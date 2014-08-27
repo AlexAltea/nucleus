@@ -21,6 +21,10 @@
 *.app
 
 # Visual Studio files
+nucleus/x64/*
+*.ilk
 *.opensdf
+*.pdb
 *.sdf
 *.suo
+*.user
