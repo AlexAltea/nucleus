@@ -6,6 +6,7 @@
 #include "emulator.h"
 #include <iostream>
 
+// Nucleus global emulator
 Emulator nucleus;
 
 int main(int argc, char **argv)

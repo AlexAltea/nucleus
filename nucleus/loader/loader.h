@@ -22,6 +22,8 @@ enum Filetype {
 
     // Common file types
     FILETYPE_ISO,
+    FILETYPE_RAR,
+    FILETYPE_ZIP,
 
     // Unknown file type
 	FILETYPE_UNKNOWN,

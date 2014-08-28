@@ -11,9 +11,10 @@
 
 class Emulator
 {
-    memory m_memory;
 
 public:
+    Memory memory;
+
     bool load(const std::string& filepath);
     void run();
     void pause();
