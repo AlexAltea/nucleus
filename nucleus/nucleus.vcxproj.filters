@@ -21,6 +21,18 @@
     <ClCompile Include="cpu\cell.cpp">
       <Filter>cpu</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\ppu\ppu_thread.cpp">
+      <Filter>cpu\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\thread.cpp">
+      <Filter>cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\ppu_interpreter.cpp">
+      <Filter>cpu\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\ppu_recompiler.cpp">
+      <Filter>cpu\ppu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -49,6 +61,30 @@
     <ClInclude Include="cpu\cell.h">
       <Filter>cpu</Filter>
     </ClInclude>
+    <ClInclude Include="cpu\ppu\ppu_thread.h">
+      <Filter>cpu\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\thread.h">
+      <Filter>cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\ppu_interpreter.h">
+      <Filter>cpu\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\translator.h">
+      <Filter>cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\instructions.h">
+      <Filter>cpu\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\decoder.h">
+      <Filter>cpu\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\decoder.h">
+      <Filter>cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\ppu_recompiler.h">
+      <Filter>cpu\ppu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -71,6 +107,12 @@
     </Filter>
     <Filter Include="syscalls\lv2">
       <UniqueIdentifier>{c4dacbb1-5a4c-4b3b-863b-3081f65cf594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpu\ppu">
+      <UniqueIdentifier>{b9d5fcc3-3779-418c-b69b-f466239485ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpu\spu">
+      <UniqueIdentifier>{c47659f4-1b74-48cc-ab31-c1af611742b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

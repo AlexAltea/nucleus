@@ -3,8 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "nucleus/filesystem/vfsLocalFile.h"
 #include "loader.h"
+#include "nucleus/filesystem/vfsLocalFile.h"
 
 Filetype detectFiletype(const std::string& filepath)
 {

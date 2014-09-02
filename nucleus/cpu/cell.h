@@ -6,10 +6,27 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/thread.h"
+#include <mutex>
+#include <vector>
 
-enum
+enum CellThreadType
 {
-    CPU_THREAD_PPU,
-    CPU_THREAD_SPU,
-    CPU_THREAD_RAWSPU,
+    CELL_THREAD_PPU,
+    CELL_THREAD_SPU,
+    CELL_THREAD_RAWSPU,
+};
+
+class Cell
+{
+    std::vector<CellThread*> m_threads;
+    std::mutex m_mutex;
+
+public:
+    CellThread& addThread(CellThreadType type);
+    void removeThread(u32 id);
+
+    void run();
+    void pause();
+    void stop();
 };

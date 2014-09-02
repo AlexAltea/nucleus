@@ -4,3 +4,44 @@
  */
 
 #include "cell.h"
+#include "nucleus/cpu/ppu/ppu_thread.h"
+
+CellThread& Cell::addThread(CellThreadType type)
+{
+    //std::lock_guard<std::mutex> lock(m_mutex);
+    CellThread* thread;
+
+    switch (type)
+    {
+    case CELL_THREAD_PPU:
+        thread = new PPUThread();
+        thread->start();
+        break;
+    /*case CELL_THREAD_SPU:
+        m_threads.push_back(Thread());
+        break;
+    case CELL_THREAD_RAWSPU:
+        m_threads.push_back(Thread());
+        break;*/
+    default:
+        // TODO: Error
+        break;
+    }
+
+    m_threads.push_back(thread);
+    return *thread;
+}
+
+void Cell::run()
+{
+    for (CellThread* thread : m_threads) {
+        thread->run();
+    }
+}
+
+void Cell::pause()
+{
+    /*for (Thread* thread : m_threads) {
+        thread->pause();
+    }*/
+}

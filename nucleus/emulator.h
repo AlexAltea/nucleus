@@ -5,20 +5,34 @@
 
 #pragma once
 
-#include "memory/memory.h"
+#include "nucleus/common.h"
+#include "nucleus/cpu/cell.h"
+#include "nucleus/memory/memory.h"
 
+#include <mutex>
+#include <condition_variable>
 #include <string>
 
 class Emulator
 {
+    std::mutex m_mutex;
+    std::condition_variable m_cv;
+    EmulatorEvent m_event;
+    EmulatorStatus m_status;
 
 public:
+    // Hardware
     Memory memory;
+    Cell cell;
 
+    // Control the emulated process
     bool load(const std::string& filepath);
     void run();
     void pause();
     void stop();
+
+    // Wait for events
+    void idle();
 };
 
 extern Emulator nucleus;

@@ -3,13 +3,14 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
+#include "self.h"
 #include "nucleus/common.h"
 #include "nucleus/emulator.h"
 #include "nucleus/filesystem/vfsLocalFile.h"
 #include "nucleus/syscalls/lv2/sys_process.h"
 #include "nucleus/syscalls/lv2/sys_prx.h"
 #include "loader.h"
-#include "self.h"
+
 #include <vector>
 
 SELFLoader::SELFLoader()
@@ -75,7 +76,7 @@ bool SELFLoader::load()
             }
 
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
-            memcpy(nucleus.memory[phdr.vaddr], &m_elf[phdr.offset], phdr.filesz);
+            memcpy(nucleus.memory + phdr.vaddr, &m_elf[phdr.offset], phdr.filesz);
             // TODO: Static function analysis?
             break;
 

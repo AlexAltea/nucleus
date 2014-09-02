@@ -28,6 +28,7 @@ int main(int argc, char **argv)
         }
 
         nucleus.run();
+        nucleus.idle();
     }
     return 0;
 }
