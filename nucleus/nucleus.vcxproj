@@ -73,7 +73,6 @@
   <ItemGroup>
     <ClCompile Include="cpu\cell.cpp" />
     <ClCompile Include="cpu\ppu\ppu_interpreter.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_recompiler.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
     <ClCompile Include="cpu\thread.cpp" />
     <ClCompile Include="emulator.cpp" />
@@ -91,7 +90,6 @@
     <ClInclude Include="cpu\ppu\decoder.h" />
     <ClInclude Include="cpu\ppu\instructions.h" />
     <ClInclude Include="cpu\ppu\ppu_interpreter.h" />
-    <ClInclude Include="cpu\ppu\ppu_recompiler.h" />
     <ClInclude Include="cpu\ppu\ppu_thread.h" />
     <ClInclude Include="cpu\thread.h" />
     <ClInclude Include="cpu\translator.h" />

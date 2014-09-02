@@ -22,11 +22,11 @@ Filetype detectFiletype(const std::string& filepath)
     case 'SCE\x00':
         return FILETYPE_SELF;
     case '!raR':
-		return FILETYPE_RAR;
-	case '\x04\x03KP':
-	case '\x06\x05KP':
-	case '\x08\x07KP':
-		return FILETYPE_ZIP;
+        return FILETYPE_RAR;
+    case '\x04\x03KP':
+    case '\x06\x05KP':
+    case '\x08\x07KP':
+        return FILETYPE_ZIP;
     }
     return FILETYPE_UNKNOWN;
 }

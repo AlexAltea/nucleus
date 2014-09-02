@@ -30,9 +30,6 @@
     <ClCompile Include="cpu\ppu\ppu_interpreter.cpp">
       <Filter>cpu\ppu</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_recompiler.cpp">
-      <Filter>cpu\ppu</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -81,9 +78,6 @@
     </ClInclude>
     <ClInclude Include="cpu\decoder.h">
       <Filter>cpu</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_recompiler.h">
-      <Filter>cpu\ppu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

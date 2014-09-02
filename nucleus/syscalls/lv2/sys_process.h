@@ -10,38 +10,38 @@
 // Process objects
 enum
 {
-	SYS_MEM_OBJECT                   = (0x08UL),
-	SYS_MUTEX_OBJECT                 = (0x85UL),
-	SYS_COND_OBJECT                  = (0x86UL),
-	SYS_RWLOCK_OBJECT                = (0x88UL),
-	SYS_INTR_TAG_OBJECT              = (0x0AUL),
-	SYS_INTR_SERVICE_HANDLE_OBJECT   = (0x0BUL),
-	SYS_EVENT_QUEUE_OBJECT           = (0x8DUL),
-	SYS_EVENT_PORT_OBJECT            = (0x0EUL),
-	SYS_TRACE_OBJECT                 = (0x21UL),
-	SYS_SPUIMAGE_OBJECT              = (0x22UL),
-	SYS_PRX_OBJECT                   = (0x23UL),
-	SYS_SPUPORT_OBJECT               = (0x24UL),
-	SYS_LWMUTEX_OBJECT               = (0x95UL),
-	SYS_TIMER_OBJECT                 = (0x11UL),
-	SYS_SEMAPHORE_OBJECT             = (0x96UL),
-	SYS_FS_FD_OBJECT                 = (0x73UL),
-	SYS_LWCOND_OBJECT                = (0x97UL),
-	SYS_EVENT_FLAG_OBJECT            = (0x98UL),
+    SYS_MEM_OBJECT                   = (0x08UL),
+    SYS_MUTEX_OBJECT                 = (0x85UL),
+    SYS_COND_OBJECT                  = (0x86UL),
+    SYS_RWLOCK_OBJECT                = (0x88UL),
+    SYS_INTR_TAG_OBJECT              = (0x0AUL),
+    SYS_INTR_SERVICE_HANDLE_OBJECT   = (0x0BUL),
+    SYS_EVENT_QUEUE_OBJECT           = (0x8DUL),
+    SYS_EVENT_PORT_OBJECT            = (0x0EUL),
+    SYS_TRACE_OBJECT                 = (0x21UL),
+    SYS_SPUIMAGE_OBJECT              = (0x22UL),
+    SYS_PRX_OBJECT                   = (0x23UL),
+    SYS_SPUPORT_OBJECT               = (0x24UL),
+    SYS_LWMUTEX_OBJECT               = (0x95UL),
+    SYS_TIMER_OBJECT                 = (0x11UL),
+    SYS_SEMAPHORE_OBJECT             = (0x96UL),
+    SYS_FS_FD_OBJECT                 = (0x73UL),
+    SYS_LWCOND_OBJECT                = (0x97UL),
+    SYS_EVENT_FLAG_OBJECT            = (0x98UL),
 };
 
 // ELF file header
 struct sys_process_param_t
 {
-	be_t<u32> size;
-	be_t<u32> magic;
-	be_t<u32> version;
-	be_t<u32> sdk_version;
-	be_t<s32> primary_prio;
-	be_t<u32> primary_stacksize;
-	be_t<u32> malloc_pagesize;
-	be_t<u32> ppc_seg;
-	//be_t<u32> crash_dump_param_addr;
+    be_t<u32> size;
+    be_t<u32> magic;
+    be_t<u32> version;
+    be_t<u32> sdk_version;
+    be_t<s32> primary_prio;
+    be_t<u32> primary_stacksize;
+    be_t<u32> malloc_pagesize;
+    be_t<u32> ppc_seg;
+    //be_t<u32> crash_dump_param_addr;
 };
 /*
 // Auxiliary functions
@@ -62,7 +62,7 @@ s32 sys_process_wait_for_child(u32 pid, mem32_t status, u64 unk);
 s32 sys_process_wait_for_child2(u64 unk1, u64 unk2, u64 unk3, u64 unk4, u64 unk5, u64 unk6);
 s32 sys_process_detach_child(u64 unk);
 void sys_game_process_exitspawn(u32 path_addr, u32 argv_addr, u32 envp_addr,
-								u32 data_addr, u32 data_size, u32 prio, u64 flags);
+                                u32 data_addr, u32 data_size, u32 prio, u64 flags);
 void sys_game_process_exitspawn2(u32 path_addr, u32 argv_addr, u32 envp_addr,
-								u32 data_addr, u32 data_size, u32 prio, u64 flags);
+                                u32 data_addr, u32 data_size, u32 prio, u64 flags);
 */

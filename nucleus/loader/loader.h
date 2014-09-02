@@ -9,7 +9,7 @@
 
 enum Filetype {
     // Error
-	FILETYPE_ERROR,
+    FILETYPE_ERROR,
 
     // PS3 file types
     FILETYPE_ELF,
@@ -26,7 +26,7 @@ enum Filetype {
     FILETYPE_ZIP,
 
     // Unknown file type
-	FILETYPE_UNKNOWN,
+    FILETYPE_UNKNOWN,
 };
 
 Filetype detectFiletype(const std::string& filename);

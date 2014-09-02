@@ -24,7 +24,7 @@ MemoryBlock::MemoryBlock(u32 block_addr, u32 block_size)
     realaddr = (void*)((u64)nucleus.memory.getBaseAddr() + block_addr);
 
 #if defined(NUCLEUS_WIN)
-	if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
+    if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
 #elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
     if (::mprotect(real_addr, block_size, PROT_READ | PROT_WRITE)) {
 #endif     
@@ -34,7 +34,7 @@ MemoryBlock::MemoryBlock(u32 block_addr, u32 block_size)
     }
     
     //Memory.RegisterPages(_addr, PAGE_4K(_size)); // TODO
-	memset(realaddr, 0, size);
+    memset(realaddr, 0, size);
 }
 
 // Memory segments
@@ -69,32 +69,32 @@ u32 MemorySegment::alloc(u32 size, u32 align)
     u32 exsize;
 
     if (align <= 4096) {
-		align = 0;
-		exsize = size;
-	}
-	else {
-		align &= ~4095;
-		exsize = size + align - 1;
-	}
+        align = 0;
+        exsize = size;
+    }
+    else {
+        align &= ~4095;
+        exsize = size + align - 1;
+    }
 
     std::lock_guard<std::mutex> lock(m_mutex);
 
     for (u32 addr = m_start; addr <= m_start + m_size - exsize;) {
-		for (const auto& block : m_allocated) {
-			if ((block.addr <= addr && addr < block.addr + block.size) ||
+        for (const auto& block : m_allocated) {
+            if ((block.addr <= addr && addr < block.addr + block.size) ||
                 (addr <= block.addr && block.addr < addr + exsize)) {
-				addr = block.addr + block.size;
-				continue;
-			}
-		}
+                addr = block.addr + block.size;
+                continue;
+            }
+        }
 
-		if (align) {
-			addr = (addr + (align - 1)) & ~(align - 1);
-		}
+        if (align) {
+            addr = (addr + (align - 1)) & ~(align - 1);
+        }
 
-		m_allocated.emplace_back(addr, size);
-		return addr;
-	}
+        m_allocated.emplace_back(addr, size);
+        return addr;
+    }
 
     return 0;
 }
@@ -102,22 +102,22 @@ u32 MemorySegment::alloc(u32 size, u32 align)
 bool MemorySegment::allocFixed(u32 addr, u32 size)
 {
     size = PAGE_4K(size + (addr & 4095)); // Align size
-	addr &= ~4095; // Align start address
+    addr &= ~4095; // Align start address
 
-	if (!isValid(addr) || !isValid(addr+size-1)) {
-		return false;
-	}
+    if (!isValid(addr) || !isValid(addr+size-1)) {
+        return false;
+    }
 
-	std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
 
-	for (const auto& block : m_allocated) {
-		if (block.addr <= addr && addr < block.addr + block.size) { // TODO: Check (addr <= block.addr && block.addr < addr + exsize) ?
+    for (const auto& block : m_allocated) {
+        if (block.addr <= addr && addr < block.addr + block.size) { // TODO: Check (addr <= block.addr && block.addr < addr + exsize) ?
             return false;
         }
-	}
+    }
 
     m_allocated.emplace_back(addr, size);
-	return true;
+    return true;
 }
 
 bool MemorySegment::isValid(u32 addr)
