@@ -3,8 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "nucleus/common.h"
 #include "memory.h"
+#include "nucleus/common.h"
 
 #ifdef NUCLEUS_WIN
 #include <Windows.h>
@@ -50,6 +50,79 @@ void Memory::close()
 		// Error
 	}
 }
+
+/**
+ * Read memory reversing endianness if necessary
+ */
+u8 Memory::read8(u32 addr)
+{
+    return *(u8*)((u64)m_base + addr);
+}
+u16 Memory::read16(u32 addr)
+{
+    return re16(*(u16*)((u64)m_base + addr));
+}
+u32 Memory::read32(u32 addr)
+{
+    return re32(*(u32*)((u64)m_base + addr));
+}
+u64 Memory::read64(u32 addr)
+{
+    return re64(*(u64*)((u64)m_base + addr));
+}
+u128 Memory::read128(u32 addr)
+{
+    return re128(*(u128*)((u64)m_base + addr));
+}
+void Memory::readLeft(u8* dst, u32 src, u32 size)
+{
+    for (u32 i = 0; i < size; i++) {
+        dst[size - 1 - i] = read8(src + i);
+    }
+}
+void Memory::readRight(u8* dst, u32 src, u32 size)
+{
+    for (u32 i = 0; i < size; i++) {
+        dst[i] = read8(src + (size - 1 - i));
+    }
+}
+
+/**
+ * Write memory reversing endianness if necessary
+ */
+void Memory::write8(u32 addr, u8 value)
+{
+    *(u8*)((u64)m_base + addr) = value;
+}
+void Memory::write16(u32 addr, u16 value)
+{
+    *(u16*)((u64)m_base + addr) = re16(value);
+}
+void Memory::write32(u32 addr, u32 value)
+{
+    *(u32*)((u64)m_base + addr) = re32(value);
+}
+void Memory::write64(u32 addr, u64 value)
+{
+    *(u64*)((u64)m_base + addr) = re64(value);
+}
+void Memory::write128(u32 addr, u128 value)
+{
+    *(u128*)((u64)m_base + addr) = re128(value);
+}
+void Memory::writeLeft(u32 dst, u8* src, u32 size)
+{
+    for (u32 i = 0; i < size; i++) {
+        write8(dst + i, src[size - 1 - i]);
+    }
+}
+void Memory::writeRight(u32 dst, u8* src, u32 size)
+{
+    for (u32 i = 0; i < size; i++) {
+        write8(dst + (size - 1 - i), src[i]);
+    }
+}
+
 
 bool Memory::check()
 {

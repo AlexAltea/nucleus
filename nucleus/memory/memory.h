@@ -39,14 +39,20 @@ public:
     u16 read16(u32 addr);
     u32 read32(u32 addr);
     u64 read64(u32 addr);
+    u128 read128(u32 addr);
+    void readLeft(u8* dst, u32 src, u32 size);
+    void readRight(u8* dst, u32 src, u32 size);
 
     void write8(u32 addr, u8 value);
     void write16(u32 addr, u16 value);
     void write32(u32 addr, u32 value);
     void write64(u32 addr, u64 value);
+    void write128(u32 addr, u128 value);
+    void writeLeft(u32 dst, u8* src, u32 size);
+    void writeRight(u32 dst, u8* src, u32 size);
 
     void* getBaseAddr() { return m_base; }
 
     MemorySegment& operator()(size_t id) { return m_segments[id]; }
-    void* operator[](u32 addr) { return (void*)((u64)m_base + addr); }
+    void* operator+(u32 addr) { return (void*)((u64)m_base + addr); }
 };

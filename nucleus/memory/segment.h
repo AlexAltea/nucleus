@@ -33,7 +33,7 @@ public:
     void init(u32 start, u32 size);
     void close();
 
-    u32 alloc(u32 size, u32 align);
+    u32 alloc(u32 size, u32 align=1);
     bool allocFixed(u32 addr, u32 size);
     void free(u32 addr);
 

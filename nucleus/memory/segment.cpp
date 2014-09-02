@@ -3,8 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "nucleus/emulator.h"
 #include "segment.h"
+#include "nucleus/emulator.h"
 
 #if defined(NUCLEUS_WIN)
 #include <Windows.h>
