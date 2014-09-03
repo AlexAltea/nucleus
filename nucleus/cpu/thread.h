@@ -31,6 +31,9 @@ protected:
     CellTranslator* m_translator;
 
 public:
+    // Program Counter
+    u32 pc;
+
     // Open a new thread that will enter the code emulation loop
     void start();
 

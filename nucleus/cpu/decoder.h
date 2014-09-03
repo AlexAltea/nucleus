@@ -43,9 +43,9 @@ public:
     {
         const u32 value = (data & UCodeField<from, to>::mask) >> UCodeField<from, to>::shift;
         if (value & (1 << (size - 1))) {
-		    return value - (1 << size);
-	    }
-	    return value;
+            return value - (1 << size);
+        }
+        return value;
     }
 };
 
@@ -73,10 +73,10 @@ template<typename TO>
 class InstrCaller
 {
 public:
-	virtual ~InstrCaller<TO>() = default;
+    virtual ~InstrCaller<TO>() = default;
 
     // Jump to the next instruction or instruction list
-	virtual void call(TO* operation, u32 code) const = 0;
+    virtual void call(TO* operation, u32 code) const = 0;
 };
 
 /**
@@ -109,7 +109,7 @@ public:
 template<typename TO, typename T1>
 InstrCaller<TO>* instr_bind(void (TO::*func)(T1), const CodeFieldBase& f1)
 {
-	return new InstrBinder_1<TO, T1>(func, f1);
+    return new InstrBinder_1<TO, T1>(func, f1);
 }
 
 template<typename TO>
@@ -156,7 +156,7 @@ class InstrBinder_2 : public InstrCaller<TO>
     typedef void (TO::*func_t)(T1, T2);
     func_t m_func;
     const CodeFieldBase& m_field1;
-	const CodeFieldBase& m_field2;
+    const CodeFieldBase& m_field2;
 
     InstrBinder_2(func_t func, T1 f1, T2 f2)
         : m_func(func), m_field1(f1), m_field2(f2)
@@ -178,8 +178,8 @@ class InstrBinder_3 : public InstrCaller<TO>
     typedef void (TO::*func_t)(T1, T2, T3);
     func_t m_func;
     const CodeFieldBase& m_field1;
-	const CodeFieldBase& m_field2;
-	const CodeFieldBase& m_field3;
+    const CodeFieldBase& m_field2;
+    const CodeFieldBase& m_field3;
 
     InstrBinder_3(func_t func, T1 f1, T2 f2, T3 f3)
         : m_func(func), m_field1(f1), m_field2(f2), m_field3(f3)
@@ -202,9 +202,9 @@ class InstrBinder_4 : public InstrCaller<TO>
     typedef void (TO::*func_t)(T1, T2, T3, T4);
     func_t m_func;
     const CodeFieldBase& m_field1;
-	const CodeFieldBase& m_field2;
-	const CodeFieldBase& m_field3;
-	const CodeFieldBase& m_field4;
+    const CodeFieldBase& m_field2;
+    const CodeFieldBase& m_field3;
+    const CodeFieldBase& m_field4;
 
     InstrBinder_4(func_t func, T1 f1, T2 f2, T3 f3, T4 f4)
         : m_func(func), m_field1(f1), m_field2(f2), m_field3(f3), m_field4(f4)
@@ -228,10 +228,10 @@ class InstrBinder_5 : public InstrCaller<TO>
     typedef void (TO::*func_t)(T1, T2, T3, T4, T5);
     func_t m_func;
     const CodeFieldBase& m_field1;
-	const CodeFieldBase& m_field2;
-	const CodeFieldBase& m_field3;
-	const CodeFieldBase& m_field4;
-	const CodeFieldBase& m_field5;
+    const CodeFieldBase& m_field2;
+    const CodeFieldBase& m_field3;
+    const CodeFieldBase& m_field4;
+    const CodeFieldBase& m_field5;
 
     InstrBinder_5(func_t func, T1 f1, T2 f2, T3 f3, T4 f4, T5 f5)
         : m_func(func), m_field1(f1), m_field2(f2), m_field3(f3), m_field4(f4), m_field5(f5)
@@ -256,11 +256,11 @@ class InstrBinder_6 : public InstrCaller<TO>
     typedef void (TO::*func_t)(T1, T2, T3, T4, T5, T6);
     func_t m_func;
     const CodeFieldBase& m_field1;
-	const CodeFieldBase& m_field2;
-	const CodeFieldBase& m_field3;
-	const CodeFieldBase& m_field4;
-	const CodeFieldBase& m_field5;
-	const CodeFieldBase& m_field6;
+    const CodeFieldBase& m_field2;
+    const CodeFieldBase& m_field3;
+    const CodeFieldBase& m_field4;
+    const CodeFieldBase& m_field5;
+    const CodeFieldBase& m_field6;
 
     InstrBinder_6(func_t func, T1 f1, T2 f2, T3 f3, T4 f4, T5 f5, T6 f6)
         : m_func(func), m_field1(f1), m_field2(f2), m_field3(f3), m_field4(f4), m_field5(f5), m_field6(f6)

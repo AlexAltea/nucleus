@@ -11,26 +11,26 @@ PPUThread::PPUThread()
 {
     /*CloseStack()
 {
-	if(m_stack_addr)
-	{
-		Memory.StackMem.Free(m_stack_addr);
-		m_stack_addr = 0;
-	}
+    if(m_stack_addr)
+    {
+        Memory.StackMem.Free(m_stack_addr);
+        m_stack_addr = 0;
+    }
 
-	m_stack_size = 0;
-	m_stack_point = 0;
+    m_stack_size = 0;
+    m_stack_point = 0;
     */
 
     /*m_sync_wait = 0;
-	m_wait_thread_id = -1;
+    m_wait_thread_id = -1;
 
-	SetPc(0);
-	cycle = 0;
-	m_is_branch = false;
+    SetPc(0);
+    cycle = 0;
+    m_is_branch = false;
 
-	m_status = Stopped;
-	m_error = 0;
-	*/
+    m_status = Stopped;
+    m_error = 0;
+    */
 
     // owned_mutexes = 0
     m_translator = new PPUInterpreter(*this);
@@ -43,8 +43,8 @@ void PPUThread::reset()
     memset(gpr, 0, sizeof(gpr));
     memset(fpr, 0, sizeof(fpr));
     memset(vr, 0, sizeof(vr));
-	
-	
+    
+    
 
     // TODO: Other registers
     // PC=0

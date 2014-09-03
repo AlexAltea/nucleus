@@ -72,8 +72,8 @@ struct u128
 {
     u64 lo, hi;
 
-	bool operator == (const u128& r) const { return (lo == r.lo) && (hi == r.hi); }
-	bool operator != (const u128& r) const { return (lo != r.lo) || (hi != r.hi); }
+    bool operator == (const u128& r) const { return (lo == r.lo) && (hi == r.hi); }
+    bool operator != (const u128& r) const { return (lo != r.lo) || (hi != r.hi); }
 
     u128 operator | (const u128& r) const { return u128{lo | r.lo, hi | r.hi}; }
     u128 operator & (const u128& r) const { return u128{lo & r.lo, hi & r.hi}; }

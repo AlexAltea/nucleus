@@ -28,12 +28,12 @@ void initRotateMask()
     if (initialized) {
         return;
     }
-	for (int mb = 0; mb < 64; mb++) {
+    for (int mb = 0; mb < 64; mb++) {
         for(u32 me = 0; me < 64; me++) {
-		    const u64 mask = (~1ULL >> mb) ^ ((me >= 63) ? 0 : ~1ULL >> (me + 1));	
-		    rotateMask[mb][me] = mb > me ? ~mask : mask;
+            const u64 mask = (~1ULL >> mb) ^ ((me >= 63) ? 0 : ~1ULL >> (me + 1));    
+            rotateMask[mb][me] = mb > me ? ~mask : mask;
         }
-	}
+    }
     initialized = true;
 }
 
@@ -44,7 +44,7 @@ PPUInterpreter::PPUInterpreter(PPUThread& thr) : thread(thr)
 
 void PPUInterpreter::step()
 {
-    const u32 instruction = nucleus.memory.read32(thread.pc + 0x10000);
+    const u32 instruction = nucleus.memory.read32(thread.pc);
     //instruction = 0xFC00F02A;
     listMain.call(this, instruction);
     thread.pc += 4;
@@ -2161,7 +2161,7 @@ void PPUInterpreter::vcmpeqfp_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_equal | none_equal;
+    thread.cr.setField(6, all_equal | none_equal);
 }
 void PPUInterpreter::vcmpequb(u32 vd, u32 va, u32 vb)
 {
@@ -2185,7 +2185,7 @@ void PPUInterpreter::vcmpequb_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_equal | none_equal;
+    thread.cr.setField(6, all_equal | none_equal);
 }
 void PPUInterpreter::vcmpequh(u32 vd, u32 va, u32 vb)
 {
@@ -2209,7 +2209,7 @@ void PPUInterpreter::vcmpequh_(u32 vd, u32 va, u32 vb)
         }
     }
         
-    thread.cr.cr6 = all_equal | none_equal;
+    thread.cr.setField(6, all_equal | none_equal);
 }
 void PPUInterpreter::vcmpequw(u32 vd, u32 va, u32 vb)
 {
@@ -2233,7 +2233,7 @@ void PPUInterpreter::vcmpequw_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_equal | none_equal;
+    thread.cr.setField(6, all_equal | none_equal);
 }
 void PPUInterpreter::vcmpgefp(u32 vd, u32 va, u32 vb)
 {
@@ -2257,7 +2257,7 @@ void PPUInterpreter::vcmpgefp_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_ge | none_ge;
+    thread.cr.setField(6, all_ge | none_ge);
 }
 void PPUInterpreter::vcmpgtfp(u32 vd, u32 va, u32 vb)
 {
@@ -2281,7 +2281,7 @@ void PPUInterpreter::vcmpgtfp_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_ge | none_ge;
+    thread.cr.setField(6, all_ge | none_ge);
 }
 void PPUInterpreter::vcmpgtsb(u32 vd, u32 va, u32 vb)
 {
@@ -2305,7 +2305,7 @@ void PPUInterpreter::vcmpgtsb_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_gt | none_gt;
+    thread.cr.setField(6, all_gt | none_gt);
 }
 void PPUInterpreter::vcmpgtsh(u32 vd, u32 va, u32 vb)
 {
@@ -2329,7 +2329,7 @@ void PPUInterpreter::vcmpgtsh_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_gt | none_gt;
+    thread.cr.setField(6, all_gt | none_gt);
 }
 void PPUInterpreter::vcmpgtsw(u32 vd, u32 va, u32 vb)
 {
@@ -2353,7 +2353,7 @@ void PPUInterpreter::vcmpgtsw_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_gt | none_gt;
+    thread.cr.setField(6, all_gt | none_gt);
 }
 void PPUInterpreter::vcmpgtub(u32 vd, u32 va, u32 vb)
 {
@@ -2377,7 +2377,7 @@ void PPUInterpreter::vcmpgtub_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_gt | none_gt;
+    thread.cr.setField(6, all_gt | none_gt);
 }
 void PPUInterpreter::vcmpgtuh(u32 vd, u32 va, u32 vb)
 {
@@ -2401,7 +2401,7 @@ void PPUInterpreter::vcmpgtuh_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_gt | none_gt;
+    thread.cr.setField(6, all_gt | none_gt);
 }
 void PPUInterpreter::vcmpgtuw(u32 vd, u32 va, u32 vb)
 {
@@ -2425,7 +2425,7 @@ void PPUInterpreter::vcmpgtuw_(u32 vd, u32 va, u32 vb)
         }
     }
 
-    thread.cr.cr6 = all_gt | none_gt;
+    thread.cr.setField(6, all_gt | none_gt);
 }
 void PPUInterpreter::vctsxs(u32 vd, u32 uimm5, u32 vb)
 {
@@ -3495,8 +3495,6 @@ void PPUInterpreter::vxor(u32 vd, u32 va, u32 vb)
 // Unknown instruction
 void PPUInterpreter::unknown(u32 instruction)
 {
-    int a = 0;
-    a += 4;
 }
 void PPUInterpreter::unknown(const std::string& instruction)
 {

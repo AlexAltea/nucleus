@@ -85,14 +85,14 @@ bool SELFLoader::load()
 
         case 0x60000001: //LOOS+1
             if (!phdr.filesz) {
-			    break;
+                break;
             }
             // TODO: sys_process stuff
             break;
 
         case 0x60000002: //LOOS+2
             if (!phdr.filesz) {
-			    break;
+                break;
             }
             // TODO: sys_prx stuff
             break;

@@ -1,0 +1,17 @@
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+branches:
+  only:
+    - master
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make -j 4

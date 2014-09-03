@@ -6,23 +6,18 @@
 #include "cell.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
-CellThread& Cell::addThread(CellThreadType type)
+CellThread& Cell::addThread(CellThreadType type, u32 entry=0)
 {
-    //std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     CellThread* thread;
 
     switch (type)
     {
     case CELL_THREAD_PPU:
         thread = new PPUThread();
+        thread->pc = entry;
         thread->start();
         break;
-    /*case CELL_THREAD_SPU:
-        m_threads.push_back(Thread());
-        break;
-    case CELL_THREAD_RAWSPU:
-        m_threads.push_back(Thread());
-        break;*/
     default:
         // TODO: Error
         break;
@@ -41,7 +36,7 @@ void Cell::run()
 
 void Cell::pause()
 {
-    /*for (Thread* thread : m_threads) {
+    for (CellThread* thread : m_threads) {
         thread->pause();
-    }*/
+    }
 }

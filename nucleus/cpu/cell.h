@@ -23,7 +23,7 @@ class Cell
     std::mutex m_mutex;
 
 public:
-    CellThread& addThread(CellThreadType type);
+    CellThread& addThread(CellThreadType type, u32 entry);
     void removeThread(u32 id);
 
     void run();
