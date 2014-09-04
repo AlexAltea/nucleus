@@ -142,6 +142,9 @@ union PPU_VSCR
 
 class PPUThread : public CellThread
 {
+    u32 m_stackAddr;
+    u32 m_stackPointer;
+
 public:
     // PPU UISA Registers
     PPU_GPR gpr[32];
@@ -164,7 +167,9 @@ public:
     u64 reserve_addr;
     u64 reserve_value;
 
+
     PPUThread();
+    ~PPUThread();
 
     void reset();
     void setPC(u32 addr);

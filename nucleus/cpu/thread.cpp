@@ -5,12 +5,17 @@
 
 #include "thread.h"
 #include "nucleus/common.h"
-#include <iostream>//
-void CellThread::start()
+#include "nucleus/emulator.h"
+
+void CellThread::start(u32 entry)
 {
     if (m_thread) {
         stop();
     }
+
+    pc = nucleus.memory.read32(entry);
+    //rtoc = nucleus.memory.read32(entry+4);
+    // status stopped.
 
     m_thread = new std::thread([&](){
         m_event = NUCLEUS_EVENT_PAUSE;

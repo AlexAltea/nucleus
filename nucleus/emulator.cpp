@@ -24,10 +24,9 @@ bool Emulator::load(const std::string& filepath)
     self.load();
 
     // Prepare Thread
-    u64 entry = nucleus.memory.read32(self.getEntry());
     switch (self.getMachine()) {
     case MACHINE_PPC64:
-        cell.addThread(CELL_THREAD_PPU, entry);
+        cell.addThread(CELL_THREAD_PPU, self.getEntry());
         break;
     default:
         // TODO: Error

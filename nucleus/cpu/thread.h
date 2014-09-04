@@ -35,7 +35,7 @@ public:
     u32 pc;
 
     // Open a new thread that will enter the code emulation loop
-    void start();
+    void start(u32 entry);
 
     // These functions control the thread once it is started
     void run();

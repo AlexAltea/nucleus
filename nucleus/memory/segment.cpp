@@ -120,6 +120,10 @@ bool MemorySegment::allocFixed(u32 addr, u32 size)
     return true;
 }
 
+void MemorySegment::free(u32 addr)
+{
+}
+
 bool MemorySegment::isValid(u32 addr)
 {
     if (addr < m_start || addr >= m_start + m_size) {

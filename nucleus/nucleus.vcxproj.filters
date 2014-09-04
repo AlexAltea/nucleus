@@ -27,8 +27,11 @@
     <ClCompile Include="cpu\thread.cpp">
       <Filter>cpu</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_interpreter.cpp">
-      <Filter>cpu\ppu</Filter>
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_tables.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,20 +67,17 @@
     <ClInclude Include="cpu\thread.h">
       <Filter>cpu</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_interpreter.h">
-      <Filter>cpu\ppu</Filter>
-    </ClInclude>
     <ClInclude Include="cpu\translator.h">
       <Filter>cpu</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\ppu\instructions.h">
+    <ClInclude Include="cpu\ppu\ppu_instructions.h">
       <Filter>cpu\ppu</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\ppu\decoder.h">
-      <Filter>cpu\ppu</Filter>
+    <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h">
+      <Filter>cpu\ppu\interpreter</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\decoder.h">
-      <Filter>cpu</Filter>
+    <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter_tables.h">
+      <Filter>cpu\ppu\interpreter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +107,9 @@
     </Filter>
     <Filter Include="cpu\spu">
       <UniqueIdentifier>{c47659f4-1b74-48cc-ab31-c1af611742b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpu\ppu\interpreter">
+      <UniqueIdentifier>{f788fe4b-e985-4668-8282-ec98f9c35c96}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

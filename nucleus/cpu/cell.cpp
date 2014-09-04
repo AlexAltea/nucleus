@@ -15,8 +15,7 @@ CellThread& Cell::addThread(CellThreadType type, u32 entry=0)
     {
     case CELL_THREAD_PPU:
         thread = new PPUThread();
-        thread->pc = entry;
-        thread->start();
+        thread->start(entry);
         break;
     default:
         // TODO: Error
