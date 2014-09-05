@@ -5,16 +5,23 @@
 using std::min;
 using std::max;
 
+#ifdef NUCLEUS_WIN
 #define re16(val)  _byteswap_ushort(val)
 #define re32(val)  _byteswap_ulong(val)
 #define re64(val)  _byteswap_uint64(val)
 #define re128(val) u128{_byteswap_uint64((val).hi), _byteswap_uint64((val).lo)}
+#else
+#define re16(val)  __builtin_bswap16(val)
+#define re32(val)  __builtin_bswap32(val)
+#define re64(val)  __builtin_bswap64(val)
+#define re128(val) u128{__builtin_bswap64((val).hi), __builtin_bswap64((val).lo)}
+#endif
 
 template<typename T, int size = sizeof(T)> struct se_t;
-template<typename T> struct se_t<T, 1> { static __forceinline void func(T& dst, const T src) { (u8&)dst = (u8&)src; } };
-template<typename T> struct se_t<T, 2> { static __forceinline void func(T& dst, const T src) { (u16&)dst = _byteswap_ushort((u16&)src); } };
-template<typename T> struct se_t<T, 4> { static __forceinline void func(T& dst, const T src) { (u32&)dst = _byteswap_ulong((u32&)src); } };
-template<typename T> struct se_t<T, 8> { static __forceinline void func(T& dst, const T src) { (u64&)dst = _byteswap_uint64((u64&)src); } };
+template<typename T> struct se_t<T, 1> { static inline void func(T& dst, const T src) { (u8&)dst = (u8&)src; } };
+template<typename T> struct se_t<T, 2> { static inline void func(T& dst, const T src) { (u16&)dst = re16((u16&)src); } };
+template<typename T> struct se_t<T, 4> { static inline void func(T& dst, const T src) { (u32&)dst = re32((u32&)src); } };
+template<typename T> struct se_t<T, 8> { static inline void func(T& dst, const T src) { (u64&)dst = re64((u64&)src); } };
 
 template<typename T> T re(const T val) { T res; se_t<T>::func(res, val); return res; }
 template<typename T1, typename T2> void re(T1& dst, const T2 val) { se_t<T1>::func(dst, val); }

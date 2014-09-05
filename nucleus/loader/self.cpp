@@ -11,6 +11,7 @@
 #include "nucleus/syscalls/lv2/sys_prx.h"
 #include "loader.h"
 
+#include <cstring>
 #include <vector>
 
 SELFLoader::SELFLoader()

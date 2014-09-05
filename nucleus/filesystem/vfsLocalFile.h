@@ -41,7 +41,7 @@ public:
 
     bool Read(void* dst, u64 size);
     bool Write(const void* src, u64 size);
-    bool vfsLocalFile::Seek(s64 offset, vfsSeekMode mode);
+    bool Seek(s64 offset, vfsSeekMode mode);
     u64 Tell() const;
     u64 GetSize();
 };

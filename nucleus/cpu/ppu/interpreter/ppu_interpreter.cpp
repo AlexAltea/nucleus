@@ -8,6 +8,7 @@
 #include "nucleus/cpu/ppu/interpreter/ppu_interpreter_tables.h"
 
 #include <cmath>
+#include <cstring>
 #include <iostream>
 
 // Instruction tables
@@ -96,17 +97,12 @@ bool PPUInterpreter::isCarry(u64 a, u64 b, u64 c)
 
 float PPUInterpreter::CheckVSCR_NJ(PPUThread& thread, const f32 v)
 {
-    if (!thread.vscr.NJ) return v;
-
-    const int fpc = _fpclass(v);
-#ifdef __GNUG__
-    if (fpc == FP_SUBNORMAL)
+    if (!thread.vscr.NJ) {
+        return v;
+    }
+    if (std::fpclassify(v) == FP_SUBNORMAL) {
         return std::signbit(v) ? -0.0f : 0.0f;
-#else
-    if (fpc & _FPCLASS_ND) return -0.0f;
-    if (fpc & _FPCLASS_PD) return  0.0f;
-#endif
-
+    }
     return v;
 }
 
@@ -215,7 +211,7 @@ void PPUInterpreter::addze(PPUInstruction instr, PPUThread& thread)
     if (instr.oe) unknown2("addzeo");
     if (instr.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[instr.rd]);
 }
-void PPUInterpreter::and(PPUInstruction instr, PPUThread& thread)
+void PPUInterpreter::_and(PPUInstruction instr, PPUThread& thread)
 {
     thread.gpr[instr.ra] = thread.gpr[instr.rs] & thread.gpr[instr.rb];
     if (instr.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[instr.ra]);
@@ -345,22 +341,22 @@ void PPUInterpreter::crxor(PPUInstruction instr, PPUThread& thread)
 void PPUInterpreter::dcbf(PPUInstruction instr, PPUThread& thread)
 {
     //unknown2("dcbf", false);
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::dcbst(PPUInstruction instr, PPUThread& thread)
 {
     //unknown2("dcbst", false);
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::dcbt(PPUInstruction instr, PPUThread& thread)
 {
     //unknown2("dcbt", false);
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::dcbtst(PPUInstruction instr, PPUThread& thread)
 {
     //unknown2("dcbtst", false);
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::dcbz(PPUInstruction instr, PPUThread& thread)
 {
@@ -369,7 +365,7 @@ void PPUInterpreter::dcbz(PPUInstruction instr, PPUThread& thread)
     if (cache_line) {
         memset(cache_line, 0, 128);
     }
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::divd(PPUInstruction instr, PPUThread& thread)
 {
@@ -425,15 +421,15 @@ void PPUInterpreter::divwu(PPUInstruction instr, PPUThread& thread)
 }
 void PPUInterpreter::dss(PPUInstruction instr, PPUThread& thread)
 {
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::dst(PPUInstruction instr, PPUThread& thread)
 {
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::dstst(PPUInstruction instr, PPUThread& thread)
 {
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::eciwx(PPUInstruction instr, PPUThread& thread)
 {
@@ -447,7 +443,7 @@ void PPUInterpreter::ecowx(PPUInstruction instr, PPUThread& thread)
 }
 void PPUInterpreter::eieio(PPUInstruction instr, PPUThread& thread)
 {
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::eqv(PPUInstruction instr, PPUThread& thread)
 {
@@ -475,7 +471,7 @@ void PPUInterpreter::icbi(PPUInstruction instr, PPUThread& thread)
 }
 void PPUInterpreter::isync(PPUInstruction instr, PPUThread& thread)
 {
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::lbz(PPUInstruction instr, PPUThread& thread)
 {
@@ -745,12 +741,12 @@ void PPUInterpreter::mtspr(PPUInstruction instr, PPUThread& thread)
 }
 void PPUInterpreter::mulhd(PPUInstruction instr, PPUThread& thread)
 {
-    thread.gpr[instr.rd] = __mulh(thread.gpr[instr.ra], thread.gpr[instr.rb]);
+    // TODO: thread.gpr[instr.rd] = __mulh(thread.gpr[instr.ra], thread.gpr[instr.rb]);
     if (instr.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[instr.rd]);
 }
 void PPUInterpreter::mulhdu(PPUInstruction instr, PPUThread& thread)
 {
-    thread.gpr[instr.rd] = __umulh(thread.gpr[instr.ra], thread.gpr[instr.rb]);
+    // TODO: thread.gpr[instr.rd] = __umulh(thread.gpr[instr.ra], thread.gpr[instr.rb]);
     if (instr.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[instr.rd]);
 }
 void PPUInterpreter::mulhw(PPUInstruction instr, PPUThread& thread)
@@ -803,7 +799,7 @@ void PPUInterpreter::nor(PPUInstruction instr, PPUThread& thread)
     thread.gpr[instr.ra] = ~(thread.gpr[instr.rs] | thread.gpr[instr.rb]);
     if (instr.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[instr.ra]);
 }
-void PPUInterpreter::or(PPUInstruction instr, PPUThread& thread)
+void PPUInterpreter::_or(PPUInstruction instr, PPUThread& thread)
 {
     thread.gpr[instr.ra] = thread.gpr[instr.rs] | thread.gpr[instr.rb];
     if (instr.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[instr.ra]);
@@ -1160,7 +1156,7 @@ void PPUInterpreter::subfze(PPUInstruction instr, PPUThread& thread)
 }
 void PPUInterpreter::sync(PPUInstruction instr, PPUThread& thread)
 {
-    _mm_mfence();
+    // TODO: _mm_fence();
 }
 void PPUInterpreter::td(PPUInstruction instr, PPUThread& thread)
 {
@@ -1204,7 +1200,7 @@ void PPUInterpreter::twi(PPUInstruction instr, PPUThread& thread)
         unknown2("twi");
     }
 }
-void PPUInterpreter::xor(PPUInstruction instr, PPUThread& thread)
+void PPUInterpreter::_xor(PPUInstruction instr, PPUThread& thread)
 {
     thread.gpr[instr.ra] = thread.gpr[instr.rs] ^ thread.gpr[instr.rb];
     if (instr.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[instr.ra]);

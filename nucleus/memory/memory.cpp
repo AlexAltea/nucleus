@@ -45,7 +45,7 @@ void Memory::close()
 #if defined(NUCLEUS_WIN)
     if (!VirtualFree(m_base, 0, MEM_RELEASE)) {
 #elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
-    if (::munmap(m_base_addr, 0x100000000)) {
+    if (::munmap(m_base, 0x100000000)) {
 #endif
         // Error
     }

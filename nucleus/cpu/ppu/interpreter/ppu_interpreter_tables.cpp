@@ -140,7 +140,7 @@ void initTables()
     s_table31[0x018] = PPUInterpreter::slw;
     s_table31[0x01a] = PPUInterpreter::cntlzw;
     s_table31[0x01b] = PPUInterpreter::sld;
-    s_table31[0x01c] = PPUInterpreter::and;
+    s_table31[0x01c] = PPUInterpreter::_and;
     s_table31[0x020] = PPUInterpreter::cmpl;
     s_table31[0x026] = PPUInterpreter::lvsr;
     s_table31[0x027] = PPUInterpreter::lvehx;
@@ -189,7 +189,7 @@ void initTables()
     s_table31[0x11c] = PPUInterpreter::eqv;
     s_table31[0x136] = PPUInterpreter::eciwx;
     s_table31[0x137] = PPUInterpreter::lhzux;
-    s_table31[0x13c] = PPUInterpreter::xor;
+    s_table31[0x13c] = PPUInterpreter::_xor;
     s_table31[0x153] = PPUInterpreter::mfspr;
     s_table31[0x155] = PPUInterpreter::lwax;
     s_table31[0x156] = PPUInterpreter::dst;
@@ -203,7 +203,7 @@ void initTables()
     s_table31[0x19c] = PPUInterpreter::orc;
     s_table31[0x1b6] = PPUInterpreter::ecowx;
     s_table31[0x1b7] = PPUInterpreter::sthux;
-    s_table31[0x1bc] = PPUInterpreter::or;
+    s_table31[0x1bc] = PPUInterpreter::_or;
     s_table31[0x1c9] = PPUInterpreter::divdu;
     s_table31[0x1cb] = PPUInterpreter::divwu;
     s_table31[0x1d3] = PPUInterpreter::mtspr;

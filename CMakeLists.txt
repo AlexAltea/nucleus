@@ -13,13 +13,13 @@ IF(NOT MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ENDIF()
 
-INCLUDE_DIRECTORIES(${NUCLEUS_SOLUTION})
+INCLUDE_DIRECTORIES(${NUCLEUS_SOLUTION_DIR})
 
 FILE(GLOB_RECURSE NUCLEUS_FILES
-    "${NUCLEUS_SOLUTION}/externals/*.cpp"
-    "${NUCLEUS_SOLUTION}/externals/*.h"
-    "${NUCLEUS_SOLUTION}/nucleus/*.cpp"
-    "${NUCLEUS_SOLUTION}/nucleus/*.h"
+    "${NUCLEUS_SOLUTION_DIR}/externals/*.cpp"
+    "${NUCLEUS_SOLUTION_DIR}/externals/*.h"
+    "${NUCLEUS_SOLUTION_DIR}/nucleus/*.cpp"
+    "${NUCLEUS_SOLUTION_DIR}/nucleus/*.h"
 )
 
 ADD_EXECUTABLE(nucleus ${NUCLEUS_FILES})

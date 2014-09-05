@@ -12,6 +12,8 @@
 #include <sys/mman.h>
 #endif
 
+#include <cstring>
+
 // Get real size for 4K pages
 #define PAGE_4K(x) (((x) + 4095) & ~(4095))
 
@@ -26,7 +28,7 @@ MemoryBlock::MemoryBlock(u32 block_addr, u32 block_size)
 #if defined(NUCLEUS_WIN)
     if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
 #elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
-    if (::mprotect(real_addr, block_size, PROT_READ | PROT_WRITE)) {
+    if (::mprotect(realaddr, block_size, PROT_READ | PROT_WRITE)) {
 #endif     
         // Error
         realaddr = nullptr;

@@ -50,7 +50,7 @@ public:
     static void addis(PPUInstruction instr, PPUThread& thread);
     static void addme(PPUInstruction instr, PPUThread& thread);
     static void addze(PPUInstruction instr, PPUThread& thread);
-    static void and(PPUInstruction instr, PPUThread& thread);
+    static void _and(PPUInstruction instr, PPUThread& thread);
     static void andc(PPUInstruction instr, PPUThread& thread);
     static void andi_(PPUInstruction instr, PPUThread& thread);
     static void andis_(PPUInstruction instr, PPUThread& thread);
@@ -145,7 +145,7 @@ public:
     static void neg(PPUInstruction instr, PPUThread& thread);
     static void nop(PPUInstruction instr, PPUThread& thread);
     static void nor(PPUInstruction instr, PPUThread& thread);
-    static void or(PPUInstruction instr, PPUThread& thread);
+    static void _or(PPUInstruction instr, PPUThread& thread);
     static void orc(PPUInstruction instr, PPUThread& thread);
     static void ori(PPUInstruction instr, PPUThread& thread);
     static void oris(PPUInstruction instr, PPUThread& thread);
@@ -202,7 +202,7 @@ public:
     static void tdi(PPUInstruction instr, PPUThread& thread);
     static void tw(PPUInstruction instr, PPUThread& thread);
     static void twi(PPUInstruction instr, PPUThread& thread);
-    static void xor(PPUInstruction instr, PPUThread& thread);
+    static void _xor(PPUInstruction instr, PPUThread& thread);
     static void xori(PPUInstruction instr, PPUThread& thread);
     static void xoris(PPUInstruction instr, PPUThread& thread);
 

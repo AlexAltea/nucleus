@@ -120,7 +120,7 @@ union PPU_VR
     f32 _f32[4];
     f64 _f64[2];
 
-    void __forceinline clear()
+    inline void clear()
     {
         _u64[0] = 0;
         _u64[1] = 0;
