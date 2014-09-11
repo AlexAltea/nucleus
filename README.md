@@ -2,7 +2,7 @@ Nucleus
 =======
 [![Build Status](https://travis-ci.org/AlexAltea/nucleus.svg)](https://travis-ci.org/AlexAltea/nucleus)
 
-This is just a private project about PlayStation 3 emulation. Some parts are based in RPCS3 code, where I have been working on since 2013, while others have been written from scratch to match my own idea of a *well designed emulator*.
+This is just a private project about PlayStation 3 emulation. Some parts are based in RPCS3 code, where I have been working on since 2013, while others have been written from scratch just for fun and learning purposes.
 
 Please, understand that I'm not interested on providing support, releases, or attention to any comments, issues or pull requests. This strict policy may change in the future though.
 

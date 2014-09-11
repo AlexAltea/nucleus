@@ -29,5 +29,6 @@
 *.user
 
 # Nucleus
-nucleus/x64/*
-bin/*
+/**/x64/*
+/bin/*
+/libs/*
