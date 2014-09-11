@@ -4,7 +4,7 @@
  */
 
 #include "loader.h"
-#include "nucleus/filesystem/vfsLocalFile.h"
+#include "nucleus/filesystem/local_file.h"
 
 Filetype detectFiletype(const std::string& filepath)
 {
@@ -17,15 +17,15 @@ Filetype detectFiletype(const std::string& filepath)
     }
 
     switch (magic.ToBE()) {
-    case '\x7f\x45LF':
+    case 0x7f454c46:
         return FILETYPE_ELF;
-    case 'SCE\x00':
+    case 0x00454353:
         return FILETYPE_SELF;
-    case '!raR':
+    case 0x21726152:
         return FILETYPE_RAR;
-    case '\x04\x03KP':
-    case '\x06\x05KP':
-    case '\x08\x07KP':
+    case 0x04034b50:
+    case 0x06054b50:
+    case 0x08074b50:
         return FILETYPE_ZIP;
     }
     return FILETYPE_UNKNOWN;

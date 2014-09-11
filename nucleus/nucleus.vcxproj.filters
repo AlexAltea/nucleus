@@ -12,9 +12,6 @@
     <ClCompile Include="loader\self.cpp">
       <Filter>loader</Filter>
     </ClCompile>
-    <ClCompile Include="filesystem\vfsLocalFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="memory\segment.cpp">
       <Filter>memory</Filter>
     </ClCompile>
@@ -33,6 +30,21 @@
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_tables.cpp">
       <Filter>cpu\ppu\interpreter</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2.cpp">
+      <Filter>syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\local_file.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="loader\keys.cpp">
+      <Filter>loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externals\sha1.cpp">
+      <Filter>externals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externals\aes.cpp">
+      <Filter>externals</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -45,9 +57,6 @@
     <ClInclude Include="emulator.h" />
     <ClInclude Include="loader\self.h">
       <Filter>loader</Filter>
-    </ClInclude>
-    <ClInclude Include="filesystem\vfsLocalFile.h">
-      <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="memory\segment.h">
       <Filter>memory</Filter>
@@ -78,6 +87,21 @@
     </ClInclude>
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter_tables.h">
       <Filter>cpu\ppu\interpreter</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2.h">
+      <Filter>syscalls</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\local_file.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="loader\keys.h">
+      <Filter>loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externals\aes.h">
+      <Filter>externals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externals\sha1.h">
+      <Filter>externals</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +134,9 @@
     </Filter>
     <Filter Include="cpu\ppu\interpreter">
       <UniqueIdentifier>{f788fe4b-e985-4668-8282-ec98f9c35c96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externals">
+      <UniqueIdentifier>{e68c46f9-ed48-4999-80bd-da820720b686}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ PPUThread::PPUThread()
     m_translator = new PPUInterpreter(*this);
 
     // Initialize stack of size 0x10000
-	m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
+    m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
     m_stackPointer = m_stackAddr + 0x10000;
 
     // Initialize registers

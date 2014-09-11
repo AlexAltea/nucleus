@@ -84,4 +84,119 @@ struct u128
 /**
  * Endianness
  */
-#include "externals/BEType.h"
+#ifdef NUCLEUS_WIN
+#define re16(val)  _byteswap_ushort(val)
+#define re32(val)  _byteswap_ulong(val)
+#define re64(val)  _byteswap_uint64(val)
+#define re128(val) u128{_byteswap_uint64((val).hi), _byteswap_uint64((val).lo)}
+#else
+#define re16(val)  __builtin_bswap16(val)
+#define re32(val)  __builtin_bswap32(val)
+#define re64(val)  __builtin_bswap64(val)
+#define re128(val) u128{__builtin_bswap64((val).hi), __builtin_bswap64((val).lo)}
+#endif
+
+template<typename T, int size = sizeof(T)> struct se_t;
+template<typename T> struct se_t<T, 1> { static inline void func(T& dst, const T src) { (u8&)dst = (u8&)src; } };
+template<typename T> struct se_t<T, 2> { static inline void func(T& dst, const T src) { (u16&)dst = re16((u16&)src); } };
+template<typename T> struct se_t<T, 4> { static inline void func(T& dst, const T src) { (u32&)dst = re32((u32&)src); } };
+template<typename T> struct se_t<T, 8> { static inline void func(T& dst, const T src) { (u64&)dst = re64((u64&)src); } };
+
+template<typename T, int size=sizeof(T)>
+class be_t
+{
+    static_assert(size == 1 || size == 2 || size == 4 || size == 8, "Bad be_t type");
+    T m_data;
+
+public:
+    typedef T type;
+    
+    const T& ToBE() const
+    {
+        return m_data;
+    }
+
+    T ToLE() const
+    {
+        T res;
+        se_t<T>::func(res, m_data);
+        return res;
+    }
+
+    void FromBE(const T& value)
+    {
+        m_data = value;
+    }
+
+    void FromLE(const T& value)
+    {
+        se_t<T>::func(m_data, value);
+    }
+
+    operator const T() const
+    {
+        return ToLE();
+    }
+
+    template<typename T1>
+    operator const be_t<T1>() const
+    {
+        be_t<T1> res;
+        if (sizeof(T1) < sizeof(T)) {
+            res.FromBE(ToBE() >> ((sizeof(T)-sizeof(T1)) * 8));
+        }
+        else if (sizeof(T1) > sizeof(T)) {
+            res.FromLE(ToLE());
+        }
+        else {
+            res.FromBE(ToBE());
+        }
+        return res;
+    }
+
+    be_t& operator = (const T& right) { FromLE(right); return *this; }
+    be_t<T,size>& operator = (const be_t<T,size>& right) = default;
+
+    template<typename T1> be_t& operator += (T1 right) { return *this = T(*this) + right; }
+    template<typename T1> be_t& operator -= (T1 right) { return *this = T(*this) - right; }
+    template<typename T1> be_t& operator *= (T1 right) { return *this = T(*this) * right; }
+    template<typename T1> be_t& operator /= (T1 right) { return *this = T(*this) / right; }
+    template<typename T1> be_t& operator %= (T1 right) { return *this = T(*this) % right; }
+    template<typename T1> be_t& operator &= (T1 right) { return *this = T(*this) & right; }
+    template<typename T1> be_t& operator |= (T1 right) { return *this = T(*this) | right; }
+    template<typename T1> be_t& operator ^= (T1 right) { return *this = T(*this) ^ right; }
+    template<typename T1> be_t& operator <<= (T1 right) { return *this = T(*this) << right; }
+    template<typename T1> be_t& operator >>= (T1 right) { return *this = T(*this) >> right; }
+
+    template<typename T1> be_t& operator += (const be_t<T1>& right) { return *this = ToLE() + right.ToLE(); }
+    template<typename T1> be_t& operator -= (const be_t<T1>& right) { return *this = ToLE() - right.ToLE(); }
+    template<typename T1> be_t& operator *= (const be_t<T1>& right) { return *this = ToLE() * right.ToLE(); }
+    template<typename T1> be_t& operator /= (const be_t<T1>& right) { return *this = ToLE() / right.ToLE(); }
+    template<typename T1> be_t& operator %= (const be_t<T1>& right) { return *this = ToLE() % right.ToLE(); }
+    template<typename T1> be_t& operator &= (const be_t<T1>& right) { return *this = ToBE() & right.ToBE(); }
+    template<typename T1> be_t& operator |= (const be_t<T1>& right) { return *this = ToBE() | right.ToBE(); }
+    template<typename T1> be_t& operator ^= (const be_t<T1>& right) { return *this = ToBE() ^ right.ToBE(); }
+
+    template<typename T1> be_t operator & (const be_t<T1>& right) const { be_t<T> res; res.FromBE(ToBE() & right.ToBE()); return res; }
+    template<typename T1> be_t operator | (const be_t<T1>& right) const { be_t<T> res; res.FromBE(ToBE() | right.ToBE()); return res; }
+    template<typename T1> be_t operator ^ (const be_t<T1>& right) const { be_t<T> res; res.FromBE(ToBE() ^ right.ToBE()); return res; }
+
+    template<typename T1> bool operator == (T1 right) const { return (T1)ToLE() == right; }
+    template<typename T1> bool operator != (T1 right) const { return !(*this == right); }
+    template<typename T1> bool operator >  (T1 right) const { return (T1)ToLE() >  right; }
+    template<typename T1> bool operator <  (T1 right) const { return (T1)ToLE() <  right; }
+    template<typename T1> bool operator >= (T1 right) const { return (T1)ToLE() >= right; }
+    template<typename T1> bool operator <= (T1 right) const { return (T1)ToLE() <= right; }
+
+    template<typename T1> bool operator == (const be_t<T1>& right) const { return ToBE() == right.ToBE(); }
+    template<typename T1> bool operator != (const be_t<T1>& right) const { return !(*this == right); }
+    template<typename T1> bool operator >  (const be_t<T1>& right) const { return (T1)ToLE() >  right.ToLE(); }
+    template<typename T1> bool operator <  (const be_t<T1>& right) const { return (T1)ToLE() <  right.ToLE(); }
+    template<typename T1> bool operator >= (const be_t<T1>& right) const { return (T1)ToLE() >= right.ToLE(); }
+    template<typename T1> bool operator <= (const be_t<T1>& right) const { return (T1)ToLE() <= right.ToLE(); }
+
+    be_t operator++ (int) { be_t res = *this; *this += 1; return res; }
+    be_t operator-- (int) { be_t res = *this; *this -= 1; return res; }
+    be_t& operator++ () { *this += 1; return *this; }
+    be_t& operator-- () { *this -= 1; return *this; }
+};

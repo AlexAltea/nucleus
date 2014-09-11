@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "vfsLocalFile.h"
+#include "local_file.h"
 #include <iostream>
 
 static const char* getOpenMode(vfsOpenMode mode)
