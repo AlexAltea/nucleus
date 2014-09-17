@@ -33,7 +33,7 @@ void Memory::init()
 
     // Initialize segments
     m_segments[SEG_MAIN_MEMORY].init(0x00010000, 0x2FFF0000);
-    m_segments[SEG_PRX_MEMORY].init(0x30000000, 0x10000000);
+    m_segments[SEG_USER_MEMORY].init(0x30000000, 0x10000000);
     m_segments[SEG_RSX_FIFO_MEMORY].init(0x40000000, 0x10000000);
     m_segments[SEG_MMAPPER_MEMORY].init(0xB0000000, 0x10000000);
     m_segments[SEG_RSX_LOCAL_MEMORY].init(0xC0000000, 0x10000000);
@@ -50,6 +50,22 @@ void Memory::close()
         // Error
     }
 }
+
+u32 Memory::alloc(u32 size, u32 align)
+{
+    return m_segments[SEG_USER_MEMORY].alloc(size, align);
+}
+
+void Memory::free(u32 addr)
+{
+    m_segments[SEG_USER_MEMORY].free(addr);
+}
+
+bool Memory::check(u32 addr)
+{
+    return true;
+}
+
 
 /**
  * Read memory reversing endianness if necessary
@@ -121,10 +137,4 @@ void Memory::writeRight(u32 dst, u8* src, u32 size)
     for (u32 i = 0; i < size; i++) {
         write8(dst + (size - 1 - i), src[i]);
     }
-}
-
-
-bool Memory::check()
-{
-    return true;
 }

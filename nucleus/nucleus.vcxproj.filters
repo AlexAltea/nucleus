@@ -45,6 +45,12 @@
     <ClCompile Include="..\externals\aes.cpp">
       <Filter>externals</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_prx.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="memory\object.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -102,6 +108,9 @@
     </ClInclude>
     <ClInclude Include="..\externals\sha1.h">
       <Filter>externals</Filter>
+    </ClInclude>
+    <ClInclude Include="memory\object.h">
+      <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

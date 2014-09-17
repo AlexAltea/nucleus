@@ -17,7 +17,7 @@ Filetype detectFiletype(const std::string& filepath)
     }
 
     switch (magic.ToBE()) {
-    case 0x7f454c46:
+    case 0x464c457f:
         return FILETYPE_ELF;
     case 0x00454353:
         return FILETYPE_SELF;

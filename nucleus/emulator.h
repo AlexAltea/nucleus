@@ -6,8 +6,9 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/cell.h"
 #include "nucleus/memory/memory.h"
+#include "nucleus/cpu/cell.h"
+#include "nucleus/syscalls/lv2.h"
 
 #include <mutex>
 #include <condition_variable>
@@ -21,9 +22,10 @@ class Emulator
     EmulatorStatus m_status;
 
 public:
-    // Hardware
+    // Hardware & OS
     Memory memory;
     Cell cell;
+    LV2 lv2;
 
     // Control the emulated process
     bool load(const std::string& filepath);
@@ -33,6 +35,9 @@ public:
 
     // Wait for events
     void idle();
+
+    // Logging
+    void log(const char* format, ...);
 };
 
 extern Emulator nucleus;

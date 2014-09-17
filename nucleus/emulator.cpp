@@ -5,6 +5,7 @@
 
 #include "emulator.h"
 #include "loader/self.h"
+#include "syscalls/lv2.h"
 
 #include <iostream>
 
@@ -21,7 +22,7 @@ bool Emulator::load(const std::string& filepath)
         std::cerr << "Invalid file given." << std::endl;
         return false;
     }
-    self.load();
+    self.load_elf();
 
     // Prepare Thread
     switch (self.getMachine()) {
@@ -32,6 +33,9 @@ bool Emulator::load(const std::string& filepath)
         // TODO: Error
         break;
     }
+
+    // Initialize LV2
+    lv2.init();
 
     return true;
 }

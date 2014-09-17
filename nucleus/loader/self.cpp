@@ -61,7 +61,7 @@ bool SELFLoader::open(const std::string& path)
     return false;
 }
 
-bool SELFLoader::load()
+bool SELFLoader::load_elf()
 {
     if (!m_elf) {
         return false;
@@ -79,7 +79,7 @@ bool SELFLoader::load()
                 break;
             }
 
-            nucleus.memory(SEG_MAIN_MEMORY).allocFixed((u32)phdr.vaddr, (u32)phdr.memsz);
+            nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
             memcpy(nucleus.memory + phdr.vaddr, &m_elf[phdr.offset], phdr.filesz);
             // TODO: Static function analysis?
             break;
@@ -100,6 +100,91 @@ bool SELFLoader::load()
             }
             // TODO: sys_prx stuff
             break;
+        }
+    }
+    return true;
+}
+
+bool SELFLoader::load_prx(sys_prx_t& prx)
+{
+    if (!m_elf) {
+        return false;
+    }
+
+    const auto& ehdr = (Elf64_Ehdr&)m_elf[0];
+    u32 base_addr;
+
+    // Loading program header table
+    for (u64 i = 0; i < ehdr.phnum; i++) {
+        const auto& phdr = (Elf64_Phdr&)m_elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
+
+        if (phdr.type == 0x00000001) {  //LOAD
+            if (!phdr.memsz) {
+                break;
+            }
+
+            const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, phdr.align);
+            memcpy(nucleus.memory + addr, &m_elf[phdr.offset], phdr.filesz);
+
+            // Add information for PRX Object
+            sys_prx_segment_t segment;
+            segment.align = (u32)phdr.align;
+            segment.size_file = (u32)phdr.filesz;
+            segment.size_memory = (u32)phdr.memsz;
+            segment.initial_addr = (u32)phdr.vaddr;
+            segment.addr = addr;
+            prx.segments.push_back(segment);
+
+            // Get FNID / addr pairs
+            if (phdr.paddr != 0) {
+                const auto& module = (sys_prx_module_info_t&)m_elf[phdr.paddr];
+                prx.name = module.name;
+                prx.version = module.version;
+
+                u32 offset = module.exports_start;
+                while (offset < module.exports_end) {
+                    const auto& library = (sys_prx_library_info_t&)m_elf[phdr.offset + offset];
+                    offset += library.size;
+
+                    sys_prx_library_t lib;
+                    if (library.name_addr) {
+                        lib.name = &m_elf[phdr.offset + library.name_addr];
+                    }
+                    for (u32 i = 0; i < library.num_func; i++) {
+                        const u32 fnid = nucleus.memory.read32(addr + library.fnid_addr + 4*i);
+                        const u32 stub = nucleus.memory.read32(addr + library.fstub_addr + 4*i);
+                        lib.exports[fnid] = stub;
+                    }
+                    prx.libraries.push_back(lib);
+                }
+            }
+
+            // Update offsets according to the base address where the PRX was allocated
+            // TODO: Probably hardcoding i==1 isn't a good idea.
+            if (i == 1) {
+                // Update export table
+                for (u32 offset = 0; offset < phdr.filesz; offset += 4) {
+                    u32 value = nucleus.memory.read32(addr + offset);
+                    for (const auto& segment : prx.segments) {
+                        if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_memory) {
+                            value = value + (segment.addr - segment.initial_addr);
+                        }
+                    }
+                    nucleus.memory.write32(addr + offset, value);
+                }
+                // Update FNID / addr pairs
+                for (auto& lib : prx.libraries) {
+                    for (auto& stub : lib.exports) {
+                        u32 value = stub.second;
+                        for (const auto& segment : prx.segments) {
+                            if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_memory) {
+                                value = value + (segment.addr - segment.initial_addr);
+                            }
+                        }
+                        stub.second = value;
+                    }
+                }
+            }
         }
     }
     return true;
@@ -171,6 +256,36 @@ bool SELFLoader::decryptMetadata()
     return true;
 }
 
+u32 SELFLoader::getDecryptedElfSize()
+{
+    u32 size = 0;
+    const auto& sce_header = (SceHeader&)m_self[0x0];
+    const auto& self_header = (SelfHeader&)m_self[0x20];
+    const auto& ehdr = (Elf64_Ehdr&)m_self[self_header.elfoff];
+
+    // Check the maximum offset referenced by the PHDRs in the Metadata Headers
+    const u32 meta_header_off = sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo);
+    const auto& meta_header = (MetadataHeader&)m_self[meta_header_off];
+    for (u32 i = 0; i < meta_header.section_count; i++) {
+        const auto& meta_shdr = (MetadataSectionHeader&)m_self[meta_header_off + sizeof(MetadataHeader) + i*sizeof(MetadataSectionHeader)];
+        const auto& meta_phdr = (Elf64_Phdr&)m_self[self_header.phdroff + meta_shdr.program_idx * sizeof(Elf64_Phdr)];
+        if (meta_shdr.type != 2) {
+            continue;
+        }
+        if (meta_shdr.compressed == 2 && size < meta_phdr.offset + meta_phdr.filesz) {
+            size = meta_phdr.offset + meta_phdr.filesz;
+        }
+        else if (size < meta_phdr.offset + meta_shdr.data_size) {
+            size = meta_phdr.offset + meta_phdr.filesz;
+        }
+    }
+    // Check the maximum offset referenced by the SHDRs in the EHDR Header
+    if (size < ehdr.shoff + ehdr.shnum * sizeof(Elf64_Shdr)) {
+        size = ehdr.shoff + ehdr.shnum * sizeof(Elf64_Shdr);
+    }
+    return size;
+}
+
 bool SELFLoader::decrypt()
 {
     if (!m_self) {
@@ -193,20 +308,24 @@ bool SELFLoader::decrypt()
      * Retail SELF
      */
     else {
-        // Prepare Metadata
+        // Get Metadata Information
         decryptMetadata();
         const u32 meta_header_off = sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo);
         const auto& meta_header = (MetadataHeader&)m_self[meta_header_off];
         const u8* data_keys = (u8*)&m_self[meta_header_off + sizeof(MetadataHeader) + meta_header.section_count * sizeof(MetadataSectionHeader)];
 
         // Get ELF size and allocate/initialize it
-        const auto& ehdr = (Elf64_Ehdr&)m_self[self_header.elfoff];
-        m_elf_size = ehdr.shoff + ehdr.shnum * sizeof(Elf64_Shdr);
+        m_elf_size = getDecryptedElfSize();
         m_elf = new char[m_elf_size]();
 
-        // Write ELF Section Headers
+        // Copy the EHDR, PHDRs and SHDRs of the ELF
+        const auto& ehdr = (Elf64_Ehdr&)m_self[self_header.elfoff];
+        char* self_phdrs = &m_self[self_header.phdroff];
         char* self_shdrs = &m_self[self_header.shdroff];
+        char* elf_phdrs = &m_elf[ehdr.phoff];
         char* elf_shdrs = &m_elf[ehdr.shoff];
+        memcpy(&m_elf[0], &ehdr, sizeof(Elf64_Ehdr));
+        memcpy(elf_phdrs, self_phdrs, ehdr.phnum * sizeof(Elf64_Phdr));
         memcpy(elf_shdrs, self_shdrs, ehdr.shnum * sizeof(Elf64_Shdr));
 
         // Write Data
@@ -214,14 +333,13 @@ bool SELFLoader::decrypt()
         for (u32 i = 0; i < meta_header.section_count; i++) {
             const auto& meta_shdr = (MetadataSectionHeader&)m_self[meta_header_off + sizeof(MetadataHeader) + i*sizeof(MetadataSectionHeader)];
             const auto& meta_phdr = (Elf64_Phdr&)m_self[self_header.phdroff + meta_shdr.program_idx * sizeof(Elf64_Phdr)];
-
             // Check if PHDR type
             if (meta_shdr.type != 2) {
                 continue;
             }
 
-            u8* data_decrypted = new u8[meta_shdr.data_size];
-            u8* data_decompressed = new u8[meta_phdr.filesz];
+            u8* data_decrypted = new u8[meta_shdr.data_size]();
+            u8* data_decompressed = new u8[meta_phdr.filesz]();
 
             // Decrypt if necessary
             if (meta_shdr.encrypted == 3) {
@@ -240,9 +358,9 @@ bool SELFLoader::decrypt()
 
             // Decompress if necessary
             if (meta_shdr.compressed == 2) {
-                unsigned long length;
-                uncompress(data_decompressed, &length, data_decrypted, (u32)meta_phdr.filesz);
-                memcpy(&m_elf[meta_phdr.offset], data_decompressed, meta_shdr.data_size);
+                unsigned long length = meta_phdr.filesz;
+                uncompress(data_decompressed, &length, data_decrypted, (u32)meta_shdr.data_size);
+                memcpy(&m_elf[meta_phdr.offset], data_decompressed, meta_phdr.filesz);
             }
             else {
                 memcpy(&m_elf[meta_phdr.offset], data_decrypted, meta_shdr.data_size);
@@ -252,9 +370,6 @@ bool SELFLoader::decrypt()
             delete data_decompressed;
         }
     }
-    vfsLocalFile f("TEST1.elf",vfsWrite);
-    f.Write(m_elf, m_elf_size);
-    f.Close();
     return true;
 }
 

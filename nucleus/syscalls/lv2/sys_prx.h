@@ -6,6 +6,11 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/memory/object.h"
+
+#include <map>
+#include <string>
+#include <vector>
 
 // Return codes
 enum
@@ -35,28 +40,62 @@ enum
     CELL_PRX_ERROR_ELF_IS_REGISTERED           = 0x80011910, // Fixed ELF is already registered
 };
 
-// ELF file header
+// ELF file headers
 struct sys_prx_param_t
 {
     be_t<u32> size;
     be_t<u32> magic;
     be_t<u32> version;
-    be_t<u32> pad0;
+    be_t<u32> unk0;
     be_t<u32> libentstart;
     be_t<u32> libentend;
     be_t<u32> libstubstart;
     be_t<u32> libstubend;
     be_t<u16> ver;
-    be_t<u16> pad1;
-    be_t<u32> pad2;
+    be_t<u16> unk1;
+    be_t<u32> unk2;
 };
 
-/*
+// PRX file headers
+struct sys_prx_module_info_t
+{
+    be_t<u16> attributes;
+    be_t<u16> version;
+    s8 name[28];
+    be_t<u32> toc;
+    be_t<u32> exports_start;
+    be_t<u32> exports_end;
+    be_t<u32> imports_start;
+    be_t<u32> imports_end;
+};
+
+// Information about imported or exported libraries in PRX modules
+struct sys_prx_library_info_t
+{
+    u8 size;
+    u8 unk0;
+    be_t<u16> version;
+    be_t<u16> attributes;
+    be_t<u16> num_func;
+    be_t<u16> num_var;
+    be_t<u16> num_tlsvar;
+    u8 info_hash;
+    u8 info_tlshash;
+    u8 unk1[2];
+    be_t<u32> name_addr;
+    be_t<u32> fnid_addr;
+    be_t<u32> fstub_addr;
+    be_t<u32> unk4;
+    be_t<u32> unk5;
+    be_t<u32> unk6;
+    be_t<u32> unk7;
+};
+
 // Data types
 struct sys_prx_load_module_option_t
 {
     be_t<u64> size;
-    be_t<u32> base_addr; // void*
+    be_t<u32> base_addr;
 };
 
 struct sys_prx_start_module_option_t
@@ -75,27 +114,40 @@ struct sys_prx_unload_module_option_t
 };
 
 // Auxiliary data types
+struct sys_prx_library_t
+{
+    std::string name;
+    std::map<u32, u32> exports; // Map: FNID (u32) -> Export table offset (u32)
+};
+
+struct sys_prx_segment_t
+{
+    u32 addr;          // Address where the PRX segment has been copied
+    u32 align;         // Alignment (PHDR's align)
+    u32 size_file;     // Size of the segment in the ELF file (PHDR's filesz)
+    u32 size_memory;   // Size of the segment in memory (PHDR's memsz). Filled with zeros after allocation
+    u32 initial_addr;  // Base address specified on PHDR header. Used to update the import table
+};
+
 struct sys_prx_t
 {
-    u32 size;
-    u32 address;
-    std::string path;
-    bool isStarted;
-
-    sys_prx_t()
-        : isStarted(false)
-    {
-    }
+    u16 version;
+    u32 func_start;
+    u32 func_stop;
+    std::string name;  // Name of the module
+    std::string path;  // Path to the PRX/SPRX file
+    std::vector<sys_prx_library_t> libraries;
+    std::vector<sys_prx_segment_t> segments;
 };
 
 // SysCalls
-s32 sys_prx_load_module(u32 path_addr, u64 flags, mem_ptr_t<sys_prx_load_module_option_t> pOpt);
+s32 sys_prx_load_module(vm_ptr<s8> path, u64 flags, vm_ptr<sys_prx_load_module_option_t> pOpt);
 s32 sys_prx_load_module_on_memcontainer();
 s32 sys_prx_load_module_by_fd();
 s32 sys_prx_load_module_on_memcontainer_by_fd();
-s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, mem32_t modres, u64 flags, mem_ptr_t<sys_prx_start_module_option_t> pOpt);
-s32 sys_prx_stop_module(s32 id, u32 args, u32 argp_addr, mem32_t modres, u64 flags, mem_ptr_t<sys_prx_stop_module_option_t> pOpt);
-s32 sys_prx_unload_module(s32 id, u64 flags, mem_ptr_t<sys_prx_unload_module_option_t> pOpt);
+s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, vm_ptr<be_t<u32>> modres, u64 flags, vm_ptr<sys_prx_start_module_option_t> pOpt);
+s32 sys_prx_stop_module(s32 id, u32 args, u32 argp_addr, vm_ptr<be_t<u32>> modres, u64 flags, vm_ptr<sys_prx_stop_module_option_t> pOpt);
+s32 sys_prx_unload_module(s32 id, u64 flags, vm_ptr<sys_prx_unload_module_option_t> pOpt);
 s32 sys_prx_get_module_list();
 s32 sys_prx_get_my_module_id();
 s32 sys_prx_get_module_id_by_address();
@@ -111,4 +163,3 @@ s32 sys_prx_unlink_library();
 s32 sys_prx_query_library();
 s32 sys_prx_start();
 s32 sys_prx_stop();
-*/

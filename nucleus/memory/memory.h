@@ -12,7 +12,7 @@ enum
 {
     // Memory segments
     SEG_MAIN_MEMORY = 0,   // 0x00010000 to 0x2FFFFFFF
-    SEG_PRX_MEMORY,        // 0x30000000 to 0x3FFFFFFF
+    SEG_USER_MEMORY,       // 0x30000000 to 0x3FFFFFFF
     SEG_RSX_FIFO_MEMORY,   // 0x40000000 to 0x4FFFFFFF
     SEG_MMAPPER_MEMORY,    // 0xB0000000 to 0xBFFFFFFF
     SEG_RSX_LOCAL_MEMORY,  // 0xC0000000 to 0xCFFFFFFF
@@ -31,9 +31,9 @@ public:
     void init();
     void close();
 
-    bool check();
-    bool alloc();
-    bool free();
+    u32 alloc(u32 size, u32 align=1);
+    void free(u32 addr);
+    bool check(u32 addr);
 
     u8 read8(u32 addr);
     u16 read16(u32 addr);
@@ -55,4 +55,5 @@ public:
 
     MemorySegment& operator()(size_t id) { return m_segments[id]; }
     void* operator+(u32 addr) { return (void*)((u64)m_base + addr); }
+    u8& operator[](u32 addr) { return *(u8*)((u64)m_base + addr); }
 };

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/syscalls/lv2/sys_prx.h"
 #include <string>
 
 // SELF structs
@@ -83,8 +84,7 @@ struct ControlInfo
     be_t<u64> next;
 
     union {
-        // Type 1 (0x30 bytes)
-        struct {
+        struct {  // Type 1 (0x30 bytes)
             be_t<u32> ctrl_flag1;
             be_t<u32> unknown1;
             be_t<u32> unknown2;
@@ -93,23 +93,20 @@ struct ControlInfo
             be_t<u32> unknown5;
             be_t<u32> unknown6;
             be_t<u32> unknown7;
-       } control_flags;
+        } control_flags;
 
-        // Type 2 (0x30 bytes)
-        struct {
+        struct {  // Type 2 (0x30 bytes)
             u8 digest[20];
             u64 unknown;
         } file_digest40;
 
-        // Type 2 (0x40 bytes)
-        struct {
+        struct {  // Type 2 (0x40 bytes)
           u8 digest1[20];
           u8 digest2[20];
           be_t<u64> unknown;
         } file_digest30;
 
-        // Type 3 (0x90 bytes)
-        struct {
+        struct {  // Type 3 (0x90 bytes)
             be_t<u32> magic;
             be_t<u32> unknown1;
             be_t<u32> license;
@@ -190,7 +187,12 @@ class SELFLoader
     size_t m_elf_size;
     size_t m_self_size;
 
+    // Decrypts the Metadata Info and Headers of a SELF file
     bool decryptMetadata();
+
+    // Returns the size of the ELF file after the SELF decryption/decompression
+    // by using accessing the SELF's EHDR and decrypted Metadata headers.
+    u32 getDecryptedElfSize();
 
 public:
     SELFLoader();
@@ -198,7 +200,8 @@ public:
     ~SELFLoader();
 
     bool open(const std::string& path);
-    bool load();
+    bool load_elf();
+    bool load_prx(sys_prx_t& prx);
     bool decrypt();
     void close();
 
