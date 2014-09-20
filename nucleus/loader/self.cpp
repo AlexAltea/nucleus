@@ -123,7 +123,7 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
                 break;
             }
 
-            const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, phdr.align);
+            const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
             memcpy(nucleus.memory + addr, &m_elf[phdr.offset], phdr.filesz);
 
             // Add information for PRX Object
@@ -163,14 +163,16 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
             // TODO: Probably hardcoding i==1 isn't a good idea.
             if (i == 1) {
                 // Update export table
-                for (u32 offset = 0; offset < phdr.filesz; offset += 4) {
-                    u32 value = nucleus.memory.read32(addr + offset);
+                for (u32 offset = 0; offset < phdr.filesz; offset += 8) {
+                    u32 value = nucleus.memory.read32(addr + offset + 0);
+                    u32 toc = nucleus.memory.read32(addr + offset + 4);
                     for (const auto& segment : prx.segments) {
                         if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_memory) {
                             value = value + (segment.addr - segment.initial_addr);
                         }
                     }
-                    nucleus.memory.write32(addr + offset, value);
+                    nucleus.memory.write32(addr + offset + 0, value);
+                    nucleus.memory.write32(addr + offset + 4, prx.segments[1].addr - phdr.vaddr + toc);
                 }
                 // Update FNID / addr pairs
                 for (auto& lib : prx.libraries) {

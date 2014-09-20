@@ -137,7 +137,7 @@ u64& PPUInterpreter::GetRegBySPR(PPUThread& thread, u32 spr)
 void PPUInterpreter::add(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.rd] = thread.gpr[code.ra] + thread.gpr[code.rb];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(CPU.GPR[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown2("addo");
 }
 void PPUInterpreter::addc(PPUFields code, PPUThread& thread)
@@ -146,7 +146,7 @@ void PPUInterpreter::addc(PPUFields code, PPUThread& thread)
     const s64 gprb = thread.gpr[code.rb];
     thread.gpr[code.rd] = gpra + gprb;
     thread.xer.CA = isCarry(gpra, gprb);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(CPU.GPR[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown2("addco"); 
 }
 void PPUInterpreter::adde(PPUFields code, PPUThread& thread)
@@ -167,7 +167,7 @@ void PPUInterpreter::adde(PPUFields code, PPUThread& thread)
         thread.gpr[code.rd] = gpra + gprb;
         thread.xer.CA = isCarry(gpra, gprb);
     }
-    if (code.rc) // TODO CPU.UpdateCR0<s64>(CPU.GPR[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown2("addeo");
 }
 void PPUInterpreter::addi(PPUFields code, PPUThread& thread)
@@ -185,7 +185,7 @@ void PPUInterpreter::addic_(PPUFields code, PPUThread& thread)
     const u64 gpra = thread.gpr[code.ra];
     thread.gpr[code.rd] = gpra + code.simm;
     thread.xer.CA = isCarry(gpra, code.simm);
-    // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0);
 }
 void PPUInterpreter::addis(PPUFields code, PPUThread& thread)
 {
@@ -197,7 +197,7 @@ void PPUInterpreter::addme(PPUFields code, PPUThread& thread)
     thread.gpr[code.rd] = gpra + thread.xer.CA - 1;
     thread.xer.CA |= gpra != 0;
     if (code.oe) unknown2("addmeo");
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::addze(PPUFields code, PPUThread& thread)
 {
@@ -205,27 +205,27 @@ void PPUInterpreter::addze(PPUFields code, PPUThread& thread)
     thread.gpr[code.rd] = gpra + thread.xer.CA;
     thread.xer.CA = isCarry(gpra, thread.xer.CA);
     if (code.oe) unknown2("addzeo");
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::andx(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & thread.gpr[code.rb];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::andc(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & ~thread.gpr[code.rb];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::andi_(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & code.uimm;
-    // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0);
 }
 void PPUInterpreter::andis_(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & (code.uimm << 16);
-    // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0);
 }
 void PPUInterpreter::b(PPUFields code, PPUThread& thread)
 {
@@ -260,19 +260,39 @@ void PPUInterpreter::bclr(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::cmp(PPUFields code, PPUThread& thread)
 {
-    // TODO: CPU.UpdateCRnS(l, code.crfd, thread.gpr[code.ra], thread.gpr[code.rb]);
+    if (code.l10) {
+        thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)thread.gpr[code.rb]);
+    }
+    else {
+        thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)thread.gpr[code.rb]);
+    }
 }
 void PPUInterpreter::cmpi(PPUFields code, PPUThread& thread)
 {
-    // TODO: CPU.UpdateCRnS(l, code.crfd, thread.gpr[code.ra], code.simm);
+    if (code.l10) {
+        thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)code.simm);
+    }
+    else {
+        thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)code.simm);
+    }
 }
 void PPUInterpreter::cmpl(PPUFields code, PPUThread& thread)
 {
-    // TODO: CPU.UpdateCRnU(l, code.crfd, thread.gpr[code.ra], thread.gpr[code.rb]);
+    if (code.l10) {
+        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)thread.gpr[code.rb]);
+    }
+    else {
+        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)thread.gpr[code.rb]);
+    }
 }
 void PPUInterpreter::cmpli(PPUFields code, PPUThread& thread)
 {
-    // TODO: CPU.UpdateCRnU(l, code.crfd, thread.gpr[code.ra], code.uimm);
+    if (code.l10) {
+        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)code.simm);
+    }
+    else {
+        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)code.simm);
+    }
 }
 void PPUInterpreter::cntlzd(PPUFields code, PPUThread& thread)
 {
@@ -374,7 +394,7 @@ void PPUInterpreter::divd(PPUFields code, PPUThread& thread)
     else {
         thread.gpr[code.rd] = gpra / gprb;
     }
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::divdu(PPUFields code, PPUThread& thread)
 {
@@ -387,7 +407,7 @@ void PPUInterpreter::divdu(PPUFields code, PPUThread& thread)
     else {
         thread.gpr[code.rd] = gpra / gprb;
     }
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::divw(PPUFields code, PPUThread& thread)
 {
@@ -400,7 +420,7 @@ void PPUInterpreter::divw(PPUFields code, PPUThread& thread)
     else {
         thread.gpr[code.rd] = (u32)(gpra / gprb);
     }
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::divwu(PPUFields code, PPUThread& thread)
 {
@@ -413,7 +433,7 @@ void PPUInterpreter::divwu(PPUFields code, PPUThread& thread)
     else {
         thread.gpr[code.rd] = gpra / gprb;
     }
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::dss(PPUFields code, PPUThread& thread)
 {
@@ -444,22 +464,22 @@ void PPUInterpreter::eieio(PPUFields code, PPUThread& thread)
 void PPUInterpreter::eqv(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = ~(thread.gpr[code.rs] ^ thread.gpr[code.rb]);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::extsb(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = (s64)(s8)thread.gpr[code.rs];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::extsh(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = (s64)(s16)thread.gpr[code.rs];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::extsw(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = (s64)(s32)thread.gpr[code.rs];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::icbi(PPUFields code, PPUThread& thread)
 {
@@ -738,31 +758,31 @@ void PPUInterpreter::mtspr(PPUFields code, PPUThread& thread)
 void PPUInterpreter::mulhd(PPUFields code, PPUThread& thread)
 {
     // TODO: thread.gpr[code.rd] = __mulh(thread.gpr[code.ra], thread.gpr[code.rb]);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::mulhdu(PPUFields code, PPUThread& thread)
 {
     // TODO: thread.gpr[code.rd] = __umulh(thread.gpr[code.ra], thread.gpr[code.rb]);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::mulhw(PPUFields code, PPUThread& thread)
 {
     s32 a = thread.gpr[code.ra];
     s32 b = thread.gpr[code.rb];
     thread.gpr[code.rd] = ((s64)a * (s64)b) >> 32;
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::mulhwu(PPUFields code, PPUThread& thread)
 {
     u32 a = thread.gpr[code.ra];
     u32 b = thread.gpr[code.rb];
     thread.gpr[code.rd] = ((u64)a * (u64)b) >> 32;
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::mulld(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.rd] = (s64)((s64)thread.gpr[code.ra] * (s64)thread.gpr[code.rb]);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown2("mulldo");
 }
 void PPUInterpreter::mulli(PPUFields code, PPUThread& thread)
@@ -772,20 +792,20 @@ void PPUInterpreter::mulli(PPUFields code, PPUThread& thread)
 void PPUInterpreter::mullw(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.rd] = (s64)((s64)(s32)thread.gpr[code.ra] * (s64)(s32)thread.gpr[code.rb]);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown2("mullwo");
 }
 void PPUInterpreter::nand(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = ~(thread.gpr[code.rs] & thread.gpr[code.rb]);
 
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::neg(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.rd] = 0 - thread.gpr[code.ra];
     if (code.oe) unknown2("nego");
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::nop(PPUFields code, PPUThread& thread)
 {
@@ -793,17 +813,17 @@ void PPUInterpreter::nop(PPUFields code, PPUThread& thread)
 void PPUInterpreter::nor(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = ~(thread.gpr[code.rs] | thread.gpr[code.rb]);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::orx(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] | thread.gpr[code.rb];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::orc(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] | ~thread.gpr[code.rb];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::ori(PPUFields code, PPUThread& thread)
 {
@@ -816,48 +836,56 @@ void PPUInterpreter::oris(PPUFields code, PPUThread& thread)
 void PPUInterpreter::rldc_lr(PPUFields code, PPUThread& thread)
 {
     if (code.aa) {
-        rldicr(code, thread);
+        rldicrx(code, thread);
     }
     else {
-        rldicl(code, thread);
+        rldiclx(code, thread);
     }
 }
-void PPUInterpreter::rldic(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldicx(PPUFields code, PPUThread& thread)
 {
-    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], code.sh) & rotateMask[code.mb][63-code.sh];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 mb = code.mb | (code.mb_ << 5);
+    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[mb][63-sh];
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rldicl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldiclx(PPUFields code, PPUThread& thread)
 {
-    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], code.sh) & rotateMask[code.mb][63];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 mb = code.mb | (code.mb_ << 5);
+    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[mb][63];
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rldicr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldicrx(PPUFields code, PPUThread& thread)
 {
-    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], code.sh) & rotateMask[0][code.me];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 me = code.me_ | (code.me__ << 5);
+    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[0][me];
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rldimi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldimix(PPUFields code, PPUThread& thread)
 {
-    const u64 mask = rotateMask[code.mb][63-code.sh];
-    thread.gpr[code.ra] = (thread.gpr[code.ra] & ~mask) | (rotl64(thread.gpr[code.rs], code.sh) & mask);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 mb = code.mb | (code.mb_ << 5);
+    const u64 mask = rotateMask[mb][63-sh];
+    thread.gpr[code.ra] = (thread.gpr[code.ra] & ~mask) | (rotl64(thread.gpr[code.rs], sh) & mask);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rlwimi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rlwimix(PPUFields code, PPUThread& thread)
 {
     const u64 mask = rotateMask[32 + code.mb][32 + code.me];
     thread.gpr[code.ra] = (thread.gpr[code.ra] & ~mask) | (rotl32(thread.gpr[code.rs], code.sh) & mask);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rlwinm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rlwinmx(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = rotl32(thread.gpr[code.rs], code.sh) & rotateMask[32 + code.mb][32 + code.me];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rlwnm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rlwnmx(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = rotl32(thread.gpr[code.rs], thread.gpr[code.rb] & 0x1f) & rotateMask[32 + code.mb][32 + code.me];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::sc(PPUFields code, PPUThread& thread)
 {
@@ -874,7 +902,7 @@ void PPUInterpreter::sld(PPUFields code, PPUThread& thread)
     u64 r = rotl64(thread.gpr[code.rs], n);
     u64 m = (thread.gpr[code.rb] & 0x40) ? 0 : rotateMask[0][63 - n];
     thread.gpr[code.ra] = r & m;
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::slw(PPUFields code, PPUThread& thread)
 {
@@ -882,7 +910,7 @@ void PPUInterpreter::slw(PPUFields code, PPUThread& thread)
     u32 r = rotl32((u32)thread.gpr[code.rs], n);
     u32 m = (thread.gpr[code.rb] & 0x20) ? 0 : rotateMask[32][63 - n];
     thread.gpr[code.ra] = r & m;
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::srad(PPUFields code, PPUThread& thread)
 {
@@ -896,14 +924,14 @@ void PPUInterpreter::srad(PPUFields code, PPUThread& thread)
         thread.gpr[code.ra] = RS >> shift;
         thread.xer.CA = (RS < 0) & ((thread.gpr[code.ra] << shift) != RS);
     }
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::sradi1(PPUFields code, PPUThread& thread)
 {
     s64 RS = thread.gpr[code.rs];
     thread.gpr[code.ra] = RS >> code.sh;
     thread.xer.CA = (RS < 0) & ((thread.gpr[code.ra] << code.sh) != RS);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::sradi2(PPUFields code, PPUThread& thread)
 {
@@ -921,14 +949,14 @@ void PPUInterpreter::sraw(PPUFields code, PPUThread& thread)
         thread.gpr[code.ra] = gprs >> shift;
         thread.xer.CA = (gprs < 0) & ((thread.gpr[code.ra] << shift) != gprs);
     }
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::srawi(PPUFields code, PPUThread& thread)
 {
     s32 gprs = (u32)thread.gpr[code.rs];
     thread.gpr[code.ra] = gprs >> code.sh;
     thread.xer.CA = (gprs < 0) & ((u32)(thread.gpr[code.ra] << code.sh) != gprs);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::srd(PPUFields code, PPUThread& thread)
 {
@@ -936,7 +964,7 @@ void PPUInterpreter::srd(PPUFields code, PPUThread& thread)
     u64 m = (thread.gpr[code.rb] & 0x40) ? 0 : rotateMask[n][63];
     u64 r = rotl64(thread.gpr[code.rs], 64 - n);
     thread.gpr[code.ra] = r & m;
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::srw(PPUFields code, PPUThread& thread)
 {
@@ -944,7 +972,7 @@ void PPUInterpreter::srw(PPUFields code, PPUThread& thread)
     u32 m = (thread.gpr[code.rb] & 0x20) ? 0 : rotateMask[32 + n][63];
     u32 r = rotl32((u32)thread.gpr[code.rs], 64 - n);
     thread.gpr[code.ra] = r & m;
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::stb(PPUFields code, PPUThread& thread)
 {
@@ -1106,7 +1134,7 @@ void PPUInterpreter::subf(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.rd] = thread.gpr[code.rb] - thread.gpr[code.ra];
     if (code.oe) unknown2("subfo");
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::subfc(PPUFields code, PPUThread& thread)
 {
@@ -1115,7 +1143,7 @@ void PPUInterpreter::subfc(PPUFields code, PPUThread& thread)
     thread.gpr[code.rd] = ~gpra + gprb + 1;
     thread.xer.CA = isCarry(~gpra, gprb, 1);
     if (code.oe) unknown2("subfco");
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::subfe(PPUFields code, PPUThread& thread)
 {
@@ -1123,7 +1151,7 @@ void PPUInterpreter::subfe(PPUFields code, PPUThread& thread)
     const s64 gprb = thread.gpr[code.rb];
     thread.gpr[code.rd] = ~gpra + gprb + thread.xer.CA;
     thread.xer.CA = isCarry(~gpra, gprb, thread.xer.CA);
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown2("subfeo");
 }
 void PPUInterpreter::subfic(PPUFields code, PPUThread& thread)
@@ -1140,7 +1168,7 @@ void PPUInterpreter::subfme(PPUFields code, PPUThread& thread)
     thread.gpr[code.rd] = ~gpra + thread.xer.CA + ~0ULL;
     thread.xer.CA = isCarry(~gpra, thread.xer.CA, ~0ULL);
     if (code.oe) unknown2("subfmeo");
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::subfze(PPUFields code, PPUThread& thread)
 {
@@ -1148,7 +1176,7 @@ void PPUInterpreter::subfze(PPUFields code, PPUThread& thread)
     thread.gpr[code.rd] = ~gpra + thread.xer.CA;
     thread.xer.CA = isCarry(~gpra, thread.xer.CA);
     if (code.oe) unknown2("subfzeo");
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.rd]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::sync(PPUFields code, PPUThread& thread)
 {
@@ -1199,7 +1227,7 @@ void PPUInterpreter::twi(PPUFields code, PPUThread& thread)
 void PPUInterpreter::xorx(PPUFields code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] ^ thread.gpr[code.rb];
-    if (code.rc) {} // TODO: CPU.UpdateCR0<s64>(thread.gpr[code.ra]);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::xori(PPUFields code, PPUThread& thread)
 {

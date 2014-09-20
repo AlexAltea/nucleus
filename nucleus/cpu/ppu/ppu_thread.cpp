@@ -20,7 +20,9 @@ PPUThread::PPUThread()
     gpr[1] = m_stackPointer;
     //gpr[2] = rtoc;
     gpr[3] = 0;
-    gpr[4] = 0;
+    gpr[4] = nucleus.memory.alloc(4,4);
+    gpr[5] = gpr[4] + 0x10;
+    nucleus.memory.write32(gpr[4], 0);
 }
 
 PPUThread::~PPUThread()

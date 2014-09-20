@@ -34,18 +34,30 @@ union PPU_CR
 
     // Bit index
     enum {
-        CR_LT = 3,
-        CR_GT = 2,
-        CR_EQ = 1,
-        CR_SO = 0,
+        CR_LT = 0,
+        CR_GT = 1,
+        CR_EQ = 2,
+        CR_SO = 3,
     };
 
     u8 getBit(u32 bit) { return (CR >> bit) & 1; }
     void setBit(u32 bit, bool value) { CR = value ? CR | (1 << bit) : CR & ~(1 << bit); }
 
     u8 getField(u32 field) { return (CR >> field*4) & 0xf; }
-    void setField(u32 field, u8 value) { CR = CR & ((~0xf | value) << field*4); }
+    void setField(u32 field, u8 value) { CR = (CR & ~((1 << (field+1)*4)-1)) | (value << field*4) | (CR & ((1 << field*4)-1)); }
 
+    template<typename T>
+    void updateField(u32 field, T a, T b) {
+        if (a < b) {
+            setField(field, 1 << CR_LT);
+        }
+        else if (a > b) {
+            setField(field, 1 << CR_LT);
+        }
+        else if (a == b) {
+            setField(field, 1 << CR_LT);
+        }
+    }
 };
 
 // Floating-Point Status and Control Register
@@ -170,7 +182,4 @@ public:
 
     PPUThread();
     ~PPUThread();
-
-    void reset();
-    void setPC(u32 addr);
 };

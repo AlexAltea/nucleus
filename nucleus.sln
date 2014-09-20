@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus", "nucleus\nucleus.vcxproj", "{D355BE01-81EB-4204-97CF-1C273C287E9F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F761046E-6C38-4428-A5F1-38391A37BB34} = {F761046E-6C38-4428-A5F1-38391A37BB34}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "externals", "externals", "{697C8FFB-2D7C-418D-A387-054747206AC2}"
 EndProject

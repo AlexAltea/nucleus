@@ -62,14 +62,18 @@ union PPUFields
     FIELD(16, 19, u32 i);       // ?
     FIELD( 6, 29, s32 li);      // Branching:
     FIELD( 6, 29, s32 ll);      // Branching:
-    FIELD(21, 25, u32 mb);      // First 1 bit of a 64-bit mask in rotate instructions
-    FIELD(26, 30, u32 me);      // Last 1 bit of a 64-bit mask in rotate instructions
+    FIELD(21, 25, u32 mb);      // First '1' bit of a 64-bit mask in rotate instructions
+    FIELD(26, 26, u32 mb_);     // First '1' bit of a 64-bit mask in rotate instructions: Split field
+    FIELD(26, 30, u32 me);      // Last '1' bit of a 64-bit mask in rotate instructions
+    FIELD(21, 25, u32 me_);     // Last '1' bit of a 64-bit mask in rotate instructions: Split field
+    FIELD(26, 26, u32 me__);    // Last '1' bit of a 64-bit mask in rotate instructions: Split field
     FIELD(16, 20, u32 nb);      // Number of bytes to move in an immediate string load or store
     FIELD( 6, 10, u32 rd);      // GPR: Destination
     FIELD( 6, 10, u32 rs);      // GPR: Source
     FIELD(11, 15, u32 ra);      // GPR: Source
     FIELD(16, 20, u32 rb);      // GPR: Source
     FIELD(16, 20, u32 sh);      // Shift amount
+    FIELD(30, 30, u32 sh_);     // Shift amount: Split field
     FIELD(11, 20, u32 spr);     // Special-purpose register
     FIELD( 9, 10, u32 strm);    // ?
     FIELD( 6, 31, u32 sys);     // ?
@@ -85,12 +89,6 @@ union PPUFields
     FIELD(22, 25, u32 vshb);    // Vector/SIMD: Specifies a shift amount in bytes
     FIELD(11, 15, s32 vsimm);   // Vector/SIMD: Immediate 5-bit signed integer
     FIELD(11, 15, u32 vuimm);   // Vector/SIMD: Immediate 5-bit unsigned integer
-
-    /*
-    static UCodeFieldSplit<21, 25, 26, 26> mb_; // First 1 bit of a 64-bit mask in rotate instructions
-    static UCodeFieldSplit<21, 25, 26, 26> me_; // Last 1 bit of a 64-bit mask in rotate instructions
-    static UCodeFieldSplit<16, 20, 30, 30> sh_; // Shift amount
-    */
 
 #undef FIELD
 };

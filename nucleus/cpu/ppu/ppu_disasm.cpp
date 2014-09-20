@@ -682,6 +682,26 @@ std::string dis_mfocrf(PPUFields code)
 
 // mffsx to mtsrin
 
+std::string dis_mfspr(PPUFields code)
+{
+    switch ((code.spr >> 5) | ((code.spr & 0x1F) << 5)) {
+    case 1:  return dis_global("mfspr", "r%d, xer", code.rd);
+    case 8:  return dis_global("mfspr", "r%d, lr", code.rd);
+    case 9:  return dis_global("mfspr", "r%d, ctr", code.rd);
+    default: return dis_global("mfspr", "r%d, spr%d", code.rd, code.spr);
+    }
+}
+
+std::string dis_mtspr(PPUFields code)
+{
+    switch ((code.spr >> 5) | ((code.spr & 0x1F) << 5)) {
+    case 1:  return dis_global("mtspr", "xer, r%d", code.rs);
+    case 8:  return dis_global("mtspr", "lr, r%d", code.rs);
+    case 9:  return dis_global("mtspr", "ctr, r%d", code.rs);
+    default: return dis_global("mtspr", "spr%d, r%d", code.spr, code.rs);
+    }
+}
+
 std::string dis_mulhdx(PPUFields code)
 {
     if (code.rc == 0) {
@@ -860,41 +880,55 @@ std::string dis_rldcrx(PPUFields code)
 
 std::string dis_rldicx(PPUFields code)
 {
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 mb = code.mb | (code.mb_ << 5);
     if (code.rc == 0) {
-        return dis_global("rldic", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.mb);
+        return dis_global("rldic", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, sh, mb);
     }
     else {
-        return dis_global("rldic.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.mb);
+        return dis_global("rldic.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, sh, mb);
     }
 }
 
 std::string dis_rldiclx(PPUFields code)
 {
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 mb = code.mb | (code.mb_ << 5);
     if (code.rc == 0) {
-        return dis_global("rldicl", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.mb);
+        if (sh == 0) {
+            return dis_global("clrldi", "r%d, r%d, %d", code.ra, code.rs, mb);
+        }
+        else {
+            return dis_global("rldicl", "r%d, r%d, %d, %d", code.ra, code.rs, sh, mb);
+        }
+
     }
     else {
-        return dis_global("rldicl.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.mb);
+        return dis_global("rldicl.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, sh, mb);
     }
 }
 
 std::string dis_rldicrx(PPUFields code)
 {
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 me = code.me_ | (code.me__ << 5);
     if (code.rc == 0) {
-        return dis_global("rldicr", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.me);
+        return dis_global("rldicr", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, sh, me);
     }
     else {
-        return dis_global("rldicr.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.me);
+        return dis_global("rldicr.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, sh, me);
     }
 }
 
 std::string dis_rldimix(PPUFields code)
 {
+    const u32 sh = code.sh | (code.sh_ << 5);
+    const u32 mb = code.mb | (code.mb_ << 5);
     if (code.rc == 0) {
-        return dis_global("rldimi", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.mb);
+        return dis_global("rldimi", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, sh, mb);
     }
     else {
-        return dis_global("rldimi.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, code.sh, code.mb);
+        return dis_global("rldimi.", "r%d, r%d, 0x%X, 0x%X", code.ra, code.rs, sh, mb);
     }
 }
 

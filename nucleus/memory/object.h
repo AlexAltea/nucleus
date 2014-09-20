@@ -8,6 +8,8 @@
 #include "nucleus/common.h"
 #include "nucleus/emulator.h"
 
+#include <cstring>
+
 /**
  * Memory allocator
  */
