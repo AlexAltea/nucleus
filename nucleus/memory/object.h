@@ -53,13 +53,13 @@ public:
     vm_ptr(u32 addr) { m_addr = addr; }
     vm_ptr(vm_var<T>& var) { m_addr = var.addr(); }
 
-    vm_ptr operator++(int) { u32 result = m_addr; m_addr += sizeof(T); return make(result); }
-    vm_ptr operator--(int) { u32 result = m_addr; m_addr -= sizeof(T); return make(result); }
+    vm_ptr operator++(int) { u32 result = m_addr; m_addr += sizeof(T); return vm_ptr<T>{ m_addr }; }
+    vm_ptr operator--(int) { u32 result = m_addr; m_addr -= sizeof(T); return vm_ptr<T>{ m_addr }; }
     vm_ptr operator++() { m_addr += sizeof(T); return *this; }
     vm_ptr operator--() { m_addr -= sizeof(T); return *this; }
 
-    vm_ptr operator+=(s32 count) { m_addr += count * sizeof(AT); return *this; }
-	vm_ptr operator-=(s32 count) { m_addr -= count * sizeof(AT); return *this; }
+    vm_ptr operator+=(s32 count) { m_addr += count * sizeof(T); return *this; }
+	vm_ptr operator-=(s32 count) { m_addr -= count * sizeof(T); return *this; }
 
     T* ptr() { return (T*)(nucleus.memory + m_addr); }
     T& ref() { return *(T*)(nucleus.memory + m_addr); }

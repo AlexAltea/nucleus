@@ -80,7 +80,8 @@
     <ClCompile Include="..\externals\sha1.cpp" />
     <ClCompile Include="cpu\cell.cpp" />
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_tables.cpp" />
+    <ClCompile Include="cpu\ppu\ppu_disasm.cpp" />
+    <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
     <ClCompile Include="cpu\thread.cpp" />
     <ClCompile Include="emulator.cpp" />
@@ -101,8 +102,9 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="cpu\cell.h" />
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h" />
-    <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter_tables.h" />
-    <ClInclude Include="cpu\ppu\ppu_instructions.h" />
+    <ClInclude Include="cpu\ppu\ppu_disasm.h" />
+    <ClInclude Include="cpu\ppu\ppu_fields.h" />
+    <ClInclude Include="cpu\ppu\ppu_tables.h" />
     <ClInclude Include="cpu\ppu\ppu_thread.h" />
     <ClInclude Include="cpu\thread.h" />
     <ClInclude Include="cpu\translator.h" />

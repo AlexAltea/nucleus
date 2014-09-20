@@ -8,10 +8,10 @@
 #include "nucleus/common.h"
 
 /**
- * PPU Instruction:
- * Consist in a 32-bit value divided in multiple bit fields
+ * PPU Fields:
+ * Represents the bit fields contained in 32-bit PPU instructions
  */
-union PPUInstruction
+union PPUFields
 {
 #define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
 

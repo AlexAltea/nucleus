@@ -66,7 +66,6 @@ bool Memory::check(u32 addr)
     return true;
 }
 
-
 /**
  * Read memory reversing endianness if necessary
  */
