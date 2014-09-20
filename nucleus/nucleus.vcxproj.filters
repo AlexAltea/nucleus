@@ -45,14 +45,17 @@
     <ClCompile Include="syscalls\lv2\sys_prx.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="memory\object.cpp">
-      <Filter>memory</Filter>
-    </ClCompile>
     <ClCompile Include="cpu\ppu\ppu_disasm.cpp">
       <Filter>cpu\ppu</Filter>
     </ClCompile>
     <ClCompile Include="cpu\ppu\ppu_tables.cpp">
       <Filter>cpu\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_tty.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="memory\object.cpp">
+      <Filter>memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,9 +109,6 @@
     <ClInclude Include="..\externals\sha1.h">
       <Filter>externals</Filter>
     </ClInclude>
-    <ClInclude Include="memory\object.h">
-      <Filter>memory</Filter>
-    </ClInclude>
     <ClInclude Include="cpu\ppu\ppu_disasm.h">
       <Filter>cpu\ppu</Filter>
     </ClInclude>
@@ -117,6 +117,15 @@
     </ClInclude>
     <ClInclude Include="cpu\ppu\ppu_fields.h">
       <Filter>cpu\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_tty.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="memory\object.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\syscall.h">
+      <Filter>syscalls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

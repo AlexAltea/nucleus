@@ -60,6 +60,7 @@ PPUInterpreter::PPUInterpreter(PPUThread& thr) : thread(thr)
 {
     initRotateMask();
 
+    // Initialize PPU Instruction tables (Remove once designated initializers are available in C++)
     if (!b_tablesInitialized) {
         initTables();
     }
@@ -377,7 +378,7 @@ void PPUInterpreter::dcbtst(PPUFields code, PPUThread& thread)
 void PPUInterpreter::dcbz(PPUFields code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
-    void* cache_line = nucleus.memory + (addr & ~127);
+    void* cache_line = nucleus.memory.ptr(addr & ~127);
     if (cache_line) {
         memset(cache_line, 0, 128);
     }
@@ -890,7 +891,7 @@ void PPUInterpreter::rlwnmx(PPUFields code, PPUThread& thread)
 void PPUInterpreter::sc(PPUFields code, PPUThread& thread)
 {
     if (code.sys == 2) {
-        unknown2("sc");//TODO: SysCall();
+        nucleus.lv2.call(thread);
     }
     else {
         unknown2("sc");

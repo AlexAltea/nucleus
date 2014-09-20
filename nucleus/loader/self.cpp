@@ -80,7 +80,7 @@ bool SELFLoader::load_elf()
             }
 
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
-            memcpy(nucleus.memory + phdr.vaddr, &m_elf[phdr.offset], phdr.filesz);
+            memcpy(nucleus.memory.ptr(phdr.vaddr), &m_elf[phdr.offset], phdr.filesz);
             // TODO: Static function analysis?
             break;
 
@@ -124,7 +124,7 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
             }
 
             const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
-            memcpy(nucleus.memory + addr, &m_elf[phdr.offset], phdr.filesz);
+            memcpy(nucleus.memory.ptr(addr), &m_elf[phdr.offset], phdr.filesz);
 
             // Add information for PRX Object
             sys_prx_segment_t segment;
@@ -223,7 +223,7 @@ bool SELFLoader::decryptMetadata()
             continue;
         }
  
-        switch (ctrl.npdrm.license) {
+        switch (ctrl.npdrm.license.ToLE()) {
         case 1: // Network license
         case 2: // Local license
             // TODO
@@ -340,8 +340,8 @@ bool SELFLoader::decrypt()
                 continue;
             }
 
-            u8* data_decrypted = new u8[meta_shdr.data_size]();
-            u8* data_decompressed = new u8[meta_phdr.filesz]();
+            u8* data_decrypted = new u8[meta_shdr.data_size.ToLE()]();
+            u8* data_decompressed = new u8[meta_phdr.filesz.ToLE()]();
 
             // Decrypt if necessary
             if (meta_shdr.encrypted == 3) {

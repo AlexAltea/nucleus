@@ -12,7 +12,7 @@
 
 struct PPUInstruction
 {
-    char* name;
+    const char* name;
     void (*interpreter)(PPUFields, PPUThread&);
     //void (*recompiler)(PPUFields, PPUThread&);
     std::string (*disassembler)(PPUFields);

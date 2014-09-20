@@ -25,7 +25,6 @@ public:
     {
         m_size = count * sizeof(T);
         m_addr = nucleus.memory.alloc(m_size, align);
-        
     }
 
     // Initialize the variable by specifying a string
@@ -33,11 +32,11 @@ public:
     {
         m_size = str.size() + 1;
         m_addr = nucleus.memory.alloc(m_size, align);
-        memcpy(nucleus.memory + m_addr, str.data(), m_size);
+        memcpy(nucleus.memory.ptr(m_addr), str.data(), m_size);
     }
 
-    T* ptr() { return (T*)(nucleus.memory + m_addr); }
-    T& ref() { return *(T*)(nucleus.memory + m_addr); }
+    T* ptr() { return nucleus.memory.ptr<T>(m_addr); }
+    T& ref() { return nucleus.memory.ref<T>(m_addr); }
 
     u32 addr() { return m_addr; }
     u32 size() { return m_size; }
@@ -59,10 +58,10 @@ public:
     vm_ptr operator--(int) { u32 result = m_addr; m_addr -= sizeof(T); return vm_ptr<T>{ m_addr }; }
     vm_ptr operator++() { m_addr += sizeof(T); return *this; }
     vm_ptr operator--() { m_addr -= sizeof(T); return *this; }
-
     vm_ptr operator+=(s32 count) { m_addr += count * sizeof(T); return *this; }
 	vm_ptr operator-=(s32 count) { m_addr -= count * sizeof(T); return *this; }
 
-    T* ptr() { return (T*)(nucleus.memory + m_addr); }
-    T& ref() { return *(T*)(nucleus.memory + m_addr); }
+    T* ptr() { return nucleus.memory.ptr<T>(m_addr); }
+
+    u32 addr() { return m_addr; }
 };

@@ -52,10 +52,10 @@ union PPU_CR
             setField(field, 1 << CR_LT);
         }
         else if (a > b) {
-            setField(field, 1 << CR_LT);
+            setField(field, 1 << CR_GT);
         }
         else if (a == b) {
-            setField(field, 1 << CR_LT);
+            setField(field, 1 << CR_EQ);
         }
     }
 };

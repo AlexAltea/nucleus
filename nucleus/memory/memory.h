@@ -54,6 +54,10 @@ public:
     void* getBaseAddr() { return m_base; }
 
     MemorySegment& operator()(size_t id) { return m_segments[id]; }
-    void* operator+(u32 addr) { return (void*)((u64)m_base + addr); }
-    u8& operator[](u32 addr) { return *(u8*)((u64)m_base + addr); }
+
+    template<typename T>
+    T& ref(u32 addr) { return *(T*)((u64)m_base + addr); }
+
+    template<typename T=void>
+    T* ptr(u32 addr) { return (T*)((u64)m_base + addr); }
 };

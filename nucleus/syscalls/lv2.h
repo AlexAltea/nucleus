@@ -6,6 +6,8 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/ppu/ppu_thread.h"
+#include "nucleus/syscalls/syscall.h"
 
 // LV2 Error Codes
 enum
@@ -82,19 +84,23 @@ enum
     LV2_DBG   = (1 << 2),
 
     // FW Type
-    LV2_CEX   = (1 << 3),
-    LV2_DEX   = (1 << 4),
-    LV2_DECR  = (1 << 5),
+    LV2_CEX   = (1 << 0),
+    LV2_DEX   = (1 << 1),
+    LV2_DECR  = (1 << 2),
 };
-/*
+
 struct LV2Syscall {
-    Syscall func;
+    Syscall* func;
+    u32 flags;
 };
-*/
+
 class LV2
 {
-    /*LV2Syscall m_syscalls[1024];*/
+    LV2Syscall m_syscalls[1024];
 
 public:
     void init();
+
+    // Get LV2 SysCall ID from the current thread and call it
+    void call(PPUThread& thread);
 };

@@ -3,8 +3,6 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#pragma once
-
 #include "ppu_tables.h"
 #include "nucleus/cpu/ppu/interpreter/ppu_interpreter.h"
 #include "nucleus/cpu/ppu/ppu_disasm.h"

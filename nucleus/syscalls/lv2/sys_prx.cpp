@@ -26,24 +26,24 @@ s32 sys_prx_load_module(vm_ptr<s8> path, u64 flags, vm_ptr<sys_prx_load_module_o
 s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, vm_ptr<be_t<u32>> modres, u64 flags, vm_ptr<sys_prx_start_module_option_t> pOpt)
 {
     const u32 elf_base = 0x10000;
-    const auto& ehdr = (Elf64_Ehdr&)nucleus.memory[elf_base];
+    const auto& ehdr = nucleus.memory.ref<Elf64_Ehdr>(elf_base);
 
     for (u64 i = 0; i < ehdr.phnum; i++) {
-        const auto& phdr = (Elf64_Phdr&)nucleus.memory[elf_base + ehdr.phoff + i*sizeof(Elf64_Phdr)];
+        const auto& phdr = nucleus.memory.ref<Elf64_Phdr>(elf_base + ehdr.phoff + i*sizeof(Elf64_Phdr));
         if (phdr.type != 0x60000002) {
             continue;
         }
 
-        const auto& prx_param = (sys_prx_param_t&)nucleus.memory[phdr.vaddr];
+        const auto& prx_param = nucleus.memory.ref<sys_prx_param_t>(phdr.vaddr);
 
         // Update import table
         u32 offset = prx_param.libstubstart;
         while (offset < prx_param.libstubend) {
-            const auto& importedLibrary = (sys_prx_library_info_t&)nucleus.memory[offset];
+            const auto& importedLibrary = nucleus.memory.ref<sys_prx_library_info_t>(offset);
             offset += importedLibrary.size;
 
             for (const auto& lib : prx.libraries) {
-                if (lib.name != (s8*)(nucleus.memory + importedLibrary.name_addr)) {
+                if (lib.name != nucleus.memory.ptr<s8>(importedLibrary.name_addr)) {
                     continue;
                 }
                 for (u32 i = 0; i < importedLibrary.num_func; i++) {
