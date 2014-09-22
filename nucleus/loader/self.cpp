@@ -74,7 +74,7 @@ bool SELFLoader::load_elf()
         const auto& phdr = (Elf64_Phdr&)m_elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
 
         switch (phdr.type.ToLE()) {
-        case 0x00000001: //LOAD
+        case PT_LOAD:
             if (!phdr.memsz) {
                 break;
             }
@@ -84,17 +84,17 @@ bool SELFLoader::load_elf()
             // TODO: Static function analysis?
             break;
 
-        case 0x00000007: //TLS
+        case PT_TLS:
             //Emu.SetTLSData(offset + phdr.p_vaddr, phdr.p_filesz, phdr.p_memsz);
 
-        case 0x60000001: //LOOS+1
+        case PT_PROC_PARAM:
             if (!phdr.filesz) {
                 break;
             }
             // TODO: sys_process stuff
             break;
 
-        case 0x60000002: //LOOS+2
+        case PT_PROC_PRX_PARAM:
             if (!phdr.filesz) {
                 break;
             }
@@ -118,7 +118,7 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
     for (u64 i = 0; i < ehdr.phnum; i++) {
         const auto& phdr = (Elf64_Phdr&)m_elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
 
-        if (phdr.type == 0x00000001) {  //LOAD
+        if (phdr.type == PT_LOAD) {
             if (!phdr.memsz) {
                 break;
             }
@@ -162,18 +162,6 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
             // Update offsets according to the base address where the PRX was allocated
             // TODO: Probably hardcoding i==1 isn't a good idea.
             if (i == 1) {
-                // Update export table
-                for (u32 offset = 0; offset < phdr.filesz; offset += 8) {
-                    u32 value = nucleus.memory.read32(addr + offset + 0);
-                    u32 toc = nucleus.memory.read32(addr + offset + 4);
-                    for (const auto& segment : prx.segments) {
-                        if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_memory) {
-                            value = value + (segment.addr - segment.initial_addr);
-                        }
-                    }
-                    nucleus.memory.write32(addr + offset + 0, value);
-                    nucleus.memory.write32(addr + offset + 4, prx.segments[1].addr - phdr.vaddr + toc);
-                }
                 // Update FNID / addr pairs
                 for (auto& lib : prx.libraries) {
                     for (auto& stub : lib.exports) {
@@ -186,6 +174,18 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
                         stub.second = value;
                     }
                 }
+            }
+        }
+
+        if (phdr.type == PT_SCE_PPURELA) {
+            for (u32 i = 0; i < phdr.filesz; i += sizeof(sys_prx_relocation_info_t)) {
+                const auto& rel = (sys_prx_relocation_info_t&)m_elf[phdr.offset + i];
+                if (rel.type != 1) {
+                    continue;
+                }
+                const u32 addr = prx.segments[1].addr + rel.offset;
+                const u32 value = prx.segments[rel.index].addr + rel.ptr;
+                nucleus.memory.write32(addr, value);
             }
         }
     }

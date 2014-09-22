@@ -7,7 +7,26 @@
 
 #include "nucleus/common.h"
 #include "nucleus/syscalls/lv2/sys_prx.h"
+
 #include <string>
+
+// Segment Types
+enum
+{
+    // Common segments
+    PT_LOAD     = 0x1,
+    PT_DYNAMIC  = 0x2,
+    PT_INTERP   = 0x3,
+    PT_NOTE     = 0x4,
+    PT_SHLIB    = 0x5,
+    PT_PHDR     = 0x6,
+    PT_TLS      = 0x7,
+
+    // Cell OS Lv-2 Specific segments
+    PT_PROC_PARAM       = 0x60000001,  
+    PT_PROC_PRX_PARAM   = 0x60000002,
+    PT_SCE_PPURELA      = 0x700000A4,
+};
 
 // SELF structs
 struct SceHeader
