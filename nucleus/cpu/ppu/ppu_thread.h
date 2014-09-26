@@ -44,7 +44,11 @@ union PPU_CR
     void setBit(u32 bit, bool value) { CR = value ? CR | (1 << bit) : CR & ~(1 << bit); }
 
     u8 getField(u32 field) { return (CR >> field*4) & 0xf; }
-    void setField(u32 field, u8 value) { CR = (CR & ~((1 << (field+1)*4)-1)) | (value << field*4) | (CR & ((1 << field*4)-1)); }
+    void setField(u32 field, u8 value) {
+        u64 maskHigh = ~((1ULL << (field+1)*4)-1);
+        u64 maskLow = ((1ULL << field*4)-1);
+        CR = (CR & (u32)maskHigh) | (value << field*4) | (CR & (u32)maskLow);
+    }
 
     template<typename T>
     void updateField(u32 field, T a, T b) {
@@ -166,7 +170,7 @@ public:
     PPU_XER xer;
     PPU_LR lr;
     PPU_CTR ctr;
-    
+
     // PPU VEA Registers
     u32 tbl;
     u32 tbu;
@@ -174,7 +178,7 @@ public:
     // PPU Vector Registers
     PPU_VR vr[32];
     PPU_VSCR vscr;
-    
+
     // PPU Reservation Registers
     u64 reserve_addr;
     u64 reserve_value;

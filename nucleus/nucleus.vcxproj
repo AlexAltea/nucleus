@@ -94,8 +94,14 @@
     <ClCompile Include="memory\segment.cpp" />
     <ClCompile Include="nucleus.cpp" />
     <ClCompile Include="syscalls\lv2.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_cond.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_dbg.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_lwmutex.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_memory.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_mutex.cpp" />
     <ClCompile Include="syscalls\lv2\sys_process.cpp" />
     <ClCompile Include="syscalls\lv2\sys_prx.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_time.cpp" />
     <ClCompile Include="syscalls\lv2\sys_tty.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -120,8 +126,14 @@
     <ClInclude Include="memory\object.h" />
     <ClInclude Include="memory\segment.h" />
     <ClInclude Include="syscalls\lv2.h" />
+    <ClInclude Include="syscalls\lv2\sys_cond.h" />
+    <ClInclude Include="syscalls\lv2\sys_dbg.h" />
+    <ClInclude Include="syscalls\lv2\sys_lwmutex.h" />
+    <ClInclude Include="syscalls\lv2\sys_memory.h" />
+    <ClInclude Include="syscalls\lv2\sys_mutex.h" />
     <ClInclude Include="syscalls\lv2\sys_process.h" />
     <ClInclude Include="syscalls\lv2\sys_prx.h" />
+    <ClInclude Include="syscalls\lv2\sys_time.h" />
     <ClInclude Include="syscalls\lv2\sys_tty.h" />
     <ClInclude Include="syscalls\syscall.h" />
   </ItemGroup>

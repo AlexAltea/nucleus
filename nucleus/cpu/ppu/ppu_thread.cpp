@@ -15,13 +15,16 @@ PPUThread::PPUThread()
     m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
     m_stackPointer = m_stackAddr + 0x10000;
 
-    // Initialize registers
+    // Initialize registers (TODO: All of this might be wrong)
     gpr[0] = pc;
     gpr[1] = m_stackPointer;
     //gpr[2] = rtoc;
     gpr[3] = 0;
     gpr[4] = nucleus.memory.alloc(4,4);
     gpr[5] = gpr[4] + 0x10;
+    gpr[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
+    tbl = 1;
+    tbu = 1;
     nucleus.memory.write32(gpr[4], 0);
 }
 

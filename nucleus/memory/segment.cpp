@@ -29,12 +29,12 @@ MemoryBlock::MemoryBlock(u32 block_addr, u32 block_size)
     if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
 #elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
     if (::mprotect(realaddr, block_size, PROT_READ | PROT_WRITE)) {
-#endif     
+#endif
         // Error
         realaddr = nullptr;
         return;
     }
-    
+
     //Memory.RegisterPages(_addr, PAGE_4K(_size)); // TODO
     memset(realaddr, 0, size);
 }
@@ -132,4 +132,9 @@ bool MemorySegment::isValid(u32 addr)
         return false;
     }
     return true;
+}
+
+u32 MemorySegment::getBaseAddr()
+{
+    return m_start;
 }

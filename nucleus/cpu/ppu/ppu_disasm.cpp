@@ -93,7 +93,7 @@ std::string dis_addi(PPUFields code)
         return dis_global("li", "r%d, 0x%X", code.rd, code.simm);
     }
     else if (code.simm < 0) {
-        return dis_global("subi", "r%d, r%d, 0x%X", code.rd, code.ra, code.simm);
+        return dis_global("addi", "r%d, r%d, -0x%X", code.rd, code.ra, -code.simm);
     }
     else {
         return dis_global("addi", "r%d, r%d, 0x%X", code.rd, code.ra, code.simm);
@@ -219,7 +219,20 @@ std::string dis_bx(PPUFields code)
 std::string dis_bcx(PPUFields code)
 {
     if (code.aa == 0 && code.lk == 0) {
-        return dis_global("bc", "0x%X, 0x%X, 0x%X", code.bo, code.bi, code.bd * 4);
+        std::string instr = "";
+        switch (code.bi % 4) {
+        case 0: instr = (code.bo & 0x08) ? "blt" : "bge";
+        case 1: instr = (code.bo & 0x08) ? "bgt" : "ble";
+        case 2: instr = (code.bo & 0x08) ? "beq" : "bne";
+        }
+        instr += (code.bo & 0x02) ? ((code.bo & 0x01) ? "+" : "-") : "";
+
+        if (code.bd < 0) {
+            return dis_global(instr.data(), "cr%d, -0x%X", code.bi / 4, -code.bd);
+        }
+        else {
+            return dis_global(instr.data(), "cr%d, 0x%X", code.bi / 4, code.bd);
+        }
     }
     else if (code.aa == 1 && code.lk == 0) {
         return dis_global("bca", "0x%X, 0x%X, 0x%X", code.bo, code.bi, code.bd * 4);
@@ -530,7 +543,12 @@ std::string dis_lbzx(PPUFields code)
 
 std::string dis_ld(PPUFields code)
 {
-    return dis_global("ld", "r%d, 0x%X(r%d)", code.rd, code.ds, code.ra);
+    if (code.ds < 0) {
+        return dis_global("ld", "r%d, -0x%X(r%d)", code.rd, -code.ds * 4, code.ra);
+    }
+    else {
+        return dis_global("ld", "r%d, 0x%X(r%d)", code.rd, code.ds * 4, code.ra);
+    }
 }
 
 std::string dis_ldarx(PPUFields code)
@@ -695,6 +713,12 @@ std::string dis_mfspr(PPUFields code)
     case 9:  return dis_global("mfspr", "r%d, ctr", code.rd);
     default: return dis_global("mfspr", "r%d, spr%d", code.rd, code.spr);
     }
+}
+
+std::string dis_mftb(PPUFields code)
+{
+    const u32 tbr = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
+    return dis_global("mftb", "r%d, %d", code.rd, tbr);
 }
 
 std::string dis_mtspr(PPUFields code)

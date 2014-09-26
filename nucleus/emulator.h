@@ -37,7 +37,7 @@ public:
     void pause();
     void stop();
 
-    // Wait for events 
+    // Wait for events
     void idle();
     void task(EmulatorEvent evt);
 };

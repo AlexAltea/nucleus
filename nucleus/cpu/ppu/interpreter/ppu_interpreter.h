@@ -13,7 +13,7 @@
 class PPUInterpreter : public CellTranslator
 {
     PPUThread& thread;
-    
+
 public:
     PPUInterpreter(PPUThread& thr);
 

@@ -110,7 +110,7 @@ class be_t
 
 public:
     typedef T type;
-    
+
     const T& ToBE() const
     {
         return m_data;

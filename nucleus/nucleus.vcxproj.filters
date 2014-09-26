@@ -60,6 +60,24 @@
     <ClCompile Include="syscalls\lv2\sys_process.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_mutex.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_memory.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_lwmutex.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_cond.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_time.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_dbg.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -131,6 +149,24 @@
       <Filter>syscalls</Filter>
     </ClInclude>
     <ClInclude Include="logging.h" />
+    <ClInclude Include="syscalls\lv2\sys_mutex.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_memory.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_lwmutex.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_cond.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_time.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_dbg.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

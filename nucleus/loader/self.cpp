@@ -57,7 +57,7 @@ bool SELFLoader::open(const std::string& path)
         memcpy(m_elf, m_self, m_elf_size);
         return true;
     }
-    
+
     return false;
 }
 
@@ -215,7 +215,7 @@ bool SELFLoader::decryptMetadata()
     }
 
     auto& meta_info = (MetadataInfo&)m_self[sizeof(SceHeader) + sce_header.meta];
-    
+
     // Decrypt NPDRM Layer if necessary
     u8 npdrm_key[0x10];
     u8 npdrm_iv[0x10] = {};
@@ -226,7 +226,7 @@ bool SELFLoader::decryptMetadata()
         if (ctrl.type != 3) {
             continue;
         }
- 
+
         switch (ctrl.npdrm.license.ToLE()) {
         case 1: // Network license
         case 2: // Local license

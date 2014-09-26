@@ -12,3 +12,8 @@ s32 sys_process_exit(s32 errorcode)
     nucleus.task(NUCLEUS_EVENT_STOP);
     return CELL_OK;
 }
+
+s32 sys_process_get_paramsfo(u8* buffer)
+{
+    return CELL_OK;
+}

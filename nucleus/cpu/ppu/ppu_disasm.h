@@ -107,6 +107,7 @@ std::string dis_mcrfs(PPUFields code);
 std::string dis_mfcr(PPUFields code);
 std::string dis_mfocrf(PPUFields code);
 std::string dis_mfspr(PPUFields code);
+std::string dis_mftb(PPUFields code);
 std::string dis_mtspr(PPUFields code);
 std::string dis_mulhdx(PPUFields code);
 std::string dis_mulhdux(PPUFields code);

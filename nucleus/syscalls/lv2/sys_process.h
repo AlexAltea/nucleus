@@ -49,7 +49,7 @@ s32 sys_process_getpid();
 s32 sys_process_getppid();
 s32 sys_process_get_number_of_object(u32 object, be_t<u32>* nump);
 s32 sys_process_get_id(u32 object, be_t<u32>* buffer, u32 size, be_t<u32>* set_size);
-s32 sys_process_get_paramsfo(be_t<u32>* buffer);
+s32 sys_process_get_paramsfo(u8* buffer);
 s32 sys_process_get_sdk_version(u32 pid, be_t<u32>* version);
 s32 sys_process_get_status(u64 unk);
 s32 sys_process_exit(s32 errorcode);

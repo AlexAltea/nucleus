@@ -26,7 +26,7 @@ class Memory
 {
     void* m_base;
     MemorySegment m_segments[SEG_COUNT];
-    
+
 public:
     void init();
     void close();

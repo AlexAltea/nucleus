@@ -14,7 +14,7 @@ s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
     if (!self.open(path)) {
         return CELL_PRX_ERROR_UNKNOWN_MODULE;
     }
-    
+
     prx.path = path;
     if (!self.load_prx(prx)) {
         return CELL_PRX_ERROR_ILLEGAL_LIBRARY;

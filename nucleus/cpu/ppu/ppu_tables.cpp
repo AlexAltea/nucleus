@@ -92,7 +92,7 @@ void initTables()
         caller = {"unknown", PPUInterpreter::unknown, dis_unknown};
     }
 
-    // Initialize Table 19 
+    // Initialize Table 19
     for (auto& caller : s_table19) {
         caller = {"unknown", PPUInterpreter::unknown, dis_unknown};
     }
@@ -123,28 +123,28 @@ void initTables()
     for (auto& caller : s_table31) {
         caller = {"unknown", PPUInterpreter::unknown, dis_unknown};
     }
-    s_table31[0x000] = {"cmp",      PPUInterpreter::cmp,      dis_cmp};
-    s_table31[0x004] = {"tw",       PPUInterpreter::tw,       dis_tw};
-    s_table31[0x006] = {"lvsl",     PPUInterpreter::lvsl,     dis_unknown};
-    s_table31[0x007] = {"lvebx",    PPUInterpreter::lvebx,    dis_unknown};
-    s_table31[0x008] = {"subfc",    PPUInterpreter::subfc,    dis_subfcx};
-    s_table31[0x009] = {"mulhdu",   PPUInterpreter::mulhdu,   dis_mulhdux};
-    s_table31[0x00a] = {"addc",     PPUInterpreter::addc,     dis_addcx};
-    s_table31[0x00b] = {"mulhwu",   PPUInterpreter::mulhwu,   dis_mulhwux};
-    s_table31[0x013] = {"mfocrf",   PPUInterpreter::mfocrf,   dis_mfocrf};
-    s_table31[0x014] = {"lwarx",    PPUInterpreter::lwarx,    dis_lwarx};
-    s_table31[0x015] = {"ldx",      PPUInterpreter::ldx,      dis_ldx};
-    s_table31[0x017] = {"lwzx",     PPUInterpreter::lwzx,     dis_lwzx};
-    s_table31[0x018] = {"slw",      PPUInterpreter::slw,      dis_slwx};
-    s_table31[0x01a] = {"cntlzw",   PPUInterpreter::cntlzw,   dis_cntlzwx};
-    s_table31[0x01b] = {"sld",      PPUInterpreter::sld,      dis_sldx};
-    s_table31[0x01c] = {"and",      PPUInterpreter::andx,     dis_andx};
-    s_table31[0x020] = {"cmpl",     PPUInterpreter::cmpl,     dis_cmpl};
-    s_table31[0x026] = {"lvsr",     PPUInterpreter::lvsr,     dis_unknown};
-    s_table31[0x027] = {"lvehx",    PPUInterpreter::lvehx,    dis_unknown};
-    s_table31[0x028] = {"subf",     PPUInterpreter::subf,     dis_subfx};
-    s_table31[0x035] = {"ldux",     PPUInterpreter::ldux,     dis_ldux};
-    s_table31[0x036] = {"dcbst",    PPUInterpreter::dcbst,    dis_dcbst};
+    s_table31[0x000] = {"cmp",     PPUInterpreter::cmp,       dis_cmp};
+    s_table31[0x004] = {"tw",      PPUInterpreter::tw,        dis_tw};
+    s_table31[0x006] = {"lvsl",    PPUInterpreter::lvsl,      dis_unknown};
+    s_table31[0x007] = {"lvebx",   PPUInterpreter::lvebx,     dis_unknown};
+    s_table31[0x008] = {"subfc",   PPUInterpreter::subfc,     dis_subfcx};
+    s_table31[0x009] = {"mulhdu",  PPUInterpreter::mulhdu,    dis_mulhdux};
+    s_table31[0x00a] = {"addc",    PPUInterpreter::addc,      dis_addcx};
+    s_table31[0x00b] = {"mulhwu",  PPUInterpreter::mulhwu,    dis_mulhwux};
+    s_table31[0x013] = {"mfocrf",  PPUInterpreter::mfocrf,    dis_mfocrf};
+    s_table31[0x014] = {"lwarx",   PPUInterpreter::lwarx,     dis_lwarx};
+    s_table31[0x015] = {"ldx",     PPUInterpreter::ldx,       dis_ldx};
+    s_table31[0x017] = {"lwzx",    PPUInterpreter::lwzx,      dis_lwzx};
+    s_table31[0x018] = {"slw",     PPUInterpreter::slw,       dis_slwx};
+    s_table31[0x01a] = {"cntlzw",  PPUInterpreter::cntlzw,    dis_cntlzwx};
+    s_table31[0x01b] = {"sld",     PPUInterpreter::sld,       dis_sldx};
+    s_table31[0x01c] = {"and",     PPUInterpreter::andx,      dis_andx};
+    s_table31[0x020] = {"cmpl",    PPUInterpreter::cmpl,      dis_cmpl};
+    s_table31[0x026] = {"lvsr",    PPUInterpreter::lvsr,      dis_unknown};
+    s_table31[0x027] = {"lvehx",   PPUInterpreter::lvehx,     dis_unknown};
+    s_table31[0x028] = {"subf",    PPUInterpreter::subf,      dis_subfx};
+    s_table31[0x035] = {"ldux",    PPUInterpreter::ldux,      dis_ldux};
+    s_table31[0x036] = {"dcbst",   PPUInterpreter::dcbst,     dis_dcbst};
     s_table31[0x037] = {"lwzux",   PPUInterpreter::lwzux,     dis_lwzux};
     s_table31[0x03a] = {"cntlzd",  PPUInterpreter::cntlzd,    dis_cntlzdx};
     s_table31[0x03c] = {"andc",    PPUInterpreter::andc,      dis_andcx};
@@ -164,7 +164,7 @@ void initTables()
     s_table31[0x08a] = {"adde",    PPUInterpreter::adde,      dis_addex};
     s_table31[0x090] = {"mtocrf",  PPUInterpreter::mtocrf,    dis_unknown};
     s_table31[0x095] = {"stdx",    PPUInterpreter::stdx,      dis_stdx};
-    s_table31[0x096] = {"stwcx_",  PPUInterpreter::stwcx_,    dis_unknown};
+    s_table31[0x096] = {"stwcx_",  PPUInterpreter::stwcx_,    dis_stwcx_};
     s_table31[0x097] = {"stwx",    PPUInterpreter::stwx,      dis_stwx};
     s_table31[0x0a7] = {"stvehx",  PPUInterpreter::stvehx,    dis_unknown};
     s_table31[0x0b5] = {"stdux",   PPUInterpreter::stdux,     dis_stdux};
@@ -172,7 +172,7 @@ void initTables()
     s_table31[0x0c7] = {"stvewx",  PPUInterpreter::stvewx,    dis_unknown};
     s_table31[0x0c8] = {"subfze",  PPUInterpreter::subfze,    dis_subfzex};
     s_table31[0x0ca] = {"addze",   PPUInterpreter::addze,     dis_addzex};
-    s_table31[0x0d6] = {"stdcx_",  PPUInterpreter::stdcx_,    dis_unknown};
+    s_table31[0x0d6] = {"stdcx_",  PPUInterpreter::stdcx_,    dis_stdcx_};
     s_table31[0x0d7] = {"stbx",    PPUInterpreter::stbx,      dis_stbx};
     s_table31[0x0e7] = {"stvx",    PPUInterpreter::stvx,      dis_unknown};
     s_table31[0x0e8] = {"subfme",  PPUInterpreter::subfme,    dis_subfmex};
@@ -193,7 +193,7 @@ void initTables()
     s_table31[0x156] = {"dst",     PPUInterpreter::dst,       dis_unknown};
     s_table31[0x157] = {"lhax",    PPUInterpreter::lhax,      dis_lhax};
     s_table31[0x167] = {"lvxl",    PPUInterpreter::lvxl,      dis_unknown};
-    s_table31[0x173] = {"mftb",    PPUInterpreter::mftb,      dis_unknown};
+    s_table31[0x173] = {"mftb",    PPUInterpreter::mftb,      dis_mftb};
     s_table31[0x175] = {"lwaux",   PPUInterpreter::lwaux,     dis_lwaux};
     s_table31[0x176] = {"dstst",   PPUInterpreter::dstst,     dis_unknown};
     s_table31[0x177] = {"lhaux",   PPUInterpreter::lhaux,     dis_lhaux};

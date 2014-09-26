@@ -6,8 +6,14 @@
 #include "lv2.h"
 #include "nucleus/memory/object.h"
 
+#include "lv2/sys_cond.h"
+#include "lv2/sys_dbg.h"
+#include "lv2/sys_lwmutex.h"
+#include "lv2/sys_memory.h"
+#include "lv2/sys_mutex.h"
 #include "lv2/sys_process.h"
 #include "lv2/sys_prx.h"
+#include "lv2/sys_time.h"
 #include "lv2/sys_tty.h"
 
 bool LV2::init()
@@ -15,7 +21,34 @@ bool LV2::init()
     // Initialize syscall table
     m_syscalls[0x003] = {wrap(sys_process_exit), LV2_NONE};
     m_syscalls[0x016] = {wrap(sys_process_exit), LV2_NONE};
+    m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
+    m_syscalls[0x05F] = {wrap(sys_lwmutex_create), LV2_NONE};
+    m_syscalls[0x060] = {wrap(sys_lwmutex_destroy), LV2_NONE};
+    m_syscalls[0x061] = {wrap(sys_lwmutex_lock), LV2_NONE};
+    m_syscalls[0x062] = {wrap(sys_lwmutex_trylock), LV2_NONE};
+    m_syscalls[0x063] = {wrap(sys_lwmutex_unlock), LV2_NONE};
+    m_syscalls[0x064] = {wrap(sys_mutex_create), LV2_NONE};
+    m_syscalls[0x065] = {wrap(sys_mutex_destroy), LV2_NONE};
+    m_syscalls[0x066] = {wrap(sys_mutex_lock), LV2_NONE};
+    m_syscalls[0x067] = {wrap(sys_mutex_trylock), LV2_NONE};
+    m_syscalls[0x068] = {wrap(sys_mutex_unlock), LV2_NONE};
+    m_syscalls[0x069] = {wrap(sys_cond_create), LV2_NONE};
+    m_syscalls[0x06A] = {wrap(sys_cond_destroy), LV2_NONE};
+    m_syscalls[0x06B] = {wrap(sys_cond_wait), LV2_NONE};
+    m_syscalls[0x06C] = {wrap(sys_cond_signal), LV2_NONE};
+    m_syscalls[0x06D] = {wrap(sys_cond_signal_all), LV2_NONE};
+    m_syscalls[0x06E] = {wrap(sys_cond_signal_to), LV2_NONE};
+    m_syscalls[0x090] = {wrap(sys_time_get_timezone), LV2_NONE};
+    m_syscalls[0x091] = {wrap(sys_time_get_current_time), LV2_NONE};
+    m_syscalls[0x093] = {wrap(sys_time_get_timebase_frequency), LV2_NONE};
+    m_syscalls[0x15C] = {wrap(sys_memory_allocate), LV2_NONE};
+    m_syscalls[0x15D] = {wrap(sys_memory_free), LV2_NONE};
+    m_syscalls[0x15E] = {wrap(sys_memory_allocate_from_container), LV2_NONE};
+    m_syscalls[0x15F] = {wrap(sys_memory_get_page_attribute), LV2_NONE};
+    m_syscalls[0x160] = {wrap(sys_memory_get_user_memory_size), LV2_NONE};
+    m_syscalls[0x161] = {wrap(sys_memory_get_user_memory_stat), LV2_NONE};
     m_syscalls[0x193] = {wrap(sys_tty_write), LV2_NONE};
+    m_syscalls[0x3DC] = {wrap(sys_dbg_ppu_exception_handler), LV2_NONE};
 
     // Load and start liblv2.sprx module
     s32 moduleId = sys_prx_load_module("dev_flash/sys/external/liblv2.sprx", 0, 0);

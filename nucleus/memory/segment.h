@@ -39,4 +39,5 @@ public:
 
     bool isValid(u32 addr);
     u32 getUsedMemory();
+    u32 getBaseAddr();
 };
