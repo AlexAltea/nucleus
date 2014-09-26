@@ -123,7 +123,12 @@ std::string dis_addic_(PPUFields code)
 std::string dis_addis(PPUFields code)
 {
     if (code.ra == 0) {
-        return dis_global("lis", "r%d, 0x%X", code.rd, code.simm);
+        if (code.simm < 0) {
+            return dis_global("lis", "r%d, -0x%X", code.rd, -code.simm);
+        }
+        else {
+            return dis_global("lis", "r%d, 0x%X", code.rd, code.simm);
+        }
     }
     else if (code.simm < 0) {
         return dis_global("subis", "r%d, r%d, 0x%X", code.rd, code.ra, code.simm);

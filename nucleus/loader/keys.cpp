@@ -4,6 +4,7 @@
  */
 
 #include "keys.h"
+#include "nucleus/emulator.h"
 
 static SelfKey self_keyvault[] = {
     // LV0 keys
@@ -557,7 +558,7 @@ static SelfKey self_keyvault[] = {
     },
 };
 
-const SelfKey& getSelfKey(u32 type, u64 version, u16 revision)
+const SelfKey* getSelfKey(u32 type, u64 version, u16 revision)
 {
     for (auto& key : self_keyvault) {
         if (key.self_type != type) {
@@ -569,9 +570,9 @@ const SelfKey& getSelfKey(u32 type, u64 version, u16 revision)
         if (key.revision != revision && (type == KEY_APP || type == KEY_ISO || type == KEY_NPDRM)) {
             continue;
         }
-        return key;
+        return &key;
     }
 
-    // TODO: Error: Key not found in keyvault!
-    return SelfKey{};
+    nucleus.log.error(LOG_LOADER, "Key not found in keyvault!");
+    return nullptr;
 }

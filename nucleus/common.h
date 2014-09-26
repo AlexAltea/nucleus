@@ -177,9 +177,9 @@ public:
     template<typename T1> be_t& operator |= (const be_t<T1>& right) { return *this = ToBE() | right.ToBE(); }
     template<typename T1> be_t& operator ^= (const be_t<T1>& right) { return *this = ToBE() ^ right.ToBE(); }
 
-    template<typename T1> be_t operator & (const be_t<T1>& right) const { be_t<T> res; res.FromBE(ToBE() & right.ToBE()); return res; }
-    template<typename T1> be_t operator | (const be_t<T1>& right) const { be_t<T> res; res.FromBE(ToBE() | right.ToBE()); return res; }
-    template<typename T1> be_t operator ^ (const be_t<T1>& right) const { be_t<T> res; res.FromBE(ToBE() ^ right.ToBE()); return res; }
+    template<typename T1> be_t operator & (const be_t<T1>& right) const { return be_t<T>{ ToBE() & right.ToBE() }; }
+    template<typename T1> be_t operator | (const be_t<T1>& right) const { return be_t<T>{ ToBE() | right.ToBE() }; }
+    template<typename T1> be_t operator ^ (const be_t<T1>& right) const { return be_t<T>{ ToBE() ^ right.ToBE() }; }
 
     template<typename T1> bool operator == (T1 right) const { return (T1)ToLE() == right; }
     template<typename T1> bool operator != (T1 right) const { return !(*this == right); }

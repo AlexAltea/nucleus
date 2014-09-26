@@ -41,27 +41,3 @@ public:
     u32 addr() { return m_addr; }
     u32 size() { return m_size; }
 };
-
-/**
- * Pointer to PS3's virtual memory
- */
-template<typename T>
-class vm_ptr
-{
-    u32 m_addr;
-
-public:
-    vm_ptr(u32 addr) { m_addr = addr; }
-    vm_ptr(vm_var<T>& var) { m_addr = var.addr(); }
-
-    vm_ptr operator++(int) { u32 result = m_addr; m_addr += sizeof(T); return vm_ptr<T>{ m_addr }; }
-    vm_ptr operator--(int) { u32 result = m_addr; m_addr -= sizeof(T); return vm_ptr<T>{ m_addr }; }
-    vm_ptr operator++() { m_addr += sizeof(T); return *this; }
-    vm_ptr operator--() { m_addr -= sizeof(T); return *this; }
-    vm_ptr operator+=(s32 count) { m_addr += count * sizeof(T); return *this; }
-	vm_ptr operator-=(s32 count) { m_addr -= count * sizeof(T); return *this; }
-
-    T* ptr() { return nucleus.memory.ptr<T>(m_addr); }
-
-    u32 addr() { return m_addr; }
-};

@@ -31,5 +31,5 @@ enum
 };
 
 // SysCalls
-s32 sys_tty_read(s32 ch, vm_ptr<s8> buf, s32 len, vm_ptr<u32> preadlen);
-s32 sys_tty_write(s32 ch, vm_ptr<s8> buf, s32 len, vm_ptr<u32> pwritelen);
+s32 sys_tty_read(s32 ch, s8* buf, s32 len, u32* preadlen);
+s32 sys_tty_write(s32 ch, s8* buf, s32 len, u32* pwritelen);

@@ -7,20 +7,18 @@
 
 #include <iostream>
 
-s32 sys_tty_read(s32 ch, vm_ptr<s8> buf, s32 len, vm_ptr<u32> preadlen)
+s32 sys_tty_read(s32 ch, s8* buf, s32 len, u32* preadlen)
 {
     return CELL_OK;
 }
 
-s32 sys_tty_write(s32 ch, vm_ptr<s8> buf, s32 len, vm_ptr<u32> pwritelen)
+s32 sys_tty_write(s32 ch, s8* buf, s32 len, u32* pwritelen)
 {
     if (ch > 15 || len <= 0) {
         return CELL_EINVAL;
     }
 
-    const std::string data(buf.ptr(), len);
-    std::cout << data.data();
-    *pwritelen.ptr() = data.size();
+    std::cout << buf;
 
     return CELL_OK;
 }

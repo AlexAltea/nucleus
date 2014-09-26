@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/logging.h"
 #include "nucleus/memory/memory.h"
 #include "nucleus/cpu/cell.h"
 #include "nucleus/syscalls/lv2.h"
@@ -27,17 +28,18 @@ public:
     Cell cell;
     LV2 lv2;
 
+    // Logging
+    Logger log;
+
     // Control the emulated process
     bool load(const std::string& filepath);
     void run();
     void pause();
     void stop();
 
-    // Wait for events
+    // Wait for events 
     void idle();
-
-    // Logging
-    void log(const char* format, ...);
+    void task(EmulatorEvent evt);
 };
 
 extern Emulator nucleus;

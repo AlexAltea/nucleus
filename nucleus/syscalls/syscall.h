@@ -9,7 +9,7 @@
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
 // Syscall arguments
-#define ARG_GPR(n) thread.gpr[3+n]
+#define ARG_GPR(T,n) (T)(std::is_pointer<T>::value ? (u64)nucleus.memory.getBaseAddr() + thread.gpr[3+n] : thread.gpr[3+n])
 
 // Base class for HLE syscalls
 class Syscall
@@ -47,7 +47,7 @@ public:
 
 	virtual void call(PPUThread& thread)
     {
-		thread.gpr[3] = m_func(ARG_GPR(0));
+		thread.gpr[3] = m_func(ARG_GPR(T1,0));
 	}
 };
 
@@ -61,7 +61,7 @@ public:
 
 	virtual void call(PPUThread& thread)
     {
-		thread.gpr[3] = m_func(ARG_GPR(0), ARG_GPR(1));
+		thread.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1));
 	}
 };
 
@@ -78,7 +78,7 @@ public:
 
 	virtual void call(PPUThread& thread)
     {
-		thread.gpr[3] = m_func(ARG_GPR(0), ARG_GPR(1), ARG_GPR(2));
+		thread.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2));
 	}
 };
 
@@ -92,7 +92,7 @@ public:
 
 	virtual void call(PPUThread& thread)
     {
-		thread.gpr[3] = m_func(ARG_GPR(0), ARG_GPR(1), ARG_GPR(2), ARG_GPR(3));
+		thread.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3));
 	}
 };
 

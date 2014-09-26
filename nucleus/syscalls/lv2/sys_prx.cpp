@@ -8,22 +8,22 @@
 #include "nucleus/memory/object.h"
 #include "nucleus/loader/self.h"
 sys_prx_t prx; //REMOVE ME
-s32 sys_prx_load_module(vm_ptr<s8> path, u64 flags, vm_ptr<sys_prx_load_module_option_t> pOpt)
+s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
 {
     SELFLoader self;
-    if (!self.open(path.ptr())) {
+    if (!self.open(path)) {
         return CELL_PRX_ERROR_UNKNOWN_MODULE;
     }
     
-    prx.path = path.ptr();
+    prx.path = path;
     if (!self.load_prx(prx)) {
         return CELL_PRX_ERROR_ILLEGAL_LIBRARY;
     }
 
-    return CELL_OK;
+    return 1;
 }
 
-s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, vm_ptr<be_t<u32>> modres, u64 flags, vm_ptr<sys_prx_start_module_option_t> pOpt)
+s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64 flags, sys_prx_start_module_option_t* pOpt)
 {
     const u32 elf_base = 0x10000;
     const auto& ehdr = nucleus.memory.ref<Elf64_Ehdr>(elf_base);

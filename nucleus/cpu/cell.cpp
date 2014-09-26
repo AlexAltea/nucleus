@@ -39,3 +39,10 @@ void Cell::pause()
         thread->pause();
     }
 }
+
+void Cell::stop()
+{
+    for (CellThread* thread : m_threads) {
+        thread->stop();
+    }
+}

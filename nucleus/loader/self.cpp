@@ -208,7 +208,11 @@ bool SELFLoader::decryptMetadata()
     const auto& sce_header = (SceHeader&)m_self[0x0];
     const auto& self_header = (SelfHeader&)m_self[0x20];
     const auto& app_info = (AppInfo&)m_self[0x70];
-    const auto& key = getSelfKey(app_info.self_type, app_info.version, sce_header.flags);
+    const auto* key = getSelfKey(app_info.self_type, app_info.version, sce_header.flags);
+
+    if (!key) {
+        return false;
+    }
 
     auto& meta_info = (MetadataInfo&)m_self[sizeof(SceHeader) + sce_header.meta];
     
@@ -226,7 +230,7 @@ bool SELFLoader::decryptMetadata()
         switch (ctrl.npdrm.license.ToLE()) {
         case 1: // Network license
         case 2: // Local license
-            // TODO
+            nucleus.log.error(LOG_LOADER, "NPDRM Network / Local licenses not yet supported");
             break;
         case 3: // Free license
             memcpy(npdrm_key, NP_KLIC_FREE, 0x10);
@@ -243,8 +247,8 @@ bool SELFLoader::decryptMetadata()
 
     // Decrypt Metadata Info
     u8 metadata_iv[0x10];
-    memcpy(metadata_iv, key.riv, 0x10);
-    aes_setkey_dec(&aes, key.erk, 256);
+    memcpy(metadata_iv, key->riv, 0x10);
+    aes_setkey_dec(&aes, key->erk, 256);
     aes_crypt_cbc(&aes, AES_DECRYPT, sizeof(MetadataInfo), metadata_iv, (u8*)&meta_info, (u8*)&meta_info);
 
     // Decrypt Metadata Headers (Metadata Header + Metadata Section Headers)

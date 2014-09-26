@@ -99,7 +99,7 @@ class LV2
     LV2Syscall m_syscalls[1024];
 
 public:
-    void init();
+    bool init();
 
     // Get LV2 SysCall ID from the current thread and call it
     void call(PPUThread& thread);

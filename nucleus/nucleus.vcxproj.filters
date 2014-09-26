@@ -57,6 +57,9 @@
     <ClCompile Include="memory\object.cpp">
       <Filter>memory</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_process.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -127,6 +130,7 @@
     <ClInclude Include="syscalls\syscall.h">
       <Filter>syscalls</Filter>
     </ClInclude>
+    <ClInclude Include="logging.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

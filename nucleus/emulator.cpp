@@ -7,8 +7,6 @@
 #include "loader/self.h"
 #include "syscalls/lv2.h"
 
-#include <iostream>
-
 bool Emulator::load(const std::string& filepath)
 {
     // Initialize everything
@@ -19,7 +17,7 @@ bool Emulator::load(const std::string& filepath)
     // Load ELF/SELF
     SELFLoader self;
     if (!self.open(filepath)) {
-        std::cerr << "Invalid file given." << std::endl;
+        log.error(LOG_COMMON, "Invalid file given.");
         return false;
     }
     self.load_elf();
@@ -35,7 +33,10 @@ bool Emulator::load(const std::string& filepath)
     }
 
     // Initialize LV2
-    lv2.init();
+    if (!lv2.init()) {
+        log.error(LOG_HLE, "Could not initialize LV2.");
+        return false;
+    }
 
     return true;
 }
@@ -63,18 +64,27 @@ void Emulator::idle()
         // Process event
         switch (m_event) {
         case NUCLEUS_EVENT_RUN:
+            cell.run();
             break;
         case NUCLEUS_EVENT_PAUSE:
+            cell.pause();
             break;
         case NUCLEUS_EVENT_STOP:
-            break;
+            cell.stop();
+            return;
         case NUCLEUS_EVENT_CLOSE:
             return;
         default:
-            // TODO: Error
+            log.warning(LOG_COMMON, "Unknown event");
             break;
         }
 
         m_event = NUCLEUS_EVENT_NONE;
     }
+}
+
+void Emulator::task(EmulatorEvent evt)
+{
+    m_event = evt;
+    m_cv.notify_one();
 }
