@@ -9,13 +9,13 @@
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
 // Syscall arguments
-#define ARG_GPR(T,n) (T)(std::is_pointer<T>::value ? (u64)nucleus.memory.getBaseAddr() + thread.gpr[3+n] : thread.gpr[3+n])
+#define ARG_GPR(T,n) (T)(std::is_pointer<T>::value ? (u64)memoryBase + thread.gpr[3+n] : thread.gpr[3+n])
 
 // Base class for HLE syscalls
 class Syscall
 {
 public:
-    virtual void call(PPUThread& thread)=0;
+    virtual void call(PPUThread& thread, void* memoryBase)=0;
     virtual ~Syscall(){};
 };
 
@@ -31,7 +31,7 @@ class SyscallBinder<TR> : public Syscall
 public:
     SyscallBinder(TR(*func)()) : m_func(func) {}
 
-    virtual void call(PPUThread& thread)
+    virtual void call(PPUThread& thread, void* memoryBase)
     {
         thread.gpr[3] = m_func();
     }
@@ -45,7 +45,7 @@ class SyscallBinder<TR, T1> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1)) : m_func(func) {}
 
-    virtual void call(PPUThread& thread)
+    virtual void call(PPUThread& thread, void* memoryBase)
     {
         thread.gpr[3] = m_func(ARG_GPR(T1,0));
     }
@@ -59,7 +59,7 @@ class SyscallBinder<TR, T1, T2> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2)) : m_func(func) {}
 
-    virtual void call(PPUThread& thread)
+    virtual void call(PPUThread& thread, void* memoryBase)
     {
         thread.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1));
     }
@@ -76,7 +76,7 @@ class SyscallBinder<TR, T1, T2, T3> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3)) : m_func(func) {}
 
-    virtual void call(PPUThread& thread)
+    virtual void call(PPUThread& thread, void* memoryBase)
     {
         thread.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2));
     }
@@ -90,7 +90,7 @@ class SyscallBinder<TR, T1, T2, T3, T4> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3, T4)) : m_func(func) {}
 
-    virtual void call(PPUThread& thread)
+    virtual void call(PPUThread& thread, void* memoryBase)
     {
         thread.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3));
     }

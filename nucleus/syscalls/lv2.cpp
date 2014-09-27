@@ -69,5 +69,5 @@ void LV2::call(PPUThread& thread)
         return;
     }
 
-    m_syscalls[id].func->call(thread);
+    m_syscalls[id].func->call(thread, nucleus.memory.getBaseAddr());
 }
