@@ -1,0 +1,6 @@
+# Nucleus
+dev_flash/**/*.ttf
+dev_flash/**/*.pic
+dev_flash/**/*.sprx
+*.self
+*.elf
