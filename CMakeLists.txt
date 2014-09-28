@@ -26,7 +26,7 @@ endif()
 
 # Project
 if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 endif()
 
 include_directories(${NUCLEUS_SOLUTION_DIR})

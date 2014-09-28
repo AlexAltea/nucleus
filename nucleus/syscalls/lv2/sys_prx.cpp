@@ -5,9 +5,9 @@
 
 #include "sys_prx.h"
 #include "nucleus/syscalls/lv2.h"
-#include "nucleus/memory/object.h"
+#include "nucleus/syscalls/lv2/sys_process.h"
 #include "nucleus/loader/self.h"
-sys_prx_t prx; //REMOVE ME
+
 s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
 {
     SELFLoader self;
@@ -15,16 +15,19 @@ s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
         return CELL_PRX_ERROR_UNKNOWN_MODULE;
     }
 
-    prx.path = path;
+    auto* prx = new sys_prx_t();
+    prx->path = path;
     if (!self.load_prx(prx)) {
         return CELL_PRX_ERROR_ILLEGAL_LIBRARY;
     }
 
-    return 1;
+    const s32 id = nucleus.lv2.objects.add(prx, SYS_PRX_OBJECT);
+    return id;
 }
 
 s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64 flags, sys_prx_start_module_option_t* pOpt)
 {
+    auto* prx = nucleus.lv2.objects.get<sys_prx_t>(id);
     const u32 elf_base = 0x10000;
     const auto& ehdr = nucleus.memory.ref<Elf64_Ehdr>(elf_base);
 
@@ -42,7 +45,7 @@ s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64
             const auto& importedLibrary = nucleus.memory.ref<sys_prx_library_info_t>(offset);
             offset += importedLibrary.size;
 
-            for (const auto& lib : prx.libraries) {
+            for (const auto& lib : prx->libraries) {
                 if (lib.name != nucleus.memory.ptr<s8>(importedLibrary.name_addr)) {
                     continue;
                 }

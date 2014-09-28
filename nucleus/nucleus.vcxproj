@@ -135,6 +135,7 @@
     <ClInclude Include="syscalls\lv2\sys_prx.h" />
     <ClInclude Include="syscalls\lv2\sys_time.h" />
     <ClInclude Include="syscalls\lv2\sys_tty.h" />
+    <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

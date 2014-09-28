@@ -105,7 +105,7 @@ bool SELFLoader::load_elf()
     return true;
 }
 
-bool SELFLoader::load_prx(sys_prx_t& prx)
+bool SELFLoader::load_prx(sys_prx_t* prx)
 {
     if (!m_elf) {
         return false;
@@ -133,13 +133,13 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
             segment.size_memory = (u32)phdr.memsz;
             segment.initial_addr = (u32)phdr.vaddr;
             segment.addr = addr;
-            prx.segments.push_back(segment);
+            prx->segments.push_back(segment);
 
             // Get FNID / addr pairs
             if (phdr.paddr != 0) {
                 const auto& module = (sys_prx_module_info_t&)m_elf[phdr.paddr];
-                prx.name = module.name;
-                prx.version = module.version;
+                prx->name = module.name;
+                prx->version = module.version;
 
                 u32 offset = module.exports_start;
                 while (offset < module.exports_end) {
@@ -155,7 +155,7 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
                         const u32 stub = nucleus.memory.read32(addr + library.fstub_addr + 4*i);
                         lib.exports[fnid] = stub;
                     }
-                    prx.libraries.push_back(lib);
+                    prx->libraries.push_back(lib);
                 }
             }
 
@@ -163,10 +163,10 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
             // TODO: Probably hardcoding i==1 isn't a good idea.
             if (i == 1) {
                 // Update FNID / addr pairs
-                for (auto& lib : prx.libraries) {
+                for (auto& lib : prx->libraries) {
                     for (auto& stub : lib.exports) {
                         u32 value = stub.second;
-                        for (const auto& segment : prx.segments) {
+                        for (const auto& segment : prx->segments) {
                             if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_memory) {
                                 value = value + (segment.addr - segment.initial_addr);
                             }
@@ -183,8 +183,8 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
                 if (rel.type != 1) {
                     continue;
                 }
-                const u32 addr = prx.segments[1].addr + rel.offset;
-                const u32 value = prx.segments[rel.index].addr + rel.ptr;
+                const u32 addr = prx->segments[1].addr + rel.offset;
+                const u32 value = prx->segments[rel.index].addr + rel.ptr;
                 nucleus.memory.write32(addr, value);
             }
         }

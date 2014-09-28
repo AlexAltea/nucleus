@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
+#include "nucleus/syscalls/object.h"
 #include "nucleus/syscalls/syscall.h"
 
 // LV2 Error Codes
@@ -97,8 +98,12 @@ struct LV2Syscall {
 class LV2
 {
     LV2Syscall m_syscalls[1024];
+    ObjectManager m_object_manager;
 
 public:
+    // Manage LV2 objects
+    ObjectManager objects;
+
     bool init();
 
     // Get LV2 SysCall ID from the current thread and call it

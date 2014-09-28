@@ -220,7 +220,7 @@ public:
 
     bool open(const std::string& path);
     bool load_elf();
-    bool load_prx(sys_prx_t& prx);
+    bool load_prx(sys_prx_t* prx);
     bool decrypt();
     void close();
 
