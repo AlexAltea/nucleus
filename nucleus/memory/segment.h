@@ -38,6 +38,7 @@ public:
     void free(u32 addr);
 
     bool isValid(u32 addr);
-    u32 getUsedMemory();
-    u32 getBaseAddr();
+    u32 getTotalMemory() const;
+    u32 getUsedMemory() const;
+    u32 getBaseAddr() const;
 };

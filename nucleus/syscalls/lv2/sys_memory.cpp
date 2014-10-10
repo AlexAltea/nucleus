@@ -30,6 +30,9 @@ s32 sys_memory_get_page_attribute(u32 addr, sys_page_attr_t* attr)
 
 s32 sys_memory_get_user_memory_size(sys_memory_info_t* mem_info)
 {
+    const MemorySegment& userMemory = nucleus.memory(SEG_USER_MEMORY);
+    mem_info->total_user_memory = userMemory.getTotalMemory();
+    mem_info->available_user_memory = userMemory.getTotalMemory() - userMemory.getUsedMemory();
     return CELL_OK;
 }
 

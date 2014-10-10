@@ -23,9 +23,9 @@ enum
     PT_TLS      = 0x7,
 
     // Cell OS Lv-2 Specific segments
-    PT_PROC_PARAM       = 0x60000001,
-    PT_PROC_PRX_PARAM   = 0x60000002,
-    PT_SCE_PPURELA      = 0x700000A4,
+    PT_PROC_PARAM   = 0x60000001,
+    PT_PRX_PARAM    = 0x60000002,
+    PT_SCE_PPURELA  = 0x700000A4,
 };
 
 // SELF structs

@@ -4,6 +4,7 @@
  */
 
 #include "sys_prx.h"
+#include "nucleus/emulator.h"
 #include "nucleus/syscalls/lv2.h"
 #include "nucleus/syscalls/lv2/sys_process.h"
 #include "nucleus/loader/self.h"

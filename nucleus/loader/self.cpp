@@ -89,15 +89,13 @@ bool SELFLoader::load_elf()
 
         case PT_PROC_PARAM:
             if (!phdr.filesz) {
-                break;
+                nucleus.lv2.proc_param.malloc_pagesize = 0x100000;
+            } else {
+                nucleus.lv2.proc_param = (sys_process_param_t&)m_elf[phdr.offset];
             }
-            // TODO: sys_process stuff
             break;
 
-        case PT_PROC_PRX_PARAM:
-            if (!phdr.filesz) {
-                break;
-            }
+        case PT_PRX_PARAM:
             // TODO: sys_prx stuff
             break;
         }

@@ -6,7 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/memory/object.h"
 
 #include <map>
 #include <string>
@@ -125,7 +124,7 @@ struct sys_prx_unload_module_option_t
     be_t<u64> size;
 };
 
-// Auxiliary data types
+// Auxiliary classes
 struct sys_prx_library_t
 {
     std::string name;

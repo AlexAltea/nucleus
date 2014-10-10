@@ -134,7 +134,21 @@ bool MemorySegment::isValid(u32 addr)
     return true;
 }
 
-u32 MemorySegment::getBaseAddr()
+u32 MemorySegment::getTotalMemory() const
+{
+    return m_size;
+}
+
+u32 MemorySegment::getUsedMemory() const
+{
+    u32 usedMemory = 0;
+    for (const auto& block : m_allocated) {
+        usedMemory += block.size;
+    }
+    return usedMemory;
+}
+
+u32 MemorySegment::getBaseAddr() const
 {
     return m_start;
 }

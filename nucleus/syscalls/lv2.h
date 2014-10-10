@@ -10,6 +10,9 @@
 #include "nucleus/syscalls/object.h"
 #include "nucleus/syscalls/syscall.h"
 
+#include "lv2/sys_process.h"
+#include "lv2/sys_prx.h"
+
 // LV2 Error Codes
 enum
 {
@@ -103,6 +106,10 @@ class LV2
 public:
     // Manage LV2 objects
     ObjectManager objects;
+
+    // Process information
+    sys_process_param_t proc_param;
+    sys_prx_param_t prx_param;
 
     bool init();
 

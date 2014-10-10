@@ -81,7 +81,7 @@ void PPUInterpreter::step()
     const PPUInstruction& instruction = s_tablePrimary[code.opcode];
 
     // Display the current instruction
-    const std::string& disasm = instruction.disassembler(code);
+    //const std::string& disasm = instruction.disassembler(code);
     //printf("%08X : %08X %s\n", thread.pc, code.instruction, disasm.data());
 
     instruction.interpreter(code, thread);
@@ -306,22 +306,24 @@ void PPUInterpreter::cmpli(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::cntlzd(PPUFields code, PPUThread& thread)
 {
-    for (int i = 0; i < 64; i++) {
+    int i;
+    for (i = 0; i < 64; i++) {
         if (thread.gpr[code.rs] & (1ULL << (63 - i))) {
-            thread.gpr[code.ra] = i;
             break;
         }
     }
+    thread.gpr[code.ra] = i;
     if (code.rc) thread.cr.setBit(thread.cr.CR_LT, false);
 }
 void PPUInterpreter::cntlzw(PPUFields code, PPUThread& thread)
 {
-    for (int i = 0; i < 32; i++) {
-        if (thread.gpr[code.rs] & (1ULL << (31 - i))) {
-            thread.gpr[code.ra] = i;
+    int i;
+    for (i = 0; i < 32; i++) {
+        if (thread.gpr[code.rs] & (1ULL << (31 - i))) {   
             break;
         }
     }
+    thread.gpr[code.ra] = i;
     if (code.rc) thread.cr.setBit(thread.cr.CR_LT, false);
 }
 void PPUInterpreter::crand(PPUFields code, PPUThread& thread)
@@ -766,12 +768,24 @@ void PPUInterpreter::mtspr(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::mulhd(PPUFields code, PPUThread& thread)
 {
-    // TODO: thread.gpr[code.rd] = __mulh(thread.gpr[code.ra], thread.gpr[code.rb]);
+    const s64 a = thread.gpr[code.ra];
+    const s64 b = thread.gpr[code.rb];
+#if defined(NUCLEUS_WIN)
+    thread.gpr[code.rd] = __mulh(a, b);
+#elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
+    __asm__("mulq %[b]" : "=d" (thread.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
+#endif
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::mulhdu(PPUFields code, PPUThread& thread)
 {
-    // TODO: thread.gpr[code.rd] = __umulh(thread.gpr[code.ra], thread.gpr[code.rb]);
+    const u64 a = thread.gpr[code.ra];
+    const u64 b = thread.gpr[code.rb];
+#if defined(NUCLEUS_WIN)
+    thread.gpr[code.rd] = __umulh(a, b);
+#elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
+    __asm__("imulq %[b]" : "=d" (thread.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
+#endif
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
 void PPUInterpreter::mulhw(PPUFields code, PPUThread& thread)

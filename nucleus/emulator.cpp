@@ -22,6 +22,12 @@ bool Emulator::load(const std::string& filepath)
     }
     self.load_elf();
 
+    // Initialize LV2
+    if (!lv2.init()) {
+        log.error(LOG_HLE, "Could not initialize LV2.");
+        return false;
+    }
+
     // Prepare Thread
     switch (self.getMachine()) {
     case MACHINE_PPC64:
@@ -30,12 +36,6 @@ bool Emulator::load(const std::string& filepath)
     default:
         // TODO: Error
         break;
-    }
-
-    // Initialize LV2
-    if (!lv2.init()) {
-        log.error(LOG_HLE, "Could not initialize LV2.");
-        return false;
     }
 
     return true;

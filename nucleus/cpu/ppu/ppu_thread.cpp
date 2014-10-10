@@ -22,7 +22,9 @@ PPUThread::PPUThread()
     gpr[3] = 0;
     gpr[4] = nucleus.memory.alloc(4,4);
     gpr[5] = gpr[4] + 0x10;
+    gpr[12] = nucleus.lv2.proc_param.malloc_pagesize;
     gpr[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
+    cr.CR = 0x22000082;
     tbl = 1;
     tbu = 1;
     nucleus.memory.write32(gpr[4], 0);
