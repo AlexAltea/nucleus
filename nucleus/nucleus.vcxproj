@@ -85,7 +85,9 @@
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
     <ClCompile Include="cpu\thread.cpp" />
     <ClCompile Include="emulator.cpp" />
+    <ClCompile Include="filesystem\filesystem.cpp" />
     <ClCompile Include="filesystem\local_file.cpp" />
+    <ClCompile Include="filesystem\virtual_filesystem.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\self.cpp" />
@@ -96,6 +98,7 @@
     <ClCompile Include="syscalls\lv2.cpp" />
     <ClCompile Include="syscalls\lv2\sys_cond.cpp" />
     <ClCompile Include="syscalls\lv2\sys_dbg.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_fs.cpp" />
     <ClCompile Include="syscalls\lv2\sys_lwmutex.cpp" />
     <ClCompile Include="syscalls\lv2\sys_memory.cpp" />
     <ClCompile Include="syscalls\lv2\sys_mutex.cpp" />
@@ -117,7 +120,9 @@
     <ClInclude Include="cpu\thread.h" />
     <ClInclude Include="cpu\translator.h" />
     <ClInclude Include="emulator.h" />
+    <ClInclude Include="filesystem\filesystem.h" />
     <ClInclude Include="filesystem\local_file.h" />
+    <ClInclude Include="filesystem\virtual_filesystem.h" />
     <ClInclude Include="loader\keys.h" />
     <ClInclude Include="loader\loader.h" />
     <ClInclude Include="loader\self.h" />
@@ -128,6 +133,7 @@
     <ClInclude Include="syscalls\lv2.h" />
     <ClInclude Include="syscalls\lv2\sys_cond.h" />
     <ClInclude Include="syscalls\lv2\sys_dbg.h" />
+    <ClInclude Include="syscalls\lv2\sys_fs.h" />
     <ClInclude Include="syscalls\lv2\sys_lwmutex.h" />
     <ClInclude Include="syscalls\lv2\sys_memory.h" />
     <ClInclude Include="syscalls\lv2\sys_mutex.h" />

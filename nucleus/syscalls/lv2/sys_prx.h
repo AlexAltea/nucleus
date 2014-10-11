@@ -140,6 +140,7 @@ struct sys_prx_segment_t
     u32 initial_addr;  // Base address specified on PHDR header. Used to update the import table
 };
 
+// Auxiliary classes
 struct sys_prx_t
 {
     u16 version;

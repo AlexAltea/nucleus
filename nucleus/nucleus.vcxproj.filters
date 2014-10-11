@@ -78,6 +78,15 @@
     <ClCompile Include="syscalls\lv2\sys_dbg.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_fs.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\virtual_filesystem.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem\filesystem.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -169,6 +178,15 @@
     </ClInclude>
     <ClInclude Include="syscalls\object.h">
       <Filter>syscalls</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_fs.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\filesystem.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem\virtual_filesystem.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

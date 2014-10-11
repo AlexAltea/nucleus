@@ -12,8 +12,8 @@
 
 class ObjectBase
 {
-	void* m_data;
-	u32 m_type;
+    void* m_data;
+    u32 m_type;
 
 public:
     virtual void* getData()=0;
@@ -23,19 +23,19 @@ template<typename T>
 class Object : public ObjectBase
 {
     T* m_data;
-	u32 m_type;
+    u32 m_type;
 
 public:
-	Object(T* data, const u32 type)
-	{
+    Object(T* data, const u32 type)
+    {
         m_type = type;
-		m_data = data;
-	}
+        m_data = data;
+    }
 
     ~Object()
-	{
+    {
         delete m_data;
-	}
+    }
 
     void* getData()
     {
@@ -45,65 +45,65 @@ public:
 
 class ObjectManager
 {
-	std::unordered_map<u32, ObjectBase*> m_objects;
-	std::mutex m_mutex;
-	u32 m_current_id;
+    std::unordered_map<u32, ObjectBase*> m_objects;
+    std::mutex m_mutex;
+    u32 m_current_id;
 
 public:
-	ObjectManager()
-	{
+    ObjectManager()
+    {
         m_current_id = 1;
-	}
-	
-	~ObjectManager()
-	{
-		std::lock_guard<std::mutex> lock(m_mutex);
+    }
+    
+    ~ObjectManager()
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
 
-		m_objects.clear();
-	}
+        m_objects.clear();
+    }
 
     // Add a new object to the set and return the generated ID
-	template<typename T>
-	u32 add(T* data, const u32 type)
-	{
-		std::lock_guard<std::mutex> lock(m_mutex);
+    template<typename T>
+    u32 add(T* data, const u32 type)
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         m_objects[m_current_id] = new Object<T>(data, type);
-		return m_current_id++;
-	}
+        return m_current_id++;
+    }
 
     // Get a pointer to the object data of a certain ID
     template<typename T>
-	T* get(const u32 id)
-	{
-		std::lock_guard<std::mutex> lock(m_mutex);
+    T* get(const u32 id)
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         if (m_objects.find(id) == m_objects.end()) {
-			return nullptr;
-		}
+            return nullptr;
+        }
 
         return (T*)m_objects[id]->getData();
-	}
+    }
 
     // Remove an object from the set given its ID (deleting the object data)
-	bool remove(const u32 id)
-	{
-		std::lock_guard<std::mutex> lock(m_mutex);
+    bool remove(const u32 id)
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         if (m_objects.find(id) == m_objects.end()) {
-			return false;
-		}
+            return false;
+        }
 
         auto item = m_objects.find(id);
-		m_objects.erase(item);
-		return true;
-	}
+        m_objects.erase(item);
+        return true;
+    }
 
     // Test if a certain ID is present
     bool check(const u32 id)
-	{
-		std::lock_guard<std::mutex> lock(m_mutex);
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
 
-		return m_objects.find(id) != m_objects.end();
-	}
+        return m_objects.find(id) != m_objects.end();
+    }
 };

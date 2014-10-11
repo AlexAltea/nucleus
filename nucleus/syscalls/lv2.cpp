@@ -6,8 +6,11 @@
 #include "lv2.h"
 #include "nucleus/memory/object.h"
 
+#include "nucleus/filesystem/virtual_filesystem.h"
+
 #include "lv2/sys_cond.h"
 #include "lv2/sys_dbg.h"
+#include "lv2/sys_fs.h"
 #include "lv2/sys_lwmutex.h"
 #include "lv2/sys_memory.h"
 #include "lv2/sys_mutex.h"
@@ -48,7 +51,16 @@ bool LV2::init()
     m_syscalls[0x160] = {wrap(sys_memory_get_user_memory_size), LV2_NONE};
     m_syscalls[0x161] = {wrap(sys_memory_get_user_memory_stat), LV2_NONE};
     m_syscalls[0x193] = {wrap(sys_tty_write), LV2_NONE};
+    m_syscalls[0x321] = {wrap(sys_fs_open), LV2_NONE};
+    m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
+    m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};
+    m_syscalls[0x324] = {wrap(sys_fs_close), LV2_NONE};
     m_syscalls[0x3DC] = {wrap(sys_dbg_ppu_exception_handler), LV2_NONE};
+
+    // Create mount points
+    devices.push_back(new VirtualFileSystem("/dev_flash", ""));
+    devices.push_back(new VirtualFileSystem("/dev_hdd0", ""));
+    devices.push_back(new VirtualFileSystem("/app_home", ""));
 
     // Load and start liblv2.sprx module
     s32 moduleId = sys_prx_load_module("dev_flash/sys/external/liblv2.sprx", 0, 0);

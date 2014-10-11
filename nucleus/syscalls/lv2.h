@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
+#include "nucleus/filesystem/filesystem.h"
 #include "nucleus/syscalls/object.h"
 #include "nucleus/syscalls/syscall.h"
 
@@ -106,6 +107,9 @@ class LV2
 public:
     // Manage LV2 objects
     ObjectManager objects;
+
+    // Manage storage devices
+    std::vector<FileSystem*> devices;
 
     // Process information
     sys_process_param_t proc_param;
