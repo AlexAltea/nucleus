@@ -4,15 +4,22 @@
  */
 
 #include "emulator.h"
-#include "loader/self.h"
-#include "syscalls/lv2.h"
+#include "nucleus/filesystem/virtual_filesystem.h"
+#include "nucleus/loader/self.h"
+#include "nucleus/syscalls/lv2.h"
 
 bool Emulator::load(const std::string& filepath)
 {
     // Initialize everything
     memory.init();
 
-    // Load title / title_id / etc. ?
+    // Create mount points
+    const std::string& nucleusPath = getEmulatorPath();
+    const std::string& processPath = getProcessPath(filepath);
+    devices.push_back(new VirtualFileSystem("/dev_flash", nucleusPath + "dev_flash"));
+    devices.push_back(new VirtualFileSystem("/dev_hdd0", nucleusPath + "dev_hdd0"));
+    devices.push_back(new VirtualFileSystem("/app_home", processPath));
+    devices.push_back(new VirtualFileSystem("", ""));
 
     // Load ELF/SELF
     SELFLoader self;

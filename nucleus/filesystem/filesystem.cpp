@@ -4,19 +4,26 @@
  */
 
 #include "filesystem.h"
+#include "nucleus/emulator.h"
 
-const char* gtOpenMode(OpenMode mode)
+#include <algorithm>
+
+#if defined(NUCLEUS_WIN)
+#include <Windows.h>
+#endif
+
+const char* getOpenMode(OpenMode mode)
 {
     switch (mode) {
-    case Read:        return "rb";
-    case Write:       return "wb";
-    case ReadWrite:   return "r+b";
+    case Read:       return "rb";
+    case Write:      return "wb";
+    case ReadWrite:  return "r+b";
     }
 
     return "r";
 }
 
-const int gtSeekMode(SeekMode mode)
+const int getSeekMode(SeekMode mode)
 {
     switch (mode) {
     case SeekSet:  return SEEK_SET;
@@ -25,4 +32,56 @@ const int gtSeekMode(SeekMode mode)
     }
 
     return SEEK_SET;
+}
+
+FileSystem* getFilesystem(const s8* path)
+{
+    for (auto& device : nucleus.devices) {
+        if (!strncmp(path, device->m_mount_point.data(), device->m_mount_point.size())) {
+            return device;
+        }
+    }
+    return nullptr;
+}
+
+
+/**
+ * Get the path to the folder that contains the Nucleus executable
+ */
+std::string getEmulatorPath()
+{
+    char buffer[4096];
+#ifdef NUCLEUS_WIN
+    GetModuleFileName(NULL, buffer, sizeof(buffer));
+#endif
+
+    std::string exePath = buffer;
+#ifdef NUCLEUS_WIN
+    int pos = exePath.rfind('\\');
+#else
+    int pos = exePath.rfind('/');
+#endif
+
+    return exePath.substr(0, pos+1);
+}
+
+/**
+ * Get the path to the folder that contains the emulated ELF binary
+ */
+std::string getProcessPath(const std::string& elfPath)
+{
+    char buffer[4096];
+#ifdef NUCLEUS_WIN
+    GetCurrentDirectory(sizeof(buffer), buffer);
+#endif
+
+    std::string procPath = buffer + ('/' + elfPath);
+#if defined(NUCLEUS_WIN)
+    std::replace(procPath.begin(), procPath.end(), '/', '\\');
+    int pos = procPath.rfind('\\');
+#else
+    int pos = procPath.rfind('/');
+#endif
+
+    return procPath.substr(0, pos+1);
 }

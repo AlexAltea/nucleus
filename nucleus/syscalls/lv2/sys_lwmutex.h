@@ -14,6 +14,12 @@ struct sys_lwmutex_attribute_t
     s8 name[8];
 };
 
+// Auxiliary classes
+struct sys_lwmutex_t
+{
+    void* ptr;
+};
+
 // SysCalls
 s32 sys_lwmutex_create(be_t<u32>* lwmutex_id, sys_lwmutex_attribute_t* attr);
 s32 sys_lwmutex_destroy(u32 lwmutex_id);

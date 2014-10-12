@@ -4,11 +4,13 @@
  */
 
 #include "sys_lwmutex.h"
+#include "nucleus/emulator.h"
 #include "nucleus/syscalls/lv2.h"
 
 s32 sys_lwmutex_create(be_t<u32>* lwmutex_id, sys_lwmutex_attribute_t* attr)
 {
-    *lwmutex_id = 1;
+    auto* lwmutex = new sys_lwmutex_t();
+    *lwmutex_id = nucleus.lv2.objects.add(lwmutex, SYS_LWMUTEX_OBJECT);
     return CELL_OK;
 }
 

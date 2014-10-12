@@ -46,12 +46,20 @@ public:
     virtual void closeFile(File* handle) = 0;
     virtual u64 readFile(File* handle, void* dst, s64 size) = 0;
     virtual u64 writeFile(File* handle, const void* src, s64 size) = 0;
-    virtual u64 seekFile(File* handle, s32 position, SeekMode type) = 0;
+    virtual u64 seekFile(File* handle, u64 position, SeekMode type) = 0;
+    virtual bool isOpen(File* handle) = 0;
+    virtual u64 getFileSize(File* handle) = 0;
 
     // File management
     virtual bool createFile(std::string path) = 0;
     virtual bool existsFile(std::string path) = 0;
+    virtual u64 getFileSize(std::string path) = 0;
 };
 
-const char* gtOpenMode(OpenMode mode);
-const int gtSeekMode(SeekMode mode);
+const char* getOpenMode(OpenMode mode);
+const int getSeekMode(SeekMode mode);
+FileSystem* getFilesystem(const s8* path);
+
+// Utilities
+std::string getEmulatorPath();
+std::string getProcessPath(const std::string& elfPath);

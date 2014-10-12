@@ -19,6 +19,7 @@ enum LoggingType
 {
     LOG_COMMON = 0,
     LOG_CPU,
+    LOG_FS,
     LOG_LOADER,
     LOG_MEMORY,
     LOG_GPU,

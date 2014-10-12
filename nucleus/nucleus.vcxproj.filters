@@ -30,9 +30,6 @@
     <ClCompile Include="syscalls\lv2.cpp">
       <Filter>syscalls</Filter>
     </ClCompile>
-    <ClCompile Include="filesystem\local_file.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="loader\keys.cpp">
       <Filter>loader</Filter>
     </ClCompile>
@@ -126,9 +123,6 @@
     </ClInclude>
     <ClInclude Include="syscalls\lv2.h">
       <Filter>syscalls</Filter>
-    </ClInclude>
-    <ClInclude Include="filesystem\local_file.h">
-      <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="loader\keys.h">
       <Filter>loader</Filter>

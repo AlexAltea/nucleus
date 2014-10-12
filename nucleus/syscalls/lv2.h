@@ -108,9 +108,6 @@ public:
     // Manage LV2 objects
     ObjectManager objects;
 
-    // Manage storage devices
-    std::vector<FileSystem*> devices;
-
     // Process information
     sys_process_param_t proc_param;
     sys_prx_param_t prx_param;

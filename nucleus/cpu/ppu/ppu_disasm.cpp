@@ -228,10 +228,10 @@ std::string dis_bcx(PPUFields code)
         instr += (code.bo & 0x02) ? ((code.bo & 0x01) ? "+" : "-") : "";
 
         if (code.bd < 0) {
-            return dis_global(instr.data(), "cr%d, -0x%X", code.bi / 4, -code.bd);
+            return dis_global(instr.c_str(), "cr%d, -0x%X", code.bi / 4, -code.bd);
         }
         else {
-            return dis_global(instr.data(), "cr%d, 0x%X", code.bi / 4, code.bd);
+            return dis_global(instr.c_str(), "cr%d, 0x%X", code.bi / 4, code.bd);
         }
     }
     else if (code.aa == 1 && code.lk == 0) {

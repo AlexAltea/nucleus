@@ -4,20 +4,11 @@
  */
 
 #include "sys_fs.h"
+#include "nucleus/filesystem/filesystem.h"
 #include "nucleus/syscalls/lv2.h"
 #include "nucleus/emulator.h"
 
 #include <cstring>
-
-FileSystem* getFilesystem(const s8* path)
-{
-    for (auto& device : nucleus.lv2.devices) {
-        if (!strncmp(path, device->m_mount_point.data(), device->m_mount_point.size())) {
-            return device;
-        }
-    }
-    return nullptr;
-}
 
 // SysCalls
 s32 sys_fs_open(const s8* path, s32 flags, be_t<s32>* fd, u64 mode, const void* arg, u64 size)

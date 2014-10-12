@@ -6,7 +6,7 @@
 #include "self.h"
 #include "nucleus/common.h"
 #include "nucleus/emulator.h"
-#include "nucleus/filesystem/local_file.h"
+#include "nucleus/filesystem/filesystem.h"
 #include "nucleus/syscalls/lv2/sys_process.h"
 #include "nucleus/syscalls/lv2/sys_prx.h"
 #include "externals/aes.h"
@@ -37,15 +37,18 @@ SELFLoader::~SELFLoader()
 
 bool SELFLoader::open(const std::string& path)
 {
-    vfsLocalFile file;
-    if (!file.Open(path, vfsRead)) {
+    FileSystem* fs = getFilesystem(path.c_str());
+    File* file = fs->openFile(path, Read);
+
+    if (!fs->isOpen(file)) {
         return false;
     }
 
-    m_self_size = file.GetSize();
+    m_self_size = fs->getFileSize(path);
     m_self = new char[m_self_size];
-    file.Seek(0, vfsSeekSet);
-    file.Read(m_self, m_self_size);
+    fs->seekFile(file, 0, SeekSet);
+    fs->readFile(file, m_self, m_self_size);
+    fs->closeFile(file);
 
     if (detectFiletype(path) == FILETYPE_SELF) {
         decrypt();

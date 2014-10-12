@@ -6,9 +6,10 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/cell.h"
+#include "nucleus/filesystem/filesystem.h"
 #include "nucleus/logging.h"
 #include "nucleus/memory/memory.h"
-#include "nucleus/cpu/cell.h"
 #include "nucleus/syscalls/lv2.h"
 
 #include <mutex>
@@ -27,6 +28,9 @@ public:
     Memory memory;
     Cell cell;
     LV2 lv2;
+
+    // Mount points
+    std::vector<FileSystem*> devices;
 
     // Logging
     Logger log;

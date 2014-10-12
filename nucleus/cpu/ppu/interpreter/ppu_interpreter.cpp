@@ -82,7 +82,7 @@ void PPUInterpreter::step()
 
     // Display the current instruction
     //const std::string& disasm = instruction.disassembler(code);
-    //printf("%08X : %08X %s\n", thread.pc, code.instruction, disasm.data());
+    //printf("%08X : %08X %s\n", thread.pc, code.instruction, disasm.c_str());
 
     instruction.interpreter(code, thread);
     thread.pc += 4;

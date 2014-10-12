@@ -4,15 +4,15 @@
  */
 
 #include "loader.h"
-#include "nucleus/filesystem/local_file.h"
+#include "nucleus/filesystem/filesystem.h"
 
 Filetype detectFiletype(const std::string& filepath)
 {
-    vfsLocalFile file;
+    FileSystem* fs = getFilesystem(filepath.c_str());
+    File* file = fs->openFile(filepath, Read);
     be_t<u32> magic;
 
-    if (!file.Open(filepath, vfsRead) ||
-        !file.Read(&magic, sizeof(magic))) {
+    if (!fs->isOpen(file) || !fs->readFile(file, &magic, sizeof(magic))) {
         return FILETYPE_ERROR;
     }
 

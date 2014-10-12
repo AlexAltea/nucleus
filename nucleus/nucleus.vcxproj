@@ -86,7 +86,6 @@
     <ClCompile Include="cpu\thread.cpp" />
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="filesystem\filesystem.cpp" />
-    <ClCompile Include="filesystem\local_file.cpp" />
     <ClCompile Include="filesystem\virtual_filesystem.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
@@ -121,7 +120,6 @@
     <ClInclude Include="cpu\translator.h" />
     <ClInclude Include="emulator.h" />
     <ClInclude Include="filesystem\filesystem.h" />
-    <ClInclude Include="filesystem\local_file.h" />
     <ClInclude Include="filesystem\virtual_filesystem.h" />
     <ClInclude Include="loader\keys.h" />
     <ClInclude Include="loader\loader.h" />
