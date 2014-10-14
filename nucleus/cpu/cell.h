@@ -23,9 +23,15 @@ class Cell
     std::mutex m_mutex;
 
 public:
+    // Thread management
     CellThread& addThread(CellThreadType type, u32 entry);
     void removeThread(u32 id);
 
+    // Current thread
+    CellThread* getCurrentThread();
+    void setCurrentThread(CellThread* thread);
+
+    // Control CPU state
     void run();
     void pause();
     void stop();

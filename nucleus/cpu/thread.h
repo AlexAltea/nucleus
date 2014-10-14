@@ -23,22 +23,26 @@ class CellThread
     EmulatorEvent m_event;
     EmulatorStatus m_status;
 
-    // Enter loop of code emulation
-    void task();
-
 protected:
     // Code translation mechanism used by the thread
     CellTranslator* m_translator;
 
 public:
-    // Program Counter
+    // Program Counter and RTOC
     u32 pc;
+    u32 rtoc;
 
     // Open a new thread that will enter the code emulation loop
     void start(u32 entry);
+
+    // Enter emulation loop
+    void task();
 
     // These functions control the thread once it is started
     void run();
     void pause();
     void stop();
+
+    // Block caller thread until this thread finishes
+    void join();
 };

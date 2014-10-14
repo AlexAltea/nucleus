@@ -128,6 +128,7 @@
     <ClInclude Include="memory\memory.h" />
     <ClInclude Include="memory\object.h" />
     <ClInclude Include="memory\segment.h" />
+    <ClInclude Include="syscalls\callback.h" />
     <ClInclude Include="syscalls\lv2.h" />
     <ClInclude Include="syscalls\lv2\sys_cond.h" />
     <ClInclude Include="syscalls\lv2\sys_dbg.h" />

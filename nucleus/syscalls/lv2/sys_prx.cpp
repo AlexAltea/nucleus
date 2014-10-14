@@ -5,6 +5,7 @@
 
 #include "sys_prx.h"
 #include "nucleus/emulator.h"
+#include "nucleus/syscalls/callback.h"
 #include "nucleus/syscalls/lv2.h"
 #include "nucleus/syscalls/lv2/sys_process.h"
 #include "nucleus/loader/self.h"
@@ -16,11 +17,17 @@ s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
         return CELL_PRX_ERROR_UNKNOWN_MODULE;
     }
 
+    // Load PRX into memory
     auto* prx = new sys_prx_t();
-    prx->path = path;
     if (!self.load_prx(prx)) {
+        delete prx;
         return CELL_PRX_ERROR_ILLEGAL_LIBRARY;
     }
+
+    const auto& metaLib = prx->libraries[0];
+    prx->func_start = metaLib.exports.at(0xBC9A0086);
+    prx->func_stop = metaLib.exports.at(0xAB779874);
+    prx->path = path;
 
     const s32 id = nucleus.lv2.objects.add(prx, SYS_PRX_OBJECT);
     return id;
@@ -29,34 +36,32 @@ s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
 s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64 flags, sys_prx_start_module_option_t* pOpt)
 {
     auto* prx = nucleus.lv2.objects.get<sys_prx_t>(id);
-    const u32 elf_base = 0x10000;
-    const auto& ehdr = nucleus.memory.ref<Elf64_Ehdr>(elf_base);
+    const sys_prx_param_t& prx_param = nucleus.lv2.prx_param;
 
-    for (u64 i = 0; i < ehdr.phnum; i++) {
-        const auto& phdr = nucleus.memory.ref<Elf64_Phdr>(elf_base + ehdr.phoff + i*sizeof(Elf64_Phdr));
-        if (phdr.type != 0x60000002) {
-            continue;
-        }
+    if (modres == nucleus.memory.ptr(0)) {
+        return CELL_EINVAL;
+    }
 
-        const auto& prx_param = nucleus.memory.ref<sys_prx_param_t>(phdr.vaddr);
+    // Update ELF import table
+    u32 offset = prx_param.libstubstart;
+    while (offset < prx_param.libstubend) {
+        const auto& importedLibrary = nucleus.memory.ref<sys_prx_library_info_t>(offset);
+        offset += importedLibrary.size;
 
-        // Update import table
-        u32 offset = prx_param.libstubstart;
-        while (offset < prx_param.libstubend) {
-            const auto& importedLibrary = nucleus.memory.ref<sys_prx_library_info_t>(offset);
-            offset += importedLibrary.size;
-
-            for (const auto& lib : prx->libraries) {
-                if (lib.name != nucleus.memory.ptr<s8>(importedLibrary.name_addr)) {
-                    continue;
-                }
-                for (u32 i = 0; i < importedLibrary.num_func; i++) {
-                    const u32 fnid = nucleus.memory.read32(importedLibrary.fnid_addr + 4*i);
-                    nucleus.memory.write32(importedLibrary.fstub_addr + 4*i, lib.exports.at(fnid));
-                }
+        for (const auto& lib : prx->libraries) {
+            if (lib.name != nucleus.memory.ptr<s8>(importedLibrary.name_addr)) {
+                continue;
+            }
+            for (u32 i = 0; i < importedLibrary.num_func; i++) {
+                const u32 fnid = nucleus.memory.read32(importedLibrary.fnid_addr + 4*i);
+                nucleus.memory.write32(importedLibrary.fstub_addr + 4*i, lib.exports.at(fnid));
             }
         }
     }
+
+    // Call module start function
+    Callback{prx->func_start}.call(args, argp_addr);
+    
 
     return CELL_OK;
 }

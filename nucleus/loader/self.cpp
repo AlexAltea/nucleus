@@ -99,7 +99,11 @@ bool SELFLoader::load_elf()
             break;
 
         case PT_PRX_PARAM:
-            // TODO: sys_prx stuff
+            if (!phdr.filesz) {
+                nucleus.log.error(LOG_LOADER, "Invalid PRX_PARAM segment");
+            } else {
+                nucleus.lv2.prx_param = (sys_prx_param_t&)m_elf[phdr.offset];
+            }
             break;
         }
     }

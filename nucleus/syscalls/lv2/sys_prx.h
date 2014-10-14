@@ -7,8 +7,8 @@
 
 #include "nucleus/common.h"
 
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 // Return codes
@@ -128,7 +128,7 @@ struct sys_prx_unload_module_option_t
 struct sys_prx_library_t
 {
     std::string name;
-    std::map<u32, u32> exports; // Map: FNID (u32) -> Export table offset (u32)
+    std::unordered_map<u32, u32> exports; // Map: FNID (u32) -> Export table offset (u32)
 };
 
 struct sys_prx_segment_t
@@ -146,6 +146,7 @@ struct sys_prx_t
     u16 version;
     u32 func_start;
     u32 func_stop;
+    u32 func_exit;
     std::string name;  // Name of the module
     std::string path;  // Path to the PRX/SPRX file
     std::vector<sys_prx_library_t> libraries;

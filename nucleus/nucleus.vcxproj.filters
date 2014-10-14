@@ -182,6 +182,9 @@
     <ClInclude Include="filesystem\virtual_filesystem.h">
       <Filter>filesystem</Filter>
     </ClInclude>
+    <ClInclude Include="syscalls\callback.h">
+      <Filter>syscalls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

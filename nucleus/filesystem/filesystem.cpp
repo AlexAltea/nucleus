@@ -7,6 +7,7 @@
 #include "nucleus/emulator.h"
 
 #include <algorithm>
+#include <cstring>
 
 #if defined(NUCLEUS_WIN)
 #include <Windows.h>

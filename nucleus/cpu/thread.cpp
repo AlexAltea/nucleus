@@ -14,11 +14,18 @@ void CellThread::start(u32 entry)
     }
 
     pc = nucleus.memory.read32(entry);
-    //rtoc = nucleus.memory.read32(entry+4);
-    // status stopped.
+    rtoc = nucleus.memory.read32(entry+4);
 
     m_thread = new std::thread([&](){
-        m_event = NUCLEUS_EVENT_PAUSE;
+        nucleus.cell.setCurrentThread(this);
+
+        // Initialize LV2 if necessary
+        if (!nucleus.lv2.initialized && !nucleus.lv2.init()) {
+            nucleus.log.error(LOG_HLE, "Could not initialize LV2.");
+            return false;
+        }
+
+        m_status = NUCLEUS_STATUS_RUNNING;
         task();
     });
 }
@@ -40,6 +47,11 @@ void CellThread::stop()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_event = NUCLEUS_EVENT_STOP;
+}
+
+void CellThread::join()
+{
+    m_thread->join();
 }
 
 void CellThread::task()

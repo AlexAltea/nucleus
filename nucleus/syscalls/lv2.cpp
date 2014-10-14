@@ -17,51 +17,65 @@
 #include "lv2/sys_time.h"
 #include "lv2/sys_tty.h"
 
-bool LV2::init()
+LV2::LV2(u32 fw_type)
 {
     // Initialize syscall table
-    m_syscalls[0x003] = {wrap(sys_process_exit), LV2_NONE};
-    m_syscalls[0x016] = {wrap(sys_process_exit), LV2_NONE};
-    m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
-    m_syscalls[0x05F] = {wrap(sys_lwmutex_create), LV2_NONE};
-    m_syscalls[0x060] = {wrap(sys_lwmutex_destroy), LV2_NONE};
-    m_syscalls[0x061] = {wrap(sys_lwmutex_lock), LV2_NONE};
-    m_syscalls[0x062] = {wrap(sys_lwmutex_trylock), LV2_NONE};
-    m_syscalls[0x063] = {wrap(sys_lwmutex_unlock), LV2_NONE};
-    m_syscalls[0x064] = {wrap(sys_mutex_create), LV2_NONE};
-    m_syscalls[0x065] = {wrap(sys_mutex_destroy), LV2_NONE};
-    m_syscalls[0x066] = {wrap(sys_mutex_lock), LV2_NONE};
-    m_syscalls[0x067] = {wrap(sys_mutex_trylock), LV2_NONE};
-    m_syscalls[0x068] = {wrap(sys_mutex_unlock), LV2_NONE};
-    m_syscalls[0x069] = {wrap(sys_cond_create), LV2_NONE};
-    m_syscalls[0x06A] = {wrap(sys_cond_destroy), LV2_NONE};
-    m_syscalls[0x06B] = {wrap(sys_cond_wait), LV2_NONE};
-    m_syscalls[0x06C] = {wrap(sys_cond_signal), LV2_NONE};
-    m_syscalls[0x06D] = {wrap(sys_cond_signal_all), LV2_NONE};
-    m_syscalls[0x06E] = {wrap(sys_cond_signal_to), LV2_NONE};
-    m_syscalls[0x090] = {wrap(sys_time_get_timezone), LV2_NONE};
-    m_syscalls[0x091] = {wrap(sys_time_get_current_time), LV2_NONE};
-    m_syscalls[0x093] = {wrap(sys_time_get_timebase_frequency), LV2_NONE};
-    m_syscalls[0x15C] = {wrap(sys_memory_allocate), LV2_NONE};
-    m_syscalls[0x15D] = {wrap(sys_memory_free), LV2_NONE};
-    m_syscalls[0x15E] = {wrap(sys_memory_allocate_from_container), LV2_NONE};
-    m_syscalls[0x15F] = {wrap(sys_memory_get_page_attribute), LV2_NONE};
-    m_syscalls[0x160] = {wrap(sys_memory_get_user_memory_size), LV2_NONE};
-    m_syscalls[0x161] = {wrap(sys_memory_get_user_memory_stat), LV2_NONE};
-    m_syscalls[0x193] = {wrap(sys_tty_write), LV2_NONE};
-    m_syscalls[0x321] = {wrap(sys_fs_open), LV2_NONE};
-    m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
-    m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};
-    m_syscalls[0x324] = {wrap(sys_fs_close), LV2_NONE};
-    m_syscalls[0x3DC] = {wrap(sys_dbg_ppu_exception_handler), LV2_NONE};
+    if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
+        m_syscalls[0x003] = {wrap(sys_process_exit), LV2_NONE};
+        m_syscalls[0x016] = {wrap(sys_process_exit), LV2_NONE};
+        m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
+        m_syscalls[0x05F] = {wrap(sys_lwmutex_create), LV2_NONE};
+        m_syscalls[0x060] = {wrap(sys_lwmutex_destroy), LV2_NONE};
+        m_syscalls[0x061] = {wrap(sys_lwmutex_lock), LV2_NONE};
+        m_syscalls[0x062] = {wrap(sys_lwmutex_trylock), LV2_NONE};
+        m_syscalls[0x063] = {wrap(sys_lwmutex_unlock), LV2_NONE};
+        m_syscalls[0x064] = {wrap(sys_mutex_create), LV2_NONE};
+        m_syscalls[0x065] = {wrap(sys_mutex_destroy), LV2_NONE};
+        m_syscalls[0x066] = {wrap(sys_mutex_lock), LV2_NONE};
+        m_syscalls[0x067] = {wrap(sys_mutex_trylock), LV2_NONE};
+        m_syscalls[0x068] = {wrap(sys_mutex_unlock), LV2_NONE};
+        m_syscalls[0x069] = {wrap(sys_cond_create), LV2_NONE};
+        m_syscalls[0x06A] = {wrap(sys_cond_destroy), LV2_NONE};
+        m_syscalls[0x06B] = {wrap(sys_cond_wait), LV2_NONE};
+        m_syscalls[0x06C] = {wrap(sys_cond_signal), LV2_NONE};
+        m_syscalls[0x06D] = {wrap(sys_cond_signal_all), LV2_NONE};
+        m_syscalls[0x06E] = {wrap(sys_cond_signal_to), LV2_NONE};
+        m_syscalls[0x090] = {wrap(sys_time_get_timezone), LV2_NONE};
+        m_syscalls[0x091] = {wrap(sys_time_get_current_time), LV2_NONE};
+        m_syscalls[0x093] = {wrap(sys_time_get_timebase_frequency), LV2_NONE};
+        m_syscalls[0x15C] = {wrap(sys_memory_allocate), LV2_NONE};
+        m_syscalls[0x15D] = {wrap(sys_memory_free), LV2_NONE};
+        m_syscalls[0x15E] = {wrap(sys_memory_allocate_from_container), LV2_NONE};
+        m_syscalls[0x15F] = {wrap(sys_memory_get_page_attribute), LV2_NONE};
+        m_syscalls[0x160] = {wrap(sys_memory_get_user_memory_size), LV2_NONE};
+        m_syscalls[0x161] = {wrap(sys_memory_get_user_memory_stat), LV2_NONE};
+        m_syscalls[0x193] = {wrap(sys_tty_write), LV2_NONE};
+        m_syscalls[0x1E0] = {wrap(sys_prx_load_module), LV2_NONE};
+        m_syscalls[0x1E1] = {wrap(sys_prx_start_module), LV2_NONE};
+        m_syscalls[0x321] = {wrap(sys_fs_open), LV2_NONE};
+        m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
+        m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};
+        m_syscalls[0x324] = {wrap(sys_fs_close), LV2_NONE};
+        m_syscalls[0x3DC] = {wrap(sys_dbg_ppu_exception_handler), LV2_NONE};
+    }
+    if (fw_type & (LV2_DEX | LV2_DECR)) {
+        // TODO: No syscalls for now
+    }
+    if (fw_type & LV2_DECR) {
+        // TODO: No syscalls for now
+    }
+}
 
+bool LV2::init()
+{
     // Load and start liblv2.sprx module
     s32 moduleId = sys_prx_load_module("dev_flash/sys/external/liblv2.sprx", 0, 0);
     if (moduleId <= CELL_OK) {
         nucleus.log.error(LOG_HLE, "You need to provide the /dev_flash/sys/external/ firmware files.");
         return false;
     }
-    sys_prx_start_module(moduleId, 0, 0, 0, 0, 0);
+    be_t<u32> modres;
+    sys_prx_start_module(moduleId, 0, 0, &modres, 0, 0);
     return true;
 }
 

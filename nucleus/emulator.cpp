@@ -29,19 +29,13 @@ bool Emulator::load(const std::string& filepath)
     }
     self.load_elf();
 
-    // Initialize LV2
-    if (!lv2.init()) {
-        log.error(LOG_HLE, "Could not initialize LV2.");
-        return false;
-    }
-
-    // Prepare Thread
+    // Prepare Thread (will initialize LV2 before going to its entry point)
     switch (self.getMachine()) {
     case MACHINE_PPC64:
         cell.addThread(CELL_THREAD_PPU, self.getEntry());
         break;
     default:
-        // TODO: Error
+        log.error(LOG_LOADER, "ELF's required architecture not supported");
         break;
     }
 
