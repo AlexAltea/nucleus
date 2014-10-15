@@ -14,6 +14,7 @@
 #include "lv2/sys_mutex.h"
 #include "lv2/sys_process.h"
 #include "lv2/sys_prx.h"
+#include "lv2/sys_ss.h"
 #include "lv2/sys_time.h"
 #include "lv2/sys_tty.h"
 
@@ -21,6 +22,7 @@ LV2::LV2(u32 fw_type)
 {
     // Initialize syscall table
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
+        m_syscalls[0x001] = {wrap(sys_process_getpid), LV2_NONE};
         m_syscalls[0x003] = {wrap(sys_process_exit), LV2_NONE};
         m_syscalls[0x016] = {wrap(sys_process_exit), LV2_NONE};
         m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
@@ -56,6 +58,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};
         m_syscalls[0x324] = {wrap(sys_fs_close), LV2_NONE};
+        m_syscalls[0x367] = {wrap(sys_ss_access_control_engine), LV2_DBG};
         m_syscalls[0x3DC] = {wrap(sys_dbg_ppu_exception_handler), LV2_NONE};
     }
     if (fw_type & (LV2_DEX | LV2_DECR)) {

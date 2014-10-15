@@ -7,6 +7,11 @@
 #include "nucleus/syscalls/lv2.h"
 #include "nucleus/emulator.h"
 
+s32 sys_process_getpid()
+{
+    return 0x01000500; // TODO
+}
+
 s32 sys_process_exit(s32 errorcode)
 {
     nucleus.task(NUCLEUS_EVENT_STOP);

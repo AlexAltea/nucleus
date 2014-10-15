@@ -124,10 +124,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
         const auto& phdr = (Elf64_Phdr&)m_elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
 
         if (phdr.type == PT_LOAD) {
-            if (!phdr.memsz) {
-                break;
-            }
-
+            // Allocate memory and copy segment contents
             const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
             memcpy(nucleus.memory.ptr(addr), &m_elf[phdr.offset], phdr.filesz);
 
@@ -137,6 +134,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
             segment.size_file = (u32)phdr.filesz;
             segment.size_memory = (u32)phdr.memsz;
             segment.initial_addr = (u32)phdr.vaddr;
+            segment.prx_offset = (u32)phdr.offset;
             segment.addr = addr;
             prx->segments.push_back(segment);
 
@@ -146,6 +144,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                 prx->name = module.name;
                 prx->version = module.version;
 
+                // Get FNID / addr pairs
                 u32 offset = module.exports_start;
                 while (offset < module.exports_end) {
                     const auto& library = (sys_prx_library_info_t&)m_elf[phdr.offset + offset];
@@ -156,11 +155,29 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                         lib.name = &m_elf[phdr.offset + library.name_addr];
                     }
                     for (u32 i = 0; i < library.num_func; i++) {
-                        const u32 fnid = nucleus.memory.read32(addr + library.fnid_addr + 4*i);
-                        const u32 stub = nucleus.memory.read32(addr + library.fstub_addr + 4*i);
+                        const u32 fnid = ((be_t<u32>&)m_elf[phdr.offset + library.fnid_addr + 4*i]).ToLE();
+                        const u32 stub = ((be_t<u32>&)m_elf[phdr.offset + library.fstub_addr + 4*i]).ToLE();
                         lib.exports[fnid] = stub;
                     }
-                    prx->libraries.push_back(lib);
+                    prx->exported_libs.push_back(lib);
+                }
+
+                // Patch pointers to other PRXs
+                offset = module.imports_start;
+                while (offset < module.imports_end) {
+                    const auto& library = (sys_prx_library_info_t&)m_elf[phdr.offset + offset];
+                    offset += library.size;
+
+                    sys_prx_library_t lib;
+                    if (library.name_addr) {
+                        lib.name = &m_elf[phdr.offset + library.name_addr];
+                    }
+                    for (u32 i = 0; i < library.num_func; i++) {
+                        const u32 fnid = ((be_t<u32>&)m_elf[phdr.offset + library.fnid_addr + 4*i]).ToLE();
+                        const u32 stub = phdr.offset + library.fstub_addr + 4*i;
+                        lib.exports[fnid] = stub;
+                    }
+                    prx->imported_libs.push_back(lib);
                 }
             }
 
@@ -168,12 +185,24 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
             // TODO: Probably hardcoding i==1 isn't a good idea.
             if (i == 1) {
                 // Update FNID / addr pairs
-                for (auto& lib : prx->libraries) {
+                for (auto& lib : prx->exported_libs) {
                     for (auto& stub : lib.exports) {
                         u32 value = stub.second;
                         for (const auto& segment : prx->segments) {
-                            if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_memory) {
+                            if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_file) {
                                 value = value + (segment.addr - segment.initial_addr);
+                            }
+                        }
+                        stub.second = value;
+                    }
+                }
+                // Update FNID / addr pairs
+                for (auto& lib : prx->imported_libs) {
+                    for (auto& stub : lib.exports) {
+                        u32 value = stub.second;
+                        for (const auto& segment : prx->segments) {
+                            if (segment.prx_offset <= value && value < segment.initial_addr + segment.size_file) {
+                                value = value + (segment.addr - segment.initial_addr - 0xf0);
                             }
                         }
                         stub.second = value;
@@ -185,15 +214,62 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
         if (phdr.type == PT_SCE_PPURELA) {
             for (u32 i = 0; i < phdr.filesz; i += sizeof(sys_prx_relocation_info_t)) {
                 const auto& rel = (sys_prx_relocation_info_t&)m_elf[phdr.offset + i];
-                if (rel.type != 1) {
-                    continue;
+
+                // Address that needs to be patched
+                u32 addr = prx->segments[rel.index_addr].addr + rel.offset;
+                u32 value = 0;
+
+                switch (rel.type) {
+                case 1:  // Patch 32-bit pointers
+                    value = (u32)prx->segments[rel.index_value].addr + rel.ptr;
+                    nucleus.memory.write32(addr, value);
+                    break;
+
+                case 4:  // Patch lower 16-bits of pointers (by using the relocation's immediate value)
+                    value = (u16)rel.ptr;
+                    nucleus.memory.write16(addr, value);
+                    break;
+
+                case 5:  // Patch higher 16-bits of pointers (by using the base address of the segment
+                    value = (u16)(prx->segments[rel.index_value].addr >> 16);
+                    nucleus.memory.write16(addr, value);
+                    break;
+
+                case 6:  // Same (TODO: Is there any difference compared to flags == 5?)
+                    value = (u16)(prx->segments[1].addr >> 16);
+                    nucleus.memory.write16(addr, value);
+                    break;
                 }
-                const u32 addr = prx->segments[1].addr + rel.offset;
-                const u32 value = prx->segments[rel.index].addr + rel.ptr;
-                nucleus.memory.write32(addr, value);
             }
         }
     }
+
+    for (const auto& importedLib : prx->imported_libs) {
+
+        const sys_prx_library_t* targetLibrary = nullptr;
+
+        // Find library (TODO: This is very inefficient)
+        for (const auto& object : nucleus.lv2.objects) {
+            if (object.second->getType() == SYS_PRX_OBJECT) {
+                const auto* imported_prx = (sys_prx_t*)object.second->getData();
+                for (const auto& exportedLib : imported_prx->exported_libs) {
+                    if (exportedLib.name == importedLib.name) {
+                        targetLibrary = &exportedLib;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!targetLibrary) {
+            return false;
+        }
+
+        for (const auto& import : importedLib.exports) {
+            const u32 fnid = import.first;
+            nucleus.memory.write32(import.second, targetLibrary->exports.at(fnid));
+        }
+    }         
     return true;
 }
 

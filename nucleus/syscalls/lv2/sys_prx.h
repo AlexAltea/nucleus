@@ -95,9 +95,9 @@ struct sys_prx_relocation_info_t
 {
     be_t<u64> offset;
     be_t<u16> unk0;
-    u8 index;
-    u8 type;
-    be_t<u32> flags;
+    u8 index_value;    // Index of the LOAD segment that updated its base address
+    u8 index_addr;     // Index of the LOAD segment containing the address to patch
+    be_t<u32> type;
     be_t<u64> ptr;
 };
 
@@ -133,11 +133,12 @@ struct sys_prx_library_t
 
 struct sys_prx_segment_t
 {
-    u32 addr;          // Address where the PRX segment has been copied
+    u32 addr;          // Base address where the PRX segment has been copied
     u32 align;         // Alignment (PHDR's align)
     u32 size_file;     // Size of the segment in the ELF file (PHDR's filesz)
     u32 size_memory;   // Size of the segment in memory (PHDR's memsz). Filled with zeros after allocation
     u32 initial_addr;  // Base address specified on PHDR header. Used to update the import table
+    u32 prx_offset;    // Base offset in the PRX file
 };
 
 // Auxiliary classes
@@ -149,7 +150,8 @@ struct sys_prx_t
     u32 func_exit;
     std::string name;  // Name of the module
     std::string path;  // Path to the PRX/SPRX file
-    std::vector<sys_prx_library_t> libraries;
+    std::vector<sys_prx_library_t> exported_libs;
+    std::vector<sys_prx_library_t> imported_libs;
     std::vector<sys_prx_segment_t> segments;
 };
 

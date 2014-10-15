@@ -24,9 +24,11 @@ s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
         return CELL_PRX_ERROR_ILLEGAL_LIBRARY;
     }
 
-    const auto& metaLib = prx->libraries[0];
-    prx->func_start = metaLib.exports.at(0xBC9A0086);
-    prx->func_stop = metaLib.exports.at(0xAB779874);
+    // Obtain module start/stop/exit functions (set to 0 if not present)
+    auto& metaLib = prx->exported_libs[0];
+    prx->func_start = metaLib.exports[0xBC9A0086];
+    prx->func_stop = metaLib.exports[0xAB779874];
+    prx->func_exit = metaLib.exports[0x3AB9A95E];
     prx->path = path;
 
     const s32 id = nucleus.lv2.objects.add(prx, SYS_PRX_OBJECT);
@@ -38,17 +40,13 @@ s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64
     auto* prx = nucleus.lv2.objects.get<sys_prx_t>(id);
     const sys_prx_param_t& prx_param = nucleus.lv2.prx_param;
 
-    if (modres == nucleus.memory.ptr(0)) {
-        return CELL_EINVAL;
-    }
-
     // Update ELF import table
     u32 offset = prx_param.libstubstart;
     while (offset < prx_param.libstubend) {
         const auto& importedLibrary = nucleus.memory.ref<sys_prx_library_info_t>(offset);
         offset += importedLibrary.size;
 
-        for (const auto& lib : prx->libraries) {
+        for (const auto& lib : prx->exported_libs) {
             if (lib.name != nucleus.memory.ptr<s8>(importedLibrary.name_addr)) {
                 continue;
             }
@@ -60,8 +58,9 @@ s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64
     }
 
     // Call module start function
-    Callback{prx->func_start}.call(args, argp_addr);
-    
+    if (prx->func_start) {
+        Callback{prx->func_start}.call(args, argp_addr);
+    }
 
     return CELL_OK;
 }

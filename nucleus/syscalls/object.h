@@ -17,6 +17,7 @@ class ObjectBase
 
 public:
     virtual void* getData()=0;
+    virtual u32 getType()=0;
 };
 
 template<typename T>
@@ -41,6 +42,11 @@ public:
     {
         return m_data;
     }
+
+    u32 getType()
+    {
+        return m_type;
+    }
 };
 
 class ObjectManager
@@ -61,6 +67,10 @@ public:
 
         m_objects.clear();
     }
+
+    // Iterator
+    std::unordered_map<u32, ObjectBase*>::const_iterator begin() { return m_objects.begin(); }
+    std::unordered_map<u32, ObjectBase*>::const_iterator end() { return m_objects.end(); }
 
     // Add a new object to the set and return the generated ID
     template<typename T>
