@@ -35,6 +35,22 @@ s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
     return id;
 }
 
+s32 sys_prx_load_module_list(s32 count, be_t<u32>* pathList, u64 flags, void* pOpt, be_t<u32>* idList)
+{
+    for (s32 i = 0; i < count; i++) {
+        auto* path = (s8*)((u64)nucleus.memory.getBaseAddr() + pathList[i]);
+
+        const s32 ret = sys_prx_load_module(path, flags, nullptr);
+        if (ret <= 0) {
+            return ret;
+        }
+
+        idList[i] = ret;
+    }
+
+    return CELL_OK;
+}
+
 s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
 {
     auto* prx = nucleus.lv2.objects.get<sys_prx_t>(id);

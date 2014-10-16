@@ -16,6 +16,7 @@
 #include "lv2/sys_mutex.h"
 #include "lv2/sys_process.h"
 #include "lv2/sys_prx.h"
+#include "lv2/sys_rsx.h"
 #include "lv2/sys_ss.h"
 #include "lv2/sys_time.h"
 #include "lv2/sys_tty.h"
@@ -57,11 +58,15 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x160] = {wrap(sys_memory_get_user_memory_size), LV2_NONE};
         m_syscalls[0x161] = {wrap(sys_memory_get_user_memory_stat), LV2_NONE};
         m_syscalls[0x193] = {wrap(sys_tty_write), LV2_NONE};
+        m_syscalls[0x1D1] = {wrap(sys_prx_load_module_list), LV2_NONE};
         m_syscalls[0x1E0] = {wrap(sys_prx_load_module), LV2_NONE};
         m_syscalls[0x1E1] = {wrap(sys_prx_start_module), LV2_NONE};
         m_syscalls[0x1E4] = {wrap(sys_prx_register_module), LV2_NONE};
         m_syscalls[0x1E6] = {wrap(sys_prx_register_library), LV2_NONE};
         m_syscalls[0x1EE] = {wrap(sys_prx_get_module_list), LV2_NONE};
+        m_syscalls[0x29C] = {wrap(sys_rsx_memory_allocate), LV2_NONE};
+        m_syscalls[0x29E] = {wrap(sys_rsx_context_allocate), LV2_NONE};
+        m_syscalls[0x2A3] = {wrap(sys_rsx_device_map), LV2_NONE};
         m_syscalls[0x321] = {wrap(sys_fs_open), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};

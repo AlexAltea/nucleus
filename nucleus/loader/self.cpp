@@ -92,6 +92,7 @@ bool SELFLoader::load_elf()
 
         case PT_PROC_PARAM:
             if (!phdr.filesz) {
+                nucleus.lv2.proc_param.sdk_version = 0x050000;
                 nucleus.lv2.proc_param.malloc_pagesize = 0x100000;
             } else {
                 nucleus.lv2.proc_param = (sys_process_param_t&)m_elf[phdr.offset];

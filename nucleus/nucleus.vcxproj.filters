@@ -90,6 +90,9 @@
     <ClCompile Include="syscalls\lv2\sys_mmapper.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_rsx.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -195,6 +198,9 @@
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_mmapper.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_rsx.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
   </ItemGroup>

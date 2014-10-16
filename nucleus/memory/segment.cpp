@@ -101,25 +101,25 @@ u32 MemorySegment::alloc(u32 size, u32 align)
     return 0;
 }
 
-bool MemorySegment::allocFixed(u32 addr, u32 size)
+u32 MemorySegment::allocFixed(u32 addr, u32 size)
 {
     size = PAGE_4K(size + (addr & 4095)); // Align size
     addr &= ~4095; // Align start address
 
     if (!isValid(addr) || !isValid(addr+size-1)) {
-        return false;
+        return 0;
     }
 
     std::lock_guard<std::mutex> lock(m_mutex);
 
     for (const auto& block : m_allocated) {
         if (block.addr <= addr && addr < block.addr + block.size) { // TODO: Check (addr <= block.addr && block.addr < addr + exsize) ?
-            return false;
+            return 0;
         }
     }
 
     m_allocated.emplace_back(addr, size);
-    return true;
+    return addr;
 }
 
 void MemorySegment::free(u32 addr)

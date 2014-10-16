@@ -160,8 +160,9 @@ struct sys_prx_t
 // SysCalls
 s32 sys_prx_1CE();
 s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt);
-s32 sys_prx_load_module_on_memcontainer();
 s32 sys_prx_load_module_by_fd();
+s32 sys_prx_load_module_list(s32 count, be_t<u32>* pathList, u64 flags, void* pOpt, be_t<u32>* idList);
+s32 sys_prx_load_module_on_memcontainer();
 s32 sys_prx_load_module_on_memcontainer_by_fd();
 s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt);
 s32 sys_prx_stop_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64 flags, sys_prx_stop_module_option_t* pOpt);
