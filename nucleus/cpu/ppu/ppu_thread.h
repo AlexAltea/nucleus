@@ -183,7 +183,6 @@ public:
     u64 reserve_addr;
     u64 reserve_value;
 
-
-    PPUThread();
+    PPUThread(u32 entry);
     ~PPUThread();
 };

@@ -65,3 +65,23 @@ s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
 
     return CELL_OK;
 }
+
+s32 sys_prx_1CE()
+{
+    return CELL_OK;
+}
+
+s32 sys_prx_get_module_list()
+{
+    return CELL_OK;
+}
+
+s32 sys_prx_register_library(u32 lib_addr)
+{
+    return CELL_OK;
+}
+
+s32 sys_prx_register_module()
+{
+    return CELL_OK;
+}

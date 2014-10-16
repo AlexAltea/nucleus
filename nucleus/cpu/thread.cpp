@@ -7,26 +7,22 @@
 #include "nucleus/common.h"
 #include "nucleus/emulator.h"
 
-void CellThread::start(u32 entry)
+void CellThread::start()
 {
     if (m_thread) {
         stop();
     }
 
-    pc = nucleus.memory.read32(entry);
-    rtoc = nucleus.memory.read32(entry+4);
-
     m_thread = new std::thread([&](){
         nucleus.cell.setCurrentThread(this);
+        m_status = NUCLEUS_STATUS_RUNNING;
 
         // Initialize LV2 if necessary
-        if (!nucleus.lv2.initialized && !nucleus.lv2.init()) {
-            nucleus.log.error(LOG_HLE, "Could not initialize LV2.");
-            return false;
+        if (!nucleus.lv2.initialized) {
+            nucleus.lv2.init();
+        } else {
+            task();
         }
-
-        m_status = NUCLEUS_STATUS_RUNNING;
-        task();
     });
 }
 

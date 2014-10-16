@@ -33,7 +33,7 @@ public:
     u32 rtoc;
 
     // Open a new thread that will enter the code emulation loop
-    void start(u32 entry);
+    void start();
 
     // Enter emulation loop
     void task();

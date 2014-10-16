@@ -10,17 +10,17 @@
 
 s32 sys_mmapper_allocate_address(u32 size, u64 flags, u32 alignment, u32* alloc_addr)
 {
-    switch (flags) {
-    case SYS_MEMORY_PAGE_SIZE_1M:
+    switch (flags & (SYS_MEMORY_PAGE_SIZE_1M | SYS_MEMORY_PAGE_SIZE_64K)) {
+    /*case SYS_MEMORY_PAGE_SIZE_1M:
         *alloc_addr = nucleus.memory.alloc(size, 0x100000);
         break;
     
     case SYS_MEMORY_PAGE_SIZE_64K:
-        *alloc_addr = nucleus.memory.alloc(size, 0x100000);
-        break;
+        *alloc_addr = nucleus.memory.alloc(size, 0x10000);
+        break;*/
 
     default:
-        nucleus.log.error(LOG_HLE, "sys_mmapper_allocate_address: Invalid flags");
+        //nucleus.log.error(LOG_HLE, "sys_mmapper_allocate_address: Invalid flags");
         return CELL_EINVAL;
     }
 

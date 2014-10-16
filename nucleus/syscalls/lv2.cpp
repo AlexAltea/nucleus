@@ -25,6 +25,7 @@ LV2::LV2(u32 fw_type)
     // Initialize syscall table
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
         m_syscalls[0x001] = {wrap(sys_process_getpid), LV2_NONE};
+        m_syscalls[0x019] = {wrap(sys_process_get_sdk_version), LV2_NONE};
         m_syscalls[0x003] = {wrap(sys_process_exit), LV2_NONE};
         m_syscalls[0x016] = {wrap(sys_process_exit), LV2_NONE};
         m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
@@ -58,6 +59,9 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x193] = {wrap(sys_tty_write), LV2_NONE};
         m_syscalls[0x1E0] = {wrap(sys_prx_load_module), LV2_NONE};
         m_syscalls[0x1E1] = {wrap(sys_prx_start_module), LV2_NONE};
+        m_syscalls[0x1E4] = {wrap(sys_prx_register_module), LV2_NONE};
+        m_syscalls[0x1E6] = {wrap(sys_prx_register_library), LV2_NONE};
+        m_syscalls[0x1EE] = {wrap(sys_prx_get_module_list), LV2_NONE};
         m_syscalls[0x321] = {wrap(sys_fs_open), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};
@@ -66,7 +70,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x3DC] = {wrap(sys_dbg_ppu_exception_handler), LV2_NONE};
     }
     if (fw_type & (LV2_DEX | LV2_DECR)) {
-        // TODO: No syscalls for now
+        m_syscalls[0x1CE] = {wrap(sys_prx_1CE), LV2_NONE};
     }
     if (fw_type & LV2_DECR) {
         // TODO: No syscalls for now

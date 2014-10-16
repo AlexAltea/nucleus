@@ -35,7 +35,7 @@ public:
     // Logging
     Logger log;
 
-    Emulator() : lv2(LV2_CEX) {}
+    Emulator() : lv2(LV2_DEX) {}
 
     // Control the emulated process
     bool load(const std::string& filepath);

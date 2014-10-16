@@ -7,13 +7,16 @@
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/interpreter/ppu_interpreter.h"
 
-PPUThread::PPUThread()
+PPUThread::PPUThread(u32 entry)
 {
     m_translator = new PPUInterpreter(*this);
 
     // Initialize stack of size 0x10000
     m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
     m_stackPointer = m_stackAddr + 0x10000;
+
+    pc = nucleus.memory.read32(entry);
+    rtoc = nucleus.memory.read32(entry+4);
 
     // Initialize registers (TODO: All of this might be wrong)
     gpr[0] = pc;
@@ -22,6 +25,7 @@ PPUThread::PPUThread()
     gpr[3] = 0;
     gpr[4] = nucleus.memory.alloc(4,4);
     gpr[5] = gpr[4] + 0x10;
+    gpr[11] = entry;
     gpr[12] = nucleus.lv2.proc_param.malloc_pagesize;
     gpr[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
     cr.CR = 0x22000082;

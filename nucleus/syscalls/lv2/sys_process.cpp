@@ -22,3 +22,8 @@ s32 sys_process_get_paramsfo(u8* buffer)
 {
     return CELL_OK;
 }
+
+s32 sys_process_get_sdk_version(u32 pid, be_t<u32>* version)
+{
+    return CELL_OK;
+}

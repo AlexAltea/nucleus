@@ -158,6 +158,7 @@ struct sys_prx_t
 };
 
 // SysCalls
+s32 sys_prx_1CE();
 s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt);
 s32 sys_prx_load_module_on_memcontainer();
 s32 sys_prx_load_module_by_fd();
@@ -165,6 +166,7 @@ s32 sys_prx_load_module_on_memcontainer_by_fd();
 s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt);
 s32 sys_prx_stop_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64 flags, sys_prx_stop_module_option_t* pOpt);
 s32 sys_prx_unload_module(s32 id, u64 flags, sys_prx_unload_module_option_t* pOpt);
+s32 sys_prx_register_module();
 s32 sys_prx_get_module_list();
 s32 sys_prx_get_my_module_id();
 s32 sys_prx_get_module_id_by_address();
@@ -173,7 +175,6 @@ s32 sys_prx_get_module_info();
 s32 sys_prx_register_library(u32 lib_addr);
 s32 sys_prx_unregister_library();
 s32 sys_prx_get_ppu_guid();
-s32 sys_prx_register_module();
 s32 sys_prx_query_module();
 s32 sys_prx_link_library();
 s32 sys_prx_unlink_library();
