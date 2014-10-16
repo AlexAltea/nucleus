@@ -5,6 +5,7 @@
 
 #include "memory.h"
 #include "nucleus/common.h"
+#include "nucleus/emulator.h"
 
 #ifdef NUCLEUS_WIN
 #include <Windows.h>
@@ -28,7 +29,7 @@ void Memory::init()
 
     // Check errors
     if (m_base == 0 || m_base == (void*)-1) {
-        // TODO
+        nucleus.log.error(LOG_MEMORY, "Could not reserve memory");
     }
 
     // Initialize segments
@@ -47,7 +48,7 @@ void Memory::close()
 #elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
     if (::munmap(m_base, 0x100000000ULL)) {
 #endif
-        // Error
+        nucleus.log.error(LOG_MEMORY, "Could not release memory");
     }
 }
 

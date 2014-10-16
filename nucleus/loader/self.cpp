@@ -246,6 +246,11 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
 
     for (const auto& importedLib : prx->imported_libs) {
 
+        // TODO: Following libraries are DECR only. Ignore them (TODO: Don't do this)
+        if (importedLib.name == "cellLibprof") {
+            continue;
+        }
+
         const sys_prx_library_t* targetLibrary = nullptr;
 
         // Find library (TODO: This is very inefficient)

@@ -35,7 +35,7 @@ s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
     return id;
 }
 
-s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64 flags, sys_prx_start_module_option_t* pOpt)
+s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
 {
     auto* prx = nucleus.lv2.objects.get<sys_prx_t>(id);
     const sys_prx_param_t& prx_param = nucleus.lv2.prx_param;
@@ -57,9 +57,10 @@ s32 sys_prx_start_module(s32 id, u32 args, u32 argp_addr, be_t<u32>* modres, u64
         }
     }
 
-    // Call module start function
     if (prx->func_start) {
-        Callback{prx->func_start}.call(args, argp_addr);
+        pOpt->entry = prx->func_start;
+    } else {
+        pOpt->entry = 0xFFFFFFFFFFFFFFFFULL;
     }
 
     return CELL_OK;

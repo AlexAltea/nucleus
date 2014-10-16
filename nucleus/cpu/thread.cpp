@@ -43,6 +43,12 @@ void CellThread::pause()
     m_event = NUCLEUS_EVENT_PAUSE;
 }
 
+void CellThread::finishCallback()
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_event = NUCLEUS_EVENT_FINISH;
+}
+
 void CellThread::stop()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -64,6 +70,10 @@ void CellThread::task()
                 m_status = NUCLEUS_STATUS_PAUSED;
                 m_cv.wait(lock, [&]{ return m_event == NUCLEUS_EVENT_RUN; });
                 m_status = NUCLEUS_STATUS_RUNNING;
+            }
+            if (m_event == NUCLEUS_EVENT_FINISH) {
+                m_event = NUCLEUS_EVENT_NONE;
+                break;
             }
             if (m_event == NUCLEUS_EVENT_STOP) {
                 break;

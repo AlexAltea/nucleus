@@ -41,6 +41,7 @@ public:
     // These functions control the thread once it is started
     void run();
     void pause();
+    void finishCallback();
     void stop();
 
     // Block caller thread until this thread finishes

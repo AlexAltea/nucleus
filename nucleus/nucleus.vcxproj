@@ -100,6 +100,7 @@
     <ClCompile Include="syscalls\lv2\sys_fs.cpp" />
     <ClCompile Include="syscalls\lv2\sys_lwmutex.cpp" />
     <ClCompile Include="syscalls\lv2\sys_memory.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_mmapper.cpp" />
     <ClCompile Include="syscalls\lv2\sys_mutex.cpp" />
     <ClCompile Include="syscalls\lv2\sys_process.cpp" />
     <ClCompile Include="syscalls\lv2\sys_prx.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="syscalls\lv2\sys_fs.h" />
     <ClInclude Include="syscalls\lv2\sys_lwmutex.h" />
     <ClInclude Include="syscalls\lv2\sys_memory.h" />
+    <ClInclude Include="syscalls\lv2\sys_mmapper.h" />
     <ClInclude Include="syscalls\lv2\sys_mutex.h" />
     <ClInclude Include="syscalls\lv2\sys_process.h" />
     <ClInclude Include="syscalls\lv2\sys_prx.h" />

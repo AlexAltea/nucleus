@@ -77,6 +77,12 @@ PPUInterpreter::PPUInterpreter(PPUThread& thr) : thread(thr)
 
 void PPUInterpreter::step()
 {
+    // Callback finished
+    if (thread.pc == 0) {
+        thread.finishCallback();
+        return;
+    }
+
     const PPUFields code = { nucleus.memory.read32(thread.pc) };
     const PPUInstruction& instruction = s_tablePrimary[code.opcode];
 

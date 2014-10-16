@@ -87,6 +87,9 @@
     <ClCompile Include="syscalls\lv2\sys_ss.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_mmapper.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -189,6 +192,9 @@
       <Filter>syscalls</Filter>
     </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_ss.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_mmapper.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
   </ItemGroup>

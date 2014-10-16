@@ -21,8 +21,10 @@ public:
 		const u32 rtoc = nucleus.memory.read32(m_addr + 4);
 
         auto* thread = (PPUThread*)nucleus.cell.getCurrentThread();
+        const u32 old_lr = thread->lr;
         const u32 old_pc = thread->pc;
         const u32 old_rtoc = thread->rtoc;
+        thread->lr = 0;
         thread->pc = pc;
         thread->rtoc = rtoc;
         thread->gpr[2] = rtoc;
@@ -30,6 +32,7 @@ public:
         // Run the function stored in the address
         thread->task();
 
+        thread->lr = old_lr;
         thread->pc = old_pc;
         thread->rtoc = old_rtoc;
         thread->gpr[2] = old_rtoc;

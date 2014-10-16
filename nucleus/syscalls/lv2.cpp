@@ -5,12 +5,14 @@
 
 #include "lv2.h"
 #include "nucleus/memory/object.h"
+#include "nucleus/syscalls/callback.h"
 
 #include "lv2/sys_cond.h"
 #include "lv2/sys_dbg.h"
 #include "lv2/sys_fs.h"
 #include "lv2/sys_lwmutex.h"
 #include "lv2/sys_memory.h"
+#include "lv2/sys_mmapper.h"
 #include "lv2/sys_mutex.h"
 #include "lv2/sys_process.h"
 #include "lv2/sys_prx.h"
@@ -45,6 +47,8 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x090] = {wrap(sys_time_get_timezone), LV2_NONE};
         m_syscalls[0x091] = {wrap(sys_time_get_current_time), LV2_NONE};
         m_syscalls[0x093] = {wrap(sys_time_get_timebase_frequency), LV2_NONE};
+        m_syscalls[0x14A] = {wrap(sys_mmapper_allocate_address), LV2_NONE};
+        m_syscalls[0x14C] = {wrap(sys_mmapper_allocate_shared_memory), LV2_NONE};
         m_syscalls[0x15C] = {wrap(sys_memory_allocate), LV2_NONE};
         m_syscalls[0x15D] = {wrap(sys_memory_free), LV2_NONE};
         m_syscalls[0x15E] = {wrap(sys_memory_allocate_from_container), LV2_NONE};
@@ -72,13 +76,14 @@ LV2::LV2(u32 fw_type)
 bool LV2::init()
 {
     // Load and start liblv2.sprx module
-    s32 moduleId = sys_prx_load_module("dev_flash/sys/external/liblv2.sprx", 0, 0);
+    s32 moduleId = sys_prx_load_module("/dev_flash/sys/external/liblv2.sprx", 0, 0);
     if (moduleId <= CELL_OK) {
         nucleus.log.error(LOG_HLE, "You need to provide the /dev_flash/sys/external/ firmware files.");
         return false;
     }
-    be_t<u32> modres;
-    sys_prx_start_module(moduleId, 0, 0, &modres, 0, 0);
+    sys_prx_start_module_option_t startFunc;
+    sys_prx_start_module(moduleId, 0, &startFunc);
+    Callback{startFunc.entry}.call();
     return true;
 }
 
