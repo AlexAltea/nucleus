@@ -18,6 +18,11 @@ s32 sys_memory_allocate_from_container(u32 size, u32 cid, u64 flags, be_t<u32>* 
     return CELL_OK;
 }
 
+s32 sys_memory_container_create2()
+{
+    return CELL_OK;
+}
+
 s32 sys_memory_free(u32 start_addr)
 {
     return CELL_OK;

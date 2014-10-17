@@ -7,6 +7,13 @@
 
 #include "nucleus/common.h"
 
+// Constants (some are used by other thread synchronization primitives)
+enum
+{
+    SYS_SYNC_PROCESS_SHARED      = 0x100,
+    SYS_SYNC_NOT_PROCESS_SHARED  = 0x200,
+};
+
 struct sys_mutex_attribute_t
 {
     be_t<u32> protocol;

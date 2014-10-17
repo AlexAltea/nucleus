@@ -105,6 +105,7 @@
     <ClCompile Include="syscalls\lv2\sys_process.cpp" />
     <ClCompile Include="syscalls\lv2\sys_prx.cpp" />
     <ClCompile Include="syscalls\lv2\sys_rsx.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_semaphore.cpp" />
     <ClCompile Include="syscalls\lv2\sys_ss.cpp" />
     <ClCompile Include="syscalls\lv2\sys_time.cpp" />
     <ClCompile Include="syscalls\lv2\sys_tty.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="syscalls\lv2\sys_process.h" />
     <ClInclude Include="syscalls\lv2\sys_prx.h" />
     <ClInclude Include="syscalls\lv2\sys_rsx.h" />
+    <ClInclude Include="syscalls\lv2\sys_semaphore.h" />
     <ClInclude Include="syscalls\lv2\sys_ss.h" />
     <ClInclude Include="syscalls\lv2\sys_time.h" />
     <ClInclude Include="syscalls\lv2\sys_tty.h" />

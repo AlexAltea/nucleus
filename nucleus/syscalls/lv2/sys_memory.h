@@ -30,6 +30,7 @@ struct sys_page_attr_t
 // SysCalls
 s32 sys_memory_allocate(u32 size, u64 flags, be_t<u32>* alloc_addr);
 s32 sys_memory_allocate_from_container(u32 size, u32 cid, u64 flags, be_t<u32>* alloc_addr);
+s32 sys_memory_container_create2();
 s32 sys_memory_free(u32 start_addr);
 s32 sys_memory_get_page_attribute(u32 addr, sys_page_attr_t* attr);
 s32 sys_memory_get_user_memory_size(sys_memory_info_t* mem_info);
