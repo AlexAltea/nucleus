@@ -18,7 +18,7 @@ public:
     void call(T... args)
     {
         const u32 pc = nucleus.memory.read32(m_addr);
-		const u32 rtoc = nucleus.memory.read32(m_addr + 4);
+        const u32 rtoc = nucleus.memory.read32(m_addr + 4);
 
         auto* thread = (PPUThread*)nucleus.cell.getCurrentThread();
         const u32 old_lr = thread->lr;

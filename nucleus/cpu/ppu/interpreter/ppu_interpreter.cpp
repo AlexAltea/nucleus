@@ -735,7 +735,7 @@ void PPUInterpreter::mtfsb1(PPUFields code, PPUThread& thread)
 void PPUInterpreter::mtfsfi(PPUFields code, PPUThread& thread)
 {
     const u64 mask = (0x1ULL << code.crfd);
-    if (code.i) {
+    if (code.imm) {
         thread.fpscr.FPSCR |= mask;
     }
     else {
@@ -3579,7 +3579,7 @@ void PPUInterpreter::vxor(PPUFields code, PPUThread& thread)
 // Unknown instruction
 void PPUInterpreter::unknown(PPUFields code, PPUThread& thread)
 {
-    std::cout << "Unknown instruction: " << code.instruction << std::endl;
+    nucleus.log.error(LOG_CPU, "Unknown instruction: %08X (PC: %08X)", code.instruction, thread.pc);
 }
 void PPUInterpreter::unknown2(const std::string& instruction)
 {

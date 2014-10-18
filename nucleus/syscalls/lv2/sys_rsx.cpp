@@ -9,12 +9,12 @@
 
 s32 sys_rsx_device_open()
 {
-	return CELL_OK;
+    return CELL_OK;
 }
 
 s32 sys_rsx_device_close()
 {
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -37,7 +37,7 @@ s32 sys_rsx_memory_allocate(be_t<u32>* mem_handle, be_t<u32>* mem_addr, u32 size
 
     *mem_handle = 1 ^ 0x5A5A5A5A; // TODO
     *mem_addr = addr;
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -46,7 +46,7 @@ s32 sys_rsx_memory_allocate(be_t<u32>* mem_handle, be_t<u32>* mem_addr, u32 size
  */
 s32 sys_rsx_memory_free(u32 mem_handle)
 {
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -69,7 +69,7 @@ s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control,
     driver_info[0] = 0x211;
 
     *context_id = 0 ^ 0x55555555; // TODO
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -78,7 +78,7 @@ s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control,
  */
 s32 sys_rsx_context_free(u32 context_id)
 {
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -91,7 +91,7 @@ s32 sys_rsx_context_free(u32 context_id)
  */
 s32 sys_rsx_context_iomap(u32 context_id, u32 io, u32 ea, u32 size, u64 flags)
 {
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -103,7 +103,7 @@ s32 sys_rsx_context_iomap(u32 context_id, u32 io, u32 ea, u32 size, u64 flags)
  */
 s32 sys_rsx_context_iounmap(u32 context_id, u32 a2, u32 io_addr, u32 size)
 {
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -117,51 +117,51 @@ s32 sys_rsx_context_iounmap(u32 context_id, u32 a2, u32 io_addr, u32 size)
  */
 s32 sys_rsx_context_attribute(s32 context_id, u32 package_id, u64 a3, u64 a4, u64 a5, u64 a6)
 {
-	switch (package_id) {
-	case 0x001: // FIFO
-		break;
-	
-	case 0x100: // Display mode set
-		break;
+    switch (package_id) {
+    case 0x001: // FIFO
+        break;
+    
+    case 0x100: // Display mode set
+        break;
 
-	case 0x101: // Display sync
-		break;
+    case 0x101: // Display sync
+        break;
 
-	case 0x102: // Display flip
-		break;
+    case 0x102: // Display flip
+        break;
 
-	case 0x103: // ?
-		break;
+    case 0x103: // ?
+        break;
 
-	case 0x104: // Display buffer
-		break;
+    case 0x104: // Display buffer
+        break;
 
-	case 0x106: // ? (Used by cellGcmInitPerfMon)
-		break;
+    case 0x106: // ? (Used by cellGcmInitPerfMon)
+        break;
 
-	case 0x10a: // ?
-		break;
+    case 0x10a: // ?
+        break;
 
-	case 0x300: // Tiles
-		break;
+    case 0x300: // Tiles
+        break;
 
-	case 0x301: // Depth-buffer (Z-cull)
-		break;
+    case 0x301: // Depth-buffer (Z-cull)
+        break;
 
-	case 0x600: // Framebuffer setup
-		break;
+    case 0x600: // Framebuffer setup
+        break;
 
-	case 0x601: // Framebuffer blit
-		break;
+    case 0x601: // Framebuffer blit
+        break;
 
-	case 0x602: // Framebuffer blit sync
-		break;
+    case 0x602: // Framebuffer blit sync
+        break;
 
-	default:
-		return CELL_EINVAL;
-	}
+    default:
+        return CELL_EINVAL;
+    }
 
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -172,13 +172,13 @@ s32 sys_rsx_context_attribute(s32 context_id, u32 package_id, u64 a3, u64 a4, u6
  */
 s32 sys_rsx_device_map(be_t<u32>* mapped_addr, be_t<u32>* a2, u32 dev_id)
 {
-	if (dev_id > 15) {
-		return CELL_EINVAL;
-	}
+    if (dev_id > 15) {
+        return CELL_EINVAL;
+    }
 
-	if ((dev_id == 0 || dev_id > 8)/*&& !sub_52450()*/) {
+    if ((dev_id == 0 || dev_id > 8)/*&& !sub_52450()*/) {
         return CELL_EPERM;
-	}
+    }
 
     // LV1 Syscall: lv1_gpu_device_map (0xD4)
     switch (dev_id) {
@@ -187,7 +187,7 @@ s32 sys_rsx_device_map(be_t<u32>* mapped_addr, be_t<u32>* a2, u32 dev_id)
         break;
     }
 
-	return CELL_OK;
+    return CELL_OK;
 }
 
 /**
@@ -196,10 +196,10 @@ s32 sys_rsx_device_map(be_t<u32>* mapped_addr, be_t<u32>* a2, u32 dev_id)
  */
 s32 sys_rsx_device_unmap(u32 dev_id)
 {
-	return CELL_OK;
+    return CELL_OK;
 }
 
 s32 sys_rsx_attribute()
 {
-	return CELL_OK;
+    return CELL_OK;
 }

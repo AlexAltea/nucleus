@@ -81,16 +81,172 @@ void initTables()
     s_tablePrimary[0x36] = {"stfd",   PPUInterpreter::stfd,         dis_unknown};
     s_tablePrimary[0x37] = {"stfdu",  PPUInterpreter::stfdu,        dis_unknown};
 
-
     // Initialize Table 4
     for (auto& caller : s_table4) {
         caller = {"", PPUInterpreter::callTable4_, dis_table4_};
     }
+    s_table4[0x020] = {"vmhaddshs",  PPUInterpreter::vmhaddshs,  dis_vmhaddshs};
+    s_table4[0x021] = {"vmhraddshs", PPUInterpreter::vmhraddshs, dis_vmhraddshs};
+    s_table4[0x022] = {"vmladduhm",  PPUInterpreter::vmladduhm,  dis_vmladduhm};
+    s_table4[0x024] = {"vmsumubm",   PPUInterpreter::vmsumubm,   dis_vmsumubm};
+    s_table4[0x025] = {"vmsummbm",   PPUInterpreter::vmsummbm,   dis_vmsummbm};
+    s_table4[0x026] = {"vmsumuhm",   PPUInterpreter::vmsumuhm,   dis_vmsumuhm};
+    s_table4[0x027] = {"vmsumuhs",   PPUInterpreter::vmsumuhs,   dis_vmsumuhs};
+    s_table4[0x028] = {"vmsumshm",   PPUInterpreter::vmsumshm,   dis_vmsumshm};
+    s_table4[0x029] = {"vmsumshs",   PPUInterpreter::vmsumshs,   dis_vmsumshs};
+    s_table4[0x02A] = {"vsel",       PPUInterpreter::vsel,       dis_vsel};
+    s_table4[0x02B] = {"vperm",      PPUInterpreter::vperm,      dis_vperm};
+    s_table4[0x02C] = {"vsldoi",     PPUInterpreter::vsldoi,     dis_vsldoi};
+    s_table4[0x02E] = {"vmaddfp",    PPUInterpreter::vmaddfp,    dis_vmaddfp};
+    s_table4[0x02F] = {"vnmsubfp",   PPUInterpreter::vnmsubfp,   dis_vnmsubfp};
 
     // Initialize Table 4 (Extended)
     for (auto& caller : s_table4_) {
         caller = {"unknown", PPUInterpreter::unknown, dis_unknown};
     }
+    s_table4_[0x000] = {"vaddubm",   PPUInterpreter::vaddubm,    dis_vaddubm};
+    s_table4_[0x002] = {"vmaxub",    PPUInterpreter::vmaxub,     dis_vmaxub};
+    s_table4_[0x004] = {"vrlb",      PPUInterpreter::vrlb,       dis_vrlb};
+    s_table4_[0x006] = {"vcmpequb",  PPUInterpreter::vcmpequb,   dis_vcmpequb};
+    s_table4_[0x008] = {"vmuloub",   PPUInterpreter::vmuloub,    dis_vmuloub};
+    s_table4_[0x00A] = {"vaddfp",    PPUInterpreter::vaddfp,     dis_vaddfp};
+    s_table4_[0x00C] = {"vmrghb",    PPUInterpreter::vmrghb,     dis_vmrghb};
+    s_table4_[0x00E] = {"vpkuhum",   PPUInterpreter::vpkuhum,    dis_vpkuhum};
+    s_table4_[0x040] = {"vadduhm",   PPUInterpreter::vadduhm,    dis_vadduhm};
+    s_table4_[0x042] = {"vmaxuh",    PPUInterpreter::vmaxuh,     dis_vmaxuh};
+    s_table4_[0x044] = {"vrlh",      PPUInterpreter::vrlh,       dis_vrlh};
+    s_table4_[0x046] = {"vcmpequh",  PPUInterpreter::vcmpequh,   dis_vcmpequh};
+    s_table4_[0x048] = {"vmulouh",   PPUInterpreter::vmulouh,    dis_vmulouh};
+    s_table4_[0x04A] = {"vsubfp",    PPUInterpreter::vsubfp,     dis_vsubfp};
+    s_table4_[0x04C] = {"vmrghh",    PPUInterpreter::vmrghh,     dis_vmrghh};
+    s_table4_[0x04E] = {"vpkuwum",   PPUInterpreter::vpkuwum,    dis_vpkuwum};
+    s_table4_[0x080] = {"vadduwm",   PPUInterpreter::vadduwm,    dis_vadduwm};
+    s_table4_[0x082] = {"vmaxuw",    PPUInterpreter::vmaxuw,     dis_vmaxuw};
+    s_table4_[0x084] = {"vrlw",      PPUInterpreter::vrlw,       dis_vrlw};
+    s_table4_[0x086] = {"vcmpequw",  PPUInterpreter::vcmpequw,   dis_vcmpequw};
+    s_table4_[0x08C] = {"vmrghw",    PPUInterpreter::vmrghw,     dis_vmrghw};
+    s_table4_[0x08E] = {"vpkuhus",   PPUInterpreter::vpkuhus,    dis_vpkuhus};
+    s_table4_[0x0C6] = {"vcmpeqfp",  PPUInterpreter::vcmpeqfp,   dis_vcmpeqfp};
+    s_table4_[0x0CE] = {"vpkuwus",   PPUInterpreter::vpkuwus,    dis_vpkuwus};
+    s_table4_[0x102] = {"vmaxsb",    PPUInterpreter::vmaxsb,     dis_vmaxsb};
+    s_table4_[0x104] = {"vslb",      PPUInterpreter::vslb,       dis_vslb};
+    s_table4_[0x108] = {"vmulosb",   PPUInterpreter::vmulosb,    dis_vmulosb};
+    s_table4_[0x10A] = {"vrefp",     PPUInterpreter::vrefp,      dis_vrefp};
+    s_table4_[0x10C] = {"vmrglb",    PPUInterpreter::vmrglb,     dis_vmrglb};
+    s_table4_[0x10E] = {"vpkshus",   PPUInterpreter::vpkshus,    dis_vpkshus};
+    s_table4_[0x142] = {"vmaxsh",    PPUInterpreter::vmaxsh,     dis_vmaxsh};
+    s_table4_[0x144] = {"vslh",      PPUInterpreter::vslh,       dis_vslh};
+    s_table4_[0x148] = {"vmulosh",   PPUInterpreter::vmulosh,    dis_vmulosh};
+    s_table4_[0x14A] = {"vrsqrtefp", PPUInterpreter::vrsqrtefp,  dis_vrsqrtefp};
+    s_table4_[0x14C] = {"vmrglh",    PPUInterpreter::vmrglh,     dis_vmrglh};
+    s_table4_[0x14E] = {"vpkswus",   PPUInterpreter::vpkswus,    dis_vpkswus};
+    s_table4_[0x180] = {"vaddcuw",   PPUInterpreter::vaddcuw,    dis_vaddcuw};
+    s_table4_[0x182] = {"vmaxsw",    PPUInterpreter::vmaxsw,     dis_vmaxsw};
+    s_table4_[0x184] = {"vslw",      PPUInterpreter::vslw,       dis_vslw};
+    s_table4_[0x18A] = {"vexptefp",  PPUInterpreter::vexptefp,   dis_vexptefp};
+    s_table4_[0x18C] = {"vmrglw",    PPUInterpreter::vmrglw,     dis_vmrglw};
+    s_table4_[0x18E] = {"vpkshss",   PPUInterpreter::vpkshss,    dis_vpkshss};
+    s_table4_[0x1C4] = {"vsl",       PPUInterpreter::vsl,        dis_vsl};
+    s_table4_[0x1C6] = {"vcmpgefp",  PPUInterpreter::vcmpgefp,   dis_vcmpgefp};
+    s_table4_[0x1CA] = {"vlogefp",   PPUInterpreter::vlogefp,    dis_vlogefp};
+    s_table4_[0x1CE] = {"vpkswss",   PPUInterpreter::vpkswss,    dis_vpkswss};
+    s_table4_[0x200] = {"vaddubs",   PPUInterpreter::vaddubs,    dis_vaddubs};
+    s_table4_[0x202] = {"vminub",    PPUInterpreter::vminub,     dis_vminub};
+    s_table4_[0x204] = {"vsrb",      PPUInterpreter::vsrb,       dis_vsrb};
+    s_table4_[0x206] = {"vcmpgtub",  PPUInterpreter::vcmpgtub,   dis_vcmpgtub};
+    s_table4_[0x208] = {"vmuleub",   PPUInterpreter::vmuleub,    dis_vmuleub};
+    s_table4_[0x20A] = {"vrfin",     PPUInterpreter::vrfin,      dis_vrfin};
+    s_table4_[0x20C] = {"vspltb",    PPUInterpreter::vspltb,     dis_vspltb};
+    s_table4_[0x20E] = {"vupkhsb",   PPUInterpreter::vupkhsb,    dis_vupkhsb};
+    s_table4_[0x240] = {"vadduhs",   PPUInterpreter::vadduhs,    dis_vadduhs};
+    s_table4_[0x242] = {"vminuh",    PPUInterpreter::vminuh,     dis_vminuh};
+    s_table4_[0x244] = {"vsrh",      PPUInterpreter::vsrh,       dis_vsrh};
+    s_table4_[0x246] = {"vcmpgtuh",  PPUInterpreter::vcmpgtuh,   dis_vcmpgtuh};
+    s_table4_[0x248] = {"vmuleuh",   PPUInterpreter::vmuleuh,    dis_vmuleuh};
+    s_table4_[0x24A] = {"vrfiz",     PPUInterpreter::vrfiz,      dis_vrfiz};
+    s_table4_[0x24C] = {"vsplth",    PPUInterpreter::vsplth,     dis_vsplth};
+    s_table4_[0x24E] = {"vupkhsh",   PPUInterpreter::vupkhsh,    dis_vupkhsh};
+    s_table4_[0x280] = {"vadduws",   PPUInterpreter::vadduws,    dis_vadduws};
+    s_table4_[0x282] = {"vminuw",    PPUInterpreter::vminuw,     dis_vminuw};
+    s_table4_[0x284] = {"vsrw",      PPUInterpreter::vsrw,       dis_vsrw};
+    s_table4_[0x286] = {"vcmpgtuw",  PPUInterpreter::vcmpgtuw,   dis_vcmpgtuw};
+    s_table4_[0x28A] = {"vrfip",     PPUInterpreter::vrfip,      dis_vrfip};
+    s_table4_[0x28C] = {"vspltw",    PPUInterpreter::vspltw,     dis_vspltw};
+    s_table4_[0x28E] = {"vupklsb",   PPUInterpreter::vupklsb,    dis_vupklsb};
+    s_table4_[0x2C4] = {"vsr",       PPUInterpreter::vsr,        dis_vsr};
+    s_table4_[0x2C6] = {"vcmpgtfp",  PPUInterpreter::vcmpgtfp,   dis_vcmpgtfp};
+    s_table4_[0x2CA] = {"vrfim",     PPUInterpreter::vrfim,      dis_vrfim};
+    s_table4_[0x2CE] = {"vupklsh",   PPUInterpreter::vupklsh,    dis_vupklsh};
+    s_table4_[0x300] = {"vaddsbs",   PPUInterpreter::vaddsbs,    dis_vaddsbs};
+    s_table4_[0x302] = {"vminsb",    PPUInterpreter::vminsb,     dis_vminsb};
+    s_table4_[0x304] = {"vsrab",     PPUInterpreter::vsrab,      dis_vsrab};
+    s_table4_[0x306] = {"vcmpgtsb",  PPUInterpreter::vcmpgtsb,   dis_vcmpgtsb};
+    s_table4_[0x308] = {"vmulesb",   PPUInterpreter::vmulesb,    dis_vmulesb};
+    s_table4_[0x30A] = {"vcfux",     PPUInterpreter::vcfux,      dis_vcfux};
+    s_table4_[0x30C] = {"vspltisb",  PPUInterpreter::vspltisb,   dis_vspltisb};
+    s_table4_[0x30E] = {"vpkpx",     PPUInterpreter::vpkpx,      dis_vpkpx};
+    s_table4_[0x340] = {"vaddshs",   PPUInterpreter::vaddshs,    dis_vaddshs};
+    s_table4_[0x342] = {"vminsh",    PPUInterpreter::vminsh,     dis_vminsh};
+    s_table4_[0x344] = {"vsrah",     PPUInterpreter::vsrah,      dis_vsrah};
+    s_table4_[0x346] = {"vcmpgtsh",  PPUInterpreter::vcmpgtsh,   dis_vcmpgtsh};
+    s_table4_[0x348] = {"vmulesh",   PPUInterpreter::vmulesh,    dis_vmulesh};
+    s_table4_[0x34A] = {"vcfsx",     PPUInterpreter::vcfsx,      dis_vcfsx};
+    s_table4_[0x34C] = {"vspltish",  PPUInterpreter::vspltish,   dis_vspltish};
+    s_table4_[0x34E] = {"vupkhpx",   PPUInterpreter::vupkhpx,    dis_vupkhpx};
+    s_table4_[0x380] = {"vaddsws",   PPUInterpreter::vaddsws,    dis_vaddsws};
+    s_table4_[0x382] = {"vminsw",    PPUInterpreter::vminsw,     dis_vminsw};
+    s_table4_[0x384] = {"vsraw",     PPUInterpreter::vsraw,      dis_vsraw};
+    s_table4_[0x386] = {"vcmpgtsw",  PPUInterpreter::vcmpgtsw,   dis_vcmpgtsw};
+    s_table4_[0x38A] = {"vctuxs",    PPUInterpreter::vctuxs,     dis_vctuxs};
+    s_table4_[0x38C] = {"vspltisw",  PPUInterpreter::vspltisw,   dis_vspltisw};
+    s_table4_[0x3C6] = {"vcmpbfp",   PPUInterpreter::vcmpbfp,    dis_vcmpbfp};
+    s_table4_[0x3CA] = {"vctsxs",    PPUInterpreter::vctsxs,     dis_vctsxs};
+    s_table4_[0x3CE] = {"vupklpx",   PPUInterpreter::vupklpx,    dis_vupklpx};
+    s_table4_[0x400] = {"vsububm",   PPUInterpreter::vsububm,    dis_vsububm};
+    s_table4_[0x402] = {"vavgub",    PPUInterpreter::vavgub,     dis_vavgub};
+    s_table4_[0x404] = {"vand",      PPUInterpreter::vand,       dis_vand};
+    s_table4_[0x406] = {"vcmpequb_", PPUInterpreter::vcmpequb_,  dis_vcmpequb_};
+    s_table4_[0x40A] = {"vmaxfp",    PPUInterpreter::vmaxfp,     dis_vmaxfp};
+    s_table4_[0x40C] = {"vslo",      PPUInterpreter::vslo,       dis_vslo};
+    s_table4_[0x440] = {"vsubuhm",   PPUInterpreter::vsubuhm,    dis_vsubuhm};
+    s_table4_[0x442] = {"vavguh",    PPUInterpreter::vavguh,     dis_vavguh};
+    s_table4_[0x444] = {"vandc",     PPUInterpreter::vandc,      dis_vandc};
+    s_table4_[0x446] = {"vcmpequh_", PPUInterpreter::vcmpequh_,  dis_vcmpequh_};
+    s_table4_[0x44A] = {"vminfp",    PPUInterpreter::vminfp,     dis_vminfp};
+    s_table4_[0x44C] = {"vsro",      PPUInterpreter::vsro,       dis_vsro};
+    s_table4_[0x480] = {"vsubuwm",   PPUInterpreter::vsubuwm,    dis_vsubuwm};
+    s_table4_[0x482] = {"vavguw",    PPUInterpreter::vavguw,     dis_vavguw};
+    s_table4_[0x484] = {"vor",       PPUInterpreter::vor,        dis_vor};
+    s_table4_[0x486] = {"vcmpequw_", PPUInterpreter::vcmpequw_,  dis_vcmpequw_};
+    s_table4_[0x4C4] = {"vxor",      PPUInterpreter::vxor,       dis_vxor};
+    s_table4_[0x4C6] = {"vcmpeqfp_", PPUInterpreter::vcmpeqfp_,  dis_vcmpeqfp_};
+    s_table4_[0x502] = {"vavgsb",    PPUInterpreter::vavgsb,     dis_vavgsb};
+    s_table4_[0x504] = {"vnor",      PPUInterpreter::vnor,       dis_vnor};
+    s_table4_[0x542] = {"vavgsh",    PPUInterpreter::vavgsh,     dis_vavgsh};
+    s_table4_[0x580] = {"vsubcuw",   PPUInterpreter::vsubcuw,    dis_vsubcuw};
+    s_table4_[0x582] = {"vavgsw",    PPUInterpreter::vavgsw,     dis_vavgsw};
+    s_table4_[0x5C6] = {"vcmpgefp_", PPUInterpreter::vcmpgefp_,  dis_vcmpgefp_};
+    s_table4_[0x600] = {"vsububs",   PPUInterpreter::vsububs,    dis_vsububs};
+    s_table4_[0x604] = {"mfvscr",    PPUInterpreter::mfvscr,     dis_mfvscr};
+    s_table4_[0x606] = {"vcmpgtub_", PPUInterpreter::vcmpgtub_,  dis_vcmpgtub_};
+    s_table4_[0x608] = {"vsum4ubs",  PPUInterpreter::vsum4ubs,   dis_vsum4ubs};
+    s_table4_[0x640] = {"vsubuhs",   PPUInterpreter::vsubuhs,    dis_vsubuhs};
+    s_table4_[0x644] = {"mtvscr",    PPUInterpreter::mtvscr,     dis_mtvscr};
+    s_table4_[0x646] = {"vcmpgtuh_", PPUInterpreter::vcmpgtuh_,  dis_vcmpgtuh_};
+    s_table4_[0x648] = {"vsum4shs",  PPUInterpreter::vsum4shs,   dis_vsum4shs};
+    s_table4_[0x680] = {"vsubuws",   PPUInterpreter::vsubuws,    dis_vsubuws};
+    s_table4_[0x686] = {"vcmpgtuw_", PPUInterpreter::vcmpgtuw_,  dis_vcmpgtuw_};
+    s_table4_[0x688] = {"vsum2sws",  PPUInterpreter::vsum2sws,   dis_vsum2sws};
+    s_table4_[0x6C6] = {"vcmpgtfp_", PPUInterpreter::vcmpgtfp_,  dis_vcmpgtfp_};
+    s_table4_[0x700] = {"vsubsbs",   PPUInterpreter::vsubsbs,    dis_vsubsbs};
+    s_table4_[0x706] = {"vcmpgtsb_", PPUInterpreter::vcmpgtsb_,  dis_vcmpgtsb_};
+    s_table4_[0x708] = {"vsum4sbs",  PPUInterpreter::vsum4sbs,   dis_vsum4sbs};
+    s_table4_[0x740] = {"vsubshs",   PPUInterpreter::vsubshs,    dis_vsubshs};
+    s_table4_[0x746] = {"vcmpgtsh_", PPUInterpreter::vcmpgtsh_,  dis_vcmpgtsh_};
+    s_table4_[0x780] = {"vsubsws",   PPUInterpreter::vsubsws,    dis_vsubsws};
+    s_table4_[0x786] = {"vcmpgtsw_", PPUInterpreter::vcmpgtsw_,  dis_vcmpgtsw_};
+    s_table4_[0x788] = {"vsumsws",   PPUInterpreter::vsumsws,    dis_vsumsws};
+    s_table4_[0x7C6] = {"vcmpbfp_",  PPUInterpreter::vcmpbfp_,   dis_vcmpbfp_};
 
     // Initialize Table 19
     for (auto& caller : s_table19) {
@@ -263,22 +419,60 @@ void initTables()
     for (auto& caller : s_table59) {
         caller = {"unknown", PPUInterpreter::unknown, dis_unknown};
     }
+    s_table59[0x12] = {"fdivs",    PPUInterpreter::fdivs,    dis_fdivs};
+    s_table59[0x14] = {"fsubs",    PPUInterpreter::fsubs,    dis_fsubs};
+    s_table59[0x15] = {"fadds",    PPUInterpreter::fadds,    dis_fadds};
+    s_table59[0x16] = {"fsqrts",   PPUInterpreter::fsqrts,   dis_fsqrts};
+    s_table59[0x18] = {"fres",     PPUInterpreter::fres,     dis_fres};
+    s_table59[0x19] = {"fmuls",    PPUInterpreter::fmuls,    dis_fmuls};
+    s_table59[0x1C] = {"fmsubs",   PPUInterpreter::fmsubs,   dis_fmsubs};
+    s_table59[0x1D] = {"fmadds",   PPUInterpreter::fmadds,   dis_fmadds};
+    s_table59[0x1E] = {"fnmsubs",  PPUInterpreter::fnmsubs,  dis_fnmsubs};
+    s_table59[0x1F] = {"fnmadds",  PPUInterpreter::fnmadds,  dis_fnmadds};
 
     // Initialize Table 62
     for (auto& caller : s_table62) {
         caller = {"unknown", PPUInterpreter::unknown, dis_unknown};
     }
-
+    s_table62[0x0] = {"std",   PPUInterpreter::std,   dis_std};
+    s_table62[0x1] = {"stdu",  PPUInterpreter::stdu,  dis_stdu};
 
     // Initialize Table 63
     for (auto& caller : s_table63) {
         caller = {"", PPUInterpreter::callTable63_, dis_unknown};
     }
-    s_table62[0x0] = {"std",   PPUInterpreter::std,   dis_std};
-    s_table62[0x1] = {"stdu",  PPUInterpreter::stdu,  dis_stdu};
+    s_table63[0x17] = {"fsel",      PPUInterpreter::fsel,    dis_fsel};
+    s_table63[0x19] = {"fmul",      PPUInterpreter::fmul,    dis_fmul};
+    s_table63[0x1C] = {"fmsub",     PPUInterpreter::fmsub,   dis_fmsub};
+    s_table63[0x1D] = {"fmadd",     PPUInterpreter::fmadd,   dis_fmadd};
+    s_table63[0x1E] = {"fnmsub",    PPUInterpreter::fnmsub,  dis_fnmsub};
+    s_table63[0x1F] = {"fnmadd",    PPUInterpreter::fnmadd,  dis_fnmadd};
 
     // Initialize Table 63 (Extended)
     for (auto& caller : s_table63_) {
         caller = {"unknown", PPUInterpreter::unknown, dis_unknown};
     }
+    s_table63_[0x000] = {"fcmpu",   PPUInterpreter::fcmpu,   dis_fcmpu};
+    s_table63_[0x00C] = {"frsp",    PPUInterpreter::frsp,    dis_frsp};
+    s_table63_[0x00E] = {"fctiw",   PPUInterpreter::fctiw,   dis_fctiw};
+    s_table63_[0x00F] = {"fctiwz",  PPUInterpreter::fctiwz,  dis_fctiwz};
+    s_table63_[0x012] = {"fdiv",    PPUInterpreter::fdiv,    dis_fdiv};
+    s_table63_[0x014] = {"fsub",    PPUInterpreter::fsub,    dis_fsub};
+    s_table63_[0x015] = {"fadd",    PPUInterpreter::fadd,    dis_fadd};
+    s_table63_[0x016] = {"fsqrt",   PPUInterpreter::fsqrt,   dis_fsqrt};
+    s_table63_[0x01A] = {"frsqrte", PPUInterpreter::frsqrte, dis_frsqrte};
+    s_table63_[0x020] = {"fcmpo",   PPUInterpreter::fcmpo,   dis_fcmpo};
+    s_table63_[0x026] = {"mtfsb1",  PPUInterpreter::mtfsb1,  dis_mtfsb1};
+    s_table63_[0x028] = {"fneg",    PPUInterpreter::fneg,    dis_fneg};
+    s_table63_[0x040] = {"mcrfs",   PPUInterpreter::mcrfs,   dis_mcrfs};
+    s_table63_[0x046] = {"mtfsb0",  PPUInterpreter::mtfsb0,  dis_mtfsb0};
+    s_table63_[0x048] = {"fmr",     PPUInterpreter::fmr,     dis_fmr};
+    s_table63_[0x086] = {"mtfsfi",  PPUInterpreter::mtfsfi,  dis_mtfsfi};
+    s_table63_[0x088] = {"fnabs",   PPUInterpreter::fnabs,   dis_fnabs};
+    s_table63_[0x108] = {"fabs",    PPUInterpreter::fabs,    dis_fabs};
+    s_table63_[0x247] = {"mffs",    PPUInterpreter::mffs,    dis_mffs};
+    s_table63_[0x2C7] = {"mtfsf",   PPUInterpreter::mtfsf,   dis_mtfsf};
+    s_table63_[0x32E] = {"fctid",   PPUInterpreter::fctid,   dis_fctid};
+    s_table63_[0x32F] = {"fctidz",  PPUInterpreter::fctidz,  dis_fctidz};
+    s_table63_[0x34E] = {"fcfid",   PPUInterpreter::fcfid,   dis_fcfid};
 }

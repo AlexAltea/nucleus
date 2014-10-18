@@ -59,7 +59,7 @@ union PPUFields
     FIELD(11, 15, u32 fra);     // FPR: Source
     FIELD(16, 20, u32 frb);     // FPR: Source
     FIELD(21, 25, u32 frc);     // FPR: Source
-    FIELD(16, 19, u32 i);       // ?
+    FIELD(16, 19, u32 imm);     // Immediate for to place in FPSCR
     FIELD( 6, 29, s32 li);      // Branching:
     FIELD( 6, 29, s32 ll);      // Branching:
     FIELD(21, 25, u32 mb);      // First '1' bit of a 64-bit mask in rotate instructions

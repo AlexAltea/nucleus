@@ -18,8 +18,8 @@ s32 sys_semaphore_create(be_t<u32>* sem_id, sys_semaphore_attribute_t* attr, s32
         return CELL_EINVAL;
     }
     if ((initial_count < 0 || max_count < initial_count) || max_count <= 0) {
-		return CELL_EINVAL;
-	}
+        return CELL_EINVAL;
+    }
 
     // Check for process-shareable flag
     if (attr->pshared == SYS_SYNC_PROCESS_SHARED) {
