@@ -100,7 +100,7 @@ bool LV2::init()
     }
     sys_prx_start_module_option_t startFunc;
     sys_prx_start_module(moduleId, 0, &startFunc);
-    Callback{startFunc.entry}.call();
+    Callback{(u32)startFunc.entry}.call();
     return true;
 }
 

@@ -11,6 +11,8 @@
 
 #if defined(NUCLEUS_WIN)
 #include <Windows.h>
+#elif defined(NUCLEUS_LINUX)
+#include <unistd.h>
 #endif
 
 const char* getOpenMode(OpenMode mode)
@@ -71,12 +73,27 @@ std::string getEmulatorPath()
  */
 std::string getProcessPath(const std::string& elfPath)
 {
+    // Get current working directory
     char buffer[4096];
-#ifdef NUCLEUS_WIN
+#if defined(NUCLEUS_WIN)
     GetCurrentDirectory(sizeof(buffer), buffer);
+#elif defined(NUCLEUS_LINUX)
+    getcwd(buffer, sizeof(buffer));
 #endif
 
-    std::string procPath = buffer + ('/' + elfPath);
+    // Check if elfPath is absolute
+    std::string procPath;
+#if defined(NUCLEUS_WIN)
+    if (elfPath.find(':') != std::string::npos) {
+#else
+    if (elfPath[0] == '/') {
+#endif
+        procPath = elfPath;
+    } else {
+        procPath = buffer + ('/' + elfPath);
+    }
+
+    // Get the path to the actual folder containing the ELF binary
 #if defined(NUCLEUS_WIN)
     std::replace(procPath.begin(), procPath.end(), '/', '\\');
     int pos = procPath.rfind('\\');

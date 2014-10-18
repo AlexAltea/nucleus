@@ -23,7 +23,6 @@
 
 // Instruction tables
 static bool b_tablesInitialized = false;
-typedef void (*func_t)(PPUFields, PPUThread&);
 
 // Instruction callers
 void PPUInterpreter::callTable4  (PPUFields code, PPUThread& thread) { s_table4[code.op4].interpreter(code, thread); }
@@ -37,17 +36,22 @@ void PPUInterpreter::callTable62 (PPUFields code, PPUThread& thread) { s_table62
 void PPUInterpreter::callTable63 (PPUFields code, PPUThread& thread) { s_table63[code.op63].interpreter(code, thread); }
 void PPUInterpreter::callTable63_(PPUFields code, PPUThread& thread) { s_table63_[code.op63_].interpreter(code, thread); }
 
-/**
- * Rotation-related functions
- */
-inline u8 rotl8(const u8 x, const u8 n) { return (x << n) | (x >> (8 - n)); }
-inline u8 rotr8(const u8 x, const u8 n) { return (x >> n) | (x << (8 - n)); }
-inline u16 rotl16(const u16 x, const u8 n) { return (x << n) | (x >> (16 - n)); }
-inline u16 rotr16(const u16 x, const u8 n) { return (x >> n) | (x << (16 - n)); }
-inline u32 rotl32(const u32 x, const u8 n) { return (x << n) | (x >> (32 - n)); }
-inline u32 rotr32(const u32 x, const u8 n) { return (x >> n) | (x << (32 - n)); }
+// PowerPC Rotation-related functions
 inline u64 rotl64(const u64 x, const u8 n) { return (x << n) | (x >> (64 - n)); }
-inline u64 rotr64(const u64 x, const u8 n) { return (x >> n) | (x << (64 - n)); }
+inline u64 rotl32(const u32 x, const u8 n) { return rotl64((u64)x | ((u64)x << 32), n); }
+inline u16 rotl16(const u16 x, const u8 n) { return (x << n) | (x >> (16 - n)); }
+inline u8 rotl8(const u8 x, const u8 n) { return (x << n) | (x >> (8 - n)); }
+
+// Reverse order of bits
+u32 bitReverse32(u32 x)
+{
+    x = ((x >> 1) & 0x55555555u) | ((x & 0x55555555u) << 1);
+    x = ((x >> 2) & 0x33333333u) | ((x & 0x33333333u) << 2);
+    x = ((x >> 4) & 0x0f0f0f0fu) | ((x & 0x0f0f0f0fu) << 4);
+    x = ((x >> 8) & 0x00ff00ffu) | ((x & 0x00ff00ffu) << 8);
+    x = ((x >> 16) & 0xffffu) | ((x & 0xffffu) << 16);
+    return x;
+}
 
 static u64 rotateMask[64][64];
 void initRotateMask()
@@ -56,9 +60,9 @@ void initRotateMask()
     if (initialized) {
         return;
     }
-    for (int mb = 0; mb < 64; mb++) {
+    for (u32 mb = 0; mb < 64; mb++) {
         for(u32 me = 0; me < 64; me++) {
-            const u64 mask = (~1ULL >> mb) ^ ((me >= 63) ? 0 : ~1ULL >> (me + 1));
+            const u64 mask = (~0ULL >> mb) ^ ((me >= 63) ? 0 : ~0ULL >> (me + 1));
             rotateMask[mb][me] = mb > me ? ~mask : mask;
         }
     }
@@ -278,8 +282,7 @@ void PPUInterpreter::cmp(PPUFields code, PPUThread& thread)
 {
     if (code.l10) {
         thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)thread.gpr[code.rb]);
-    }
-    else {
+    } else {
         thread.cr.updateField(code.crfd, (s32)thread.gpr[code.ra], (s32)thread.gpr[code.rb]);
     }
 }
@@ -287,8 +290,7 @@ void PPUInterpreter::cmpi(PPUFields code, PPUThread& thread)
 {
     if (code.l10) {
         thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)code.simm);
-    }
-    else {
+    } else {
         thread.cr.updateField(code.crfd, (s32)thread.gpr[code.ra], (s32)code.simm);
     }
 }
@@ -296,18 +298,16 @@ void PPUInterpreter::cmpl(PPUFields code, PPUThread& thread)
 {
     if (code.l10) {
         thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)thread.gpr[code.rb]);
-    }
-    else {
+    } else {
         thread.cr.updateField(code.crfd, (u32)thread.gpr[code.ra], (u32)thread.gpr[code.rb]);
     }
 }
 void PPUInterpreter::cmpli(PPUFields code, PPUThread& thread)
 {
     if (code.l10) {
-        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)code.simm);
-    }
-    else {
-        thread.cr.updateField(code.crfd, (u32)thread.gpr[code.ra], (u32)code.simm);
+        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)code.uimm);
+    } else {
+        thread.cr.updateField(code.crfd, (u32)thread.gpr[code.ra], (u32)code.uimm);
     }
 }
 void PPUInterpreter::cntlzd(PPUFields code, PPUThread& thread)
@@ -319,7 +319,7 @@ void PPUInterpreter::cntlzd(PPUFields code, PPUThread& thread)
         }
     }
     thread.gpr[code.ra] = i;
-    if (code.rc) thread.cr.setBit(thread.cr.CR_LT, false);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::cntlzw(PPUFields code, PPUThread& thread)
 {
@@ -330,7 +330,7 @@ void PPUInterpreter::cntlzw(PPUFields code, PPUThread& thread)
         }
     }
     thread.gpr[code.ra] = i;
-    if (code.rc) thread.cr.setBit(thread.cr.CR_LT, false);
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::crand(PPUFields code, PPUThread& thread)
 {
@@ -707,7 +707,7 @@ void PPUInterpreter::mcrfs(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::mfocrf(PPUFields code, PPUThread& thread)
 {
-    thread.gpr[code.rd] = thread.cr.CR;
+    thread.gpr[code.rd] = bitReverse32(thread.cr.CR);
 }
 void PPUInterpreter::mfspr(PPUFields code, PPUThread& thread)
 {
@@ -864,12 +864,17 @@ void PPUInterpreter::oris(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::rldc_lr(PPUFields code, PPUThread& thread)
 {
+    const u32 rotate = thread.gpr[code.rb] & 0x3F;
+    const u32 mb = code.mb | (code.mb_ << 5);
     if (code.aa) {
-        rldicrx(code, thread);
+        // rldcrx
+        thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], rotate) & rotateMask[0][mb];
     }
     else {
-        rldiclx(code, thread);
+        // rldclx
+        thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], rotate) & rotateMask[mb][63];
     }
+    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::rldicx(PPUFields code, PPUThread& thread)
 {
@@ -902,8 +907,9 @@ void PPUInterpreter::rldimix(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::rlwimix(PPUFields code, PPUThread& thread)
 {
-    const u64 mask = rotateMask[32 + code.mb][32 + code.me];
-    thread.gpr[code.ra] = (thread.gpr[code.ra] & ~mask) | (rotl32(thread.gpr[code.rs], code.sh) & mask);
+    const u64 r = rotl32(thread.gpr[code.rs], code.sh);
+    const u64 m = rotateMask[32 + code.mb][32 + code.me];
+    thread.gpr[code.ra] = (r & m) | (thread.gpr[code.ra] & ~m);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::rlwinmx(PPUFields code, PPUThread& thread)
@@ -927,10 +933,8 @@ void PPUInterpreter::sc(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::sld(PPUFields code, PPUThread& thread)
 {
-    u32 n = thread.gpr[code.rb] & 0x3f;
-    u64 r = rotl64(thread.gpr[code.rs], n);
-    u64 m = (thread.gpr[code.rb] & 0x40) ? 0 : rotateMask[0][63 - n];
-    thread.gpr[code.ra] = r & m;
+    const u64 shift = thread.gpr[code.rb] & 0x7F;
+    thread.gpr[code.ra] = (shift & 0x40) ? 0 : (thread.gpr[code.rs] << shift);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::slw(PPUFields code, PPUThread& thread)
@@ -955,16 +959,13 @@ void PPUInterpreter::srad(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::sradi1(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sradi(PPUFields code, PPUThread& thread)
 {
-    s64 RS = thread.gpr[code.rs];
-    thread.gpr[code.ra] = RS >> code.sh;
-    thread.xer.CA = (RS < 0) & ((thread.gpr[code.ra] << code.sh) != RS);
+    const s64 rs = thread.gpr[code.rs];
+    const u32 sh = code.sh | (code.sh_ << 5);
+    thread.gpr[code.ra] = rs >> sh;
+    thread.xer.CA = (rs < 0) & ((thread.gpr[code.ra] << sh) != rs);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
-}
-void PPUInterpreter::sradi2(PPUFields code, PPUThread& thread)
-{
-    sradi1(code, thread);
 }
 void PPUInterpreter::sraw(PPUFields code, PPUThread& thread)
 {
@@ -989,10 +990,8 @@ void PPUInterpreter::srawi(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::srd(PPUFields code, PPUThread& thread)
 {
-    u32 n = thread.gpr[code.rb] & 0x3f;
-    u64 m = (thread.gpr[code.rb] & 0x40) ? 0 : rotateMask[n][63];
-    u64 r = rotl64(thread.gpr[code.rs], 64 - n);
-    thread.gpr[code.ra] = r & m;
+    const u64 shift = thread.gpr[code.rb] & 0x7F;
+    thread.gpr[code.ra] = (shift & 0x40) ? 0 : (thread.gpr[code.rs] >> shift);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
 void PPUInterpreter::srw(PPUFields code, PPUThread& thread)

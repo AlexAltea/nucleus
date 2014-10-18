@@ -161,8 +161,7 @@ public:
     static void sld(PPUFields code, PPUThread& thread);
     static void slw(PPUFields code, PPUThread& thread);
     static void srad(PPUFields code, PPUThread& thread);
-    static void sradi1(PPUFields code, PPUThread& thread);
-    static void sradi2(PPUFields code, PPUThread& thread);
+    static void sradi(PPUFields code, PPUThread& thread);
     static void sraw(PPUFields code, PPUThread& thread);
     static void srawi(PPUFields code, PPUThread& thread);
     static void srd(PPUFields code, PPUThread& thread);

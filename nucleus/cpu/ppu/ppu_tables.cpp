@@ -148,7 +148,7 @@ void initTables()
     s_table31[0x037] = {"lwzux",   PPUInterpreter::lwzux,     dis_lwzux};
     s_table31[0x03a] = {"cntlzd",  PPUInterpreter::cntlzd,    dis_cntlzdx};
     s_table31[0x03c] = {"andc",    PPUInterpreter::andc,      dis_andcx};
-    s_table31[0x03c] = {"td",      PPUInterpreter::td,        dis_td};
+    s_table31[0x044] = {"td",      PPUInterpreter::td,        dis_td};
     s_table31[0x047] = {"lvewx",   PPUInterpreter::lvewx,     dis_unknown};
     s_table31[0x049] = {"mulhd",   PPUInterpreter::mulhd,     dis_mulhdx};
     s_table31[0x04b] = {"mulhw",   PPUInterpreter::mulhw,     dis_mulhwx};
@@ -238,8 +238,8 @@ void initTables()
     s_table31[0x327] = {"lvrxl",   PPUInterpreter::lvrxl,     dis_unknown};
     s_table31[0x336] = {"dss",     PPUInterpreter::dss,       dis_unknown};
     s_table31[0x338] = {"srawi",   PPUInterpreter::srawi,     dis_srawix};
-    s_table31[0x33a] = {"sradi1",  PPUInterpreter::sradi1,    dis_unknown};
-    s_table31[0x33b] = {"sradi2",  PPUInterpreter::sradi2,    dis_unknown};
+    s_table31[0x33a] = {"sradi",   PPUInterpreter::sradi,     dis_unknown};
+    s_table31[0x33b] = {"sradi",   PPUInterpreter::sradi,     dis_unknown};
     s_table31[0x356] = {"eieio",   PPUInterpreter::eieio,     dis_eieio};
     s_table31[0x387] = {"stvlxl",  PPUInterpreter::stvlxl,    dis_unknown};
     s_table31[0x396] = {"sthbrx",  PPUInterpreter::sthbrx,    dis_sthbrx};
