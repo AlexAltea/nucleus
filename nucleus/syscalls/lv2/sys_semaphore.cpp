@@ -53,7 +53,7 @@ s32 sys_semaphore_get_value(u32 sem_id, be_t<s32>* val)
         return CELL_ESRCH;
     }
     if (val == nucleus.memory.ptr(0)) {
-        return CELL_EINVAL;
+        return CELL_EFAULT;
     }
 
     *val = semaphore->count;
@@ -71,7 +71,7 @@ s32 sys_semaphore_post(u32 sem_id, s32 val)
     if (val < 0) {
         return CELL_EINVAL;
     }
-    if (semaphore->count + val < semaphore->max_count) {
+    if (semaphore->count + val > semaphore->max_count) {
         return CELL_EBUSY;
     }
 

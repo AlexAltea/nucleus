@@ -138,6 +138,20 @@ public:
     }
 };
 
+template<typename TR, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+class SyscallBinder<TR, T1, T2, T3, T4, T5, T6, T7, T8> : public Syscall
+{
+    TR(*m_func)(T1, T2, T3, T4, T5, T6, T7, T8);
+
+public:
+    SyscallBinder(TR(*func)(T1, T2, T3, T4, T5, T6, T7, T8)) : m_func(func) {}
+
+    virtual void call(PPUThread& thread, void* memoryBase)
+    {
+        thread.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5), ARG_GPR(T7,6), ARG_GPR(T8,7));
+    }
+};
+
 template<typename TR, typename... TA>
 Syscall* wrap(TR(*func)(TA...))
 {

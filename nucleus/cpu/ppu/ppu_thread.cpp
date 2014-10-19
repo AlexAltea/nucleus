@@ -20,7 +20,7 @@ PPUThread::PPUThread(u32 entry)
 
     // Initialize registers (TODO: All of this might be wrong)
     gpr[0] = pc;
-    gpr[1] = m_stackPointer;
+    gpr[1] = m_stackPointer - 0x200;
     gpr[2] = rtoc;
     gpr[3] = 0;
     gpr[4] = nucleus.memory.alloc(4,4);

@@ -10,6 +10,7 @@
 // Process objects
 enum
 {
+    // Official
     SYS_MEM_OBJECT                  = 0x08,
     SYS_MUTEX_OBJECT                = 0x85,
     SYS_COND_OBJECT                 = 0x86,
@@ -28,6 +29,9 @@ enum
     SYS_FS_FD_OBJECT                = 0x73,
     SYS_LWCOND_OBJECT               = 0x97,
     SYS_EVENT_FLAG_OBJECT           = 0x98,
+
+    // Custom
+    SYS_PPU_THREAD_OBJECT           = 0x01,
 };
 
 // ELF file header

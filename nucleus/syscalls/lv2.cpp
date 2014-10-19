@@ -14,12 +14,14 @@
 #include "lv2/sys_memory.h"
 #include "lv2/sys_mmapper.h"
 #include "lv2/sys_mutex.h"
+#include "lv2/sys_ppu_thread.h"
 #include "lv2/sys_process.h"
 #include "lv2/sys_prx.h"
 #include "lv2/sys_rsx.h"
 #include "lv2/sys_semaphore.h"
 #include "lv2/sys_ss.h"
 #include "lv2/sys_time.h"
+#include "lv2/sys_timer.h"
 #include "lv2/sys_tty.h"
 
 LV2::LV2(u32 fw_type)
@@ -27,10 +29,14 @@ LV2::LV2(u32 fw_type)
     // Initialize syscall table
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
         m_syscalls[0x001] = {wrap(sys_process_getpid), LV2_NONE};
-        m_syscalls[0x019] = {wrap(sys_process_get_sdk_version), LV2_NONE};
         m_syscalls[0x003] = {wrap(sys_process_exit), LV2_NONE};
         m_syscalls[0x016] = {wrap(sys_process_exit), LV2_NONE};
-        m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};       
+        m_syscalls[0x019] = {wrap(sys_process_get_sdk_version), LV2_NONE};
+        m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
+        m_syscalls[0x029] = {wrap(sys_ppu_thread_exit), LV2_NONE};
+        m_syscalls[0x02C] = {wrap(sys_ppu_thread_join), LV2_NONE};
+        m_syscalls[0x034] = {wrap(sys_ppu_thread_create), LV2_NONE};
+        m_syscalls[0x035] = {wrap(sys_ppu_thread_start), LV2_NONE};
         m_syscalls[0x05A] = {wrap(sys_semaphore_create), LV2_NONE};
         m_syscalls[0x05B] = {wrap(sys_semaphore_destroy), LV2_NONE};
         m_syscalls[0x05C] = {wrap(sys_semaphore_wait), LV2_NONE};
@@ -53,6 +59,8 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x06D] = {wrap(sys_cond_signal_all), LV2_NONE};
         m_syscalls[0x06E] = {wrap(sys_cond_signal_to), LV2_NONE};
         m_syscalls[0x072] = {wrap(sys_semaphore_get_value), LV2_NONE};
+        m_syscalls[0x08D] = {wrap(sys_timer_usleep), LV2_NONE};
+        m_syscalls[0x08E] = {wrap(sys_timer_sleep), LV2_NONE};
         m_syscalls[0x090] = {wrap(sys_time_get_timezone), LV2_NONE};
         m_syscalls[0x091] = {wrap(sys_time_get_current_time), LV2_NONE};
         m_syscalls[0x093] = {wrap(sys_time_get_timebase_frequency), LV2_NONE};
@@ -74,6 +82,8 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x1EE] = {wrap(sys_prx_get_module_list), LV2_NONE};
         m_syscalls[0x29C] = {wrap(sys_rsx_memory_allocate), LV2_NONE};
         m_syscalls[0x29E] = {wrap(sys_rsx_context_allocate), LV2_NONE};
+        m_syscalls[0x2A0] = {wrap(sys_rsx_context_iomap), LV2_NONE};
+        m_syscalls[0x2A2] = {wrap(sys_rsx_context_attribute), LV2_NONE};
         m_syscalls[0x2A3] = {wrap(sys_rsx_device_map), LV2_NONE};
         m_syscalls[0x321] = {wrap(sys_fs_open), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
@@ -92,6 +102,8 @@ LV2::LV2(u32 fw_type)
 
 bool LV2::init()
 {
+    initialized = true;
+
     // Load and start liblv2.sprx module
     s32 moduleId = sys_prx_load_module("/dev_flash/sys/external/liblv2.sprx", 0, 0);
     if (moduleId <= CELL_OK) {

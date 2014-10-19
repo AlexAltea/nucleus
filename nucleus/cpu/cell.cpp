@@ -14,7 +14,7 @@
 
 thread_local CellThread* g_this_thread = nullptr;
 
-CellThread& Cell::addThread(CellThreadType type, u32 entry=0)
+CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     CellThread* thread;
@@ -23,7 +23,6 @@ CellThread& Cell::addThread(CellThreadType type, u32 entry=0)
     {
     case CELL_THREAD_PPU:
         thread = new PPUThread(entry);
-        thread->start();
         break;
     default:
         // TODO: Error
@@ -31,7 +30,7 @@ CellThread& Cell::addThread(CellThreadType type, u32 entry=0)
     }
 
     m_threads.push_back(thread);
-    return *thread;
+    return thread;
 }
 
 CellThread* Cell::getCurrentThread()

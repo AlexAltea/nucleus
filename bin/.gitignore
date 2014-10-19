@@ -4,3 +4,4 @@ dev_flash/**/*.pic
 dev_flash/**/*.sprx
 *.self
 *.elf
+*.bat

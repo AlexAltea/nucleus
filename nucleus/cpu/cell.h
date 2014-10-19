@@ -24,7 +24,7 @@ class Cell
 
 public:
     // Thread management
-    CellThread& addThread(CellThreadType type, u32 entry);
+    CellThread* addThread(CellThreadType type, u32 entry);
     void removeThread(u32 id);
 
     // Current thread

@@ -1,0 +1,50 @@
+/**
+ * (c) 2014 Nucleus project. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
+
+#include "sys_ppu_thread.h"
+#include "nucleus/syscalls/lv2.h"
+#include "nucleus/emulator.h"
+
+s32 sys_ppu_thread_create(be_t<u64>* thread_id, be_t<u32>* entry, u64 arg, u64 unk0, s32 prio, u32 stacksize, u64 flags, s8* threadname)
+{
+    auto* thread = (PPUThread*)nucleus.cell.addThread(CELL_THREAD_PPU, *entry);
+    thread->gpr[3] = arg;
+
+    *thread_id = nucleus.lv2.objects.add(thread, SYS_PPU_THREAD_OBJECT);
+    return CELL_OK;
+}
+
+s32 sys_ppu_thread_exit(s32 errorcode)
+{
+    auto* thread = nucleus.cell.getCurrentThread();
+    thread->stop();
+    return CELL_OK;
+}
+
+s32 sys_ppu_thread_join(u64 thread_id, be_t<u64>* vptr)
+{
+    auto* thread = nucleus.lv2.objects.get<PPUThread>(thread_id);
+
+    // Check requisites
+    if (!thread) {
+        return CELL_ESRCH;
+    }
+
+    thread->join();
+    return CELL_OK;
+}
+
+s32 sys_ppu_thread_start(u64 thread_id)
+{
+    auto* thread = nucleus.lv2.objects.get<PPUThread>(thread_id);
+
+    // Check requisites
+    if (!thread) {
+        return CELL_ESRCH;
+    }
+
+    thread->start();
+    return CELL_OK;
+}

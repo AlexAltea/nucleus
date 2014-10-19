@@ -76,6 +76,7 @@ PPUInterpreter::PPUInterpreter(PPUThread& thr) : thread(thr)
     // Initialize PPU Instruction tables (Remove once designated initializers are available in C++)
     if (!b_tablesInitialized) {
         initTables();
+        b_tablesInitialized = true;
     }
 }
 

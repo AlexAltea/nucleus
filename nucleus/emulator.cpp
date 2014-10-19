@@ -30,15 +30,13 @@ bool Emulator::load(const std::string& filepath)
     self.load_elf();
 
     // Prepare Thread (will initialize LV2 before going to its entry point)
-    switch (self.getMachine()) {
-    case MACHINE_PPC64:
-        cell.addThread(CELL_THREAD_PPU, self.getEntry());
-        break;
-    default:
-        log.error(LOG_LOADER, "ELF's required architecture not supported");
-        break;
+    if (self.getMachine() != MACHINE_PPC64) {
+        log.error(LOG_COMMON, "Only PPC64 executables are allowed");
+        return false;
     }
 
+    auto* thread = (PPUThread*)cell.addThread(CELL_THREAD_PPU, self.getEntry());
+    thread->start();
     return true;
 }
 

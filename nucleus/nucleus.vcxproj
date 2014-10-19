@@ -102,12 +102,14 @@
     <ClCompile Include="syscalls\lv2\sys_memory.cpp" />
     <ClCompile Include="syscalls\lv2\sys_mmapper.cpp" />
     <ClCompile Include="syscalls\lv2\sys_mutex.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_ppu_thread.cpp" />
     <ClCompile Include="syscalls\lv2\sys_process.cpp" />
     <ClCompile Include="syscalls\lv2\sys_prx.cpp" />
     <ClCompile Include="syscalls\lv2\sys_rsx.cpp" />
     <ClCompile Include="syscalls\lv2\sys_semaphore.cpp" />
     <ClCompile Include="syscalls\lv2\sys_ss.cpp" />
     <ClCompile Include="syscalls\lv2\sys_time.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_timer.cpp" />
     <ClCompile Include="syscalls\lv2\sys_tty.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,12 +143,14 @@
     <ClInclude Include="syscalls\lv2\sys_memory.h" />
     <ClInclude Include="syscalls\lv2\sys_mmapper.h" />
     <ClInclude Include="syscalls\lv2\sys_mutex.h" />
+    <ClInclude Include="syscalls\lv2\sys_ppu_thread.h" />
     <ClInclude Include="syscalls\lv2\sys_process.h" />
     <ClInclude Include="syscalls\lv2\sys_prx.h" />
     <ClInclude Include="syscalls\lv2\sys_rsx.h" />
     <ClInclude Include="syscalls\lv2\sys_semaphore.h" />
     <ClInclude Include="syscalls\lv2\sys_ss.h" />
     <ClInclude Include="syscalls\lv2\sys_time.h" />
+    <ClInclude Include="syscalls\lv2\sys_timer.h" />
     <ClInclude Include="syscalls\lv2\sys_tty.h" />
     <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
