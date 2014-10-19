@@ -18,7 +18,6 @@ s32 sys_tty_write(s32 ch, s8* buf, s32 len, u32* pwritelen)
         return CELL_EINVAL;
     }
 
-    std::cout << buf;
-
+    std::cout << std::string(buf, len).c_str();
     return CELL_OK;
 }

@@ -220,7 +220,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                 u32 addr = prx->segments[rel.index_addr].addr + rel.offset;
                 u32 value = 0;
 
-                switch (rel.type) {
+                switch (rel.type.ToLE()) {
                 case 1:  // Patch 32-bit pointers
                     value = (u32)prx->segments[rel.index_value].addr + rel.ptr;
                     nucleus.memory.write32(addr, value);

@@ -11,7 +11,7 @@
 s32 sys_semaphore_create(be_t<u32>* sem_id, sys_semaphore_attribute_t* attr, s32 initial_count, s32 max_count)
 {
     // Check requisites
-    if (attr == nucleus.memory.ptr(0)) {
+    if (sem_id == nucleus.memory.ptr(0) || attr == nucleus.memory.ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {
@@ -89,6 +89,11 @@ s32 sys_semaphore_trywait(u32 sem_id)
 {
     auto* semaphore = nucleus.lv2.objects.get<sys_semaphore_t>(sem_id);
 
+    // Check requisites
+    if (!semaphore) {
+        return CELL_ESRCH;
+    }
+
     // If semaphore count is positive, decrement it and continue
     std::unique_lock<std::mutex> lock(semaphore->mutex);
     if (semaphore->count > 0) {
@@ -101,6 +106,11 @@ s32 sys_semaphore_trywait(u32 sem_id)
 s32 sys_semaphore_wait(u32 sem_id, u64 timeout)
 {
     auto* semaphore = nucleus.lv2.objects.get<sys_semaphore_t>(sem_id);
+    
+    // Check requisites
+    if (!semaphore) {
+        return CELL_ESRCH;
+    }
 
     // If semaphore count is positive, decrement it and continue
     std::unique_lock<std::mutex> lock(semaphore->mutex);
