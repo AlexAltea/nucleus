@@ -9,6 +9,7 @@
 
 #include "lv2/sys_cond.h"
 #include "lv2/sys_dbg.h"
+#include "lv2/sys_event.h"
 #include "lv2/sys_fs.h"
 #include "lv2/sys_lwmutex.h"
 #include "lv2/sys_memory.h"

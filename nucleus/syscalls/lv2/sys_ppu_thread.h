@@ -10,8 +10,8 @@
 // Classes
 struct sys_ppu_thread_stack_t
 {
-    u32 addr;
-    u32 size;
+    be_t<u32> addr;
+    be_t<u32> size;
 };
 
 // SysCalls

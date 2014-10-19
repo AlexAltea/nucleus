@@ -10,16 +10,16 @@ s32 sys_timer_sleep(u32 sleep_time)
 {
     // TODO: Use a condition variable to kill the thread while it sleeps
     std::this_thread::sleep_for(std::chrono::seconds(sleep_time));
-	return CELL_OK;
+    return CELL_OK;
 }
 
 s32 sys_timer_usleep(u64 sleep_time)
 {
     // Maximum value is: 2^48-1
-	if (sleep_time > 0xFFFFFFFFFFFFULL) {
+    if (sleep_time > 0xFFFFFFFFFFFFULL) {
         sleep_time = 0xFFFFFFFFFFFFULL;
     }
     // TODO: Use a condition variable to kill the thread while it sleeps
-	std::this_thread::sleep_for(std::chrono::microseconds(sleep_time));
-	return CELL_OK;
+    std::this_thread::sleep_for(std::chrono::microseconds(sleep_time));
+    return CELL_OK;
 }

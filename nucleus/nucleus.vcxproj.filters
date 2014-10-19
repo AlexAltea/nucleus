@@ -102,6 +102,9 @@
     <ClCompile Include="syscalls\lv2\sys_timer.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_event.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -219,6 +222,9 @@
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_timer.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_event.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
   </ItemGroup>
