@@ -9,7 +9,36 @@
 
 s32 sys_memory_allocate(u32 size, u64 flags, be_t<u32>* alloc_addr)
 {
-    *alloc_addr = nucleus.memory.alloc(size, 0x10);
+    // Check requisites
+    if (alloc_addr == nucleus.memory.ptr(0)) {
+        return CELL_EFAULT;
+    }
+
+    // Allocate memory
+    u32 addr;
+    switch (flags) {
+	case SYS_MEMORY_PAGE_SIZE_1M:
+        if (size & 0xFFFFF) {
+            return CELL_EALIGN;
+        }
+        addr = nucleus.memory.alloc(size, 0x100000);
+        break;
+
+    case SYS_MEMORY_PAGE_SIZE_64K:
+        if (size & 0xFFFF) {
+            return CELL_EALIGN;
+        }
+        addr = nucleus.memory.alloc(size, 0x10000);
+        break;
+
+    default:
+        return CELL_EINVAL;
+    }
+
+    if (!addr) {
+        return CELL_ENOMEM;
+    }
+    *alloc_addr = addr;
     return CELL_OK;
 }
 

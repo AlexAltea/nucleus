@@ -28,6 +28,9 @@ protected:
     CellTranslator* m_translator;
 
 public:
+    // Thread priority
+    s32 prio;
+
     // Program Counter and RTOC
     u32 pc;
     u32 rtoc;

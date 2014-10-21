@@ -51,38 +51,46 @@ s32 sys_event_flag_wait(u32 eflag_id, u64 bitptn, u32 mode, be_t<u64>* result, u
     }
 
     std::unique_lock<std::mutex> lock(eflag->mutex);
+    bool validCondition;
+
+    // Check if the condition is met, otherwise wait until condition or timeout happens
     if (((mode & SYS_EVENT_FLAG_WAIT_AND) && ((eflag->value & bitptn) == bitptn)) ||
         ((mode & SYS_EVENT_FLAG_WAIT_OR) && (eflag->value & bitptn))) {
-        return CELL_OK;
+        validCondition = true;
     }
-
-    // Wait until condition is met
-    if (timeout == 0) {
+    else if (timeout == 0) {
+        validCondition = true;
         if (mode & SYS_EVENT_FLAG_WAIT_AND) {
             eflag->cv.wait(lock, [&]{ return (eflag->value & bitptn) == bitptn; });
         } else {
             eflag->cv.wait(lock, [&]{ return (eflag->value & bitptn); });
         }
-        return CELL_OK;
     }
-
-    // Wait until condition or timeout is met
     else {
-        bool validCondition;
         auto rel_time = std::chrono::microseconds(timeout);
         if (mode & SYS_EVENT_FLAG_WAIT_AND) {
             validCondition = eflag->cv.wait_for(lock, rel_time, [&]{ return (eflag->value & bitptn) == bitptn; });
         } else {
             validCondition = eflag->cv.wait_for(lock, rel_time, [&]{ return (eflag->value & bitptn); });
         }
-
-        // Check outcome
-        if (!validCondition) {
-            return CELL_ETIMEDOUT;
-        } else {
-            return CELL_OK;
-        }
     }
+
+    // Save value if required and exit if timeout occurred
+    if (result !=  nucleus.memory.ptr(0)) {
+        *result = eflag->value;
+    }
+    if (!validCondition) {
+        return CELL_ETIMEDOUT;
+    }
+
+    // Clear the event flag if required
+    if (mode & SYS_EVENT_FLAG_WAIT_CLEAR) {
+        eflag->value &= ~bitptn;
+    }
+    if (mode & SYS_EVENT_FLAG_WAIT_CLEAR_ALL) {
+        eflag->value = 0;
+    }
+    return CELL_OK;
 }
 
 s32 sys_event_flag_trywait(u32 eflag_id, u64 bitptn, u32 mode, be_t<u64>* result)
@@ -93,8 +101,31 @@ s32 sys_event_flag_trywait(u32 eflag_id, u64 bitptn, u32 mode, be_t<u64>* result
     if (!eflag) {
         return CELL_ESRCH;
     }
+    if (((mode & 0xF) != SYS_EVENT_FLAG_WAIT_AND) && ((mode & 0xF) != SYS_EVENT_FLAG_WAIT_OR)) {
+        return CELL_EINVAL;
+    }
 
-    return CELL_OK;
+    std::unique_lock<std::mutex> lock(eflag->mutex);
+
+    // Save value if required
+    if (result ==  nucleus.memory.ptr(0)) {
+        *result = eflag->value;
+    }
+
+    // Check condition
+    if (((mode & SYS_EVENT_FLAG_WAIT_AND) && ((eflag->value & bitptn) == bitptn)) ||
+        ((mode & SYS_EVENT_FLAG_WAIT_OR) && (eflag->value & bitptn))) {
+
+        // Clear the event flag if required
+        if (mode & SYS_EVENT_FLAG_WAIT_CLEAR) {
+            eflag->value &= ~bitptn;
+        }
+        if (mode & SYS_EVENT_FLAG_WAIT_CLEAR_ALL) {
+            eflag->value = 0;
+        }
+        return CELL_OK;
+    }
+    return CELL_EBUSY;
 }
 
 s32 sys_event_flag_set(u32 eflag_id, u64 bitptn)

@@ -10,6 +10,7 @@
 s32 sys_ppu_thread_create(be_t<u64>* thread_id, be_t<u32>* entry, u64 arg, u64 unk0, s32 prio, u32 stacksize, u64 flags, s8* threadname)
 {
     auto* thread = (PPUThread*)nucleus.cell.addThread(CELL_THREAD_PPU, *entry);
+    thread->prio = prio;
     thread->gpr[3] = arg;
 
     *thread_id = nucleus.lv2.objects.add(thread, SYS_PPU_THREAD_OBJECT);
@@ -20,6 +21,22 @@ s32 sys_ppu_thread_exit(s32 errorcode)
 {
     auto* thread = nucleus.cell.getCurrentThread();
     thread->stop();
+    return CELL_OK;
+}
+
+s32 sys_ppu_thread_get_priority(u64 thread_id, be_t<s32>* prio)
+{
+    auto* thread = nucleus.lv2.objects.get<PPUThread>(thread_id);
+
+    // Check requisites
+    if (prio == nucleus.memory.ptr(0)) {
+        return CELL_EFAULT;
+    }
+    if (!thread) {
+        return CELL_ESRCH;
+    }
+
+    *prio = thread->prio;
     return CELL_OK;
 }
 

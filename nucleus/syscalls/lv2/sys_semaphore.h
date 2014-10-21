@@ -14,7 +14,7 @@ struct sys_semaphore_attribute_t
 {
     be_t<u32> protocol;
     be_t<u32> pshared;
-    be_t<u64> key;
+    be_t<u64> ipc_key;
     be_t<s32> flags;
     be_t<u32> pad;
     s8 name[8];

@@ -36,6 +36,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
         m_syscalls[0x029] = {wrap(sys_ppu_thread_exit), LV2_NONE};
         m_syscalls[0x02C] = {wrap(sys_ppu_thread_join), LV2_NONE};
+        m_syscalls[0x030] = {wrap(sys_ppu_thread_get_priority), LV2_NONE};
         m_syscalls[0x034] = {wrap(sys_ppu_thread_create), LV2_NONE};
         m_syscalls[0x035] = {wrap(sys_ppu_thread_start), LV2_NONE};
         m_syscalls[0x052] = {wrap(sys_event_flag_create), LV2_NONE};

@@ -32,7 +32,7 @@ struct sys_event_flag_attr_t
 {
     be_t<u32> protocol;
     be_t<u32> pshared;
-    be_t<u64> key;
+    be_t<u64> ipc_key;
     be_t<s32> flags;
     be_t<s32> type;
     s8 name[8];

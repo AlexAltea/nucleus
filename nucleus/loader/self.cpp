@@ -459,8 +459,8 @@ bool SELFLoader::decrypt()
                 memcpy(&m_elf[meta_phdr.offset], data_decrypted, meta_shdr.data_size);
             }
 
-            delete data_decrypted;
-            delete data_decompressed;
+            delete[] data_decrypted;
+            delete[] data_decompressed;
         }
     }
     return true;

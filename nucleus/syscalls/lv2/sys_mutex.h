@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+#include <mutex>
+
 // Constants (some are used by other thread synchronization primitives)
 enum
 {
@@ -24,6 +26,12 @@ struct sys_mutex_attribute_t
     be_t<s32> flags;
     s8 padding[4];
     s8 name[8];
+};
+
+struct sys_mutex_t
+{
+    std::timed_mutex mutex;
+    sys_mutex_attribute_t attr;
 };
 
 // SysCalls
