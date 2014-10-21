@@ -6,10 +6,11 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/logging.h"
 #include "nucleus/cpu/cell.h"
 #include "nucleus/filesystem/filesystem.h"
-#include "nucleus/logging.h"
 #include "nucleus/memory/memory.h"
+#include "nucleus/gpu/rsx.h"
 #include "nucleus/syscalls/lv2.h"
 
 #include <mutex>
@@ -27,6 +28,7 @@ public:
     // Hardware & OS
     Memory memory;
     Cell cell;
+    RSX rsx;
     LV2 lv2;
 
     // Mount points

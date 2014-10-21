@@ -10,6 +10,15 @@
 #include <condition_variable>
 #include <mutex>
 
+// Constants
+enum
+{
+    SYS_EVENT_FLAG_WAIT_AND       = 0x01,
+	SYS_EVENT_FLAG_WAIT_OR        = 0x02,
+	SYS_EVENT_FLAG_WAIT_CLEAR     = 0x10,
+	SYS_EVENT_FLAG_WAIT_CLEAR_ALL = 0x20,
+};
+
 // Classes
 struct sys_event_t
 {
@@ -37,6 +46,14 @@ struct sys_event_queue_attr_t
 };
 
 // Auxiliary classes
+struct sys_event_flag_t
+{
+    std::mutex mutex;
+    std::condition_variable cv;
+    sys_event_flag_attr_t attr;
+    u64 value;
+};
+
 struct sys_event_queue_t
 {
     std::mutex mutex;

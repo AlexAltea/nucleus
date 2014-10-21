@@ -87,6 +87,7 @@
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="filesystem\filesystem.cpp" />
     <ClCompile Include="filesystem\virtual_filesystem.cpp" />
+    <ClCompile Include="gpu\rsx.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\self.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="emulator.h" />
     <ClInclude Include="filesystem\filesystem.h" />
     <ClInclude Include="filesystem\virtual_filesystem.h" />
+    <ClInclude Include="gpu\rsx.h" />
     <ClInclude Include="loader\keys.h" />
     <ClInclude Include="loader\loader.h" />
     <ClInclude Include="loader\self.h" />

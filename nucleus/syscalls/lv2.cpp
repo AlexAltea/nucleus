@@ -38,6 +38,11 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x02C] = {wrap(sys_ppu_thread_join), LV2_NONE};
         m_syscalls[0x034] = {wrap(sys_ppu_thread_create), LV2_NONE};
         m_syscalls[0x035] = {wrap(sys_ppu_thread_start), LV2_NONE};
+        m_syscalls[0x052] = {wrap(sys_event_flag_create), LV2_NONE};
+        m_syscalls[0x053] = {wrap(sys_event_flag_destroy), LV2_NONE};
+        m_syscalls[0x055] = {wrap(sys_event_flag_wait), LV2_NONE};
+        m_syscalls[0x056] = {wrap(sys_event_flag_trywait), LV2_NONE};
+        m_syscalls[0x057] = {wrap(sys_event_flag_set), LV2_NONE};
         m_syscalls[0x05A] = {wrap(sys_semaphore_create), LV2_NONE};
         m_syscalls[0x05B] = {wrap(sys_semaphore_destroy), LV2_NONE};
         m_syscalls[0x05C] = {wrap(sys_semaphore_wait), LV2_NONE};
@@ -60,6 +65,9 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x06D] = {wrap(sys_cond_signal_all), LV2_NONE};
         m_syscalls[0x06E] = {wrap(sys_cond_signal_to), LV2_NONE};
         m_syscalls[0x072] = {wrap(sys_semaphore_get_value), LV2_NONE};
+        m_syscalls[0x076] = {wrap(sys_event_flag_clear), LV2_NONE};
+        m_syscalls[0x084] = {wrap(sys_event_flag_cancel), LV2_NONE};
+        m_syscalls[0x08B] = {wrap(sys_event_flag_get), LV2_NONE};
         m_syscalls[0x08D] = {wrap(sys_timer_usleep), LV2_NONE};
         m_syscalls[0x08E] = {wrap(sys_timer_sleep), LV2_NONE};
         m_syscalls[0x090] = {wrap(sys_time_get_timezone), LV2_NONE};

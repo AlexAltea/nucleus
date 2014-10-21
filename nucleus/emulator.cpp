@@ -27,16 +27,17 @@ bool Emulator::load(const std::string& filepath)
         log.error(LOG_COMMON, "Invalid file given.");
         return false;
     }
-    self.load_elf();
 
-    // Prepare Thread (will initialize LV2 before going to its entry point)
+    self.load_elf();
     if (self.getMachine() != MACHINE_PPC64) {
         log.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;
     }
 
+    // Prepare Thread (this will initialize LV2)
     auto* thread = (PPUThread*)cell.addThread(CELL_THREAD_PPU, self.getEntry());
     thread->start();
+
     return true;
 }
 

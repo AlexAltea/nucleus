@@ -105,6 +105,9 @@
     <ClCompile Include="syscalls\lv2\sys_event.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="gpu\rsx.cpp">
+      <Filter>gpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_event.h">
       <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu\rsx.h">
+      <Filter>gpu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

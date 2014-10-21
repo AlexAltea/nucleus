@@ -64,6 +64,8 @@ s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control,
     *lpar_driver_info = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60200000, 0x4000);
     *lpar_reports = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60300000, 0x10000);
 
+    nucleus.rsx.local_reports = nucleus.memory.ptr<rsx_report_t>(*lpar_reports);
+
     // TODO: ???
     auto* driver_info = (be_t<u32>*)((u64)nucleus.memory.getBaseAddr() + *lpar_driver_info);
     driver_info[0] = 0x211;
