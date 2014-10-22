@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+#include <mutex>
+
 struct sys_lwmutex_attribute_t
 {
     be_t<u32> protocol;
@@ -17,7 +19,8 @@ struct sys_lwmutex_attribute_t
 // Auxiliary classes
 struct sys_lwmutex_t
 {
-    void* ptr;
+    std::timed_mutex lwmutex;
+    sys_lwmutex_attribute_t attr;
 };
 
 // SysCalls

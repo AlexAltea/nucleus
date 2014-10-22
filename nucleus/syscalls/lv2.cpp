@@ -31,6 +31,7 @@ LV2::LV2(u32 fw_type)
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
         m_syscalls[0x001] = {wrap(sys_process_getpid), LV2_NONE};
         m_syscalls[0x003] = {wrap(sys_process_exit), LV2_NONE};
+        m_syscalls[0x012] = {wrap(sys_process_getppid), LV2_NONE};
         m_syscalls[0x016] = {wrap(sys_process_exit), LV2_NONE};
         m_syscalls[0x019] = {wrap(sys_process_get_sdk_version), LV2_NONE};
         m_syscalls[0x01E] = {wrap(sys_process_get_paramsfo), LV2_NONE};
@@ -134,6 +135,6 @@ void LV2::call(PPUThread& thread)
         nucleus.log.warning(LOG_HLE, "LV2 Syscall %d (0x%x) called", id, id);
         return;
     }
-
+    //nucleus.log.warning(LOG_HLE, "LV2 Syscall %d (0x%x) called", id, id);
     m_syscalls[id].func->call(thread, nucleus.memory.getBaseAddr());
 }

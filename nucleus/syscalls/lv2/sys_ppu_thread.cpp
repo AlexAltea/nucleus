@@ -7,9 +7,13 @@
 #include "nucleus/syscalls/lv2.h"
 #include "nucleus/emulator.h"
 
-s32 sys_ppu_thread_create(be_t<u64>* thread_id, be_t<u32>* entry, u64 arg, u64 unk0, s32 prio, u32 stacksize, u64 flags, s8* threadname)
+s32 sys_ppu_thread_create(be_t<u64>* thread_id, sys_ppu_thread_attr_t* attr, u64 arg, u64 unk0, s32 prio, u32 stacksize, u64 flags, s8* threadname)
 {
-    auto* thread = (PPUThread*)nucleus.cell.addThread(CELL_THREAD_PPU, *entry);
+    u32 entry = attr->entry;
+    u32 tls_addr = attr->tls_addr;
+
+    // Create PPU thread
+    auto* thread = (PPUThread*)nucleus.cell.addThread(CELL_THREAD_PPU, entry);
     thread->prio = prio;
     thread->gpr[3] = arg;
 

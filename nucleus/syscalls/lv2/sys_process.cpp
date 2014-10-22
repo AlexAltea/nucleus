@@ -12,6 +12,11 @@ s32 sys_process_getpid()
     return 0x01000500; // TODO
 }
 
+s32 sys_process_getppid()
+{
+    return 0x01000300; // TODO
+}
+
 s32 sys_process_exit(s32 errorcode)
 {
     nucleus.task(NUCLEUS_EVENT_STOP);

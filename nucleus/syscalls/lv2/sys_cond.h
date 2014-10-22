@@ -6,13 +6,25 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "sys_mutex.h"
 
+#include <condition_variable>
+
+// Classes
 struct sys_cond_attribute_t
 {
     be_t<u32> pshared;
     be_t<u64> ipc_key;
     be_t<s32> flags;
     s8 name[8];
+};
+
+// Auxiliary classes
+struct sys_cond_t
+{
+    std::condition_variable cv;
+    sys_mutex_t* mutex;
+    sys_cond_attribute_t attr;
 };
 
 // SysCalls
