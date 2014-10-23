@@ -9,12 +9,53 @@
 #include "nucleus/cpu/thread.h"
 #include <string>
 
+#define DOUBLE_SIGN 0x8000000000000000ULL
+#define DOUBLE_EXP  0x7FF0000000000000ULL
+#define DOUBLE_FRAC 0x000FFFFFFFFFFFFFULL
+#define DOUBLE_ZERO 0x0000000000000000ULL
+
 // FPSCR Rounding control field values
 enum FPSCR_RN {
     FPSCR_RN_NEAR = 0,
     FPSCR_RN_ZERO = 1,
     FPSCR_RN_PINF = 2,
     FPSCR_RN_MINF = 3,
+};
+
+// FPSCR Result flags
+enum FPSCR_FPRF {
+    FPR_FPRF_PZ   = 0x2,
+    FPR_FPRF_PN   = 0x4,
+    FPR_FPRF_PINF = 0x5,
+    FPR_FPRF_NN   = 0x8,
+    FPR_FPRF_NINF = 0x9,
+    FPR_FPRF_QNAN = 0x11,
+    FPR_FPRF_NZ   = 0x12,
+    FPR_FPRF_PD   = 0x14,
+    FPR_FPRF_ND   = 0x18,
+};
+
+// FPSCR flags
+enum FPSCR_EXP
+{
+	FPSCR_FX        = 0x80000000,
+	FPSCR_FEX       = 0x40000000,
+	FPSCR_VX        = 0x20000000,
+	FPSCR_OX        = 0x10000000,
+	FPSCR_UX        = 0x08000000,
+	FPSCR_ZX        = 0x04000000,
+	FPSCR_XX        = 0x02000000,
+	FPSCR_VXSNAN    = 0x01000000,
+	FPSCR_VXISI     = 0x00800000,
+	FPSCR_VXIDI     = 0x00400000,
+	FPSCR_VXZDZ     = 0x00200000,
+	FPSCR_VXIMZ     = 0x00100000,
+	FPSCR_VXVC      = 0x00080000,
+	FPSCR_FR        = 0x00040000,
+	FPSCR_FI        = 0x00020000,
+	FPSCR_VXSOFT    = 0x00000400,
+	FPSCR_VXSQRT    = 0x00000200,
+	FPSCR_VXCVI     = 0x00000100,
 };
 
 /**
@@ -61,6 +102,9 @@ union PPU_CR
         else if (a == b) {
             setField(field, 1 << CR_EQ);
         }
+        else {
+            setField(field, 1 << CR_SO);
+        }
     }
 };
 
@@ -98,6 +142,14 @@ union PPU_FPSCR
         u32 FEX     :1; // Enabled exception summary
         u32 FX      :1; // Exception summary
     };
+
+    void setException(const u32 mask)
+    {
+        if ((FPSCR & mask) != mask) {
+            FX = 1;
+        }
+		FPSCR |= mask;
+    }
 };
 
 // XER Register (SPR 1)

@@ -17,7 +17,7 @@ s32 sys_memory_allocate(u32 size, u64 flags, be_t<u32>* alloc_addr)
     // Allocate memory
     u32 addr;
     switch (flags) {
-	case SYS_MEMORY_PAGE_SIZE_1M:
+    case SYS_MEMORY_PAGE_SIZE_1M:
         if (size & 0xFFFFF) {
             return CELL_EALIGN;
         }

@@ -439,5 +439,5 @@ public:
 
     // Unknown instruction
     static void unknown(PPUFields code, PPUThread& thread);
-    static void unknown2(const std::string& instr);
+    static void unknown(const char* instruction);
 };
