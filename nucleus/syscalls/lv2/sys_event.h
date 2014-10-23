@@ -9,6 +9,7 @@
 
 #include <condition_variable>
 #include <mutex>
+#include <queue>
 
 // Constants
 enum
@@ -17,6 +18,8 @@ enum
 	SYS_EVENT_FLAG_WAIT_OR        = 0x02,
 	SYS_EVENT_FLAG_WAIT_CLEAR     = 0x10,
 	SYS_EVENT_FLAG_WAIT_CLEAR_ALL = 0x20,
+
+    SYS_EVENT_PORT_LOCAL          = 0x01,
 };
 
 // Classes
@@ -58,13 +61,18 @@ struct sys_event_queue_t
 {
     std::mutex mutex;
     std::condition_variable cv;
+    std::queue<sys_event_t> queue;
     sys_event_queue_attr_t attr;
 };
 
 struct sys_event_port_t
 {
-    sys_event_queue_t* queue = nullptr;
-    s8 name[8];
+    sys_event_queue_t* equeue = nullptr;
+    u32 type;
+    union {
+        s8 name[8];
+        u64 name_value;
+    };
 };
 
 // SysCalls
@@ -79,12 +87,12 @@ s32 sys_event_flag_get(u32 eflag_id, be_t<u64>* flags);
 
 s32 sys_event_port_create(be_t<u32>* eport_id, s32 port_type, u64 name);
 s32 sys_event_port_destroy(u32 eport_id);
-s32 sys_event_port_connect_local(u32 eport_id, u32 event_queue_id);
+s32 sys_event_port_connect_local(u32 eport_id, u32 equeue_id);
 s32 sys_event_port_disconnect(u32 eport_id);
 s32 sys_event_port_send(u32 eport_id, u64 data1, u64 data2, u64 data3);
 
 s32 sys_event_queue_create(be_t<u32>* equeue_id, sys_event_queue_attr_t* attr, u64 event_queue_key, s32 size);
 s32 sys_event_queue_destroy(u32 equeue_id, s32 mode);
 s32 sys_event_queue_receive(u32 equeue_id, sys_event_t* dummy_event, u64 timeout);
-s32 sys_event_queue_tryreceive(u32 equeue_id, sys_event_t* event_array, s32 size, be_t<u32>* number);
+s32 sys_event_queue_tryreceive(u32 equeue_id, sys_event_t* event_array, s32 size, be_t<s32>* number);
 s32 sys_event_queue_drain(u32 equeue_id);

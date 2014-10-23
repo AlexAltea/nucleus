@@ -61,7 +61,7 @@ void initRotateMask()
         return;
     }
     for (u32 mb = 0; mb < 64; mb++) {
-        for(u32 me = 0; me < 64; me++) {
+        for (u32 me = 0; me < 64; me++) {
             const u64 mask = (~0ULL >> mb) ^ ((me >= 63) ? 0 : ~0ULL >> (me + 1));
             rotateMask[mb][me] = mb > me ? ~mask : mask;
         }

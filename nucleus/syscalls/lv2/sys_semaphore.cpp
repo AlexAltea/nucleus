@@ -112,24 +112,20 @@ s32 sys_semaphore_wait(u32 sem_id, u64 timeout)
         return CELL_ESRCH;
     }
 
-    // If semaphore count is positive, decrement it and continue
     std::unique_lock<std::mutex> lock(semaphore->mutex);
-    if (semaphore->count > 0) {
-        semaphore->count--;
-        return CELL_OK;
+
+    if (semaphore->count <= 0) {
+        // Wait until condition or timeout is met
+        if (timeout == 0) {
+            semaphore->cv.wait(lock, [&]{ return semaphore->count > 0; });
+        } else {
+            auto rel_time = std::chrono::microseconds(timeout);
+            if (!semaphore->cv.wait_for(lock, rel_time, [&]{ return semaphore->count > 0; })) {
+                return CELL_ETIMEDOUT;
+            }
+        }
     }
 
-    // Wait until condition or timeout is met
-    if (timeout == 0) {
-        semaphore->cv.wait(lock, [&]{ return semaphore->count > 0; });
-    } else {
-        auto rel_time = std::chrono::microseconds(timeout);
-        semaphore->cv.wait_for(lock, rel_time, [&]{ return semaphore->count > 0; });
-    }
-
-    if (semaphore->count == 0) {
-        return CELL_ETIMEDOUT;
-    }
     semaphore->count--;
     return CELL_OK;
 }

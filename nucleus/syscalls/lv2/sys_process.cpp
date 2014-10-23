@@ -30,6 +30,9 @@ s32 sys_process_get_paramsfo(u8* buffer)
 
 s32 sys_process_get_sdk_version(u32 pid, be_t<u32>* version)
 {
+    if (!version) {
+        return CELL_EFAULT;
+    }
     *version = nucleus.lv2.proc_param.sdk_version;
     return CELL_OK;
 }

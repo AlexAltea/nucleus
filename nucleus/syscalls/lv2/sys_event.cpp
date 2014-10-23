@@ -8,6 +8,8 @@
 #include "nucleus/syscalls/lv2.h"
 #include "nucleus/emulator.h"
 
+#include <algorithm>
+
 /**
  * LV2: Event flags
  */
@@ -192,8 +194,15 @@ s32 sys_event_flag_get(u32 eflag_id, be_t<u64>* flags)
  */
 s32 sys_event_port_create(be_t<u32>* eport_id, s32 port_type, u64 name)
 {
+    // Check requisites
+    if (eport_id == nucleus.memory.ptr(0)) {
+        return CELL_EFAULT;
+    }
+
     // Create event queue
     auto* eport = new sys_event_port_t();
+    eport-> type = port_type;
+    eport->name_value = name;
 
     *eport_id = nucleus.lv2.objects.add(eport, SYS_EVENT_PORT_OBJECT);
     return CELL_OK;
@@ -207,39 +216,56 @@ s32 sys_event_port_destroy(u32 eport_id)
     return CELL_OK;
 }
 
-s32 sys_event_port_connect_local(u32 eport_id, u32 event_queue_id)
+s32 sys_event_port_connect_local(u32 eport_id, u32 equeue_id)
 {
-    auto* eport = nucleus.lv2.objects.get<sys_event_queue_t>(eport_id);
+    auto* eport = nucleus.lv2.objects.get<sys_event_port_t>(eport_id);
+    auto* equeue = nucleus.lv2.objects.get<sys_event_queue_t>(equeue_id);
 
     // Check requisites
-    if (!eport) {
+    if (!eport || !equeue) {
         return CELL_ESRCH;
     }
+    if (!eport->type != SYS_EVENT_PORT_LOCAL) {
+        return CELL_EINVAL;
+    }
+    if (!eport->equeue) {
+        return CELL_EISCONN;
+    }
 
+    eport->equeue = equeue;
     return CELL_OK;
 }
 
 s32 sys_event_port_disconnect(u32 eport_id)
 {
-    auto* eport = nucleus.lv2.objects.get<sys_event_queue_t>(eport_id);
+    auto* eport = nucleus.lv2.objects.get<sys_event_port_t>(eport_id);
 
     // Check requisites
     if (!eport) {
         return CELL_ESRCH;
     }
 
+    eport->equeue = nullptr;
     return CELL_OK;
 }
 
 s32 sys_event_port_send(u32 eport_id, u64 data1, u64 data2, u64 data3)
 {
-    auto* eport = nucleus.lv2.objects.get<sys_event_queue_t>(eport_id);
+    auto* eport = nucleus.lv2.objects.get<sys_event_port_t>(eport_id);
 
     // Check requisites
     if (!eport) {
         return CELL_ESRCH;
     }
 
+    sys_event_t evt;
+    evt.source = eport->name_value;
+    evt.data1 = data1;
+    evt.data2 = data2;
+    evt.data3 = data3;
+
+    eport->equeue->queue.push(evt);
+    eport->equeue->cv.notify_one();
     return CELL_OK;
 }
 
@@ -273,7 +299,7 @@ s32 sys_event_queue_destroy(u32 equeue_id, s32 mode)
     return CELL_OK;
 }
 
-s32 sys_event_queue_receive(u32 equeue_id, sys_event_t* dummy_event, u64 timeout)
+s32 sys_event_queue_receive(u32 equeue_id, sys_event_t* evt, u64 timeout)
 {
     auto* equeue = nucleus.lv2.objects.get<sys_event_queue_t>(equeue_id);
 
@@ -282,10 +308,26 @@ s32 sys_event_queue_receive(u32 equeue_id, sys_event_t* dummy_event, u64 timeout
         return CELL_ESRCH;
     }
 
+    std::unique_lock<std::mutex> lock(equeue->mutex);
+
+    if (equeue->queue.empty()) {
+        // Wait until condition or timeout is met
+        if (timeout == 0) {
+            equeue->cv.wait(lock, [&]{ return equeue->queue.size(); });
+        } else {
+            auto rel_time = std::chrono::microseconds(timeout);
+            if (!equeue->cv.wait_for(lock, rel_time, [&]{ return equeue->queue.size(); })) {
+                return CELL_ETIMEDOUT;
+            }
+        }
+    }
+    
+    *evt = equeue->queue.front();
+    equeue->queue.pop();
     return CELL_OK;
 }
 
-s32 sys_event_queue_tryreceive(u32 equeue_id, sys_event_t* event_array, s32 size, be_t<u32>* number)
+s32 sys_event_queue_tryreceive(u32 equeue_id, sys_event_t* event_array, s32 size, be_t<s32>* number)
 {
     auto* equeue = nucleus.lv2.objects.get<sys_event_queue_t>(equeue_id);
 
@@ -294,6 +336,15 @@ s32 sys_event_queue_tryreceive(u32 equeue_id, sys_event_t* event_array, s32 size
         return CELL_ESRCH;
     }
 
+    std::unique_lock<std::mutex> lock(equeue->mutex);
+
+    s32 eventsReceived = std::max((s32)equeue->queue.size(), size);
+    *number = eventsReceived;
+
+    for (u32 i = 0; i < eventsReceived; i++) {
+        event_array[i] = equeue->queue.front();
+        equeue->queue.pop();
+    }
     return CELL_OK;
 }
 

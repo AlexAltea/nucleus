@@ -68,6 +68,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x06E] = {wrap(sys_cond_signal_to), LV2_NONE};
         m_syscalls[0x072] = {wrap(sys_semaphore_get_value), LV2_NONE};
         m_syscalls[0x076] = {wrap(sys_event_flag_clear), LV2_NONE};
+        m_syscalls[0x082] = {wrap(sys_event_queue_receive), LV2_NONE};
         m_syscalls[0x084] = {wrap(sys_event_flag_cancel), LV2_NONE};
         m_syscalls[0x08B] = {wrap(sys_event_flag_get), LV2_NONE};
         m_syscalls[0x08D] = {wrap(sys_timer_usleep), LV2_NONE};
