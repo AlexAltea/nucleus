@@ -648,7 +648,7 @@ void PPUInterpreter::lswi(PPUFields code, PPUThread& thread)
 {
     u64 ea = code.ra ? thread.gpr[code.ra] : 0;
     u64 n = code.nb ? code.nb : 32;
-    u8 reg = thread.gpr[code.rd];
+    u8 reg = code.rd;
     while (n > 0) {
         if (n > 3) {
             thread.gpr[reg] = nucleus.memory.read32(ea);
@@ -657,10 +657,12 @@ void PPUInterpreter::lswi(PPUFields code, PPUThread& thread)
         }
         else {
             u32 buf = 0;
+            u32 i = 3;
             while (n > 0) {
                 n--;
-                buf |= nucleus.memory.read8(ea) << (n*8);
+                buf |= nucleus.memory.read8(ea) << (i * 8);
                 ea++;
+                i--;
             }
             thread.gpr[reg] = buf;
         }
@@ -786,11 +788,13 @@ void PPUInterpreter::mtocrf(PPUFields code, PPUThread& thread)
         }
     }
     else {
-        for (u32 i=0; i<8; ++i) {
+        u32 mask = 0;
+        for (int i = 0; i < 8; i++) {
             if (code.crm & (1 << i)) {
-                thread.cr.setField(7 - i, thread.gpr[code.rs] & (0xf << (i * 4)));
+                mask |= (0xF << (i * 4));
             }
         }
+        thread.cr.CR = bitReverse32(thread.gpr[code.rs] & mask) | (bitReverse32(thread.cr.CR) & ~mask);
     }
 }
 void PPUInterpreter::mtspr(PPUFields code, PPUThread& thread)
@@ -1121,7 +1125,7 @@ void PPUInterpreter::stswi(PPUFields code, PPUThread& thread)
 {
     u64 ea = code.ra ? thread.gpr[code.ra] : 0;
     u64 n = code.nb ? code.nb : 32;
-    u8 reg = thread.gpr[code.rd];
+    u8 reg = code.rd;
 
     while (n > 0) {
         if (n > 3) {

@@ -15,6 +15,7 @@ Filetype detectFiletype(const std::string& filepath)
     if (!fs->isOpen(file) || !fs->readFile(file, &magic, sizeof(magic))) {
         return FILETYPE_ERROR;
     }
+    fs->closeFile(file);
 
     switch (magic.ToBE()) {
     case 0x464c457f:

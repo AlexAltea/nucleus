@@ -698,6 +698,17 @@ std::string dis_mftb(PPUFields code)
     return dis_global("mftb", "r%d, %d", code.rd, tbr);
 }
 
+std::string dis_mtocrf(PPUFields code)
+{
+    if (code.l11 == 0 && code.crm == 0xFF) {
+        return dis_global("mtcr", "r%d", code.rs);
+    } else if (code.l11 == 0) {
+        return dis_global("mtcrf", "0x%X, r%d", code.crm, code.rs);
+    } else {
+        return dis_global("mtocrf", "0x%X, r%d", code.crm, code.rs);
+    }
+}
+
 std::string dis_mtspr(PPUFields code)
 {
     switch ((code.spr >> 5) | ((code.spr & 0x1F) << 5)) {
