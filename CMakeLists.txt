@@ -32,6 +32,8 @@ endif()
 include_directories(${NUCLEUS_SOLUTION_DIR})
 
 file(GLOB_RECURSE NUCLEUS_FILES
+    "${NUCLEUS_SOLUTION_DIR}/externals/mongoose/mongoose.c"
+    "${NUCLEUS_SOLUTION_DIR}/externals/mongoose/mongoose.h"
     "${NUCLEUS_SOLUTION_DIR}/externals/aes.cpp"
     "${NUCLEUS_SOLUTION_DIR}/externals/aes.h"
     "${NUCLEUS_SOLUTION_DIR}/externals/sha1.cpp"
