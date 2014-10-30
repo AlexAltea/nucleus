@@ -77,6 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\externals\aes.cpp" />
+    <ClCompile Include="..\externals\mongoose\mongoose.c" />
     <ClCompile Include="..\externals\sha1.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="cpu\cell.cpp" />
@@ -85,6 +86,7 @@
     <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
     <ClCompile Include="cpu\thread.cpp" />
+    <ClCompile Include="debugger.cpp" />
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="filesystem\filesystem.cpp" />
     <ClCompile Include="filesystem\virtual_filesystem.cpp" />
@@ -117,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\externals\aes.h" />
+    <ClInclude Include="..\externals\mongoose\mongoose.h" />
     <ClInclude Include="..\externals\sha1.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="config.h" />
@@ -128,6 +131,7 @@
     <ClInclude Include="cpu\ppu\ppu_thread.h" />
     <ClInclude Include="cpu\thread.h" />
     <ClInclude Include="cpu\translator.h" />
+    <ClInclude Include="debugger.h" />
     <ClInclude Include="emulator.h" />
     <ClInclude Include="filesystem\filesystem.h" />
     <ClInclude Include="filesystem\virtual_filesystem.h" />

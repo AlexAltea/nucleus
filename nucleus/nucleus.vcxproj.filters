@@ -109,6 +109,10 @@
       <Filter>gpu</Filter>
     </ClCompile>
     <ClCompile Include="config.cpp" />
+    <ClCompile Include="debugger.cpp" />
+    <ClCompile Include="..\externals\mongoose\mongoose.c">
+      <Filter>externals\mongoose</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -235,6 +239,10 @@
       <Filter>gpu</Filter>
     </ClInclude>
     <ClInclude Include="config.h" />
+    <ClInclude Include="debugger.h" />
+    <ClInclude Include="..\externals\mongoose\mongoose.h">
+      <Filter>externals\mongoose</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -269,6 +277,9 @@
     </Filter>
     <Filter Include="externals">
       <UniqueIdentifier>{e68c46f9-ed48-4999-80bd-da820720b686}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externals\mongoose">
+      <UniqueIdentifier>{ba021b58-b3bb-40c5-be21-d6333cb88b4d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

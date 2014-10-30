@@ -24,7 +24,7 @@ bool Emulator::load(const std::string& filepath)
     devices.push_back(new VirtualFileSystem("/app_home", processPath));
     devices.push_back(new VirtualFileSystem("", ""));
 
-    // Load ELF/SELF
+    // Load ELF/SELF file
     SELFLoader self;
     if (!self.open(filepath)) {
         log.error(LOG_COMMON, "Invalid file given.");

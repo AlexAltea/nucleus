@@ -4,7 +4,9 @@
  */
 
 #include "config.h"
+#include "debugger.h"
 #include "emulator.h"
+
 #include <iostream>
 
 int main(int argc, char **argv)
@@ -32,7 +34,8 @@ int main(int argc, char **argv)
 
         // Start debugger
         if (config.debugger) {
-            std::cout << "Debugger listening on 127.0.0.1:8000" << std::endl;
+            debugger.init();
+            std::cerr << "Debugger listening on 127.0.0.1:8000" << std::endl;
         }
 
         nucleus.run();

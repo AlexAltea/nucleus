@@ -56,25 +56,13 @@ u32 bitReverse32(u32 x)
 // Return the corresponding FPSCR flags for the FPRF field for a given double value
 u32 getFPRFlags(f64 value)
 {
-        switch (_fpclass(value)) {
-#ifdef NUCLEUS_WIN
-        case _FPCLASS_QNAN: return FPR_FPRF_QNAN;
-        case _FPCLASS_NINF: return FPR_FPRF_NINF;
-        case _FPCLASS_NN:   return FPR_FPRF_NN;
-        case _FPCLASS_ND:   return FPR_FPRF_ND;
-        case _FPCLASS_NZ:   return FPR_FPRF_NZ;
-        case _FPCLASS_PZ:   return FPR_FPRF_PZ;
-        case _FPCLASS_PD:   return FPR_FPRF_PD;
-        case _FPCLASS_PN:   return FPR_FPRF_PN;
-        case _FPCLASS_PINF: return FPR_FPRF_PINF;
-#else
-        case FP_NAN:        return FPR_QNAN;
-        case FP_INFINITE:   return std::signbit(value) ? FPR_FPRF_NINF : FPR_FPRF_PINF;
-        case FP_SUBNORMAL:  return std::signbit(value) ? FPR_FPRF_ND : FPR_FPRF_PD;
-        case FP_ZERO:       return std::signbit(value) ? FPR_FPRF_NZ : FPR_FPRF_PZ;
-#endif
-        default:            return std::signbit(value) ? FPR_FPRF_NN : FPR_FPRF_PN;
-        }
+    switch (std::fpclassify(value)) {
+    case FP_NAN:        return FPR_FPRF_QNAN;
+    case FP_INFINITE:   return std::signbit(value) ? FPR_FPRF_NINF : FPR_FPRF_PINF;
+    case FP_SUBNORMAL:  return std::signbit(value) ? FPR_FPRF_ND : FPR_FPRF_PD;
+    case FP_ZERO:       return std::signbit(value) ? FPR_FPRF_NZ : FPR_FPRF_PZ;
+    default:            return std::signbit(value) ? FPR_FPRF_NN : FPR_FPRF_PN;
+    }
 }
 
 static u64 rotateMask[64][64];

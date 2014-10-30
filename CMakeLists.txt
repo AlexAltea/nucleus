@@ -33,8 +33,8 @@ include_directories(${NUCLEUS_SOLUTION_DIR})
 
 file(GLOB_RECURSE NUCLEUS_FILES
     "${NUCLEUS_SOLUTION_DIR}/externals/aes.cpp"
-	"${NUCLEUS_SOLUTION_DIR}/externals/aes.h"
-	"${NUCLEUS_SOLUTION_DIR}/externals/sha1.cpp"
+    "${NUCLEUS_SOLUTION_DIR}/externals/aes.h"
+    "${NUCLEUS_SOLUTION_DIR}/externals/sha1.cpp"
     "${NUCLEUS_SOLUTION_DIR}/externals/sha1.h"
     "${NUCLEUS_SOLUTION_DIR}/nucleus/*.cpp"
     "${NUCLEUS_SOLUTION_DIR}/nucleus/*.h"
