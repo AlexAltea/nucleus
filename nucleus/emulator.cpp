@@ -8,6 +8,9 @@
 #include "nucleus/loader/self.h"
 #include "nucleus/syscalls/lv2.h"
 
+// Global emulator object
+Emulator nucleus;
+
 bool Emulator::load(const std::string& filepath)
 {
     // Initialize everything

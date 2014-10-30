@@ -78,6 +78,7 @@
   <ItemGroup>
     <ClCompile Include="..\externals\aes.cpp" />
     <ClCompile Include="..\externals\sha1.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="cpu\cell.cpp" />
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp" />
     <ClCompile Include="cpu\ppu\ppu_disasm.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="..\externals\aes.h" />
     <ClInclude Include="..\externals\sha1.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="cpu\cell.h" />
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h" />
     <ClInclude Include="cpu\ppu\ppu_disasm.h" />

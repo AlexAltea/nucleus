@@ -38,7 +38,7 @@ public:
         char message[4096];
         snprintf(message, sizeof(message), format, std::forward<Args>(args)...);
         snprintf(log, sizeof(log), "N: %s\n", message);
-        std::cout << log;
+        std::cerr << log;
     }
 
     template<typename... Args>
@@ -48,7 +48,7 @@ public:
         char message[4096];
         snprintf(message, sizeof(message), format, std::forward<Args>(args)...);
         snprintf(log, sizeof(log), "W: %s\n", message);
-        std::cout << log;
+        std::cerr << log;
     }
 
     template<typename... Args>
@@ -58,6 +58,6 @@ public:
         char message[4096];
         snprintf(message, sizeof(message), format, std::forward<Args>(args)...);
         snprintf(log, sizeof(log), "W: %s\n", message);
-        std::cout << log;
+        std::cerr << log;
     }
 };
