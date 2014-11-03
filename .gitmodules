@@ -1,3 +1,3 @@
 [submodule "tests"]
-	path = tests
+	path = tests/integration
 	url = https://github.com/AlexAltea/ps3autotests.git
