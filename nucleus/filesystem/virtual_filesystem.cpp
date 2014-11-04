@@ -16,7 +16,7 @@ std::string VirtualFileSystem::getHostPath(const std::string& virtualPath)
 #if defined(NUCLEUS_WIN)
     std::replace(hostPath.begin(), hostPath.end(), '/', '\\');
 #endif
-    
+
     return hostPath;
 }
 
@@ -103,7 +103,7 @@ bool VirtualFileSystem::createFile(std::string path)
 #else
     file = fopen(hostPath.c_str(), "w");
 #endif
-    
+
     if (!file) {
         return false;
     }
@@ -122,7 +122,7 @@ bool VirtualFileSystem::existsFile(std::string path)
 #else
     file = fopen(hostPath.c_str(), "r");
 #endif
-    
+
     if (!file) {
         return false;
     }

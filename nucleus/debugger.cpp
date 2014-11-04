@@ -51,7 +51,7 @@ void dbg_connect(mg_connection *conn)
     StringBuffer buffer;
     PrettyWriter<StringBuffer> writer(buffer);
     Document doc;
-    
+
     Value device(kObjectType);
     device.AddMember("name", Value("Nucleus"), doc.GetAllocator());
     device.AddMember("type", Value("emulator"), doc.GetAllocator());
@@ -66,7 +66,7 @@ void dbg_connect(mg_connection *conn)
     doc.AddMember("device", device, doc.GetAllocator());
     doc.AddMember("host", host, doc.GetAllocator());
     doc.Accept(writer);
-    
+
     mg_send_header(conn, "Access-Control-Allow-Origin", "*");
     mg_printf_data(conn, buffer.GetString());
 }

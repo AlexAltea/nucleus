@@ -321,7 +321,7 @@ s32 sys_event_queue_receive(u32 equeue_id, sys_event_t* evt, u64 timeout)
             }
         }
     }
-    
+
     *evt = equeue->queue.front();
     equeue->queue.pop();
     return CELL_OK;

@@ -79,7 +79,7 @@ s32 sys_cond_signal_to(u32 cond_id, u32 thread_id)
     if (!cond) {
         return CELL_ESRCH;
     }
-    
+
     // TODO: This is wrong
     cond->cv.notify_all();
     return CELL_OK;

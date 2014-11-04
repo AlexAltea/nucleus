@@ -60,7 +60,7 @@ public:
     {
         m_current_id = 1;
     }
-    
+
     ~ObjectManager()
     {
         std::lock_guard<std::mutex> lock(m_mutex);

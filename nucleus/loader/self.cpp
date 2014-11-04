@@ -275,7 +275,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
             const u32 fnid = import.first;
             nucleus.memory.write32(import.second, targetLibrary->exports.at(fnid));
         }
-    }         
+    }
     return true;
 }
 

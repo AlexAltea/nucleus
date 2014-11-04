@@ -338,7 +338,7 @@ void PPUInterpreter::cntlzw(PPUFields code, PPUThread& thread)
 {
     int i;
     for (i = 0; i < 32; i++) {
-        if (thread.gpr[code.rs] & (1ULL << (31 - i))) {   
+        if (thread.gpr[code.rs] & (1ULL << (31 - i))) {
             break;
         }
     }
@@ -1481,7 +1481,7 @@ void PPUInterpreter::fctidz(PPUFields code, PPUThread& thread)
         }
         r = (u64)i;
     }
-    
+
     (u64&)thread.fpr[code.frd] = 0xFFF8000000000000ULL | r;
     if (r == 0 && ((u64&)b & DOUBLE_SIGN)) {
         (u64&)thread.fpr[code.frd] |= 0x100000000ULL;

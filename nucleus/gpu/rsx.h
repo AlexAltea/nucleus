@@ -20,5 +20,5 @@ public:
     u32 regs[0x10000];
 
     // RSX Local Memory (mapped into the user space)
-    rsx_report_t* local_reports; 
+    rsx_report_t* local_reports;
 };

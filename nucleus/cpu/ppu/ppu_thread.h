@@ -38,24 +38,24 @@ enum FPSCR_FPRF {
 // FPSCR flags
 enum FPSCR_EXP
 {
-	FPSCR_FX        = 0x80000000,
-	FPSCR_FEX       = 0x40000000,
-	FPSCR_VX        = 0x20000000,
-	FPSCR_OX        = 0x10000000,
-	FPSCR_UX        = 0x08000000,
-	FPSCR_ZX        = 0x04000000,
-	FPSCR_XX        = 0x02000000,
-	FPSCR_VXSNAN    = 0x01000000,
-	FPSCR_VXISI     = 0x00800000,
-	FPSCR_VXIDI     = 0x00400000,
-	FPSCR_VXZDZ     = 0x00200000,
-	FPSCR_VXIMZ     = 0x00100000,
-	FPSCR_VXVC      = 0x00080000,
-	FPSCR_FR        = 0x00040000,
-	FPSCR_FI        = 0x00020000,
-	FPSCR_VXSOFT    = 0x00000400,
-	FPSCR_VXSQRT    = 0x00000200,
-	FPSCR_VXCVI     = 0x00000100,
+    FPSCR_FX        = 0x80000000,
+    FPSCR_FEX       = 0x40000000,
+    FPSCR_VX        = 0x20000000,
+    FPSCR_OX        = 0x10000000,
+    FPSCR_UX        = 0x08000000,
+    FPSCR_ZX        = 0x04000000,
+    FPSCR_XX        = 0x02000000,
+    FPSCR_VXSNAN    = 0x01000000,
+    FPSCR_VXISI     = 0x00800000,
+    FPSCR_VXIDI     = 0x00400000,
+    FPSCR_VXZDZ     = 0x00200000,
+    FPSCR_VXIMZ     = 0x00100000,
+    FPSCR_VXVC      = 0x00080000,
+    FPSCR_FR        = 0x00040000,
+    FPSCR_FI        = 0x00020000,
+    FPSCR_VXSOFT    = 0x00000400,
+    FPSCR_VXSQRT    = 0x00000200,
+    FPSCR_VXCVI     = 0x00000100,
 };
 
 /**
@@ -148,7 +148,7 @@ union PPU_FPSCR
         if ((FPSCR & mask) != mask) {
             FX = 1;
         }
-		FPSCR |= mask;
+        FPSCR |= mask;
     }
 };
 
