@@ -72,14 +72,14 @@ void initTables()
     s_tablePrimary[0x2d] = {"sthu",   PPUInterpreter::sthu,         dis_sthu};
     s_tablePrimary[0x2e] = {"lmw",    PPUInterpreter::lmw,          dis_lmw};
     s_tablePrimary[0x2f] = {"stmw",   PPUInterpreter::stmw,         dis_stmw};
-    s_tablePrimary[0x30] = {"lfs",    PPUInterpreter::lfs,          dis_unknown};
-    s_tablePrimary[0x31] = {"lfsu",   PPUInterpreter::lfsu,         dis_unknown};
-    s_tablePrimary[0x32] = {"lfd",    PPUInterpreter::lfd,          dis_unknown};
-    s_tablePrimary[0x33] = {"lfdu",   PPUInterpreter::lfdu,         dis_unknown};
-    s_tablePrimary[0x34] = {"stfs",   PPUInterpreter::stfs,         dis_unknown};
-    s_tablePrimary[0x35] = {"stfsu",  PPUInterpreter::stfsu,        dis_unknown};
-    s_tablePrimary[0x36] = {"stfd",   PPUInterpreter::stfd,         dis_unknown};
-    s_tablePrimary[0x37] = {"stfdu",  PPUInterpreter::stfdu,        dis_unknown};
+    s_tablePrimary[0x30] = {"lfs",    PPUInterpreter::lfs,          dis_lfs};
+    s_tablePrimary[0x31] = {"lfsu",   PPUInterpreter::lfsu,         dis_lfsu};
+    s_tablePrimary[0x32] = {"lfd",    PPUInterpreter::lfd,          dis_lfd};
+    s_tablePrimary[0x33] = {"lfdu",   PPUInterpreter::lfdu,         dis_lfdu};
+    s_tablePrimary[0x34] = {"stfs",   PPUInterpreter::stfs,         dis_stfs};
+    s_tablePrimary[0x35] = {"stfsu",  PPUInterpreter::stfsu,        dis_stfsu};
+    s_tablePrimary[0x36] = {"stfd",   PPUInterpreter::stfd,         dis_stfd};
+    s_tablePrimary[0x37] = {"stfdu",  PPUInterpreter::stfdu,        dis_stfdu};
 
     // Initialize Table 4
     for (auto& caller : s_table4) {
@@ -439,7 +439,7 @@ void initTables()
 
     // Initialize Table 63
     for (auto& caller : s_table63) {
-        caller = {"", PPUInterpreter::callTable63_, dis_unknown};
+        caller = {"", PPUInterpreter::callTable63_, dis_table63_};
     }
     s_table63[0x17] = {"fsel",      PPUInterpreter::fsel,    dis_fsel};
     s_table63[0x19] = {"fmul",      PPUInterpreter::fmul,    dis_fmul};

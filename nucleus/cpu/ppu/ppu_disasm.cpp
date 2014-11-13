@@ -1595,6 +1595,26 @@ std::string dis_fsubs(PPUFields code)
     }
 }
 
+std::string dis_lfd(PPUFields code)
+{
+    return dis_global("lfd", "fr%d, 0x%X(r%d)", code.frd, code.d, code.ra);
+}
+
+std::string dis_lfdu(PPUFields code)
+{
+    return dis_global("lfdu", "fr%d, 0x%X(r%d)", code.frd, code.d, code.ra);
+}
+
+std::string dis_lfs(PPUFields code)
+{
+    return dis_global("lfs", "fr%d, 0x%X(r%d)", code.frd, code.d, code.ra);
+}
+
+std::string dis_lfsu(PPUFields code)
+{
+    return dis_global("lfsu", "fr%d, 0x%X(r%d)", code.frd, code.d, code.ra);
+}
+
 std::string dis_mcrfs(PPUFields code)
 {
     return dis_global("mcrfs", "cr%d, cr%d", code.crfd, code.crfs);
@@ -1643,6 +1663,26 @@ std::string dis_mtfsfi(PPUFields code)
     } else {
         return dis_global("mtfsfi.", "crf%d, 0x%X", code.crfd, code.imm);
     }
+}
+
+std::string dis_stfd(PPUFields code)
+{
+    return dis_global("stfd", "fr%d, 0x%X(r%d)", code.frs, code.d, code.ra);
+}
+
+std::string dis_stfdu(PPUFields code)
+{
+    return dis_global("stfdu", "fr%d, 0x%X(r%d)", code.frs, code.d, code.ra);
+}
+
+std::string dis_stfs(PPUFields code)
+{
+    return dis_global("stfs", "fr%d, 0x%X(r%d)", code.frs, code.d, code.ra);
+}
+
+std::string dis_stfsu(PPUFields code)
+{
+    return dis_global("stfsu", "fr%d, 0x%X(r%d)", code.frs, code.d, code.ra);
 }
 
 /**

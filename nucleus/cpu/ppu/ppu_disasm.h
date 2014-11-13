@@ -218,11 +218,19 @@ std::string dis_fsqrts(PPUFields code);
 std::string dis_fsub(PPUFields code);
 std::string dis_fsubs(PPUFields code);
 std::string dis_mcrfs(PPUFields code);
+std::string dis_lfd(PPUFields code);
+std::string dis_lfdu(PPUFields code);
+std::string dis_lfs(PPUFields code);
+std::string dis_lfsu(PPUFields code);
 std::string dis_mffs(PPUFields code);
 std::string dis_mtfsb0(PPUFields code);
 std::string dis_mtfsb1(PPUFields code);
 std::string dis_mtfsf(PPUFields code);
 std::string dis_mtfsfi(PPUFields code);
+std::string dis_stfd(PPUFields code);
+std::string dis_stfdu(PPUFields code);
+std::string dis_stfs(PPUFields code);
+std::string dis_stfsu(PPUFields code);
 
 // Vector/SIMD instructions
 std::string dis_mfvscr(PPUFields code);
