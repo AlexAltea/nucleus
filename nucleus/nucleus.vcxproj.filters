@@ -199,9 +199,6 @@
     <ClInclude Include="syscalls\lv2\sys_dbg.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="syscalls\object.h">
-      <Filter>syscalls</Filter>
-    </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_fs.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
@@ -242,6 +239,9 @@
     <ClInclude Include="debugger.h" />
     <ClInclude Include="..\externals\mongoose\mongoose.h">
       <Filter>externals\mongoose</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\object.h">
+      <Filter>syscalls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -53,14 +53,9 @@ class ObjectManager
 {
     std::unordered_map<u32, ObjectBase*> m_objects;
     std::mutex m_mutex;
-    u32 m_current_id;
+    u32 m_current_id = 1;
 
 public:
-    ObjectManager()
-    {
-        m_current_id = 1;
-    }
-
     ~ObjectManager()
     {
         std::lock_guard<std::mutex> lock(m_mutex);

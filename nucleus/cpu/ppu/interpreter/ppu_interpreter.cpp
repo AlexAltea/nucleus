@@ -1233,41 +1233,15 @@ void PPUInterpreter::td(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::tdi(PPUFields code, PPUThread& thread)
 {
-    s64 a = thread.gpr[code.ra];
-
-    if ((a < (s64)code.simm  && (code.to & 0x10)) ||
-        (a > (s64)code.simm  && (code.to & 0x8))  ||
-        (a == (s64)code.simm && (code.to & 0x4))  ||
-        ((u64)a < (u64)code.simm && (code.to & 0x2)) ||
-        ((u64)a > (u64)code.simm && (code.to & 0x1))) {
-        unknown("tdi");
-    }
+    unknown("tdi");
 }
-
 void PPUInterpreter::tw(PPUFields code, PPUThread& thread)
 {
-    s32 a = thread.gpr[code.ra];
-    s32 b = thread.gpr[code.rb];
-
-    if ((a < b  && (code.to & 0x10)) ||
-        (a > b  && (code.to & 0x8))  ||
-        (a == b && (code.to & 0x4))  ||
-        ((u32)a < (u32)b && (code.to & 0x2)) ||
-        ((u32)a > (u32)b && (code.to & 0x1))) {
-        unknown("tw");
-    }
+    unknown("tw");
 }
 void PPUInterpreter::twi(PPUFields code, PPUThread& thread)
 {
-    s32 a = thread.gpr[code.ra];
-
-    if ((a < code.simm  && (code.to & 0x10)) ||
-        (a > code.simm  && (code.to & 0x8))  ||
-        (a == code.simm && (code.to & 0x4))  ||
-        ((u32)a < (u32)code.simm && (code.to & 0x2)) ||
-        ((u32)a > (u32)code.simm && (code.to & 0x1))) {
-        unknown("twi");
-    }
+    unknown("twi");
 }
 void PPUInterpreter::xorx(PPUFields code, PPUThread& thread)
 {
@@ -1336,19 +1310,44 @@ void PPUInterpreter::fabs(PPUFields code, PPUThread& thread)
 {
     const f32 value = thread.fpr[code.frb];
     thread.fpr[code.frd] = (value < 0) ? -value : value;
-    if (code.rc) { unknown("fabs."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fadd(PPUFields code, PPUThread& thread)
 {
-    thread.fpr[code.frd] = thread.fpr[code.fra] + thread.fpr[code.frb];
+    const f64 a = thread.fpr[code.fra];
+    const f64 b = thread.fpr[code.frb];
+    const f64 t = a + b;
+    if (a != a) {
+        thread.fpr[code.frd] = a;
+    } else if (b != b) {
+        thread.fpr[code.frd] = b;
+    } else if (t != t) {
+        thread.fpscr.setException(FPSCR_VXISI);
+        (u64&)thread.fpr[code.frd] = 0x7FF8000000000000ULL;
+    } else {
+        thread.fpr[code.frd] = t;
+    }
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPRF & 0xF); }
 }
 void PPUInterpreter::fadds(PPUFields code, PPUThread& thread)
 {
-    thread.fpr[code.frd] = static_cast<f32>(thread.fpr[code.fra] + thread.fpr[code.frb]);
+    const f64 a = thread.fpr[code.fra];
+    const f64 b = thread.fpr[code.frb];
+    const f64 t = a + b;
+    if (a != a) {
+        thread.fpr[code.frd] = a;
+    } else if (b != b) {
+        thread.fpr[code.frd] = b;
+    } else if (t != t) {
+        thread.fpscr.setException(FPSCR_VXISI);
+        (u64&)thread.fpr[code.frd] = 0x7FF8000000000000ULL;
+    } else {
+        thread.fpr[code.frd] = t;
+    }
+    thread.fpr[code.frd] = static_cast<f32>(thread.fpr[code.frd]);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fadds."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fcfid(PPUFields code, PPUThread& thread)
 {
@@ -1363,7 +1362,7 @@ void PPUInterpreter::fcfid(PPUFields code, PPUThread& thread)
         thread.fpscr.FR = abs(bfi) > abs(bi);
     }
     thread.fpr[code.frd] = bf;
-    if (code.rc) { unknown("fcfid."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fcmpo(PPUFields code, PPUThread& thread)
 {/*
@@ -1448,7 +1447,7 @@ void PPUInterpreter::fctid(PPUFields code, PPUThread& thread)
     (u64&)thread.fpr[code.frd] = 0xFFF8000000000000ULL | r;
     if (r == 0 && ((u64&)b & DOUBLE_SIGN)) (u64&)thread.fpr[code.frd] |= 0x100000000ULL;
 
-    if (code.rc) { unknown("fctid."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fctidz(PPUFields code, PPUThread& thread)
 {
@@ -1486,7 +1485,7 @@ void PPUInterpreter::fctidz(PPUFields code, PPUThread& thread)
     if (r == 0 && ((u64&)b & DOUBLE_SIGN)) {
         (u64&)thread.fpr[code.frd] |= 0x100000000ULL;
     }
-    if (code.rc) { unknown("fctidz."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fctiw(PPUFields code, PPUThread& thread)
 {
@@ -1545,7 +1544,7 @@ void PPUInterpreter::fctiw(PPUFields code, PPUThread& thread)
     if (r == 0 && ((u64&)b & DOUBLE_SIGN)) {
         (u64&)thread.fpr[code.frd] |= 0x100000000ULL;
     }
-    if (code.rc) { unknown("fctiw."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fctiwz(PPUFields code, PPUThread& thread)
 {
@@ -1583,7 +1582,7 @@ void PPUInterpreter::fctiwz(PPUFields code, PPUThread& thread)
     if (value == 0 && ((u64&)b & DOUBLE_SIGN)) {
         (u64&)thread.fpr[code.frd] |= 0x100000000ULL;
     }
-    if (code.rc) unknown("fctiwz.");
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fdiv(PPUFields code, PPUThread& thread)
 {
@@ -1614,7 +1613,7 @@ void PPUInterpreter::fdiv(PPUFields code, PPUThread& thread)
         }
     }*/
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fdiv."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fdivs(PPUFields code, PPUThread& thread)
 {
@@ -1646,36 +1645,36 @@ void PPUInterpreter::fdivs(PPUFields code, PPUThread& thread)
     }*/
 
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fdivs."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fmadd(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = thread.fpr[code.fra] * thread.fpr[code.frc] + thread.fpr[code.frb];
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fmadd."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fmadds(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = static_cast<f32>(thread.fpr[code.fra] * thread.fpr[code.frc] + thread.fpr[code.frb]);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fmadds."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fmr(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = thread.fpr[code.frb];
-    if (code.rc) { unknown("fmr."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fmsub(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = thread.fpr[code.fra] * thread.fpr[code.frc] - thread.fpr[code.frb];
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fmsub."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fmsubs(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = static_cast<f32>(thread.fpr[code.fra] * thread.fpr[code.frc] - thread.fpr[code.frb]);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fmsubs."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fmul(PPUFields code, PPUThread& thread)
 {/*
@@ -1695,7 +1694,7 @@ void PPUInterpreter::fmul(PPUFields code, PPUThread& thread)
         thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     }
 
-    if (code.rc) { unknown("fmul."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 */}
 void PPUInterpreter::fmuls(PPUFields code, PPUThread& thread)
 {
@@ -1703,41 +1702,41 @@ void PPUInterpreter::fmuls(PPUFields code, PPUThread& thread)
     thread.fpscr.FI = 0;
     thread.fpscr.FR = 0;
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fmuls."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fnabs(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = -::fabs(thread.fpr[code.frb]);
-    if (code.rc) { unknown("fnabs."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fneg(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = -thread.fpr[code.frb];
-    if (code.rc) { unknown("fneg."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fnmadd(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = -(thread.fpr[code.fra] * thread.fpr[code.frc] + thread.fpr[code.frb]);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fnmadd."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fnmadds(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = static_cast<f32>(-(thread.fpr[code.fra] * thread.fpr[code.frc] + thread.fpr[code.frb]));
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fnmadds."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fnmsub(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = -(thread.fpr[code.fra] * thread.fpr[code.frc] - thread.fpr[code.frb]);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fnmsub."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fnmsubs(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = static_cast<f32>(-(thread.fpr[code.fra] * thread.fpr[code.frc] - thread.fpr[code.frb]));
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fnmsubs."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fres(PPUFields code, PPUThread& thread)
 {
@@ -1745,7 +1744,7 @@ void PPUInterpreter::fres(PPUFields code, PPUThread& thread)
         thread.fpscr.setException(FPSCR_ZX);
     }
     thread.fpr[code.frd] = static_cast<f32>(1.0 / thread.fpr[code.frb]);
-    if (code.rc) { unknown("fres."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::frsp(PPUFields code, PPUThread& thread)
 {/*
@@ -1766,41 +1765,41 @@ void PPUInterpreter::frsqrte(PPUFields code, PPUThread& thread)
         thread.fpscr.setException(FPSCR_ZX);
     }
     thread.fpr[code.frd] = static_cast<f32>(1.0 / sqrt(thread.fpr[code.frb]));
-    if (code.rc) { unknown("frsqrte."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fsel(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = thread.fpr[code.fra] >= 0.0 ? thread.fpr[code.frc] : thread.fpr[code.frb];
-    if (code.rc) { unknown("fsel."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fsqrt(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = sqrt(thread.fpr[code.frb]);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fsqrt."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fsqrts(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = static_cast<f32>(sqrt(thread.fpr[code.frb]));
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fsqrts."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fsub(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = thread.fpr[code.fra] - thread.fpr[code.frb];
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fsub."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::fsubs(PPUFields code, PPUThread& thread)
 {
     thread.fpr[code.frd] = static_cast<f32>(thread.fpr[code.fra] - thread.fpr[code.frb]);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
-    if (code.rc) { unknown("fsubs."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::mffs(PPUFields code, PPUThread& thread)
 {
     (u64&)thread.fpr[code.frd] = thread.fpscr.FPSCR;
-    if (code.rc) { unknown("mffs."); }
+    if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::mtfsf(PPUFields code, PPUThread& thread)
 {

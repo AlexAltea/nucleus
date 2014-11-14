@@ -28,8 +28,8 @@ protected:
     CellTranslator* m_translator;
 
 public:
-    // Thread priority
-    s32 prio;
+    s32 prio;  // Thread priority
+    u64 id;    // Thread ID (relevant for LV2)
 
     // Program Counter and RTOC
     u32 pc;
