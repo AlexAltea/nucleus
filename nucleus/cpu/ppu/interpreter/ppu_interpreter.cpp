@@ -1359,6 +1359,7 @@ void PPUInterpreter::fcfid(PPUFields code, PPUThread& thread)
         thread.fpscr.FR = 0;
     } else {
         thread.fpscr.FI = 1;
+        thread.fpscr.setException(FPSCR_XX);
         thread.fpscr.FR = abs(bfi) > abs(bi);
     }
     thread.fpr[code.frd] = bf;
@@ -1370,11 +1371,11 @@ void PPUInterpreter::fcmpo(PPUFields code, PPUThread& thread)
 
     if (cmp_res == CR_SO) {
         if (FPRdouble::IsSNaN(thread.fpr[code.fra]) || FPRdouble::IsSNaN(thread.fpr[code.frb])) {
-            thread.SetFPSCRException(FPSCR_VXSNAN);
+            thread.fpscr.setException(FPSCR_VXSNAN);
             if (!thread.fpscr.VE) thread.SetFPSCRException(FPSCR_VXVC);
         }
         else {
-            thread.SetFPSCRException(FPSCR_VXVC);
+            thread.fpscr.setException(FPSCR_VXVC);
         }
 
         thread.fpscr.FX = 1;
@@ -1679,7 +1680,7 @@ void PPUInterpreter::fmsubs(PPUFields code, PPUThread& thread)
 void PPUInterpreter::fmul(PPUFields code, PPUThread& thread)
 {/*
     if ((FPRdouble::IsINF(thread.fpr[code.fra]) && thread.fpr[code.frc] == 0.0) || (FPRdouble::IsINF(thread.fpr[code.frc]) && thread.fpr[code.fra] == 0.0)) {
-        thread.SetFPSCRException(FPSCR_VXIMZ);
+        thread.fpscr.setException(FPSCR_VXIMZ);
         thread.fpr[code.frd] = FPR_NAN;
         thread.fpscr.FI = 0;
         thread.fpscr.FR = 0;
@@ -1687,7 +1688,7 @@ void PPUInterpreter::fmul(PPUFields code, PPUThread& thread)
     }
     else {
         if (FPRdouble::IsSNaN(thread.fpr[code.fra]) || FPRdouble::IsSNaN(thread.fpr[code.frc])) {
-            thread.SetFPSCRException(FPSCR_VXSNAN);
+            thread.fpscr.setException(FPSCR_VXSNAN);
         }
 
         thread.fpr[code.frd] = thread.fpr[code.fra] * thread.fpr[code.frc];
@@ -1747,18 +1748,25 @@ void PPUInterpreter::fres(PPUFields code, PPUThread& thread)
     if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd], (f64)0); }
 }
 void PPUInterpreter::frsp(PPUFields code, PPUThread& thread)
-{/*
+{
     const f64 b = thread.fpr[code.frb];
     f64 b0 = b;
     if (thread.fpscr.NI) {
         if (((u64&)b0 & DOUBLE_EXP) < 0x3800000000000000ULL) (u64&)b0 &= DOUBLE_SIGN;
     }
     const f64 r = static_cast<f32>(b0);
-    thread.fpscr.FR = fabs(r) > fabs(b);
-    thread.SetFPSCR_FI(b != r);
+    thread.fpscr.FR = ::fabs(r) > ::fabs(b);
+
+    if (b != r) {
+        thread.fpscr.FI = 1;
+        thread.fpscr.setException(FPSCR_XX);
+    } else {
+        thread.fpscr.FI = 0;
+    }
+    
     thread.fpscr.FPRF = getFPRFlags(r);
     thread.fpr[code.frd] = r;
-*/}
+}
 void PPUInterpreter::frsqrte(PPUFields code, PPUThread& thread)
 {
     if (thread.fpr[code.frb] == 0.0) {

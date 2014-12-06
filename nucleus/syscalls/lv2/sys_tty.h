@@ -6,7 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/memory/object.h"
 
 // TTY channels
 enum

@@ -34,7 +34,7 @@ void Memory::init()
 
     // Initialize segments
     m_segments[SEG_MAIN_MEMORY].init(0x00010000, 0x2FFF0000);
-    m_segments[SEG_USER_MEMORY].init(0x30000000, 0x10000000);
+    m_segments[SEG_USER_MEMORY].init(0x10000000, 0x10000000);
     m_segments[SEG_RSX_FIFO_MEMORY].init(0x40000000, 0x10000000);
     m_segments[SEG_RSX_MAP_MEMORY].init(0x60000000, 0x10000000);
     m_segments[SEG_MMAPPER_MEMORY].init(0xB0000000, 0x10000000);

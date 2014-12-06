@@ -23,7 +23,7 @@ PPUThread::PPUThread(u32 entry)
     gpr[1] = m_stackPointer - 0x200;
     gpr[2] = rtoc;
     gpr[3] = 0;
-    gpr[4] = nucleus.memory.alloc(4,4);
+    gpr[4] = m_stackPointer - 0x80;
     gpr[5] = gpr[4] + 0x10;
     gpr[11] = entry;
     gpr[12] = nucleus.lv2.proc_param.malloc_pagesize;
@@ -31,7 +31,6 @@ PPUThread::PPUThread(u32 entry)
     cr.CR = 0x22000082;
     tbl = 1;
     tbu = 1;
-    nucleus.memory.write32(gpr[4], 0);
 }
 
 PPUThread::~PPUThread()

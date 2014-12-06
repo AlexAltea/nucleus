@@ -4,7 +4,7 @@
  */
 
 #include "lv2.h"
-#include "nucleus/memory/object.h"
+#include "nucleus/emulator.h"
 #include "nucleus/syscalls/callback.h"
 
 #include "lv2/sys_cond.h"

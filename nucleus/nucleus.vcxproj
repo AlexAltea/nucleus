@@ -95,7 +95,6 @@
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\self.cpp" />
     <ClCompile Include="memory\memory.cpp" />
-    <ClCompile Include="memory\object.cpp" />
     <ClCompile Include="memory\segment.cpp" />
     <ClCompile Include="nucleus.cpp" />
     <ClCompile Include="syscalls\lv2.cpp" />
@@ -141,7 +140,6 @@
     <ClInclude Include="loader\self.h" />
     <ClInclude Include="logging.h" />
     <ClInclude Include="memory\memory.h" />
-    <ClInclude Include="memory\object.h" />
     <ClInclude Include="memory\segment.h" />
     <ClInclude Include="syscalls\callback.h" />
     <ClInclude Include="syscalls\lv2.h" />

@@ -114,7 +114,7 @@ public:
 
     LV2(u32 fw_type);
 
-    bool initialized;
+    bool initialized = false;
     bool init();
 
     // Get LV2 SysCall ID from the current thread and call it

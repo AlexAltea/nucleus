@@ -240,6 +240,10 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                     value = (u16)(prx->segments[1].addr >> 16);
                     nucleus.memory.write16(addr, value);
                     break;
+
+                default:
+                    nucleus.log.error(LOG_LOADER, "Unknown relocation type!");
+                    break;
                 }
             }
         }

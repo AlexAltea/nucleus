@@ -4,6 +4,7 @@
  */
 
 #include "sys_tty.h"
+#include "nucleus/syscalls/lv2.h"
 
 #include <iostream>
 
