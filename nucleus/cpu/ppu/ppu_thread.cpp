@@ -31,6 +31,12 @@ PPUThread::PPUThread(u32 entry)
     cr.CR = 0x22000082;
     tbl = 1;
     tbu = 1;
+
+    // Arguments passed to sys_initialize_tls on liblv2.sprx's start function
+    gpr[7] = 0x0; // TODO
+    gpr[8] = 0x0; // TODO
+    gpr[9] = 0x0; // TODO
+    gpr[10] = 0x90;
 }
 
 PPUThread::~PPUThread()

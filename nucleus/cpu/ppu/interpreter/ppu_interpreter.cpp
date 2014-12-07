@@ -17,6 +17,7 @@
 #undef max
 #undef min
 #elif defined(NUCLEUS_LINUX)
+#include <time.h>
 #define InterlockedCompareExchange(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #define InterlockedCompareExchange64(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #endif
@@ -63,6 +64,33 @@ u32 getFPRFlags(f64 value)
     case FP_ZERO:       return std::signbit(value) ? FPR_FPRF_NZ : FPR_FPRF_PZ;
     default:            return std::signbit(value) ? FPR_FPRF_NN : FPR_FPRF_PN;
     }
+}
+
+u64 getTimebase()
+{
+#ifdef NUCLEUS_WIN
+    static struct PerformanceFreqHolder {
+		u64 value;
+		PerformanceFreqHolder() {
+			LARGE_INTEGER freq;
+			QueryPerformanceFrequency(&freq);
+			value = freq.QuadPart;
+		}
+	} freq;
+
+	LARGE_INTEGER cycle;
+	QueryPerformanceCounter(&cycle);
+	const u64 sec = cycle.QuadPart / freq.value;
+	return sec * 79800000 + (cycle.QuadPart % freq.value) * 79800000 / freq.value;
+#else
+    struct timespec ts;
+	if (!clock_gettime(CLOCK_MONOTONIC, &ts)) {
+		return ts.tv_sec * (s64)79800000 + (s64)ts.tv_nsec * (s64)79800000 / 1000000000;
+    } else {
+        nucleus.log.error(LOG_CPU, "Could not get the Timebase value");
+        return 0;
+    }    
+#endif
 }
 
 static u64 rotateMask[64][64];
@@ -731,8 +759,10 @@ void PPUInterpreter::mfspr(PPUFields code, PPUThread& thread)
 void PPUInterpreter::mftb(PPUFields code, PPUThread& thread)
 {
     const u32 n = (code.spr >> 5) | ((code.spr & 0x1f) << 5);
+    thread.tb = getTimebase();
+
     switch (n) {
-    case 0x10C: thread.gpr[code.rd] = thread.tbl; break;
+    case 0x10C: thread.gpr[code.rd] = thread.tb; break;
     case 0x10D: thread.gpr[code.rd] = thread.tbu; break;
     default: unknown("mftb"); break;
     }

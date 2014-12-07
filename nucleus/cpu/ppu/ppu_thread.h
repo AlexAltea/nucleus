@@ -224,8 +224,13 @@ public:
     PPU_CTR ctr;
 
     // PPU VEA Registers
-    u32 tbl;
-    u32 tbu;
+    union {
+        u64 tb;
+        struct {
+            u32 tbl;
+            u32 tbu;
+        };
+    };
 
     // PPU Vector Registers
     PPU_VR vr[32];
