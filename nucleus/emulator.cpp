@@ -15,6 +15,7 @@ bool Emulator::load(const std::string& filepath)
 {
     // Initialize everything
     memory.init();
+    rsx.init();
 
     // Create mount points
     const std::string& nucleusPath = getEmulatorPath();

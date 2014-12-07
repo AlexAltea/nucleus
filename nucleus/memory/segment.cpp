@@ -122,8 +122,18 @@ u32 MemorySegment::allocFixed(u32 addr, u32 size)
     return addr;
 }
 
-void MemorySegment::free(u32 addr)
+bool MemorySegment::free(u32 addr)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    for (auto it = m_allocated.begin(); it != m_allocated.end(); it++) {
+        if (it->addr == addr) {
+            m_allocated.erase(it);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool MemorySegment::isValid(u32 addr)

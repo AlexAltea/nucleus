@@ -110,6 +110,9 @@
     <ClCompile Include="..\externals\mongoose\mongoose.c">
       <Filter>externals\mongoose</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\lv1\lv1_gpu.cpp">
+      <Filter>syscalls\lv1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -237,6 +240,9 @@
     <ClInclude Include="syscalls\object.h">
       <Filter>syscalls</Filter>
     </ClInclude>
+    <ClInclude Include="syscalls\lv1\lv1_gpu.h">
+      <Filter>syscalls\lv1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -274,6 +280,9 @@
     </Filter>
     <Filter Include="externals\mongoose">
       <UniqueIdentifier>{ba021b58-b3bb-40c5-be21-d6333cb88b4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="syscalls\lv1">
+      <UniqueIdentifier>{05d8309f-e821-40da-b226-1363ec5c64d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

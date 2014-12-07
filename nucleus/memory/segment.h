@@ -35,7 +35,7 @@ public:
 
     u32 alloc(u32 size, u32 align=1);
     u32 allocFixed(u32 addr, u32 size);
-    void free(u32 addr);
+    bool free(u32 addr);
 
     bool isValid(u32 addr);
     u32 getTotalMemory() const;

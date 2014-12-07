@@ -5,6 +5,7 @@
 
 #include "sys_rsx.h"
 #include "nucleus/syscalls/lv2.h"
+#include "nucleus/syscalls/lv1/lv1_gpu.h"
 #include "nucleus/emulator.h"
 
 s32 sys_rsx_device_open()
@@ -19,6 +20,7 @@ s32 sys_rsx_device_close()
 
 /**
  * LV2 SysCall 668 (0x29C): sys_rsx_memory_allocate
+ * Allocate space in the RSX local memory.
  *  - mem_handle (OUT): Context / ID, which is used by sys_rsx_memory_free to free allocated memory.
  *  - mem_addr (OUT): Returns the local memory base address, usually 0xC0000000.
  *  - size (IN): Local memory size. E.g. 0x0F900000 (249 MB).
@@ -29,13 +31,13 @@ s32 sys_rsx_device_close()
  */
 s32 sys_rsx_memory_allocate(be_t<u32>* mem_handle, be_t<u32>* mem_addr, u32 size, u64 flags, u64 a5, u64 a6, u64 a7)
 {
-    // Allocate space in the RSX local memory
+    // LV1 Syscall: lv1_gpu_memory_allocate (0xD6)
     const u32 addr = nucleus.memory(SEG_RSX_LOCAL_MEMORY).alloc(size);
     if (!addr) {
         return CELL_EINVAL;
     }
 
-    *mem_handle = 1 ^ 0x5A5A5A5A; // TODO
+    *mem_handle = addr; // HACK: On the PS3, this is: *mem_handle = id ^ 0x5A5A5A5A
     *mem_addr = addr;
     return CELL_OK;
 }
@@ -46,6 +48,9 @@ s32 sys_rsx_memory_allocate(be_t<u32>* mem_handle, be_t<u32>* mem_addr, u32 size
  */
 s32 sys_rsx_memory_free(u32 mem_handle)
 {
+    // LV1 Syscall: lv1_gpu_memory_free (0xD8)
+    nucleus.memory(SEG_RSX_LOCAL_MEMORY).free(mem_handle);
+
     return CELL_OK;
 }
 
@@ -64,7 +69,8 @@ s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control,
     *lpar_driver_info = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60200000, 0x4000);
     *lpar_reports = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60300000, 0x10000);
 
-    nucleus.rsx.local_reports = nucleus.memory.ptr<rsx_report_t>(*lpar_reports);
+    nucleus.rsx.dma_control = nucleus.memory.ptr<rsx_dma_control_t>(*lpar_dma_control);
+    nucleus.rsx.reports = nucleus.memory.ptr<rsx_report_t>(*lpar_reports);
 
     // TODO: ???
     auto* driver_info = (be_t<u32>*)((u64)nucleus.memory.getBaseAddr() + *lpar_driver_info);
@@ -120,7 +126,10 @@ s32 sys_rsx_context_iounmap(u32 context_id, u32 a2, u32 io_addr, u32 size)
 s32 sys_rsx_context_attribute(s32 context_id, u32 package_id, u64 a3, u64 a4, u64 a5, u64 a6)
 {
     switch (package_id) {
-    case 0x001: // FIFO
+    case L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP:
+        nucleus.rsx.dma_control->get = 0; // TODO
+        nucleus.rsx.dma_control->put = 0; // TODO
+        nucleus.rsx.dma_control->ref = 0xFFFFFFFF; // TODO
         break;
     
     case 0x100: // Display mode set
