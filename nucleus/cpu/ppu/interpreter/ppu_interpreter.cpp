@@ -17,7 +17,6 @@
 #undef max
 #undef min
 #elif defined(NUCLEUS_LINUX)
-#include <time.h>
 #define InterlockedCompareExchange(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #define InterlockedCompareExchange64(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #endif
@@ -83,13 +82,8 @@ u64 getTimebase()
     const u64 sec = cycle.QuadPart / freq.value;
     return sec * 79800000 + (cycle.QuadPart % freq.value) * 79800000 / freq.value;
 #else
-    struct timespec ts;
-    if (!clock_gettime(CLOCK_MONOTONIC, &ts)) {
-        return ts.tv_sec * (s64)79800000 + (s64)ts.tv_nsec * (s64)79800000 / 1000000000;
-    } else {
-        nucleus.log.error(LOG_CPU, "Could not get the Timebase value");
-        return 0;
-    }    
+    nucleus.log.error(LOG_CPU, "Could not get the Timebase value");
+    return 0;  
 #endif
 }
 

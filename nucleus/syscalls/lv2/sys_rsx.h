@@ -19,4 +19,4 @@ s32 sys_rsx_context_iounmap(u32 context_id, u32 a2, u32 io_addr, u32 size);
 s32 sys_rsx_context_attribute(s32 context_id, u32 package_id, u64 a3, u64 a4, u64 a5, u64 a6);
 s32 sys_rsx_device_map(be_t<u32>* a1, be_t<u32>* a2, u32 dev_id);
 s32 sys_rsx_device_unmap(u32 dev_id);
-s32 sys_rsx_attribute();
+s32 sys_rsx_attribute(u32 a1, u32 a2, u32 a3, u32 a4, u32 a5);

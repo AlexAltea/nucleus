@@ -210,7 +210,26 @@ s32 sys_rsx_device_unmap(u32 dev_id)
     return CELL_OK;
 }
 
-s32 sys_rsx_attribute()
+/**
+ * LV2 SysCall 677 (0x2A5): sys_rsx_attribute
+ */
+s32 sys_rsx_attribute(u32 a1, u32 a2, u32 a3, u32 a4, u32 a5)
 {
+    // LV1 Syscall: lv1_gpu_attribute (0xE4)
+    switch (a1) {
+    case L1GPU_ATTRIBUTE_UNK002:
+    case L1GPU_ATTRIBUTE_UNK100:
+    case L1GPU_ATTRIBUTE_UNK105:
+    case L1GPU_ATTRIBUTE_UNK202:
+    case L1GPU_ATTRIBUTE_UNK400:
+    case L1GPU_ATTRIBUTE_UNK401:
+    case L1GPU_ATTRIBUTE_UNK402:
+    case L1GPU_ATTRIBUTE_UNK403:
+        break;
+
+    default:
+        break;
+    }
+
     return CELL_OK;
 }

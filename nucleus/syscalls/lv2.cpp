@@ -97,6 +97,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x2A0] = {wrap(sys_rsx_context_iomap), LV2_NONE};
         m_syscalls[0x2A2] = {wrap(sys_rsx_context_attribute), LV2_NONE};
         m_syscalls[0x2A3] = {wrap(sys_rsx_device_map), LV2_NONE};
+        m_syscalls[0x2A5] = {wrap(sys_rsx_attribute), LV2_NONE};
         m_syscalls[0x321] = {wrap(sys_fs_open), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};

@@ -14,13 +14,16 @@ struct rsx_dma_control_t
     u8 unk[0x40];
 
     // CellGcmControl
-    u32 put;
-    u32 get;
-    u32 ref;
+    be_t<u32> put;
+    be_t<u32> get;
+    be_t<u32> ref;
 };
 
 struct rsx_report_t
 {
+    be_t<u64> timer;
+	be_t<u32> value;
+	be_t<u32> padding;
 };
 
 class RSX
