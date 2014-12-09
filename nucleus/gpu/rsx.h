@@ -22,8 +22,8 @@ struct rsx_dma_control_t
 struct rsx_report_t
 {
     be_t<u64> timer;
-	be_t<u32> value;
-	be_t<u32> padding;
+    be_t<u32> value;
+    be_t<u32> padding;
 };
 
 class RSX

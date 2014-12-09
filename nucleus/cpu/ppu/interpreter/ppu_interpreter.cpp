@@ -774,13 +774,10 @@ void PPUInterpreter::mtfsb1(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::mtfsfi(PPUFields code, PPUThread& thread)
 {
-    const u64 mask = (0x1ULL << code.crfd);
-    if (code.imm) {
-        thread.fpscr.FPSCR |= mask;
-    }
-    else {
-        thread.fpscr.FPSCR &= ~mask;
-    }
+    const u32 mask = 0xF << (code.crfd * 4);
+    const u32 value = (code.imm & 0xF) << (code.crfd * 4);
+    thread.fpscr.FPSCR &= ~mask;
+    thread.fpscr.FPSCR |= value;
     if (code.rc) unknown("mtfsfi.");
 }
 void PPUInterpreter::mtocrf(PPUFields code, PPUThread& thread)
@@ -1729,12 +1726,23 @@ void PPUInterpreter::fmul(PPUFields code, PPUThread& thread)
         thread.fpr[code.frd]._f64 = thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64;
         thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     }
-
     if (code.rc) { thread.cr.updateField(1, (f64)thread.fpr[code.frd]._f64, (f64)0); }
 }
 void PPUInterpreter::fmuls(PPUFields code, PPUThread& thread)
 {
-    thread.fpr[code.frd]._f64 = static_cast<f32>(thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64);
+    const f64 a = thread.fpr[code.fra]._f64;
+    const f64 b = thread.fpr[code.frb]._f64;
+    const f32 t = a * b;
+    if (a != a) {
+        thread.fpr[code.frd]._f64 = a;
+    } else if (b != b) {
+        thread.fpr[code.frd]._f64 = b;
+    } else if (t != t) {
+        thread.fpscr.setException(FPSCR_VXISI);
+        (u64&)thread.fpr[code.frd] = 0x7FF8000000000000ULL;
+    } else {
+        thread.fpr[code.frd]._f64 = t;
+    }
     thread.fpscr.FI = 0;
     thread.fpscr.FR = 0;
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);

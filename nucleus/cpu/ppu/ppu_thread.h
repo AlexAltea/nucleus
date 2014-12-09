@@ -129,15 +129,15 @@ union PPU_FPR
     bool isSNaN() {
         return
             (_u64 & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL &&
-		    (_u64 & 0x000FFFFFFFFFFFFFULL) != 0ULL &&
-		    (_u64 & 0x0008000000000000ULL) == 0ULL;
+            (_u64 & 0x000FFFFFFFFFFFFFULL) != 0ULL &&
+            (_u64 & 0x0008000000000000ULL) == 0ULL;
     }
 
     static int compare(PPU_FPR& a, PPU_FPR& b) {
         if(a._f64  < b._f64) return PPU_CR::CR_LT;
-	    if(a._f64  > b._f64) return PPU_CR::CR_GT;
-	    if(a._f64 == b._f64) return PPU_CR::CR_EQ;
-	    return PPU_CR::CR_SO;
+        if(a._f64  > b._f64) return PPU_CR::CR_GT;
+        if(a._f64 == b._f64) return PPU_CR::CR_EQ;
+        return PPU_CR::CR_SO;
     }
 };
 
