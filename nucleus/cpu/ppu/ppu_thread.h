@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
+
 #include <string>
 
 #define DOUBLE_SIGN 0x8000000000000000ULL
@@ -36,8 +37,7 @@ enum FPSCR_FPRF {
 };
 
 // FPSCR flags
-enum FPSCR_EXP
-{
+enum FPSCR_EXP {
     FPSCR_FX        = 0x80000000,
     FPSCR_FEX       = 0x40000000,
     FPSCR_VX        = 0x20000000,
@@ -64,9 +64,6 @@ enum FPSCR_EXP
 
 // General-Purpose Register
 typedef u64 PPU_GPR;
-
-// Floating-Point Register
-typedef f64 PPU_FPR;
 
 // Condition Register
 union PPU_CR
@@ -105,6 +102,42 @@ union PPU_CR
         else {
             setField(field, 1 << CR_SO);
         }
+    }
+};
+
+// Floating-Point Register
+union PPU_FPR
+{
+    f64 _f64;
+    u64 _u64;
+
+    enum : u64 {
+        FPR_NAN = 0x7FF8000000000000ULL,
+    };
+
+    bool operator== (f64 right) { return _f64 == right; }
+    bool operator== (u64 right) { return _u64 == right; }
+
+    bool isInf() {
+        return (_u64 & 0x7FFFFFFFFFFFFFFFULL) == 0x7FF0000000000000ULL;
+    }
+
+    bool isNaN() {
+        return std::isnan(_f64);
+    }
+
+    bool isSNaN() {
+        return
+            (_u64 & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL &&
+		    (_u64 & 0x000FFFFFFFFFFFFFULL) != 0ULL &&
+		    (_u64 & 0x0008000000000000ULL) == 0ULL;
+    }
+
+    static int compare(PPU_FPR& a, PPU_FPR& b) {
+        if(a._f64  < b._f64) return PPU_CR::CR_LT;
+	    if(a._f64  > b._f64) return PPU_CR::CR_GT;
+	    if(a._f64 == b._f64) return PPU_CR::CR_EQ;
+	    return PPU_CR::CR_SO;
     }
 };
 
