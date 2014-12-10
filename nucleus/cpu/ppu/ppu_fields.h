@@ -76,7 +76,7 @@ union PPUFields
     FIELD(30, 30, u32 sh_);     // Shift amount: Split field
     FIELD(11, 20, u32 spr);     // Special-purpose register
     FIELD( 9, 10, u32 strm);    // ?
-    FIELD( 6, 31, u32 sys);     // ?
+    FIELD(20, 26, u32 lev);     // ?
     FIELD(16, 31, s32 simm);    // Immediate 16-bit signed integer
     FIELD(16, 31, u32 uimm);    // Immediate 16-bit unsigned integer
     FIELD( 9, 10, u32 th);      // Data stream variant of the dcbt instruction

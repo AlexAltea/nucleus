@@ -963,10 +963,14 @@ void PPUInterpreter::rlwnmx(PPUFields code, PPUThread& thread)
 }
 void PPUInterpreter::sc(PPUFields code, PPUThread& thread)
 {
-    if (code.sys == 2) {
+    switch (code.lev) {
+    case 0:
         nucleus.lv2.call(thread);
-    }
-    else {
+        break;
+    case 1:
+        unknown("hvsc");
+        break;
+    default:
         unknown("sc");
     }
 }

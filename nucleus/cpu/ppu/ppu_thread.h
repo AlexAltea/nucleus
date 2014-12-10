@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
 
+#include <cmath>
 #include <string>
 
 #define DOUBLE_SIGN 0x8000000000000000ULL

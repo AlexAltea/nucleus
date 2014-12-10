@@ -5,7 +5,7 @@ import re
 
 # Directories
 NUCLEUS_DIR = os.path.abspath("..")
-NUCLEUS_SOLUTION = os.path.join(NUCLEUS_DIR, "nucleus")
+NUCLEUS_PROJECT = os.path.join(NUCLEUS_DIR, "nucleus")
 
 
 # Formatting rules for *.c, *.cpp and *.h files
@@ -14,8 +14,8 @@ def formatGeneric(codeInput):
     # Replace LF with CRLF
     codeInput = re.sub(r'^[\r]\n', r'\r\n', codeInput)
 
-    # Replace tabs at the beginning of lines with spaces (!)
-    codeInput = re.sub(r'([\n,\r]+)([\t]*)[\t]', r'\1\2    ', codeInput)
+    # Replace tabs with 4 spaces
+    codeInput = re.sub(r'\t', r'    ', codeInput)
 
     # Remove tabs or spaces at the end of lines
     codeInput = re.sub(r'([ \t]+)\r', r'\1\r', codeInput)
@@ -25,7 +25,7 @@ def formatGeneric(codeInput):
 
 # Search and edit files of the Nucleus project
 def main():
-    for root, dirs, files in os.walk(NUCLEUS_SOLUTION):
+    for root, dirs, files in os.walk(NUCLEUS_PROJECT):
         for filename in files:
             if not filename.endswith((".c",".cc",".cpp",".h",".hpp")):
                 continue
