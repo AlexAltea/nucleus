@@ -17,7 +17,7 @@ s32 cellVideoOutConfigure(u32 videoOut, CellVideoOutConfiguration* config, CellV
 
 s32 cellVideoOutGetState(u32 videoOut, u32 deviceIndex, CellVideoOutState* state)
 {
-    if (deviceIndex == 0) {
+    if (deviceIndex > 0) {
         return CELL_VIDEO_OUT_ERROR_DEVICE_NOT_FOUND;
     }
     if (videoOut != CELL_VIDEO_OUT_PRIMARY) {

@@ -29,7 +29,7 @@ s32 sys_rsx_device_close()
  *  - a6 (IN): E.g. Immediate value passed in cellGcmSys is 16. 
  *  - a7 (IN): E.g. Immediate value passed in cellGcmSys is 8.
  */
-s32 sys_rsx_memory_allocate(be_t<u32>* mem_handle, be_t<u32>* mem_addr, u32 size, u64 flags, u64 a5, u64 a6, u64 a7)
+s32 sys_rsx_memory_allocate(be_t<u32>* mem_handle, be_t<u64>* mem_addr, u32 size, u64 flags, u64 a5, u64 a6, u64 a7)
 {
     // LV1 Syscall: lv1_gpu_memory_allocate (0xD6)
     const u32 addr = nucleus.memory(SEG_RSX_LOCAL_MEMORY).alloc(size);

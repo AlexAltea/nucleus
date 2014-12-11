@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
 #include "nucleus/filesystem/filesystem.h"
+#include "nucleus/syscalls/module.h"
 #include "nucleus/syscalls/object.h"
 #include "nucleus/syscalls/syscall.h"
 
@@ -102,11 +103,10 @@ struct LV2Syscall {
 class LV2
 {
     LV2Syscall m_syscalls[1024];
-    ObjectManager m_object_manager;
 
 public:
-    // Manage LV2 objects
     ObjectManager objects;
+    ModuleManager modules;
 
     // Process information
     sys_process_param_t proc_param;

@@ -970,6 +970,9 @@ void PPUInterpreter::sc(PPUFields code, PPUThread& thread)
     case 1:
         unknown("hvsc");
         break;
+    case 2:
+        nucleus.lv2.modules.call(thread);
+        break;
     default:
         unknown("sc");
     }

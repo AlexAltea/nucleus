@@ -113,6 +113,12 @@
     <ClCompile Include="syscalls\lv1\lv1_gpu.cpp">
       <Filter>syscalls\lv1</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\module.cpp">
+      <Filter>syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\modules\libsysmodule.cpp">
+      <Filter>syscalls\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -243,6 +249,12 @@
     <ClInclude Include="syscalls\lv1\lv1_gpu.h">
       <Filter>syscalls\lv1</Filter>
     </ClInclude>
+    <ClInclude Include="syscalls\module.h">
+      <Filter>syscalls</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\modules\libsysmodule.h">
+      <Filter>syscalls\modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -283,6 +295,9 @@
     </Filter>
     <Filter Include="syscalls\lv1">
       <UniqueIdentifier>{05d8309f-e821-40da-b226-1363ec5c64d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="syscalls\modules">
+      <UniqueIdentifier>{b973ebaf-0e09-48e8-b507-02288f5c29e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

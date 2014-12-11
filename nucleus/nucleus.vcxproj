@@ -116,6 +116,8 @@
     <ClCompile Include="syscalls\lv2\sys_time.cpp" />
     <ClCompile Include="syscalls\lv2\sys_timer.cpp" />
     <ClCompile Include="syscalls\lv2\sys_tty.cpp" />
+    <ClCompile Include="syscalls\module.cpp" />
+    <ClCompile Include="syscalls\modules\libsysmodule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\externals\aes.h" />
@@ -162,6 +164,8 @@
     <ClInclude Include="syscalls\lv2\sys_time.h" />
     <ClInclude Include="syscalls\lv2\sys_timer.h" />
     <ClInclude Include="syscalls\lv2\sys_tty.h" />
+    <ClInclude Include="syscalls\module.h" />
+    <ClInclude Include="syscalls\modules\libsysmodule.h" />
     <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
   </ItemGroup>

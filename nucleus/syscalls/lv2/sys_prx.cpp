@@ -55,11 +55,11 @@ s32 sys_prx_load_module_list(s32 count, be_t<u64>* pathList, u64 flags, void* pO
 s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
 {
     auto* prx = nucleus.lv2.objects.get<sys_prx_t>(id);
-    const sys_prx_param_t& prx_param = nucleus.lv2.prx_param;
+    const sys_prx_param_t& param = nucleus.lv2.prx_param;
 
     // Update ELF import table
-    u32 offset = prx_param.libstubstart;
-    while (offset < prx_param.libstubend) {
+    u32 offset = param.libstubstart;
+    while (offset < param.libstubend) {
         const auto& importedLibrary = nucleus.memory.ref<sys_prx_library_info_t>(offset);
         offset += importedLibrary.size;
 
@@ -69,7 +69,23 @@ s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
             }
             for (u32 i = 0; i < importedLibrary.num_func; i++) {
                 const u32 fnid = nucleus.memory.read32(importedLibrary.fnid_addr + 4*i);
-                nucleus.memory.write32(importedLibrary.fstub_addr + 4*i, lib.exports.at(fnid));
+
+                // Try to link to a native implementation (HLE)
+                if (nucleus.lv2.modules.find(lib.name, fnid)) {
+                    u32 hookAddr = nucleus.memory.alloc(20, 8);
+                    nucleus.memory.write32(hookAddr + 0, 0x3D600000 | ((fnid >> 16) & 0xFFFF));  // lis  r11, fnid:hi
+                    nucleus.memory.write32(hookAddr + 4, 0x616B0000 | (fnid & 0xFFFF));          // ori  r11, r11, fnid:lo
+                    nucleus.memory.write32(hookAddr + 8, 0x44000042);                            // sc   2
+                    nucleus.memory.write32(hookAddr + 12, 0x4E800020);                           // blr
+                    nucleus.memory.write32(hookAddr + 16, hookAddr);                             // OPD: Function address
+                    nucleus.memory.write32(hookAddr + 20, 0);                                    // OPD: Function RTOC
+                    nucleus.memory.write32(importedLibrary.fstub_addr + 4*i, hookAddr + 16);
+                }
+                
+                // Otherwise, link to original function (LLE)
+                else {
+                    nucleus.memory.write32(importedLibrary.fstub_addr + 4*i, lib.exports.at(fnid));
+                }
             }
         }
     }
