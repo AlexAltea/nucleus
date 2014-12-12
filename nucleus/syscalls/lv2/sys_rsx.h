@@ -16,7 +16,7 @@ s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control,
 s32 sys_rsx_context_free(u32 context_id);
 s32 sys_rsx_context_iomap(u32 context_id, u32 io, u32 ea, u32 size, u64 flags);
 s32 sys_rsx_context_iounmap(u32 context_id, u32 a2, u32 io_addr, u32 size);
-s32 sys_rsx_context_attribute(s32 context_id, u32 package_id, u64 a3, u64 a4, u64 a5, u64 a6);
+s32 sys_rsx_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2, u64 p3, u64 p4);
 s32 sys_rsx_device_map(be_t<u32>* a1, be_t<u32>* a2, u32 dev_id);
 s32 sys_rsx_device_unmap(u32 dev_id);
 s32 sys_rsx_attribute(u32 a1, u32 a2, u32 a3, u32 a4, u32 a5);

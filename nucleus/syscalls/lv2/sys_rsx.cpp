@@ -65,18 +65,14 @@ s32 sys_rsx_memory_free(u32 mem_handle)
  */
 s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control, be_t<u64>* lpar_driver_info, be_t<u64>* lpar_reports, u64 mem_ctx, u64 system_mode)
 {
-    *lpar_dma_control = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60100000, 0x1000);
-    *lpar_driver_info = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60200000, 0x4000);
-    *lpar_reports = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60300000, 0x10000);
+    // HACK: We already store data in the memory on RSX initialization, mapping is not necessary
+    *lpar_dma_control = 0x60100000;
+    *lpar_driver_info = 0x60200000;
+    *lpar_reports = 0x60300000;
 
-    nucleus.rsx.dma_control = nucleus.memory.ptr<rsx_dma_control_t>(*lpar_dma_control);
-    nucleus.rsx.reports = nucleus.memory.ptr<rsx_report_t>(*lpar_reports);
+    // HACK: On the PS3, this is: *context_id = id ^ 0x55555555
+    *context_id = 0 ^ 0x55555555;
 
-    // TODO: ???
-    auto* driver_info = (be_t<u32>*)((u64)nucleus.memory.getBaseAddr() + *lpar_driver_info);
-    driver_info[0] = 0x211;
-
-    *context_id = 0 ^ 0x55555555; // TODO
     return CELL_OK;
 }
 
@@ -99,6 +95,7 @@ s32 sys_rsx_context_free(u32 context_id)
  */
 s32 sys_rsx_context_iomap(u32 context_id, u32 io, u32 ea, u32 size, u64 flags)
 {
+    nucleus.rsx.io_address = ea;
     return CELL_OK;
 }
 
@@ -123,22 +120,18 @@ s32 sys_rsx_context_iounmap(u32 context_id, u32 a2, u32 io_addr, u32 size)
  *  - a5 (IN): 
  *  - a6 (IN): 
  */
-s32 sys_rsx_context_attribute(s32 context_id, u32 package_id, u64 a3, u64 a4, u64 a5, u64 a6)
+s32 sys_rsx_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2, u64 p3, u64 p4)
 {
-    switch (package_id) {
+    switch (operation_code) {
     case L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP:
-        nucleus.rsx.dma_control->get = 0; // TODO
-        nucleus.rsx.dma_control->put = 0; // TODO
+        nucleus.rsx.dma_control->get = p1;
+        nucleus.rsx.dma_control->put = p2;
         nucleus.rsx.dma_control->ref = 0xFFFFFFFF; // TODO
         break;
     
-    case 0x100: // Display mode set
-        break;
-
-    case 0x101: // Display sync
-        break;
-
-    case 0x102: // Display flip
+    case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_MODE_SET:
+    case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_SYNC:
+    case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_FLIP:
         break;
 
     case 0x103: // ?
@@ -159,13 +152,10 @@ s32 sys_rsx_context_attribute(s32 context_id, u32 package_id, u64 a3, u64 a4, u6
     case 0x301: // Depth-buffer (Z-cull)
         break;
 
-    case 0x600: // Framebuffer setup
-        break;
-
-    case 0x601: // Framebuffer blit
-        break;
-
-    case 0x602: // Framebuffer blit sync
+    case L1GPU_CONTEXT_ATTRIBUTE_FB_SETUP:
+    case L1GPU_CONTEXT_ATTRIBUTE_FB_BLIT:
+    case L1GPU_CONTEXT_ATTRIBUTE_FB_BLIT_SYNC:
+    case L1GPU_CONTEXT_ATTRIBUTE_FB_CLOSE:
         break;
 
     default:
