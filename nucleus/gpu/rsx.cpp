@@ -14,12 +14,14 @@ void RSX::init() {
 
     dma_control = nucleus.memory.ptr<rsx_dma_control_t>(0x60100000);
     driver_info = nucleus.memory.ptr<rsx_driver_info_t>(0x60200000);
-    reports = nucleus.memory.ptr<rsx_report_t>(0x60300000);
+    reports = nucleus.memory.ptr<rsx_reports_t>(0x60300000);
 
     // Write driver information
-    driver_info->version = 0x211;
-    driver_info->coreFrequency = 500000000;
-    driver_info->memoryFrequency = 650000000;
+    driver_info->version_driver = 0x211;
+    driver_info->version_gpu = 0x5C;
+    driver_info->memory_size = 0xFE00000;       // 254 MB
+    driver_info->nvcore_frequency = 500000000;  // 500 MHz
+    driver_info->memory_frequency = 650000000;  // 650 MHz
 
     // Prevent the FIFO from fetching commands
     dma_control->get = 0;

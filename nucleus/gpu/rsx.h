@@ -19,10 +19,18 @@ struct rsx_dma_control_t {
 };
 
 struct rsx_driver_info_t {
-    be_t<u32> version;
-    be_t<u32> unk[3];
-    be_t<u32> coreFrequency;
-    be_t<u32> memoryFrequency;
+    be_t<u32> version_driver;
+    be_t<u32> version_gpu;
+    be_t<u32> memory_size;
+    be_t<u32> hardware_channel;
+    be_t<u32> nvcore_frequency;
+    be_t<u32> memory_frequency;
+};
+
+struct rsx_reports_t {
+    u8 unk1[0x10C0];
+    u8 unk2[0x40];
+    u32 flip;
 };
 
 struct rsx_report_t {
@@ -67,7 +75,7 @@ public:
     // RSX Local Memory (mapped into the user space)
     rsx_dma_control_t* dma_control;
     rsx_driver_info_t* driver_info;
-    rsx_report_t* reports;
+    rsx_reports_t* reports;
 
     // IO Address (mapped into GPU memory through FlexIO)
     u32 io_address;

@@ -298,4 +298,9 @@ enum {
     NV3089_IMAGE_IN_FORMAT                   = 0x0000C404,
     NV3089_IMAGE_IN_OFFSET                   = 0x0000C408,
     NV3089_IMAGE_IN                          = 0x0000C40C,
+
+    // SCE DRIVER
+    SCE_DRIVER_FLIP                          = 0x0000E924,
+    SCE_DRIVER_QUEUE                         = 0x0000E944,
+    SCE_DRIVER_INTERRUPT                     = 0x0000EB00,
 };
