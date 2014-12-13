@@ -6,7 +6,9 @@
 #pragma once
 
 #include "nucleus/common.h"
+//#include "nucleus/gpu/null/null_renderer.h"
 
+#include <stack>
 #include <thread>
 
 struct rsx_dma_control_t {
@@ -33,6 +35,8 @@ union rsx_method_t
 {
 #define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
 
+    u32 method;
+
     FIELD( 1,  1, u32 flag_ni);        // Non-Incrementing method
     FIELD( 2,  2, u32 flag_jump);      // Jump command
     FIELD(14, 14, u32 flag_ret);       // Return command
@@ -47,7 +51,14 @@ union rsx_method_t
 
 class RSX
 {
+    // Renderer (Null, Software, OpenGL, DirectX)
+    //Renderer* renderer;
+
+    // Thread responsible of fetching methods and rendering
     std::thread* m_pfifo_thread;
+
+    // Call stack
+    std::stack<u32> m_pfifo_stack;
 
 public:
     // Method registers: Note that method offsets need to be (>> 2)-shifted.

@@ -12,7 +12,7 @@ Config config;
 
 void Config::parseArguments(int argc, char** argv)
 {
-    for (int i=0; i<argc; i++) {
+    for (int i = 0; i < argc; i++) {
         if (!strcmp(argv[i], "--debugger")) {
             debugger = true;
         }

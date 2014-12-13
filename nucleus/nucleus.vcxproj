@@ -138,6 +138,9 @@
     <ClInclude Include="filesystem\filesystem.h" />
     <ClInclude Include="filesystem\virtual_filesystem.h" />
     <ClInclude Include="gpu\rsx.h" />
+    <ClInclude Include="gpu\rsx_fp.h" />
+    <ClInclude Include="gpu\rsx_methods.h" />
+    <ClInclude Include="gpu\rsx_vp.h" />
     <ClInclude Include="loader\keys.h" />
     <ClInclude Include="loader\loader.h" />
     <ClInclude Include="loader\self.h" />

@@ -41,5 +41,28 @@ void RSX::task() {
 
         // Read next command
         const rsx_method_t cmd = { nucleus.memory.read32(io_address + get) };
+
+        if (cmd.flag_jump) {
+            dma_control->get = cmd.jump_offset << 2;
+            continue;
+        }
+        if (cmd.flag_call) {
+            m_pfifo_stack.push(get + 4);
+            dma_control->get = cmd.call_offset << 2;
+            continue;
+        }
+        if (cmd.flag_ret) {
+            dma_control->get = m_pfifo_stack.top();
+            m_pfifo_stack.pop();
+            continue;
+        }
+
+        //nucleus.log.notice(LOG_GPU, "METHOD: 0x%X (+ %d args) @ IO:0x%X", cmd.method_offset << 2, cmd.method_count, get);
+        for (int i = 0; i < cmd.method_count; i++) {
+            const u32 argument = nucleus.memory.read32(io_address + get + 4*(i+1));
+            regs[cmd.method_offset + i * cmd.flag_ni] = argument;
+        }
+
+        dma_control->get += 4 * (cmd.method_count + 1);
     }
 }

@@ -255,6 +255,15 @@
     <ClInclude Include="syscalls\modules\libsysmodule.h">
       <Filter>syscalls\modules</Filter>
     </ClInclude>
+    <ClInclude Include="gpu\rsx_vp.h">
+      <Filter>gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu\rsx_fp.h">
+      <Filter>gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu\rsx_methods.h">
+      <Filter>gpu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -298,6 +307,18 @@
     </Filter>
     <Filter Include="syscalls\modules">
       <UniqueIdentifier>{b973ebaf-0e09-48e8-b507-02288f5c29e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gpu\null">
+      <UniqueIdentifier>{43252559-7d28-47cc-b1eb-73bdc8e4466d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gpu\directx">
+      <UniqueIdentifier>{6ecc0a11-292c-4e55-b66a-3014fd0b78ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gpu\opengl">
+      <UniqueIdentifier>{137cfb6a-f833-4228-bc33-ece142cebab8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gpu\software">
+      <UniqueIdentifier>{d5b85229-91f1-4c09-9a62-d6a2d2634bd9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
