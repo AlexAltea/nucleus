@@ -42,6 +42,18 @@ file(GLOB_RECURSE NUCLEUS_FILES
     "${NUCLEUS_SOLUTION_DIR}/nucleus/*.h"
 )
 
+# Discard platform-dependent files
+if (NOT WIN32)
+    file(GLOB_RECURSE DISCARD_FILES
+        "${NUCLEUS_SOLUTION_DIR}/nucleus/gpu/direct3d/*.cpp"
+        "${NUCLEUS_SOLUTION_DIR}/nucleus/gpu/direct3d/*.h"
+        "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.cpp"
+        "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.h"
+	)
+    list(REMOVE_ITEM NUCLEUS_FILES DISCARD_FILES)
+endif()
+
+# Target
 add_executable(nucleus ${NUCLEUS_FILES})
 
 target_link_libraries(nucleus ${ZLIB_LIBRARY})

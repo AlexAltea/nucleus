@@ -6,6 +6,7 @@
 #include "config.h"
 #include "debugger.h"
 #include "emulator.h"
+#include "ui/ui.h"
 
 #include <iostream>
 
@@ -16,7 +17,8 @@ int main(int argc, char **argv)
             << "Nucleus v0.0.1: A PlayStation 3 emulator.\n"
             << "Usage: nucleus [arguments] path/to/executable.ppu.self\n"
             << "Arguments:\n"
-            << "  --debugger    Create a Nerve backend debugging server\n"
+            << "  --ui          Opens the Nucleus UI window, allowing GPU backends to work.\n"
+            << "  --debugger    Create a Nerve backend debugging server.\n"
             << "                More information at: http://alexaltea.github.io/nerve/ \n"
             << std::endl;
     }
@@ -25,6 +27,11 @@ int main(int argc, char **argv)
         // Configure emulator
         config.parseArguments(argc, argv);
         std::string elfPath = argv[argc-1];
+
+        // Start UI
+        if (config.ui) {
+            ui.init();
+        }
 
         // Start emulator
         if (!nucleus.load(elfPath)) {

@@ -119,6 +119,15 @@
     <ClCompile Include="syscalls\modules\libsysmodule.cpp">
       <Filter>syscalls\modules</Filter>
     </ClCompile>
+    <ClCompile Include="ui\windows\window.cpp">
+      <Filter>ui\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\ui.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\windows\renderer_opengl.cpp">
+      <Filter>ui\windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -264,6 +273,15 @@
     <ClInclude Include="gpu\rsx_methods.h">
       <Filter>gpu</Filter>
     </ClInclude>
+    <ClInclude Include="ui\ui.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\windows\window.h">
+      <Filter>ui\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\windows\renderer_opengl.h">
+      <Filter>ui\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -319,6 +337,12 @@
     </Filter>
     <Filter Include="gpu\software">
       <UniqueIdentifier>{d5b85229-91f1-4c09-9a62-d6a2d2634bd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{1a3d9deb-1064-46ed-8c66-1115220cd6bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\windows">
+      <UniqueIdentifier>{185aee07-6b27-484a-a8a4-d09127a36a70}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
