@@ -11,5 +11,6 @@ class RSXRenderer {
 
 public:
     virtual void Begin(u32 mode)=0;
+    virtual void DrawArrays(u32 count, const be_t<u32>* args)=0;
     virtual void End()=0;
 };

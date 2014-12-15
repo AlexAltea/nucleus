@@ -9,5 +9,9 @@ This project focuses on PlayStation 3 emulation. Please, understand that I'm not
 * __Memory__: Nucleus emulates the PS3 user-mode environment, which uses 32-bit addresses. This reflects on the CPU / Memory related code, and could cause issues if you use it for other platforms, or for designing a low-level PS3 emulator.
 * __Portability__: Nucleus assumes that the host system runs on a low endian CPU, with 64-bit addresses.
 
+### Building
+* __Linux__: Follow the `.travis.yml` file.
+* __Windows__: Install *Visual Studio 2013*, open `nucleus.sln` and press *Build* > *Rebuild solution*.
+
 ### Disclaimer
 The goal of this project is to experiment, research, and educate on the topic of emulation of modern devices and operating systems. **It is not for enabling illegal activity**. All information is obtained via reverse engineering of legally purchased devices and games and information made public on the Internet.

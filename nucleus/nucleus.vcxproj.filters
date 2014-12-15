@@ -291,6 +291,9 @@
     <ClInclude Include="gpu\opengl\opengl_renderer.h">
       <Filter>gpu\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="gpu\rsx_enum.h">
+      <Filter>gpu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

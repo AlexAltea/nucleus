@@ -93,5 +93,9 @@ void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
             m_renderer->End();
         }
         break;
+
+    case NV4097_DRAW_ARRAYS:
+        m_renderer->DrawArrays(count, args);
+        break;
     }
 }

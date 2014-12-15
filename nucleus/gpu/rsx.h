@@ -11,6 +11,7 @@
 #include <stack>
 #include <thread>
 
+// LPAR DMA Control
 struct rsx_dma_control_t {
     u8 unk[0x40];
     be_t<u32> put; // CellGcmControl
@@ -18,6 +19,7 @@ struct rsx_dma_control_t {
     be_t<u32> ref; // CellGcmControl
 };
 
+// LPAR Driver Information
 struct rsx_driver_info_t {
     be_t<u32> version_driver;
     be_t<u32> version_gpu;
@@ -27,16 +29,20 @@ struct rsx_driver_info_t {
     be_t<u32> memory_frequency;
 };
 
-struct rsx_reports_t {
-    u8 unk1[0x10C0];
-    u8 unk2[0x40];
-    u32 flip;
-};
-
+// LPAR Reports
 struct rsx_report_t {
     be_t<u64> timer;
     be_t<u32> value;
     be_t<u32> padding;
+};
+
+struct rsx_reports_t {
+    u8 unk_semaphore[0x1000];
+    u8 unk1_notify[0xC0];
+    u8 unk2_notify[0x40];
+    u32 flip;
+    u8 unk3_notify[0x2FC];
+    rsx_report_t report[2048];
 };
 
 union rsx_method_t
