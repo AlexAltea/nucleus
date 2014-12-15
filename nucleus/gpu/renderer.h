@@ -5,6 +5,11 @@
 
 #pragma once
 
-#include <Windows.h>
+#include "nucleus/common.h"
 
-void OpenGL_Init(HWND hwnd);
+class RSXRenderer {
+
+public:
+    virtual void Begin(u32 mode)=0;
+    virtual void End()=0;
+};

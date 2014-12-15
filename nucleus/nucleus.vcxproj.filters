@@ -125,8 +125,11 @@
     <ClCompile Include="ui\ui.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="ui\windows\renderer_opengl.cpp">
+    <ClCompile Include="ui\windows\window_opengl.cpp">
       <Filter>ui\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="gpu\opengl\opengl_renderer.cpp">
+      <Filter>gpu\opengl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -279,8 +282,14 @@
     <ClInclude Include="ui\windows\window.h">
       <Filter>ui\windows</Filter>
     </ClInclude>
-    <ClInclude Include="ui\windows\renderer_opengl.h">
+    <ClInclude Include="ui\windows\window_opengl.h">
       <Filter>ui\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu\renderer.h">
+      <Filter>gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu\opengl\opengl_renderer.h">
+      <Filter>gpu\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

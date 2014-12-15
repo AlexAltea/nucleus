@@ -3,8 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "renderer_opengl.h"
+#pragma once
 
-void OpenGL_Init(HWND hwnd)
-{
-}
+#include <Windows.h>
+
+void OpenGL_Init(HWND hWnd);

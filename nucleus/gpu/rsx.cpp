@@ -5,6 +5,10 @@
 
 #include "rsx.h"
 #include "nucleus/emulator.h"
+#include "nucleus/config.h"
+#include "nucleus/gpu/rsx_methods.h"
+
+#include "nucleus/gpu/opengl/opengl_renderer.h"
 
 void RSX::init() {
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
@@ -27,6 +31,12 @@ void RSX::init() {
     dma_control->get = 0;
     dma_control->put = 0;
 
+    // Initialize renderer
+    switch (config.gpuBackend) {
+    case GPU_BACKEND_OPENGL:
+        m_renderer = new RSXRendererOpenGL();
+    }
+
     m_pfifo_thread = new std::thread([&](){
         task();
     });
@@ -41,9 +51,9 @@ void RSX::task() {
         const u32 get = dma_control->get;
         const u32 put = dma_control->put;
 
-        // Read next command
         const rsx_method_t cmd = { nucleus.memory.read32(io_address + get) };
 
+        // Branching commands
         if (cmd.flag_jump) {
             dma_control->get = cmd.jump_offset << 2;
             continue;
@@ -59,12 +69,29 @@ void RSX::task() {
             continue;
         }
 
-        //nucleus.log.notice(LOG_GPU, "METHOD: 0x%X (+ %d args) @ IO:0x%X", cmd.method_offset << 2, cmd.method_count, get);
         for (int i = 0; i < cmd.method_count; i++) {
             const u32 argument = nucleus.memory.read32(io_address + get + 4*(i+1));
             regs[cmd.method_offset + i * cmd.flag_ni] = argument;
         }
 
+        const u32 offset = cmd.method_offset << 2;
+        const u32 count = cmd.method_count;
+        const be_t<u32>* arguments = nucleus.memory.ptr<be_t<u32>>(io_address + get + 4);
+        method(offset, count, arguments);
+
         dma_control->get += 4 * (cmd.method_count + 1);
+    }
+}
+
+void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
+{
+    switch (offset) {
+    case NV4097_SET_BEGIN_END:
+        if (args[0]) {
+            m_renderer->Begin(args[0]);
+        } else {
+            m_renderer->End();
+        }
+        break;
     }
 }

@@ -90,6 +90,7 @@
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="filesystem\filesystem.cpp" />
     <ClCompile Include="filesystem\virtual_filesystem.cpp" />
+    <ClCompile Include="gpu\opengl\opengl_renderer.cpp" />
     <ClCompile Include="gpu\rsx.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
@@ -119,7 +120,7 @@
     <ClCompile Include="syscalls\module.cpp" />
     <ClCompile Include="syscalls\modules\libsysmodule.cpp" />
     <ClCompile Include="ui\ui.cpp" />
-    <ClCompile Include="ui\windows\renderer_opengl.cpp" />
+    <ClCompile Include="ui\windows\window_opengl.cpp" />
     <ClCompile Include="ui\windows\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +141,8 @@
     <ClInclude Include="emulator.h" />
     <ClInclude Include="filesystem\filesystem.h" />
     <ClInclude Include="filesystem\virtual_filesystem.h" />
+    <ClInclude Include="gpu\opengl\opengl_renderer.h" />
+    <ClInclude Include="gpu\renderer.h" />
     <ClInclude Include="gpu\rsx.h" />
     <ClInclude Include="gpu\rsx_fp.h" />
     <ClInclude Include="gpu\rsx_methods.h" />
@@ -175,7 +178,7 @@
     <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
     <ClInclude Include="ui\ui.h" />
-    <ClInclude Include="ui\windows\renderer_opengl.h" />
+    <ClInclude Include="ui\windows\window_opengl.h" />
     <ClInclude Include="ui\windows\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

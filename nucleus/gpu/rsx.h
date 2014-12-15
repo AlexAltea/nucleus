@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-//#include "nucleus/gpu/null/null_renderer.h"
+#include "nucleus/gpu/renderer.h"
 
 #include <stack>
 #include <thread>
@@ -60,7 +60,7 @@ union rsx_method_t
 class RSX
 {
     // Renderer (Null, Software, OpenGL, DirectX)
-    //Renderer* renderer;
+    RSXRenderer* m_renderer;
 
     // Thread responsible of fetching methods and rendering
     std::thread* m_pfifo_thread;
@@ -81,5 +81,8 @@ public:
     u32 io_address;
 
     void init();
+
     void task();
+
+    void method(u32 offset, u32 count, const be_t<u32>* args);
 };

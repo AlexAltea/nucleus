@@ -6,7 +6,7 @@
 #include "window.h"
 #include "nucleus/config.h"
 
-#include "renderer_opengl.h"
+#include "window_opengl.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

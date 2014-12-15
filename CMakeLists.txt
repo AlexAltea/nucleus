@@ -50,7 +50,7 @@ if (NOT WIN32)
         "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.cpp"
         "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.h"
 	)
-    list(REMOVE_ITEM NUCLEUS_FILES DISCARD_FILES)
+    list(REMOVE_ITEM NUCLEUS_FILES ${DISCARD_FILES})
 endif()
 
 # Target
