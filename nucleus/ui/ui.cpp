@@ -4,9 +4,13 @@
  */
 
 #include "ui.h"
+#include "nucleus/config.h"
 
 #ifdef NUCLEUS_WIN
-#include "windows/window.h"
+#include "windows/window_opengl.h"
+#endif
+#ifdef NUCLEUS_LINUX
+#include "linux/window_opengl.h"
 #endif
 
 // Global UI manager object
@@ -22,8 +26,22 @@ void UI::init()
 void UI::task()
 {
 #ifdef NUCLEUS_WIN
-    Window mainWindow("Nucleus", 960, 544);
-    mainWindow.init();
-    mainWindow.loop();
+    switch (config.gpuBackend) {
+    case GPU_BACKEND_OPENGL:
+        m_window = new WindowOpenGL("Nucleus", 960, 544);
+        m_window->loop();
+        break;
+    
+    case GPU_BACKEND_NULL:
+    case GPU_BACKEND_SOFTWARE:
+    case GPU_BACKEND_DIRECT3D:
+    default:
+        break;
+    }
 #endif
+}
+
+Window* UI::get()
+{
+    return m_window;
 }

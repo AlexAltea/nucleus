@@ -1,7 +1,7 @@
 Nucleus
 =======
 [![Build Status](https://travis-ci.org/AlexAltea/nucleus.svg)](https://travis-ci.org/AlexAltea/nucleus)
-[![Last Release](https://badge.fury.io/gh/AlexAltea%2Fnucleus.svg)](https://github.com/AlexAltea/nucleus/releases)
+[![Last Release](https://img.shields.io/badge/version-0.0.1-brightgreen.svg?style=flat)](https://github.com/AlexAltea/nucleus/releases)
 
 This project focuses on PlayStation 3 emulation. Please, understand that I'm not interested on providing support, releases, or attention to any comments, issues or pull requests for now.
 

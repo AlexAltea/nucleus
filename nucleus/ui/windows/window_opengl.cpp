@@ -9,12 +9,14 @@
 
 #pragma comment(lib, "opengl32.lib")
 
-void OpenGL_Init(HWND hWnd)
+WindowOpenGL::WindowOpenGL(const std::string& title, int width, int height) : Window(title, width, height)
 {
-    HDC hDC;
-    HGLRC hRC;
-    GLuint PixelFormat;
+    m_hdc = GetDC(m_hwnd);
+}
 
+void WindowOpenGL::init()
+{
+    GLuint PixelFormat;
     static const PIXELFORMATDESCRIPTOR pfd = {
         sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
         1,                              // Version
@@ -36,36 +38,35 @@ void OpenGL_Init(HWND hWnd)
         0, 0, 0                         // Layer masks ignored
     };
 
-    hDC = GetDC(hWnd);
-    if (!hDC) {
-		MessageBox(hWnd, "Failed to get a device context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+    if (!m_hdc) {
+		MessageBox(m_hwnd, "Failed to get a device context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
 		return;
 	}
 
-    PixelFormat = ChoosePixelFormat(hDC, &pfd);
+    PixelFormat = ChoosePixelFormat(m_hdc, &pfd);
     if (!PixelFormat) {
-		MessageBox(hWnd, "Can't find a suitable PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(m_hwnd, "Can't find a suitable PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
 		return;
 	}
 
-    if (!SetPixelFormat(hDC, PixelFormat, &pfd)) {
-		MessageBox(hWnd, "Can't set the PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+    if (!SetPixelFormat(m_hdc, PixelFormat, &pfd)) {
+		MessageBox(m_hwnd, "Can't set the PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
 		return;
 	}
 
-    hRC = wglCreateContext(hDC);
-    if (!hRC) {
-		MessageBox(hWnd, "Can't create a GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+    m_hrc = wglCreateContext(m_hdc);
+    if (!m_hrc) {
+		MessageBox(m_hwnd, "Can't create a GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
 		return;
 	}
 
-    if (!wglMakeCurrent(hDC, hRC)) {
-		MessageBox(hWnd, "Can't activate the GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+    if (!wglMakeCurrent(m_hdc, m_hrc)) {
+		MessageBox(m_hwnd, "Can't activate the GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
 		return;
 	}
+}
 
-    /*if (glewInit() != GLEW_OK) {
-		MessageBox(hWnd, "Failed to re-initialize GLEW.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-		return;
-	}*/
+void WindowOpenGL::swap_buffers()
+{
+    SwapBuffers(m_hdc);
 }

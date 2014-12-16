@@ -9,11 +9,7 @@
 
 #include <string>
 
-#include <Windows.h>
-
 class WindowOpenGL : public Window {
-    HDC m_hdc;
-    HGLRC m_hrc;
 
 public:
     WindowOpenGL(const std::string& title, int width, int height);

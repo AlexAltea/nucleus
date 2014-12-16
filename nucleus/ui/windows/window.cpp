@@ -4,9 +4,6 @@
  */
 
 #include "window.h"
-#include "nucleus/config.h"
-
-#include "window_opengl.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -25,10 +22,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 Window::Window(const std::string& title, int width, int height) : m_title(title), m_width(width), m_height(height)
 {
-}
-
-bool Window::init()
-{
     WNDCLASSEX wc;
     HINSTANCE hInstance = GetModuleHandle(NULL);
     const char lpszClassName[] = "NucleusWindowClass";
@@ -42,14 +35,14 @@ bool Window::init()
     wc.hInstance     = hInstance;
     wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
     wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszMenuName  = NULL;
     wc.lpszClassName = lpszClassName;
     wc.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
 
     if (!RegisterClassEx(&wc)) {
         MessageBox(NULL, "Window Registration Failed!", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return false;
+        return;
     }
 
     // Set initial size
@@ -71,7 +64,7 @@ bool Window::init()
 
     if (!m_hwnd) {
         MessageBox(NULL, "Window Creation Failed!", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return false;
+        return;
     }
 
     // Configure menus
@@ -87,20 +80,6 @@ bool Window::init()
     AppendMenu(hSubMenu, MF_STRING, 0, "About");
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&Help");
     SetMenu(m_hwnd, hMenu);
-
-    switch (config.gpuBackend) {
-    case GPU_BACKEND_NULL:
-        break;
-    case GPU_BACKEND_SOFTWARE:
-        break;
-    case GPU_BACKEND_OPENGL:
-        OpenGL_Init(m_hwnd);
-        break;
-    case GPU_BACKEND_DIRECT3D:
-        break;
-    }
-    
-    return true;
 }
 
 void Window::loop()

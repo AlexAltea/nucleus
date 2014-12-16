@@ -7,19 +7,8 @@
 
 #include <string>
 
-#include <Windows.h>
-
-// Menu entry IDs
-enum {
-    UI_FILE_EXIT,
-    UI_HELP_ABOUT,
-};
-
 class Window {
 protected:
-    HWND m_hwnd;
-    HMENU m_hmenu;
-
     std::string m_title;
     int m_width;
     int m_height;
