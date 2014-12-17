@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/gpu/renderer.h"
+#include "nucleus/ui/ui.h"
 
 // OpenGL dependencies
 #ifdef NUCLEUS_WIN
@@ -17,9 +18,15 @@
 #endif
 
 class RSXRendererOpenGL : public RSXRenderer {
+    Window* m_window;
 
 public:
+    RSXRendererOpenGL();
+
+    virtual void AlphaFunc(u32 func, f32 ref) override;
     virtual void Begin(u32 mode) override;
     virtual void DrawArrays(u32 count, const be_t<u32>* args) override;
+    virtual void Enable(u32 prop, u32 enabled) override;
     virtual void End() override;
+    virtual void Flip() override;
 };

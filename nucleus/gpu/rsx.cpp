@@ -31,18 +31,18 @@ void RSX::init() {
     dma_control->get = 0;
     dma_control->put = 0;
 
-    // Initialize renderer
-    switch (config.gpuBackend) {
-    case GPU_BACKEND_OPENGL:
-        m_renderer = new RSXRendererOpenGL();
-    }
-
     m_pfifo_thread = new std::thread([&](){
         task();
     });
 }
 
 void RSX::task() {
+    // Initialize renderer
+    switch (config.gpuBackend) {
+    case GPU_BACKEND_OPENGL:
+        m_renderer = new RSXRendererOpenGL();
+    }
+
     while (true) {
         // Wait until GET and PUT are different
         while (dma_control->get == dma_control->put) {
@@ -69,8 +69,10 @@ void RSX::task() {
             continue;
         }
 
+        //nucleus.log.notice(LOG_GPU, "METHOD: 0x%X @ IO:0x%X", cmd.method_offset << 2, cmd.method_count, get);
         for (int i = 0; i < cmd.method_count; i++) {
             const u32 argument = nucleus.memory.read32(io_address + get + 4*(i+1));
+            //nucleus.log.notice(LOG_GPU, "    > 0x%X", argument);
             regs[cmd.method_offset + i * cmd.flag_ni] = argument;
         }
 
@@ -86,6 +88,31 @@ void RSX::task() {
 void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
 {
     switch (offset) {
+    case NV4097_SET_DITHER_ENABLE:
+    case NV4097_SET_ALPHA_TEST_ENABLE:
+    case NV4097_SET_STENCIL_TEST_ENABLE:
+    case NV4097_SET_DEPTH_TEST_ENABLE:
+    case NV4097_SET_CULL_FACE_ENABLE:
+    case NV4097_SET_BLEND_ENABLE:
+    case NV4097_SET_POLY_OFFSET_FILL_ENABLE:
+    case NV4097_SET_POLY_OFFSET_LINE_ENABLE:
+    case NV4097_SET_POLY_OFFSET_POINT_ENABLE:
+    case NV4097_SET_LOGIC_OP_ENABLE:
+    case NV4097_SET_SPECULAR_ENABLE:
+    case NV4097_SET_LINE_SMOOTH_ENABLE:
+    case NV4097_SET_POLY_SMOOTH_ENABLE:
+    case NV4097_SET_VERTEX_DATA_ARRAY_FORMAT:
+        m_renderer->Enable(offset, args[0]);
+        break;
+
+    case NV4097_SET_ALPHA_FUNC:
+    case NV4097_SET_ALPHA_REF: {
+        const u32 func = regs[NV4097_SET_ALPHA_FUNC];
+        const f32 ref = (f32&)regs[NV4097_SET_ALPHA_REF];
+        m_renderer->AlphaFunc(func, ref);
+        break;
+    }
+
     case NV4097_SET_BEGIN_END:
         if (args[0]) {
             m_renderer->Begin(args[0]);
@@ -94,8 +121,15 @@ void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
         }
         break;
 
-    case NV4097_DRAW_ARRAYS:
+    case NV4097_DRAW_ARRAYS: {
+        const u32 first = args[0] & 0xFFFFFF;
+        const u32 count = (args[0] >> 24);
         m_renderer->DrawArrays(count, args);
         break;
+    }
+
+    case SCE_DRIVER_FLIP:
+        m_renderer->Flip();
+        driver_info->flip &= 0x80000000;
     }
 }

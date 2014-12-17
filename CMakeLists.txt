@@ -11,6 +11,7 @@ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif()
 
 # Dependencies
+find_package(OpenGL REQUIRED)
 find_package(ZLIB)
 if(ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIR})
@@ -56,5 +57,5 @@ endif()
 # Target
 add_executable(nucleus ${NUCLEUS_FILES})
 
-target_link_libraries(nucleus ${ZLIB_LIBRARY})
+target_link_libraries(nucleus ${ZLIB_LIBRARY} ${OPENGL_LIBRARIES})
 set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)

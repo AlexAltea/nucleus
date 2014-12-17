@@ -27,6 +27,10 @@ struct rsx_driver_info_t {
     be_t<u32> hardware_channel;
     be_t<u32> nvcore_frequency;
     be_t<u32> memory_frequency;
+
+    u8 unk1[0x10C0 - 6*4];
+    u8 unk2[0x40];
+    u32 flip;
 };
 
 // LPAR Reports
@@ -38,10 +42,7 @@ struct rsx_report_t {
 
 struct rsx_reports_t {
     u8 unk_semaphore[0x1000];
-    u8 unk1_notify[0xC0];
-    u8 unk2_notify[0x40];
-    u32 flip;
-    u8 unk3_notify[0x2FC];
+    u8 unk_notify[0x400];
     rsx_report_t report[2048];
 };
 
