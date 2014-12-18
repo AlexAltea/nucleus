@@ -30,7 +30,7 @@ struct rsx_driver_info_t {
 
     u8 unk1[0x10C0 - 6*4];
     u8 unk2[0x40];
-    u32 flip;
+    be_t<u32> flip;
 };
 
 // LPAR Reports
@@ -58,7 +58,7 @@ union rsx_method_t
     FIELD(30, 30, u32 flag_call);      // Call command
     FIELD( 3, 13, u32 method_count);   // Method arguments count
     FIELD(16, 29, u32 method_offset);  // Method offset (>> 2)
-    FIELD( 2, 31, u32 jump_offset);    // Jump IO offset (>> 2)
+    FIELD( 3, 31, u32 jump_offset);    // Jump IO offset (>> 2)
     FIELD( 0, 29, u32 call_offset);    // Call IO offset (>> 2)
     
 #undef FIELD

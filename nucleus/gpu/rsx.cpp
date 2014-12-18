@@ -130,6 +130,6 @@ void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
 
     case SCE_DRIVER_FLIP:
         m_renderer->Flip();
-        driver_info->flip &= 0x80000000;
+        driver_info->flip |= 0x80000000;
     }
 }
