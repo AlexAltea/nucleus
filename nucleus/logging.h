@@ -6,14 +6,10 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/format.h"
 
-#include <cstdio>
 #include <iostream>
 #include <mutex>
-
-#if defined(NUCLEUS_WIN)
-#define snprintf _snprintf_s
-#endif
 
 enum LoggingType
 {
@@ -26,38 +22,29 @@ enum LoggingType
     LOG_HLE,
 };
 
-// Prints emulator events (notices, warnings and errors) using std::out.
+// Prints emulator events (notices, warnings and errors) using std::cerr.
 // This is thread-safe in C++11, so there is no need to provide manual synchronization.
 class Logger
 {
 public:
     template<typename... Args>
-    void notice(LoggingType type, const char* format, Args... args)
+    void notice(LoggingType type, const char* pattern, Args... args)
     {
-        char log[4096];
-        char message[4096];
-        snprintf(message, sizeof(message), format, std::forward<Args>(args)...);
-        snprintf(log, sizeof(log), "N: %s\n", message);
-        std::cerr << log;
+        const std::string log = "N: " + format(pattern, std::forward<Args>(args)...);
+        std::cerr << log.c_str();
     }
 
     template<typename... Args>
-    void warning(LoggingType type, const char* format, Args... args)
+    void warning(LoggingType type, const char* pattern, Args... args)
     {
-        char log[4096];
-        char message[4096];
-        snprintf(message, sizeof(message), format, std::forward<Args>(args)...);
-        snprintf(log, sizeof(log), "W: %s\n", message);
-        std::cerr << log;
+        const std::string log = "W: " + format(pattern, std::forward<Args>(args)...);
+        std::cerr << log.c_str();
     }
 
     template<typename... Args>
-    void error(LoggingType type, const char* format, Args... args)
+    void error(LoggingType type, const char* pattern, Args... args)
     {
-        char log[4096];
-        char message[4096];
-        snprintf(message, sizeof(message), format, std::forward<Args>(args)...);
-        snprintf(log, sizeof(log), "W: %s\n", message);
-        std::cerr << log;
+        const std::string log = "E: " + format(pattern, std::forward<Args>(args)...);
+        std::cerr << log.c_str();
     }
 };

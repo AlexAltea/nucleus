@@ -26,6 +26,19 @@
 #endif
 
 /**
+ * Compilers
+ */
+#if defined(_MSC_VER)
+#define NUCLEUS_MSVC
+#endif
+#if defined(__GNUC__)
+#define NUCLEUS_GCC
+#endif
+#if defined(__clang__)
+#define NUCLEUS_CLANG
+#endif
+
+/**
  * Events & Status
  */
 enum EmulatorEvent

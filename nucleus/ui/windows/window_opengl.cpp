@@ -38,31 +38,31 @@ void WindowOpenGL::init()
     };
 
     if (!m_hdc) {
-		MessageBox(m_hwnd, "Failed to get a device context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-		return;
-	}
+        MessageBox(m_hwnd, "Failed to get a device context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 
     PixelFormat = ChoosePixelFormat(m_hdc, &pfd);
     if (!PixelFormat) {
-		MessageBox(m_hwnd, "Can't find a suitable PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-		return;
-	}
+        MessageBox(m_hwnd, "Can't find a suitable PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 
     if (!SetPixelFormat(m_hdc, PixelFormat, &pfd)) {
-		MessageBox(m_hwnd, "Can't set the PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-		return;
-	}
+        MessageBox(m_hwnd, "Can't set the PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 
     m_hrc = wglCreateContext(m_hdc);
     if (!m_hrc) {
-		MessageBox(m_hwnd, "Can't create a GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-		return;
-	}
+        MessageBox(m_hwnd, "Can't create a GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 
     if (!wglMakeCurrent(m_hdc, m_hrc)) {
-		MessageBox(m_hwnd, "Can't activate the GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-		return;
-	}
+        MessageBox(m_hwnd, "Can't activate the GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 }
 
 void WindowOpenGL::swap_buffers()

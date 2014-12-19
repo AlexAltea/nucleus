@@ -143,6 +143,7 @@
     <ClInclude Include="emulator.h" />
     <ClInclude Include="filesystem\filesystem.h" />
     <ClInclude Include="filesystem\virtual_filesystem.h" />
+    <ClInclude Include="format.h" />
     <ClInclude Include="gpu\opengl\opengl_fp.h" />
     <ClInclude Include="gpu\opengl\opengl_renderer.h" />
     <ClInclude Include="gpu\opengl\opengl_vp.h" />

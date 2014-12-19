@@ -306,6 +306,7 @@
     <ClInclude Include="gpu\opengl\opengl_vp.h">
       <Filter>gpu\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="format.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

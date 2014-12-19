@@ -10,7 +10,7 @@
 #include "nucleus/syscalls/lv2/sys_process.h"
 #include "nucleus/loader/self.h"
 
-s32 sys_prx_load_module(s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
+s32 sys_prx_load_module(const s8* path, u64 flags, sys_prx_load_module_option_t* pOpt)
 {
     SELFLoader self;
     if (!self.open(path)) {

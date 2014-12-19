@@ -5,23 +5,15 @@
 
 #include "ppu_disasm.h"
 #include "nucleus/common.h"
+#include "nucleus/format.h"
 #include "nucleus/cpu/ppu/ppu_tables.h"
-
-#include <cstdio>
-
-#if defined(NUCLEUS_WIN)
-#define snprintf _snprintf_s
-#endif
 
 // Render the disassembled instruction given it's name and operands
 template<typename... Args>
 std::string dis_global(const char* name, const char* operandsFormat, Args... fields)
 {
-    char disasm[256];
-    char operands[256];
-    snprintf(operands, sizeof(operands), operandsFormat, std::forward<Args>(fields)...);
-    snprintf(disasm, sizeof(disasm), "%-8s %s", name, operands);
-    return std::string(disasm);
+    const std::string& operands = format(operandsFormat, std::forward<Args>(fields)...);
+    return format("%-8s %s", name, operands.c_str());
 }
 
 // Call tables
