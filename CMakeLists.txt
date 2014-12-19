@@ -10,8 +10,7 @@ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message(FATAL_ERROR "Nucleus can only be compiled on 64-bit platforms.")
 endif()
 
-# Dependencies               
-find_package(GLEW REQUIRED)
+# Dependencies
 find_package(OpenGL REQUIRED)
 find_package(ZLIB)
 if(ZLIB_FOUND)
@@ -24,6 +23,24 @@ else()
     add_library(zlib STATIC ${ZLIB_FILES})
     include_directories("${NUCLEUS_SOLUTION_DIR}/externals/zlib")
     set(ZLIB_LIBRARY zlib)
+endif()
+
+# Find GLEW
+if (NOT WIN32)
+    find_path(GLEW_INCLUDE_PATH GL/glew.h
+        /usr/include
+        /usr/local/include
+        /sw/include
+        /opt/local/include
+    )
+    find_library(GLEW_LIBRARY NAMES GLEW glew PATHS
+        /usr/lib64
+        /usr/lib
+        /usr/local/lib64
+        /usr/local/lib
+        /sw/lib
+        /opt/local/lib
+    )
 endif()
 
 # Project
@@ -51,7 +68,7 @@ if (NOT WIN32)
         "${NUCLEUS_SOLUTION_DIR}/nucleus/gpu/direct3d/*.h"
         "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.cpp"
         "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.h"
-	)
+    )
     list(REMOVE_ITEM NUCLEUS_FILES ${DISCARD_FILES})
 endif()
 
