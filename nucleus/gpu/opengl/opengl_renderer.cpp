@@ -8,7 +8,8 @@
 #include "nucleus/gpu/rsx_enum.h"
 #include "nucleus/gpu/rsx_methods.h"
 
-#pragma comment(lib, "opengl32.lib")
+// OpenGL dependencies
+#include <GL/glew.h>
 
 #define checkRendererError(name) \
     if (glGetError() != GL_NO_ERROR) { \

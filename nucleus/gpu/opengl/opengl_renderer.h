@@ -8,15 +8,6 @@
 #include "nucleus/gpu/renderer.h"
 #include "nucleus/ui/ui.h"
 
-// OpenGL dependencies
-#ifdef NUCLEUS_WIN
-#include <Windows.h>
-#include <GL/gl.h>
-#endif
-#ifdef NUCLEUS_LINUX
-#include <GL/gl.h>
-#endif
-
 class RSXRendererOpenGL : public RSXRenderer {
     Window* m_window;
 

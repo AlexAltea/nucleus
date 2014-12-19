@@ -131,6 +131,12 @@
     <ClCompile Include="gpu\opengl\opengl_renderer.cpp">
       <Filter>gpu\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="gpu\opengl\opengl_vp.cpp">
+      <Filter>gpu\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="gpu\opengl\opengl_fp.cpp">
+      <Filter>gpu\opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -293,6 +299,12 @@
     </ClInclude>
     <ClInclude Include="gpu\rsx_enum.h">
       <Filter>gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu\opengl\opengl_fp.h">
+      <Filter>gpu\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="gpu\opengl\opengl_vp.h">
+      <Filter>gpu\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

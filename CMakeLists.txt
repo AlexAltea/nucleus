@@ -10,7 +10,8 @@ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message(FATAL_ERROR "Nucleus can only be compiled on 64-bit platforms.")
 endif()
 
-# Dependencies
+# Dependencies               
+find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(ZLIB)
 if(ZLIB_FOUND)
@@ -57,5 +58,5 @@ endif()
 # Target
 add_executable(nucleus ${NUCLEUS_FILES})
 
-target_link_libraries(nucleus ${ZLIB_LIBRARY} ${OPENGL_LIBRARIES})
+target_link_libraries(nucleus ${ZLIB_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
 set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)

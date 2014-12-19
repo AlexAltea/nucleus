@@ -5,9 +5,8 @@
 
 #include "window_opengl.h"
 
-#include <GL/gl.h>
-
-#pragma comment(lib, "opengl32.lib")
+// OpenGL dependencies
+#include <GL/glew.h>
 
 WindowOpenGL::WindowOpenGL(const std::string& title, int width, int height) : Window(title, width, height)
 {
