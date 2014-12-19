@@ -38,14 +38,9 @@ void RSXRendererOpenGL::Begin(u32 mode)
     checkRendererError("Begin");
 }
 
-void RSXRendererOpenGL::DrawArrays(u32 count, const be_t<u32>* args)
+void RSXRendererOpenGL::DrawArrays(u32 mode, u32 first, u32 count)
 {
-    glColor3f(1.0f,0.0f,0.0f);
-	glVertex3f(-0.5f,-0.5f,-1.0f);
-	glColor3f(0.0f,1.0f,0.0f);
-	glVertex3f( 1.0f,-1.0f,-1.0f);
-	glColor3f(0.0f,0.0f,1.0f);
-	glVertex3f(-1.0f, 1.0f,-1.0f);
+    glDrawArrays(GL_TRIANGLES, first, count);
     checkRendererError("DrawArrays");
 }
 

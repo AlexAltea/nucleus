@@ -58,7 +58,7 @@ union rsx_method_t
     FIELD(30, 30, u32 flag_call);      // Call command
     FIELD( 3, 13, u32 method_count);   // Method arguments count
     FIELD(16, 29, u32 method_offset);  // Method offset (>> 2)
-    FIELD( 3, 31, u32 jump_offset);    // Jump IO offset (>> 2)
+    FIELD( 3, 31, u32 jump_offset);    // Jump IO offset
     FIELD( 0, 29, u32 call_offset);    // Call IO offset (>> 2)
     
 #undef FIELD

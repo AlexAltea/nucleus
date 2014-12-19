@@ -55,7 +55,7 @@ void RSX::task() {
 
         // Branching commands
         if (cmd.flag_jump) {
-            dma_control->get = cmd.jump_offset << 2;
+            dma_control->get = cmd.jump_offset;
             continue;
         }
         if (cmd.flag_call) {
@@ -101,7 +101,6 @@ void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
     case NV4097_SET_SPECULAR_ENABLE:
     case NV4097_SET_LINE_SMOOTH_ENABLE:
     case NV4097_SET_POLY_SMOOTH_ENABLE:
-    case NV4097_SET_VERTEX_DATA_ARRAY_FORMAT:
         m_renderer->Enable(offset, args[0]);
         break;
 
@@ -113,6 +112,12 @@ void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
         break;
     }
 
+    case NV4097_SET_VERTEX_DATA_ARRAY_FORMAT:
+        break;
+
+    case NV4097_SET_VERTEX_DATA_ARRAY_OFFSET:
+        break;
+
     case NV4097_SET_BEGIN_END:
         if (args[0]) {
             m_renderer->Begin(args[0]);
@@ -123,8 +128,8 @@ void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
 
     case NV4097_DRAW_ARRAYS: {
         const u32 first = args[0] & 0xFFFFFF;
-        const u32 count = (args[0] >> 24);
-        m_renderer->DrawArrays(count, args);
+        const u32 count = (args[0] >> 24) + 1;
+        m_renderer->DrawArrays(0, first, count);
         break;
     }
 
