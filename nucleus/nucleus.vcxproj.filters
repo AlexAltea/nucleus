@@ -307,6 +307,9 @@
       <Filter>gpu\opengl</Filter>
     </ClInclude>
     <ClInclude Include="format.h" />
+    <ClInclude Include="gpu\rsx_pgraph.h">
+      <Filter>gpu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/gpu/renderer.h"
+#include "nucleus/gpu/rsx_pgraph.h"
 
 #include <stack>
 #include <thread>
@@ -76,6 +77,9 @@ class RSX
     std::stack<u32> m_pfifo_stack;
 
 public:
+    // Engines
+    PGRAPH pgraph;
+
     // Method registers: Note that method offsets need to be (>> 2)-shifted.
     u32 regs[0x4000];
 

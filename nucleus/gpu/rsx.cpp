@@ -6,7 +6,9 @@
 #include "rsx.h"
 #include "nucleus/emulator.h"
 #include "nucleus/config.h"
+
 #include "nucleus/gpu/rsx_methods.h"
+#include "nucleus/gpu/rsx_vp.h"
 
 #include "nucleus/gpu/opengl/opengl_renderer.h"
 
@@ -111,6 +113,21 @@ void RSX::method(u32 offset, u32 count, const be_t<u32>* args)
         m_renderer->AlphaFunc(func, ref);
         break;
     }
+
+    case NV4097_SET_TRANSFORM_PROGRAM:
+        for (u32 i = 0; i < count; i++) {
+            pgraph.vp_data[pgraph.vp_load++] = args[i];
+        }
+        pgraph.vp_dirty = true;
+        break;
+
+    case NV4097_SET_TRANSFORM_PROGRAM_LOAD:
+        pgraph.vp_load = args[0];
+        break;
+
+    case NV4097_SET_TRANSFORM_PROGRAM_START:
+        pgraph.vp_start = args[0];
+        break;
 
     case NV4097_SET_VERTEX_DATA_ARRAY_FORMAT:
         break;

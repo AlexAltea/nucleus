@@ -225,7 +225,7 @@ s32 sys_event_port_connect_local(u32 eport_id, u32 equeue_id)
     if (!eport || !equeue) {
         return CELL_ESRCH;
     }
-    if (!eport->type != SYS_EVENT_PORT_LOCAL) {
+    if (eport->type != SYS_EVENT_PORT_LOCAL) {
         return CELL_EINVAL;
     }
     if (!eport->equeue) {
