@@ -16,7 +16,7 @@
         nucleus.log.error(LOG_GPU, "Something went wrong"); \
     }
 
-RSXRendererOpenGL::RSXRendererOpenGL()
+PGRAPH_OpenGL::PGRAPH_OpenGL()
 {
     // Wait until Nucleus window is ready
     while (!ui.get()) {
@@ -27,25 +27,25 @@ RSXRendererOpenGL::RSXRendererOpenGL()
     m_window->init();
 }
 
-void RSXRendererOpenGL::AlphaFunc(u32 func, f32 ref)
+void PGRAPH_OpenGL::AlphaFunc(u32 func, f32 ref)
 {
     glAlphaFunc(func, ref);
     checkRendererError("AlphaFunc");
 }
 
-void RSXRendererOpenGL::Begin(u32 mode)
+void PGRAPH_OpenGL::Begin(u32 mode)
 {
     glBegin(mode);
     checkRendererError("Begin");
 }
 
-void RSXRendererOpenGL::DrawArrays(u32 mode, u32 first, u32 count)
+void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
 {
     glDrawArrays(GL_TRIANGLES, first, count);
     checkRendererError("DrawArrays");
 }
 
-void RSXRendererOpenGL::Enable(u32 prop, u32 enabled)
+void PGRAPH_OpenGL::Enable(u32 prop, u32 enabled)
 {
     switch (prop) {
     case NV4097_SET_DITHER_ENABLE:
@@ -103,13 +103,13 @@ void RSXRendererOpenGL::Enable(u32 prop, u32 enabled)
     checkRendererError("Enable");
 }
 
-void RSXRendererOpenGL::End()
+void PGRAPH_OpenGL::End()
 {
     glEnd();
     checkRendererError("End");
 }
 
-void RSXRendererOpenGL::Flip()
+void PGRAPH_OpenGL::Flip()
 {
     m_window->swap_buffers();
 }

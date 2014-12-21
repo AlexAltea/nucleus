@@ -291,9 +291,6 @@
     <ClInclude Include="ui\windows\window_opengl.h">
       <Filter>ui\windows</Filter>
     </ClInclude>
-    <ClInclude Include="gpu\renderer.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
     <ClInclude Include="gpu\opengl\opengl_renderer.h">
       <Filter>gpu\opengl</Filter>
     </ClInclude>

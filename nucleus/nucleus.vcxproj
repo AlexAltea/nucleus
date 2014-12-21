@@ -147,7 +147,6 @@
     <ClInclude Include="gpu\opengl\opengl_fp.h" />
     <ClInclude Include="gpu\opengl\opengl_renderer.h" />
     <ClInclude Include="gpu\opengl\opengl_vp.h" />
-    <ClInclude Include="gpu\renderer.h" />
     <ClInclude Include="gpu\rsx.h" />
     <ClInclude Include="gpu\rsx_enum.h" />
     <ClInclude Include="gpu\rsx_fp.h" />

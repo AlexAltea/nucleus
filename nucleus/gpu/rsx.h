@@ -6,7 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/gpu/renderer.h"
 #include "nucleus/gpu/rsx_pgraph.h"
 
 #include <stack>
@@ -67,8 +66,8 @@ union rsx_method_t
 
 class RSX
 {
-    // Renderer (Null, Software, OpenGL, DirectX)
-    RSXRenderer* m_renderer;
+    // Rendering engine (Null, Software, OpenGL, DirectX)
+    PGRAPH* pgraph;
 
     // Thread responsible of fetching methods and rendering
     std::thread* m_pfifo_thread;
@@ -77,12 +76,6 @@ class RSX
     std::stack<u32> m_pfifo_stack;
 
 public:
-    // Engines
-    PGRAPH pgraph;
-
-    // Method registers: Note that method offsets need to be (>> 2)-shifted.
-    u32 regs[0x4000];
-
     // RSX Local Memory (mapped into the user space)
     rsx_dma_control_t* dma_control;
     rsx_driver_info_t* driver_info;
@@ -95,5 +88,5 @@ public:
 
     void task();
 
-    void method(u32 offset, u32 count, const be_t<u32>* args);
+    void method(u32 offset, u32 parameter);
 };

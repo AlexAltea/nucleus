@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include "nucleus/gpu/renderer.h"
+#include "nucleus/gpu/rsx_pgraph.h"
 #include "nucleus/ui/ui.h"
 
-class RSXRendererOpenGL : public RSXRenderer {
+class PGRAPH_OpenGL : public PGRAPH {
     Window* m_window;
 
 public:
-    RSXRendererOpenGL();
+    PGRAPH_OpenGL();
 
     virtual void AlphaFunc(u32 func, f32 ref) override;
     virtual void Begin(u32 mode) override;

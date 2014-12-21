@@ -128,7 +128,11 @@ enum {
     NV4097_SET_VERTEX_DATA_SCALED4S_M        = 0x00000A80,
     NV4097_SET_TEXTURE_CONTROL2              = 0x00000B00,
     NV4097_SET_TEX_COORD_CONTROL             = 0x00000B40,
-    NV4097_SET_TRANSFORM_PROGRAM             = 0x00000B80,
+    NV4097_SET_TRANSFORM_PROGRAM             = 0x00000B80, // Copy data to PGRAPH's VPE instruction buffer at the LOAD offset.
+    NV4097_SET_TRANSFORM_PROGRAM_UNK0        = 0x00000B80, // Save [0:32] instruction bits.
+    NV4097_SET_TRANSFORM_PROGRAM_UNK1        = 0x00000B84, // Save [32:64] instruction bits.
+    NV4097_SET_TRANSFORM_PROGRAM_UNK2        = 0x00000B88, // Save [64:96] instruction bits.
+    NV4097_SET_TRANSFORM_PROGRAM_UNK3        = 0x00000B8C, // Save [96:128] instruction bits, copy the 128-bit value to VPE's buffer at offset LOAD. Then increment LOAD.
     NV4097_SET_SPECULAR_ENABLE               = 0x00001428,
     NV4097_SET_TWO_SIDE_LIGHT_EN             = 0x0000142C,
     NV4097_CLEAR_ZCULL_SURFACE               = 0x00001438,
@@ -202,8 +206,8 @@ enum {
     NV4097_SET_VERTEX_DATA1F_M               = 0x00001E40,
     NV4097_SET_TRANSFORM_EXECUTION_MODE      = 0x00001E94,
     NV4097_SET_RENDER_ENABLE                 = 0x00001E98,
-    NV4097_SET_TRANSFORM_PROGRAM_LOAD        = 0x00001E9C,
-    NV4097_SET_TRANSFORM_PROGRAM_START       = 0x00001EA0,
+    NV4097_SET_TRANSFORM_PROGRAM_LOAD        = 0x00001E9C, // Set PGRAPH's VPE LOAD register, which specifies the offset where new instructions are copied.
+    NV4097_SET_TRANSFORM_PROGRAM_START       = 0x00001EA0, // Set PGRAPH's VPE START register.
     NV4097_SET_ZCULL_CONTROL0                = 0x00001EA4,
     NV4097_SET_ZCULL_CONTROL1                = 0x00001EA8,
     NV4097_SET_SCULL_CONTROL                 = 0x00001EAC,
