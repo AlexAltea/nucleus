@@ -34,6 +34,7 @@ enum {
 
 // RSX Constants
 enum {
+    // Primitives
     RSX_PRIMITIVE_POINTS          = 1,
     RSX_PRIMITIVE_LINES           = 2,
     RSX_PRIMITIVE_LINE_LOOP       = 3,
@@ -44,4 +45,13 @@ enum {
     RSX_PRIMITIVE_QUADS           = 8,
     RSX_PRIMITIVE_QUAD_STRIP      = 9,
     RSX_PRIMITIVE_POLYGON         = 10,
+
+    // Vertex data type
+    RSX_VERTEX_S1     = 1,
+	RSX_VERTEX_F      = 2,
+	RSX_VERTEX_SF     = 3,
+	RSX_VERTEX_UB     = 4,
+	RSX_VERTEX_S32K   = 5,
+	RSX_VERTEX_CMP    = 6,
+	RSX_VERTEX_UB256  = 7,
 };

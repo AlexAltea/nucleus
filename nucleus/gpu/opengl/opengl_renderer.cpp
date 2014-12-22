@@ -33,6 +33,17 @@ void PGRAPH_OpenGL::AlphaFunc(u32 func, f32 ref)
     checkRendererError("AlphaFunc");
 }
 
+void PGRAPH_OpenGL::BindVertexAttributes()
+{
+    for (int index = 0; index < 16; index++) {
+        const auto& attr = vp_attr[index];
+        if (attr.dirty) {
+            glEnableVertexAttribArray(index);
+            glVertexAttribPointer(index, attr.size, GL_FLOAT, GL_FALSE, attr.stride, 0);
+        }
+    }
+}
+
 void PGRAPH_OpenGL::Begin(u32 mode)
 {
     glBegin(mode);

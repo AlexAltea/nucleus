@@ -22,6 +22,9 @@
 #define case_8(offset, step)       \
     case_4(offset, step)           \
     case_4(offset + 4*step, step)
+#define case_16(offset, step)      \
+    case_8(offset, step)           \
+    case_8(offset + 8*step, step)
 
 void RSX::init() {
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
@@ -150,11 +153,21 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->vp_start = parameter;
         break;
 
-    case NV4097_SET_VERTEX_DATA_ARRAY_FORMAT:
+    case_16(NV4097_SET_VERTEX_DATA_ARRAY_FORMAT, 4) {
+        const u32 index = 0;
+        pgraph->vp_attr[index].type = parameter & 0xF;
+        pgraph->vp_attr[index].size = (parameter >> 4) & 0xF;
+        pgraph->vp_attr[index].stride = (parameter >> 8) & 0xFF;
+        pgraph->vp_attr[index].frequency = (parameter >> 16);
         break;
+    }
 
-    case NV4097_SET_VERTEX_DATA_ARRAY_OFFSET:
+    case_16(NV4097_SET_VERTEX_DATA_ARRAY_OFFSET, 4) {
+        const u32 index = 0;
+        pgraph->vp_attr[index].offset = parameter & 0x7FFFFFFF;
+        pgraph->vp_attr[index].location = (parameter >> 31);
         break;
+    }
 
     case NV4097_SET_BEGIN_END:
         if (parameter) {
