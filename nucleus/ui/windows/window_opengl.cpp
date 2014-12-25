@@ -63,6 +63,11 @@ void WindowOpenGL::init()
         MessageBox(m_hwnd, "Can't activate the GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
+
+    if (glewInit() != GLEW_OK) {
+        MessageBox(m_hwnd, "Failed to initialize GLEW.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 }
 
 void WindowOpenGL::swap_buffers()

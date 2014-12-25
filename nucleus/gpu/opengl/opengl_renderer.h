@@ -21,4 +21,5 @@ public:
     virtual void Enable(u32 prop, u32 enabled) override;
     virtual void End() override;
     virtual void Flip() override;
+    virtual void UnbindVertexAttributes() override;
 };

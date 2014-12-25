@@ -13,18 +13,21 @@
 #include "nucleus/gpu/opengl/opengl_renderer.h"
 
 // Method matching
-#define case_2(offset, step)       \
-    case offset:                   \
+#define case_2(offset, step) \
+    case offset: \
     case offset + step:
-#define case_4(offset, step)       \
-    case_2(offset, step)           \
+#define case_4(offset, step) \
+    case_2(offset, step) \
     case_2(offset + 2*step, step)
-#define case_8(offset, step)       \
-    case_4(offset, step)           \
+#define case_8(offset, step) \
+    case_4(offset, step) \
     case_4(offset + 4*step, step)
-#define case_16(offset, step)      \
-    case_8(offset, step)           \
+#define case_16(offset, step) \
+    case_8(offset, step) \
     case_8(offset + 8*step, step)
+#define case_range(n, baseOffset, step) \
+    case_##n(baseOffset, step) \
+    index = (offset - baseOffset) / step;
 
 void RSX::init() {
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
@@ -101,6 +104,9 @@ void RSX::task() {
 
 void RSX::method(u32 offset, u32 parameter)
 {
+    // Slot used on multiple-register methods
+    u32 index;
+
     switch (offset) {
     case NV4097_SET_DITHER_ENABLE:
     case NV4097_SET_ALPHA_TEST_ENABLE:
@@ -128,19 +134,19 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
         break;
 
-    case_8(NV4097_SET_TRANSFORM_PROGRAM_UNK0, 16)
+    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK0, 16)
         pgraph->vp_data[pgraph->vp_load].unk0 = parameter;
         break;
 
-    case_8(NV4097_SET_TRANSFORM_PROGRAM_UNK1, 16)
+    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK1, 16)
         pgraph->vp_data[pgraph->vp_load].unk1 = parameter;
         break;
 
-    case_8(NV4097_SET_TRANSFORM_PROGRAM_UNK2, 16)
+    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK2, 16)
         pgraph->vp_data[pgraph->vp_load].unk2 = parameter;
         break;
 
-    case_8(NV4097_SET_TRANSFORM_PROGRAM_UNK3, 16)
+    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK3, 16)
         pgraph->vp_data[pgraph->vp_load].unk3 = parameter;
         pgraph->vp_load += 1;
         break;
@@ -153,21 +159,27 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->vp_start = parameter;
         break;
 
-    case_16(NV4097_SET_VERTEX_DATA_ARRAY_FORMAT, 4) {
-        const u32 index = 0;
+    case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_FORMAT, 4)
         pgraph->vp_attr[index].type = parameter & 0xF;
         pgraph->vp_attr[index].size = (parameter >> 4) & 0xF;
         pgraph->vp_attr[index].stride = (parameter >> 8) & 0xFF;
         pgraph->vp_attr[index].frequency = (parameter >> 16);
+        pgraph->vp_attr[index].dirty = true;
         break;
-    }
 
-    case_16(NV4097_SET_VERTEX_DATA_ARRAY_OFFSET, 4) {
-        const u32 index = 0;
+    case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_OFFSET, 4)
         pgraph->vp_attr[index].offset = parameter & 0x7FFFFFFF;
         pgraph->vp_attr[index].location = (parameter >> 31);
+        pgraph->vp_attr[index].dirty = true;
         break;
-    }
+
+    case NV4097_SET_VERTEX_DATA_BASE_OFFSET:
+        pgraph->vertex_data_base_offset = parameter;
+        break;
+
+    case NV4097_SET_VERTEX_DATA_BASE_INDEX:
+        pgraph->vertex_data_base_index = parameter;
+        break;
 
     case NV4097_SET_BEGIN_END:
         if (parameter) {
@@ -180,7 +192,10 @@ void RSX::method(u32 offset, u32 parameter)
     case NV4097_DRAW_ARRAYS: {
         const u32 first = parameter & 0xFFFFFF;
         const u32 count = (parameter >> 24) + 1;
+        pgraph->LoadVertexAttributes(first, count);
+        pgraph->BindVertexAttributes();
         pgraph->DrawArrays(0, first, count);
+        pgraph->UnbindVertexAttributes();
         break;
     }
 

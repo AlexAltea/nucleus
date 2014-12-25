@@ -94,6 +94,7 @@
     <ClCompile Include="gpu\opengl\opengl_renderer.cpp" />
     <ClCompile Include="gpu\opengl\opengl_vp.cpp" />
     <ClCompile Include="gpu\rsx.cpp" />
+    <ClCompile Include="gpu\rsx_pgraph.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\self.cpp" />

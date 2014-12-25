@@ -7,22 +7,28 @@
 
 #include "nucleus/gpu/rsx_vp.h"
 
+#include <vector>
+
 // RSX Vertex Program attribute
 struct rsx_vp_attribute_t {
-    bool dirty;    // Flag: Needs to be rebinded
-    u32 type;
-    u32 location;
-    u32 offset;
-    u32 stride;
-    u32 frequency;
-    u32 size;
+    bool dirty;             // Flag: Needs to be reloaded and rebinded.
+    std::vector<u8> data;   // Holds the loaded and converted data.
+    u16 frequency;          // Access frequency of vertex data.
+    u8 stride;              // Offset between two consecutive vertices.
+    u8 size;                // Coordinates per vertex.
+    u8 type;                // Format (S1, F, SF, UB, S32K, CMP, UB256).
+    u32 location;           // Location (Local Memory or Main Memory).
+    u32 offset;             // Offset at the specified location.
 };
 
+// RSX's PGRAPH engine (Curie)
 class PGRAPH {
 public:
     // Registers
     u32 alpha_func;
     u32 alpha_ref;
+    u32 vertex_data_base_offset;
+    u32 vertex_data_base_index;
 
     // Vertex Program
     bool vp_dirty;                      // Flag: Needs to be recompiled
@@ -30,6 +36,9 @@ public:
     rsx_vp_instruction_t vp_data[512];  // 512 VPE instructions
     u32 vp_load;                        // Set through NV4097_SET_TRANSFORM_PROGRAM_LOAD
     u32 vp_start;                       // Set through NV4097_SET_TRANSFORM_PROGRAM_START
+
+    // Auxiliary methods
+    void LoadVertexAttributes(u32 first, u32 count);
 
     // Rendering methods
     virtual void AlphaFunc(u32 func, f32 ref)=0;
@@ -39,4 +48,5 @@ public:
     virtual void Enable(u32 prop, u32 enabled)=0;
     virtual void End()=0;
     virtual void Flip()=0;
+    virtual void UnbindVertexAttributes()=0;
 };

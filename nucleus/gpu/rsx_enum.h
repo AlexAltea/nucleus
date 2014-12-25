@@ -54,4 +54,8 @@ enum {
 	RSX_VERTEX_S32K   = 5,
 	RSX_VERTEX_CMP    = 6,
 	RSX_VERTEX_UB256  = 7,
+
+    // Data location
+    RSX_LOCATION_LOCAL  = 0,
+	RSX_LOCATION_MAIN   = 1,
 };

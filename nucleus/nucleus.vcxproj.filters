@@ -137,6 +137,9 @@
     <ClCompile Include="gpu\opengl\opengl_fp.cpp">
       <Filter>gpu\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="gpu\rsx_pgraph.cpp">
+      <Filter>gpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

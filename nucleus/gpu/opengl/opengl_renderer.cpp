@@ -33,20 +33,37 @@ void PGRAPH_OpenGL::AlphaFunc(u32 func, f32 ref)
     checkRendererError("AlphaFunc");
 }
 
+// NOTE: RSX doesn't know how big the vertex buffer is, but OpenGL requires this information
+// to copy the data to the host GPU. Therefore, LoadVertexAttributes needs to be called.
 void PGRAPH_OpenGL::BindVertexAttributes()
 {
+    // Indices are attr.type
+    static const GLenum vertexType[] = {
+        NULL, GL_SHORT, GL_FLOAT, GL_HALF_FLOAT, GL_UNSIGNED_BYTE, GL_SHORT, GL_FLOAT, GL_UNSIGNED_BYTE
+    };
+    static const GLboolean vertexNormalized[] = {
+        NULL, GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE, GL_FALSE
+    };
+
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
     for (int index = 0; index < 16; index++) {
         const auto& attr = vp_attr[index];
-        if (attr.dirty) {
+        if (attr.size) {
+            GLuint vbo;
+            glGenBuffers(1, &vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glBufferData(GL_ARRAY_BUFFER, attr.data.size(), attr.data.data(), GL_STATIC_DRAW);
             glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, attr.size, GL_FLOAT, GL_FALSE, attr.stride, 0);
+            glVertexAttribPointer(index, attr.size, vertexType[attr.type], vertexNormalized[attr.type], 0, 0);
         }
     }
 }
 
 void PGRAPH_OpenGL::Begin(u32 mode)
 {
-    glBegin(mode);
     checkRendererError("Begin");
 }
 
@@ -116,11 +133,19 @@ void PGRAPH_OpenGL::Enable(u32 prop, u32 enabled)
 
 void PGRAPH_OpenGL::End()
 {
-    glEnd();
     checkRendererError("End");
 }
 
 void PGRAPH_OpenGL::Flip()
 {
     m_window->swap_buffers();
+}
+
+void PGRAPH_OpenGL::UnbindVertexAttributes()
+{
+    for (int index = 0; index < 16; index++) {
+        glDisableVertexAttribArray(index);
+        checkRendererError("UnbindVertexAttributes");
+    }
+    glBindVertexArray(0);
 }
