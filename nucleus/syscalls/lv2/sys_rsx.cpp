@@ -66,9 +66,9 @@ s32 sys_rsx_memory_free(u32 mem_handle)
 s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control, be_t<u64>* lpar_driver_info, be_t<u64>* lpar_reports, u64 mem_ctx, u64 system_mode)
 {
     // HACK: We already store data in the memory on RSX initialization, mapping is not necessary
-    *lpar_dma_control = 0x60100000;
-    *lpar_driver_info = 0x60200000;
-    *lpar_reports = 0x60300000;
+    *lpar_dma_control = 0x40100000;
+    *lpar_driver_info = 0x40200000;
+    *lpar_reports = 0x40300000;
 
     // HACK: On the PS3, this is: *context_id = id ^ 0x55555555
     *context_id = 0 ^ 0x55555555;
@@ -126,7 +126,6 @@ s32 sys_rsx_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2
     case L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP:
         nucleus.rsx.dma_control->get = p1;
         nucleus.rsx.dma_control->put = p2;
-        nucleus.rsx.dma_control->ref = 0xFFFFFFFF; // TODO
         break;
     
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_MODE_SET:
@@ -185,7 +184,8 @@ s32 sys_rsx_device_map(be_t<u32>* mapped_addr, be_t<u32>* a2, u32 dev_id)
     // LV1 Syscall: lv1_gpu_device_map (0xD4)
     switch (dev_id) {
     case 8:
-        *mapped_addr = nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x60000000, 0x1000);
+        // HACK: We already store data in the memory on RSX initialization, mapping is not necessary
+        *mapped_addr = 0x40000000;
         break;
     }
 

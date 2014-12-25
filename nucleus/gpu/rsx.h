@@ -11,6 +11,9 @@
 #include <stack>
 #include <thread>
 
+struct rsx_device_t {
+};
+
 // LPAR DMA Control
 struct rsx_dma_control_t {
     u8 unk[0x40];
@@ -64,10 +67,26 @@ union rsx_method_t
 #undef FIELD
 };
 
+struct DMAObject {
+    // Flags
+    enum {
+        READ      = 1 << 0,
+        WRITE     = 1 << 1,
+        READWRITE = READ | WRITE,
+    };
+    u32 addr;
+    u32 size;
+    u32 flags;
+};
+
 class RSX
 {
     // Rendering engine (Null, Software, OpenGL, DirectX)
     PGRAPH* pgraph;
+
+    // Command processing engine: PFIFO
+    u32 dma_semaphore;
+    u32 dma_semaphore_offset;
 
     // Thread responsible of fetching methods and rendering
     std::thread* m_pfifo_thread;
@@ -77,6 +96,7 @@ class RSX
 
 public:
     // RSX Local Memory (mapped into the user space)
+    rsx_device_t* device;
     rsx_dma_control_t* dma_control;
     rsx_driver_info_t* driver_info;
     rsx_reports_t* reports;
@@ -89,4 +109,9 @@ public:
     void task();
 
     void method(u32 offset, u32 parameter);
+
+    // DMA Read-Write
+    DMAObject dma_address(u32 dma_object);
+    u32 dma_read32(u32 dma_object, u32 offset);
+    void dma_write32(u32 dma_object, u32 offset, u32 value);
 };

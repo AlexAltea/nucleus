@@ -9,6 +9,7 @@
 
 enum {
     // NV40_CHANNEL_DMA (NV406E)
+    // These methods are executed by the PFIFO puller itself, instead of being forwared to an engine.
     NV406E_SET_REFERENCE                     = 0x00000050,
     NV406E_SET_CONTEXT_DMA_SEMAPHORE         = 0x00000060,
     NV406E_SEMAPHORE_OFFSET                  = 0x00000064,
