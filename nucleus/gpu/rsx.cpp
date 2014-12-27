@@ -190,6 +190,15 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->vp_start = parameter;
         break;
 
+    case NV4097_SET_SHADER_PROGRAM:
+        pgraph->fp_location = (parameter & 0x3) - 1;
+        pgraph->fp_offset = (parameter & ~0x3);
+        break;
+
+    case NV4097_SET_SHADER_CONTROL:
+        pgraph->fp_control = parameter;
+        break;
+
     case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_FORMAT, 4)
         pgraph->vp_attr[index].type = parameter & 0xF;
         pgraph->vp_attr[index].size = (parameter >> 4) & 0xF;
@@ -233,10 +242,10 @@ void RSX::method(u32 offset, u32 parameter)
     // SCE DRIVER
     case SCE_DRIVER_FLIP:
         pgraph->Flip();
-        driver_info->flip |= 0x80000000;
+        driver_info->unk2[1].flip |= 0x80000000;
 
-    //default:
-        //nucleus.log.notice(LOG_GPU, "METHOD: 0x%X; PARAM: 0x%X", offset, parameter);
+    default:
+        ;//nucleus.log.notice(LOG_GPU, "METHOD: 0x%X; PARAM: 0x%X", offset, parameter);
     }
 }
 
@@ -277,7 +286,7 @@ void RSX::dma_write32(u32 dma_object, u32 offset, u32 value)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::WRITE) {
-        nucleus.memory.write32(dma.addr + offset, value);
+        return nucleus.memory.write32(dma.addr + offset, value);
     }
 
     nucleus.log.warning(LOG_GPU, "Illegal DMA write");

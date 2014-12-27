@@ -10,11 +10,11 @@
 enum {
     // NV40_CHANNEL_DMA (NV406E)
     // These methods are executed by the PFIFO puller itself, instead of being forwared to an engine.
-    NV406E_SET_REFERENCE                     = 0x00000050,
-    NV406E_SET_CONTEXT_DMA_SEMAPHORE         = 0x00000060,
-    NV406E_SEMAPHORE_OFFSET                  = 0x00000064,
-    NV406E_SEMAPHORE_ACQUIRE                 = 0x00000068,
-    NV406E_SEMAPHORE_RELEASE                 = 0x0000006C,
+    NV406E_SET_REFERENCE                     = 0x00000050, // Modify DMA control's reference register
+    NV406E_SET_CONTEXT_DMA_SEMAPHORE         = 0x00000060, // DMA context object
+    NV406E_SEMAPHORE_OFFSET                  = 0x00000064, // Offset has to be smaller than 0x1000 and 4-aligned.
+    NV406E_SEMAPHORE_ACQUIRE                 = 0x00000068, // Make the PFIFO puller wait until offset contains the parameter.
+    NV406E_SEMAPHORE_RELEASE                 = 0x0000006C, // Write parameter to the specified offset.
 
     // NV40_CURIE_PRIMITIVE (NV4097)
     NV4097_SET_OBJECT                        = 0x00000000,

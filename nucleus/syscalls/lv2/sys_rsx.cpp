@@ -143,7 +143,7 @@ s32 sys_rsx_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2
         break;
 
     case 0x10A: // ? (Involved in managing flip status through cellGcmResetFlipStatus)
-        nucleus.rsx.driver_info->flip &= p2;
+        nucleus.rsx.driver_info->unk2[p1].flip &= p2;
         break;
 
     case 0x300: // Tiles

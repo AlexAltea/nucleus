@@ -37,6 +37,12 @@ public:
     u32 vp_load;                        // Set through NV4097_SET_TRANSFORM_PROGRAM_LOAD
     u32 vp_start;                       // Set through NV4097_SET_TRANSFORM_PROGRAM_START
 
+    // Fragment Program
+    bool fp_dirty;                      // Flag: Needs to be recompiled
+    u32 fp_location;                    // Location (Local Memory or Main Memory)
+    u32 fp_offset;                      // Offset at the specified location
+    u32 fp_control;                     // Control the performance of the program
+
     // Auxiliary methods
     void LoadVertexAttributes(u32 first, u32 count);
 

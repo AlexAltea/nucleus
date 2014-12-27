@@ -20,6 +20,8 @@ struct rsx_dma_control_t {
     be_t<u32> put; // CellGcmControl
     be_t<u32> get; // CellGcmControl
     be_t<u32> ref; // CellGcmControl
+    u32 unk2[2];
+    be_t<u32> unk3; // TODO: Seems to be another GET / PUT pointer
 };
 
 // LPAR Driver Information
@@ -30,10 +32,11 @@ struct rsx_driver_info_t {
     be_t<u32> hardware_channel;
     be_t<u32> nvcore_frequency;
     be_t<u32> memory_frequency;
-
     u8 unk1[0x10C0 - 6*4];
-    u8 unk2[0x40];
-    be_t<u32> flip;
+    struct unk2 {
+        be_t<u32> flip;
+        u8 unk[0x3C];
+    } unk2[2]; // TODO: Find the name and exact number of these
 };
 
 // LPAR Reports
