@@ -16,7 +16,7 @@ class OpenGLVertexProgram
 
 public:
     // OpenGL shader ID
-    u32 m_id;
+    u32 m_id = 0;
 
     bool decompile(rsx_vp_t program);
 

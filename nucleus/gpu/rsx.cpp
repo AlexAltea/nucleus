@@ -26,6 +26,9 @@
 #define case_16(offset, step) \
     case_8(offset, step) \
     case_8(offset + 8*step, step)
+#define case_32(offset, step) \
+    case_16(offset, step) \
+    case_16(offset + 16*step, step)
 #define case_range(n, baseOffset, step) \
     case_##n(baseOffset, step) \
     index = (offset - baseOffset) / step;
@@ -165,21 +168,51 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
         break;
 
-    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK0, 16)
-        pgraph->vp_data[pgraph->vp_load].unk0 = parameter;
+    case NV4097_SET_COLOR_MASK:
+        pgraph->ColorMask(
+            (parameter & 0x1000000),
+            (parameter & 0x0010000),
+            (parameter & 0x0000100),
+            (parameter & 0x0000001));
         break;
 
-    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK1, 16)
-        pgraph->vp_data[pgraph->vp_load].unk1 = parameter;
+    case NV4097_SET_COLOR_CLEAR_VALUE:
+        pgraph->ClearColor(
+            (parameter >> 24) & 0xFF,
+            (parameter >> 16) & 0xFF,
+            (parameter >>  8) & 0xFF,
+            (parameter & 0xFF));
         break;
 
-    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK2, 16)
-        pgraph->vp_data[pgraph->vp_load].unk2 = parameter;
+    case NV4097_SET_ZSTENCIL_CLEAR_VALUE:
+        pgraph->ClearDepth(parameter >> 8);
+        pgraph->ClearStencil(parameter & 0xFF);
         break;
 
-    case_range(8, NV4097_SET_TRANSFORM_PROGRAM_UNK3, 16)
-        pgraph->vp_data[pgraph->vp_load].unk3 = parameter;
-        pgraph->vp_load += 1;
+    case NV4097_CLEAR_SURFACE:
+        pgraph->ClearSurface(parameter);
+        break;
+
+    case NV4097_SET_DEPTH_FUNC:
+        pgraph->DepthFunc(parameter);
+        break;
+
+    case_range(32, NV4097_SET_TRANSFORM_PROGRAM, 4)
+        switch (index % 4) {
+        case 0:
+            pgraph->vp_data[pgraph->vp_load].unk0 = parameter;
+            break;
+        case 1:
+            pgraph->vp_data[pgraph->vp_load].unk1 = parameter;
+            break;
+        case 2:
+            pgraph->vp_data[pgraph->vp_load].unk2 = parameter;
+            break;
+        case 3:
+            pgraph->vp_data[pgraph->vp_load].unk3 = parameter;
+            pgraph->vp_load += 1;
+            break;
+        }
         break;
 
     case NV4097_SET_TRANSFORM_PROGRAM_LOAD:
@@ -258,11 +291,11 @@ DMAObject RSX::dma_address(u32 dma_object)
     case RSX_CONTEXT_DMA_DEVICE_RW:
         return DMAObject{0x40000000, 0x1000, DMAObject::READWRITE};
     case RSX_CONTEXT_DMA_DEVICE_R:
-        return DMAObject{0x40000000, 0x1000, DMAObject::READ};
+        return DMAObject{0x40000000, 0x1000, DMAObject::READWRITE}; // TODO: Inconsistency: Gitbrew says R, test says RW
     case RSX_CONTEXT_DMA_SEMAPHORE_RW:
         return DMAObject{0x40100000, 0x1000, DMAObject::READWRITE};
     case RSX_CONTEXT_DMA_SEMAPHORE_R:
-        return DMAObject{0x40100000, 0x1000, DMAObject::READ};
+        return DMAObject{0x40100000, 0x1000, DMAObject::READWRITE}; // TODO: Inconsistency: Gitbrew says R, test says RW
     default:
         nucleus.log.warning(LOG_GPU, "Unknown DMA object (0x%08X)", dma_object);
         return DMAObject{};

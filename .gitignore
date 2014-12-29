@@ -29,6 +29,9 @@
 *.suo
 *.user
 
+# Apitrace
+*.trace
+
 # Nucleus
 /**/x64/*
 /libs/*

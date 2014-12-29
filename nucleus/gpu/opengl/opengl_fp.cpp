@@ -36,6 +36,16 @@ const char* getMask(u32 maskValue)
 
 bool OpenGLFragmentProgram::decompile()
 {
+    // TEMPORARY
+    m_shader = R"(
+#version 330
+in vec4 diff_color;
+layout (location = 0) out vec4 ocol0;
+void main() {
+	ocol0 = diff_color;
+}
+    )";
+
     return true;
 }
 

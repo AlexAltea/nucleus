@@ -8,12 +8,15 @@
 #include "nucleus/gpu/rsx_enum.h"
 #include "nucleus/gpu/rsx_methods.h"
 
+#include "nucleus/gpu/opengl/opengl_vp.h"
+#include "nucleus/gpu/opengl/opengl_fp.h"
+
 // OpenGL dependencies
 #include <GL/glew.h>
 
 #define checkRendererError(name) \
     if (glGetError() != GL_NO_ERROR) { \
-        nucleus.log.error(LOG_GPU, "Something went wrong"); \
+        nucleus.log.error(LOG_GPU, "Something went wrong in %s", name); \
     }
 
 PGRAPH_OpenGL::PGRAPH_OpenGL()
@@ -67,8 +70,74 @@ void PGRAPH_OpenGL::Begin(u32 mode)
     checkRendererError("Begin");
 }
 
+void PGRAPH_OpenGL::ClearColor(u8 a, u8 r, u8 g, u8 b)
+{
+    glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+    checkRendererError("ClearColor");
+}
+
+void PGRAPH_OpenGL::ClearDepth(u32 value)
+{
+    glClearDepth(value / (float)0xFFFFFF);
+    checkRendererError("ClearDepth");
+}
+
+void PGRAPH_OpenGL::ClearStencil(u32 value)
+{
+    glClearStencil(value);
+    checkRendererError("ClearStencil");
+}
+
+void PGRAPH_OpenGL::ClearSurface(u32 mask)
+{
+    // Set mask
+    GLbitfield clearMask = 0;
+    if (mask & 0x01) clearMask |= GL_DEPTH_BUFFER_BIT;
+    if (mask & 0x02) clearMask |= GL_STENCIL_BUFFER_BIT;
+    if (mask & 0xF0) clearMask |= GL_COLOR_BUFFER_BIT;
+
+    glClear(clearMask);
+    checkRendererError("ClearSurface");
+}
+
+void PGRAPH_OpenGL::ColorMask(bool a, bool r, bool g, bool b)
+{
+    glColorMask(r, g, b, a);
+    checkRendererError("ColorMask");
+}
+
+void PGRAPH_OpenGL::DepthFunc(u32 func)
+{
+    glDepthFunc(func);
+    checkRendererError("DepthFunc");
+}
+
 void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
 {
+    // TEMPORARY
+    OpenGLVertexProgram vp;
+    vp.decompile({0});
+    vp.compile();
+    OpenGLFragmentProgram fp;
+    fp.decompile();
+    fp.compile();
+
+    // Link, validate and use program
+    GLuint id = glCreateProgram();
+	glAttachShader(id, vp.m_id);
+	glAttachShader(id, fp.m_id);
+    glLinkProgram(id);
+    GLint status;
+	glGetProgramiv(id, GL_LINK_STATUS, &status);
+    if (status != GL_TRUE) {
+        nucleus.log.error(LOG_GPU, "PGRAPH_OpenGL::DrawArrays: Can't link program");
+    }
+    glGetProgramiv(id, GL_VALIDATE_STATUS, &status);
+    if (status != GL_TRUE) {
+        nucleus.log.error(LOG_GPU, "PGRAPH_OpenGL::DrawArrays: Can't validate program");
+    }
+    glUseProgram(id);
+
     glDrawArrays(GL_TRIANGLES, first, count);
     checkRendererError("DrawArrays");
 }
@@ -113,11 +182,11 @@ void PGRAPH_OpenGL::Enable(u32 prop, u32 enabled)
         break;
 
     case NV4097_SET_LOGIC_OP_ENABLE:
-        enabled ? glEnable(GL_LOGIC_OP) : glDisable(GL_LOGIC_OP);
+        //enabled ? glEnable(GL_LOGIC_OP) : glDisable(GL_LOGIC_OP);
         break;
 
     case NV4097_SET_SPECULAR_ENABLE:
-        enabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING);
+        //enabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING);
         break;
 
     case NV4097_SET_LINE_SMOOTH_ENABLE:

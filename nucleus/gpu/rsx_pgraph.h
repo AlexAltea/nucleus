@@ -50,6 +50,12 @@ public:
     virtual void AlphaFunc(u32 func, f32 ref)=0;
     virtual void Begin(u32 mode)=0;
     virtual void BindVertexAttributes()=0;
+    virtual void ClearColor(u8 a, u8 r, u8 g, u8 b)=0;
+    virtual void ClearDepth(u32 value)=0;
+    virtual void ClearStencil(u32 value)=0;
+    virtual void ClearSurface(u32 mask)=0;
+    virtual void ColorMask(bool a, bool r, bool g, bool b)=0;
+    virtual void DepthFunc(u32 func)=0;
     virtual void DrawArrays(u32 mode, u32 first, u32 count)=0;
     virtual void Enable(u32 prop, u32 enabled)=0;
     virtual void End()=0;

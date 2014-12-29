@@ -110,6 +110,18 @@ bool OpenGLVertexProgram::decompile(rsx_vp_t program)
 
     m_shader += "}\n";
 
+    // TEMPORARY
+    m_shader = R"(
+#version 330
+layout (location = 0) in vec4 v0;
+layout (location = 3) in vec4 v3;
+out vec4 diff_color;
+void main() {
+	gl_Position = v0;
+	diff_color = v3;
+}
+    )";
+
     return true;
 }
 
