@@ -89,10 +89,32 @@ struct u128
     bool operator == (const u128& r) const { return (lo == r.lo) && (hi == r.hi); }
     bool operator != (const u128& r) const { return (lo != r.lo) || (hi != r.hi); }
 
+    u128 operator + (const u64 r) const { return u128{lo + r, hi + ((lo + r < lo) ? 1 : 0)}; }
+    u128 operator - (const u64 r) const { return u128{lo - r, hi - ((lo < lo - r) ? 1 : 0)}; }
     u128 operator | (const u128& r) const { return u128{lo | r.lo, hi | r.hi}; }
     u128 operator & (const u128& r) const { return u128{lo & r.lo, hi & r.hi}; }
     u128 operator ^ (const u128& r) const { return u128{lo ^ r.lo, hi ^ r.hi}; }
     u128 operator ~ () const { return u128{~lo, ~hi}; }
+
+    u128 operator >> (const s64 r) const {
+        if (r >= 128) { return u128{0, 0}; }
+        if (r == 0)   { return *this; }
+        if (r < 0)    { return *this << -r; }
+        u64 _hi = (r < 64) ? (hi >> r) : 0;
+        u64 _lo = (r < 64) ? (0xFFFFFFFFFFFFFFFFULL << (64-r)) : (0xFFFFFFFFFFFFFFFFULL >> (r-64));
+        _lo = (_lo & ((hi << (64-r)) | (hi >> r))) | ((r < 64) ? (lo >> r) : 0);
+        return u128{_lo, _hi};
+    }
+
+    u128 operator << (const s64 r) const {
+        if (r >= 128) { return u128{0, 0}; }
+        if (r == 0)   { return *this; }
+        if (r < 0)    { return *this >> -r; }
+        u64 _lo = (r < 64) ? (lo << r) : 0;
+        u64 _hi = (r < 64) ? (0xFFFFFFFFFFFFFFFFULL >> (64-r)) : (0xFFFFFFFFFFFFFFFFULL << (r-64));
+        _hi = (_hi & ((hi << r) | (hi >> (64-r)))) | ((r < 64) ? (hi << r) : 0);
+        return u128{_lo, _hi};
+    }
 };
 
 /**
