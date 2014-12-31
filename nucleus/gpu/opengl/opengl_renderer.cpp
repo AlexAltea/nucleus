@@ -42,10 +42,10 @@ void PGRAPH_OpenGL::BindVertexAttributes()
 {
     // Indices are attr.type
     static const GLenum vertexType[] = {
-        NULL, GL_SHORT, GL_FLOAT, GL_HALF_FLOAT, GL_UNSIGNED_BYTE, GL_SHORT, GL_FLOAT, GL_UNSIGNED_BYTE
+        0, GL_SHORT, GL_FLOAT, GL_HALF_FLOAT, GL_UNSIGNED_BYTE, GL_SHORT, GL_FLOAT, GL_UNSIGNED_BYTE
     };
     static const GLboolean vertexNormalized[] = {
-        NULL, GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE, GL_FALSE
+        0, GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE, GL_FALSE
     };
 
     GLuint vao;
@@ -53,7 +53,7 @@ void PGRAPH_OpenGL::BindVertexAttributes()
     glBindVertexArray(vao);
 
     for (int index = 0; index < 16; index++) {
-        const auto& attr = vp_attr[index];
+        const auto& attr = vpe.attr[index];
         if (attr.size) {
             GLuint vbo;
             glGenBuffers(1, &vbo);
@@ -114,18 +114,26 @@ void PGRAPH_OpenGL::DepthFunc(u32 func)
 
 void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
 {
-    // TEMPORARY
-    OpenGLVertexProgram vp;
-    vp.decompile({0});
-    vp.compile();
-    OpenGLFragmentProgram fp;
-    fp.decompile();
-    fp.compile();
+    u64 hash_vp = 0;
+    if (cache_vp.find(hash_vp) == cache_vp.end()) {
+        OpenGLVertexProgram vp;
+        vp.decompile(vpe.data, vpe.start);
+        vp.compile();
+        cache_vp[hash_vp] = vp;
+    }
+
+    u64 hash_fp = 0;
+    if (cache_fp.find(hash_fp) == cache_fp.end()) {
+        OpenGLFragmentProgram fp;
+        fp.decompile();
+        fp.compile();
+        cache_fp[hash_fp] = fp;
+    }
 
     // Link, validate and use program
     GLuint id = glCreateProgram();
-	glAttachShader(id, vp.m_id);
-	glAttachShader(id, fp.m_id);
+	glAttachShader(id, cache_vp[hash_vp].id);
+	glAttachShader(id, cache_fp[hash_fp].id);
     glLinkProgram(id);
     GLint status;
 	glGetProgramiv(id, GL_LINK_STATUS, &status);
@@ -137,6 +145,15 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
         nucleus.log.error(LOG_GPU, "PGRAPH_OpenGL::DrawArrays: Can't validate program");
     }
     glUseProgram(id);
+
+    // Upload VP constants
+    for (auto& constant : vpe.constant) {
+        if (constant.dirty) {
+            GLint loc = glGetUniformLocation(id, "c[256]"); // TODO
+            glUniform4f(loc, constant.x, constant.y, constant.z, constant.w);
+            constant.dirty = false;
+        }
+    }
 
     glDrawArrays(GL_TRIANGLES, first, count);
     checkRendererError("DrawArrays");
@@ -182,10 +199,12 @@ void PGRAPH_OpenGL::Enable(u32 prop, u32 enabled)
         break;
 
     case NV4097_SET_LOGIC_OP_ENABLE:
+        // TODO: Nsight dislikes this
         //enabled ? glEnable(GL_LOGIC_OP) : glDisable(GL_LOGIC_OP);
         break;
 
     case NV4097_SET_SPECULAR_ENABLE:
+        // TODO: Nsight dislikes this
         //enabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING);
         break;
 

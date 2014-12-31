@@ -59,15 +59,22 @@ enum {
     RSX_VP_OPCODE_SCA_POP = 0x14, // Pop from stack
 };
 
-// RSX Vertex Program instruction
-struct rsx_vp_instruction_t {
-    u32 unk0;
-    u32 unk1;
-    u32 unk2;
-    u32 unk3;
+// RSX Vertex Program vector register
+struct rsx_vp_constant_t {
+    bool dirty = false; // Flag: Needs to be reuploaded
+    union {
+        u32 word[4];
+        struct {
+            be_t<f32> x; 
+            be_t<f32> y;
+            be_t<f32> z;
+            be_t<f32> w;
+        };
+    };
 };
 
-// RSX Vertex Program
-struct rsx_vp_t {
-    rsx_vp_instruction_t* instructions;
+// RSX Vertex Program instruction
+union rsx_vp_instruction_t
+{
+    u32 word[4];
 };

@@ -197,30 +197,40 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->DepthFunc(parameter);
         break;
 
+    /*
+    case NV4097_SET_VIEWPORT_HORIZONTAL:
+    
+    case NV4097_SET_VIEWPORT_VERTICAL:
+    
+    case NV4097_SET_CLIP_MIN:
+    
+    case NV4097_SET_VIEWPORT_OFFSET:
+    */
+
     case_range(32, NV4097_SET_TRANSFORM_PROGRAM, 4)
-        switch (index % 4) {
-        case 0:
-            pgraph->vp_data[pgraph->vp_load].unk0 = parameter;
-            break;
-        case 1:
-            pgraph->vp_data[pgraph->vp_load].unk1 = parameter;
-            break;
-        case 2:
-            pgraph->vp_data[pgraph->vp_load].unk2 = parameter;
-            break;
-        case 3:
-            pgraph->vp_data[pgraph->vp_load].unk3 = parameter;
-            pgraph->vp_load += 1;
-            break;
+        pgraph->vpe.data[pgraph->vpe.load].word[index % 4] = parameter;
+        if (index % 4 == 3) {
+            pgraph->vpe.load += 1;
         }
         break;
 
     case NV4097_SET_TRANSFORM_PROGRAM_LOAD:
-        pgraph->vp_load = parameter;
+        pgraph->vpe.load = parameter;
         break;
 
     case NV4097_SET_TRANSFORM_PROGRAM_START:
-        pgraph->vp_start = parameter;
+        pgraph->vpe.start = parameter;
+        break;
+
+    case_range(32, NV4097_SET_TRANSFORM_CONSTANT, 4)
+        pgraph->vpe.constant[pgraph->vpe.constant_load].word[index % 4] = parameter;
+        if (index % 4 == 3) {
+            pgraph->vpe.constant_load += 1;
+        }
+        break;
+
+    case NV4097_SET_TRANSFORM_CONSTANT_LOAD:
+        pgraph->vpe.constant_load = parameter;
         break;
 
     case NV4097_SET_SHADER_PROGRAM:
@@ -233,17 +243,17 @@ void RSX::method(u32 offset, u32 parameter)
         break;
 
     case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_FORMAT, 4)
-        pgraph->vp_attr[index].type = parameter & 0xF;
-        pgraph->vp_attr[index].size = (parameter >> 4) & 0xF;
-        pgraph->vp_attr[index].stride = (parameter >> 8) & 0xFF;
-        pgraph->vp_attr[index].frequency = (parameter >> 16);
-        pgraph->vp_attr[index].dirty = true;
+        pgraph->vpe.attr[index].type = parameter & 0xF;
+        pgraph->vpe.attr[index].size = (parameter >> 4) & 0xF;
+        pgraph->vpe.attr[index].stride = (parameter >> 8) & 0xFF;
+        pgraph->vpe.attr[index].frequency = (parameter >> 16);
+        pgraph->vpe.attr[index].dirty = true;
         break;
 
     case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_OFFSET, 4)
-        pgraph->vp_attr[index].offset = parameter & 0x7FFFFFFF;
-        pgraph->vp_attr[index].location = (parameter >> 31);
-        pgraph->vp_attr[index].dirty = true;
+        pgraph->vpe.attr[index].offset = parameter & 0x7FFFFFFF;
+        pgraph->vpe.attr[index].location = (parameter >> 31);
+        pgraph->vpe.attr[index].dirty = true;
         break;
 
     case NV4097_SET_VERTEX_DATA_BASE_OFFSET:

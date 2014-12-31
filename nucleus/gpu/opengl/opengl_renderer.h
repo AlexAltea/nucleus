@@ -5,11 +5,20 @@
 
 #pragma once
 
+#include "nucleus/common.h"
 #include "nucleus/gpu/rsx_pgraph.h"
+#include "nucleus/gpu/opengl/opengl_vp.h"
+#include "nucleus/gpu/opengl/opengl_fp.h"
 #include "nucleus/ui/ui.h"
+
+#include <unordered_map>
 
 class PGRAPH_OpenGL : public PGRAPH {
     Window* m_window;
+
+    // Cache
+    std::unordered_map<u64, OpenGLVertexProgram> cache_vp;
+    std::unordered_map<u64, OpenGLFragmentProgram> cache_fp;
 
 public:
     PGRAPH_OpenGL();

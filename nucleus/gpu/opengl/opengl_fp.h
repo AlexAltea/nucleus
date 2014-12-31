@@ -12,11 +12,11 @@
 class OpenGLFragmentProgram
 {
     // OpenGL shader source
-    std::string m_shader;
+    std::string source;
 
 public:
     // OpenGL shader ID
-    u32 m_id = 0;
+    u32 id = 0;
 
     bool decompile();
 

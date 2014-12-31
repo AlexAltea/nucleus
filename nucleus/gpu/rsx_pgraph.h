@@ -30,12 +30,16 @@ public:
     u32 vertex_data_base_offset;
     u32 vertex_data_base_index;
 
-    // Vertex Program
-    bool vp_dirty;                      // Flag: Needs to be recompiled
-    rsx_vp_attribute_t vp_attr[16];     // 16 Vertex Program attributes
-    rsx_vp_instruction_t vp_data[512];  // 512 VPE instructions
-    u32 vp_load;                        // Set through NV4097_SET_TRANSFORM_PROGRAM_LOAD
-    u32 vp_start;                       // Set through NV4097_SET_TRANSFORM_PROGRAM_START
+    // Vertex Processing Engine
+    struct VPE {
+        bool dirty;                      // Flag: Needs to be recompiled
+        rsx_vp_attribute_t attr[16];     // 16 Vertex Program attributes
+        rsx_vp_instruction_t data[512];  // 512 VPE instructions
+        rsx_vp_constant_t constant[468]; // 468 vector constant registers
+        u32 constant_load;               // Set through NV4097_SET_TRANSFORM_CONSTANT_LOAD
+        u32 load;                        // Set through NV4097_SET_TRANSFORM_PROGRAM_LOAD
+        u32 start;                       // Set through NV4097_SET_TRANSFORM_PROGRAM_START
+    } vpe;
 
     // Fragment Program
     bool fp_dirty;                      // Flag: Needs to be recompiled

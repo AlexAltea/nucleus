@@ -73,45 +73,48 @@ const vp_output_register_t output_regs[] = {
     { "rsx_Texture9",           "o[6]",   false },
 };
 
-bool OpenGLVertexProgram::decompile(rsx_vp_t program)
+bool OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
 {
     // Header
-    m_shader =
+    source =
         "#version 330\n"
 
         // Vertex input registers
-        "attribute vec4 v0;\n"
-        "attribute vec4 v1;\n"
-        "attribute vec4 v2;\n"
-        "attribute vec4 v3;\n"
-        "attribute vec4 v4;\n"
-        "attribute vec4 v5;\n"
-        "attribute vec4 v6;\n"
-        "attribute vec4 v7;\n"
-        "attribute vec4 v8;\n"
-        "attribute vec4 v9;\n"
-        "attribute vec4 v10;\n"
-        "attribute vec4 v11;\n"
-        "attribute vec4 v12;\n"
-        "attribute vec4 v13;\n"
-        "attribute vec4 v14;\n"
-        "attribute vec4 v15;\n"
+        "layout (location = 0) in vec4 v0;"
+        "layout (location = 1) in vec4 v1;"
+        "layout (location = 2) in vec4 v2;"
+        "layout (location = 3) in vec4 v3;"
+        "layout (location = 4) in vec4 v4;"
+        "layout (location = 5) in vec4 v5;"
+        "layout (location = 6) in vec4 v6;"
+        "layout (location = 7) in vec4 v7;"
+        "layout (location = 8) in vec4 v8;"
+        "layout (location = 9) in vec4 v9;"
+        "layout (location = 10) in vec4 v10;"
+        "layout (location = 11) in vec4 v11;"
+        "layout (location = 12) in vec4 v12;"
+        "layout (location = 13) in vec4 v13;"
+        "layout (location = 14) in vec4 v14;"
+        "layout (location = 15) in vec4 v15;"
 
         // Vertex output registers
-        "vec4 o[16];\n"
+        "vec4 v[16];"          // Input registers
+        "vec4 r[48];"          // Data registers
+        "vec4 o[16];"          // Output registers
+        "uniform vec4 c[464];" // Constant registers
 
         // Shader body
         "void main() {\n";
 
     // Write Output registers
     for (const auto& reg : output_regs) {
-        m_shader += format("\t%s = %s;\n", reg.glReg, reg.rsxReg);
+        source += format("\t%s = %s;\n", reg.glReg, reg.rsxReg);
     }
 
-    m_shader += "}\n";
+    source += "}\n";
 
     // TEMPORARY
-    m_shader = R"(
+    source = R"(
 #version 330
 layout (location = 0) in vec4 v0;
 layout (location = 3) in vec4 v3;
@@ -128,21 +131,21 @@ void main() {
 bool OpenGLVertexProgram::compile()
 {
     // Check if the shader was already compiled
-    if (m_id != 0) {
-        glDeleteShader(m_id);
+    if (id != 0) {
+        glDeleteShader(id);
     }
 
-    m_id = glCreateShader(GL_VERTEX_SHADER);
+    id = glCreateShader(GL_VERTEX_SHADER);
 
     // Compile shader
-    const GLchar* sourceString = m_shader.data();
-    const GLint sourceLength = m_shader.length();
-    glShaderSource(m_id, 1, &sourceString, &sourceLength);
-    glCompileShader(m_id);
+    const GLchar* sourceString = source.data();
+    const GLint sourceLength = source.length();
+    glShaderSource(id, 1, &sourceString, &sourceLength);
+    glCompileShader(id);
 
     // Check if shader compiled succesfully
     GLint status;
-    glGetShaderiv(m_id, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(id, GL_COMPILE_STATUS, &status);
     if (status != GL_TRUE) {
         nucleus.log.error(LOG_GPU, "OpenGLVertexProgram::compile: Can't compile shader");
         return false;

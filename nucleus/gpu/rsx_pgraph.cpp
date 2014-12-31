@@ -11,10 +11,10 @@ void PGRAPH::LoadVertexAttributes(u32 first, u32 count)
 {
     // Bytes per vertex coordinate. Index is given by attribute::type.
     static const u32 vertexTypeSize[] = {
-        NULL, 2, 4, 2, 1, 2, 4, 1
+        0, 2, 4, 2, 1, 2, 4, 1
     };
 
-    for (auto& attr : vp_attr) {
+    for (auto& attr : vpe.attr) {
         if (!attr.size) {
             continue;
         }

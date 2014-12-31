@@ -12,13 +12,13 @@
 class OpenGLVertexProgram
 {
     // OpenGL shader source
-    std::string m_shader;
+    std::string source;
 
 public:
     // OpenGL shader ID
-    u32 m_id = 0;
+    u32 id = 0;
 
-    bool decompile(rsx_vp_t program);
+    bool decompile(rsx_vp_instruction_t* buffer, u32 start);
 
     bool compile();
 };
