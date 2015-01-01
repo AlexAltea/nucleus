@@ -39,10 +39,10 @@ bool OpenGLFragmentProgram::decompile()
     // TEMPORARY
     source = R"(
 #version 330
-in vec4 diff_color;
+in vec4 rsx_BackDiffuseColor;
 layout (location = 0) out vec4 ocol0;
 void main() {
-	ocol0 = diff_color;
+    ocol0 = rsx_BackDiffuseColor;
 }
     )";
 

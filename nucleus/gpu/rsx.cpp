@@ -225,6 +225,7 @@ void RSX::method(u32 offset, u32 parameter)
     case_range(32, NV4097_SET_TRANSFORM_CONSTANT, 4)
         pgraph->vpe.constant[pgraph->vpe.constant_load].word[index % 4] = parameter;
         if (index % 4 == 3) {
+            pgraph->vpe.constant[pgraph->vpe.constant_load].dirty = true;
             pgraph->vpe.constant_load += 1;
         }
         break;

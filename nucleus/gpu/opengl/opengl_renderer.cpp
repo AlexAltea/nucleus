@@ -147,9 +147,10 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
     glUseProgram(id);
 
     // Upload VP constants
-    for (auto& constant : vpe.constant) {
+    for (u32 i = 0; i < 468; i++) {
+        auto& constant = vpe.constant[i];
         if (constant.dirty) {
-            GLint loc = glGetUniformLocation(id, "c[256]"); // TODO
+            GLint loc = glGetUniformLocation(id, format("c[%d]", i).c_str());
             glUniform4f(loc, constant.x, constant.y, constant.z, constant.w);
             constant.dirty = false;
         }

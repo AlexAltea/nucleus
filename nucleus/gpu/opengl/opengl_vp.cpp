@@ -12,120 +12,215 @@
 // OpenGL dependencies
 #include <GL/glew.h>
 
-// Input register
-struct vp_input_register_t {
-    const char* glReg;
-    const char* rsxReg;
-};
-
-const vp_input_register_t input_regs[] = {
-    // OpenGL custom inputs
-    { "rsx_Position",      "v0"  },
-    { "rsx_SkinWeights",   "v1"  },
-    { "rsx_Normal",        "v2"  },
-    { "rsx_DiffuseColor",  "v3"  },
-    { "rsx_SpecularColor", "v4"  },
-    { "rsx_Fog",           "v5"  },
-    { "rsx_PointSize",     "v6"  },
-    { "rsx_Texture0",      "v8"  },
-    { "rsx_Texture1",      "v9"  },
-    { "rsx_Texture2",      "v10" },
-    { "rsx_Texture3",      "v11" },
-    { "rsx_Texture4",      "v12" },
-    { "rsx_Texture5",      "v13" },
-    { "rsx_Texture6",      "v14" },
-    { "rsx_Texture7",      "v15" },
-};
-
 // Output register
 struct vp_output_register_t {
     const char* glReg;
     const char* rsxReg;
+    int rsxIndex;
     bool predefined;
 };
 
 const vp_output_register_t output_regs[] = {
     // OpenGL predefined outputs
-    { "gl_Position",            "o[0]",   true },
-    { "gl_PointSize",           "o[6].x", true },
-    { "gl_ClipDistance[0]",     "o[5].y", true },
-    { "gl_ClipDistance[1]",     "o[5].z", true },
-    { "gl_ClipDistance[2]",     "o[5].w", true },
-    { "gl_ClipDistance[3]",     "o[6].y", true },
-    { "gl_ClipDistance[4]",     "o[6].z", true },
-    { "gl_ClipDistance[5]",     "o[6].w", true },
+    { "gl_Position",            "o[0]",    0, true },
+    { "gl_PointSize",           "o[6].x",  6, true },
+    { "gl_ClipDistance[0]",     "o[5].y",  5, true },
+    { "gl_ClipDistance[1]",     "o[5].z",  5, true },
+    { "gl_ClipDistance[2]",     "o[5].w",  5, true },
+    { "gl_ClipDistance[3]",     "o[6].y",  6, true },
+    { "gl_ClipDistance[4]",     "o[6].z",  6, true },
+    { "gl_ClipDistance[5]",     "o[6].w",  6, true },
 
     // OpenGL custom outputs
-    { "rsx_BackDiffuseColor",   "o[1]",   false },
-    { "rsx_BackSpecularColor",  "o[2]",   false },
-    { "rsx_FrontDiffuseColor",  "o[3]",   false },
-    { "rsx_FrontSpecularColor", "o[4]",   false },
-    { "rsx_Fog",                "o[5].x", false },
-    { "rsx_Texture0",           "o[7]",   false },
-    { "rsx_Texture1",           "o[8]",   false },
-    { "rsx_Texture2",           "o[9]",   false },
-    { "rsx_Texture3",           "o[10]",  false },
-    { "rsx_Texture4",           "o[11]",  false },
-    { "rsx_Texture5",           "o[12]",  false },
-    { "rsx_Texture6",           "o[13]",  false },
-    { "rsx_Texture7",           "o[14]",  false },
-    { "rsx_Texture8",           "o[15]",  false },
-    { "rsx_Texture9",           "o[6]",   false },
+    { "rsx_BackDiffuseColor",   "o[1]",    1, false },
+    { "rsx_BackSpecularColor",  "o[2]",    2, false },
+    { "rsx_FrontDiffuseColor",  "o[3]",    3, false },
+    { "rsx_FrontSpecularColor", "o[4]",    4, false },
+    { "rsx_Fog",                "o[5].x",  5, false },
+    { "rsx_Texture0",           "o[7]",    7, false },
+    { "rsx_Texture1",           "o[8]",    8, false },
+    { "rsx_Texture2",           "o[9]",    9, false },
+    { "rsx_Texture3",           "o[10]",  10, false },
+    { "rsx_Texture4",           "o[11]",  11, false },
+    { "rsx_Texture5",           "o[12]",  12, false },
+    { "rsx_Texture6",           "o[13]",  13, false },
+    { "rsx_Texture7",           "o[14]",  14, false },
+    { "rsx_Texture8",           "o[15]",  15, false },
+    { "rsx_Texture9",           "o[6]",    6, false },
 };
+
+const char* get_mask(u8 maskValue)
+{
+    static const char* maskString[] = {
+        "",     //  0 -> 0000 [....]
+        ".w",   //  1 -> 0001 [...w]
+        ".z",   //  2 -> 0010 [..z.]
+        ".zw",  //  3 -> 0011 [..zw]
+        ".y",   //  4 -> 0100 [.y..]
+        ".yw",  //  5 -> 0101 [.y.w]
+        ".yz",  //  6 -> 0110 [.yz.]
+        ".yzw", //  7 -> 0111 [.yzw]
+        ".x",   //  8 -> 1000 [x...]
+        ".xw",  //  9 -> 1001 [x..w]
+        ".xz",  // 10 -> 1010 [x.z.]
+        ".xzw", // 11 -> 1011 [x.zw]
+        ".xy",  // 12 -> 1100 [xy..]
+        ".xyw", // 13 -> 1101 [xy.w]
+        ".xyz", // 14 -> 1110 [xyz.]
+        ""      // 15 -> 1111 [xyzw]
+    };
+    return maskString[maskValue % 16];
+}
+
+std::string get_swizzling(u8 swizzleValue)
+{
+    static const char* swizzleString[] = {
+        "x", "y", "z", "w"
+    };
+
+    // Check if swizzling is required (0x1B -> 0b00011011 -> [0,1,2,3] -> ".xyzw")
+    if (swizzleValue == 0x1B) {
+        return "";
+    }
+
+    std::string swizzling = ".";
+    swizzling += swizzleString[(swizzleValue >> 6) & 0x3];
+    swizzling += swizzleString[(swizzleValue >> 4) & 0x3];
+    swizzling += swizzleString[(swizzleValue >> 2) & 0x3];
+    swizzling += swizzleString[(swizzleValue >> 0) & 0x3];
+    return swizzling;
+}
+
+std::string OpenGLVertexProgram::get_header()
+{
+    std::string header = "#version 330\n";
+
+    // Input registers
+    for (u32 i = 0; i < 16; i++) {
+        if (usedInputs & (1 << i)) {
+            header += format("layout (location = %d) in vec4 v%d;", i, i);
+        }
+    }
+
+    // Output registers
+    for (const auto& reg : output_regs) {
+        if (usedOutputs & (1 << reg.rsxIndex) && !reg.predefined) {
+            header += format("out vec4 %s;", reg.glReg);
+        }
+    }
+
+    header += "vec4 o[16];";           // Output registers
+    header += "vec4 r[48];";           // Data registers
+    header += "uniform vec4 c[468];";  // Constant registers
+    return header;
+}
+
+std::string OpenGLVertexProgram::get_src(u32 n)
+{
+    std::string src;
+    rsx_vp_instruction_source_t source;
+
+    // Get source vector
+    switch (n) {
+    case 0: source.value = (instr.src0_hi << 9) | instr.src0_lo; break;
+    case 1: source.value = instr.src1; break;
+    case 2: source.value = (instr.src2_hi << 11) | instr.src2_lo; break;
+    }
+
+    switch (source.type) {
+    case 1: // Data register
+        src = format("r[%d]", source.index) + get_swizzling(source.swizzling);
+        break;
+
+    case 2: // Input register
+        usedInputs |= (1 << instr.src_input);
+        src = format("v%d", instr.src_input) + get_swizzling(source.swizzling);
+        break;
+
+    case 3: // Constant register
+        src = format("c[%d]", instr.src_const) + get_swizzling(source.swizzling);
+        break;
+    }
+
+    // Absolute value
+    switch (n) {
+    case 0: src = instr.abs_src0 ? "abs(" + src + ")" : src;
+    case 1: src = instr.abs_src1 ? "abs(" + src + ")" : src;
+    case 2: src = instr.abs_src2 ? "abs(" + src + ")" : src;
+    }
+
+    // Negated value
+    if (source.neg) {
+        src = "-" + src;
+    }
+
+    return src;
+}
+
+std::string OpenGLVertexProgram::get_dst()
+{
+    if (instr.dst >= 16) {
+        nucleus.log.error(LOG_GPU, "VPE: Destination register out of range");
+    }
+    usedOutputs |= (1 << instr.dst);
+    return format("o[%d]%s", instr.dst, get_mask(instr.masc_vec));
+}
 
 bool OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
 {
-    // Header
-    source =
-        "#version 330\n"
+#define DST()  get_dst().c_str()
+#define SRC(n) get_src(n).c_str()
 
-        // Vertex input registers
-        "layout (location = 0) in vec4 v0;"
-        "layout (location = 1) in vec4 v1;"
-        "layout (location = 2) in vec4 v2;"
-        "layout (location = 3) in vec4 v3;"
-        "layout (location = 4) in vec4 v4;"
-        "layout (location = 5) in vec4 v5;"
-        "layout (location = 6) in vec4 v6;"
-        "layout (location = 7) in vec4 v7;"
-        "layout (location = 8) in vec4 v8;"
-        "layout (location = 9) in vec4 v9;"
-        "layout (location = 10) in vec4 v10;"
-        "layout (location = 11) in vec4 v11;"
-        "layout (location = 12) in vec4 v12;"
-        "layout (location = 13) in vec4 v13;"
-        "layout (location = 14) in vec4 v14;"
-        "layout (location = 15) in vec4 v15;"
+    usedInputs = 0;
+    usedOutputs = 0;
 
-        // Vertex output registers
-        "vec4 v[16];"          // Input registers
-        "vec4 r[48];"          // Data registers
-        "vec4 o[16];"          // Output registers
-        "uniform vec4 c[464];" // Constant registers
+    // Shader body
+    for (u32 i = start; i < 512; i++) {
+        instr = buffer[i];
 
-        // Shader body
-        "void main() {\n";
+        // SCA Opcodes
+        switch(instr.opcode_sca) {
+        case RSX_VP_OPCODE_SCA_NOP:
+            break;
+        default:
+            nucleus.log.error(LOG_GPU, "VPE: Unknown SCA opcode (%d)", instr.opcode_sca);
+            return false;
+        }
 
-    // Write Output registers
-    for (const auto& reg : output_regs) {
-        source += format("\t%s = %s;\n", reg.glReg, reg.rsxReg);
+        // VEC Opcodes
+        switch(instr.opcode_vec) {
+        case RSX_VP_OPCODE_VEC_NOP:
+            break;
+        case RSX_VP_OPCODE_VEC_MOV:
+            source += format("%s = %s;\n", DST(), SRC(0));
+            break;
+        case RSX_VP_OPCODE_VEC_DP4:
+            source += format("%s = vec4(dot(%s, %s));\n", DST(), SRC(0), SRC(1));
+            break;
+        default:
+            nucleus.log.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
+            return false;
+        }
+
+        // Final instruction
+        if (instr.end) {
+            break;
+        }
     }
 
-    source += "}\n";
+    // Map RSX output registers to shader output vectors
+    for (const auto& reg : output_regs) {
+        if (usedOutputs & (1 << reg.rsxIndex)) {
+            source += format("%s = %s;", reg.glReg, reg.rsxReg);
+        }
+    }
 
-    // TEMPORARY
-    source = R"(
-#version 330
-layout (location = 0) in vec4 v0;
-layout (location = 3) in vec4 v3;
-out vec4 diff_color;
-void main() {
-	gl_Position = v0;
-	diff_color = v3;
-}
-    )";
-
+    // Merge header and body
+    source = get_header() + "void main() { " + source + "}";
     return true;
+
+#undef DST
+#undef SRC
 }
 
 bool OpenGLVertexProgram::compile()

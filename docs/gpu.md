@@ -17,6 +17,46 @@ TODO
 
 ## Vertex Shaders
 
+Vertex shaders are run in the *Vertex Processing Engine* (**VPE**). It reads 128-bit instructions from a 512 instruction buffer. Two PGRAPH registers point respectively to the offset where new instructions are written (*LOAD*) and the offset where the execution of the shader starts (*START*).
+
+### Registers:
+
+The vertex shaders can access following resources:
+
+#### Input registers:
+| Register | Description    |
+|----------|----------------|
+| v[0]     | Position       |
+| v[1]     | Skin weights   |
+| v[2]     | Normal         |
+| v[3]     | Diffuse color  |
+| v[4]     | Diffuse color  |
+| v[5]     | Fog            |
+| v[6]     | Point size     |
+| v[7]     | (*???*)        |
+| v[8]     | Texture 0      |
+| v[9]     | Texture 1      |
+| v[10]    | Texture 2      |
+| v[11]    | Texture 3      |
+| v[12]    | Texture 4      |
+| v[13]    | Texture 5      |
+| v[14]    | Texture 6      |
+| v[15]    | Texture 7      |
+
+#### Output registers:
+
+TODO
+
+#### Constant registers:
+
+TODO
+
+#### Data registers:
+
+TODO
+
+### Opcodes
+
 TODO
 
 ## Fragment Shaders

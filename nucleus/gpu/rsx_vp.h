@@ -65,10 +65,10 @@ struct rsx_vp_constant_t {
     union {
         u32 word[4];
         struct {
-            be_t<f32> x; 
-            be_t<f32> y;
-            be_t<f32> z;
-            be_t<f32> w;
+            f32 x; 
+            f32 y;
+            f32 z;
+            f32 w;
         };
     };
 };
@@ -76,5 +76,49 @@ struct rsx_vp_constant_t {
 // RSX Vertex Program instruction
 union rsx_vp_instruction_t
 {
+#define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
+
     u32 word[4];
+
+    struct {
+        union {
+            FIELD( 8,  8, u32 abs_src0);
+            FIELD( 9,  9, u32 abs_src1);
+            FIELD(10, 10, u32 abs_src2);
+            FIELD(22, 29, u32 swizzling);
+        };
+        union {
+            FIELD( 0,  4, u32 opcode_sca);
+            FIELD( 5,  9, u32 opcode_vec);
+            FIELD(10, 19, u32 src_const);
+            FIELD(20, 23, u32 src_input);
+            FIELD(24, 31, u32 src0_hi);
+        };
+        union {
+            FIELD( 0,  8, u32 src0_lo);
+            FIELD( 9, 25, u32 src1);
+            FIELD(26, 31, u32 src2_hi);
+        };
+        union {
+            FIELD( 0, 10, u32 src2_lo);
+            FIELD(11, 14, u32 mask_sca);
+            FIELD(15, 18, u32 masc_vec);
+            FIELD(25, 29, u32 dst);
+            FIELD(31, 31, u32 end);
+        };
+    };
+
+#undef FIELD
+};
+
+union rsx_vp_instruction_source_t
+{
+    u32 value;
+
+    struct {
+        u32 type      : 2;
+        u32 index     : 6;
+        u32 swizzling : 8;
+        u32 neg       : 1;
+    };
 };
