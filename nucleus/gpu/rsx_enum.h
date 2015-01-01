@@ -48,14 +48,14 @@ enum {
 
     // Vertex data type
     RSX_VERTEX_S1     = 1,
-	RSX_VERTEX_F      = 2,
-	RSX_VERTEX_SF     = 3,
-	RSX_VERTEX_UB     = 4,
-	RSX_VERTEX_S32K   = 5,
-	RSX_VERTEX_CMP    = 6,
-	RSX_VERTEX_UB256  = 7,
+    RSX_VERTEX_F      = 2,
+    RSX_VERTEX_SF     = 3,
+    RSX_VERTEX_UB     = 4,
+    RSX_VERTEX_S32K   = 5,
+    RSX_VERTEX_CMP    = 6,
+    RSX_VERTEX_UB256  = 7,
 
     // Data location
     RSX_LOCATION_LOCAL  = 0,
-	RSX_LOCATION_MAIN   = 1,
+    RSX_LOCATION_MAIN   = 1,
 };

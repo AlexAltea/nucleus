@@ -6,6 +6,7 @@ import re
 # Directories
 NUCLEUS_DIR = os.path.abspath("..")
 NUCLEUS_PROJECT = os.path.join(NUCLEUS_DIR, "nucleus")
+NUCLEUS_TESTS = os.path.join(NUCLEUS_DIR, "tests", "unit")
 
 
 # Formatting rules for *.c, *.cpp and *.h files
@@ -25,23 +26,24 @@ def formatGeneric(codeInput):
 
 # Search and edit files of the Nucleus project
 def main():
-    for root, dirs, files in os.walk(NUCLEUS_PROJECT):
-        for filename in files:
-            if not filename.endswith((".c",".cc",".cpp",".h",".hpp")):
-                continue
+    for path in [NUCLEUS_PROJECT, NUCLEUS_TESTS]:
+        for root, dirs, files in os.walk(path):
+            for filename in files:
+                if not filename.endswith((".c",".cc",".cpp",".h",".hpp")):
+                    continue
 
-            # Read and format the code
-            f = open(os.path.join(root, filename), "rb")
-            codeInput = f.read()
-            codeOutput = formatGeneric(codeInput)
-            f.close()
+                # Read and format the code
+                f = open(os.path.join(root, filename), "rb")
+                codeInput = f.read()
+                codeOutput = formatGeneric(codeInput)
+                f.close()
 
-            # Update file if necessary
-            if codeInput != codeOutput:
-                w = open(os.path.join(root, filename), "wb")
-                w.write(codeOutput)
-                w.close()
-                break
+                # Update file if necessary
+                if codeInput != codeOutput:
+                    w = open(os.path.join(root, filename), "wb")
+                    w.write(codeOutput)
+                    w.close()
+                    break
 
 
 if __name__ == "__main__":
