@@ -1,5 +1,5 @@
 /**
- * (c) 2014 Nucleus project. All rights reserved.
+ * (c) 2015 Nucleus project. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -112,7 +112,7 @@ struct u128
         if (r < 0)    { return *this >> -r; }
         u64 _lo = (r < 64) ? (lo << r) : 0;
         u64 _hi = (r < 64) ? (0xFFFFFFFFFFFFFFFFULL >> (64-r)) : (0xFFFFFFFFFFFFFFFFULL << (r-64));
-        _hi = (_hi & ((hi << r) | (hi >> (64-r)))) | ((r < 64) ? (hi << r) : 0);
+        _hi = (_hi & ((lo << r) | (lo >> (64-r)))) | ((r < 64) ? (hi << r) : 0);
         return u128{_lo, _hi};
     }
 };

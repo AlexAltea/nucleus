@@ -10,11 +10,12 @@
 #include "nucleus/common.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-	
+
 TEST_CLASS(UnitTests) {
     
 public:
-    TEST_METHOD(U128Tests) {
+    TEST_METHOD(U128Tests)
+    {
         // Operator +
         Assert::IsTrue((u128{0,0} + 1) == u128{1,0});
         Assert::IsTrue((u128{0xFFFFFFFFFFFFFFFF,0} + 1) == u128{0,1});
@@ -48,5 +49,5 @@ public:
         Assert::IsTrue((u128{1,0} >> -64) == u128{0,1});
         Assert::IsTrue((u128{1,1} >>   0) == u128{1,1});
         Assert::IsTrue((u128{2,2} >>   1) == u128{1,1});
-	}
+    }
 };
