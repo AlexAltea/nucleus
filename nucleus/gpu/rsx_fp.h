@@ -1,5 +1,5 @@
 /**
- * (c) 2014 Nucleus project. All rights reserved.
+ * (c) 2015 Nucleus project. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -76,4 +76,50 @@ enum {
     RSX_FP_OPCODE_LOOP       = 0x43, // Loop
     RSX_FP_OPCODE_REP        = 0x44, // Repeat
     RSX_FP_OPCODE_RET        = 0x45, // Return
+};
+
+// RSX Fragment Program instruction
+union rsx_fp_instruction_t
+{
+#define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
+
+    // NOTE: To read the data with the fields below, reverse the byte and half-word endianness of these words
+    // In other words, do following map for each word [A,B,C,D] -> [D,C,B,A] -> [B,A,D,C], where A,B,C,D represent bytes.
+    u32 word[4];
+
+    struct {
+        union {
+            FIELD( 0,  0, u32 saturate);
+            FIELD( 2,  7, u32 opcode);
+            FIELD(15, 18, u32 input_index);  // Input attribute register index
+            FIELD(19, 22, u32 dst_mask);
+            FIELD(24, 24, u32 dst_half);     // Half precision (f16)
+            FIELD(25, 30, u32 dst_index);    // Destination register index
+            FIELD(31, 31, u32 end);          // Last instruction flag
+        }; 
+        union {
+            FIELD( 0, 31, u32 word1);
+        };
+        union {
+            FIELD(29, 31, u32 type);
+        };
+        union {
+            FIELD( 0, 31, u32 end_offset);
+        };
+    };
+
+#undef FIELD
+};
+
+union rsx_fp_instruction_source_t
+{
+    u32 value;
+
+    struct {
+        u32 type      : 2; // Register type: { 0: Data, 1: Input, 2: Constant }
+        u32 index     : 6; // Register input
+        u32 half      : 1; // Half precision (f16)
+        u32 swizzling : 8; // Swizzling mask
+        u32 neg       : 1; // Negated value
+    };
 };

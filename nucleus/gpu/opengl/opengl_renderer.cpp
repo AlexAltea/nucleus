@@ -125,7 +125,7 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
     u64 hash_fp = 0;
     if (cache_fp.find(hash_fp) == cache_fp.end()) {
         OpenGLFragmentProgram fp;
-        fp.decompile();
+        fp.decompile(nucleus.memory.ptr<rsx_fp_instruction_t>((fp_location ? nucleus.rsx.io_address : 0xC0000000) + fp_offset));
         fp.compile();
         cache_fp[hash_fp] = fp;
     }

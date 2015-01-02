@@ -43,7 +43,7 @@ public:
 
     // Fragment Program
     bool fp_dirty;                      // Flag: Needs to be recompiled
-    u32 fp_location;                    // Location (Local Memory or Main Memory)
+    u32 fp_location;                    // Location: Local Memory (0) or Main Memory (1)
     u32 fp_offset;                      // Offset at the specified location
     u32 fp_control;                     // Control the performance of the program
 

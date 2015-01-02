@@ -17,7 +17,7 @@ TODO
 
 ## Vertex Shaders
 
-Vertex shaders are run in the *Vertex Processing Engine* (**VPE**). It reads 128-bit instructions from a 512 instruction buffer. Two PGRAPH registers point respectively to the offset where new instructions are written (*LOAD*) and the offset where the execution of the shader starts (*START*).
+Vertex shaders are run in the *Vertex Processing Engine* (**VPE**). It reads 128-bit instructions from a 512 instruction buffer. Two PGRAPH registers point to the offset where new instructions are written (*LOAD*) and the offset where the execution of the shader starts (*START*) respectively.
 
 ### Registers:
 

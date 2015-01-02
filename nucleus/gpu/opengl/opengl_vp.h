@@ -14,6 +14,7 @@ class OpenGLVertexProgram
     // OpenGL shader source
     std::string source;
 
+    // Input/Output registers used in the program
     u32 usedInputs;
     u32 usedOutputs;
 
@@ -31,7 +32,7 @@ public:
     // OpenGL shader ID
     u32 id = 0;
 
-    // Return a GLSL vertex shader equivalent to the VPE instruction buffer at the given start offset
+    // Generate a GLSL vertex shader equivalent to the VPE instruction buffer at the given start offset
     bool decompile(rsx_vp_instruction_t* buffer, u32 start);
 
     // Compile the generated GLSL code for the host GPU
