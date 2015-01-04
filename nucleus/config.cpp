@@ -16,8 +16,8 @@ void Config::parseArguments(int argc, char** argv)
         if (!strcmp(argv[i], "--debugger")) {
             debugger = true;
         }
-        if (!strcmp(argv[i], "--ui")) {
-            ui = true;
+        if (!strcmp(argv[i], "--console")) {
+            console = true;
         }
     }
 }

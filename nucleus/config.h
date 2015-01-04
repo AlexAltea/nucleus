@@ -18,8 +18,8 @@ class Config
 {
 public:
     // Settings
-    bool debugger = false;
-    bool ui = false;
+    bool debugger = false;  // Start Nerve debugging server
+    bool console = false;   // Run Nucleus in console-only mode, preventing UI or GPU backends from running
     ConfigGpuBackend gpuBackend = GPU_BACKEND_OPENGL;
 
     // Modify settings with arguments or JSON files

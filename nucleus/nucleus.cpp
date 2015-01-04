@@ -14,10 +14,10 @@ int main(int argc, char **argv)
 {
     if (argc <= 1) {
         std::cout
-            << "Nucleus v0.0.1: A PlayStation 3 emulator.\n"
+            << "Nucleus v0.0.2: A PlayStation 3 emulator.\n"
             << "Usage: nucleus [arguments] path/to/executable.ppu.self\n"
             << "Arguments:\n"
-            << "  --ui          Opens the Nucleus UI window, allowing GPU backends to work.\n"
+            << "  --console     Avoids the Nucleus UI window, disabling GPU backends.\n"
             << "  --debugger    Create a Nerve backend debugging server.\n"
             << "                More information at: http://alexaltea.github.io/nerve/ \n"
             << std::endl;
@@ -28,8 +28,8 @@ int main(int argc, char **argv)
         config.parseArguments(argc, argv);
         std::string elfPath = argv[argc-1];
 
-        // Start UI
-        if (config.ui) {
+        // Start UI if console-only mode is disabled
+        if (!config.console) {
             ui.init();
         }
 
