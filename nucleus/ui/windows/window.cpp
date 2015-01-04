@@ -4,6 +4,7 @@
  */
 
 #include "window.h"
+#include "nucleus/resource.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -33,12 +34,12 @@ Window::Window(const std::string& title, int width, int height) : m_title(title)
     wc.cbClsExtra    = 0;
     wc.cbWndExtra    = 0;
     wc.hInstance     = hInstance;
-    wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hIcon         = LoadIcon(hInstance, (LPCTSTR)IDI_NUCLEUS);
     wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszMenuName  = NULL;
     wc.lpszClassName = lpszClassName;
-    wc.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hIconSm       = LoadIcon(hInstance, (LPCTSTR)IDI_NUCLEUS);
 
     if (!RegisterClassEx(&wc)) {
         MessageBox(NULL, "Window Registration Failed!", "Nucleus", MB_ICONEXCLAMATION | MB_OK);

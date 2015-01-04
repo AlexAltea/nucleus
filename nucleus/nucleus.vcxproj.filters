@@ -319,6 +319,7 @@
     <ClInclude Include="gpu\rsx_texture.h">
       <Filter>gpu</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -381,5 +382,8 @@
     <Filter Include="ui\windows">
       <UniqueIdentifier>{185aee07-6b27-484a-a8a4-d09127a36a70}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="nucleus.rc" />
   </ItemGroup>
 </Project>

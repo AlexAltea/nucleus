@@ -21,6 +21,7 @@
 *.app
 
 # Visual Studio files
+*.aps
 *.ilk
 *.lastcodeanalysissucceeded
 *.opensdf
@@ -28,6 +29,9 @@
 *.sdf
 *.suo
 *.user
+
+# Adobe Illustrator files
+*.eps
 
 # Apitrace
 *.trace

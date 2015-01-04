@@ -163,6 +163,7 @@
     <ClInclude Include="logging.h" />
     <ClInclude Include="memory\memory.h" />
     <ClInclude Include="memory\segment.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="syscalls\callback.h" />
     <ClInclude Include="syscalls\lv1\lv1_gpu.h" />
     <ClInclude Include="syscalls\lv2.h" />
@@ -190,6 +191,9 @@
     <ClInclude Include="ui\ui.h" />
     <ClInclude Include="ui\windows\window_opengl.h" />
     <ClInclude Include="ui\windows\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="nucleus.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
