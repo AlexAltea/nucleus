@@ -5,7 +5,10 @@
 
 #pragma once
 
+#include "nucleus/common.h"
 #include "nucleus/gpu/rsx_vp.h"
+#include "nucleus/gpu/rsx_fp.h"
+#include "nucleus/gpu/rsx_texture.h"
 
 #include <vector>
 
@@ -29,6 +32,9 @@ public:
     u32 alpha_ref;
     u32 vertex_data_base_offset;
     u32 vertex_data_base_index;
+
+    // Textures
+    rsx_texture_t texture[16];
 
     // Vertex Processing Engine
     struct VPE {

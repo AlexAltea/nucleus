@@ -316,6 +316,9 @@
     <ClInclude Include="gpu\opengl\opengl_program.h">
       <Filter>gpu\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="gpu\rsx_texture.h">
+      <Filter>gpu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

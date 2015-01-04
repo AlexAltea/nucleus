@@ -155,6 +155,7 @@
     <ClInclude Include="gpu\rsx_fp.h" />
     <ClInclude Include="gpu\rsx_methods.h" />
     <ClInclude Include="gpu\rsx_pgraph.h" />
+    <ClInclude Include="gpu\rsx_texture.h" />
     <ClInclude Include="gpu\rsx_vp.h" />
     <ClInclude Include="loader\keys.h" />
     <ClInclude Include="loader\loader.h" />

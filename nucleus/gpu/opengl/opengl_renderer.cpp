@@ -132,11 +132,11 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
 
     // Link, validate and use program
     GLuint id = glCreateProgram();
-	glAttachShader(id, cache_vp[hash_vp].id);
-	glAttachShader(id, cache_fp[hash_fp].id);
+    glAttachShader(id, cache_vp[hash_vp].id);
+    glAttachShader(id, cache_fp[hash_fp].id);
     glLinkProgram(id);
     GLint status;
-	glGetProgramiv(id, GL_LINK_STATUS, &status);
+    glGetProgramiv(id, GL_LINK_STATUS, &status);
     if (status != GL_TRUE) {
         nucleus.log.error(LOG_GPU, "PGRAPH_OpenGL::DrawArrays: Can't link program");
     }
