@@ -265,6 +265,60 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->vertex_data_base_index = parameter;
         break;
 
+    case_range(16, NV4097_SET_TEXTURE_OFFSET, 0x20)
+        pgraph->texture[index].offset = parameter;
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_FORMAT, 0x20)
+        pgraph->texture[index].location = (parameter & 0x3) - 1;
+        pgraph->texture[index].cubemap = (parameter >> 2) & 0x1;
+        pgraph->texture[index].border = (parameter >> 3) & 0x1;
+        pgraph->texture[index].dimension = (parameter >> 4) & 0xF;
+        pgraph->texture[index].format = (parameter >> 8) & 0xFF;
+        pgraph->texture[index].mipmap = (parameter >> 16);
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_ADDRESS, 0x20)
+        pgraph->texture[index].wrap_s = parameter & 0xF;
+        pgraph->texture[index].anisoBias = (parameter >> 4) & 0xF;
+        pgraph->texture[index].wrap_t = (parameter >> 8) & 0xF;
+        pgraph->texture[index].unsignedRemap = (parameter >> 12) & 0xF;
+        pgraph->texture[index].wrap_r = (parameter >> 16) & 0xF;
+        pgraph->texture[index].gamma = (parameter >> 20) & 0xF;
+        pgraph->texture[index].signedRemap = (parameter >> 24) & 0xF;
+        pgraph->texture[index].zfunc = (parameter >> 28) & 0xF;
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_CONTROL0, 0x20)
+        pgraph->texture[index].alphakill = (parameter >> 2) & 0x3;
+        pgraph->texture[index].max_aniso = (parameter >> 4) & 0x7;
+        pgraph->texture[index].max_lod = (parameter >> 7) & 0xFFF;
+        pgraph->texture[index].min_lod = (parameter >> 19) & 0xFFF;
+        pgraph->texture[index].enable = (parameter >> 31);
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_CONTROL1, 0x20)
+        pgraph->texture[index].remap = parameter;
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_FILTER, 0x20)
+        pgraph->texture[index].filter.value = parameter;
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_IMAGE_RECT, 0x20)
+        pgraph->texture[index].width = parameter >> 16;
+        pgraph->texture[index].height = parameter & 0xFFFF;
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_BORDER_COLOR, 0x20)
+        pgraph->texture[index].border_color = parameter;
+        break;
+
+    case_range(16, NV4097_SET_TEXTURE_CONTROL3, 4)
+        pgraph->texture[index].pitch = parameter & 0xFFFFF;
+        pgraph->texture[index].depth = parameter >> 20;
+        break;
+
     case NV4097_SET_BEGIN_END:
         if (parameter) {
             pgraph->Begin(parameter);
