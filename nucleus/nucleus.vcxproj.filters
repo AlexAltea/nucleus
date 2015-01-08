@@ -140,9 +140,6 @@
     <ClCompile Include="gpu\rsx_pgraph.cpp">
       <Filter>gpu</Filter>
     </ClCompile>
-    <ClCompile Include="gpu\opengl\opengl_program.cpp">
-      <Filter>gpu\opengl</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -312,9 +309,6 @@
     <ClInclude Include="format.h" />
     <ClInclude Include="gpu\rsx_pgraph.h">
       <Filter>gpu</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\opengl\opengl_program.h">
-      <Filter>gpu\opengl</Filter>
     </ClInclude>
     <ClInclude Include="gpu\rsx_texture.h">
       <Filter>gpu</Filter>

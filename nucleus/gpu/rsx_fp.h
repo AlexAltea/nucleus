@@ -78,6 +78,19 @@ enum {
     RSX_FP_OPCODE_RET        = 0x45, // Return
 };
 
+// RSX Fragment Program inlined vector constant
+struct rsx_fp_constant_t {
+    union {
+        u32 word[4];
+        struct {
+            f32 x;
+            f32 y;
+            f32 z;
+            f32 w;
+        };
+    };
+};
+
 // RSX Fragment Program instruction
 union rsx_fp_instruction_t
 {
@@ -91,6 +104,7 @@ union rsx_fp_instruction_t
         union {
             FIELD( 0,  0, u32 saturate);
             FIELD( 2,  7, u32 opcode);
+            FIELD(10, 13, u32 tex);
             FIELD(15, 18, u32 input_index);  // Input attribute register index
             FIELD(19, 22, u32 dst_mask);
             FIELD(24, 24, u32 dst_half);     // Half precision (f16)
@@ -119,7 +133,10 @@ union rsx_fp_instruction_source_t
         u32 type      : 2; // Register type: { 0: Data, 1: Input, 2: Constant }
         u32 index     : 6; // Register input
         u32 half      : 1; // Half precision (f16)
-        u32 swizzling : 8; // Swizzling mask
+        u32 swizzle_x : 2; // Swizzling mask on the component x
+        u32 swizzle_y : 2; // Swizzling mask on the component y
+        u32 swizzle_z : 2; // Swizzling mask on the component z
+        u32 swizzle_w : 2; // Swizzling mask on the component w
         u32 neg       : 1; // Negated value
     };
 };

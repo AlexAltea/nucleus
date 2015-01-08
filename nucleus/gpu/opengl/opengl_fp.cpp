@@ -7,7 +7,6 @@
 #include "nucleus/format.h"
 #include "nucleus/emulator.h"
 #include "nucleus/gpu/rsx_fp.h"
-#include "nucleus/gpu/opengl/opengl_program.h"
 
 // OpenGL dependencies
 #include <GL/glew.h>
@@ -28,7 +27,7 @@ const fp_input_register_t input_regs[] = {
     { "rsx_BackDiffuseColor",   "f[1]",    1, false },
     { "rsx_BackSpecularColor",  "f[2]",    2, false },
     { "rsx_FrontDiffuseColor",  "f[3]",    3, false },
-    { "rsx_FrontSpecularColor", "f[4]",    4, false },
+    { "rsx_TEX0",               "f[4]",    4, false },
     { "rsx_Fog",                "f[5]",    5, false },
     { "rsx_Texture0",           "f[6]",    6, false },
     { "rsx_Texture1",           "f[7]",    7, false },
@@ -54,6 +53,30 @@ const fp_output_register_t output_regs[] = {
     { "rsx_COL3",  4,  8 },
 };
 
+// Transform the 4-bit mask of the [x,y,z,w] values into the GLSL equivalent
+const char* get_fp_mask(u8 maskValue)
+{
+    static const char* maskString[] = {
+        "",     //  0 -> 0000 [....]
+        ".x",   //  1 -> 0001 [...x]
+        ".y",   //  2 -> 0010 [..y.]
+        ".xy",  //  3 -> 0011 [..yx]
+        ".z",   //  4 -> 0100 [.z..]
+        ".xz",  //  5 -> 0101 [.z.x]
+        ".yz",  //  6 -> 0110 [.zy.]
+        ".xyz", //  7 -> 0111 [.zyx]
+        ".w",   //  8 -> 1000 [w...]
+        ".xw",  //  9 -> 1001 [w..x]
+        ".yw",  // 10 -> 1010 [w.y.]
+        ".xyw", // 11 -> 1011 [w.yx]
+        ".zw",  // 12 -> 1100 [wz..]
+        ".xzw", // 13 -> 1101 [wz.x]
+        ".yzw", // 14 -> 1110 [wzy.]
+        ""      // 15 -> 1111 [wzyx]
+    };
+    return maskString[maskValue % 16];
+}
+
 std::string OpenGLFragmentProgram::get_header()
 {
     std::string header = "#version 330\n";
@@ -72,6 +95,13 @@ std::string OpenGLFragmentProgram::get_header()
         }
     }
 
+    // Sampler registers
+    for (int i = 0; i < 16; i++) {
+        if (usedSamplers & (1 << i)) {
+            header += format("uniform sampler2D tex%d;", i);
+        }
+    }
+
     header += "vec4 f[15];"; // Input attribute registers
     header += "vec4 r[48];"; // Temporary register: Full-width (4 x 32-bit float) register
     header += "vec4 h[48];"; // Temporary register: Half-width (4 x 16-bit float) register (TODO: Should be overlapped with the full-width registers above)
@@ -85,7 +115,7 @@ std::string OpenGLFragmentProgram::get_src(u32 n)
 
     switch (source.type) {
     case 0: // Temporary register
-        // TODO
+        src = format("%s[%d]", source.half ? "h" : "r", source.index);
         break;
 
     case 1: // Input register
@@ -94,8 +124,29 @@ std::string OpenGLFragmentProgram::get_src(u32 n)
         break;
 
     case 2: // Constant register
-        // TODO
+        src = format("vec4(%f, %f, %f, %f)",
+            get_word<f32>(instr_ptr->word[0]),
+            get_word<f32>(instr_ptr->word[1]),
+            get_word<f32>(instr_ptr->word[2]),
+            get_word<f32>(instr_ptr->word[3]));
+        instr_ptr++;
         break;
+    }
+
+    // Swizzling
+    static const char* swizzleString[] = { "x", "y", "z", "w" };
+    src += ".";
+    src += swizzleString[source.swizzle_x];
+    src += swizzleString[source.swizzle_y];
+    src += swizzleString[source.swizzle_z];
+    src += swizzleString[source.swizzle_w];
+
+    // Absolute value
+    // TODO
+
+    // Negated value
+    if (source.neg) {
+        src = "-" + src;
     }
 
     return src;
@@ -107,33 +158,51 @@ std::string OpenGLFragmentProgram::get_dst()
         nucleus.log.error(LOG_GPU, "Fragment program: Destination register out of range");
     }
     usedOutputs |= (1 << instr.dst_index);
-    return format("%s[%d]%s", instr.dst_half ? "h" : "r", instr.dst_index, get_mask(instr.dst_mask));
+    return format("%s[%d]%s", instr.dst_half ? "h" : "r", instr.dst_index, get_fp_mask(instr.dst_mask));
 }
 
-bool OpenGLFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
+std::string OpenGLFragmentProgram::get_tex()
+{
+    usedSamplers |= (1 << instr.tex);
+    return format("tex%d", instr.tex);
+}
+
+void OpenGLFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
 {
 #define DST()  get_dst().c_str()
 #define SRC(n) get_src(n).c_str()
+#define TEX()  get_tex().c_str()
 
     source = "";
     usedInputs = 0;
     usedOutputs = 0;
+    usedSamplers = 0;
+
+    // Set pointer to current instruction
+    instr_ptr = buffer;
 
     // Shader body 
-    for (u32 i = 0; true; i++) {
-        // Set current instruction, reverse byte and half-word endianness per word
-        instr = buffer[i];
-        instr.word[0] = (re32(instr.word[0]) >> 16) | (re32(instr.word[0]) << 16);
-        instr.word[1] = (re32(instr.word[1]) >> 16) | (re32(instr.word[1]) << 16);
-        instr.word[2] = (re32(instr.word[2]) >> 16) | (re32(instr.word[2]) << 16);
-        instr.word[3] = (re32(instr.word[3]) >> 16) | (re32(instr.word[3]) << 16);
+    while (true) {
+        // Set current instruction
+        instr.word[0] = get_word<u32>(instr_ptr->word[0]);
+        instr.word[1] = get_word<u32>(instr_ptr->word[1]);
+        instr.word[2] = get_word<u32>(instr_ptr->word[2]);
+        instr.word[3] = get_word<u32>(instr_ptr->word[3]);
+        instr_ptr++;
 
         switch (instr.opcode) {
         case RSX_FP_OPCODE_NOP:
             break;
         case RSX_FP_OPCODE_MOV:
-            source += format("%s = %s;", DST(), SRC(0));
+            source += format("%s = %s%s;", DST(), SRC(0), get_fp_mask(instr.dst_mask));
             break;
+        case RSX_FP_OPCODE_TEX:
+            source += format("%s = texture(%s, %s.xy)%s;", DST(), TEX(), SRC(0), get_fp_mask(instr.dst_mask));
+            break;
+        case RSX_FP_OPCODE_FENCB:
+            break;
+        default:
+            nucleus.log.error(LOG_GPU, "Fragment program: Unknown opcode (%d)", instr.opcode);
         }
 
         // Final instruction
@@ -158,10 +227,10 @@ bool OpenGLFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
 
     // Merge header and body
     source = get_header() + "void main() { " + source + "}";
-    return true;
 
 #undef DST
 #undef SRC
+#undef TEX
 }
 
 bool OpenGLFragmentProgram::compile()

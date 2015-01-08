@@ -7,7 +7,6 @@
 #include "nucleus/format.h"
 #include "nucleus/emulator.h"
 #include "nucleus/gpu/rsx_vp.h"
-#include "nucleus/gpu/opengl/opengl_program.h"
 
 // OpenGL dependencies
 #include <GL/glew.h>
@@ -37,17 +36,61 @@ const vp_output_register_t output_regs[] = {
     { "rsx_FrontDiffuseColor",  "o[3]",    3, false },
     { "rsx_FrontSpecularColor", "o[4]",    4, false },
     { "rsx_Fog",                "o[5].x",  5, false },
-    { "rsx_Texture0",           "o[7]",    7, false },
-    { "rsx_Texture1",           "o[8]",    8, false },
-    { "rsx_Texture2",           "o[9]",    9, false },
-    { "rsx_Texture3",           "o[10]",  10, false },
-    { "rsx_Texture4",           "o[11]",  11, false },
-    { "rsx_Texture5",           "o[12]",  12, false },
-    { "rsx_Texture6",           "o[13]",  13, false },
-    { "rsx_Texture7",           "o[14]",  14, false },
-    { "rsx_Texture8",           "o[15]",  15, false },
-    { "rsx_Texture9",           "o[6]",    6, false },
+    { "rsx_TEX0",               "o[7]",    7, false },
+    { "rsx_TEX1",               "o[8]",    8, false },
+    { "rsx_TEX2",               "o[9]",    9, false },
+    { "rsx_TEX3",               "o[10]",  10, false },
+    { "rsx_TEX4",               "o[11]",  11, false },
+    { "rsx_TEX5",               "o[12]",  12, false },
+    { "rsx_TEX6",               "o[13]",  13, false },
+    { "rsx_TEX7",               "o[14]",  14, false },
+    { "rsx_TEX8",               "o[15]",  15, false },
+    { "rsx_TEX9",               "o[6]",    6, false },
 };
+
+// Transform the 4-bit mask of the [x,y,z,w] values into the GLSL equivalent
+const char* get_vp_mask(u8 maskValue)
+{
+    static const char* maskString[] = {
+        "",     //  0 -> 0000 [....]
+        ".w",   //  1 -> 0001 [...w]
+        ".z",   //  2 -> 0010 [..z.]
+        ".zw",  //  3 -> 0011 [..zw]
+        ".y",   //  4 -> 0100 [.y..]
+        ".yw",  //  5 -> 0101 [.y.w]
+        ".yz",  //  6 -> 0110 [.yz.]
+        ".yzw", //  7 -> 0111 [.yzw]
+        ".x",   //  8 -> 1000 [x...]
+        ".xw",  //  9 -> 1001 [x..w]
+        ".xz",  // 10 -> 1010 [x.z.]
+        ".xzw", // 11 -> 1011 [x.zw]
+        ".xy",  // 12 -> 1100 [xy..]
+        ".xyw", // 13 -> 1101 [xy.w]
+        ".xyz", // 14 -> 1110 [xyz.]
+        ""      // 15 -> 1111 [xyzw]
+    };
+    return maskString[maskValue % 16];
+}
+
+// Transform a the 2-bit swizzle masks for [x,y,z,w] packed as a u8 into the GLSL equivalent
+std::string get_vp_swizzling(u8 swizzleValue)
+{
+    static const char* swizzleString[] = {
+        "x", "y", "z", "w"
+    };
+
+    // Check if swizzling is required (0x1B -> 0b00011011 -> [0,1,2,3] -> ".xyzw")
+    if (swizzleValue == 0x1B) {
+        return "";
+    }
+
+    std::string swizzling = ".";
+    swizzling += swizzleString[(swizzleValue >> 6) & 0x3];
+    swizzling += swizzleString[(swizzleValue >> 4) & 0x3];
+    swizzling += swizzleString[(swizzleValue >> 2) & 0x3];
+    swizzling += swizzleString[(swizzleValue >> 0) & 0x3];
+    return swizzling;
+}
 
 std::string OpenGLVertexProgram::get_header()
 {
@@ -87,18 +130,21 @@ std::string OpenGLVertexProgram::get_src(u32 n)
 
     switch (source.type) {
     case 1: // Data register
-        src = format("r[%d]", source.index) + get_swizzling(source.swizzling);
+        src = format("r[%d]", source.index);
         break;
 
     case 2: // Input register
         usedInputs |= (1 << instr.src_input);
-        src = format("v%d", instr.src_input) + get_swizzling(source.swizzling);
+        src = format("v%d", instr.src_input);
         break;
 
     case 3: // Constant register
-        src = format("c[%d]", instr.src_const) + get_swizzling(source.swizzling);
+        src = format("c[%d]", instr.src_const);
         break;
     }
+
+    // Swizzling
+    src += get_vp_swizzling(source.swizzling);
 
     // Absolute value
     switch (n) {
@@ -121,10 +167,10 @@ std::string OpenGLVertexProgram::get_dst()
         nucleus.log.error(LOG_GPU, "VPE: Destination register out of range");
     }
     usedOutputs |= (1 << instr.dst);
-    return format("o[%d]%s", instr.dst, get_mask(instr.masc_vec));
+    return format("o[%d]%s", instr.dst, get_vp_mask(instr.masc_vec));
 }
 
-bool OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
+void OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
 {
 #define DST()  get_dst().c_str()
 #define SRC(n) get_src(n).c_str()
@@ -143,7 +189,6 @@ bool OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
             break;
         default:
             nucleus.log.error(LOG_GPU, "VPE: Unknown SCA opcode (%d)", instr.opcode_sca);
-            return false;
         }
 
         // VEC Opcodes
@@ -158,7 +203,6 @@ bool OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
             break;
         default:
             nucleus.log.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
-            return false;
         }
 
         // Final instruction
@@ -176,7 +220,6 @@ bool OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
 
     // Merge header and body
     source = get_header() + "void main() { " + source + "}";
-    return true;
 
 #undef DST
 #undef SRC

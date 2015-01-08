@@ -33,7 +33,7 @@ public:
     u32 id = 0;
 
     // Generate a GLSL vertex shader equivalent to the VPE instruction buffer at the given start offset
-    bool decompile(rsx_vp_instruction_t* buffer, u32 start);
+    void decompile(rsx_vp_instruction_t* buffer, u32 start);
 
     // Compile the generated GLSL code for the host GPU
     bool compile();

@@ -100,9 +100,9 @@ enum {
 
     // Swizzle flags
     RSX_TEXTURE_SZ  = 0x00,  // Swizzle format
-	RSX_TEXTURE_LN  = 0x20,  // Linear format
+    RSX_TEXTURE_LN  = 0x20,  // Linear format
 
     // Normalization flags
-    RSX_TEXTURE_NR	= 0x00,  // Normalized coordinates
-	RSX_TEXTURE_UN	= 0x40,  // Unnormalized coordinates
+    RSX_TEXTURE_NR    = 0x00,  // Normalized coordinates
+    RSX_TEXTURE_UN    = 0x40,  // Unnormalized coordinates
 };
