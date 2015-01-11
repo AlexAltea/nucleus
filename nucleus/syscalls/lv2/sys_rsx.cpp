@@ -5,8 +5,12 @@
 
 #include "sys_rsx.h"
 #include "nucleus/syscalls/lv2.h"
+#include "nucleus/syscalls/lv2/sys_event.h"
 #include "nucleus/syscalls/lv1/lv1_gpu.h"
 #include "nucleus/emulator.h"
+
+// TEST/HACK: I'm not sure if the event port is stored in LV2 memory
+be_t<u32> eport_handlers;
 
 s32 sys_rsx_device_open()
 {
@@ -73,6 +77,16 @@ s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control,
     // HACK: On the PS3, this is: *context_id = id ^ 0x55555555
     *context_id = 0 ^ 0x55555555;
 
+    // TEST/HACK: I'm not sure if the event queue is created here
+    sys_event_queue_attr_t equeue_attr{};
+    equeue_attr.protocol = SYS_SYNC_PRIORITY;
+    equeue_attr.type = SYS_PPU_QUEUE;
+    sys_event_queue_create(&nucleus.rsx.driver_info->handler_queue, &equeue_attr, 0, 0x20);
+
+    // TEST/HACK: I'm not sure if the event port is created/connected here
+    sys_event_port_create(&eport_handlers, SYS_EVENT_PORT_LOCAL, 0); // TODO: This might not be SYS_EVENT_PORT_LOCAL.
+    sys_event_port_connect_local(eport_handlers, nucleus.rsx.driver_info->handler_queue);
+
     return CELL_OK;
 }
 
@@ -130,7 +144,14 @@ s32 sys_rsx_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2
     
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_MODE_SET:
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_SYNC:
+        break;
+
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_FLIP:
+        nucleus.rsx.driver_info->head[p1].flip |= 0x80000000;
+        if (p1 == 0)
+            sys_event_port_send(eport_handlers, 0, (1 << 3), 0);
+        if (p1 == 1)
+            sys_event_port_send(eport_handlers, 0, (1 << 4), 0);
         break;
 
     case 0x103: // ?
@@ -143,7 +164,7 @@ s32 sys_rsx_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2
         break;
 
     case 0x10A: // ? (Involved in managing flip status through cellGcmResetFlipStatus)
-        nucleus.rsx.driver_info->unk2[p1].flip &= p2;
+        nucleus.rsx.driver_info->head[p1].flip &= p2;
         break;
 
     case 0x300: // Tiles

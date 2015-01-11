@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/syscalls/lv2/sys_synchronization.h"
 
 #include <condition_variable>
 #include <mutex>
@@ -20,6 +21,9 @@ enum
     SYS_EVENT_FLAG_WAIT_CLEAR_ALL = 0x20,
 
     SYS_EVENT_PORT_LOCAL          = 0x01,
+
+    SYS_PPU_QUEUE                 = 0x01,
+    SYS_SPU_QUEUE                 = 0x02,
 };
 
 // Classes

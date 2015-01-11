@@ -33,10 +33,16 @@ struct rsx_driver_info_t {
     be_t<u32> nvcore_frequency;
     be_t<u32> memory_frequency;
     u8 unk1[0x10C0 - 6*4];
-    struct unk2 {
+    struct head_t {
         be_t<u32> flip;
         u8 unk[0x3C];
-    } unk2[2]; // TODO: Find the name and exact number of these
+    } head[2];
+    u8 unk2 [0x40 * 6];
+    be_t<u32> handlers;
+    be_t<u32> unk3;
+    be_t<u32> unk4;
+    be_t<u32> unk5;
+    be_t<u32> handler_queue;
 };
 
 // LPAR Reports

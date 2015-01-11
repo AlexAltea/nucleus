@@ -6,6 +6,7 @@
 #include "rsx.h"
 #include "nucleus/emulator.h"
 #include "nucleus/config.h"
+#include "nucleus/syscalls/lv2/sys_rsx.h"
 
 #include "nucleus/gpu/rsx_enum.h"
 #include "nucleus/gpu/rsx_methods.h"
@@ -338,9 +339,15 @@ void RSX::method(u32 offset, u32 parameter)
     }
 
     // SCE DRIVER
-    case SCE_DRIVER_FLIP:
+    case_range(2, SCE_DRIVER_FLIP, 4)
         pgraph->Flip();
-        driver_info->unk2[1].flip |= 0x80000000;
+        sys_rsx_context_attribute(0x55555555, 0x102, index, parameter, 0, 0);
+        break;
+
+    case_range(2, SCE_DRIVER_QUEUE, 4)
+    case SCE_DRIVER_INTERRUPT:
+    case SCE_DRIVER_SET_OBJECT:
+        break;
 
     default:
         ;//nucleus.log.notice(LOG_GPU, "METHOD: 0x%X; PARAM: 0x%X", offset, parameter);

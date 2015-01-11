@@ -314,6 +314,9 @@
       <Filter>gpu</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="syscalls\lv2\sys_synchronization.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

@@ -179,6 +179,7 @@
     <ClInclude Include="syscalls\lv2\sys_rsx.h" />
     <ClInclude Include="syscalls\lv2\sys_semaphore.h" />
     <ClInclude Include="syscalls\lv2\sys_ss.h" />
+    <ClInclude Include="syscalls\lv2\sys_synchronization.h" />
     <ClInclude Include="syscalls\lv2\sys_time.h" />
     <ClInclude Include="syscalls\lv2\sys_timer.h" />
     <ClInclude Include="syscalls\lv2\sys_tty.h" />
