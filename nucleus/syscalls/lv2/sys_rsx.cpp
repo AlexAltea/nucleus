@@ -5,12 +5,8 @@
 
 #include "sys_rsx.h"
 #include "nucleus/syscalls/lv2.h"
-#include "nucleus/syscalls/lv2/sys_event.h"
 #include "nucleus/syscalls/lv1/lv1_gpu.h"
 #include "nucleus/emulator.h"
-
-// TEST/HACK: I'm not sure if the event port is stored in LV2 memory
-be_t<u32> eport_handlers;
 
 s32 sys_rsx_device_open()
 {
@@ -69,23 +65,10 @@ s32 sys_rsx_memory_free(u32 mem_handle)
  */
 s32 sys_rsx_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control, be_t<u64>* lpar_driver_info, be_t<u64>* lpar_reports, u64 mem_ctx, u64 system_mode)
 {
-    // HACK: We already store data in the memory on RSX initialization, mapping is not necessary
-    *lpar_dma_control = 0x40100000;
-    *lpar_driver_info = 0x40200000;
-    *lpar_reports = 0x40300000;
-
-    // HACK: On the PS3, this is: *context_id = id ^ 0x55555555
-    *context_id = 0 ^ 0x55555555;
-
-    // TEST/HACK: I'm not sure if the event queue is created here
-    sys_event_queue_attr_t equeue_attr{};
-    equeue_attr.protocol = SYS_SYNC_PRIORITY;
-    equeue_attr.type = SYS_PPU_QUEUE;
-    sys_event_queue_create(&nucleus.rsx.driver_info->handler_queue, &equeue_attr, 0, 0x20);
-
-    // TEST/HACK: I'm not sure if the event port is created/connected here
-    sys_event_port_create(&eport_handlers, SYS_EVENT_PORT_LOCAL, 0); // TODO: This might not be SYS_EVENT_PORT_LOCAL.
-    sys_event_port_connect_local(eport_handlers, nucleus.rsx.driver_info->handler_queue);
+    u32 ret = lv1_gpu_context_allocate(context_id, lpar_dma_control, lpar_driver_info, lpar_reports, mem_ctx, system_mode);
+    if (ret != LV1_SUCCESS) {
+        return CELL_EINVAL;
+    }
 
     return CELL_OK;
 }
@@ -125,61 +108,11 @@ s32 sys_rsx_context_iounmap(u32 context_id, u32 a2, u32 io_addr, u32 size)
     return CELL_OK;
 }
 
-/**
- * LV2 SysCall 674 (0x2A2): sys_rsx_context_attribute
- *  - context_id (IN): RSX context, e.g. 0x55555555
- *  - package_id (IN): 
- *  - a3 (IN): 
- *  - a4 (IN): 
- *  - a5 (IN): 
- *  - a6 (IN): 
- */
+// LV2 Syscall 674 (0x2A2): sys_rsx_context_attribute
 s32 sys_rsx_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2, u64 p3, u64 p4)
 {
-    switch (operation_code) {
-    case L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP:
-        nucleus.rsx.dma_control->get = p1;
-        nucleus.rsx.dma_control->put = p2;
-        break;
-    
-    case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_MODE_SET:
-    case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_SYNC:
-        break;
-
-    case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_FLIP:
-        nucleus.rsx.driver_info->head[p1].flip |= 0x80000000;
-        if (p1 == 0)
-            sys_event_port_send(eport_handlers, 0, (1 << 3), 0);
-        if (p1 == 1)
-            sys_event_port_send(eport_handlers, 0, (1 << 4), 0);
-        break;
-
-    case 0x103: // ?
-        break;
-
-    case 0x104: // Display buffer
-        break;
-
-    case 0x106: // ? (Used by cellGcmInitPerfMon)
-        break;
-
-    case 0x10A: // ? (Involved in managing flip status through cellGcmResetFlipStatus)
-        nucleus.rsx.driver_info->head[p1].flip &= p2;
-        break;
-
-    case 0x300: // Tiles
-        break;
-
-    case 0x301: // Depth-buffer (Z-cull)
-        break;
-
-    case L1GPU_CONTEXT_ATTRIBUTE_FB_SETUP:
-    case L1GPU_CONTEXT_ATTRIBUTE_FB_BLIT:
-    case L1GPU_CONTEXT_ATTRIBUTE_FB_BLIT_SYNC:
-    case L1GPU_CONTEXT_ATTRIBUTE_FB_CLOSE:
-        break;
-
-    default:
+    u32 ret = lv1_gpu_context_attribute(context_id, operation_code, p1, p2, p3, p4);
+    if (ret != LV1_SUCCESS) {
         return CELL_EINVAL;
     }
 

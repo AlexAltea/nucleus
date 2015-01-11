@@ -15,7 +15,7 @@
 #include "lv2/sys_process.h"
 #include "lv2/sys_prx.h"
 
-// LV2 Error Codes
+// LV2 Return Codes
 enum
 {
     CELL_OK            = 0x00000000,

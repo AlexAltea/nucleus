@@ -163,6 +163,7 @@
     <ClInclude Include="memory\segment.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="syscalls\callback.h" />
+    <ClInclude Include="syscalls\lv1.h" />
     <ClInclude Include="syscalls\lv1\lv1_gpu.h" />
     <ClInclude Include="syscalls\lv2.h" />
     <ClInclude Include="syscalls\lv2\sys_cond.h" />

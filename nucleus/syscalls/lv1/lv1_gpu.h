@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+#include "nucleus/syscalls/lv1.h"
+
 enum {
     L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP        = 0x0001,
     L1GPU_CONTEXT_ATTRIBUTE_FIFO_PAUSE        = 0x0002,
@@ -12,7 +15,7 @@ enum {
     L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_MODE_SET  = 0x0100,
     L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_SYNC      = 0x0101,
     L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_FLIP      = 0x0102,
-    L1GPU_CONTEXT_ATTRIBUTE_UNK103            = 0x0103,
+    L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_QUEUE     = 0x0103,
     L1GPU_CONTEXT_ATTRIBUTE_UNK104            = 0x0104,
     L1GPU_CONTEXT_ATTRIBUTE_UNK105            = 0x0105,
     L1GPU_CONTEXT_ATTRIBUTE_UNK106            = 0x0106,
@@ -43,3 +46,6 @@ enum {
     L1GPU_ATTRIBUTE_UNK402 = 0x0402,
     L1GPU_ATTRIBUTE_UNK403 = 0x0403,
 };
+
+s32 lv1_gpu_context_allocate(be_t<u32>* context_id, be_t<u64>* lpar_dma_control, be_t<u64>* lpar_driver_info, be_t<u64>* lpar_reports, u64 mem_ctx, u64 system_mode);
+s32 lv1_gpu_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2, u64 p3, u64 p4);
