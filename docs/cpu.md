@@ -1,6 +1,6 @@
 # CPU Documentation
 
-The PlayStation 3 is based on *Cell Broadband Engine Architecture* (**Cell**). This processor combines 1 *PowerPC Processing Element* (PPE) and 8 *Synergistic Processing Elements* (SPEs). In user-mode only 6 SPEs are available since one is disabled and other is reserved for the system. A brief description about these elements as well as links to the official public documentation are provided in this document.
+The PlayStation 3 is based on the *Cell Broadband Engine Architecture* (**Cell**). This processor combines 1 *PowerPC Processing Element* (PPE) and 8 *Synergistic Processing Elements* (SPEs). In user-mode only 6 SPEs are available since one is disabled and other is reserved for the system. A brief description about these elements as well as links to the official public documentation are provided in this document.
 
 * [Cell Broadband Engine Architecture (Version 1.02 / October 11, 2007)](https://www-01.ibm.com/chips/techlib/techlib.nsf/techdocs/1AEEE1270EA2776387257060006E61BA/$file/CBEA_v1.02_11Oct2007_pub.pdf)
 * [Cell Broadband Engine Programming Handbook (Version 1.12 / April 3, 2009)](https://www-01.ibm.com/chips/techlib/techlib.nsf/techdocs/7A77CCDF14FE70D5852575CA0074E8ED/$file/CellBE_Handbook_v1.12_3Apr09_pub.pdf)
