@@ -7,6 +7,11 @@
 
 #include "nucleus/common.h"
 
+// Properties
+enum {
+    RSX_MAX_TEXTURES = 16,
+};
+
 // RSX Class handles
 enum {
     RSX_CONTEXT_DMA_MEMORY_FRAME_BUFFER         = 0xFEED0000, // Local memory

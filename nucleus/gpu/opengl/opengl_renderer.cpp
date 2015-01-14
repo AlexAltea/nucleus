@@ -156,6 +156,40 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
         }
     }
 
+    // Bind textures
+    for (u32 i = 0; i < RSX_MAX_TEXTURES; i++) {
+        const auto& tex = texture[i];
+        if (tex.enable) {
+            GLuint tid;
+            glActiveTexture(GL_TEXTURE0 + i);
+            glGenTextures(1, &tid);
+            glBindTexture(GL_TEXTURE_2D, tid);
+            checkRendererError("glGetUniformLocati3on");
+            GLint loc = glGetUniformLocation(id, format("tex%u", i).c_str());
+            glProgramUniform1i(id, loc, i);
+
+            // Init texture
+            void* texaddr = nucleus.memory.ptr<void>((tex.location ? nucleus.rsx.io_address : 0xC0000000) + tex.offset);
+            switch (tex.format & ~RSX_TEXTURE_LN & ~RSX_TEXTURE_UN) {
+            case RSX_TEXTURE_B8:
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width, tex.height, 0, GL_BLUE, GL_UNSIGNED_BYTE, texaddr);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_BLUE);
+		        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_BLUE);
+		        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_BLUE);
+		        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_BLUE);
+                break;
+            case RSX_TEXTURE_A8R8G8B8:
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width, tex.height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, texaddr);
+                break;
+            default:
+                nucleus.log.error(LOG_GPU, "Unsupported texture format (%d)", tex.format);
+            }
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        }
+    }
+
     glDrawArrays(GL_TRIANGLES, first, count);
     checkRendererError("DrawArrays");
 }

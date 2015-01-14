@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/gpu/rsx_enum.h"
 #include "nucleus/gpu/rsx_vp.h"
 #include "nucleus/gpu/rsx_fp.h"
 #include "nucleus/gpu/rsx_texture.h"
@@ -34,7 +35,7 @@ public:
     u32 vertex_data_base_index;
 
     // Textures
-    rsx_texture_t texture[16];
+    rsx_texture_t texture[RSX_MAX_TEXTURES];
 
     // Vertex Processing Engine
     struct VPE {
