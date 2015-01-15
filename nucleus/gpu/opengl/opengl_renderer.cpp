@@ -114,26 +114,28 @@ void PGRAPH_OpenGL::DepthFunc(u32 func)
 
 void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
 {
-    u64 hash_vp = 0;
-    if (cache_vp.find(hash_vp) == cache_vp.end()) {
+    auto vp_data = &vpe.data[vpe.start];
+    auto vp_hash = HashVertexProgram(vp_data);
+    if (cache_vp.find(vp_hash) == cache_vp.end()) {
         OpenGLVertexProgram vp;
-        vp.decompile(vpe.data, vpe.start);
+        vp.decompile(vp_data);
         vp.compile();
-        cache_vp[hash_vp] = vp;
+        cache_vp[vp_hash] = vp;
     }
 
-    u64 hash_fp = 0;
-    if (cache_fp.find(hash_fp) == cache_fp.end()) {
+    auto fp_data = nucleus.memory.ptr<rsx_fp_instruction_t>((fp_location ? nucleus.rsx.io_address : 0xC0000000) + fp_offset);
+    auto fp_hash = HashFragmentProgram(fp_data);
+    if (cache_fp.find(fp_hash) == cache_fp.end()) {
         OpenGLFragmentProgram fp;
-        fp.decompile(nucleus.memory.ptr<rsx_fp_instruction_t>((fp_location ? nucleus.rsx.io_address : 0xC0000000) + fp_offset));
+        fp.decompile(fp_data);
         fp.compile();
-        cache_fp[hash_fp] = fp;
+        cache_fp[fp_hash] = fp;
     }
 
     // Link, validate and use program
     GLuint id = glCreateProgram();
-    glAttachShader(id, cache_vp[hash_vp].id);
-    glAttachShader(id, cache_fp[hash_fp].id);
+    glAttachShader(id, cache_vp[vp_hash].id);
+    glAttachShader(id, cache_fp[fp_hash].id);
     glLinkProgram(id);
     GLint status;
     glGetProgramiv(id, GL_LINK_STATUS, &status);
@@ -164,9 +166,6 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
             glActiveTexture(GL_TEXTURE0 + i);
             glGenTextures(1, &tid);
             glBindTexture(GL_TEXTURE_2D, tid);
-            checkRendererError("glGetUniformLocati3on");
-            GLint loc = glGetUniformLocation(id, format("tex%u", i).c_str());
-            glProgramUniform1i(id, loc, i);
 
             // Init texture
             void* texaddr = nucleus.memory.ptr<void>((tex.location ? nucleus.rsx.io_address : 0xC0000000) + tex.offset);

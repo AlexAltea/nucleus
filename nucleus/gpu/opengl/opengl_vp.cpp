@@ -163,14 +163,26 @@ std::string OpenGLVertexProgram::get_src(u32 n)
 
 std::string OpenGLVertexProgram::get_dst()
 {
-    if (instr.dst >= 16) {
-        nucleus.log.error(LOG_GPU, "VPE: Destination register out of range");
+    std::string dst;
+
+    // Data register
+    if (instr.dst == 0x1F) {
+        dst = format("r[%d]", instr.dst_data);
     }
-    usedOutputs |= (1 << instr.dst);
-    return format("o[%d]%s", instr.dst, get_vp_mask(instr.masc_vec));
+
+    // Output register
+    else {
+        if (instr.dst >= 16) {
+            nucleus.log.error(LOG_GPU, "VPE: Destination register out of range");
+        }
+        usedOutputs |= (1 << instr.dst);
+        dst = format("o[%d]", instr.dst);
+    }
+
+    return dst + get_vp_mask(instr.masc_vec);
 }
 
-void OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
+void OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer)
 {
 #define DST()  get_dst().c_str()
 #define SRC(n) get_src(n).c_str()
@@ -180,8 +192,8 @@ void OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
     usedOutputs = 0;
 
     // Shader body
-    for (u32 i = start; i < 512; i++) {
-        instr = buffer[i];
+    do {
+        instr = *buffer;
 
         // SCA Opcodes
         switch(instr.opcode_sca) {
@@ -196,20 +208,27 @@ void OpenGLVertexProgram::decompile(rsx_vp_instruction_t* buffer, u32 start)
         case RSX_VP_OPCODE_VEC_NOP:
             break;
         case RSX_VP_OPCODE_VEC_MOV:
-            source += format("%s = %s;\n", DST(), SRC(0));
+            source += format("%s = %s%s;\n", DST(), SRC(0), get_vp_mask(instr.masc_vec));
+            break;
+        case RSX_VP_OPCODE_VEC_MUL:
+            source += format("%s = (%s * %s)%s;\n", DST(), SRC(0), SRC(1), get_vp_mask(instr.masc_vec));
+            break;
+        case RSX_VP_OPCODE_VEC_MAD:
+            source += format("%s = ((%s * %s) + %s)%s;\n", DST(), SRC(0), SRC(1), SRC(2), get_vp_mask(instr.masc_vec));
+            break;
+        case RSX_VP_OPCODE_VEC_FRC:
+            source += format("%s = fract(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
+            break;
+        case RSX_VP_OPCODE_VEC_FLR:
+            source += format("%s = floor(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
             break;
         case RSX_VP_OPCODE_VEC_DP4:
-            source += format("%s = vec4(dot(%s, %s));\n", DST(), SRC(0), SRC(1));
+            source += format("%s = vec4(dot(%s, %s))%s;\n", DST(), SRC(0), SRC(1), get_vp_mask(instr.masc_vec));
             break;
         default:
             nucleus.log.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
         }
-
-        // Final instruction
-        if (instr.end) {
-            break;
-        }
-    }
+    } while (!(buffer++)->end);
 
     // Map RSX output registers to shader output vectors
     for (const auto& reg : output_regs) {

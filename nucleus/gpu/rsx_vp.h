@@ -79,12 +79,14 @@ union rsx_vp_instruction_t
 #define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
 
     u32 word[4];
+    u64 dword[2];
 
     struct {
         union {
             FIELD( 8,  8, u32 abs_src0);
             FIELD( 9,  9, u32 abs_src1);
             FIELD(10, 10, u32 abs_src2);
+            FIELD(11, 16, u32 dst_data);
             FIELD(22, 29, u32 swizzling);
         };
         union {

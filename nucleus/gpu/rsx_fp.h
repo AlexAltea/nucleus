@@ -99,6 +99,7 @@ union rsx_fp_instruction_t
     // NOTE: To read the data with the fields below, reverse the byte and half-word endianness of these words
     // In other words, do following map for each word [A,B,C,D] -> [D,C,B,A] -> [B,A,D,C], where A,B,C,D represent bytes.
     u32 word[4];
+    u64 dword[2];
 
     struct {
         union {

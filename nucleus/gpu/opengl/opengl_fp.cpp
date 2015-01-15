@@ -79,7 +79,7 @@ const char* get_fp_mask(u8 maskValue)
 
 std::string OpenGLFragmentProgram::get_header()
 {
-    std::string header = "#version 330\n";
+    std::string header = "#version 420\n";
 
     // Input registers
     for (const auto& reg : input_regs) {
@@ -98,7 +98,7 @@ std::string OpenGLFragmentProgram::get_header()
     // Sampler registers
     for (int i = 0; i < 16; i++) {
         if (usedSamplers & (1 << i)) {
-            header += format("uniform sampler2D tex%d;", i);
+            header += format("layout (binding = %d) uniform sampler2D tex%d;", i, i);
         }
     }
 
@@ -195,6 +195,9 @@ void OpenGLFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
             break;
         case RSX_FP_OPCODE_MOV:
             source += format("%s = %s%s;", DST(), SRC(0), get_fp_mask(instr.dst_mask));
+            break;
+        case RSX_FP_OPCODE_MUL:
+            source += format("%s = (%s * %s)%s;\n", DST(), SRC(0), SRC(1), get_fp_mask(instr.dst_mask));
             break;
         case RSX_FP_OPCODE_TEX:
             source += format("%s = texture(%s, %s.xy)%s;", DST(), TEX(), SRC(0), get_fp_mask(instr.dst_mask));

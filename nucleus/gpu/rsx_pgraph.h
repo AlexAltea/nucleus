@@ -54,6 +54,11 @@ public:
     u32 fp_offset;                      // Offset at the specified location
     u32 fp_control;                     // Control the performance of the program
 
+    // Hashing methods
+    u64 HashTexture();
+    u64 HashVertexProgram(rsx_vp_instruction_t* program);
+    u64 HashFragmentProgram(rsx_fp_instruction_t* program);
+
     // Auxiliary methods
     void LoadVertexAttributes(u32 first, u32 count);
 
