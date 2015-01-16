@@ -11,9 +11,13 @@
 ModuleManager::ModuleManager()
 {
     m_modules.emplace_back(Module("cellSysutil", {
-       {0x0BAE8772, wrap(cellVideoOutConfigure)},
-       {0xE558748D, wrap(cellVideoOutGetResolution)},
-       {0x887572D5, wrap(cellVideoOutGetState)}
+        {0x0BAE8772, wrap(cellVideoOutConfigure)},
+        {0x1E930EEF, wrap(cellVideoOutGetDeviceInfo)},
+        {0xE558748D, wrap(cellVideoOutGetResolution)},
+        {0x887572D5, wrap(cellVideoOutGetState)}
+    }));
+    m_modules.emplace_back(Module("cellSysutilAvconfExt", {
+        {0x655A0364, wrap(cellVideoOutGetGamma)},
     }));
 }
 

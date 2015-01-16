@@ -93,3 +93,5 @@ s32 sys_fs_mkdir(const s8* path, u32 mode);
 s32 sys_fs_rename(const s8* from, const s8* to);
 s32 sys_fs_rmdir(const s8* path);
 s32 sys_fs_unlink(const s8* path);
+s32 sys_fs_fcntl();
+s32 sys_fs_lseek(s32 fd, s64 offset, s32 whence, u64 *pos);

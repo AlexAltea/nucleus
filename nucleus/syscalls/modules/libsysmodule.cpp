@@ -11,28 +11,22 @@ s32 cellVideoOutConfigure(u32 videoOut, CellVideoOutConfiguration* config, CellV
     if (videoOut != CELL_VIDEO_OUT_PRIMARY) {
         return CELL_VIDEO_OUT_ERROR_UNSUPPORTED_VIDEO_OUT;
     }
-
+    // TODO: ?
     return CELL_VIDEO_OUT_SUCCEEDED;
 }
 
-s32 cellVideoOutGetState(u32 videoOut, u32 deviceIndex, CellVideoOutState* state)
+s32 cellVideoOutGetDeviceInfo()
 {
-    if (deviceIndex > 0) {
-        return CELL_VIDEO_OUT_ERROR_DEVICE_NOT_FOUND;
-    }
-    if (videoOut != CELL_VIDEO_OUT_PRIMARY) {
-        return CELL_VIDEO_OUT_ERROR_UNSUPPORTED_VIDEO_OUT;
-    }
+    nucleus.log.warning(LOG_HLE, "libsysutil: cellVideoOutGetDeviceInfo called");
+    // TODO: ?
+    return CELL_OK;
+}
 
-    state->state = CELL_VIDEO_OUT_OUTPUT_STATE_ENABLED;
-    state->colorSpace = CELL_VIDEO_OUT_COLOR_SPACE_RGB;
-    state->displayMode.resolutionId = CELL_VIDEO_OUT_RESOLUTION_480;
-    state->displayMode.scanMode = CELL_VIDEO_OUT_SCAN_MODE_INTERLACE;
-    state->displayMode.conversion = CELL_VIDEO_OUT_DISPLAY_CONVERSION_NONE;
-    state->displayMode.aspect = CELL_VIDEO_OUT_ASPECT_4_3;
-    state->displayMode.refreshRates = CELL_VIDEO_OUT_REFRESH_RATE_50HZ;
-
-    return CELL_VIDEO_OUT_SUCCEEDED;
+s32 cellVideoOutGetGamma()
+{
+    nucleus.log.warning(LOG_HLE, "libsysutil: cellVideoOutGetGamma called");
+    // TODO: ?
+    return CELL_OK;
 }
 
 s32 cellVideoOutGetResolution(u32 resolutionId, CellVideoOutResolution* resolution)
@@ -81,6 +75,26 @@ s32 cellVideoOutGetResolution(u32 resolutionId, CellVideoOutResolution* resoluti
     default:
         nucleus.log.warning(LOG_HLE, "cellVideoOutGetResolution: Wrong resolutionId (%d), probably unimplemented.", resolutionId);
     }
+
+    return CELL_VIDEO_OUT_SUCCEEDED;
+}
+
+s32 cellVideoOutGetState(u32 videoOut, u32 deviceIndex, CellVideoOutState* state)
+{
+    if (deviceIndex > 0) {
+        return CELL_VIDEO_OUT_ERROR_DEVICE_NOT_FOUND;
+    }
+    if (videoOut != CELL_VIDEO_OUT_PRIMARY) {
+        return CELL_VIDEO_OUT_ERROR_UNSUPPORTED_VIDEO_OUT;
+    }
+
+    state->state = CELL_VIDEO_OUT_OUTPUT_STATE_ENABLED;
+    state->colorSpace = CELL_VIDEO_OUT_COLOR_SPACE_RGB;
+    state->displayMode.resolutionId = CELL_VIDEO_OUT_RESOLUTION_480;
+    state->displayMode.scanMode = CELL_VIDEO_OUT_SCAN_MODE_INTERLACE;
+    state->displayMode.conversion = CELL_VIDEO_OUT_DISPLAY_CONVERSION_NONE;
+    state->displayMode.aspect = CELL_VIDEO_OUT_ASPECT_4_3;
+    state->displayMode.refreshRates = CELL_VIDEO_OUT_REFRESH_RATE_50HZ;
 
     return CELL_VIDEO_OUT_SUCCEEDED;
 }

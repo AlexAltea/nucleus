@@ -89,3 +89,18 @@ s32 sys_fs_close(s32 fd)
     fs->closeFile(file->file);
     return CELL_OK;
 }
+
+s32 sys_fs_fcntl()
+{
+    nucleus.log.warning(LOG_HLE, "LV2 Syscall (0x331) called: sys_fs_fcntl");
+    return CELL_OK;
+}
+
+s32 sys_fs_lseek(s32 fd, s64 offset, s32 whence, u64 *pos)
+{
+    auto* file = nucleus.lv2.objects.get<sys_fs_t>(fd);
+    FileSystem* fs = file->fs;
+
+    *pos = fs->seekFile(file->file, offset, SeekSet);
+    return CELL_OK;
+}
