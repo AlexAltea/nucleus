@@ -7,6 +7,7 @@
 #include "nucleus/emulator.h"
 
 #include "modules/libsysmodule.h"
+#include "modules/libsysutil_avconf_ext.h"
 
 ModuleManager::ModuleManager()
 {

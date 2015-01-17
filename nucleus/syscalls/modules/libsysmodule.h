@@ -134,6 +134,5 @@ struct CellVideoOutResolution {
 // Functions
 s32 cellVideoOutConfigure(u32 videoOut, CellVideoOutConfiguration* config, CellVideoOutOption* option, u32 waitForEvent);
 s32 cellVideoOutGetDeviceInfo();
-s32 cellVideoOutGetGamma();
 s32 cellVideoOutGetResolution(u32 resolutionId, CellVideoOutResolution* resolution);
 s32 cellVideoOutGetState(u32 videoOut, u32 deviceIndex, CellVideoOutState* state);

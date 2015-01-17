@@ -143,6 +143,18 @@
     <ClCompile Include="gpu\rsx_dma.cpp">
       <Filter>gpu</Filter>
     </ClCompile>
+    <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp">
+      <Filter>syscalls\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_hid.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_gamepad.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="syscalls\lv2\sys_config.cpp">
+      <Filter>syscalls\lv2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -325,6 +337,18 @@
     </ClInclude>
     <ClInclude Include="gpu\rsx_dma.h">
       <Filter>gpu</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\modules\libsysutil_avconf_ext.h">
+      <Filter>syscalls\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_hid.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_gamepad.h">
+      <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="syscalls\lv2\sys_config.h">
+      <Filter>syscalls\lv2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -8,9 +8,12 @@
 #include "nucleus/syscalls/callback.h"
 
 #include "lv2/sys_cond.h"
+#include "lv2/sys_config.h"
 #include "lv2/sys_dbg.h"
 #include "lv2/sys_event.h"
 #include "lv2/sys_fs.h"
+#include "lv2/sys_gamepad.h"
+#include "lv2/sys_hid.h"
 #include "lv2/sys_lwmutex.h"
 #include "lv2/sys_memory.h"
 #include "lv2/sys_mmapper.h"
@@ -68,6 +71,8 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x06E] = {wrap(sys_cond_signal_to), LV2_NONE};
         m_syscalls[0x072] = {wrap(sys_semaphore_get_value), LV2_NONE};
         m_syscalls[0x076] = {wrap(sys_event_flag_clear), LV2_NONE};
+        m_syscalls[0x080] = {wrap(sys_event_queue_create), LV2_NONE};
+        m_syscalls[0x081] = {wrap(sys_event_queue_destroy), LV2_NONE};
         m_syscalls[0x082] = {wrap(sys_event_queue_receive), LV2_NONE};
         m_syscalls[0x084] = {wrap(sys_event_flag_cancel), LV2_NONE};
         m_syscalls[0x08B] = {wrap(sys_event_flag_get), LV2_NONE};
@@ -92,6 +97,11 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x1E4] = {wrap(sys_prx_register_module), LV2_NONE};
         m_syscalls[0x1E6] = {wrap(sys_prx_register_library), LV2_NONE};
         m_syscalls[0x1EE] = {wrap(sys_prx_get_module_list), LV2_NONE};
+        m_syscalls[0x200] = {wrap(sys_hid_0x200), LV2_NONE};
+        m_syscalls[0x204] = {wrap(sys_config_open), LV2_NONE};
+        m_syscalls[0x205] = {wrap(sys_config_close), LV2_NONE};
+        m_syscalls[0x207] = {wrap(sys_config_add_service_listener), LV2_NONE};
+        m_syscalls[0x26D] = {wrap(sys_gamepad_ycon_if), LV2_NONE};
         m_syscalls[0x29C] = {wrap(sys_rsx_memory_allocate), LV2_NONE};
         m_syscalls[0x29E] = {wrap(sys_rsx_context_allocate), LV2_NONE};
         m_syscalls[0x2A0] = {wrap(sys_rsx_context_iomap), LV2_NONE};
@@ -108,7 +118,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x3DC] = {wrap(sys_dbg_ppu_exception_handler), LV2_NONE};
     }
     if (fw_type & (LV2_DEX | LV2_DECR)) {
-        m_syscalls[0x1CE] = {wrap(sys_prx_1CE), LV2_NONE};
+        m_syscalls[0x1CE] = {wrap(sys_prx_0x1CE), LV2_NONE};
     }
     if (fw_type & LV2_DECR) {
         // TODO: No syscalls for now

@@ -99,7 +99,7 @@ s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
     return CELL_OK;
 }
 
-s32 sys_prx_1CE()
+s32 sys_prx_0x1CE()
 {
     return CELL_OK;
 }

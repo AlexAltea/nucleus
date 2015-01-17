@@ -22,13 +22,6 @@ s32 cellVideoOutGetDeviceInfo()
     return CELL_OK;
 }
 
-s32 cellVideoOutGetGamma()
-{
-    nucleus.log.warning(LOG_HLE, "libsysutil: cellVideoOutGetGamma called");
-    // TODO: ?
-    return CELL_OK;
-}
-
 s32 cellVideoOutGetResolution(u32 resolutionId, CellVideoOutResolution* resolution)
 {
     switch (resolutionId) {

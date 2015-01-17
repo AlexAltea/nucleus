@@ -105,9 +105,12 @@
     <ClCompile Include="syscalls\lv1\lv1_gpu.cpp" />
     <ClCompile Include="syscalls\lv2.cpp" />
     <ClCompile Include="syscalls\lv2\sys_cond.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_config.cpp" />
     <ClCompile Include="syscalls\lv2\sys_dbg.cpp" />
     <ClCompile Include="syscalls\lv2\sys_event.cpp" />
     <ClCompile Include="syscalls\lv2\sys_fs.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_gamepad.cpp" />
+    <ClCompile Include="syscalls\lv2\sys_hid.cpp" />
     <ClCompile Include="syscalls\lv2\sys_lwmutex.cpp" />
     <ClCompile Include="syscalls\lv2\sys_memory.cpp" />
     <ClCompile Include="syscalls\lv2\sys_mmapper.cpp" />
@@ -123,6 +126,7 @@
     <ClCompile Include="syscalls\lv2\sys_tty.cpp" />
     <ClCompile Include="syscalls\module.cpp" />
     <ClCompile Include="syscalls\modules\libsysmodule.cpp" />
+    <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp" />
     <ClCompile Include="ui\ui.cpp" />
     <ClCompile Include="ui\windows\window_opengl.cpp" />
     <ClCompile Include="ui\windows\window.cpp" />
@@ -169,9 +173,12 @@
     <ClInclude Include="syscalls\lv1\lv1_gpu.h" />
     <ClInclude Include="syscalls\lv2.h" />
     <ClInclude Include="syscalls\lv2\sys_cond.h" />
+    <ClInclude Include="syscalls\lv2\sys_config.h" />
     <ClInclude Include="syscalls\lv2\sys_dbg.h" />
     <ClInclude Include="syscalls\lv2\sys_event.h" />
     <ClInclude Include="syscalls\lv2\sys_fs.h" />
+    <ClInclude Include="syscalls\lv2\sys_gamepad.h" />
+    <ClInclude Include="syscalls\lv2\sys_hid.h" />
     <ClInclude Include="syscalls\lv2\sys_lwmutex.h" />
     <ClInclude Include="syscalls\lv2\sys_memory.h" />
     <ClInclude Include="syscalls\lv2\sys_mmapper.h" />
@@ -188,6 +195,7 @@
     <ClInclude Include="syscalls\lv2\sys_tty.h" />
     <ClInclude Include="syscalls\module.h" />
     <ClInclude Include="syscalls\modules\libsysmodule.h" />
+    <ClInclude Include="syscalls\modules\libsysutil_avconf_ext.h" />
     <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
     <ClInclude Include="ui\ui.h" />

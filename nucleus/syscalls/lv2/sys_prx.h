@@ -158,7 +158,7 @@ struct sys_prx_t
 };
 
 // SysCalls
-s32 sys_prx_1CE();
+s32 sys_prx_0x1CE();
 s32 sys_prx_load_module(const s8* path, u64 flags, sys_prx_load_module_option_t* pOpt);
 s32 sys_prx_load_module_by_fd();
 s32 sys_prx_load_module_list(s32 count, be_t<u64>* pathList, u64 flags, void* pOpt, be_t<u32>* idList);
