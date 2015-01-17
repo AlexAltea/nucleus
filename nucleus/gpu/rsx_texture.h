@@ -103,6 +103,18 @@ enum {
     RSX_TEXTURE_LN  = 0x20,  // Linear format
 
     // Normalization flags
-    RSX_TEXTURE_NR    = 0x00,  // Normalized coordinates
-    RSX_TEXTURE_UN    = 0x40,  // Unnormalized coordinates
+    RSX_TEXTURE_NR  = 0x00,  // Normalized coordinates
+    RSX_TEXTURE_UN  = 0x40,  // Unnormalized coordinates
+};
+
+// Texture wrap
+enum {
+    RSX_TEXTURE_WRAP                        = 1,
+    RSX_TEXTURE_MIRROR                      = 2,
+    RSX_TEXTURE_CLAMP_TO_EDGE               = 3,
+    RSX_TEXTURE_BORDER                      = 4,
+    RSX_TEXTURE_CLAMP                       = 5,
+    RSX_TEXTURE_MIRROR_ONCE_CLAMP_TO_EDGE   = 6,
+    RSX_TEXTURE_MIRROR_ONCE_BORDER          = 7,
+    RSX_TEXTURE_MIRROR_ONCE_CLAMP           = 8,
 };

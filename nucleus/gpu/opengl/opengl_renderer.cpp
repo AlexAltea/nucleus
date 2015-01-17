@@ -67,7 +67,7 @@ void PGRAPH_OpenGL::BindVertexAttributes()
 
 void PGRAPH_OpenGL::Begin(u32 mode)
 {
-    checkRendererError("Begin");
+    vertex_primitive = mode;
 }
 
 void PGRAPH_OpenGL::ClearColor(u8 a, u8 r, u8 g, u8 b)
@@ -112,8 +112,12 @@ void PGRAPH_OpenGL::DepthFunc(u32 func)
     checkRendererError("DepthFunc");
 }
 
-void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
+void PGRAPH_OpenGL::DrawArrays(u32 first, u32 count)
 {
+    // State
+    glBlendFuncSeparate(blend_sfactor_rgb, blend_dfactor_rgb, blend_sfactor_alpha, blend_dfactor_alpha);
+
+    // Shaders
     auto vp_data = &vpe.data[vpe.start];
     auto vp_hash = HashVertexProgram(vp_data);
     if (cache_vp.find(vp_hash) == cache_vp.end()) {
@@ -173,9 +177,9 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
             case RSX_TEXTURE_B8:
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width, tex.height, 0, GL_BLUE, GL_UNSIGNED_BYTE, texaddr);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_BLUE);
-		        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_BLUE);
-		        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_BLUE);
-		        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_BLUE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_BLUE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_BLUE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_BLUE);
                 break;
             case RSX_TEXTURE_A8R8G8B8:
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width, tex.height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, texaddr);
@@ -189,7 +193,8 @@ void PGRAPH_OpenGL::DrawArrays(u32 mode, u32 first, u32 count)
         }
     }
 
-    glDrawArrays(GL_TRIANGLES, first, count);
+    GLenum mode = vertex_primitive - 1;
+    glDrawArrays(mode, first, count);
     checkRendererError("DrawArrays");
 }
 
@@ -255,7 +260,7 @@ void PGRAPH_OpenGL::Enable(u32 prop, u32 enabled)
 
 void PGRAPH_OpenGL::End()
 {
-    checkRendererError("End");
+    vertex_primitive = 0;
 }
 
 void PGRAPH_OpenGL::Flip()

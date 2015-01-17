@@ -31,8 +31,13 @@ public:
     // Registers
     u32 alpha_func;
     u32 alpha_ref;
+    u16 blend_sfactor_rgb;
+    u16 blend_sfactor_alpha;
+    u16 blend_dfactor_rgb;
+    u16 blend_dfactor_alpha;
     u32 vertex_data_base_offset;
     u32 vertex_data_base_index;
+    u32 vertex_primitive;
 
     // Textures
     rsx_texture_t texture[RSX_MAX_TEXTURES];
@@ -72,7 +77,7 @@ public:
     virtual void ClearSurface(u32 mask)=0;
     virtual void ColorMask(bool a, bool r, bool g, bool b)=0;
     virtual void DepthFunc(u32 func)=0;
-    virtual void DrawArrays(u32 mode, u32 first, u32 count)=0;
+    virtual void DrawArrays(u32 first, u32 count)=0;
     virtual void Enable(u32 prop, u32 enabled)=0;
     virtual void End()=0;
     virtual void Flip()=0;

@@ -32,7 +32,7 @@ public:
     virtual void ClearSurface(u32 mask) override;
     virtual void ColorMask(bool a, bool r, bool g, bool b) override;
     virtual void DepthFunc(u32 func) override;
-    virtual void DrawArrays(u32 mode, u32 first, u32 count) override;
+    virtual void DrawArrays(u32 first, u32 count) override;
     virtual void Enable(u32 prop, u32 enabled) override;
     virtual void End() override;
     virtual void Flip() override;

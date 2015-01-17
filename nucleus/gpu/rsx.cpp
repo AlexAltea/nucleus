@@ -169,6 +169,16 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
         break;
 
+    case NV4097_SET_BLEND_FUNC_SFACTOR:
+        pgraph->blend_sfactor_rgb = parameter & 0xFFFF;
+        pgraph->blend_sfactor_alpha = parameter >> 16;
+        break;
+
+    case NV4097_SET_BLEND_FUNC_DFACTOR:
+        pgraph->blend_dfactor_rgb = parameter & 0xFFFF;
+        pgraph->blend_dfactor_alpha = parameter >> 16;
+        break;
+
     case NV4097_SET_COLOR_MASK:
         pgraph->ColorMask(
             (parameter & 0x1000000),
@@ -333,7 +343,7 @@ void RSX::method(u32 offset, u32 parameter)
         const u32 count = (parameter >> 24) + 1;
         pgraph->LoadVertexAttributes(first, count);
         pgraph->BindVertexAttributes();
-        pgraph->DrawArrays(0, first, count);
+        pgraph->DrawArrays(first, count);
         pgraph->UnbindVertexAttributes();
         break;
     }
