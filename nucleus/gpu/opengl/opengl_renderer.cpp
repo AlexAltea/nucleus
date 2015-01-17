@@ -127,7 +127,7 @@ void PGRAPH_OpenGL::DrawArrays(u32 first, u32 count)
         cache_vp[vp_hash] = vp;
     }
 
-    auto fp_data = nucleus.memory.ptr<rsx_fp_instruction_t>((fp_location ? nucleus.rsx.io_address : 0xC0000000) + fp_offset);
+    auto fp_data = nucleus.memory.ptr<rsx_fp_instruction_t>((fp_location ? nucleus.rsx.get_ea(0x0) : 0xC0000000) + fp_offset);
     auto fp_hash = HashFragmentProgram(fp_data);
     if (cache_fp.find(fp_hash) == cache_fp.end()) {
         OpenGLFragmentProgram fp;
@@ -172,7 +172,7 @@ void PGRAPH_OpenGL::DrawArrays(u32 first, u32 count)
             glBindTexture(GL_TEXTURE_2D, tid);
 
             // Init texture
-            void* texaddr = nucleus.memory.ptr<void>((tex.location ? nucleus.rsx.io_address : 0xC0000000) + tex.offset);
+            void* texaddr = nucleus.memory.ptr<void>((tex.location ? nucleus.rsx.get_ea(0x0) : 0xC0000000) + tex.offset);
             switch (tex.format & ~RSX_TEXTURE_LN & ~RSX_TEXTURE_UN) {
             case RSX_TEXTURE_B8:
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width, tex.height, 0, GL_BLUE, GL_UNSIGNED_BYTE, texaddr);

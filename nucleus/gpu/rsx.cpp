@@ -81,7 +81,7 @@ void RSX::task() {
         const u32 get = dma_control->get;
         const u32 put = dma_control->put;
 
-        const rsx_method_t cmd = { nucleus.memory.read32(io_address + get) };
+        const rsx_method_t cmd = { io_read32(get) };
 
         // Branching commands
         if (cmd.flag_jump) {
@@ -101,7 +101,7 @@ void RSX::task() {
 
         for (int i = 0; i < cmd.method_count; i++) {
             const u32 offset = (cmd.method_offset << 2) + (cmd.flag_ni ? 0 : 4*i);
-            const u32 parameter = nucleus.memory.read32(io_address + get + 4*(i+1));
+            const u32 parameter = io_read32(get + 4*(i+1));
             //nucleus.log.notice(LOG_GPU, "METHOD: 0x%X;  IO: 0x%X;  PARAM: 0x%X", offset, get, parameter);
             method(offset, parameter);
         }
@@ -160,6 +160,18 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->Enable(offset, parameter);
         break;
 
+    case NV4097_SET_SEMAPHORE_OFFSET:
+        pgraph->semaphore_index = parameter >> 4;
+        break;
+
+    case NV4097_BACK_END_WRITE_SEMAPHORE_RELEASE: {
+        u32 value = (parameter & 0xFF00FF00) | ((parameter & 0xFF) << 16) | ((parameter >> 16) & 0xFF);
+        reports->semaphore[pgraph->semaphore_index].value = value;
+        reports->semaphore[pgraph->semaphore_index].padding = 0;
+        reports->semaphore[pgraph->semaphore_index].timestamp = ptimer_gettime();
+        break;
+    }
+    
     case NV4097_SET_ALPHA_FUNC:
         pgraph->alpha_func = parameter;
         pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
@@ -402,4 +414,36 @@ u64 RSX::ptimer_gettime()
     nucleus.log.error(LOG_CPU, "Could not get the PTIMER value");
     return 0;  
 #endif
+}
+
+u32 RSX::io_read32(u32 offset)
+{
+    for (const auto& map : iomaps) {
+        if (map.io <= offset && (offset + 4) <= map.io + map.size) {
+            return nucleus.memory.read32(map.ea + offset);
+        }
+    }
+    nucleus.log.error(LOG_GPU, "Illegal IO 32-bit read");
+    return 0;
+}
+
+void RSX::io_write32(u32 offset, u32 value)
+{
+    for (const auto& map : iomaps) {
+        if (map.io <= offset && (offset + 4) <= map.io + map.size) {
+            nucleus.memory.write32(map.ea + offset, value);
+        }
+    }
+    nucleus.log.error(LOG_GPU, "Illegal IO 32-bit write");
+}
+
+u32 RSX::get_ea(u32 offset)
+{
+    for (const auto& map : iomaps) {
+        if (map.io <= offset && offset < map.io + map.size) {
+            return map.ea + offset;
+        }
+    }
+    nucleus.log.warning(LOG_GPU, "Queried invalid IO address");
+    return 0;
 }

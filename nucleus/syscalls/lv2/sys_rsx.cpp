@@ -92,7 +92,13 @@ s32 sys_rsx_context_free(u32 context_id)
  */
 s32 sys_rsx_context_iomap(u32 context_id, u32 io, u32 ea, u32 size, u64 flags)
 {
-    nucleus.rsx.io_address = ea;
+    rsx_iomap_t iomap;
+    iomap.io = io;
+    iomap.ea = ea;
+    iomap.size = size;
+
+    // TODO: Implement flags
+    nucleus.rsx.iomaps.push_back(iomap);
     return CELL_OK;
 }
 

@@ -35,6 +35,7 @@ public:
     u16 blend_sfactor_alpha;
     u16 blend_dfactor_rgb;
     u16 blend_dfactor_alpha;
+    u32 semaphore_index;
     u32 vertex_data_base_offset;
     u32 vertex_data_base_index;
     u32 vertex_primitive;

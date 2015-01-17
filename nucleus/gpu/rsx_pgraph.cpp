@@ -55,7 +55,7 @@ void PGRAPH::LoadVertexAttributes(u32 first, u32 count)
         if (attr.location == RSX_LOCATION_LOCAL) {
             addr = nucleus.memory(SEG_RSX_LOCAL_MEMORY).getBaseAddr() + attr.offset;
         } else {
-            addr = nucleus.rsx.io_address + attr.offset;
+            addr = nucleus.rsx.get_ea(attr.offset);
         }
 
         const u32 typeSize = vertexTypeSize[attr.type];

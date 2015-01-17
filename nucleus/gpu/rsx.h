@@ -46,16 +46,29 @@ struct rsx_driver_info_t {
 };
 
 // LPAR Reports
+struct rsx_semaphore_t {
+    be_t<u32> value;
+    be_t<u32> padding;
+    be_t<u64> timestamp;
+};
+
 struct rsx_report_t {
-    be_t<u64> timer;
+    be_t<u64> timestamp;
     be_t<u32> value;
     be_t<u32> padding;
 };
 
 struct rsx_reports_t {
-    u8 unk_semaphore[0x1000];
+    rsx_semaphore_t semaphore[0x100];
     u8 unk_notify[0x400];
     rsx_report_t report[2048];
+};
+
+// FlexIO mapped memory
+struct rsx_iomap_t {
+    u32 io;    // IO address (destination)
+    u32 ea;    // EA space address (source)
+    u32 size;  // Size of mapped region
 };
 
 union rsx_method_t
@@ -98,15 +111,28 @@ public:
     rsx_driver_info_t* driver_info;
     rsx_reports_t* reports;
 
-    // IO Address (mapped into GPU memory through FlexIO)
-    u32 io_address;
+    // IO Memory Access (mapped into GPU memory through FlexIO)
+    std::vector<rsx_iomap_t> iomaps;
 
+    u32 io_read8(u32 offset);
+    u32 io_read16(u32 offset);
+    u32 io_read32(u32 offset);
+    u32 io_read64(u64 offset);
+
+    void io_write32(u8 offset, u8 value);
+    void io_write32(u16 offset, u16 value);
+    void io_write32(u32 offset, u32 value);
+    void io_write32(u64 offset, u64 value);
+
+    u32 get_ea(u32 io_addr);
+
+    // Get current time in nanoseconds from PTIMER
+    u64 ptimer_gettime();
+
+    // Initialization and method processing
     void init();
 
     void task();
 
     void method(u32 offset, u32 parameter);
-
-    // Get current time in nanoseconds from PTIMER
-    u64 ptimer_gettime();
 };
