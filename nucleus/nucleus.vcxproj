@@ -94,6 +94,7 @@
     <ClCompile Include="gpu\opengl\opengl_renderer.cpp" />
     <ClCompile Include="gpu\opengl\opengl_vp.cpp" />
     <ClCompile Include="gpu\rsx.cpp" />
+    <ClCompile Include="gpu\rsx_dma.cpp" />
     <ClCompile Include="gpu\rsx_pgraph.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="gpu\opengl\opengl_renderer.h" />
     <ClInclude Include="gpu\opengl\opengl_vp.h" />
     <ClInclude Include="gpu\rsx.h" />
+    <ClInclude Include="gpu\rsx_dma.h" />
     <ClInclude Include="gpu\rsx_enum.h" />
     <ClInclude Include="gpu\rsx_fp.h" />
     <ClInclude Include="gpu\rsx_methods.h" />

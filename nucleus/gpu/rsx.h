@@ -76,18 +76,6 @@ union rsx_method_t
 #undef FIELD
 };
 
-struct DMAObject {
-    // Flags
-    enum {
-        READ      = 1 << 0,
-        WRITE     = 1 << 1,
-        READWRITE = READ | WRITE,
-    };
-    u32 addr;
-    u32 size;
-    u32 flags;
-};
-
 class RSX
 {
     // Rendering engine (Null, Software, OpenGL, DirectX)
@@ -119,8 +107,6 @@ public:
 
     void method(u32 offset, u32 parameter);
 
-    // DMA Read-Write
-    DMAObject dma_address(u32 dma_object);
-    u32 dma_read32(u32 dma_object, u32 offset);
-    void dma_write32(u32 dma_object, u32 offset, u32 value);
+    // Get current time in nanoseconds from PTIMER
+    u64 ptimer_gettime();
 };

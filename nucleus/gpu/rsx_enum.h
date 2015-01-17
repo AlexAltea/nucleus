@@ -18,22 +18,6 @@ enum {
     RSX_CONTEXT_DMA_MEMORY_HOST_BUFFER          = 0xFEED0001, // Main memory
     RSX_CONTEXT_SURFACE2D                       = 0x313371C3,
     RSX_CONTEXT_SWIZZLE2D                       = 0x31337A73,
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY0       = 0x66604200, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY1       = 0x66604201, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY2       = 0x66604202, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY3       = 0x66604203, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY4       = 0x66604204, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY5       = 0x66604205, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY6       = 0x66604206, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY7       = 0x66604207, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY8       = 0x66604208, // Target: lpar_reports[0x1000 : 0x????]
-    RSX_CONTEXT_DMA_NOTIFY_MAIN_0               = 0x6660420F,
-    RSX_CONTEXT_DMA_SEMAPHORE_RW                = 0x66606660, // Target: lpar_reports[0x0000 : 0x1000] (Read/Write)
-    RSX_CONTEXT_DMA_SEMAPHORE_R                 = 0x66616661, // Target: lpar_reports[0x0000 : 0x1000] (Read)
-    RSX_CONTEXT_DMA_REPORT_LOCATION_LOCAL       = 0x66626660, // Target: lpar_reports[0x1400 : 0x9400]
-    RSX_CONTEXT_DMA_REPORT_LOCATION_MAIN        = 0xBAD68000,
-    RSX_CONTEXT_DMA_DEVICE_RW                   = 0x56616660,
-    RSX_CONTEXT_DMA_DEVICE_R                    = 0x56616661,
     RSX_OBJECT_CAFEBABE                         = 0xCAFEBABE,
 };
 
@@ -63,4 +47,11 @@ enum {
     // Data location
     RSX_LOCATION_LOCAL  = 0,
     RSX_LOCATION_MAIN   = 1,
+
+    // Reports
+    RSX_REPORT_ZPASS_PIXEL_CNT  = 1,
+    RSX_REPORT_ZCULL_STATS      = 2,
+    RSX_REPORT_ZCULL_STATS1     = 3,
+    RSX_REPORT_ZCULL_STATS2     = 4,
+    RSX_REPORT_ZCULL_STATS3     = 5,
 };

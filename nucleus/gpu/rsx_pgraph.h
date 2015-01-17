@@ -39,6 +39,9 @@ public:
     u32 vertex_data_base_index;
     u32 vertex_primitive;
 
+    // DMA
+    u32 dma_report;
+
     // Textures
     rsx_texture_t texture[RSX_MAX_TEXTURES];
 

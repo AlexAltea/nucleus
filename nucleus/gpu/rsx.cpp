@@ -8,6 +8,7 @@
 #include "nucleus/config.h"
 #include "nucleus/syscalls/lv1/lv1_gpu.h"
 
+#include "nucleus/gpu/rsx_dma.h"
 #include "nucleus/gpu/rsx_enum.h"
 #include "nucleus/gpu/rsx_methods.h"
 #include "nucleus/gpu/rsx_vp.h"
@@ -208,6 +209,10 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->DepthFunc(parameter);
         break;
 
+    case NV4097_SET_CONTEXT_DMA_REPORT:
+        pgraph->dma_report = parameter;
+        break;
+
     /*
     case NV4097_SET_VIEWPORT_HORIZONTAL:
     
@@ -348,6 +353,20 @@ void RSX::method(u32 offset, u32 parameter)
         break;
     }
 
+    case NV4097_GET_REPORT: {
+        const u32 type = parameter >> 24;
+        const u32 offset = parameter & 0xFFFFFF;
+
+        // TODO: Get the value for the requested report type
+        u64 timestamp = ptimer_gettime();
+        u32 value = 0;
+
+        dma_write64(pgraph->dma_report, offset + 0x0, timestamp);
+        dma_write32(pgraph->dma_report, offset + 0x8, value);
+        dma_write32(pgraph->dma_report, offset + 0xC, 0);
+        break;
+    }
+
     // SCE DRIVER
     case_range(2, SCE_DRIVER_FLIP, 4)
         pgraph->Flip();
@@ -363,45 +382,24 @@ void RSX::method(u32 offset, u32 parameter)
     }
 }
 
-DMAObject RSX::dma_address(u32 dma_object)
+u64 RSX::ptimer_gettime()
 {
-    // NOTE: RAMIN is not emulated, therefore DMA Objects are hardcoded in this function
-    switch (dma_object) {
-    case RSX_CONTEXT_DMA_REPORT_LOCATION_LOCAL:
-        return DMAObject{0x40101400, 0x8000, DMAObject::READ};
-    case RSX_CONTEXT_DMA_DEVICE_RW:
-        return DMAObject{0x40000000, 0x1000, DMAObject::READWRITE};
-    case RSX_CONTEXT_DMA_DEVICE_R:
-        return DMAObject{0x40000000, 0x1000, DMAObject::READWRITE}; // TODO: Inconsistency: Gitbrew says R, test says RW
-    case RSX_CONTEXT_DMA_SEMAPHORE_RW:
-        return DMAObject{0x40100000, 0x1000, DMAObject::READWRITE};
-    case RSX_CONTEXT_DMA_SEMAPHORE_R:
-        return DMAObject{0x40100000, 0x1000, DMAObject::READWRITE}; // TODO: Inconsistency: Gitbrew says R, test says RW
-    default:
-        nucleus.log.warning(LOG_GPU, "Unknown DMA object (0x%08X)", dma_object);
-        return DMAObject{};
-    }
-}
+#ifdef NUCLEUS_WIN
+    static struct PerformanceFreqHolder {
+        u64 value;
+        PerformanceFreqHolder() {
+            LARGE_INTEGER freq;
+            QueryPerformanceFrequency(&freq);
+            value = freq.QuadPart;
+        }
+    } freq;
 
-u32 RSX::dma_read32(u32 dma_object, u32 offset)
-{
-    const DMAObject& dma = dma_address(dma_object);
-
-    if (dma.addr && dma.flags & DMAObject::READ) {
-        return nucleus.memory.read32(dma.addr + offset);
-    }
-
-    nucleus.log.warning(LOG_GPU, "Illegal DMA read");
-    return 0;
-}
-
-void RSX::dma_write32(u32 dma_object, u32 offset, u32 value)
-{
-    const DMAObject& dma = dma_address(dma_object);
-
-    if (dma.addr && dma.flags & DMAObject::WRITE) {
-        return nucleus.memory.write32(dma.addr + offset, value);
-    }
-
-    nucleus.log.warning(LOG_GPU, "Illegal DMA write");
+    LARGE_INTEGER cycle;
+    QueryPerformanceCounter(&cycle);
+    const u64 sec = cycle.QuadPart / freq.value;
+    return sec * 1000000000 + (cycle.QuadPart % freq.value) * 1000000000 / freq.value;
+#else
+    nucleus.log.error(LOG_CPU, "Could not get the PTIMER value");
+    return 0;  
+#endif
 }
