@@ -8,4 +8,6 @@
 #include "nucleus/common.h"
 
 // SysCalls
+s32 sys_hid_0x1FE();
 s32 sys_hid_0x200();
+s32 sys_hid_0x202();

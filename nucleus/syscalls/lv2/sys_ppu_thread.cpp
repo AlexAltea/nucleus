@@ -44,6 +44,16 @@ s32 sys_ppu_thread_get_priority(u64 thread_id, be_t<s32>* prio)
     return CELL_OK;
 }
 
+s32 sys_ppu_thread_get_stack_information(sys_ppu_thread_stack_t* sp)
+{
+    auto* thread = nucleus.cell.getCurrentThread();
+
+    // TODO: ?
+    sp->addr = 0;
+    sp->size = 4096;
+    return CELL_OK;
+}
+
 s32 sys_ppu_thread_join(u64 thread_id, be_t<u64>* vptr)
 {
     auto* thread = nucleus.lv2.objects.get<PPUThread>(thread_id);

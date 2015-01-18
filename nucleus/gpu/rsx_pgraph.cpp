@@ -28,13 +28,15 @@ u64 PGRAPH::HashVertexProgram(rsx_vp_instruction_t* program)
 u64 PGRAPH::HashFragmentProgram(rsx_fp_instruction_t* program)
 {
     // 64-bit Fowler/Noll/Vo FNV-1a hash code
+    bool end = false;
     u64 hash = 0xCBF29CE484222325ULL;
     do {
         hash ^= program->dword[0];
         hash += (hash << 1) + (hash << 4) + (hash << 5) + (hash << 7) + (hash << 8) + (hash << 40);
         hash ^= program->dword[1];
         hash += (hash << 1) + (hash << 4) + (hash << 5) + (hash << 7) + (hash << 8) + (hash << 40);
-    } while (!(program++)->end);
+        end = ((program++)->word[0] >> 8) & 0x1; // NOTE: We can't acces program->end directly, since words require byte swapping
+    } while (!end);
     return hash;
 }
 

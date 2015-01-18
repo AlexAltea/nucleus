@@ -41,6 +41,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x029] = {wrap(sys_ppu_thread_exit), LV2_NONE};
         m_syscalls[0x02C] = {wrap(sys_ppu_thread_join), LV2_NONE};
         m_syscalls[0x030] = {wrap(sys_ppu_thread_get_priority), LV2_NONE};
+        m_syscalls[0x031] = {wrap(sys_ppu_thread_get_stack_information), LV2_NONE};
         m_syscalls[0x034] = {wrap(sys_ppu_thread_create), LV2_NONE};
         m_syscalls[0x035] = {wrap(sys_ppu_thread_start), LV2_NONE};
         m_syscalls[0x052] = {wrap(sys_event_flag_create), LV2_NONE};
@@ -75,6 +76,9 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x081] = {wrap(sys_event_queue_destroy), LV2_NONE};
         m_syscalls[0x082] = {wrap(sys_event_queue_receive), LV2_NONE};
         m_syscalls[0x084] = {wrap(sys_event_flag_cancel), LV2_NONE};
+        m_syscalls[0x086] = {wrap(sys_event_port_create), LV2_NONE};
+        m_syscalls[0x087] = {wrap(sys_event_port_destroy), LV2_NONE};
+        m_syscalls[0x088] = {wrap(sys_event_port_connect_local), LV2_NONE};
         m_syscalls[0x08B] = {wrap(sys_event_flag_get), LV2_NONE};
         m_syscalls[0x08D] = {wrap(sys_timer_usleep), LV2_NONE};
         m_syscalls[0x08E] = {wrap(sys_timer_sleep), LV2_NONE};
@@ -97,7 +101,9 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x1E4] = {wrap(sys_prx_register_module), LV2_NONE};
         m_syscalls[0x1E6] = {wrap(sys_prx_register_library), LV2_NONE};
         m_syscalls[0x1EE] = {wrap(sys_prx_get_module_list), LV2_NONE};
+        m_syscalls[0x1FE] = {wrap(sys_hid_0x1FE), LV2_NONE};
         m_syscalls[0x200] = {wrap(sys_hid_0x200), LV2_NONE};
+        m_syscalls[0x202] = {wrap(sys_hid_0x202), LV2_NONE};
         m_syscalls[0x204] = {wrap(sys_config_open), LV2_NONE};
         m_syscalls[0x205] = {wrap(sys_config_close), LV2_NONE};
         m_syscalls[0x207] = {wrap(sys_config_add_service_listener), LV2_NONE};

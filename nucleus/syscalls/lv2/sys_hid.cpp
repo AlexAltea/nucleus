@@ -6,7 +6,19 @@
 #include "sys_hid.h"
 #include "nucleus/syscalls/lv2.h"
 
+s32 sys_hid_0x1FE()
+{
+    // TODO: ?
+    return CELL_OK;
+}
+
 s32 sys_hid_0x200()
+{
+    // TODO: ?
+    return CELL_OK;
+}
+
+s32 sys_hid_0x202()
 {
     // TODO: ?
     return CELL_OK;
