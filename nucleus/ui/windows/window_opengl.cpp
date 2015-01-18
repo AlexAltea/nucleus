@@ -29,7 +29,7 @@ void WindowOpenGL::init()
         0,                              // Shift bit ignored
         0,                              // No accumulation Buffer
         0, 0, 0, 0,                     // Accumulation bits Ignored
-        16,                             // At least a 16-bit Z-buffer (depth buffer)  
+        16,                             // At least a 16-bit Z-buffer (depth buffer)
         8,                              // 8-bit stencil buffer
         0,                              // No auxiliary buffer
         PFD_MAIN_PLANE,                 // Main drawing layer

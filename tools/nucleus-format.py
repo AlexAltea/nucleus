@@ -19,7 +19,7 @@ def formatGeneric(codeInput):
     codeInput = re.sub(r'\t', r'    ', codeInput)
 
     # Remove tabs or spaces at the end of lines
-    codeInput = re.sub(r'([ \t]+)\r', r'\1\r', codeInput)
+    codeInput = re.sub(r'([ \t]+)\r', r'\r', codeInput)
     
     return codeInput
 

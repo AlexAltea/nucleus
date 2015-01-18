@@ -84,7 +84,7 @@ u64 getTimebase()
     return sec * 79800000 + (cycle.QuadPart % freq.value) * 79800000 / freq.value;
 #else
     nucleus.log.error(LOG_CPU, "Could not get the Timebase value");
-    return 0;  
+    return 0;
 #endif
 }
 

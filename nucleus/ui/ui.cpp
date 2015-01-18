@@ -18,7 +18,7 @@ UI ui;
 
 void UI::init()
 {
-    m_window_thread = new std::thread([&](){       
+    m_window_thread = new std::thread([&](){
         task();
     });
 }
@@ -31,7 +31,7 @@ void UI::task()
         m_window = new WindowOpenGL("Nucleus", 960, 544);
         m_window->loop();
         break;
-    
+
     case GPU_BACKEND_NULL:
     case GPU_BACKEND_SOFTWARE:
     case GPU_BACKEND_DIRECT3D:

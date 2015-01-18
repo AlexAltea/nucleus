@@ -181,7 +181,7 @@ void OpenGLFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
     // Set pointer to current instruction
     instr_ptr = buffer;
 
-    // Shader body 
+    // Shader body
     while (true) {
         // Set current instruction
         instr.word[0] = get_word<u32>(instr_ptr->word[0]);

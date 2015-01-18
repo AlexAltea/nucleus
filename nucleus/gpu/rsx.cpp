@@ -164,6 +164,12 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->semaphore_index = parameter >> 4;
         break;
 
+    case NV4097_TEXTURE_READ_SEMAPHORE_RELEASE:
+        reports->semaphore[pgraph->semaphore_index].value = parameter;
+        reports->semaphore[pgraph->semaphore_index].padding = 0;
+        reports->semaphore[pgraph->semaphore_index].timestamp = ptimer_gettime();
+        break;
+
     case NV4097_BACK_END_WRITE_SEMAPHORE_RELEASE: {
         const u32 value = (parameter & 0xFF00FF00) | ((parameter & 0xFF) << 16) | ((parameter >> 16) & 0xFF);
         reports->semaphore[pgraph->semaphore_index].value = value;
@@ -171,12 +177,12 @@ void RSX::method(u32 offset, u32 parameter)
         reports->semaphore[pgraph->semaphore_index].timestamp = ptimer_gettime();
         break;
     }
-    
+
     case NV4097_SET_ALPHA_FUNC:
         pgraph->alpha_func = parameter;
         pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
         break;
-        
+
     case NV4097_SET_ALPHA_REF:
         pgraph->alpha_ref = parameter;
         pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
@@ -227,11 +233,11 @@ void RSX::method(u32 offset, u32 parameter)
 
     /*
     case NV4097_SET_VIEWPORT_HORIZONTAL:
-    
+
     case NV4097_SET_VIEWPORT_VERTICAL:
-    
+
     case NV4097_SET_CLIP_MIN:
-    
+
     case NV4097_SET_VIEWPORT_OFFSET:
     */
 
@@ -412,7 +418,7 @@ u64 RSX::ptimer_gettime()
     return sec * 1000000000 + (cycle.QuadPart % freq.value) * 1000000000 / freq.value;
 #else
     nucleus.log.error(LOG_CPU, "Could not get the PTIMER value");
-    return 0;  
+    return 0;
 #endif
 }
 
