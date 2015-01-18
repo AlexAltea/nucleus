@@ -56,7 +56,6 @@ void Emulator::pause()
 
 void Emulator::stop()
 {
-
 }
 
 void Emulator::idle()

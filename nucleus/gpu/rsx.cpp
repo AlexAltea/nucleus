@@ -165,7 +165,7 @@ void RSX::method(u32 offset, u32 parameter)
         break;
 
     case NV4097_BACK_END_WRITE_SEMAPHORE_RELEASE: {
-        u32 value = (parameter & 0xFF00FF00) | ((parameter & 0xFF) << 16) | ((parameter >> 16) & 0xFF);
+        const u32 value = (parameter & 0xFF00FF00) | ((parameter & 0xFF) << 16) | ((parameter >> 16) & 0xFF);
         reports->semaphore[pgraph->semaphore_index].value = value;
         reports->semaphore[pgraph->semaphore_index].padding = 0;
         reports->semaphore[pgraph->semaphore_index].timestamp = ptimer_gettime();
@@ -419,8 +419,8 @@ u64 RSX::ptimer_gettime()
 u32 RSX::io_read32(u32 offset)
 {
     for (const auto& map : iomaps) {
-        if (map.io <= offset && (offset + 4) <= map.io + map.size) {
-            return nucleus.memory.read32(map.ea + offset);
+        if (map.io <= offset && (offset & ~0x3) < map.io + map.size) {
+            return nucleus.memory.read32(map.ea + (offset - map.io));
         }
     }
     nucleus.log.error(LOG_GPU, "Illegal IO 32-bit read");
@@ -430,8 +430,8 @@ u32 RSX::io_read32(u32 offset)
 void RSX::io_write32(u32 offset, u32 value)
 {
     for (const auto& map : iomaps) {
-        if (map.io <= offset && (offset + 4) <= map.io + map.size) {
-            nucleus.memory.write32(map.ea + offset, value);
+        if (map.io <= offset && (offset & ~0x3) <= map.io + map.size) {
+            nucleus.memory.write32(map.ea + (offset - map.io), value);
         }
     }
     nucleus.log.error(LOG_GPU, "Illegal IO 32-bit write");
@@ -441,7 +441,7 @@ u32 RSX::get_ea(u32 offset)
 {
     for (const auto& map : iomaps) {
         if (map.io <= offset && offset < map.io + map.size) {
-            return map.ea + offset;
+            return map.ea + (offset - map.io);
         }
     }
     nucleus.log.warning(LOG_GPU, "Queried invalid IO address");

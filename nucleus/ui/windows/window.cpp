@@ -4,6 +4,7 @@
  */
 
 #include "window.h"
+#include "nucleus/emulator.h"
 #include "nucleus/resource.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -11,6 +12,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch(msg) {
     case WM_CLOSE:
         DestroyWindow(hwnd);
+        nucleus.task(NUCLEUS_EVENT_CLOSE);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
