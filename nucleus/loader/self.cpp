@@ -88,7 +88,8 @@ bool SELFLoader::load_elf()
             break;
 
         case PT_TLS:
-            //Emu.SetTLSData(offset + phdr.p_vaddr, phdr.p_filesz, phdr.p_memsz);
+            // TODO: ?
+            break;
 
         case PT_PROC_PARAM:
             if (!phdr.filesz) {

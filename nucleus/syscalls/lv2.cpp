@@ -118,6 +118,7 @@ LV2::LV2(u32 fw_type)
         m_syscalls[0x323] = {wrap(sys_fs_read), LV2_NONE};
         m_syscalls[0x323] = {wrap(sys_fs_write), LV2_NONE};
         m_syscalls[0x324] = {wrap(sys_fs_close), LV2_NONE};
+        m_syscalls[0x328] = {wrap(sys_fs_stat), LV2_NONE};
         m_syscalls[0x331] = {wrap(sys_fs_fcntl), LV2_NONE};
         m_syscalls[0x332] = {wrap(sys_fs_lseek), LV2_NONE};
         m_syscalls[0x367] = {wrap(sys_ss_access_control_engine), LV2_DBG};

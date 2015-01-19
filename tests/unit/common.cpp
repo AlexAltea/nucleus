@@ -12,7 +12,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 TEST_CLASS(UnitTests) {
-    
+
 public:
     TEST_METHOD(U128Tests)
     {

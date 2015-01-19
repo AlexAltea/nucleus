@@ -83,7 +83,7 @@ s32 cellVideoOutGetState(u32 videoOut, u32 deviceIndex, CellVideoOutState* state
 
     state->state = CELL_VIDEO_OUT_OUTPUT_STATE_ENABLED;
     state->colorSpace = CELL_VIDEO_OUT_COLOR_SPACE_RGB;
-    state->displayMode.resolutionId = CELL_VIDEO_OUT_RESOLUTION_480;
+    state->displayMode.resolutionId = CELL_VIDEO_OUT_RESOLUTION_720;
     state->displayMode.scanMode = CELL_VIDEO_OUT_SCAN_MODE_INTERLACE;
     state->displayMode.conversion = CELL_VIDEO_OUT_DISPLAY_CONVERSION_NONE;
     state->displayMode.aspect = CELL_VIDEO_OUT_ASPECT_4_3;

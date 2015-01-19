@@ -25,7 +25,7 @@ PGRAPH_OpenGL::PGRAPH_OpenGL()
     while (!ui.get()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
-    
+
     m_window = ui.get();
     m_window->init();
 }

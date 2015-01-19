@@ -81,7 +81,7 @@ s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
                     nucleus.memory.write32(hookAddr + 20, 0);                                    // OPD: Function RTOC
                     nucleus.memory.write32(importedLibrary.fstub_addr + 4*i, hookAddr + 16);
                 }
-                
+
                 // Otherwise, link to original function (LLE)
                 else {
                     nucleus.memory.write32(importedLibrary.fstub_addr + 4*i, lib.exports.at(fnid));

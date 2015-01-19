@@ -90,6 +90,15 @@ s32 sys_fs_close(s32 fd)
     return CELL_OK;
 }
 
+s32 sys_fs_stat(const s8* path, sys_fs_stat_t* sb)
+{
+    FileSystem* fs = getFilesystem(path);
+
+    // TODO: Fill the rest of the information
+    sb->st_size = fs->getFileSize(path);
+    return CELL_OK;
+}
+
 s32 sys_fs_fcntl()
 {
     nucleus.log.warning(LOG_HLE, "LV2 Syscall (0x331) called: sys_fs_fcntl");
