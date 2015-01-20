@@ -20,6 +20,7 @@ enum LoggingType
     LOG_MEMORY,
     LOG_GPU,
     LOG_HLE,
+    LOG_UI,
 };
 
 // Prints emulator events (notices, warnings and errors) using std::cerr.

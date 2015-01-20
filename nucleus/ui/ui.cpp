@@ -18,6 +18,9 @@ UI ui;
 
 void UI::init()
 {
+    // Initialize UI translation mechanisms
+    language.open(config.language);
+
     m_window_thread = new std::thread([&](){
         task();
     });

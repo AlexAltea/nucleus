@@ -127,6 +127,7 @@
     <ClCompile Include="syscalls\module.cpp" />
     <ClCompile Include="syscalls\modules\libsysmodule.cpp" />
     <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp" />
+    <ClCompile Include="ui\language.cpp" />
     <ClCompile Include="ui\ui.cpp" />
     <ClCompile Include="ui\windows\window_opengl.cpp" />
     <ClCompile Include="ui\windows\window.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="syscalls\modules\libsysutil_avconf_ext.h" />
     <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
+    <ClInclude Include="ui\language.h" />
     <ClInclude Include="ui\ui.h" />
     <ClInclude Include="ui\windows\window_opengl.h" />
     <ClInclude Include="ui\windows\window.h" />

@@ -7,12 +7,15 @@
 
 #include "nucleus/common.h"
 
+// Nucleus UI Language
+#include "nucleus/ui/language.h"
+
 // Nucleus UI Window object
 #ifdef NUCLEUS_WIN
-#include "windows/window.h"
+#include "nucleus/ui/windows/window.h"
 #endif
 #ifdef NUCLEUS_LINUX
-#include "linux/window.h"
+#include "nucleus/ui/linux/window.h"
 #endif
 
 #include <thread>
@@ -23,6 +26,8 @@ class UI
     std::thread* m_window_thread;
 
 public:
+    Language language;
+
     // Initialize the UI manager, and run task() in a separate thread
     void init();
 

@@ -155,6 +155,9 @@
     <ClCompile Include="syscalls\lv2\sys_config.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="ui\language.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -349,6 +352,9 @@
     </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_config.h">
       <Filter>syscalls\lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\language.h">
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

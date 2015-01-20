@@ -7,6 +7,13 @@
 
 #include <string>
 
+enum ConfigLanguage {
+    LANGUAGE_DEFAULT,
+    LANGUAGE_DE_DE,    // German (Germany)
+    LANGUAGE_EN_US,    // English (United States)
+    LANGUAGE_ES_ES,    // Spanish (Spain)
+};
+
 enum ConfigGpuBackend {
     GPU_BACKEND_NULL,
     GPU_BACKEND_SOFTWARE,
@@ -20,6 +27,7 @@ public:
     // Settings
     bool debugger = false;  // Start Nerve debugging server
     bool console = false;   // Run Nucleus in console-only mode, preventing UI or GPU backends from running
+    ConfigLanguage language = LANGUAGE_DEFAULT;
     ConfigGpuBackend gpuBackend = GPU_BACKEND_OPENGL;
 
     // Modify settings with arguments or JSON files

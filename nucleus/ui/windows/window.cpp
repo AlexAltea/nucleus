@@ -6,6 +6,10 @@
 #include "window.h"
 #include "nucleus/emulator.h"
 #include "nucleus/resource.h"
+#include "nucleus/ui/ui.h"
+
+// Translate UI strings
+#define _(s) ui.language.translate(s)
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -77,11 +81,11 @@ Window::Window(const std::string& title, int width, int height) : m_title(title)
     HMENU hSubMenu;
 
     hSubMenu = CreatePopupMenu();
-    AppendMenu(hSubMenu, MF_STRING, 0, "&Exit");
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&File");
+    AppendMenu(hSubMenu, MF_STRING, 0, _("&Exit"));
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, _("&File"));
     hSubMenu = CreatePopupMenu();
-    AppendMenu(hSubMenu, MF_STRING, 0, "About");
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, "&Help");
+    AppendMenu(hSubMenu, MF_STRING, 0, _("About..."));
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, _("&Help"));
     SetMenu(m_hwnd, hMenu);
 }
 

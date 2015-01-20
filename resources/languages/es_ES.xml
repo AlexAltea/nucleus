@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language>
+  <name>Español (España)</name>
+  <authors>
+    <author>Alexandro Sánchez Bach</author>
+  </authors>
+  <entries>
+    <!--Menus-->
+    <msg id="&amp;File" value="&amp;Archivo" />
+    <msg id="&amp;Help" value="A&amp;yuda" />
+    <msg id="&amp;Exit" value="&amp;Salir" />
+    <msg id="About..." value="Acerca de..." />
+  </entries>
+</language>
