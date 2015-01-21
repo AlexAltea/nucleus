@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/syscalls/lv2/sys_process.h"
 #include "nucleus/syscalls/lv2/sys_prx.h"
 
 #include <string>
@@ -52,13 +53,17 @@ enum {
 // Segment flags
 enum {
     // Common flags
-    PF_X            = (1 << 0),  // Segment is executable
-    PF_W            = (1 << 1),  // Segment is writable
-    PF_R            = (1 << 2),  // Segment is readable
+    PF_X       = 0x00000001,  // Segment is executable (by PPU)
+    PF_W       = 0x00000002,  // Segment is writable (by PPU)
+    PF_R       = 0x00000004,  // Segment is readable (by PPU)
 
     // Cell OS Lv-2 (OS) specific flags
-    PF_UNK_00200000 = (1 << 21),
-    PF_UNK_00400000 = (1 << 22),
+    PF_SPU_X   = 0x00100000,  // SPU execute
+    PF_SPU_W   = 0x00200000,  // SPU write
+    PF_SPU_R   = 0x00400000,  // SPU read
+    PF_RSX_X   = 0x01000000,  // RSX execute
+    PF_RSX_W   = 0x02000000,  // RSX write
+    PF_RSX_R   = 0x04000000,  // RSX read
 };
 
 // Relocations
@@ -249,8 +254,8 @@ class SELFLoader
 
 public:
     bool open(const std::string& path);
-    bool load_elf();
-    bool load_prx(sys_prx_t* prx);
+    bool load_elf(sys_process_t& proc);
+    bool load_prx(sys_prx_t& prx);
     bool decrypt();
     void close();
 

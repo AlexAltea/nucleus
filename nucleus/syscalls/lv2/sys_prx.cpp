@@ -19,7 +19,7 @@ s32 sys_prx_load_module(const s8* path, u64 flags, sys_prx_load_module_option_t*
 
     // Load PRX into memory
     auto* prx = new sys_prx_t();
-    if (!self.load_prx(prx)) {
+    if (!self.load_prx(*prx)) {
         delete prx;
         return CELL_PRX_ERROR_ILLEGAL_LIBRARY;
     }
@@ -55,7 +55,7 @@ s32 sys_prx_load_module_list(s32 count, be_t<u64>* pathList, u64 flags, void* pO
 s32 sys_prx_start_module(s32 id, u64 flags, sys_prx_start_module_option_t* pOpt)
 {
     auto* prx = nucleus.lv2.objects.get<sys_prx_t>(id);
-    const sys_prx_param_t& param = nucleus.lv2.prx_param;
+    const auto& param = nucleus.lv2.proc.prx_param;
 
     // Update ELF import table
     u32 offset = param.libstubstart;

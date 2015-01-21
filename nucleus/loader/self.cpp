@@ -44,7 +44,7 @@ bool SELFLoader::open(const std::string& path)
     return false;
 }
 
-bool SELFLoader::load_elf()
+bool SELFLoader::load_elf(sys_process_t& proc)
 {
     if (elf.empty()) {
         return false;
@@ -73,10 +73,10 @@ bool SELFLoader::load_elf()
 
         case PT_PROC_PARAM:
             if (!phdr.filesz) {
-                nucleus.lv2.proc_param.sdk_version = 0xFFFFFFFF;
-                nucleus.lv2.proc_param.malloc_pagesize = 0x100000;
+                proc.param.sdk_version = 0xFFFFFFFF;
+                proc.param.malloc_pagesize = 0x100000;
             } else {
-                nucleus.lv2.proc_param = (sys_process_param_t&)elf[phdr.offset];
+                proc.param = (sys_process_param_t&)elf[phdr.offset];
             }
             break;
 
@@ -84,7 +84,7 @@ bool SELFLoader::load_elf()
             if (!phdr.filesz) {
                 nucleus.log.error(LOG_LOADER, "Invalid PRX_PARAM segment");
             } else {
-                nucleus.lv2.prx_param = (sys_prx_param_t&)elf[phdr.offset];
+                proc.prx_param = (sys_process_prx_param_t&)elf[phdr.offset];
             }
             break;
         }
@@ -92,7 +92,7 @@ bool SELFLoader::load_elf()
     return true;
 }
 
-bool SELFLoader::load_prx(sys_prx_t* prx)
+bool SELFLoader::load_prx(sys_prx_t& prx)
 {
     if (elf.empty()) {
         return false;
@@ -118,13 +118,13 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
             segment.initial_addr = (u32)phdr.vaddr;
             segment.prx_offset = (u32)phdr.offset;
             segment.addr = addr;
-            prx->segments.push_back(segment);
+            prx.segments.push_back(segment);
 
             // Get FNID / addr pairs
             if (phdr.paddr != 0) {
                 const auto& module = (sys_prx_module_info_t&)elf[phdr.paddr];
-                prx->name = module.name;
-                prx->version = module.version;
+                prx.name = module.name;
+                prx.version = module.version;
 
                 // Get FNID / addr pairs
                 u32 offset = module.exports_start;
@@ -141,7 +141,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                         const u32 stub = ((be_t<u32>&)elf[phdr.offset + library.fstub_addr + 4*i]).ToLE();
                         lib.exports[fnid] = stub;
                     }
-                    prx->exported_libs.push_back(lib);
+                    prx.exported_libs.push_back(lib);
                 }
 
                 // Patch pointers to other PRXs
@@ -159,7 +159,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                         const u32 stub = phdr.offset + library.fstub_addr + 4*i;
                         lib.exports[fnid] = stub;
                     }
-                    prx->imported_libs.push_back(lib);
+                    prx.imported_libs.push_back(lib);
                 }
             }
 
@@ -167,10 +167,10 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
             // TODO: Probably hardcoding i==1 isn't a good idea.
             if (i == 1) {
                 // Update FNID / addr pairs
-                for (auto& lib : prx->exported_libs) {
+                for (auto& lib : prx.exported_libs) {
                     for (auto& stub : lib.exports) {
                         u32 value = stub.second;
-                        for (const auto& segment : prx->segments) {
+                        for (const auto& segment : prx.segments) {
                             if (segment.initial_addr <= value && value < segment.initial_addr + segment.size_file) {
                                 value = value + (segment.addr - segment.initial_addr);
                             }
@@ -179,10 +179,10 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                     }
                 }
                 // Update FNID / addr pairs
-                for (auto& lib : prx->imported_libs) {
+                for (auto& lib : prx.imported_libs) {
                     for (auto& stub : lib.exports) {
                         u32 value = stub.second;
-                        for (const auto& segment : prx->segments) {
+                        for (const auto& segment : prx.segments) {
                             if (segment.prx_offset <= value && value < segment.initial_addr + segment.size_file) {
                                 value = value + (segment.addr - segment.initial_addr - 0xf0);
                             }
@@ -198,12 +198,12 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                 const auto& rel = (sys_prx_relocation_info_t&)elf[phdr.offset + i];
 
                 // Address that needs to be patched
-                u32 addr = prx->segments[rel.index_addr].addr + rel.offset;
+                u32 addr = prx.segments[rel.index_addr].addr + rel.offset;
                 u32 value = 0;
 
                 switch (rel.type.ToLE()) {
                 case R_PPC64_ADDR32:
-                    value = (u32)prx->segments[rel.index_value].addr + rel.ptr;
+                    value = (u32)prx.segments[rel.index_value].addr + rel.ptr;
                     nucleus.memory.write32(addr, value);
                     break;
 
@@ -213,12 +213,12 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                     break;
 
                 case R_PPC64_ADDR16_HI:
-                    value = (u16)(prx->segments[rel.index_value].addr >> 16);
+                    value = (u16)(prx.segments[rel.index_value].addr >> 16);
                     nucleus.memory.write16(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_HA:
-                    value = (u16)(prx->segments[1].addr >> 16);
+                    value = (u16)(prx.segments[1].addr >> 16);
                     nucleus.memory.write16(addr, value);
                     break;
 
@@ -230,7 +230,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
         }
     }
 
-    for (const auto& importedLib : prx->imported_libs) {
+    for (const auto& importedLib : prx.imported_libs) {
 
         // TODO: Following libraries are DECR only. Ignore them (TODO: Don't do this)
         if (importedLib.name == "cellLibprof") {

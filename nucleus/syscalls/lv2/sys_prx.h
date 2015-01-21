@@ -39,22 +39,6 @@ enum
     CELL_PRX_ERROR_ELF_IS_REGISTERED           = 0x80011910,  // Fixed ELF is already registered
 };
 
-// ELF file headers
-struct sys_prx_param_t
-{
-    be_t<u32> size;
-    be_t<u32> magic;
-    be_t<u32> version;
-    be_t<u32> unk0;
-    be_t<u32> libentstart;
-    be_t<u32> libentend;
-    be_t<u32> libstubstart;
-    be_t<u32> libstubend;
-    be_t<u16> ver;
-    be_t<u16> unk1;
-    be_t<u32> unk2;
-};
-
 // PRX file headers
 struct sys_prx_module_info_t
 {

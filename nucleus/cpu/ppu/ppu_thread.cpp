@@ -26,7 +26,7 @@ PPUThread::PPUThread(u32 entry)
     gpr[4] = m_stackPointer - 0x80;
     gpr[5] = gpr[4] + 0x10;
     gpr[11] = entry;
-    gpr[12] = nucleus.lv2.proc_param.malloc_pagesize;
+    gpr[12] = nucleus.lv2.proc.param.malloc_pagesize;
     gpr[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
     cr.CR = 0x22000082;
     tbl = 1;

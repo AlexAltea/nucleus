@@ -37,7 +37,7 @@ enum
     SYS_PPU_THREAD_OBJECT           = 0x01,
 };
 
-// ELF file header
+// ELF file headers
 struct sys_process_param_t
 {
     be_t<u32> size;
@@ -49,6 +49,27 @@ struct sys_process_param_t
     be_t<u32> malloc_pagesize;
     be_t<u32> ppc_seg;
     be_t<u32> crash_dump_param_addr;
+};
+
+struct sys_process_prx_param_t
+{
+    be_t<u32> size;
+    be_t<u32> magic;
+    be_t<u32> version;
+    be_t<u32> unk0;
+    be_t<u32> libentstart;
+    be_t<u32> libentend;
+    be_t<u32> libstubstart;
+    be_t<u32> libstubend;
+    be_t<u16> ver;
+    be_t<u16> unk1;
+    be_t<u32> unk2;
+};
+
+// Auxiliary classes
+struct sys_process_t {
+    sys_process_param_t param;
+    sys_process_prx_param_t prx_param;
 };
 
 // SysCalls

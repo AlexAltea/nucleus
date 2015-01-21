@@ -33,7 +33,7 @@ bool Emulator::load(const std::string& filepath)
         return false;
     }
 
-    self.load_elf();
+    self.load_elf(lv2.proc);
     if (self.getMachine() != EM_PPC64) {
         log.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;

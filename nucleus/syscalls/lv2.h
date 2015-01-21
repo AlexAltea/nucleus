@@ -16,8 +16,7 @@
 #include "lv2/sys_prx.h"
 
 // LV2 Return Codes
-enum
-{
+enum {
     CELL_OK            = 0x00000000,
 
     CELL_EAGAIN        = 0x80010001, // The resource is temporarily unavailable
@@ -80,8 +79,7 @@ enum
     CELL_ENOTSDATA     = 0x8001003B,
 };
 
-enum
-{
+enum {
     LV2_NONE  = 0,
 
     // Flags
@@ -109,8 +107,7 @@ public:
     ModuleManager modules;
 
     // Process information
-    sys_process_param_t proc_param;
-    sys_prx_param_t prx_param;
+    sys_process_t proc;
 
     LV2(u32 fw_type);
 
