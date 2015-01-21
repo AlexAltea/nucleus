@@ -222,22 +222,22 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                 u32 value = 0;
 
                 switch (rel.type.ToLE()) {
-                case 1:  // Patch 32-bit pointers
+                case R_PPC64_ADDR32:
                     value = (u32)prx->segments[rel.index_value].addr + rel.ptr;
                     nucleus.memory.write32(addr, value);
                     break;
 
-                case 4:  // Patch lower 16-bits of pointers (by using the relocation's immediate value)
+                case R_PPC64_ADDR16_LO:
                     value = (u16)rel.ptr;
                     nucleus.memory.write16(addr, value);
                     break;
 
-                case 5:  // Patch higher 16-bits of pointers (by using the base address of the segment
+                case R_PPC64_ADDR16_HI:
                     value = (u16)(prx->segments[rel.index_value].addr >> 16);
                     nucleus.memory.write16(addr, value);
                     break;
 
-                case 6:  // Same (TODO: Is there any difference compared to flags == 5?)
+                case R_PPC64_ADDR16_HA:
                     value = (u16)(prx->segments[1].addr >> 16);
                     nucleus.memory.write16(addr, value);
                     break;

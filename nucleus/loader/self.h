@@ -11,8 +11,7 @@
 #include <string>
 
 // Segment Types
-enum
-{
+enum {
     // Common segments
     PT_LOAD     = 0x1,
     PT_DYNAMIC  = 0x2,
@@ -26,6 +25,18 @@ enum
     PT_PROC_PARAM   = 0x60000001,
     PT_PRX_PARAM    = 0x60000002,
     PT_SCE_PPURELA  = 0x700000A4,
+};
+
+// Relocations
+enum {
+    R_PPC64_NONE       = 0, // Nothing
+    R_PPC64_ADDR32     = 1, // u32:  (S + A)
+    R_PPC64_ADDR24     = 2, // u24:  (S + A) >> 2
+    R_PPC64_ADDR16     = 3, // u16:  (S + A)
+    R_PPC64_ADDR16_LO  = 4, // u16:  LO(S + A)
+    R_PPC64_ADDR16_HI  = 5, // u16:  HI(S + A)
+    R_PPC64_ADDR16_HA  = 6, // u16:  HA(S + A)
+    R_PPC64_ADDR14     = 7, // u14:  (S + A) >> 2
 };
 
 // SELF structs
