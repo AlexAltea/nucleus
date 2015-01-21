@@ -10,7 +10,7 @@
 
 #include <string>
 
-// Segment Types
+// Segment types
 enum {
     // Common segments
     PT_LOAD     = 0x1,
@@ -21,10 +21,23 @@ enum {
     PT_PHDR     = 0x6,
     PT_TLS      = 0x7,
 
-    // Cell OS Lv-2 Specific segments
+    // Cell OS Lv-2 (OS) specific segments
     PT_PROC_PARAM   = 0x60000001,
     PT_PRX_PARAM    = 0x60000002,
+
+    // Cell B.E. (CPU) specific segments
     PT_SCE_PPURELA  = 0x700000A4,
+};
+
+// Segment flags
+enum {
+    // Common flags
+    PF_X            = (1 << 0),  // Segment is executable
+    PF_W            = (1 << 1),  // Segment is writable
+    PF_R            = (1 << 2),  // Segment is readable
+
+    // Cell OS Lv-2 (OS) specific flags
+    PF_UNK_00400000 = (1 << 22),
 };
 
 // Relocations
