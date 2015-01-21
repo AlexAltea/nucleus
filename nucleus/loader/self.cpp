@@ -15,25 +15,6 @@
 #include "loader.h"
 
 #include <cstring>
-#include <vector>
-
-SELFLoader::SELFLoader()
-{
-    m_elf = nullptr;
-    m_self = nullptr;
-    m_elf_size = 0;
-    m_self_size = 0;
-}
-
-SELFLoader::SELFLoader(const std::string& path)
-{
-    open(path);
-}
-
-SELFLoader::~SELFLoader()
-{
-    close();
-}
 
 bool SELFLoader::open(const std::string& path)
 {
@@ -44,10 +25,10 @@ bool SELFLoader::open(const std::string& path)
         return false;
     }
 
-    m_self_size = fs->getFileSize(path);
-    m_self = new char[m_self_size];
+    const u64 selfSize = fs->getFileSize(path);
+    self.resize(selfSize);
     fs->seekFile(file, 0, SeekSet);
-    fs->readFile(file, m_self, m_self_size);
+    fs->readFile(file, &self[0], selfSize);
     fs->closeFile(file);
 
     if (detectFiletype(path) == FILETYPE_SELF) {
@@ -55,9 +36,8 @@ bool SELFLoader::open(const std::string& path)
         return true;
     }
     else if (detectFiletype(path) == FILETYPE_ELF) {
-        m_elf_size = m_self_size;
-        m_elf = new char[m_elf_size];
-        memcpy(m_elf, m_self, m_elf_size);
+        elf.resize(selfSize);
+        memcpy(&elf[0], &self[0], selfSize);
         return true;
     }
 
@@ -66,15 +46,15 @@ bool SELFLoader::open(const std::string& path)
 
 bool SELFLoader::load_elf()
 {
-    if (!m_elf) {
+    if (elf.empty()) {
         return false;
     }
 
-    const auto& ehdr = (Elf64_Ehdr&)m_elf[0];
+    const auto& ehdr = (Elf64_Ehdr&)elf[0];
 
     // Loading program header table
     for (u64 i = 0; i < ehdr.phnum; i++) {
-        const auto& phdr = (Elf64_Phdr&)m_elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
+        const auto& phdr = (Elf64_Phdr&)elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
 
         switch (phdr.type.ToLE()) {
         case PT_LOAD:
@@ -83,7 +63,7 @@ bool SELFLoader::load_elf()
             }
 
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
-            memcpy(nucleus.memory.ptr(phdr.vaddr), &m_elf[phdr.offset], phdr.filesz);
+            memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
             // TODO: Static function analysis?
             break;
 
@@ -96,7 +76,7 @@ bool SELFLoader::load_elf()
                 nucleus.lv2.proc_param.sdk_version = 0xFFFFFFFF;
                 nucleus.lv2.proc_param.malloc_pagesize = 0x100000;
             } else {
-                nucleus.lv2.proc_param = (sys_process_param_t&)m_elf[phdr.offset];
+                nucleus.lv2.proc_param = (sys_process_param_t&)elf[phdr.offset];
             }
             break;
 
@@ -104,7 +84,7 @@ bool SELFLoader::load_elf()
             if (!phdr.filesz) {
                 nucleus.log.error(LOG_LOADER, "Invalid PRX_PARAM segment");
             } else {
-                nucleus.lv2.prx_param = (sys_prx_param_t&)m_elf[phdr.offset];
+                nucleus.lv2.prx_param = (sys_prx_param_t&)elf[phdr.offset];
             }
             break;
         }
@@ -114,21 +94,21 @@ bool SELFLoader::load_elf()
 
 bool SELFLoader::load_prx(sys_prx_t* prx)
 {
-    if (!m_elf) {
+    if (elf.empty()) {
         return false;
     }
 
-    const auto& ehdr = (Elf64_Ehdr&)m_elf[0];
+    const auto& ehdr = (Elf64_Ehdr&)elf[0];
     u32 base_addr;
 
     // Loading program header table
     for (u64 i = 0; i < ehdr.phnum; i++) {
-        const auto& phdr = (Elf64_Phdr&)m_elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
+        const auto& phdr = (Elf64_Phdr&)elf[ehdr.phoff + i*sizeof(Elf64_Phdr)];
 
         if (phdr.type == PT_LOAD) {
             // Allocate memory and copy segment contents
             const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
-            memcpy(nucleus.memory.ptr(addr), &m_elf[phdr.offset], phdr.filesz);
+            memcpy(nucleus.memory.ptr(addr), &elf[phdr.offset], phdr.filesz);
 
             // Add information for PRX Object
             sys_prx_segment_t segment;
@@ -142,23 +122,23 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
 
             // Get FNID / addr pairs
             if (phdr.paddr != 0) {
-                const auto& module = (sys_prx_module_info_t&)m_elf[phdr.paddr];
+                const auto& module = (sys_prx_module_info_t&)elf[phdr.paddr];
                 prx->name = module.name;
                 prx->version = module.version;
 
                 // Get FNID / addr pairs
                 u32 offset = module.exports_start;
                 while (offset < module.exports_end) {
-                    const auto& library = (sys_prx_library_info_t&)m_elf[phdr.offset + offset];
+                    const auto& library = (sys_prx_library_info_t&)elf[phdr.offset + offset];
                     offset += library.size;
 
                     sys_prx_library_t lib;
                     if (library.name_addr) {
-                        lib.name = &m_elf[phdr.offset + library.name_addr];
+                        lib.name = &elf[phdr.offset + library.name_addr];
                     }
                     for (u32 i = 0; i < library.num_func; i++) {
-                        const u32 fnid = ((be_t<u32>&)m_elf[phdr.offset + library.fnid_addr + 4*i]).ToLE();
-                        const u32 stub = ((be_t<u32>&)m_elf[phdr.offset + library.fstub_addr + 4*i]).ToLE();
+                        const u32 fnid = ((be_t<u32>&)elf[phdr.offset + library.fnid_addr + 4*i]).ToLE();
+                        const u32 stub = ((be_t<u32>&)elf[phdr.offset + library.fstub_addr + 4*i]).ToLE();
                         lib.exports[fnid] = stub;
                     }
                     prx->exported_libs.push_back(lib);
@@ -167,15 +147,15 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
                 // Patch pointers to other PRXs
                 offset = module.imports_start;
                 while (offset < module.imports_end) {
-                    const auto& library = (sys_prx_library_info_t&)m_elf[phdr.offset + offset];
+                    const auto& library = (sys_prx_library_info_t&)elf[phdr.offset + offset];
                     offset += library.size;
 
                     sys_prx_library_t lib;
                     if (library.name_addr) {
-                        lib.name = &m_elf[phdr.offset + library.name_addr];
+                        lib.name = &elf[phdr.offset + library.name_addr];
                     }
                     for (u32 i = 0; i < library.num_func; i++) {
-                        const u32 fnid = ((be_t<u32>&)m_elf[phdr.offset + library.fnid_addr + 4*i]).ToLE();
+                        const u32 fnid = ((be_t<u32>&)elf[phdr.offset + library.fnid_addr + 4*i]).ToLE();
                         const u32 stub = phdr.offset + library.fstub_addr + 4*i;
                         lib.exports[fnid] = stub;
                     }
@@ -215,7 +195,7 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
 
         if (phdr.type == PT_SCE_PPURELA) {
             for (u32 i = 0; i < phdr.filesz; i += sizeof(sys_prx_relocation_info_t)) {
-                const auto& rel = (sys_prx_relocation_info_t&)m_elf[phdr.offset + i];
+                const auto& rel = (sys_prx_relocation_info_t&)elf[phdr.offset + i];
 
                 // Address that needs to be patched
                 u32 addr = prx->segments[rel.index_addr].addr + rel.offset;
@@ -286,34 +266,30 @@ bool SELFLoader::load_prx(sys_prx_t* prx)
 
 void SELFLoader::close()
 {
-    delete[] m_elf;
-    delete[] m_self;
-    m_elf = nullptr;
-    m_self = nullptr;
-    m_elf_size = 0;
-    m_self_size = 0;
+    elf.clear();
+    self.clear();
 }
 
 bool SELFLoader::decryptMetadata()
 {
     aes_context aes;
-    const auto& sce_header = (SceHeader&)m_self[0x0];
-    const auto& self_header = (SelfHeader&)m_self[0x20];
-    const auto& app_info = (AppInfo&)m_self[0x70];
+    const auto& sce_header = (SceHeader&)self[0x0];
+    const auto& self_header = (SelfHeader&)self[0x20];
+    const auto& app_info = (AppInfo&)self[0x70];
     const auto* key = getSelfKey(app_info.self_type, app_info.version, sce_header.flags);
 
     if (!key) {
         return false;
     }
 
-    auto& meta_info = (MetadataInfo&)m_self[sizeof(SceHeader) + sce_header.meta];
+    auto& meta_info = (MetadataInfo&)self[sizeof(SceHeader) + sce_header.meta];
 
     // Decrypt NPDRM Layer if necessary
     u8 npdrm_key[0x10];
     u8 npdrm_iv[0x10] = {};
     u32 offset = self_header.controloff;
     while (offset < self_header.controloff + self_header.controlsize) {
-        const auto& ctrl = (ControlInfo&)m_self[offset];
+        const auto& ctrl = (ControlInfo&)self[offset];
         offset += ctrl.size;
         if (ctrl.type != 3) {
             continue;
@@ -345,7 +321,7 @@ bool SELFLoader::decryptMetadata()
 
     // Decrypt Metadata Headers (Metadata Header + Metadata Section Headers)
     u8 ctr_stream_block[0x10];
-    u8* meta_headers = (u8*)&m_self[sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo)];
+    u8* meta_headers = (u8*)&self[sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo)];
     u32 meta_headers_size = sce_header.hsize - (sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo));
     size_t ctr_nc_off = 0;
     aes_setkey_enc(&aes, meta_info.key, 128);
@@ -357,16 +333,16 @@ bool SELFLoader::decryptMetadata()
 u32 SELFLoader::getDecryptedElfSize()
 {
     u32 size = 0;
-    const auto& sce_header = (SceHeader&)m_self[0x0];
-    const auto& self_header = (SelfHeader&)m_self[0x20];
-    const auto& ehdr = (Elf64_Ehdr&)m_self[self_header.elfoff];
+    const auto& sce_header = (SceHeader&)self[0x0];
+    const auto& self_header = (SelfHeader&)self[0x20];
+    const auto& ehdr = (Elf64_Ehdr&)self[self_header.elfoff];
 
     // Check the maximum offset referenced by the PHDRs in the Metadata Headers
     const u32 meta_header_off = sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo);
-    const auto& meta_header = (MetadataHeader&)m_self[meta_header_off];
+    const auto& meta_header = (MetadataHeader&)self[meta_header_off];
     for (u32 i = 0; i < meta_header.section_count; i++) {
-        const auto& meta_shdr = (MetadataSectionHeader&)m_self[meta_header_off + sizeof(MetadataHeader) + i*sizeof(MetadataSectionHeader)];
-        const auto& meta_phdr = (Elf64_Phdr&)m_self[self_header.phdroff + meta_shdr.program_idx * sizeof(Elf64_Phdr)];
+        const auto& meta_shdr = (MetadataSectionHeader&)self[meta_header_off + sizeof(MetadataHeader) + i*sizeof(MetadataSectionHeader)];
+        const auto& meta_phdr = (Elf64_Phdr&)self[self_header.phdroff + meta_shdr.program_idx * sizeof(Elf64_Phdr)];
         if (meta_shdr.type != 2) {
             continue;
         }
@@ -386,20 +362,20 @@ u32 SELFLoader::getDecryptedElfSize()
 
 bool SELFLoader::decrypt()
 {
-    if (!m_self) {
+    if (self.empty()) {
         return false;
     }
 
-    const auto& sce_header = (SceHeader&)m_self[0x0];
-    const auto& self_header = (SelfHeader&)m_self[0x20];
+    const auto& sce_header = (SceHeader&)self[0x0];
+    const auto& self_header = (SelfHeader&)self[0x20];
 
     /**
      * Debug SELF
      */
     if (sce_header.flags == 0x8000) {
-        m_elf_size = m_self_size - sce_header.hsize;
-        m_elf = new char[m_elf_size];
-        memcpy(m_elf, m_self + sce_header.hsize, m_elf_size);
+        const u64 elfSize = self.size() - sce_header.hsize;
+        elf.resize(elfSize);
+        memcpy(&elf[0], &self[sce_header.hsize], elfSize);
     }
 
     /**
@@ -409,28 +385,28 @@ bool SELFLoader::decrypt()
         // Get Metadata Information
         decryptMetadata();
         const u32 meta_header_off = sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo);
-        const auto& meta_header = (MetadataHeader&)m_self[meta_header_off];
-        const u8* data_keys = (u8*)&m_self[meta_header_off + sizeof(MetadataHeader) + meta_header.section_count * sizeof(MetadataSectionHeader)];
+        const auto& meta_header = (MetadataHeader&)self[meta_header_off];
+        const u8* data_keys = (u8*)&self[meta_header_off + sizeof(MetadataHeader) + meta_header.section_count * sizeof(MetadataSectionHeader)];
 
         // Get ELF size and allocate/initialize it
-        m_elf_size = getDecryptedElfSize();
-        m_elf = new char[m_elf_size]();
+        const u64 elfSize = getDecryptedElfSize();
+        elf.resize(elfSize);
 
         // Copy the EHDR, PHDRs and SHDRs of the ELF
-        const auto& ehdr = (Elf64_Ehdr&)m_self[self_header.elfoff];
-        char* self_phdrs = &m_self[self_header.phdroff];
-        char* self_shdrs = &m_self[self_header.shdroff];
-        char* elf_phdrs = &m_elf[ehdr.phoff];
-        char* elf_shdrs = &m_elf[ehdr.shoff];
-        memcpy(&m_elf[0], &ehdr, sizeof(Elf64_Ehdr));
+        const auto& ehdr = (Elf64_Ehdr&)self[self_header.elfoff];
+        char* self_phdrs = &self[self_header.phdroff];
+        char* self_shdrs = &self[self_header.shdroff];
+        char* elf_phdrs = &elf[ehdr.phoff];
+        char* elf_shdrs = &elf[ehdr.shoff];
+        memcpy(&elf[0], &ehdr, sizeof(Elf64_Ehdr));
         memcpy(elf_phdrs, self_phdrs, ehdr.phnum * sizeof(Elf64_Phdr));
         memcpy(elf_shdrs, self_shdrs, ehdr.shnum * sizeof(Elf64_Shdr));
 
         // Write Data
         aes_context aes;
         for (u32 i = 0; i < meta_header.section_count; i++) {
-            const auto& meta_shdr = (MetadataSectionHeader&)m_self[meta_header_off + sizeof(MetadataHeader) + i*sizeof(MetadataSectionHeader)];
-            const auto& meta_phdr = (Elf64_Phdr&)m_self[self_header.phdroff + meta_shdr.program_idx * sizeof(Elf64_Phdr)];
+            const auto& meta_shdr = (MetadataSectionHeader&)self[meta_header_off + sizeof(MetadataHeader) + i*sizeof(MetadataSectionHeader)];
+            const auto& meta_phdr = (Elf64_Phdr&)self[self_header.phdroff + meta_shdr.program_idx * sizeof(Elf64_Phdr)];
             // Check if PHDR type
             if (meta_shdr.type != 2) {
                 continue;
@@ -445,7 +421,7 @@ bool SELFLoader::decrypt()
                 u8 data_iv[0x10];
                 memcpy(data_key, data_keys + meta_shdr.key_idx * 0x10, 0x10);
                 memcpy(data_iv, data_keys + meta_shdr.iv_idx * 0x10, 0x10);
-                memcpy(data_decrypted, &m_self[meta_shdr.data_offset], meta_shdr.data_size);
+                memcpy(data_decrypted, &self[meta_shdr.data_offset], meta_shdr.data_size);
 
                 // Perform AES-CTR encryption on the data
                 u8 ctr_stream_block[0x10] = {};
@@ -458,10 +434,10 @@ bool SELFLoader::decrypt()
             if (meta_shdr.compressed == 2) {
                 unsigned long length = meta_phdr.filesz;
                 uncompress(data_decompressed, &length, data_decrypted, (u32)meta_shdr.data_size);
-                memcpy(&m_elf[meta_phdr.offset], data_decompressed, meta_phdr.filesz);
+                memcpy(&elf[meta_phdr.offset], data_decompressed, meta_phdr.filesz);
             }
             else {
-                memcpy(&m_elf[meta_phdr.offset], data_decrypted, meta_shdr.data_size);
+                memcpy(&elf[meta_phdr.offset], data_decrypted, meta_shdr.data_size);
             }
 
             delete[] data_decrypted;
@@ -473,18 +449,18 @@ bool SELFLoader::decrypt()
 
 u16 SELFLoader::getMachine()
 {
-    if (!m_elf) {
-        return MACHINE_UNKNOWN;
+    if (elf.empty()) {
+        return EM_UNKNOWN;
     }
-    const auto& ehdr = (Elf64_Ehdr&)m_elf[0];
+    const auto& ehdr = (Elf64_Ehdr&)elf[0];
     return ehdr.machine;
 }
 
 u64 SELFLoader::getEntry()
 {
-    if (!m_elf) {
+    if (elf.empty()) {
         return 0;
     }
-    const auto& ehdr = (Elf64_Ehdr&)m_elf[0];
+    const auto& ehdr = (Elf64_Ehdr&)elf[0];
     return ehdr.entry;
 }

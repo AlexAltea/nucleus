@@ -9,6 +9,26 @@
 #include "nucleus/syscalls/lv2/sys_prx.h"
 
 #include <string>
+#include <vector>
+
+/**
+ * ELF64 Header constants
+ */
+enum ELFType {
+    ET_NONE = 0,  // No file type
+    ET_REL  = 1,  // Relocatable object file
+    ET_EXEC = 2,  // Executable file
+    ET_DYN  = 3,  // Shared object file
+    ET_CORE = 4,  // Core file
+};
+
+enum ELFMachine {
+    EM_UNKNOWN,
+    EM_MIPS   = 0x08,
+    EM_PPC64  = 0x15,
+    EM_SPU    = 0x17,
+    EM_ARM    = 0x28,
+};
 
 // Segment types
 enum {
@@ -37,6 +57,7 @@ enum {
     PF_R            = (1 << 2),  // Segment is readable
 
     // Cell OS Lv-2 (OS) specific flags
+    PF_UNK_00200000 = (1 << 21),
     PF_UNK_00400000 = (1 << 22),
 };
 
@@ -214,21 +235,10 @@ struct Elf64_Shdr
     be_t<u64> entsize;
 };
 
-enum ELFMachine
-{
-    MACHINE_UNKNOWN,
-    MACHINE_MIPS = 0x08,
-    MACHINE_PPC64 = 0x15,
-    MACHINE_SPU = 0x17,
-    MACHINE_ARM = 0x28,
-};
-
 class SELFLoader
 {
-    char* m_elf;
-    char* m_self;
-    size_t m_elf_size;
-    size_t m_self_size;
+    std::vector<char> elf;  // Holds the decrypted executable
+    std::vector<char> self; // Holds the encrypted executable
 
     // Decrypts the Metadata Info and Headers of a SELF file
     bool decryptMetadata();
@@ -238,10 +248,6 @@ class SELFLoader
     u32 getDecryptedElfSize();
 
 public:
-    SELFLoader();
-    SELFLoader(const std::string& path);
-    ~SELFLoader();
-
     bool open(const std::string& path);
     bool load_elf();
     bool load_prx(sys_prx_t* prx);
