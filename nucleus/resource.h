@@ -3,8 +3,9 @@
 // Used by nucleus.rc
 //
 #define IDI_NUCLEUS                     101
-#define IDR_LANGUAGE_EN_US              102
-#define IDR_LANGUAGE_ES_ES              103
+#define IDR_LANGUAGE_DE_DE              102
+#define IDR_LANGUAGE_EN_US              103
+#define IDR_LANGUAGE_ES_ES              104
 
 // Next default values for new objects
 // 

@@ -21,7 +21,7 @@ struct LanguageResource {
 
 static const LanguageResource langResources[] = {
     { LANGUAGE_DEFAULT, IDR_LANGUAGE_EN_US },
-    { LANGUAGE_DE_DE,   IDR_LANGUAGE_EN_US },
+    { LANGUAGE_DE_DE,   IDR_LANGUAGE_DE_DE },
     { LANGUAGE_EN_US,   IDR_LANGUAGE_EN_US },
     { LANGUAGE_ES_ES,   IDR_LANGUAGE_ES_ES }
 };

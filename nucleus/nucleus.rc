@@ -59,6 +59,7 @@ IDI_NUCLEUS             ICON                    "..\\resources\\icons\\nucleus.i
 // Language
 //
 
+IDR_LANGUAGE_DE_DE      LANGUAGE                "..\\resources\\languages\\de_DE.xml"
 IDR_LANGUAGE_EN_US      LANGUAGE                "..\\resources\\languages\\en_US.xml"
 IDR_LANGUAGE_ES_ES      LANGUAGE                "..\\resources\\languages\\es_ES.xml"
 #endif    // Neutral (Default) resources
