@@ -4,3 +4,4 @@
 [submodule "llvm"]
 	path = externals/llvm
 	url = http://llvm.org/git/llvm.git
+	ignore = dirty
