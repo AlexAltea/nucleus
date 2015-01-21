@@ -11,10 +11,10 @@
 #include "nucleus/ui/language.h"
 
 // Nucleus UI Window object
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
 #include "nucleus/ui/windows/window.h"
 #endif
-#ifdef NUCLEUS_LINUX
+#ifdef NUCLEUS_PLATFORM_LINUX
 #include "nucleus/ui/linux/window.h"
 #endif
 

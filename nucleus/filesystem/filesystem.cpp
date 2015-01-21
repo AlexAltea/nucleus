@@ -9,9 +9,9 @@
 #include <algorithm>
 #include <cstring>
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
-#elif defined(NUCLEUS_LINUX)
+#elif defined(NUCLEUS_PLATFORM_LINUX)
 #include <unistd.h>
 #endif
 
@@ -54,12 +54,12 @@ FileSystem* getFilesystem(const s8* path)
 std::string getEmulatorPath()
 {
     char buffer[4096];
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     GetModuleFileName(NULL, buffer, sizeof(buffer));
 #endif
 
     std::string exePath = buffer;
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     int pos = exePath.rfind('\\');
 #else
     int pos = exePath.rfind('/');
@@ -75,15 +75,15 @@ std::string getProcessPath(const std::string& elfPath)
 {
     // Get current working directory
     char buffer[4096];
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     GetCurrentDirectory(sizeof(buffer), buffer);
-#elif defined(NUCLEUS_LINUX)
+#elif defined(NUCLEUS_PLATFORM_LINUX)
     getcwd(buffer, sizeof(buffer));
 #endif
 
     // Check if elfPath is absolute
     std::string procPath;
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (elfPath.find(':') != std::string::npos) {
 #else
     if (elfPath[0] == '/') {
@@ -94,7 +94,7 @@ std::string getProcessPath(const std::string& elfPath)
     }
 
     // Get the path to the actual folder containing the ELF binary
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     std::replace(procPath.begin(), procPath.end(), '/', '\\');
     int pos = procPath.rfind('\\');
 #else

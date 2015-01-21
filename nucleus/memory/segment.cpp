@@ -6,9 +6,9 @@
 #include "segment.h"
 #include "nucleus/emulator.h"
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
-#elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
 #include <sys/mman.h>
 #endif
 
@@ -25,9 +25,9 @@ MemoryBlock::MemoryBlock(u32 block_addr, u32 block_size)
     size = PAGE_4K(block_size);
     realaddr = (void*)((u64)nucleus.memory.getBaseAddr() + block_addr);
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
-#elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
     if (::mprotect(realaddr, block_size, PROT_READ | PROT_WRITE)) {
 #endif
         // Error

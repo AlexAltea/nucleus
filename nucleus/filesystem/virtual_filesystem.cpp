@@ -13,7 +13,7 @@ std::string VirtualFileSystem::getHostPath(const std::string& virtualPath)
     std::string hostPath = m_host_path;
     hostPath += virtualPath.substr(m_mount_point.size());
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     std::replace(hostPath.begin(), hostPath.end(), '/', '\\');
 #endif
 
@@ -27,7 +27,7 @@ File* VirtualFileSystem::openFile(std::string path, OpenMode mode)
 
     const std::string& hostPath = getHostPath(path);
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     fopen_s(&file->handler, hostPath.c_str(), getOpenMode(mode));
 #else
     file->handler = fopen(hostPath.c_str(), getOpenMode(mode));
@@ -55,7 +55,7 @@ u64 VirtualFileSystem::writeFile(File* handle, const void* src, s64 size)
 
 u64 VirtualFileSystem::seekFile(File* handle, u64 position, SeekMode type)
 {
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     return _fseeki64(handle->handler, position, getSeekMode(type));
 #else
     return fseeko64(handle->handler, position, getSeekMode(type));
@@ -69,7 +69,7 @@ bool VirtualFileSystem::isOpen(File* handle)
 
 u64 VirtualFileSystem::getFileSize(File* handle)
 {
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     u64 pos = _ftelli64(handle->handler);
     if (_fseeki64(handle->handler, 0, SEEK_END) != 0) {
 #else
@@ -80,7 +80,7 @@ u64 VirtualFileSystem::getFileSize(File* handle)
         return 0;
     }
 
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     u64 size = _ftelli64(handle->handler);
     if (_fseeki64(handle->handler, pos, SEEK_SET) != 0) {
 #else
@@ -98,7 +98,7 @@ bool VirtualFileSystem::createFile(std::string path)
     const std::string& hostPath = getHostPath(path);
     std::FILE* file;
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     fopen_s(&file, hostPath.c_str(), "w");
 #else
     file = fopen(hostPath.c_str(), "w");
@@ -117,7 +117,7 @@ bool VirtualFileSystem::existsFile(std::string path)
     const std::string& hostPath = getHostPath(path);
     std::FILE* file;
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     fopen_s(&file, hostPath.c_str(), "r");
 #else
     file = fopen(hostPath.c_str(), "r");
@@ -136,7 +136,7 @@ u64 VirtualFileSystem::getFileSize(std::string path)
     const std::string& hostPath = getHostPath(path);
     std::FILE* file;
 
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     fopen_s(&file, hostPath.c_str(), "rb");
     _fseeki64(file, 0, SEEK_END);
     u64 size = _ftelli64(file);

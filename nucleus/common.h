@@ -8,34 +8,43 @@
 /**
  * Architectures
  */
-#if defined(__amd64__) || defined(__x86_64__) || defined(_M_X64) || defined(_M_AMD64)
-#define NUCLEUS_X86_64
+#if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
+#define NUCLEUS_ARCH_X86_64
+#endif
+#if defined(__arm__) || defined(_M_ARM)
+#define NUCLEUS_ARCH_ARM
 #endif
 
 /**
  * Platforms
  */
 #if defined(__linux__)
-#define NUCLEUS_LINUX
+#define NUCLEUS_PLATFORM_LINUX
 #endif
 #if defined(_WIN32) || defined(_WIN64)
-#define NUCLEUS_WIN
+#define NUCLEUS_PLATFORM_WINDOWS
 #endif
 #if defined(__APPLE__) && defined(__MACH__)
-#define NUCLEUS_MACOS
+#define NUCLEUS_PLATFORM_MACOS
+#endif
+#if defined(__ANDROID_API__)
+#define NUCLEUS_PLATFORM_ANDROID
+#endif
+#if defined(__APPLE__) && defined(TARGET_OS_IPHONE)
+#define NUCLEUS_PLATFORM_IOS
 #endif
 
 /**
  * Compilers
  */
 #if defined(_MSC_VER)
-#define NUCLEUS_MSVC
+#define NUCLEUS_COMPILER_MSVC
 #endif
 #if defined(__GNUC__)
-#define NUCLEUS_GCC
+#define NUCLEUS_COMPILER_GCC
 #endif
 #if defined(__clang__)
-#define NUCLEUS_CLANG
+#define NUCLEUS_COMPILER_CLANG
 #endif
 
 /**
@@ -120,7 +129,7 @@ struct u128
 /**
  * Endianness
  */
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_COMPILER_MSVC
 #define re16(val)  _byteswap_ushort(val)
 #define re32(val)  _byteswap_ulong(val)
 #define re64(val)  _byteswap_uint64(val)

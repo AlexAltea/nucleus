@@ -402,7 +402,7 @@ void RSX::method(u32 offset, u32 parameter)
 
 u64 RSX::ptimer_gettime()
 {
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     static struct PerformanceFreqHolder {
         u64 value;
         PerformanceFreqHolder() {

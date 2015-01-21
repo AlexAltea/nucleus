@@ -10,7 +10,7 @@
 
 #include <cstring>
 
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif
 
@@ -43,7 +43,7 @@ void Language::open(ConfigLanguage language)
     }
 
     // Open the file/resource
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     HRSRC hRes = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(lang.winResource), "LANGUAGE");
     HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRes);
     DWORD langSize = SizeofResource(GetModuleHandle(NULL), hRes);

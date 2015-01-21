@@ -6,10 +6,10 @@
 #include "ui.h"
 #include "nucleus/config.h"
 
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
 #include "windows/window_opengl.h"
 #endif
-#ifdef NUCLEUS_LINUX
+#ifdef NUCLEUS_PLATFORM_LINUX
 #include "linux/window_opengl.h"
 #endif
 
@@ -28,7 +28,7 @@ void UI::init()
 
 void UI::task()
 {
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     switch (config.gpuBackend) {
     case GPU_BACKEND_OPENGL:
         m_window = new WindowOpenGL("Nucleus", 960, 544);

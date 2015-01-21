@@ -12,11 +12,11 @@
 #include <cstring>
 #include <iostream>
 
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
 #undef max
 #undef min
-#elif defined(NUCLEUS_LINUX)
+#elif defined(NUCLEUS_PLATFORM_LINUX)
 #define InterlockedCompareExchange(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #define InterlockedCompareExchange64(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #endif
@@ -68,7 +68,7 @@ u32 getFPRFlags(PPU_FPR reg)
 
 u64 getTimebase()
 {
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
     static struct PerformanceFreqHolder {
         u64 value;
         PerformanceFreqHolder() {
@@ -815,9 +815,9 @@ void PPUInterpreter::mulhd(PPUFields code, PPUThread& thread)
 {
     const s64 a = thread.gpr[code.ra];
     const s64 b = thread.gpr[code.rb];
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     thread.gpr[code.rd] = __mulh(a, b);
-#elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
     __asm__("mulq %[b]" : "=d" (thread.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
 #endif
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
@@ -826,9 +826,9 @@ void PPUInterpreter::mulhdu(PPUFields code, PPUThread& thread)
 {
     const u64 a = thread.gpr[code.ra];
     const u64 b = thread.gpr[code.rb];
-#if defined(NUCLEUS_WIN)
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     thread.gpr[code.rd] = __umulh(a, b);
-#elif defined(NUCLEUS_LINUX) || defined(NUCLEUS_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
     __asm__("imulq %[b]" : "=d" (thread.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
 #endif
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }

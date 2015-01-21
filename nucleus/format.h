@@ -10,11 +10,11 @@
 #include <cstdio>
 #include <string>
 
-#ifdef NUCLEUS_MSVC
+#ifdef NUCLEUS_COMPILER_MSVC
 #define snprintf _snprintf_s
 #endif
 
-#ifdef NUCLEUS_CLANG
+#ifdef NUCLEUS_COMPILER_CLANG
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-security"
 #endif
@@ -28,6 +28,6 @@ std::string format(const char* pattern, Args... args)
     return std::string(buffer);
 }
 
-#ifdef NUCLEUS_CLANG
+#ifdef NUCLEUS_COMPILER_CLANG
 #pragma clang diagnostic pop
 #endif

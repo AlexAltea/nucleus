@@ -9,9 +9,9 @@
 
 #include <algorithm>
 
-#ifdef NUCLEUS_WIN
+#ifdef NUCLEUS_PLATFORM_WINDOWS
 #define thread_local __declspec(thread)
-#elif NUCLEUS_MACOS
+#elif NUCLEUS_PLATFORM_MACOS
 #define thread_local __thread
 #endif
 
