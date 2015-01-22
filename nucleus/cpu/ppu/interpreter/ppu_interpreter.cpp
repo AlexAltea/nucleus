@@ -126,10 +126,6 @@ void PPUInterpreter::step()
     const PPUFields code = { nucleus.memory.read32(thread.pc) };
     const PPUInstruction& instruction = s_tablePrimary[code.opcode];
 
-    // Display the current instruction
-    //const std::string& disasm = instruction.disassembler(code);
-    //printf("%08X : %08X %s\n", thread.pc, code.instruction, disasm.c_str());
-
     instruction.interpreter(code, thread);
     thread.pc += 4;
 }

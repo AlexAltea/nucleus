@@ -84,7 +84,6 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="cpu\cell.cpp" />
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_disasm.cpp" />
     <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
     <ClCompile Include="cpu\thread.cpp" />
@@ -142,7 +141,6 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="cpu\cell.h" />
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h" />
-    <ClInclude Include="cpu\ppu\ppu_disasm.h" />
     <ClInclude Include="cpu\ppu\ppu_fields.h" />
     <ClInclude Include="cpu\ppu\ppu_tables.h" />
     <ClInclude Include="cpu\ppu\ppu_thread.h" />

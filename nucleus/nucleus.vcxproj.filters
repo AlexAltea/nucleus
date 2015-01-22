@@ -42,9 +42,6 @@
     <ClCompile Include="syscalls\lv2\sys_prx.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_disasm.cpp">
-      <Filter>cpu\ppu</Filter>
-    </ClCompile>
     <ClCompile Include="cpu\ppu\ppu_tables.cpp">
       <Filter>cpu\ppu</Filter>
     </ClCompile>
@@ -206,9 +203,6 @@
     </ClInclude>
     <ClInclude Include="..\externals\sha1.h">
       <Filter>externals</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_disasm.h">
-      <Filter>cpu\ppu</Filter>
     </ClInclude>
     <ClInclude Include="cpu\ppu\ppu_tables.h">
       <Filter>cpu\ppu</Filter>
@@ -417,6 +411,9 @@
     </Filter>
     <Filter Include="ui\windows">
       <UniqueIdentifier>{185aee07-6b27-484a-a8a4-d09127a36a70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpu\ppu\translator">
+      <UniqueIdentifier>{7d09f279-8d21-4f56-a3ec-64fa06b2a7a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
