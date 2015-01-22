@@ -7,6 +7,9 @@
 #include "nucleus/cpu/ppu/interpreter/ppu_interpreter.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
+namespace cpu {
+namespace ppu {
+
 PPUInstruction s_tablePrimary[0x40];
 PPUInstruction s_table4[0x40];
 PPUInstruction s_table4_[0x800];
@@ -475,3 +478,6 @@ void initTables()
     s_table63_[0x32F] = {"fctidz",  PPUInterpreter::fctidz};
     s_table63_[0x34E] = {"fcfid",   PPUInterpreter::fcfid};
 }
+
+}  // namespace ppu
+}  // namespace cpu

@@ -7,11 +7,14 @@
 
 #include "nucleus/common.h"
 
+namespace cpu {
+namespace ppu {
+
 /**
- * PPU Fields:
+ * PPU Instruction:
  * Represents the bit fields contained in 32-bit PPU instructions
  */
-union PPUFields
+union Instruction
 {
 #define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
 
@@ -92,3 +95,6 @@ union PPUFields
 
 #undef FIELD
 };
+
+}  // namespace ppu
+}  // namespace cpu

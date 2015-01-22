@@ -7,6 +7,8 @@
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/interpreter/ppu_interpreter.h"
 
+using namespace cpu::ppu;
+
 PPUThread::PPUThread(u32 entry)
 {
     m_translator = new PPUInterpreter(*this);

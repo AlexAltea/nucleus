@@ -207,9 +207,6 @@
     <ClInclude Include="cpu\ppu\ppu_tables.h">
       <Filter>cpu\ppu</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_fields.h">
-      <Filter>cpu\ppu</Filter>
-    </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_tty.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
@@ -349,6 +346,9 @@
     </ClInclude>
     <ClInclude Include="ui\language.h">
       <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\ppu_instruction.h">
+      <Filter>cpu\ppu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

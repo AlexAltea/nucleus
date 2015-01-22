@@ -141,7 +141,7 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="cpu\cell.h" />
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h" />
-    <ClInclude Include="cpu\ppu\ppu_fields.h" />
+    <ClInclude Include="cpu\ppu\ppu_instruction.h" />
     <ClInclude Include="cpu\ppu\ppu_tables.h" />
     <ClInclude Include="cpu\ppu\ppu_thread.h" />
     <ClInclude Include="cpu\thread.h" />

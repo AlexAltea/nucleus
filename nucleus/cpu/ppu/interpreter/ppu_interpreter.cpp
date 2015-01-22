@@ -21,20 +21,22 @@
 #define InterlockedCompareExchange64(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #endif
 
+using namespace cpu::ppu;
+
 // Instruction tables
 static bool b_tablesInitialized = false;
 
 // Instruction callers
-void PPUInterpreter::callTable4  (PPUFields code, PPUThread& thread) { s_table4[code.op4].interpreter(code, thread); }
-void PPUInterpreter::callTable4_ (PPUFields code, PPUThread& thread) { s_table4_[code.op4_].interpreter(code, thread); }
-void PPUInterpreter::callTable19 (PPUFields code, PPUThread& thread) { s_table19[code.op19].interpreter(code, thread); }
-void PPUInterpreter::callTable30 (PPUFields code, PPUThread& thread) { s_table30[code.op30].interpreter(code, thread); }
-void PPUInterpreter::callTable31 (PPUFields code, PPUThread& thread) { s_table31[code.op31].interpreter(code, thread); }
-void PPUInterpreter::callTable58 (PPUFields code, PPUThread& thread) { s_table58[code.op58].interpreter(code, thread); }
-void PPUInterpreter::callTable59 (PPUFields code, PPUThread& thread) { s_table59[code.op59].interpreter(code, thread); }
-void PPUInterpreter::callTable62 (PPUFields code, PPUThread& thread) { s_table62[code.op62].interpreter(code, thread); }
-void PPUInterpreter::callTable63 (PPUFields code, PPUThread& thread) { s_table63[code.op63].interpreter(code, thread); }
-void PPUInterpreter::callTable63_(PPUFields code, PPUThread& thread) { s_table63_[code.op63_].interpreter(code, thread); }
+void PPUInterpreter::callTable4  (Instruction code, PPUThread& thread) { s_table4[code.op4].interpreter(code, thread); }
+void PPUInterpreter::callTable4_ (Instruction code, PPUThread& thread) { s_table4_[code.op4_].interpreter(code, thread); }
+void PPUInterpreter::callTable19 (Instruction code, PPUThread& thread) { s_table19[code.op19].interpreter(code, thread); }
+void PPUInterpreter::callTable30 (Instruction code, PPUThread& thread) { s_table30[code.op30].interpreter(code, thread); }
+void PPUInterpreter::callTable31 (Instruction code, PPUThread& thread) { s_table31[code.op31].interpreter(code, thread); }
+void PPUInterpreter::callTable58 (Instruction code, PPUThread& thread) { s_table58[code.op58].interpreter(code, thread); }
+void PPUInterpreter::callTable59 (Instruction code, PPUThread& thread) { s_table59[code.op59].interpreter(code, thread); }
+void PPUInterpreter::callTable62 (Instruction code, PPUThread& thread) { s_table62[code.op62].interpreter(code, thread); }
+void PPUInterpreter::callTable63 (Instruction code, PPUThread& thread) { s_table63[code.op63].interpreter(code, thread); }
+void PPUInterpreter::callTable63_(Instruction code, PPUThread& thread) { s_table63_[code.op63_].interpreter(code, thread); }
 
 // PowerPC Rotation-related functions
 inline u64 rotl64(const u64 x, const u8 n) { return (x << n) | (x >> (64 - n)); }
@@ -123,7 +125,7 @@ void PPUInterpreter::step()
         return;
     }
 
-    const PPUFields code = { nucleus.memory.read32(thread.pc) };
+    const Instruction code = { nucleus.memory.read32(thread.pc) };
     const PPUInstruction& instruction = s_tablePrimary[code.opcode];
 
     instruction.interpreter(code, thread);
@@ -186,13 +188,13 @@ u64& PPUInterpreter::GetRegBySPR(PPUThread& thread, u32 spr)
 /**
  * PPU Instructions
  */
-void PPUInterpreter::add(PPUFields code, PPUThread& thread)
+void PPUInterpreter::add(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = thread.gpr[code.ra] + thread.gpr[code.rb];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("addo");
 }
-void PPUInterpreter::addc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::addc(Instruction code, PPUThread& thread)
 {
     const s64 gpra = thread.gpr[code.ra];
     const s64 gprb = thread.gpr[code.rb];
@@ -201,7 +203,7 @@ void PPUInterpreter::addc(PPUFields code, PPUThread& thread)
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("addco");
 }
-void PPUInterpreter::adde(PPUFields code, PPUThread& thread)
+void PPUInterpreter::adde(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     const u64 gprb = thread.gpr[code.rb];
@@ -222,28 +224,28 @@ void PPUInterpreter::adde(PPUFields code, PPUThread& thread)
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("addeo");
 }
-void PPUInterpreter::addi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::addi(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = code.ra ? ((s64)thread.gpr[code.ra] + code.simm) : code.simm;
 }
-void PPUInterpreter::addic(PPUFields code, PPUThread& thread)
+void PPUInterpreter::addic(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     thread.gpr[code.rd] = gpra + code.simm;
     thread.xer.CA = isCarry(gpra, code.simm);
 }
-void PPUInterpreter::addic_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::addic_(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     thread.gpr[code.rd] = gpra + code.simm;
     thread.xer.CA = isCarry(gpra, code.simm);
     thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0);
 }
-void PPUInterpreter::addis(PPUFields code, PPUThread& thread)
+void PPUInterpreter::addis(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = code.ra ? ((s64)thread.gpr[code.ra] + (code.simm << 16)) : (code.simm << 16);
 }
-void PPUInterpreter::addme(PPUFields code, PPUThread& thread)
+void PPUInterpreter::addme(Instruction code, PPUThread& thread)
 {
     const s64 gpra = thread.gpr[code.ra];
     thread.gpr[code.rd] = gpra + thread.xer.CA - 1;
@@ -251,7 +253,7 @@ void PPUInterpreter::addme(PPUFields code, PPUThread& thread)
     if (code.oe) unknown("addmeo");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::addze(PPUFields code, PPUThread& thread)
+void PPUInterpreter::addze(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     thread.gpr[code.rd] = gpra + thread.xer.CA;
@@ -259,33 +261,33 @@ void PPUInterpreter::addze(PPUFields code, PPUThread& thread)
     if (code.oe) unknown("addzeo");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::andx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::andx(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & thread.gpr[code.rb];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::andc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::andc(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & ~thread.gpr[code.rb];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::andi_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::andi_(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & code.uimm;
     thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0);
 }
-void PPUInterpreter::andis_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::andis_(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] & (code.uimm << 16);
     thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0);
 }
-void PPUInterpreter::b(PPUFields code, PPUThread& thread)
+void PPUInterpreter::b(Instruction code, PPUThread& thread)
 {
     if (code.lk) thread.lr = thread.pc + 4;
     thread.pc = (code.aa ? (code.li << 2) : thread.pc + (code.li << 2)) & ~0x3ULL;
     thread.pc -= 4;
 }
-void PPUInterpreter::bc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::bc(Instruction code, PPUThread& thread)
 {
     if (CheckCondition(thread, code.bo, code.bi)) {
         if (code.lk) thread.lr = thread.pc + 4;
@@ -293,7 +295,7 @@ void PPUInterpreter::bc(PPUFields code, PPUThread& thread)
         thread.pc -= 4;
     }
 }
-void PPUInterpreter::bcctr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::bcctr(Instruction code, PPUThread& thread)
 {
     if (code.bo & 0x10 || thread.cr.getBit(code.bi) == ((code.bo >> 3) & 1)) {
         if (code.lk) thread.lr = thread.pc + 4;
@@ -301,7 +303,7 @@ void PPUInterpreter::bcctr(PPUFields code, PPUThread& thread)
         thread.pc -= 4;
     }
 }
-void PPUInterpreter::bclr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::bclr(Instruction code, PPUThread& thread)
 {
     if (CheckCondition(thread, code.bo, code.bi)) {
         const u32 newLR = thread.pc + 4;
@@ -310,7 +312,7 @@ void PPUInterpreter::bclr(PPUFields code, PPUThread& thread)
         if (code.lk) thread.lr = newLR;
     }
 }
-void PPUInterpreter::cmp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::cmp(Instruction code, PPUThread& thread)
 {
     if (code.l10) {
         thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)thread.gpr[code.rb]);
@@ -318,7 +320,7 @@ void PPUInterpreter::cmp(PPUFields code, PPUThread& thread)
         thread.cr.updateField(code.crfd, (s32)thread.gpr[code.ra], (s32)thread.gpr[code.rb]);
     }
 }
-void PPUInterpreter::cmpi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::cmpi(Instruction code, PPUThread& thread)
 {
     if (code.l10) {
         thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)code.simm);
@@ -326,7 +328,7 @@ void PPUInterpreter::cmpi(PPUFields code, PPUThread& thread)
         thread.cr.updateField(code.crfd, (s32)thread.gpr[code.ra], (s32)code.simm);
     }
 }
-void PPUInterpreter::cmpl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::cmpl(Instruction code, PPUThread& thread)
 {
     if (code.l10) {
         thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)thread.gpr[code.rb]);
@@ -334,7 +336,7 @@ void PPUInterpreter::cmpl(PPUFields code, PPUThread& thread)
         thread.cr.updateField(code.crfd, (u32)thread.gpr[code.ra], (u32)thread.gpr[code.rb]);
     }
 }
-void PPUInterpreter::cmpli(PPUFields code, PPUThread& thread)
+void PPUInterpreter::cmpli(Instruction code, PPUThread& thread)
 {
     if (code.l10) {
         thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)code.uimm);
@@ -342,7 +344,7 @@ void PPUInterpreter::cmpli(PPUFields code, PPUThread& thread)
         thread.cr.updateField(code.crfd, (u32)thread.gpr[code.ra], (u32)code.uimm);
     }
 }
-void PPUInterpreter::cntlzd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::cntlzd(Instruction code, PPUThread& thread)
 {
     int i;
     for (i = 0; i < 64; i++) {
@@ -353,7 +355,7 @@ void PPUInterpreter::cntlzd(PPUFields code, PPUThread& thread)
     thread.gpr[code.ra] = i;
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::cntlzw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::cntlzw(Instruction code, PPUThread& thread)
 {
     int i;
     for (i = 0; i < 32; i++) {
@@ -364,67 +366,67 @@ void PPUInterpreter::cntlzw(PPUFields code, PPUThread& thread)
     thread.gpr[code.ra] = i;
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::crand(PPUFields code, PPUThread& thread)
+void PPUInterpreter::crand(Instruction code, PPUThread& thread)
 {
     const u8 value = thread.cr.getBit(code.crba) & thread.cr.getBit(code.crbb);
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::crandc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::crandc(Instruction code, PPUThread& thread)
 {
     const u8 value = thread.cr.getBit(code.crba) & (1 ^ thread.cr.getBit(code.crbb));
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::creqv(PPUFields code, PPUThread& thread)
+void PPUInterpreter::creqv(Instruction code, PPUThread& thread)
 {
     const u8 value = 1 ^ (thread.cr.getBit(code.crba) ^ thread.cr.getBit(code.crbb));
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::crnand(PPUFields code, PPUThread& thread)
+void PPUInterpreter::crnand(Instruction code, PPUThread& thread)
 {
     const u8 value = 1 ^ (thread.cr.getBit(code.crba) & thread.cr.getBit(code.crbb));
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::crnor(PPUFields code, PPUThread& thread)
+void PPUInterpreter::crnor(Instruction code, PPUThread& thread)
 {
     const u8 value = 1 ^ (thread.cr.getBit(code.crba) | thread.cr.getBit(code.crbb));
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::cror(PPUFields code, PPUThread& thread)
+void PPUInterpreter::cror(Instruction code, PPUThread& thread)
 {
     const u8 value = thread.cr.getBit(code.crba) | thread.cr.getBit(code.crbb);
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::crorc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::crorc(Instruction code, PPUThread& thread)
 {
     const u8 value = thread.cr.getBit(code.crba) | (1 ^ thread.cr.getBit(code.crbb));
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::crxor(PPUFields code, PPUThread& thread)
+void PPUInterpreter::crxor(Instruction code, PPUThread& thread)
 {
     const u8 value = thread.cr.getBit(code.crba) ^ thread.cr.getBit(code.crbb);
     thread.cr.setBit(code.crbd, value);
 }
-void PPUInterpreter::dcbf(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dcbf(Instruction code, PPUThread& thread)
 {
     //unknown("dcbf", false);
     // TODO: _mm_fence();
 }
-void PPUInterpreter::dcbst(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dcbst(Instruction code, PPUThread& thread)
 {
     //unknown("dcbst", false);
     // TODO: _mm_fence();
 }
-void PPUInterpreter::dcbt(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dcbt(Instruction code, PPUThread& thread)
 {
     //unknown("dcbt", false);
     // TODO: _mm_fence();
 }
-void PPUInterpreter::dcbtst(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dcbtst(Instruction code, PPUThread& thread)
 {
     //unknown("dcbtst", false);
     // TODO: _mm_fence();
 }
-void PPUInterpreter::dcbz(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dcbz(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     void* cache_line = nucleus.memory.ptr(addr & ~127);
@@ -433,7 +435,7 @@ void PPUInterpreter::dcbz(PPUFields code, PPUThread& thread)
     }
     // TODO: _mm_fence();
 }
-void PPUInterpreter::divd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::divd(Instruction code, PPUThread& thread)
 {
     const s64 gpra = thread.gpr[code.ra];
     const s64 gprb = thread.gpr[code.rb];
@@ -446,7 +448,7 @@ void PPUInterpreter::divd(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::divdu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::divdu(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     const s64 gprb = thread.gpr[code.rb];
@@ -459,7 +461,7 @@ void PPUInterpreter::divdu(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::divw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::divw(Instruction code, PPUThread& thread)
 {
     const s32 gpra = thread.gpr[code.ra];
     const s32 gprb = thread.gpr[code.rb];
@@ -472,7 +474,7 @@ void PPUInterpreter::divw(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::divwu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::divwu(Instruction code, PPUThread& thread)
 {
     const u32 gpra = thread.gpr[code.ra];
     const u32 gprb = thread.gpr[code.rb];
@@ -485,165 +487,165 @@ void PPUInterpreter::divwu(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::dss(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dss(Instruction code, PPUThread& thread)
 {
     // TODO: _mm_fence();
 }
-void PPUInterpreter::dst(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dst(Instruction code, PPUThread& thread)
 {
     // TODO: _mm_fence();
 }
-void PPUInterpreter::dstst(PPUFields code, PPUThread& thread)
+void PPUInterpreter::dstst(Instruction code, PPUThread& thread)
 {
     // TODO: _mm_fence();
 }
-void PPUInterpreter::eciwx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::eciwx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read32(addr);
 }
-void PPUInterpreter::ecowx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ecowx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write32(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::eieio(PPUFields code, PPUThread& thread)
+void PPUInterpreter::eieio(Instruction code, PPUThread& thread)
 {
     // TODO: _mm_fence();
 }
-void PPUInterpreter::eqv(PPUFields code, PPUThread& thread)
+void PPUInterpreter::eqv(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = ~(thread.gpr[code.rs] ^ thread.gpr[code.rb]);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::extsb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::extsb(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = (s64)(s8)thread.gpr[code.rs];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::extsh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::extsh(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = (s64)(s16)thread.gpr[code.rs];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::extsw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::extsw(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = (s64)(s32)thread.gpr[code.rs];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::icbi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::icbi(Instruction code, PPUThread& thread)
 {
     // Nothing to do in the interpreter.
 }
-void PPUInterpreter::isync(PPUFields code, PPUThread& thread)
+void PPUInterpreter::isync(Instruction code, PPUThread& thread)
 {
     // TODO: _mm_fence();
 }
-void PPUInterpreter::lbz(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lbz(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = nucleus.memory.read8(code.ra ? thread.gpr[code.ra] + code.d : code.d);
 }
-void PPUInterpreter::lbzu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lbzu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     thread.gpr[code.rd] = nucleus.memory.read8(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lbzux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lbzux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read8(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lbzx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lbzx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read8(addr);
 }
-void PPUInterpreter::ld(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ld(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + (code.ds << 2) : (code.ds << 2);
     thread.gpr[code.rd] = nucleus.memory.read64(addr);
 }
-void PPUInterpreter::ldarx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ldarx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read64(addr);
     thread.reserve_addr = addr;
     thread.reserve_value = re64(thread.gpr[code.rd]);
 }
-void PPUInterpreter::ldbrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ldbrx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = re64(nucleus.memory.read64(addr));
 }
-void PPUInterpreter::ldu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ldu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + (code.ds << 2);
     thread.gpr[code.rd] = nucleus.memory.read64(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::ldux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ldux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read64(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::ldx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ldx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read64(addr);
 }
-void PPUInterpreter::lha(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lha(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     thread.gpr[code.rd] = (s64)(s16)nucleus.memory.read16(addr);
 }
-void PPUInterpreter::lhau(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhau(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     thread.gpr[code.rd] = (s64)(s16)nucleus.memory.read16(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lhaux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhaux(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = (s64)(s16)nucleus.memory.read16(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lhax(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhax(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = (s64)(s16)nucleus.memory.read16(addr);
 }
-void PPUInterpreter::lhbrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhbrx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = re16(nucleus.memory.read16(addr));
 }
-void PPUInterpreter::lhz(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhz(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     thread.gpr[code.rd] = nucleus.memory.read16(addr);
 }
-void PPUInterpreter::lhzu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhzu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     thread.gpr[code.rd] = nucleus.memory.read16(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lhzux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhzux(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read16(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lhzx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lhzx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read16(addr);
 }
-void PPUInterpreter::lmw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lmw(Instruction code, PPUThread& thread)
 {
     u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     for (u32 i = code.rd; i < 32; i++) {
@@ -651,7 +653,7 @@ void PPUInterpreter::lmw(PPUFields code, PPUThread& thread)
         addr += 4;
     }
 }
-void PPUInterpreter::lswi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lswi(Instruction code, PPUThread& thread)
 {
     u64 ea = code.ra ? thread.gpr[code.ra] : 0;
     u64 n = code.nb ? code.nb : 32;
@@ -676,78 +678,78 @@ void PPUInterpreter::lswi(PPUFields code, PPUThread& thread)
         reg = (reg + 1) % 32;
     }
 }
-void PPUInterpreter::lswx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lswx(Instruction code, PPUThread& thread)
 {
     unknown("lswx");
 }
-void PPUInterpreter::lwa(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwa(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = (s64)(s32)nucleus.memory.read32(code.ra ? thread.gpr[code.ra] + (code.ds << 2) : (code.ds << 2));
 }
-void PPUInterpreter::lwarx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwarx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read32(addr);
     thread.reserve_addr = addr;
     thread.reserve_value = re32(thread.gpr[code.rd]);
 }
-void PPUInterpreter::lwaux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwaux(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = (s64)(s32)nucleus.memory.read32(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lwax(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwax(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = (s64)(s32)nucleus.memory.read32(addr);
 }
-void PPUInterpreter::lwbrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwbrx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = re32(nucleus.memory.read32(addr));
 }
-void PPUInterpreter::lwz(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwz(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     thread.gpr[code.rd] = nucleus.memory.read32(addr);
 }
-void PPUInterpreter::lwzu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwzu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     thread.gpr[code.rd] = nucleus.memory.read32(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lwzux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwzux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read32(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lwzx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lwzx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.gpr[code.rd] = nucleus.memory.read32(addr);
 }
-void PPUInterpreter::mcrf(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mcrf(Instruction code, PPUThread& thread)
 {
     thread.cr.setField(code.crfd, thread.cr.getField(code.crfs));
 }
-void PPUInterpreter::mcrfs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mcrfs(Instruction code, PPUThread& thread)
 {
     u64 mask = (1ULL << code.crbd);
     thread.cr.CR &= ~mask;
     thread.cr.CR |= thread.fpscr.FPSCR & mask;
 }
-void PPUInterpreter::mfocrf(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mfocrf(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = bitReverse32(thread.cr.CR);
 }
-void PPUInterpreter::mfspr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mfspr(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = GetRegBySPR(thread, code.spr);
 }
-void PPUInterpreter::mftb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mftb(Instruction code, PPUThread& thread)
 {
     const u32 n = (code.spr >> 5) | ((code.spr & 0x1f) << 5);
     thread.tb = getTimebase();
@@ -758,17 +760,17 @@ void PPUInterpreter::mftb(PPUFields code, PPUThread& thread)
     default: unknown("mftb"); break;
     }
 }
-void PPUInterpreter::mtfsb0(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mtfsb0(Instruction code, PPUThread& thread)
 {
     thread.fpscr.FPSCR &= ~(1ULL << code.crbd);
     if (code.rc) unknown("mtfsb0.");
 }
-void PPUInterpreter::mtfsb1(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mtfsb1(Instruction code, PPUThread& thread)
 {
     thread.fpscr.FPSCR |= (1ULL << code.crbd);
     if (code.rc) unknown("mtfsb1.");
 }
-void PPUInterpreter::mtfsfi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mtfsfi(Instruction code, PPUThread& thread)
 {
     const u32 mask = 0xF << (code.crfd * 4);
     const u32 value = (code.imm & 0xF) << (code.crfd * 4);
@@ -776,7 +778,7 @@ void PPUInterpreter::mtfsfi(PPUFields code, PPUThread& thread)
     thread.fpscr.FPSCR |= value;
     if (code.rc) unknown("mtfsfi.");
 }
-void PPUInterpreter::mtocrf(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mtocrf(Instruction code, PPUThread& thread)
 {
     if (code.l11) {
         u32 n = 0, count = 0;
@@ -803,11 +805,11 @@ void PPUInterpreter::mtocrf(PPUFields code, PPUThread& thread)
         thread.cr.CR = bitReverse32(thread.gpr[code.rs] & mask) | (bitReverse32(thread.cr.CR) & ~mask);
     }
 }
-void PPUInterpreter::mtspr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mtspr(Instruction code, PPUThread& thread)
 {
     GetRegBySPR(thread, code.spr) = thread.gpr[code.rs];
 }
-void PPUInterpreter::mulhd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mulhd(Instruction code, PPUThread& thread)
 {
     const s64 a = thread.gpr[code.ra];
     const s64 b = thread.gpr[code.rb];
@@ -818,7 +820,7 @@ void PPUInterpreter::mulhd(PPUFields code, PPUThread& thread)
 #endif
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::mulhdu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mulhdu(Instruction code, PPUThread& thread)
 {
     const u64 a = thread.gpr[code.ra];
     const u64 b = thread.gpr[code.rb];
@@ -829,75 +831,75 @@ void PPUInterpreter::mulhdu(PPUFields code, PPUThread& thread)
 #endif
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::mulhw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mulhw(Instruction code, PPUThread& thread)
 {
     s32 a = thread.gpr[code.ra];
     s32 b = thread.gpr[code.rb];
     thread.gpr[code.rd] = ((s64)a * (s64)b) >> 32;
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::mulhwu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mulhwu(Instruction code, PPUThread& thread)
 {
     u32 a = thread.gpr[code.ra];
     u32 b = thread.gpr[code.rb];
     thread.gpr[code.rd] = ((u64)a * (u64)b) >> 32;
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::mulld(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mulld(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = (s64)((s64)thread.gpr[code.ra] * (s64)thread.gpr[code.rb]);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("mulldo");
 }
-void PPUInterpreter::mulli(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mulli(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = (s64)thread.gpr[code.ra] * code.simm;
 }
-void PPUInterpreter::mullw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mullw(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = (s64)((s64)(s32)thread.gpr[code.ra] * (s64)(s32)thread.gpr[code.rb]);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("mullwo");
 }
-void PPUInterpreter::nand(PPUFields code, PPUThread& thread)
+void PPUInterpreter::nand(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = ~(thread.gpr[code.rs] & thread.gpr[code.rb]);
 
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::neg(PPUFields code, PPUThread& thread)
+void PPUInterpreter::neg(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = 0 - thread.gpr[code.ra];
     if (code.oe) unknown("nego");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::nop(PPUFields code, PPUThread& thread)
+void PPUInterpreter::nop(Instruction code, PPUThread& thread)
 {
 }
-void PPUInterpreter::nor(PPUFields code, PPUThread& thread)
+void PPUInterpreter::nor(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = ~(thread.gpr[code.rs] | thread.gpr[code.rb]);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::orx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::orx(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] | thread.gpr[code.rb];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::orc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::orc(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] | ~thread.gpr[code.rb];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::ori(PPUFields code, PPUThread& thread)
+void PPUInterpreter::ori(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] | code.uimm;
 }
-void PPUInterpreter::oris(PPUFields code, PPUThread& thread)
+void PPUInterpreter::oris(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] | (code.uimm << 16);
 }
-void PPUInterpreter::rldc_lr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldc_lr(Instruction code, PPUThread& thread)
 {
     const u32 rotate = thread.gpr[code.rb] & 0x3F;
     const u32 mb = code.mb | (code.mb_ << 5);
@@ -911,28 +913,28 @@ void PPUInterpreter::rldc_lr(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rldicx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldicx(Instruction code, PPUThread& thread)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 mb = code.mb | (code.mb_ << 5);
     thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[mb][63-sh];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rldiclx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldiclx(Instruction code, PPUThread& thread)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 mb = code.mb | (code.mb_ << 5);
     thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[mb][63];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rldicrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldicrx(Instruction code, PPUThread& thread)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 me = code.me_ | (code.me__ << 5);
     thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[0][me];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rldimix(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rldimix(Instruction code, PPUThread& thread)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 mb = code.mb | (code.mb_ << 5);
@@ -940,24 +942,24 @@ void PPUInterpreter::rldimix(PPUFields code, PPUThread& thread)
     thread.gpr[code.ra] = (thread.gpr[code.ra] & ~mask) | (rotl64(thread.gpr[code.rs], sh) & mask);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rlwimix(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rlwimix(Instruction code, PPUThread& thread)
 {
     const u64 r = rotl32(thread.gpr[code.rs], code.sh);
     const u64 m = rotateMask[32 + code.mb][32 + code.me];
     thread.gpr[code.ra] = (r & m) | (thread.gpr[code.ra] & ~m);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rlwinmx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rlwinmx(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = rotl32(thread.gpr[code.rs], code.sh) & rotateMask[32 + code.mb][32 + code.me];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::rlwnmx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::rlwnmx(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = rotl32(thread.gpr[code.rs], thread.gpr[code.rb] & 0x1f) & rotateMask[32 + code.mb][32 + code.me];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::sc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sc(Instruction code, PPUThread& thread)
 {
     switch (code.lev) {
     case 0:
@@ -973,13 +975,13 @@ void PPUInterpreter::sc(PPUFields code, PPUThread& thread)
         unknown("sc");
     }
 }
-void PPUInterpreter::sld(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sld(Instruction code, PPUThread& thread)
 {
     const u64 shift = thread.gpr[code.rb] & 0x7F;
     thread.gpr[code.ra] = (shift & 0x40) ? 0 : (thread.gpr[code.rs] << shift);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::slw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::slw(Instruction code, PPUThread& thread)
 {
     u32 n = thread.gpr[code.rb] & 0x1f;
     u32 r = rotl32((u32)thread.gpr[code.rs], n);
@@ -987,7 +989,7 @@ void PPUInterpreter::slw(PPUFields code, PPUThread& thread)
     thread.gpr[code.ra] = r & m;
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::srad(PPUFields code, PPUThread& thread)
+void PPUInterpreter::srad(Instruction code, PPUThread& thread)
 {
     s64 RS = thread.gpr[code.rs];
     u8 shift = thread.gpr[code.rb] & 127;
@@ -1001,7 +1003,7 @@ void PPUInterpreter::srad(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::sradi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sradi(Instruction code, PPUThread& thread)
 {
     const s64 rs = thread.gpr[code.rs];
     const u32 sh = code.sh | (code.sh_ << 5);
@@ -1009,7 +1011,7 @@ void PPUInterpreter::sradi(PPUFields code, PPUThread& thread)
     thread.xer.CA = (rs < 0) & ((thread.gpr[code.ra] << sh) != rs);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::sraw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sraw(Instruction code, PPUThread& thread)
 {
     s32 gprs = thread.gpr[code.rs];
     u8 shift = thread.gpr[code.rb] & 63;
@@ -1023,20 +1025,20 @@ void PPUInterpreter::sraw(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::srawi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::srawi(Instruction code, PPUThread& thread)
 {
     s32 gprs = (u32)thread.gpr[code.rs];
     thread.gpr[code.ra] = gprs >> code.sh;
     thread.xer.CA = (gprs < 0) & ((u32)(thread.gpr[code.ra] << code.sh) != gprs);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::srd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::srd(Instruction code, PPUThread& thread)
 {
     const u64 shift = thread.gpr[code.rb] & 0x7F;
     thread.gpr[code.ra] = (shift & 0x40) ? 0 : (thread.gpr[code.rs] >> shift);
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::srw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::srw(Instruction code, PPUThread& thread)
 {
     u32 n = thread.gpr[code.rb] & 0x1f;
     u32 m = (thread.gpr[code.rb] & 0x20) ? 0 : rotateMask[32 + n][63];
@@ -1044,34 +1046,34 @@ void PPUInterpreter::srw(PPUFields code, PPUThread& thread)
     thread.gpr[code.ra] = r & m;
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::stb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stb(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     nucleus.memory.write8(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::stbu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stbu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     nucleus.memory.write8(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stbux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stbux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     nucleus.memory.write8(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stbx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stbx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write8(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::std(PPUFields code, PPUThread& thread)
+void PPUInterpreter::std(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     nucleus.memory.write64(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::stdcx_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stdcx_(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     if (thread.reserve_addr == addr) {
@@ -1082,51 +1084,51 @@ void PPUInterpreter::stdcx_(PPUFields code, PPUThread& thread)
         thread.cr.setBit(PPU_CR::CR_EQ, false);
     }
 }
-void PPUInterpreter::stdu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stdu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + (code.ds << 2);
     nucleus.memory.write64(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stdux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stdux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     nucleus.memory.write64(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stdx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stdx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write64(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::sth(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sth(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     nucleus.memory.write16(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::sthbrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sthbrx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write16(addr, re16((u16)thread.gpr[code.rs]));
 }
-void PPUInterpreter::sthu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sthu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     nucleus.memory.write16(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::sthux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sthux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     nucleus.memory.write16(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::sthx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sthx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write16(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::stmw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stmw(Instruction code, PPUThread& thread)
 {
     u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     for (int i = code.rs; i < 32; i++) {
@@ -1134,7 +1136,7 @@ void PPUInterpreter::stmw(PPUFields code, PPUThread& thread)
         addr += 4;
     }
 }
-void PPUInterpreter::stswi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stswi(Instruction code, PPUThread& thread)
 {
     u64 ea = code.ra ? thread.gpr[code.ra] : 0;
     u64 n = code.nb ? code.nb : 32;
@@ -1158,21 +1160,21 @@ void PPUInterpreter::stswi(PPUFields code, PPUThread& thread)
         reg = (reg + 1) % 32;
     }
 }
-void PPUInterpreter::stswx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stswx(Instruction code, PPUThread& thread)
 {
     unknown("stwsx");
 }
-void PPUInterpreter::stw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stw(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     nucleus.memory.write32(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::stwbrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stwbrx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write32(addr, re32(thread.gpr[code.rs]));
 }
-void PPUInterpreter::stwcx_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stwcx_(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     if (thread.reserve_addr == addr) {
@@ -1183,30 +1185,30 @@ void PPUInterpreter::stwcx_(PPUFields code, PPUThread& thread)
         thread.cr.setBit(PPU_CR::CR_EQ, false);
     }
 }
-void PPUInterpreter::stwu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stwu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     nucleus.memory.write32(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stwux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stwux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     nucleus.memory.write32(addr, thread.gpr[code.rs]);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stwx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stwx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write32(addr, thread.gpr[code.rs]);
 }
-void PPUInterpreter::subf(PPUFields code, PPUThread& thread)
+void PPUInterpreter::subf(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = thread.gpr[code.rb] - thread.gpr[code.ra];
     if (code.oe) unknown("subfo");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::subfc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::subfc(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     const s64 gprb = thread.gpr[code.rb];
@@ -1215,7 +1217,7 @@ void PPUInterpreter::subfc(PPUFields code, PPUThread& thread)
     if (code.oe) unknown("subfco");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::subfe(PPUFields code, PPUThread& thread)
+void PPUInterpreter::subfe(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     const s64 gprb = thread.gpr[code.rb];
@@ -1224,7 +1226,7 @@ void PPUInterpreter::subfe(PPUFields code, PPUThread& thread)
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("subfeo");
 }
-void PPUInterpreter::subfic(PPUFields code, PPUThread& thread)
+void PPUInterpreter::subfic(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     const u64 IMM = (s64)code.simm;
@@ -1232,7 +1234,7 @@ void PPUInterpreter::subfic(PPUFields code, PPUThread& thread)
 
     thread.xer.CA = isCarry(~gpra, IMM, 1);
 }
-void PPUInterpreter::subfme(PPUFields code, PPUThread& thread)
+void PPUInterpreter::subfme(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     thread.gpr[code.rd] = ~gpra + thread.xer.CA + ~0ULL;
@@ -1240,7 +1242,7 @@ void PPUInterpreter::subfme(PPUFields code, PPUThread& thread)
     if (code.oe) unknown("subfmeo");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::subfze(PPUFields code, PPUThread& thread)
+void PPUInterpreter::subfze(Instruction code, PPUThread& thread)
 {
     const u64 gpra = thread.gpr[code.ra];
     thread.gpr[code.rd] = ~gpra + thread.xer.CA;
@@ -1248,96 +1250,96 @@ void PPUInterpreter::subfze(PPUFields code, PPUThread& thread)
     if (code.oe) unknown("subfzeo");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::sync(PPUFields code, PPUThread& thread)
+void PPUInterpreter::sync(Instruction code, PPUThread& thread)
 {
     // TODO: _mm_fence();
 }
-void PPUInterpreter::td(PPUFields code, PPUThread& thread)
+void PPUInterpreter::td(Instruction code, PPUThread& thread)
 {
     unknown("td");
 }
-void PPUInterpreter::tdi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::tdi(Instruction code, PPUThread& thread)
 {
     unknown("tdi");
 }
-void PPUInterpreter::tw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::tw(Instruction code, PPUThread& thread)
 {
     unknown("tw");
 }
-void PPUInterpreter::twi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::twi(Instruction code, PPUThread& thread)
 {
     unknown("twi");
 }
-void PPUInterpreter::xorx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::xorx(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] ^ thread.gpr[code.rb];
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
 }
-void PPUInterpreter::xori(PPUFields code, PPUThread& thread)
+void PPUInterpreter::xori(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] ^ code.uimm;
 }
-void PPUInterpreter::xoris(PPUFields code, PPUThread& thread)
+void PPUInterpreter::xoris(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.ra] = thread.gpr[code.rs] ^ (code.uimm << 16);
 }
 
 // Floating-Point Unit instructions
-void PPUInterpreter::lfd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfd(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     thread.fpr[code.frd]._u64 = nucleus.memory.read64(addr);
 }
-void PPUInterpreter::lfdu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfdu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     thread.fpr[code.frd]._u64 = nucleus.memory.read64(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lfdux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfdux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     thread.fpr[code.frd]._u64 = nucleus.memory.read64(addr);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lfdx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfdx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     thread.fpr[code.frd]._u64 = nucleus.memory.read64(addr);
 }
-void PPUInterpreter::lfs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfs(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     const u32 value = nucleus.memory.read32(addr);
     thread.fpr[code.frd]._f64 = (f32&)value;
 }
-void PPUInterpreter::lfsu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfsu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     const u32 value = nucleus.memory.read32(addr);
     thread.fpr[code.frd]._f64 = (f32&)value;
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lfsux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfsux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     const u32 value = nucleus.memory.read32(addr);
     thread.fpr[code.frd]._f64 = (f32&)value;
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::lfsx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lfsx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u32 value = nucleus.memory.read32(addr);
     thread.fpr[code.frd]._f64 = (f32&)value;
 }
-void PPUInterpreter::fabs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fabs(Instruction code, PPUThread& thread)
 {
     const f64 value = thread.fpr[code.frb]._f64;
     thread.fpr[code.frd]._f64 = (value < 0.0) ? -value : value;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fadd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fadd(Instruction code, PPUThread& thread)
 {
     const f64 a = thread.fpr[code.fra]._f64;
     const f64 b = thread.fpr[code.frb]._f64;
@@ -1355,7 +1357,7 @@ void PPUInterpreter::fadd(PPUFields code, PPUThread& thread)
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPRF >> 28); }
 }
-void PPUInterpreter::fadds(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fadds(Instruction code, PPUThread& thread)
 {
     const f64 a = thread.fpr[code.fra]._f64;
     const f64 b = thread.fpr[code.frb]._f64;
@@ -1374,7 +1376,7 @@ void PPUInterpreter::fadds(PPUFields code, PPUThread& thread)
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fcfid(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fcfid(Instruction code, PPUThread& thread)
 {
     const s64 bi = (s64&)thread.fpr[code.frb];
     const f64 bf = (f64)bi;
@@ -1390,7 +1392,7 @@ void PPUInterpreter::fcfid(PPUFields code, PPUThread& thread)
     thread.fpr[code.frd]._f64 = bf;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fcmpo(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fcmpo(Instruction code, PPUThread& thread)
 {
     const int compareResult = PPU_FPR::compare(thread.fpr[code.fra], thread.fpr[code.frb]);
     if (compareResult == PPU_CR::CR_SO) {
@@ -1408,7 +1410,7 @@ void PPUInterpreter::fcmpo(PPUFields code, PPUThread& thread)
     thread.fpscr.FPRF = (1 << (3 - compareResult));
     thread.cr.setField(code.crfd, 1 << compareResult);
 }
-void PPUInterpreter::fcmpu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fcmpu(Instruction code, PPUThread& thread)
 {
     const int compareResult = PPU_FPR::compare(thread.fpr[code.fra], thread.fpr[code.frb]);
     if (compareResult == PPU_CR::CR_SO) {
@@ -1419,7 +1421,7 @@ void PPUInterpreter::fcmpu(PPUFields code, PPUThread& thread)
     thread.fpscr.FPRF = (1 << (3 - compareResult));
     thread.cr.setField(code.crfd, 1 << compareResult);
 }
-void PPUInterpreter::fctid(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fctid(Instruction code, PPUThread& thread)
 {
     const f64 b = thread.fpr[code.frb]._f64;
     u64 r;
@@ -1478,7 +1480,7 @@ void PPUInterpreter::fctid(PPUFields code, PPUThread& thread)
     thread.fpr[code.frd]._u64 = r;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fctidz(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fctidz(Instruction code, PPUThread& thread)
 {
     const f64 b = thread.fpr[code.frb]._f64;
     u64 r;
@@ -1517,7 +1519,7 @@ void PPUInterpreter::fctidz(PPUFields code, PPUThread& thread)
     thread.fpr[code.frd]._u64 = r;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fctiw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fctiw(Instruction code, PPUThread& thread)
 {
     const f64 b = thread.fpr[code.frb]._f64;
     u32 r;
@@ -1577,7 +1579,7 @@ void PPUInterpreter::fctiw(PPUFields code, PPUThread& thread)
     (u64&)thread.fpr[code.frd] = r;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fctiwz(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fctiwz(Instruction code, PPUThread& thread)
 {
     const f64 b = thread.fpr[code.frb]._f64;
     u32 value;
@@ -1612,7 +1614,7 @@ void PPUInterpreter::fctiwz(PPUFields code, PPUThread& thread)
     (u64&)thread.fpr[code.frd] = value;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fdiv(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fdiv(Instruction code, PPUThread& thread)
 {
     if (std::isnan(thread.fpr[code.fra]._f64)) {
         thread.fpr[code.frd] = thread.fpr[code.fra];
@@ -1642,7 +1644,7 @@ void PPUInterpreter::fdiv(PPUFields code, PPUThread& thread)
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fdivs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fdivs(Instruction code, PPUThread& thread)
 {
     if (std::isnan(thread.fpr[code.fra]._f64)) {
         thread.fpr[code.frd] = thread.fpr[code.fra];
@@ -1673,36 +1675,36 @@ void PPUInterpreter::fdivs(PPUFields code, PPUThread& thread)
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fmadd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fmadd(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 + thread.fpr[code.frb]._f64;
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fmadds(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fmadds(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = static_cast<f32>(thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 + thread.fpr[code.frb]._f64);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fmr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fmr(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd] = thread.fpr[code.frb];
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fmsub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fmsub(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 - thread.fpr[code.frb]._f64;
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fmsubs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fmsubs(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = static_cast<f32>(thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 - thread.fpr[code.frb]._f64);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fmul(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fmul(Instruction code, PPUThread& thread)
 {
     if ((thread.fpr[code.fra].isInf() && thread.fpr[code.frc] == 0.0) ||
         (thread.fpr[code.frc].isInf() && thread.fpr[code.fra] == 0.0)) {
@@ -1721,7 +1723,7 @@ void PPUInterpreter::fmul(PPUFields code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fmuls(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fmuls(Instruction code, PPUThread& thread)
 {
     const f64 a = thread.fpr[code.fra]._f64;
     const f64 b = thread.fpr[code.frc]._f64;
@@ -1741,41 +1743,41 @@ void PPUInterpreter::fmuls(PPUFields code, PPUThread& thread)
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fnabs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fnabs(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = -::fabs(thread.fpr[code.frb]._f64);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fneg(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fneg(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = -thread.fpr[code.frb]._f64;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fnmadd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fnmadd(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = -(thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 + thread.fpr[code.frb]._f64);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fnmadds(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fnmadds(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = static_cast<f32>(-(thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 + thread.fpr[code.frb]._f64));
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fnmsub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fnmsub(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = -(thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 - thread.fpr[code.frb]._f64);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fnmsubs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fnmsubs(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = static_cast<f32>(-(thread.fpr[code.fra]._f64 * thread.fpr[code.frc]._f64 - thread.fpr[code.frb]._f64));
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fres(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fres(Instruction code, PPUThread& thread)
 {
     if (thread.fpr[code.frb] == 0.0) {
         thread.fpscr.setException(FPSCR_ZX);
@@ -1783,7 +1785,7 @@ void PPUInterpreter::fres(PPUFields code, PPUThread& thread)
     thread.fpr[code.frd]._f64 = static_cast<f32>(1.0 / thread.fpr[code.frb]._f64);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::frsp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::frsp(Instruction code, PPUThread& thread)
 {
     const f64 b = thread.fpr[code.frb]._f64;
     f64 b0 = b;
@@ -1803,7 +1805,7 @@ void PPUInterpreter::frsp(PPUFields code, PPUThread& thread)
     thread.fpr[code.frd]._f64 = r;
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
 }
-void PPUInterpreter::frsqrte(PPUFields code, PPUThread& thread)
+void PPUInterpreter::frsqrte(Instruction code, PPUThread& thread)
 {
     if (thread.fpr[code.frb] == 0.0) {
         thread.fpscr.setException(FPSCR_ZX);
@@ -1811,41 +1813,41 @@ void PPUInterpreter::frsqrte(PPUFields code, PPUThread& thread)
     thread.fpr[code.frd]._f64 = 1.0 / sqrt(thread.fpr[code.frb]._f64);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fsel(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fsel(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd] = thread.fpr[code.fra]._f64 >= 0.0 ? thread.fpr[code.frc] : thread.fpr[code.frb];
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fsqrt(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fsqrt(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = sqrt(thread.fpr[code.frb]._f64);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fsqrts(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fsqrts(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = static_cast<f32>(sqrt(thread.fpr[code.frb]._f64));
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fsub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fsub(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = thread.fpr[code.fra]._f64 - thread.fpr[code.frb]._f64;
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::fsubs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::fsubs(Instruction code, PPUThread& thread)
 {
     thread.fpr[code.frd]._f64 = static_cast<f32>(thread.fpr[code.fra]._f64 - thread.fpr[code.frb]._f64);
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::mffs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mffs(Instruction code, PPUThread& thread)
 {
     (u64&)thread.fpr[code.frd] = thread.fpscr.FPSCR;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
-void PPUInterpreter::mtfsf(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mtfsf(Instruction code, PPUThread& thread)
 {
     u32 mask = 0;
     for (int i = 0; i < 8; i++) {
@@ -1856,54 +1858,54 @@ void PPUInterpreter::mtfsf(PPUFields code, PPUThread& thread)
     thread.fpscr.FPSCR = (thread.fpscr.FPSCR & ~mask) | ((u32&)thread.fpr[code.frb] & mask);
     if (code.rc) unknown("mtfsf.");
 }
-void PPUInterpreter::stfd(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfd(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     nucleus.memory.write64(addr, thread.fpr[code.frs]._u64);
 }
-void PPUInterpreter::stfdu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfdu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     nucleus.memory.write64(addr, thread.fpr[code.frs]._u64);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stfdux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfdux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     nucleus.memory.write64(addr, thread.fpr[code.frs]._u64);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stfdx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfdx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write64(addr, thread.fpr[code.frs]._u64);
 }
-void PPUInterpreter::stfiwx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfiwx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     nucleus.memory.write32(addr, (u32&)thread.fpr[code.frs]);
 }
-void PPUInterpreter::stfs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfs(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + code.d : code.d;
     const f32 value = thread.fpr[code.frs]._f64;
     nucleus.memory.write32(addr, (u32&)value);
 }
-void PPUInterpreter::stfsu(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfsu(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + code.d;
     const f32 value = thread.fpr[code.frs]._f64;
     nucleus.memory.write32(addr, (u32&)value);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stfsux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfsux(Instruction code, PPUThread& thread)
 {
     const u32 addr = thread.gpr[code.ra] + thread.gpr[code.rb];
     const f32 value = thread.fpr[code.frs]._f64;
     nucleus.memory.write32(addr, (u32&)value);
     thread.gpr[code.ra] = addr;
 }
-void PPUInterpreter::stfsx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stfsx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const f32 value = thread.fpr[code.frs]._f64;
@@ -1911,46 +1913,46 @@ void PPUInterpreter::stfsx(PPUFields code, PPUThread& thread)
 }
 
 // Vector/SIMD instructions
-void PPUInterpreter::lvebx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvebx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
     thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
 }
-void PPUInterpreter::lvehx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvehx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
     thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
 }
-void PPUInterpreter::lvewx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvewx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
     thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
 }
-void PPUInterpreter::lvlx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvlx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.readLeft(thread.vr[code.vd]._u8 + eb, addr, 16 - eb);
 }
-void PPUInterpreter::lvlxl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvlxl(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.readLeft(thread.vr[code.vd]._u8 + eb, addr, 16 - eb);
 }
-void PPUInterpreter::lvrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvrx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.readRight(thread.vr[code.vd]._u8, addr & ~0xf, eb);
 }
-void PPUInterpreter::lvrxl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvrxl(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.readRight(thread.vr[code.vd]._u8, addr & ~0xf, eb);
 }
-void PPUInterpreter::lvsl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvsl(Instruction code, PPUThread& thread)
 {
     static const u64 lvsl_values[0x10][2] = {
         {0x08090A0B0C0D0E0F, 0x0001020304050607},
@@ -1974,7 +1976,7 @@ void PPUInterpreter::lvsl(PPUFields code, PPUThread& thread)
     thread.vr[code.vd]._u64[0] = lvsl_values[addr & 0xf][0];
     thread.vr[code.vd]._u64[1] = lvsl_values[addr & 0xf][1];
 }
-void PPUInterpreter::lvsr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvsr(Instruction code, PPUThread& thread)
 {
     static const u64 lvsr_values[0x10][2] = {
         {0x18191A1B1C1D1E1F, 0x1011121314151617},
@@ -1998,90 +2000,90 @@ void PPUInterpreter::lvsr(PPUFields code, PPUThread& thread)
     thread.vr[code.vd]._u64[0] = lvsr_values[addr & 0xf][0];
     thread.vr[code.vd]._u64[1] = lvsr_values[addr & 0xf][1];
 }
-void PPUInterpreter::lvx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
     thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
 }
-void PPUInterpreter::lvxl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::lvxl(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
     thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
 }
-void PPUInterpreter::mfvscr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mfvscr(Instruction code, PPUThread& thread)
 {
     thread.vr[code.vd].clear();
     thread.vr[code.vd]._u32[0] = thread.vscr.VSCR;
 }
-void PPUInterpreter::mtvscr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::mtvscr(Instruction code, PPUThread& thread)
 {
     thread.vscr.VSCR = thread.vr[code.vb]._u32[0];
 }
-void PPUInterpreter::stvebx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvebx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.write8(addr, thread.vr[code.vs]._u8[15 - eb]);
 }
-void PPUInterpreter::stvehx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvehx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~1ULL;
     const u8 eb = (addr & 0xf) >> 1;
     nucleus.memory.write16(addr, thread.vr[code.vs]._u16[7 - eb]);
 }
-void PPUInterpreter::stvewx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvewx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~3ULL;
     const u8 eb = (addr & 0xf) >> 2;
     nucleus.memory.write32(addr, thread.vr[code.vs]._u32[3 - eb]);
 }
-void PPUInterpreter::stvlx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvlx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.writeLeft(addr, thread.vr[code.vs]._u8 + eb, 16 - eb);
 }
-void PPUInterpreter::stvlxl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvlxl(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.writeLeft(addr, thread.vr[code.vs]._u8 + eb, 16 - eb);
 }
-void PPUInterpreter::stvrx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvrx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.writeRight(addr - eb, thread.vr[code.vs]._u8, eb);
 }
-void PPUInterpreter::stvrxl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvrxl(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
     const u8 eb = addr & 0xf;
     nucleus.memory.writeRight(addr - eb, thread.vr[code.vs]._u8, eb);
 }
-void PPUInterpreter::stvx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
     nucleus.memory.write128(addr, thread.vr[code.vs]._u128);
 }
-void PPUInterpreter::stvxl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::stvxl(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
     nucleus.memory.write128(addr, thread.vr[code.vs]._u128);
 }
-void PPUInterpreter::vaddcuw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vaddcuw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = ~thread.vr[code.va]._u32[w] < thread.vr[code.vb]._u32[w];
     }
 }
-void PPUInterpreter::vaddfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vaddfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = thread.vr[code.va]._f32[w] + thread.vr[code.vb]._f32[w];
     }
 }
-void PPUInterpreter::vaddsbs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vaddsbs(Instruction code, PPUThread& thread)
 {
     for (u32 b=0; b<16; ++b) {
         const s16 result = (s16)thread.vr[code.va]._s8[b] + (s16)thread.vr[code.vb]._s8[b];
@@ -2098,7 +2100,7 @@ void PPUInterpreter::vaddsbs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vaddshs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vaddshs(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         const s32 result = (s32)thread.vr[code.va]._s16[h] + (s32)thread.vr[code.vb]._s16[h];
@@ -2115,7 +2117,7 @@ void PPUInterpreter::vaddshs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vaddsws(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vaddsws(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         const s64 result = (s64)thread.vr[code.va]._s32[w] + (s64)thread.vr[code.vb]._s32[w];
@@ -2132,13 +2134,13 @@ void PPUInterpreter::vaddsws(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vaddubm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vaddubm(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] + thread.vr[code.vb]._u8[b];
     }
 }
-void PPUInterpreter::vaddubs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vaddubs(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         const u16 result = (u16)thread.vr[code.va]._u8[b] + (u16)thread.vr[code.vb]._u8[b];
@@ -2151,13 +2153,13 @@ void PPUInterpreter::vaddubs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vadduhm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vadduhm(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] + thread.vr[code.vb]._u16[h];
     }
 }
-void PPUInterpreter::vadduhs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vadduhs(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         const u32 result = (u32)thread.vr[code.va]._u16[h] + (u32)thread.vr[code.vb]._u16[h];
@@ -2170,13 +2172,13 @@ void PPUInterpreter::vadduhs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vadduwm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vadduwm(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] + thread.vr[code.vb]._u32[w];
     }
 }
-void PPUInterpreter::vadduws(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vadduws(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         const u64 result = (u64)thread.vr[code.va]._u32[w] + (u64)thread.vr[code.vb]._u32[w];
@@ -2189,69 +2191,69 @@ void PPUInterpreter::vadduws(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vand(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vand(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] & thread.vr[code.vb]._u32[w];
     }
 }
-void PPUInterpreter::vandc(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vandc(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] & (~thread.vr[code.vb]._u32[w]);
     }
 }
-void PPUInterpreter::vavgsb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vavgsb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._s8[b] = (thread.vr[code.va]._s8[b] + thread.vr[code.vb]._s8[b] + 1) >> 1;
     }
 }
-void PPUInterpreter::vavgsh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vavgsh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = (thread.vr[code.va]._s16[h] + thread.vr[code.vb]._s16[h] + 1) >> 1;
     }
 }
-void PPUInterpreter::vavgsw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vavgsw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s32[w] = ((s64)thread.vr[code.va]._s32[w] + (s64)thread.vr[code.vb]._s32[w] + 1) >> 1;
     }
 }
-void PPUInterpreter::vavgub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vavgub(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = (thread.vr[code.va]._u8[b] + thread.vr[code.vb]._u8[b] + 1) >> 1;
     }
 }
-void PPUInterpreter::vavguh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vavguh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = (thread.vr[code.va]._u16[h] + thread.vr[code.vb]._u16[h] + 1) >> 1;
     }
 }
-void PPUInterpreter::vavguw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vavguw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = ((u64)thread.vr[code.va]._u32[w] + (u64)thread.vr[code.vb]._u32[w] + 1) >> 1;
     }
 }
-void PPUInterpreter::vcfsx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcfsx(Instruction code, PPUThread& thread)
 {
     const u32 scale = 1 << code.vuimm;
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = ((f32)thread.vr[code.vb]._s32[w]) / scale;
     }
 }
-void PPUInterpreter::vcfux(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcfux(Instruction code, PPUThread& thread)
 {
     const u32 scale = 1 << code.vuimm;
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = ((f32)thread.vr[code.vb]._u32[w]) / scale;
     }
 }
-void PPUInterpreter::vcmpbfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpbfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         u32 mask = 0;
@@ -2264,7 +2266,7 @@ void PPUInterpreter::vcmpbfp(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u32[w] = mask;
     }
 }
-void PPUInterpreter::vcmpbfp_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpbfp_(Instruction code, PPUThread& thread)
 {
     bool allInBounds = true;
     for (int w = 0; w < 4; w++) {
@@ -2282,13 +2284,13 @@ void PPUInterpreter::vcmpbfp_(PPUFields code, PPUThread& thread)
     }
     thread.cr.setBit(6*4 + 2, allInBounds);
 }
-void PPUInterpreter::vcmpeqfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpeqfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._f32[w] == thread.vr[code.vb]._f32[w] ? 0xFFFFFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpeqfp_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpeqfp_(Instruction code, PPUThread& thread)
 {
     int all_equal = 0x8;
     int none_equal = 0x2;
@@ -2306,13 +2308,13 @@ void PPUInterpreter::vcmpeqfp_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_equal | none_equal);
 }
-void PPUInterpreter::vcmpequb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpequb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] == thread.vr[code.vb]._u8[b] ? 0xFF : 0;
     }
 }
-void PPUInterpreter::vcmpequb_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpequb_(Instruction code, PPUThread& thread)
 {
     int all_equal = 0x8;
     int none_equal = 0x2;
@@ -2330,13 +2332,13 @@ void PPUInterpreter::vcmpequb_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_equal | none_equal);
 }
-void PPUInterpreter::vcmpequh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpequh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] == thread.vr[code.vb]._u16[h] ? 0xFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpequh_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpequh_(Instruction code, PPUThread& thread)
 {
     int all_equal = 0x8;
     int none_equal = 0x2;
@@ -2353,13 +2355,13 @@ void PPUInterpreter::vcmpequh_(PPUFields code, PPUThread& thread)
     }
     thread.cr.setField(6, all_equal | none_equal);
 }
-void PPUInterpreter::vcmpequw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpequw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] == thread.vr[code.vb]._u32[w] ? 0xFFFFFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpequw_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpequw_(Instruction code, PPUThread& thread)
 {
     int all_equal = 0x8;
     int none_equal = 0x2;
@@ -2377,13 +2379,13 @@ void PPUInterpreter::vcmpequw_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_equal | none_equal);
 }
-void PPUInterpreter::vcmpgefp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgefp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._f32[w] >= thread.vr[code.vb]._f32[w] ? 0xFFFFFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpgefp_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgefp_(Instruction code, PPUThread& thread)
 {
     int all_ge = 0x8;
     int none_ge = 0x2;
@@ -2401,13 +2403,13 @@ void PPUInterpreter::vcmpgefp_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_ge | none_ge);
 }
-void PPUInterpreter::vcmpgtfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._f32[w] > thread.vr[code.vb]._f32[w] ? 0xFFFFFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpgtfp_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtfp_(Instruction code, PPUThread& thread)
 {
     int all_ge = 0x8;
     int none_ge = 0x2;
@@ -2425,13 +2427,13 @@ void PPUInterpreter::vcmpgtfp_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_ge | none_ge);
 }
-void PPUInterpreter::vcmpgtsb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtsb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = thread.vr[code.va]._s8[b] > thread.vr[code.vb]._s8[b] ? 0xFF : 0;
     }
 }
-void PPUInterpreter::vcmpgtsb_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtsb_(Instruction code, PPUThread& thread)
 {
     int all_gt = 0x8;
     int none_gt = 0x2;
@@ -2449,13 +2451,13 @@ void PPUInterpreter::vcmpgtsb_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_gt | none_gt);
 }
-void PPUInterpreter::vcmpgtsh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtsh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._s16[h] > thread.vr[code.vb]._s16[h] ? 0xFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpgtsh_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtsh_(Instruction code, PPUThread& thread)
 {
     int all_gt = 0x8;
     int none_gt = 0x2;
@@ -2473,13 +2475,13 @@ void PPUInterpreter::vcmpgtsh_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_gt | none_gt);
 }
-void PPUInterpreter::vcmpgtsw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtsw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._s32[w] > thread.vr[code.vb]._s32[w] ? 0xFFFFFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpgtsw_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtsw_(Instruction code, PPUThread& thread)
 {
     int all_gt = 0x8;
     int none_gt = 0x2;
@@ -2497,13 +2499,13 @@ void PPUInterpreter::vcmpgtsw_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_gt | none_gt);
 }
-void PPUInterpreter::vcmpgtub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtub(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] > thread.vr[code.vb]._u8[b] ? 0xFF : 0;
     }
 }
-void PPUInterpreter::vcmpgtub_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtub_(Instruction code, PPUThread& thread)
 {
     int all_gt = 0x8;
     int none_gt = 0x2;
@@ -2521,13 +2523,13 @@ void PPUInterpreter::vcmpgtub_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_gt | none_gt);
 }
-void PPUInterpreter::vcmpgtuh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtuh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] > thread.vr[code.vb]._u16[h] ? 0xFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpgtuh_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtuh_(Instruction code, PPUThread& thread)
 {
     int all_gt = 0x8;
     int none_gt = 0x2;
@@ -2545,13 +2547,13 @@ void PPUInterpreter::vcmpgtuh_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_gt | none_gt);
 }
-void PPUInterpreter::vcmpgtuw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtuw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] > thread.vr[code.vb]._u32[w] ? 0xFFFFFFFF : 0;
     }
 }
-void PPUInterpreter::vcmpgtuw_(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vcmpgtuw_(Instruction code, PPUThread& thread)
 {
     int all_gt = 0x8;
     int none_gt = 0x2;
@@ -2569,7 +2571,7 @@ void PPUInterpreter::vcmpgtuw_(PPUFields code, PPUThread& thread)
 
     thread.cr.setField(6, all_gt | none_gt);
 }
-void PPUInterpreter::vctsxs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vctsxs(Instruction code, PPUThread& thread)
 {
     int nScale = 1 << code.vuimm;
 
@@ -2585,7 +2587,7 @@ void PPUInterpreter::vctsxs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vctuxs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vctuxs(Instruction code, PPUThread& thread)
 {
     int nScale = 1 << code.vuimm;
 
@@ -2600,65 +2602,65 @@ void PPUInterpreter::vctuxs(PPUFields code, PPUThread& thread)
             thread.vr[code.vd]._u32[w] = (u32)result;
     }
 }
-void PPUInterpreter::vexptefp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vexptefp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = exp(thread.vr[code.vb]._f32[w] * log(2.0f));
     }
 }
-void PPUInterpreter::vlogefp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vlogefp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = log(thread.vr[code.vb]._f32[w]) / log(2.0f);
     }
 }
-void PPUInterpreter::vmaddfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaddfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = thread.vr[code.va]._f32[w] * thread.vr[code.vc]._f32[w] + thread.vr[code.vb]._f32[w];
     }
 }
-void PPUInterpreter::vmaxfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaxfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = std::max(thread.vr[code.va]._f32[w], thread.vr[code.vb]._f32[w]);
     }
 }
-void PPUInterpreter::vmaxsb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaxsb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++)
         thread.vr[code.vd]._s8[b] = std::max(thread.vr[code.va]._s8[b], thread.vr[code.vb]._s8[b]);
 }
-void PPUInterpreter::vmaxsh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaxsh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = std::max(thread.vr[code.va]._s16[h], thread.vr[code.vb]._s16[h]);
     }
 }
-void PPUInterpreter::vmaxsw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaxsw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s32[w] = std::max(thread.vr[code.va]._s32[w], thread.vr[code.vb]._s32[w]);
     }
 }
-void PPUInterpreter::vmaxub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaxub(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++)
         thread.vr[code.vd]._u8[b] = std::max(thread.vr[code.va]._u8[b], thread.vr[code.vb]._u8[b]);
 }
-void PPUInterpreter::vmaxuh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaxuh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = std::max(thread.vr[code.va]._u16[h], thread.vr[code.vb]._u16[h]);
     }
 }
-void PPUInterpreter::vmaxuw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmaxuw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = std::max(thread.vr[code.va]._u32[w], thread.vr[code.vb]._u32[w]);
     }
 }
-void PPUInterpreter::vmhaddshs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmhaddshs(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         s32 result = (s32)thread.vr[code.va]._s16[h] * (s32)thread.vr[code.vb]._s16[h] + (s32)thread.vr[code.vc]._s16[h];
@@ -2675,7 +2677,7 @@ void PPUInterpreter::vmhaddshs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vmhraddshs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmhraddshs(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         s32 result = (s32)thread.vr[code.va]._s16[h] * (s32)thread.vr[code.vb]._s16[h] + (s32)thread.vr[code.vc]._s16[h] + 0x4000;
@@ -2693,97 +2695,97 @@ void PPUInterpreter::vmhraddshs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vminfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vminfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = std::min(thread.vr[code.va]._f32[w], thread.vr[code.vb]._f32[w]);
     }
 }
-void PPUInterpreter::vminsb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vminsb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._s8[b] = std::min(thread.vr[code.va]._s8[b], thread.vr[code.vb]._s8[b]);
     }
 }
-void PPUInterpreter::vminsh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vminsh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = std::min(thread.vr[code.va]._s16[h], thread.vr[code.vb]._s16[h]);
     }
 }
-void PPUInterpreter::vminsw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vminsw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s32[w] = std::min(thread.vr[code.va]._s32[w], thread.vr[code.vb]._s32[w]);
     }
 }
-void PPUInterpreter::vminub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vminub(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = std::min(thread.vr[code.va]._u8[b], thread.vr[code.vb]._u8[b]);
     }
 }
-void PPUInterpreter::vminuh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vminuh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = std::min(thread.vr[code.va]._u16[h], thread.vr[code.vb]._u16[h]);
     }
 }
-void PPUInterpreter::vminuw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vminuw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = std::min(thread.vr[code.va]._u32[w], thread.vr[code.vb]._u32[w]);
     }
 }
-void PPUInterpreter::vmladduhm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmladduhm(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] * thread.vr[code.vb]._u16[h] + thread.vr[code.vc]._u16[h];
     }
 }
-void PPUInterpreter::vmrghb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmrghb(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u8[15 - h*2 + 0] = thread.vr[code.va]._u8[15 - h];
         thread.vr[code.vd]._u8[15 - h*2 - 1] = thread.vr[code.vb]._u8[15 - h];
     }
 }
-void PPUInterpreter::vmrghh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmrghh(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u16[7 - w*2 + 0] = thread.vr[code.va]._u16[7 - w];
         thread.vr[code.vd]._u16[7 - w*2 - 1] = thread.vr[code.vb]._u16[7 - w];
     }
 }
-void PPUInterpreter::vmrghw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmrghw(Instruction code, PPUThread& thread)
 {
     for (int d = 0; d < 2; d++) {
         thread.vr[code.vd]._u32[3 - d*2 + 0] = thread.vr[code.va]._u32[3 - d];
         thread.vr[code.vd]._u32[3 - d*2 - 1] = thread.vr[code.vb]._u32[3 - d];
     }
 }
-void PPUInterpreter::vmrglb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmrglb(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u8[15 - h*2 + 0] = thread.vr[code.va]._u8[7 - h];
         thread.vr[code.vd]._u8[15 - h*2 - 1] = thread.vr[code.vb]._u8[7 - h];
     }
 }
-void PPUInterpreter::vmrglh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmrglh(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u16[7 - w*2] = thread.vr[code.va]._u16[3 - w];
         thread.vr[code.vd]._u16[7 - w*2 - 1] = thread.vr[code.vb]._u16[3 - w];
     }
 }
-void PPUInterpreter::vmrglw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmrglw(Instruction code, PPUThread& thread)
 {
     for (int d = 0; d < 2; d++) {
         thread.vr[code.vd]._u32[3 - d*2 + 0] = thread.vr[code.va]._u32[1 - d];
         thread.vr[code.vd]._u32[3 - d*2 - 1] = thread.vr[code.vb]._u32[1 - d];
     }
 }
-void PPUInterpreter::vmsummbm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmsummbm(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         s32 result = 0;
@@ -2794,7 +2796,7 @@ void PPUInterpreter::vmsummbm(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._s32[w] = result;
     }
 }
-void PPUInterpreter::vmsumshm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmsumshm(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         s32 result = 0;
@@ -2805,7 +2807,7 @@ void PPUInterpreter::vmsumshm(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._s32[w] = result;
     }
 }
-void PPUInterpreter::vmsumshs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmsumshs(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         s64 result = 0;
@@ -2827,7 +2829,7 @@ void PPUInterpreter::vmsumshs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vmsumubm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmsumubm(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         u32 result = 0;
@@ -2838,7 +2840,7 @@ void PPUInterpreter::vmsumubm(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u32[w] = result;
     }
 }
-void PPUInterpreter::vmsumuhm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmsumuhm(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         u32 result = 0;
@@ -2851,7 +2853,7 @@ void PPUInterpreter::vmsumuhm(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u32[w] = result;
     }
 }
-void PPUInterpreter::vmsumuhs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmsumuhs(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         u64 result = 0;
@@ -2869,73 +2871,73 @@ void PPUInterpreter::vmsumuhs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vmulesb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmulesb(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = (s16)thread.vr[code.va]._s8[h*2+1] * (s16)thread.vr[code.vb]._s8[h*2+1];
     }
 }
-void PPUInterpreter::vmulesh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmulesh(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s32[w] = (s32)thread.vr[code.va]._s16[w*2+1] * (s32)thread.vr[code.vb]._s16[w*2+1];
     }
 }
-void PPUInterpreter::vmuleub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmuleub(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = (u16)thread.vr[code.va]._u8[h*2+1] * (u16)thread.vr[code.vb]._u8[h*2+1];
     }
 }
-void PPUInterpreter::vmuleuh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmuleuh(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = (u32)thread.vr[code.va]._u16[w*2+1] * (u32)thread.vr[code.vb]._u16[w*2+1];
     }
 }
-void PPUInterpreter::vmulosb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmulosb(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = (s16)thread.vr[code.va]._s8[h*2] * (s16)thread.vr[code.vb]._s8[h*2];
     }
 }
-void PPUInterpreter::vmulosh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmulosh(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s32[w] = (s32)thread.vr[code.va]._s16[w*2] * (s32)thread.vr[code.vb]._s16[w*2];
     }
 }
-void PPUInterpreter::vmuloub(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmuloub(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = (u16)thread.vr[code.va]._u8[h*2] * (u16)thread.vr[code.vb]._u8[h*2];
     }
 }
-void PPUInterpreter::vmulouh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vmulouh(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = (u32)thread.vr[code.va]._u16[w*2] * (u32)thread.vr[code.vb]._u16[w*2];
     }
 }
-void PPUInterpreter::vnmsubfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vnmsubfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = -(thread.vr[code.va]._f32[w] * thread.vr[code.vc]._f32[w] - thread.vr[code.vb]._f32[w]);
     }
 }
-void PPUInterpreter::vnor(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vnor(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = ~(thread.vr[code.va]._u32[w] | thread.vr[code.vb]._u32[w]);
     }
 }
-void PPUInterpreter::vor(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vor(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] | thread.vr[code.vb]._u32[w];
     }
 }
-void PPUInterpreter::vperm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vperm(Instruction code, PPUThread& thread)
 {
     u8 tmpSRC[32];
     memcpy(tmpSRC, thread.vr[code.vb]._u8, 16);
@@ -2947,7 +2949,7 @@ void PPUInterpreter::vperm(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[b] = tmpSRC[0x1f - index];
     }
 }
-void PPUInterpreter::vpkpx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkpx(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 4; h++) {
         const u16 bb7  = thread.vr[code.vb]._u8[15 - (h*4 + 0)] & 0x1;
@@ -2963,7 +2965,7 @@ void PPUInterpreter::vpkpx(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u16[7 - h] = (ab7 << 15) | (ab8 << 10) | (ab16 << 5) | ab24;
     }
 }
-void PPUInterpreter::vpkshss(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkshss(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 8; b++) {
         s16 result = thread.vr[code.va]._s16[b];
@@ -2993,7 +2995,7 @@ void PPUInterpreter::vpkshss(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._s8[b] = result;
     }
 }
-void PPUInterpreter::vpkshus(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkshus(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 8; b++) {
         s16 result = thread.vr[code.va]._s16[b];
@@ -3023,7 +3025,7 @@ void PPUInterpreter::vpkshus(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[b] = result;
     }
 }
-void PPUInterpreter::vpkswss(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkswss(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 4; h++) {
         s32 result = thread.vr[code.va]._s32[h];
@@ -3053,7 +3055,7 @@ void PPUInterpreter::vpkswss(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._s16[h] = result;
     }
 }
-void PPUInterpreter::vpkswus(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkswus(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 4; h++) {
         s32 result = thread.vr[code.va]._s32[h];
@@ -3083,14 +3085,14 @@ void PPUInterpreter::vpkswus(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u16[h] = result;
     }
 }
-void PPUInterpreter::vpkuhum(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkuhum(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 8; b++) {
         thread.vr[code.vd]._u8[b+8] = thread.vr[code.va]._u8[b*2];
         thread.vr[code.vd]._u8[b  ] = thread.vr[code.vb]._u8[b*2];
     }
 }
-void PPUInterpreter::vpkuhus(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkuhus(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 8; b++) {
         u16 result = thread.vr[code.va]._u16[b];
@@ -3112,14 +3114,14 @@ void PPUInterpreter::vpkuhus(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[b] = result;
     }
 }
-void PPUInterpreter::vpkuwum(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkuwum(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 4; h++) {
         thread.vr[code.vd]._u16[h+4] = thread.vr[code.va]._u16[h*2];
         thread.vr[code.vd]._u16[h  ] = thread.vr[code.vb]._u16[h*2];
     }
 }
-void PPUInterpreter::vpkuwus(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vpkuwus(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 4; h++) {
         u32 result = thread.vr[code.va]._u32[h];
@@ -3141,31 +3143,31 @@ void PPUInterpreter::vpkuwus(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u16[h] = result;
     }
 }
-void PPUInterpreter::vrefp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrefp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = 1.0f / thread.vr[code.vb]._f32[w];
     }
 }
-void PPUInterpreter::vrfim(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrfim(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = floor(thread.vr[code.vb]._f32[w]);
     }
 }
-void PPUInterpreter::vrfin(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrfin(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = floor(thread.vr[code.vb]._f32[w] + 0.5f);
     }
 }
-void PPUInterpreter::vrfip(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrfip(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = ceil(thread.vr[code.vb]._f32[w]);
     }
 }
-void PPUInterpreter::vrfiz(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrfiz(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         f32 f;
@@ -3173,7 +3175,7 @@ void PPUInterpreter::vrfiz(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._f32[w] = f;
     }
 }
-void PPUInterpreter::vrlb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrlb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         int nRot = thread.vr[code.vb]._u8[b] & 0x7;
@@ -3181,31 +3183,31 @@ void PPUInterpreter::vrlb(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[b] = (thread.vr[code.va]._u8[b] << nRot) | (thread.vr[code.va]._u8[b] >> (8 - nRot));
     }
 }
-void PPUInterpreter::vrlh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrlh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = rotl16(thread.vr[code.va]._u16[h], thread.vr[code.vb]._u8[h*2] & 0xf);
     }
 }
-void PPUInterpreter::vrlw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrlw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = rotl32(thread.vr[code.va]._u32[w], thread.vr[code.vb]._u8[w*4] & 0x1f);
     }
 }
-void PPUInterpreter::vrsqrtefp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vrsqrtefp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = 1.0f / sqrtf(thread.vr[code.vb]._f32[w]);
     }
 }
-void PPUInterpreter::vsel(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsel(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = (thread.vr[code.vb]._u8[b] & thread.vr[code.vc]._u8[b]) | (thread.vr[code.va]._u8[b] & (~thread.vr[code.vc]._u8[b]));
     }
 }
-void PPUInterpreter::vsl(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsl(Instruction code, PPUThread& thread)
 {
     u8 sh = thread.vr[code.vb]._u8[0] & 0x7;
 
@@ -3223,13 +3225,13 @@ void PPUInterpreter::vsl(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vslb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vslb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] << (thread.vr[code.vb]._u8[b] & 0x7);
     }
 }
-void PPUInterpreter::vsldoi(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsldoi(Instruction code, PPUThread& thread)
 {
     u8 tmpSRC[32];
     memcpy(tmpSRC, thread.vr[code.vb]._u8, 16);
@@ -3238,13 +3240,13 @@ void PPUInterpreter::vsldoi(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[15 - b] = tmpSRC[31 - (b + code.sh)];
     }
 }
-void PPUInterpreter::vslh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vslh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] << (thread.vr[code.vb]._u8[h*2] & 0xf);
     }
 }
-void PPUInterpreter::vslo(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vslo(Instruction code, PPUThread& thread)
 {
     u8 nShift = (thread.vr[code.vb]._u8[0] >> 3) & 0xf;
 
@@ -3254,13 +3256,13 @@ void PPUInterpreter::vslo(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[15 - b] = thread.vr[code.va]._u8[15 - (b + nShift)];
     }
 }
-void PPUInterpreter::vslw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vslw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] << (thread.vr[code.vb]._u32[w] & 0x1f);
     }
 }
-void PPUInterpreter::vspltb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vspltb(Instruction code, PPUThread& thread)
 {
     u8 byte = thread.vr[code.vb]._u8[15 - code.vuimm];
 
@@ -3268,39 +3270,39 @@ void PPUInterpreter::vspltb(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[b] = byte;
     }
 }
-void PPUInterpreter::vsplth(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsplth(Instruction code, PPUThread& thread)
 {
     const u16 hword = thread.vr[code.vb]._u16[7 - code.vuimm];
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = hword;
     }
 }
-void PPUInterpreter::vspltisb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vspltisb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = code.vsimm;
     }
 }
-void PPUInterpreter::vspltish(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vspltish(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = (s16)code.vsimm;
     }
 }
-void PPUInterpreter::vspltisw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vspltisw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = (s32)code.vsimm;
     }
 }
-void PPUInterpreter::vspltw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vspltw(Instruction code, PPUThread& thread)
 {
     const u32 word = thread.vr[code.vb]._u32[3 - code.vuimm];
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = word;
     }
 }
-void PPUInterpreter::vsr(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsr(Instruction code, PPUThread& thread)
 {
     u8 sh = thread.vr[code.vb]._u8[0] & 0x7;
     u32 t = 1;
@@ -3316,37 +3318,37 @@ void PPUInterpreter::vsr(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vsrab(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsrab(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._s8[b] = thread.vr[code.va]._s8[b] >> (thread.vr[code.vb]._u8[b] & 0x7);
     }
 }
-void PPUInterpreter::vsrah(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsrah(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = thread.vr[code.va]._s16[h] >> (thread.vr[code.vb]._u8[h*2] & 0xf);
     }
 }
-void PPUInterpreter::vsraw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsraw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s32[w] = thread.vr[code.va]._s32[w] >> (thread.vr[code.vb]._u8[w*4] & 0x1f);
     }
 }
-void PPUInterpreter::vsrb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsrb(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] >> (thread.vr[code.vb]._u8[b] & 0x7);
     }
 }
-void PPUInterpreter::vsrh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsrh(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] >> (thread.vr[code.vb]._u8[h*2] & 0xf);
     }
 }
-void PPUInterpreter::vsro(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsro(Instruction code, PPUThread& thread)
 {
     const u8 nShift = (thread.vr[code.vb]._u8[0] >> 3) & 0xf;
     thread.vr[code.vd].clear();
@@ -3355,25 +3357,25 @@ void PPUInterpreter::vsro(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b + nShift];
     }
 }
-void PPUInterpreter::vsrw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsrw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] >> (thread.vr[code.vb]._u8[w*4] & 0x1f);
     }
 }
-void PPUInterpreter::vsubcuw(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubcuw(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] < thread.vr[code.vb]._u32[w] ? 0 : 1;
     }
 }
-void PPUInterpreter::vsubfp(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubfp(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._f32[w] = thread.vr[code.va]._f32[w] - thread.vr[code.vb]._f32[w];
     }
 }
-void PPUInterpreter::vsubsbs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubsbs(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         s16 result = (s16)thread.vr[code.va]._s8[b] - (s16)thread.vr[code.vb]._s8[b];
@@ -3390,7 +3392,7 @@ void PPUInterpreter::vsubsbs(PPUFields code, PPUThread& thread)
             thread.vr[code.vd]._s8[b] = (s8)result;
     }
 }
-void PPUInterpreter::vsubshs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubshs(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         s32 result = (s32)thread.vr[code.va]._s16[h] - (s32)thread.vr[code.vb]._s16[h];
@@ -3407,7 +3409,7 @@ void PPUInterpreter::vsubshs(PPUFields code, PPUThread& thread)
             thread.vr[code.vd]._s16[h] = (s16)result;
     }
 }
-void PPUInterpreter::vsubsws(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubsws(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         s64 result = (s64)thread.vr[code.va]._s32[w] - (s64)thread.vr[code.vb]._s32[w];
@@ -3424,13 +3426,13 @@ void PPUInterpreter::vsubsws(PPUFields code, PPUThread& thread)
             thread.vr[code.vd]._s32[w] = (s32)result;
     }
 }
-void PPUInterpreter::vsububm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsububm(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         thread.vr[code.vd]._u8[b] = (u8)((thread.vr[code.va]._u8[b] - thread.vr[code.vb]._u8[b]) & 0xFF);
     }
 }
-void PPUInterpreter::vsububs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsububs(Instruction code, PPUThread& thread)
 {
     for (int b = 0; b < 16; b++) {
         s16 result = (s16)thread.vr[code.va]._u8[b] - (s16)thread.vr[code.vb]._u8[b];
@@ -3443,13 +3445,13 @@ void PPUInterpreter::vsububs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vsubuhm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubuhm(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] - thread.vr[code.vb]._u16[h];
     }
 }
-void PPUInterpreter::vsubuhs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubuhs(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         s32 result = (s32)thread.vr[code.va]._u16[h] - (s32)thread.vr[code.vb]._u16[h];
@@ -3462,13 +3464,13 @@ void PPUInterpreter::vsubuhs(PPUFields code, PPUThread& thread)
             thread.vr[code.vd]._u16[h] = (u16)result;
     }
 }
-void PPUInterpreter::vsubuwm(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubuwm(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] - thread.vr[code.vb]._u32[w];
     }
 }
-void PPUInterpreter::vsubuws(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsubuws(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         s64 result = (s64)thread.vr[code.va]._u32[w] - (s64)thread.vr[code.vb]._u32[w];
@@ -3481,7 +3483,7 @@ void PPUInterpreter::vsubuws(PPUFields code, PPUThread& thread)
             thread.vr[code.vd]._u32[w] = (u32)result;
     }
 }
-void PPUInterpreter::vsum2sws(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsum2sws(Instruction code, PPUThread& thread)
 {
     for (int n = 0; n < 2; n++) {
         s64 sum = (s64)thread.vr[code.va]._s32[n*2] + thread.vr[code.va]._s32[n*2 + 1] + thread.vr[code.vb]._s32[n*2];
@@ -3501,7 +3503,7 @@ void PPUInterpreter::vsum2sws(PPUFields code, PPUThread& thread)
     thread.vr[code.vd]._s32[1] = 0;
     thread.vr[code.vd]._s32[3] = 0;
 }
-void PPUInterpreter::vsum4sbs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsum4sbs(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         s64 sum = thread.vr[code.vb]._s32[w];
@@ -3523,7 +3525,7 @@ void PPUInterpreter::vsum4sbs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vsum4shs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsum4shs(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         s64 sum = thread.vr[code.vb]._s32[w];
@@ -3545,7 +3547,7 @@ void PPUInterpreter::vsum4shs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vsum4ubs(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsum4ubs(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         u64 sum = thread.vr[code.vb]._u32[w];
@@ -3563,7 +3565,7 @@ void PPUInterpreter::vsum4ubs(PPUFields code, PPUThread& thread)
         }
     }
 }
-void PPUInterpreter::vsumsws(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vsumsws(Instruction code, PPUThread& thread)
 {
     thread.vr[code.vd].clear();
 
@@ -3584,7 +3586,7 @@ void PPUInterpreter::vsumsws(PPUFields code, PPUThread& thread)
     else
         thread.vr[code.vd]._s32[0] = (s32)sum;
 }
-void PPUInterpreter::vupkhpx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vupkhpx(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s8[(3 - w)*4 + 3] = thread.vr[code.vb]._s8[w*2 + 0] >> 7;
@@ -3593,19 +3595,19 @@ void PPUInterpreter::vupkhpx(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[(3 - w)*4 + 0] = thread.vr[code.vb]._u8[w*2 + 1] & 0x1f;
     }
 }
-void PPUInterpreter::vupkhsb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vupkhsb(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = thread.vr[code.vb]._s8[h];
     }
 }
-void PPUInterpreter::vupkhsh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vupkhsh(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s32[w] = thread.vr[code.vb]._s16[w];
     }
 }
-void PPUInterpreter::vupklpx(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vupklpx(Instruction code, PPUThread& thread)
 {
     for (int w = 0; w < 4; w++) {
         thread.vr[code.vd]._s8[(3 - w)*4 + 3] = thread.vr[code.vb]._s8[8 + w*2 + 0] >> 7;
@@ -3614,27 +3616,27 @@ void PPUInterpreter::vupklpx(PPUFields code, PPUThread& thread)
         thread.vr[code.vd]._u8[(3 - w)*4 + 0] = thread.vr[code.vb]._u8[8 + w*2 + 1] & 0x1f;
     }
 }
-void PPUInterpreter::vupklsb(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vupklsb(Instruction code, PPUThread& thread)
 {
     for (int h = 0; h < 8; h++) {
         thread.vr[code.vd]._s16[h] = thread.vr[code.vb]._s8[8 + h];
     }
 }
-void PPUInterpreter::vupklsh(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vupklsh(Instruction code, PPUThread& thread)
 {
     thread.vr[code.vd]._s32[0] = thread.vr[code.vb]._s16[4 + 0];
     thread.vr[code.vd]._s32[1] = thread.vr[code.vb]._s16[4 + 1];
     thread.vr[code.vd]._s32[2] = thread.vr[code.vb]._s16[4 + 2];
     thread.vr[code.vd]._s32[3] = thread.vr[code.vb]._s16[4 + 3];
 }
-void PPUInterpreter::vxor(PPUFields code, PPUThread& thread)
+void PPUInterpreter::vxor(Instruction code, PPUThread& thread)
 {
     thread.vr[code.vd]._u64[0] = thread.vr[code.va]._u64[0] ^ thread.vr[code.vb]._u64[0];
     thread.vr[code.vd]._u32[1] = thread.vr[code.va]._u64[1] ^ thread.vr[code.vb]._u64[1];
 }
 
 // Unknown instruction
-void PPUInterpreter::unknown(PPUFields code, PPUThread& thread)
+void PPUInterpreter::unknown(Instruction code, PPUThread& thread)
 {
     nucleus.log.error(LOG_CPU, "Unknown instruction: %08X (PC: %08X)", code.instruction, thread.pc);
 }

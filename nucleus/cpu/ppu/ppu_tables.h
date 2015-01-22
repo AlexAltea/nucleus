@@ -5,17 +5,18 @@
 
 #pragma once
 
-#include "nucleus/cpu/ppu/ppu_fields.h"
+#include "nucleus/cpu/ppu/ppu_instruction.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
 #include <string>
 
+namespace cpu {
+namespace ppu {
+
 struct PPUInstruction
 {
     const char* name;
-    void (*interpreter)(PPUFields, PPUThread&);
-    //void (*recompiler)(PPUFields, PPUThread&);
-    std::string (*disassembler)(PPUFields);
+    void (*interpreter)(Instruction, PPUThread&);
 };
 
 extern PPUInstruction s_tablePrimary[0x40];
@@ -31,3 +32,6 @@ extern PPUInstruction s_table63[0x20];
 extern PPUInstruction s_table63_[0x400];
 
 void initTables();
+
+}  // namespace ppu
+}  // namespace cpu
