@@ -26,18 +26,6 @@ using namespace cpu::ppu;
 // Instruction tables
 static bool b_tablesInitialized = false;
 
-// Instruction callers
-void PPUInterpreter::callTable4  (Instruction code, PPUThread& thread) { s_table4[code.op4].interpreter(code, thread); }
-void PPUInterpreter::callTable4_ (Instruction code, PPUThread& thread) { s_table4_[code.op4_].interpreter(code, thread); }
-void PPUInterpreter::callTable19 (Instruction code, PPUThread& thread) { s_table19[code.op19].interpreter(code, thread); }
-void PPUInterpreter::callTable30 (Instruction code, PPUThread& thread) { s_table30[code.op30].interpreter(code, thread); }
-void PPUInterpreter::callTable31 (Instruction code, PPUThread& thread) { s_table31[code.op31].interpreter(code, thread); }
-void PPUInterpreter::callTable58 (Instruction code, PPUThread& thread) { s_table58[code.op58].interpreter(code, thread); }
-void PPUInterpreter::callTable59 (Instruction code, PPUThread& thread) { s_table59[code.op59].interpreter(code, thread); }
-void PPUInterpreter::callTable62 (Instruction code, PPUThread& thread) { s_table62[code.op62].interpreter(code, thread); }
-void PPUInterpreter::callTable63 (Instruction code, PPUThread& thread) { s_table63[code.op63].interpreter(code, thread); }
-void PPUInterpreter::callTable63_(Instruction code, PPUThread& thread) { s_table63_[code.op63_].interpreter(code, thread); }
-
 // PowerPC Rotation-related functions
 inline u64 rotl64(const u64 x, const u8 n) { return (x << n) | (x >> (64 - n)); }
 inline u64 rotl32(const u32 x, const u8 n) { return rotl64((u64)x | ((u64)x << 32), n); }
@@ -126,9 +114,9 @@ void PPUInterpreter::step()
     }
 
     const Instruction code = { nucleus.memory.read32(thread.pc) };
-    const PPUInstruction& instruction = s_tablePrimary[code.opcode];
+    const Entry& entry = get_entry(code);
 
-    instruction.interpreter(code, thread);
+    entry.interpreter(code, thread);
     thread.pc += 4;
 }
 

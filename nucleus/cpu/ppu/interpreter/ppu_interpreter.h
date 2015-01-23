@@ -23,18 +23,6 @@ public:
     // Decode and execute one instruction
     void step();
 
-    // Instruction callers
-    static void callTable4  (Instruction code, PPUThread& thread);
-    static void callTable4_ (Instruction code, PPUThread& thread);
-    static void callTable19 (Instruction code, PPUThread& thread);
-    static void callTable30 (Instruction code, PPUThread& thread);
-    static void callTable31 (Instruction code, PPUThread& thread);
-    static void callTable58 (Instruction code, PPUThread& thread);
-    static void callTable59 (Instruction code, PPUThread& thread);
-    static void callTable62 (Instruction code, PPUThread& thread);
-    static void callTable63 (Instruction code, PPUThread& thread);
-    static void callTable63_(Instruction code, PPUThread& thread);
-
     /**
      * Auxiliary functions
      */
