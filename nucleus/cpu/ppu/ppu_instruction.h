@@ -101,13 +101,16 @@ union Instruction
      */
 
     // Determines whether the instruction is a valid PPU instruction
-    bool is_valid();
+    bool is_valid() const;
 
-    // Determines whether the instruction is branching instruction
-    bool is_branch();
+    // Determines whether the instruction is branch instruction
+    bool is_branch() const;
+
+    // Determines whether the instruction is function call instruction
+    bool is_call() const;
 
     // Determines whether the instruction is return instruction
-    bool is_return();
+    bool is_return() const;
 
 #undef FIELD
 };

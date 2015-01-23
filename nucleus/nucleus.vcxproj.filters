@@ -158,6 +158,9 @@
     <ClCompile Include="cpu\ppu\ppu_instruction.cpp">
       <Filter>cpu\ppu</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\ppu\ppu_analyzer.cpp">
+      <Filter>cpu\ppu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -351,6 +354,9 @@
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="cpu\ppu\ppu_instruction.h">
+      <Filter>cpu\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\ppu_analyzer.h">
       <Filter>cpu\ppu</Filter>
     </ClInclude>
   </ItemGroup>

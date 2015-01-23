@@ -6,13 +6,13 @@
 #include "self.h"
 #include "nucleus/common.h"
 #include "nucleus/emulator.h"
+#include "nucleus/cpu/ppu/ppu_analyzer.h"
 #include "nucleus/filesystem/filesystem.h"
-#include "nucleus/syscalls/lv2/sys_process.h"
-#include "nucleus/syscalls/lv2/sys_prx.h"
+#include "nucleus/loader/keys.h"
+#include "nucleus/loader/loader.h"
+
 #include "externals/aes.h"
 #include "externals/zlib/zlib.h"
-#include "keys.h"
-#include "loader.h"
 
 #include <cstring>
 
@@ -64,7 +64,9 @@ bool SELFLoader::load_elf(sys_process_t& proc)
 
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
             memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
-            // TODO: Static function analysis?
+            if (phdr.flags & PF_X) {
+                cpu::ppu::analyze_segment(phdr.vaddr, phdr.filesz);
+            }
             break;
 
         case PT_TLS:
