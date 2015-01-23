@@ -155,6 +155,9 @@
     <ClCompile Include="ui\language.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\ppu\ppu_instruction.cpp">
+      <Filter>cpu\ppu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

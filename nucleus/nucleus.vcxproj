@@ -84,6 +84,7 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="cpu\cell.cpp" />
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp" />
+    <ClCompile Include="cpu\ppu\ppu_instruction.cpp" />
     <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
     <ClCompile Include="cpu\thread.cpp" />

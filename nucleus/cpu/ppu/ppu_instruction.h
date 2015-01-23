@@ -10,13 +10,15 @@
 namespace cpu {
 namespace ppu {
 
-/**
- * PPU Instruction:
- * Represents the bit fields contained in 32-bit PPU instructions
- */
+// PPU Instruction
 union Instruction
 {
 #define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
+
+    /**
+     * PPU Instruction fields:
+     * Represents the bit fields contained in 32-bit PPU instructions.
+     */
 
     u32 instruction;
 
@@ -92,6 +94,20 @@ union Instruction
     FIELD(22, 25, u32 vshb);    // Vector/SIMD: Specifies a shift amount in bytes
     FIELD(11, 15, s32 vsimm);   // Vector/SIMD: Immediate 5-bit signed integer
     FIELD(11, 15, u32 vuimm);   // Vector/SIMD: Immediate 5-bit unsigned integer
+
+    /**
+     * PPU Instruction properties:
+     * Properties of the current instruction, required by the analyzer.
+     */
+
+    // Determines whether the instruction is a valid PPU instruction
+    bool is_valid();
+
+    // Determines whether the instruction is branching instruction
+    bool is_branch();
+
+    // Determines whether the instruction is return instruction
+    bool is_return();
 
 #undef FIELD
 };
