@@ -8,6 +8,8 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
 
+#include "nucleus/cpu/ppu/ppu_analyzer.h"
+
 #include <mutex>
 #include <vector>
 #include <set>
@@ -29,8 +31,11 @@ class Cell
     u64 m_current_id = 1;
 
 public:
+    // Executable memory segments
+    std::vector<cpu::ppu::Segment> ppu_segments;
+
     // Initialize static Cell related data
-    Cell::Cell();
+    Cell();
 
     // Count and iterate through threads
     size_t size() { return m_threads.size(); }

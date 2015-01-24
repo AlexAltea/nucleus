@@ -14,8 +14,6 @@
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
-#undef max
-#undef min
 #elif defined(NUCLEUS_PLATFORM_LINUX)
 #define InterlockedCompareExchange(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)
 #define InterlockedCompareExchange64(ptr,new_val,old_val)  __sync_val_compare_and_swap(ptr,old_val,new_val)

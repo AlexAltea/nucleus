@@ -8,16 +8,17 @@
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 
 #include <map>
-#include <set>
-#include <vector>
 
 namespace cpu {
 namespace ppu {
 
 void analyze_segment(u32 address, u32 size)
 {
+    Segment segment;
+    segment.address = address;
+    segment.size = size;
+
     std::map<u32, Block> blocks;
-    std::vector<Function> functions;
 
     // Current basic block being processed
     Block current;
@@ -75,7 +76,7 @@ void analyze_segment(u32 address, u32 size)
         if (block.initial) {
             Function function;
             function.block = block;
-            functions.push_back(function);
+            segment.functions.push_back(function);
         }
     }
 }

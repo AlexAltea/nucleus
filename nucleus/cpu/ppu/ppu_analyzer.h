@@ -7,12 +7,20 @@
 
 #include "nucleus/common.h"
 
+//#include "llvm/IR/BasicBlock.h"
+//#include "llvm/IR/Function.h"
+
 #include <string>
+#include <vector>
 
 namespace cpu {
 namespace ppu {
 
-struct Block {
+class Block
+{
+    //llvm::BasicBlock* block;
+
+public:
     // Starting address of this block in the EA space
     u32 address = 0;
 
@@ -27,12 +35,29 @@ struct Block {
     Block* branch_b = nullptr; // Conditional-False branching address
 };
 
-struct Function {
+class Function
+{
+    //llvm::Function* function;
+
+public:
     // Initial block that starts the Control Flow Graph
     Block block;
 
     // Name extracted from the DWARF symbols if available
     std::string name;
+};
+
+class Segment
+{
+public:
+    // Starting address of this segment in the EA space
+    u32 address = 0;
+
+    // Number of bytes covered by this segment
+    u32 size = 0;
+
+    // Functions contained in a 
+    std::vector<Function> functions;
 };
 
 void analyze_segment(u32 address, u32 size);

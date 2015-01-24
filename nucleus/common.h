@@ -245,3 +245,16 @@ public:
     be_t& operator++ () { *this += 1; return *this; }
     be_t& operator-- () { *this -= 1; return *this; }
 };
+
+/**
+ * Compiler warnings/errors
+ */
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#define NOMINMAX  // Conflicts with std::min, std::max in <algorithm> and min, max definitions in <Windows.h>
+#endif
+
+#if defined(NUCLEUS_COMPILER_MSVC)
+// Reason:       Nucleus is not responsible for useful C11 features not being in C++11.
+// Description:  Warning C4201: nonstandard extension used : nameless struct/union
+#pragma warning(disable: 4201)
+#endif

@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+
 #include <string>
 
 #include <Windows.h>
