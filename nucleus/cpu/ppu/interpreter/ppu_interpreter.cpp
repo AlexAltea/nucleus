@@ -23,9 +23,6 @@
 
 using namespace cpu::ppu;
 
-// Instruction tables
-static bool b_tablesInitialized = false;
-
 // PowerPC Rotation-related functions
 inline u64 rotl64(const u64 x, const u8 n) { return (x << n) | (x >> (64 - n)); }
 inline u64 rotl32(const u32 x, const u8 n) { return rotl64((u64)x | ((u64)x << 32), n); }
@@ -97,12 +94,6 @@ void initRotateMask()
 PPUInterpreter::PPUInterpreter(PPUThread& thr) : thread(thr)
 {
     initRotateMask();
-
-    // Initialize PPU Instruction tables (Remove once designated initializers are available in C++)
-    if (!b_tablesInitialized) {
-        initTables();
-        b_tablesInitialized = true;
-    }
 }
 
 void PPUInterpreter::step()
@@ -279,7 +270,7 @@ void PPUInterpreter::bc(Instruction code, PPUThread& thread)
 {
     if (CheckCondition(thread, code.bo, code.bi)) {
         if (code.lk) thread.lr = thread.pc + 4;
-        thread.pc = (code.aa ? code.bd : thread.pc + code.bd) & ~0x3ULL;
+        thread.pc = (code.aa ? (code.bd << 2) : thread.pc + (code.bd << 2)) & ~0x3ULL;
         thread.pc -= 4;
     }
 }

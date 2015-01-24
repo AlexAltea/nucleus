@@ -46,7 +46,7 @@ union Instruction
     FIELD( 9, 10, u32 l9_10);   // Bit/Flags: ?
     FIELD( 6, 10, u32 bo);      // Branching: Options for the branch conditional instructions
     FIELD(11, 15, u32 bi);      // Branching: CR bit to trigger branch conditional instructions
-    FIELD(16, 31, s32 bd);      // Branching: Immediate 14-bit signed integer for branch displacement
+    FIELD(16, 29, s32 bd);      // Branching: Immediate 14-bit signed integer for branch displacement
     FIELD(19, 20, u32 bh);      // ?
     FIELD(11, 13, u32 bfa);     // ?
     FIELD( 6,  8, u32 crfd);    // CR fields: Destination CR or FPSCR field
@@ -105,12 +105,17 @@ union Instruction
 
     // Determines whether the instruction is branch instruction
     bool is_branch() const;
+    bool is_branch_conditional() const;   
+    bool is_branch_unconditional() const;
 
     // Determines whether the instruction is function call instruction
     bool is_call() const;
 
     // Determines whether the instruction is return instruction
     bool is_return() const;
+
+    // Obtain the target address if the branch is taken
+    u32 get_target(u32 currentAddr) const;
 
 #undef FIELD
 };

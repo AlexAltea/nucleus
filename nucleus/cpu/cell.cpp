@@ -7,6 +7,8 @@
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
+#include "nucleus/cpu/ppu/ppu_tables.h"
+
 #include <algorithm>
 
 #ifdef NUCLEUS_PLATFORM_WINDOWS
@@ -16,6 +18,11 @@
 #endif
 
 thread_local CellThread* g_this_thread = nullptr;
+
+Cell::Cell()
+{
+    cpu::ppu::initTables();
+}
 
 CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
 {
