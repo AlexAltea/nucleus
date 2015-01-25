@@ -34,9 +34,6 @@ public:
     // Executable memory segments
     std::vector<cpu::ppu::Segment> ppu_segments;
 
-    // Initialize static Cell related data
-    Cell();
-
     // Count and iterate through threads
     size_t size() { return m_threads.size(); }
     std::vector<CellThread*>::const_iterator begin() { return m_threads.begin(); }

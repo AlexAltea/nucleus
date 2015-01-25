@@ -19,11 +19,6 @@
 
 thread_local CellThread* g_this_thread = nullptr;
 
-Cell::Cell()
-{
-    cpu::ppu::initTables();
-}
-
 CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
 {
     std::lock_guard<std::mutex> lock(m_mutex);

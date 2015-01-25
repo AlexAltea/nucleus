@@ -16,507 +16,522 @@
 namespace cpu {
 namespace ppu {
 
-Entry s_tablePrimary[0x40];
-Entry s_table4[0x40];
-Entry s_table4_[0x800];
-Entry s_table19[0x400];
-Entry s_table30[0x8];
-Entry s_table31[0x400];
-Entry s_table58[0x4];
-Entry s_table59[0x20];
-Entry s_table62[0x4];
-Entry s_table63[0x20];
-Entry s_table63_[0x400];
+/**
+ * PPU tables:
+ * Initialized as static constant data when Nucleus starts up.
+ * Invalid entries are zero-filled, therefore matching the ENTRY_INVALID type.
+ * NOTE: Use designated initializers instead as soon as they become available on C++.
+ */
 
+template <int N>
+struct Table {
+    Entry table[N];
+
+    const Entry& operator[] (const u32 i) const {
+        return table[i];
+    }
+};
+
+// Primary Table
+static const struct table_primary_t : Table<0x40> {
+    table_primary_t() : Table() {
+        table[0x004] = TABLE(get_table4);
+        table[0x013] = TABLE(get_table19);
+        table[0x01E] = TABLE(get_table30);
+        table[0x01F] = TABLE(get_table31);
+        table[0x03A] = TABLE(get_table58);
+        table[0x03B] = TABLE(get_table59);
+        table[0x03E] = TABLE(get_table62);
+        table[0x03F] = TABLE(get_table63);
+        table[0x002] = INSTRUCTION(tdi);
+        table[0x003] = INSTRUCTION(twi);
+        table[0x007] = INSTRUCTION(mulli);
+        table[0x008] = INSTRUCTION(subfic);
+        table[0x00A] = INSTRUCTION(cmpli);
+        table[0x00B] = INSTRUCTION(cmpi);
+        table[0x00C] = INSTRUCTION(addic);
+        table[0x00D] = INSTRUCTION(addic_);
+        table[0x00E] = INSTRUCTION(addi);
+        table[0x00F] = INSTRUCTION(addis);
+        table[0x010] = INSTRUCTION(bcx);
+        table[0x011] = INSTRUCTION(sc);
+        table[0x012] = INSTRUCTION(bx);
+        table[0x014] = INSTRUCTION(rlwimix);
+        table[0x015] = INSTRUCTION(rlwinmx);
+        table[0x017] = INSTRUCTION(rlwnmx);
+        table[0x018] = INSTRUCTION(ori);
+        table[0x019] = INSTRUCTION(oris);
+        table[0x01A] = INSTRUCTION(xori);
+        table[0x01B] = INSTRUCTION(xoris);
+        table[0x01C] = INSTRUCTION(andi_);
+        table[0x01D] = INSTRUCTION(andis_);
+        table[0x020] = INSTRUCTION(lwz);
+        table[0x021] = INSTRUCTION(lwzu);
+        table[0x022] = INSTRUCTION(lbz);
+        table[0x023] = INSTRUCTION(lbzu);
+        table[0x024] = INSTRUCTION(stw);
+        table[0x025] = INSTRUCTION(stwu);
+        table[0x026] = INSTRUCTION(stb);
+        table[0x027] = INSTRUCTION(stbu);
+        table[0x028] = INSTRUCTION(lhz);
+        table[0x029] = INSTRUCTION(lhzu);
+        table[0x02A] = INSTRUCTION(lha);
+        table[0x02B] = INSTRUCTION(lhau);
+        table[0x02C] = INSTRUCTION(sth);
+        table[0x02D] = INSTRUCTION(sthu);
+        table[0x02E] = INSTRUCTION(lmw);
+        table[0x02F] = INSTRUCTION(stmw);
+        table[0x030] = INSTRUCTION(lfs);
+        table[0x031] = INSTRUCTION(lfsu);
+        table[0x032] = INSTRUCTION(lfd);
+        table[0x033] = INSTRUCTION(lfdu);
+        table[0x034] = INSTRUCTION(stfs);
+        table[0x035] = INSTRUCTION(stfsu);
+        table[0x036] = INSTRUCTION(stfd);
+        table[0x037] = INSTRUCTION(stfdu);
+    }
+} tablePrimary;
+
+// Table 4
+static const struct table4_t : Table<0x40> {
+    table4_t() : Table() {
+        table[0x020] = INSTRUCTION(vmhaddshs);
+        table[0x021] = INSTRUCTION(vmhraddshs);
+        table[0x022] = INSTRUCTION(vmladduhm);
+        table[0x024] = INSTRUCTION(vmsumubm);
+        table[0x025] = INSTRUCTION(vmsummbm);
+        table[0x026] = INSTRUCTION(vmsumuhm);
+        table[0x027] = INSTRUCTION(vmsumuhs);
+        table[0x028] = INSTRUCTION(vmsumshm);
+        table[0x029] = INSTRUCTION(vmsumshs);
+        table[0x02A] = INSTRUCTION(vsel);
+        table[0x02B] = INSTRUCTION(vperm);
+        table[0x02C] = INSTRUCTION(vsldoi);
+        table[0x02E] = INSTRUCTION(vmaddfp);
+        table[0x02F] = INSTRUCTION(vnmsubfp);
+    }
+} table4;
+
+// Table 4 (Extended)
+static const struct table4_ext_t : Table<0x800> {
+    table4_ext_t() : Table() {
+        table[0x000] = INSTRUCTION(vaddubm);
+        table[0x002] = INSTRUCTION(vmaxub);
+        table[0x004] = INSTRUCTION(vrlb);
+        table[0x006] = INSTRUCTION(vcmpequb);
+        table[0x008] = INSTRUCTION(vmuloub);
+        table[0x00A] = INSTRUCTION(vaddfp);
+        table[0x00C] = INSTRUCTION(vmrghb);
+        table[0x00E] = INSTRUCTION(vpkuhum);
+        table[0x040] = INSTRUCTION(vadduhm);
+        table[0x042] = INSTRUCTION(vmaxuh);
+        table[0x044] = INSTRUCTION(vrlh);
+        table[0x046] = INSTRUCTION(vcmpequh);
+        table[0x048] = INSTRUCTION(vmulouh);
+        table[0x04A] = INSTRUCTION(vsubfp);
+        table[0x04C] = INSTRUCTION(vmrghh);
+        table[0x04E] = INSTRUCTION(vpkuwum);
+        table[0x080] = INSTRUCTION(vadduwm);
+        table[0x082] = INSTRUCTION(vmaxuw);
+        table[0x084] = INSTRUCTION(vrlw);
+        table[0x086] = INSTRUCTION(vcmpequw);
+        table[0x08C] = INSTRUCTION(vmrghw);
+        table[0x08E] = INSTRUCTION(vpkuhus);
+        table[0x0C6] = INSTRUCTION(vcmpeqfp);
+        table[0x0CE] = INSTRUCTION(vpkuwus);
+        table[0x102] = INSTRUCTION(vmaxsb);
+        table[0x104] = INSTRUCTION(vslb);
+        table[0x108] = INSTRUCTION(vmulosb);
+        table[0x10A] = INSTRUCTION(vrefp);
+        table[0x10C] = INSTRUCTION(vmrglb);
+        table[0x10E] = INSTRUCTION(vpkshus);
+        table[0x142] = INSTRUCTION(vmaxsh);
+        table[0x144] = INSTRUCTION(vslh);
+        table[0x148] = INSTRUCTION(vmulosh);
+        table[0x14A] = INSTRUCTION(vrsqrtefp);
+        table[0x14C] = INSTRUCTION(vmrglh);
+        table[0x14E] = INSTRUCTION(vpkswus);
+        table[0x180] = INSTRUCTION(vaddcuw);
+        table[0x182] = INSTRUCTION(vmaxsw);
+        table[0x184] = INSTRUCTION(vslw);
+        table[0x18A] = INSTRUCTION(vexptefp);
+        table[0x18C] = INSTRUCTION(vmrglw);
+        table[0x18E] = INSTRUCTION(vpkshss);
+        table[0x1C4] = INSTRUCTION(vsl);
+        table[0x1C6] = INSTRUCTION(vcmpgefp);
+        table[0x1CA] = INSTRUCTION(vlogefp);
+        table[0x1CE] = INSTRUCTION(vpkswss);
+        table[0x200] = INSTRUCTION(vaddubs);
+        table[0x202] = INSTRUCTION(vminub);
+        table[0x204] = INSTRUCTION(vsrb);
+        table[0x206] = INSTRUCTION(vcmpgtub);
+        table[0x208] = INSTRUCTION(vmuleub);
+        table[0x20A] = INSTRUCTION(vrfin);
+        table[0x20C] = INSTRUCTION(vspltb);
+        table[0x20E] = INSTRUCTION(vupkhsb);
+        table[0x240] = INSTRUCTION(vadduhs);
+        table[0x242] = INSTRUCTION(vminuh);
+        table[0x244] = INSTRUCTION(vsrh);
+        table[0x246] = INSTRUCTION(vcmpgtuh);
+        table[0x248] = INSTRUCTION(vmuleuh);
+        table[0x24A] = INSTRUCTION(vrfiz);
+        table[0x24C] = INSTRUCTION(vsplth);
+        table[0x24E] = INSTRUCTION(vupkhsh);
+        table[0x280] = INSTRUCTION(vadduws);
+        table[0x282] = INSTRUCTION(vminuw);
+        table[0x284] = INSTRUCTION(vsrw);
+        table[0x286] = INSTRUCTION(vcmpgtuw);
+        table[0x28A] = INSTRUCTION(vrfip);
+        table[0x28C] = INSTRUCTION(vspltw);
+        table[0x28E] = INSTRUCTION(vupklsb);
+        table[0x2C4] = INSTRUCTION(vsr);
+        table[0x2C6] = INSTRUCTION(vcmpgtfp);
+        table[0x2CA] = INSTRUCTION(vrfim);
+        table[0x2CE] = INSTRUCTION(vupklsh);
+        table[0x300] = INSTRUCTION(vaddsbs);
+        table[0x302] = INSTRUCTION(vminsb);
+        table[0x304] = INSTRUCTION(vsrab);
+        table[0x306] = INSTRUCTION(vcmpgtsb);
+        table[0x308] = INSTRUCTION(vmulesb);
+        table[0x30A] = INSTRUCTION(vcfux);
+        table[0x30C] = INSTRUCTION(vspltisb);
+        table[0x30E] = INSTRUCTION(vpkpx);
+        table[0x340] = INSTRUCTION(vaddshs);
+        table[0x342] = INSTRUCTION(vminsh);
+        table[0x344] = INSTRUCTION(vsrah);
+        table[0x346] = INSTRUCTION(vcmpgtsh);
+        table[0x348] = INSTRUCTION(vmulesh);
+        table[0x34A] = INSTRUCTION(vcfsx);
+        table[0x34C] = INSTRUCTION(vspltish);
+        table[0x34E] = INSTRUCTION(vupkhpx);
+        table[0x380] = INSTRUCTION(vaddsws);
+        table[0x382] = INSTRUCTION(vminsw);
+        table[0x384] = INSTRUCTION(vsraw);
+        table[0x386] = INSTRUCTION(vcmpgtsw);
+        table[0x38A] = INSTRUCTION(vctuxs);
+        table[0x38C] = INSTRUCTION(vspltisw);
+        table[0x3C6] = INSTRUCTION(vcmpbfp);
+        table[0x3CA] = INSTRUCTION(vctsxs);
+        table[0x3CE] = INSTRUCTION(vupklpx);
+        table[0x400] = INSTRUCTION(vsububm);
+        table[0x402] = INSTRUCTION(vavgub);
+        table[0x404] = INSTRUCTION(vand);
+        table[0x406] = INSTRUCTION(vcmpequb_);
+        table[0x40A] = INSTRUCTION(vmaxfp);
+        table[0x40C] = INSTRUCTION(vslo);
+        table[0x440] = INSTRUCTION(vsubuhm);
+        table[0x442] = INSTRUCTION(vavguh);
+        table[0x444] = INSTRUCTION(vandc);
+        table[0x446] = INSTRUCTION(vcmpequh_);
+        table[0x44A] = INSTRUCTION(vminfp);
+        table[0x44C] = INSTRUCTION(vsro);
+        table[0x480] = INSTRUCTION(vsubuwm);
+        table[0x482] = INSTRUCTION(vavguw);
+        table[0x484] = INSTRUCTION(vor);
+        table[0x486] = INSTRUCTION(vcmpequw_);
+        table[0x4C4] = INSTRUCTION(vxor);
+        table[0x4C6] = INSTRUCTION(vcmpeqfp_);
+        table[0x502] = INSTRUCTION(vavgsb);
+        table[0x504] = INSTRUCTION(vnor);
+        table[0x542] = INSTRUCTION(vavgsh);
+        table[0x580] = INSTRUCTION(vsubcuw);
+        table[0x582] = INSTRUCTION(vavgsw);
+        table[0x5C6] = INSTRUCTION(vcmpgefp_);
+        table[0x600] = INSTRUCTION(vsububs);
+        table[0x604] = INSTRUCTION(mfvscr);
+        table[0x606] = INSTRUCTION(vcmpgtub_);
+        table[0x608] = INSTRUCTION(vsum4ubs);
+        table[0x640] = INSTRUCTION(vsubuhs);
+        table[0x644] = INSTRUCTION(mtvscr);
+        table[0x646] = INSTRUCTION(vcmpgtuh_);
+        table[0x648] = INSTRUCTION(vsum4shs);
+        table[0x680] = INSTRUCTION(vsubuws);
+        table[0x686] = INSTRUCTION(vcmpgtuw_);
+        table[0x688] = INSTRUCTION(vsum2sws);
+        table[0x6C6] = INSTRUCTION(vcmpgtfp_);
+        table[0x700] = INSTRUCTION(vsubsbs);
+        table[0x706] = INSTRUCTION(vcmpgtsb_);
+        table[0x708] = INSTRUCTION(vsum4sbs);
+        table[0x740] = INSTRUCTION(vsubshs);
+        table[0x746] = INSTRUCTION(vcmpgtsh_);
+        table[0x780] = INSTRUCTION(vsubsws);
+        table[0x786] = INSTRUCTION(vcmpgtsw_);
+        table[0x788] = INSTRUCTION(vsumsws);
+        table[0x7C6] = INSTRUCTION(vcmpbfp_);
+    }
+} table4_;
+
+// Table 19
+static const struct table19_t : Table<0x400> {
+    table19_t() : Table() {
+        table[0x000] = INSTRUCTION(mcrf);
+        table[0x010] = INSTRUCTION(bclrx);
+        table[0x021] = INSTRUCTION(crnor);
+        table[0x081] = INSTRUCTION(crandc);
+        table[0x096] = INSTRUCTION(isync);
+        table[0x0C1] = INSTRUCTION(crxor);
+        table[0x0E1] = INSTRUCTION(crnand);
+        table[0x101] = INSTRUCTION(crand);
+        table[0x121] = INSTRUCTION(creqv);
+        table[0x1A1] = INSTRUCTION(crorc);
+        table[0x1C1] = INSTRUCTION(cror);
+        table[0x210] = INSTRUCTION(bcctrx);
+    }
+} table19;
+
+// Table 30
+static const struct table30_t : Table<0x8> {
+    table30_t() : Table() {
+        table[0x000] = INSTRUCTION(rldiclx);
+        table[0x001] = INSTRUCTION(rldicrx);
+        table[0x002] = INSTRUCTION(rldicx);
+        table[0x003] = INSTRUCTION(rldimix);
+        table[0x004] = INSTRUCTION(rldc_lr);
+    }
+} table30;
+
+// Table 31
+static const struct table31_t : Table<0x400> {
+    table31_t() : Table() {
+        table[0x000] = INSTRUCTION(cmp);
+        table[0x004] = INSTRUCTION(tw);
+        table[0x006] = INSTRUCTION(lvsl);
+        table[0x007] = INSTRUCTION(lvebx);
+        table[0x008] = INSTRUCTION(subfcx);
+        table[0x009] = INSTRUCTION(mulhdux);
+        table[0x00A] = INSTRUCTION(addcx);
+        table[0x00B] = INSTRUCTION(mulhwux);
+        table[0x013] = INSTRUCTION(mfocrf);
+        table[0x014] = INSTRUCTION(lwarx);
+        table[0x015] = INSTRUCTION(ldx);
+        table[0x017] = INSTRUCTION(lwzx);
+        table[0x018] = INSTRUCTION(slwx);
+        table[0x01A] = INSTRUCTION(cntlzwx);
+        table[0x01B] = INSTRUCTION(sldx);
+        table[0x01C] = INSTRUCTION(andx);
+        table[0x020] = INSTRUCTION(cmpl);
+        table[0x026] = INSTRUCTION(lvsr);
+        table[0x027] = INSTRUCTION(lvehx);
+        table[0x028] = INSTRUCTION(subfx);
+        table[0x035] = INSTRUCTION(ldux);
+        table[0x036] = INSTRUCTION(dcbst);
+        table[0x037] = INSTRUCTION(lwzux);
+        table[0x03A] = INSTRUCTION(cntlzdx);
+        table[0x03C] = INSTRUCTION(andcx);
+        table[0x044] = INSTRUCTION(td);
+        table[0x047] = INSTRUCTION(lvewx);
+        table[0x049] = INSTRUCTION(mulhdx);
+        table[0x04B] = INSTRUCTION(mulhwx);
+        table[0x054] = INSTRUCTION(ldarx);
+        table[0x056] = INSTRUCTION(dcbf);
+        table[0x057] = INSTRUCTION(lbzx);
+        table[0x067] = INSTRUCTION(lvx);
+        table[0x068] = INSTRUCTION(negx);
+        table[0x077] = INSTRUCTION(lbzux);
+        table[0x07C] = INSTRUCTION(norx);
+        table[0x087] = INSTRUCTION(stvebx);
+        table[0x088] = INSTRUCTION(subfex);
+        table[0x08A] = INSTRUCTION(addex);
+        table[0x090] = INSTRUCTION(mtocrf);
+        table[0x095] = INSTRUCTION(stdx);
+        table[0x096] = INSTRUCTION(stwcx_);
+        table[0x097] = INSTRUCTION(stwx);
+        table[0x0A7] = INSTRUCTION(stvehx);
+        table[0x0B5] = INSTRUCTION(stdux);
+        table[0x0B7] = INSTRUCTION(stwux);
+        table[0x0C7] = INSTRUCTION(stvewx);
+        table[0x0C8] = INSTRUCTION(subfzex);
+        table[0x0CA] = INSTRUCTION(addzex);
+        table[0x0D6] = INSTRUCTION(stdcx_);
+        table[0x0D7] = INSTRUCTION(stbx);
+        table[0x0E7] = INSTRUCTION(stvx);
+        table[0x0E8] = INSTRUCTION(subfmex);
+        table[0x0E9] = INSTRUCTION(mulldx);
+        table[0x0EA] = INSTRUCTION(addmex);
+        table[0x0EB] = INSTRUCTION(mullwx);
+        table[0x0F6] = INSTRUCTION(dcbtst);
+        table[0x0F7] = INSTRUCTION(stbux);
+        table[0x10A] = INSTRUCTION(addx);
+        table[0x116] = INSTRUCTION(dcbt);
+        table[0x117] = INSTRUCTION(lhzx);
+        table[0x11C] = INSTRUCTION(eqvx);
+        table[0x136] = INSTRUCTION(eciwx);
+        table[0x137] = INSTRUCTION(lhzux);
+        table[0x13C] = INSTRUCTION(xorx);
+        table[0x153] = INSTRUCTION(mfspr);
+        table[0x155] = INSTRUCTION(lwax);
+        table[0x156] = INSTRUCTION(dst);
+        table[0x157] = INSTRUCTION(lhax);
+        table[0x167] = INSTRUCTION(lvxl);
+        table[0x173] = INSTRUCTION(mftb);
+        table[0x175] = INSTRUCTION(lwaux);
+        table[0x176] = INSTRUCTION(dstst);
+        table[0x177] = INSTRUCTION(lhaux);
+        table[0x197] = INSTRUCTION(sthx);
+        table[0x19C] = INSTRUCTION(orcx);
+        table[0x1B6] = INSTRUCTION(ecowx);
+        table[0x1B7] = INSTRUCTION(sthux);
+        table[0x1BC] = INSTRUCTION(orx);
+        table[0x1C9] = INSTRUCTION(divdux);
+        table[0x1CB] = INSTRUCTION(divwux);
+        table[0x1D3] = INSTRUCTION(mtspr);
+        table[0x1DC] = INSTRUCTION(nandx);
+        table[0x1E7] = INSTRUCTION(stvxl);
+        table[0x1E9] = INSTRUCTION(divdx);
+        table[0x1EB] = INSTRUCTION(divwx);
+        table[0x207] = INSTRUCTION(lvlx);
+        table[0x214] = INSTRUCTION(ldbrx);
+        table[0x215] = INSTRUCTION(lswx);
+        table[0x216] = INSTRUCTION(lwbrx);
+        table[0x217] = INSTRUCTION(lfsx);
+        table[0x218] = INSTRUCTION(srwx);
+        table[0x21B] = INSTRUCTION(srdx);
+        table[0x227] = INSTRUCTION(lvrx);
+        table[0x237] = INSTRUCTION(lfsux);
+        table[0x255] = INSTRUCTION(lswi);
+        table[0x256] = INSTRUCTION(sync);
+        table[0x257] = INSTRUCTION(lfdx);
+        table[0x277] = INSTRUCTION(lfdux);
+        table[0x287] = INSTRUCTION(stvlx);
+        table[0x295] = INSTRUCTION(stswx);
+        table[0x296] = INSTRUCTION(stwbrx);
+        table[0x297] = INSTRUCTION(stfsx);
+        table[0x2A7] = INSTRUCTION(stvrx);
+        table[0x2B7] = INSTRUCTION(stfsux);
+        table[0x2D5] = INSTRUCTION(stswi);
+        table[0x2D7] = INSTRUCTION(stfdx);
+        table[0x2F7] = INSTRUCTION(stfdux);
+        table[0x307] = INSTRUCTION(lvlxl);
+        table[0x316] = INSTRUCTION(lhbrx);
+        table[0x318] = INSTRUCTION(srawx);
+        table[0x31A] = INSTRUCTION(sradx);
+        table[0x327] = INSTRUCTION(lvrxl);
+        table[0x336] = INSTRUCTION(dss);
+        table[0x338] = INSTRUCTION(srawix);
+        table[0x33A] = INSTRUCTION(sradix);
+        table[0x33B] = INSTRUCTION(sradix);
+        table[0x356] = INSTRUCTION(eieio);
+        table[0x387] = INSTRUCTION(stvlxl);
+        table[0x396] = INSTRUCTION(sthbrx);
+        table[0x39A] = INSTRUCTION(extshx);
+        table[0x387] = INSTRUCTION(stvrxl);
+        table[0x3BA] = INSTRUCTION(extsbx);
+        table[0x3D7] = INSTRUCTION(stfiwx);
+        table[0x3DA] = INSTRUCTION(extswx);
+        table[0x3D6] = INSTRUCTION(icbi);
+        table[0x3F6] = INSTRUCTION(dcbz);
+    }
+} table31;
+
+// Table 58
+static const struct table58_t : Table<0x4> {
+    table58_t() : Table() {
+        table[0x000] = INSTRUCTION(ld);
+        table[0x001] = INSTRUCTION(ldu);
+        table[0x002] = INSTRUCTION(lwa);
+    }
+} table58;
+
+// Table 59
+static const struct table59_t : Table<0x20> {
+    table59_t() : Table() {
+        table[0x012] = INSTRUCTION(fdivsx);
+        table[0x014] = INSTRUCTION(fsubsx);
+        table[0x015] = INSTRUCTION(faddsx);
+        table[0x016] = INSTRUCTION(fsqrtsx);
+        table[0x018] = INSTRUCTION(fresx);
+        table[0x019] = INSTRUCTION(fmulsx);
+        table[0x01C] = INSTRUCTION(fmsubsx);
+        table[0x01D] = INSTRUCTION(fmaddsx);
+        table[0x01E] = INSTRUCTION(fnmsubsx);
+        table[0x01F] = INSTRUCTION(fnmaddsx);
+    }
+} table59;
+
+// Table 62
+static const struct table62_t : Table<0x4> {
+    table62_t() : Table() {
+        table[0x000] = INSTRUCTION(std);
+        table[0x001] = INSTRUCTION(stdu);
+    }
+} table62;
+
+// Table 63
+static const struct table63_t : Table<0x20> {
+    table63_t() : Table() {
+        table[0x017] = INSTRUCTION(fselx);
+        table[0x019] = INSTRUCTION(fmulx);
+        table[0x01C] = INSTRUCTION(fmsubx);
+        table[0x01D] = INSTRUCTION(fmaddx);
+        table[0x01E] = INSTRUCTION(fnmsubx);
+        table[0x01F] = INSTRUCTION(fnmaddx);
+    }
+} table63;
+
+// Table 63 (Extended)
+static const struct table63_ext_t : Table<0x400> {
+    table63_ext_t() : Table() {
+        table[0x000] = INSTRUCTION(fcmpu);
+        table[0x00C] = INSTRUCTION(frspx);
+        table[0x00E] = INSTRUCTION(fctiwx);
+        table[0x00F] = INSTRUCTION(fctiwzx);
+        table[0x012] = INSTRUCTION(fdivx);
+        table[0x014] = INSTRUCTION(fsubx);
+        table[0x015] = INSTRUCTION(faddx);
+        table[0x016] = INSTRUCTION(fsqrtx);
+        table[0x01A] = INSTRUCTION(frsqrtex);
+        table[0x020] = INSTRUCTION(fcmpo);
+        table[0x026] = INSTRUCTION(mtfsb1x);
+        table[0x028] = INSTRUCTION(fnegx);
+        table[0x040] = INSTRUCTION(mcrfs);
+        table[0x046] = INSTRUCTION(mtfsb0x);
+        table[0x048] = INSTRUCTION(fmrx);
+        table[0x086] = INSTRUCTION(mtfsfix);
+        table[0x088] = INSTRUCTION(fnabsx);
+        table[0x108] = INSTRUCTION(fabsx);
+        table[0x247] = INSTRUCTION(mffsx);
+        table[0x2C7] = INSTRUCTION(mtfsfx);
+        table[0x32E] = INSTRUCTION(fctidx);
+        table[0x32F] = INSTRUCTION(fctidzx);
+        table[0x34E] = INSTRUCTION(fcfidx);
+    }
+} table63_;
+
+/**
+ * Return entries from tables
+ */
 const Entry& get_entry(Instruction code)
 {
-    if (s_tablePrimary[code.opcode].type == ENTRY_TABLE) {
-        return s_tablePrimary[code.opcode].caller(code);
+    if (tablePrimary[code.opcode].type == ENTRY_TABLE) {
+        return tablePrimary[code.opcode].caller(code);
     }
-    return s_tablePrimary[code.opcode];
+    return tablePrimary[code.opcode];
 }
 
 const Entry& get_table4(Instruction code)
 {
-    if (s_table4[code.op4].type == ENTRY_TABLE) {
-        return s_table4[code.op4].caller(code);
+    if (table4[code.op4].type == ENTRY_INVALID) {
+        return get_table4_(code);
     }
-    return s_table4[code.op4];
+    return table4[code.op4];
 }
 
 const Entry& get_table63(Instruction code)
 {
-    if (s_table63[code.op63].type == ENTRY_TABLE) {
-        return s_table63[code.op63].caller(code);
+    if (table63[code.op63].type == ENTRY_INVALID) {
+        return get_table63_(code);
     }
-    return s_table63[code.op63];
+    return table63[code.op63];
 }
 
-const Entry& get_table4_ (Instruction code) { return s_table4_[code.op4_]; }
-const Entry& get_table19 (Instruction code) { return s_table19[code.op19]; }
-const Entry& get_table30 (Instruction code) { return s_table30[code.op30]; }
-const Entry& get_table31 (Instruction code) { return s_table31[code.op31]; }
-const Entry& get_table58 (Instruction code) { return s_table58[code.op58]; }
-const Entry& get_table59 (Instruction code) { return s_table59[code.op59]; }
-const Entry& get_table62 (Instruction code) { return s_table62[code.op62]; }
-const Entry& get_table63_(Instruction code) { return s_table63_[code.op63_]; }
-
-void initTables()
-{
-    // Initialize Primary Table
-    for (auto& caller : s_tablePrimary) {
-        caller = { ENTRY_INVALID };
-    }
-    s_tablePrimary[0x04] = TABLE(get_table4);
-    s_tablePrimary[0x13] = TABLE(get_table19);
-    s_tablePrimary[0x1e] = TABLE(get_table30);
-    s_tablePrimary[0x1f] = TABLE(get_table31);
-    s_tablePrimary[0x3a] = TABLE(get_table58);
-    s_tablePrimary[0x3b] = TABLE(get_table59);
-    s_tablePrimary[0x3e] = TABLE(get_table62);
-    s_tablePrimary[0x3f] = TABLE(get_table63);
-    s_tablePrimary[0x02] = INSTRUCTION(tdi);
-    s_tablePrimary[0x03] = INSTRUCTION(twi);
-    s_tablePrimary[0x07] = INSTRUCTION(mulli);
-    s_tablePrimary[0x08] = INSTRUCTION(subfic);
-    s_tablePrimary[0x0a] = INSTRUCTION(cmpli);
-    s_tablePrimary[0x0b] = INSTRUCTION(cmpi);
-    s_tablePrimary[0x0c] = INSTRUCTION(addic);
-    s_tablePrimary[0x0d] = INSTRUCTION(addic_);
-    s_tablePrimary[0x0e] = INSTRUCTION(addi);
-    s_tablePrimary[0x0f] = INSTRUCTION(addis);
-    s_tablePrimary[0x10] = INSTRUCTION(bcx);
-    s_tablePrimary[0x11] = INSTRUCTION(sc);
-    s_tablePrimary[0x12] = INSTRUCTION(bx);
-    s_tablePrimary[0x14] = INSTRUCTION(rlwimix);
-    s_tablePrimary[0x15] = INSTRUCTION(rlwinmx);
-    s_tablePrimary[0x17] = INSTRUCTION(rlwnmx);
-    s_tablePrimary[0x18] = INSTRUCTION(ori);
-    s_tablePrimary[0x19] = INSTRUCTION(oris);
-    s_tablePrimary[0x1a] = INSTRUCTION(xori);
-    s_tablePrimary[0x1b] = INSTRUCTION(xoris);
-    s_tablePrimary[0x1c] = INSTRUCTION(andi_);
-    s_tablePrimary[0x1d] = INSTRUCTION(andis_);
-    s_tablePrimary[0x20] = INSTRUCTION(lwz);
-    s_tablePrimary[0x21] = INSTRUCTION(lwzu);
-    s_tablePrimary[0x22] = INSTRUCTION(lbz);
-    s_tablePrimary[0x23] = INSTRUCTION(lbzu);
-    s_tablePrimary[0x24] = INSTRUCTION(stw);
-    s_tablePrimary[0x25] = INSTRUCTION(stwu);
-    s_tablePrimary[0x26] = INSTRUCTION(stb);
-    s_tablePrimary[0x27] = INSTRUCTION(stbu);
-    s_tablePrimary[0x28] = INSTRUCTION(lhz);
-    s_tablePrimary[0x29] = INSTRUCTION(lhzu);
-    s_tablePrimary[0x2a] = INSTRUCTION(lha);
-    s_tablePrimary[0x2b] = INSTRUCTION(lhau);
-    s_tablePrimary[0x2c] = INSTRUCTION(sth);
-    s_tablePrimary[0x2d] = INSTRUCTION(sthu);
-    s_tablePrimary[0x2e] = INSTRUCTION(lmw);
-    s_tablePrimary[0x2f] = INSTRUCTION(stmw);
-    s_tablePrimary[0x30] = INSTRUCTION(lfs);
-    s_tablePrimary[0x31] = INSTRUCTION(lfsu);
-    s_tablePrimary[0x32] = INSTRUCTION(lfd);
-    s_tablePrimary[0x33] = INSTRUCTION(lfdu);
-    s_tablePrimary[0x34] = INSTRUCTION(stfs);
-    s_tablePrimary[0x35] = INSTRUCTION(stfsu);
-    s_tablePrimary[0x36] = INSTRUCTION(stfd);
-    s_tablePrimary[0x37] = INSTRUCTION(stfdu);
-
-    // Initialize Table 4
-    for (auto& caller : s_table4) {
-        caller = TABLE(get_table4_);
-    }
-    s_table4[0x020] = INSTRUCTION(vmhaddshs);
-    s_table4[0x021] = INSTRUCTION(vmhraddshs);
-    s_table4[0x022] = INSTRUCTION(vmladduhm);
-    s_table4[0x024] = INSTRUCTION(vmsumubm);
-    s_table4[0x025] = INSTRUCTION(vmsummbm);
-    s_table4[0x026] = INSTRUCTION(vmsumuhm);
-    s_table4[0x027] = INSTRUCTION(vmsumuhs);
-    s_table4[0x028] = INSTRUCTION(vmsumshm);
-    s_table4[0x029] = INSTRUCTION(vmsumshs);
-    s_table4[0x02A] = INSTRUCTION(vsel);
-    s_table4[0x02B] = INSTRUCTION(vperm);
-    s_table4[0x02C] = INSTRUCTION(vsldoi);
-    s_table4[0x02E] = INSTRUCTION(vmaddfp);
-    s_table4[0x02F] = INSTRUCTION(vnmsubfp);
-
-    // Initialize Table 4 (Extended)
-    for (auto& caller : s_table4_) {
-        caller = { ENTRY_INVALID };
-    }
-    s_table4_[0x000] = INSTRUCTION(vaddubm);
-    s_table4_[0x002] = INSTRUCTION(vmaxub);
-    s_table4_[0x004] = INSTRUCTION(vrlb);
-    s_table4_[0x006] = INSTRUCTION(vcmpequb);
-    s_table4_[0x008] = INSTRUCTION(vmuloub);
-    s_table4_[0x00A] = INSTRUCTION(vaddfp);
-    s_table4_[0x00C] = INSTRUCTION(vmrghb);
-    s_table4_[0x00E] = INSTRUCTION(vpkuhum);
-    s_table4_[0x040] = INSTRUCTION(vadduhm);
-    s_table4_[0x042] = INSTRUCTION(vmaxuh);
-    s_table4_[0x044] = INSTRUCTION(vrlh);
-    s_table4_[0x046] = INSTRUCTION(vcmpequh);
-    s_table4_[0x048] = INSTRUCTION(vmulouh);
-    s_table4_[0x04A] = INSTRUCTION(vsubfp);
-    s_table4_[0x04C] = INSTRUCTION(vmrghh);
-    s_table4_[0x04E] = INSTRUCTION(vpkuwum);
-    s_table4_[0x080] = INSTRUCTION(vadduwm);
-    s_table4_[0x082] = INSTRUCTION(vmaxuw);
-    s_table4_[0x084] = INSTRUCTION(vrlw);
-    s_table4_[0x086] = INSTRUCTION(vcmpequw);
-    s_table4_[0x08C] = INSTRUCTION(vmrghw);
-    s_table4_[0x08E] = INSTRUCTION(vpkuhus);
-    s_table4_[0x0C6] = INSTRUCTION(vcmpeqfp);
-    s_table4_[0x0CE] = INSTRUCTION(vpkuwus);
-    s_table4_[0x102] = INSTRUCTION(vmaxsb);
-    s_table4_[0x104] = INSTRUCTION(vslb);
-    s_table4_[0x108] = INSTRUCTION(vmulosb);
-    s_table4_[0x10A] = INSTRUCTION(vrefp);
-    s_table4_[0x10C] = INSTRUCTION(vmrglb);
-    s_table4_[0x10E] = INSTRUCTION(vpkshus);
-    s_table4_[0x142] = INSTRUCTION(vmaxsh);
-    s_table4_[0x144] = INSTRUCTION(vslh);
-    s_table4_[0x148] = INSTRUCTION(vmulosh);
-    s_table4_[0x14A] = INSTRUCTION(vrsqrtefp);
-    s_table4_[0x14C] = INSTRUCTION(vmrglh);
-    s_table4_[0x14E] = INSTRUCTION(vpkswus);
-    s_table4_[0x180] = INSTRUCTION(vaddcuw);
-    s_table4_[0x182] = INSTRUCTION(vmaxsw);
-    s_table4_[0x184] = INSTRUCTION(vslw);
-    s_table4_[0x18A] = INSTRUCTION(vexptefp);
-    s_table4_[0x18C] = INSTRUCTION(vmrglw);
-    s_table4_[0x18E] = INSTRUCTION(vpkshss);
-    s_table4_[0x1C4] = INSTRUCTION(vsl);
-    s_table4_[0x1C6] = INSTRUCTION(vcmpgefp);
-    s_table4_[0x1CA] = INSTRUCTION(vlogefp);
-    s_table4_[0x1CE] = INSTRUCTION(vpkswss);
-    s_table4_[0x200] = INSTRUCTION(vaddubs);
-    s_table4_[0x202] = INSTRUCTION(vminub);
-    s_table4_[0x204] = INSTRUCTION(vsrb);
-    s_table4_[0x206] = INSTRUCTION(vcmpgtub);
-    s_table4_[0x208] = INSTRUCTION(vmuleub);
-    s_table4_[0x20A] = INSTRUCTION(vrfin);
-    s_table4_[0x20C] = INSTRUCTION(vspltb);
-    s_table4_[0x20E] = INSTRUCTION(vupkhsb);
-    s_table4_[0x240] = INSTRUCTION(vadduhs);
-    s_table4_[0x242] = INSTRUCTION(vminuh);
-    s_table4_[0x244] = INSTRUCTION(vsrh);
-    s_table4_[0x246] = INSTRUCTION(vcmpgtuh);
-    s_table4_[0x248] = INSTRUCTION(vmuleuh);
-    s_table4_[0x24A] = INSTRUCTION(vrfiz);
-    s_table4_[0x24C] = INSTRUCTION(vsplth);
-    s_table4_[0x24E] = INSTRUCTION(vupkhsh);
-    s_table4_[0x280] = INSTRUCTION(vadduws);
-    s_table4_[0x282] = INSTRUCTION(vminuw);
-    s_table4_[0x284] = INSTRUCTION(vsrw);
-    s_table4_[0x286] = INSTRUCTION(vcmpgtuw);
-    s_table4_[0x28A] = INSTRUCTION(vrfip);
-    s_table4_[0x28C] = INSTRUCTION(vspltw);
-    s_table4_[0x28E] = INSTRUCTION(vupklsb);
-    s_table4_[0x2C4] = INSTRUCTION(vsr);
-    s_table4_[0x2C6] = INSTRUCTION(vcmpgtfp);
-    s_table4_[0x2CA] = INSTRUCTION(vrfim);
-    s_table4_[0x2CE] = INSTRUCTION(vupklsh);
-    s_table4_[0x300] = INSTRUCTION(vaddsbs);
-    s_table4_[0x302] = INSTRUCTION(vminsb);
-    s_table4_[0x304] = INSTRUCTION(vsrab);
-    s_table4_[0x306] = INSTRUCTION(vcmpgtsb);
-    s_table4_[0x308] = INSTRUCTION(vmulesb);
-    s_table4_[0x30A] = INSTRUCTION(vcfux);
-    s_table4_[0x30C] = INSTRUCTION(vspltisb);
-    s_table4_[0x30E] = INSTRUCTION(vpkpx);
-    s_table4_[0x340] = INSTRUCTION(vaddshs);
-    s_table4_[0x342] = INSTRUCTION(vminsh);
-    s_table4_[0x344] = INSTRUCTION(vsrah);
-    s_table4_[0x346] = INSTRUCTION(vcmpgtsh);
-    s_table4_[0x348] = INSTRUCTION(vmulesh);
-    s_table4_[0x34A] = INSTRUCTION(vcfsx);
-    s_table4_[0x34C] = INSTRUCTION(vspltish);
-    s_table4_[0x34E] = INSTRUCTION(vupkhpx);
-    s_table4_[0x380] = INSTRUCTION(vaddsws);
-    s_table4_[0x382] = INSTRUCTION(vminsw);
-    s_table4_[0x384] = INSTRUCTION(vsraw);
-    s_table4_[0x386] = INSTRUCTION(vcmpgtsw);
-    s_table4_[0x38A] = INSTRUCTION(vctuxs);
-    s_table4_[0x38C] = INSTRUCTION(vspltisw);
-    s_table4_[0x3C6] = INSTRUCTION(vcmpbfp);
-    s_table4_[0x3CA] = INSTRUCTION(vctsxs);
-    s_table4_[0x3CE] = INSTRUCTION(vupklpx);
-    s_table4_[0x400] = INSTRUCTION(vsububm);
-    s_table4_[0x402] = INSTRUCTION(vavgub);
-    s_table4_[0x404] = INSTRUCTION(vand);
-    s_table4_[0x406] = INSTRUCTION(vcmpequb_);
-    s_table4_[0x40A] = INSTRUCTION(vmaxfp);
-    s_table4_[0x40C] = INSTRUCTION(vslo);
-    s_table4_[0x440] = INSTRUCTION(vsubuhm);
-    s_table4_[0x442] = INSTRUCTION(vavguh);
-    s_table4_[0x444] = INSTRUCTION(vandc);
-    s_table4_[0x446] = INSTRUCTION(vcmpequh_);
-    s_table4_[0x44A] = INSTRUCTION(vminfp);
-    s_table4_[0x44C] = INSTRUCTION(vsro);
-    s_table4_[0x480] = INSTRUCTION(vsubuwm);
-    s_table4_[0x482] = INSTRUCTION(vavguw);
-    s_table4_[0x484] = INSTRUCTION(vor);
-    s_table4_[0x486] = INSTRUCTION(vcmpequw_);
-    s_table4_[0x4C4] = INSTRUCTION(vxor);
-    s_table4_[0x4C6] = INSTRUCTION(vcmpeqfp_);
-    s_table4_[0x502] = INSTRUCTION(vavgsb);
-    s_table4_[0x504] = INSTRUCTION(vnor);
-    s_table4_[0x542] = INSTRUCTION(vavgsh);
-    s_table4_[0x580] = INSTRUCTION(vsubcuw);
-    s_table4_[0x582] = INSTRUCTION(vavgsw);
-    s_table4_[0x5C6] = INSTRUCTION(vcmpgefp_);
-    s_table4_[0x600] = INSTRUCTION(vsububs);
-    s_table4_[0x604] = INSTRUCTION(mfvscr);
-    s_table4_[0x606] = INSTRUCTION(vcmpgtub_);
-    s_table4_[0x608] = INSTRUCTION(vsum4ubs);
-    s_table4_[0x640] = INSTRUCTION(vsubuhs);
-    s_table4_[0x644] = INSTRUCTION(mtvscr);
-    s_table4_[0x646] = INSTRUCTION(vcmpgtuh_);
-    s_table4_[0x648] = INSTRUCTION(vsum4shs);
-    s_table4_[0x680] = INSTRUCTION(vsubuws);
-    s_table4_[0x686] = INSTRUCTION(vcmpgtuw_);
-    s_table4_[0x688] = INSTRUCTION(vsum2sws);
-    s_table4_[0x6C6] = INSTRUCTION(vcmpgtfp_);
-    s_table4_[0x700] = INSTRUCTION(vsubsbs);
-    s_table4_[0x706] = INSTRUCTION(vcmpgtsb_);
-    s_table4_[0x708] = INSTRUCTION(vsum4sbs);
-    s_table4_[0x740] = INSTRUCTION(vsubshs);
-    s_table4_[0x746] = INSTRUCTION(vcmpgtsh_);
-    s_table4_[0x780] = INSTRUCTION(vsubsws);
-    s_table4_[0x786] = INSTRUCTION(vcmpgtsw_);
-    s_table4_[0x788] = INSTRUCTION(vsumsws);
-    s_table4_[0x7C6] = INSTRUCTION(vcmpbfp_);
-
-    // Initialize Table 19
-    for (auto& caller : s_table19) {
-        caller = { ENTRY_INVALID };
-    }
-    s_table19[0x000] = INSTRUCTION(mcrf);
-    s_table19[0x010] = INSTRUCTION(bclrx);
-    s_table19[0x021] = INSTRUCTION(crnor);
-    s_table19[0x081] = INSTRUCTION(crandc);
-    s_table19[0x096] = INSTRUCTION(isync);
-    s_table19[0x0c1] = INSTRUCTION(crxor);
-    s_table19[0x0e1] = INSTRUCTION(crnand);
-    s_table19[0x101] = INSTRUCTION(crand);
-    s_table19[0x121] = INSTRUCTION(creqv);
-    s_table19[0x1a1] = INSTRUCTION(crorc);
-    s_table19[0x1c1] = INSTRUCTION(cror);
-    s_table19[0x210] = INSTRUCTION(bcctrx);
-
-    // Initialize Table 30
-    for (auto& caller : s_table30) {
-        caller = INSTRUCTION(unknown);
-    }
-    s_table30[0x0] = INSTRUCTION(rldiclx);
-    s_table30[0x1] = INSTRUCTION(rldicrx);
-    s_table30[0x2] = INSTRUCTION(rldicx);
-    s_table30[0x3] = INSTRUCTION(rldimix);
-    s_table30[0x4] = INSTRUCTION(rldc_lr);
-
-    // Initialize Table 31
-    for (auto& caller : s_table31) {
-        caller = { ENTRY_INVALID };
-    }
-    s_table31[0x000] = INSTRUCTION(cmp);
-    s_table31[0x004] = INSTRUCTION(tw);
-    s_table31[0x006] = INSTRUCTION(lvsl);
-    s_table31[0x007] = INSTRUCTION(lvebx);
-    s_table31[0x008] = INSTRUCTION(subfcx);
-    s_table31[0x009] = INSTRUCTION(mulhdux);
-    s_table31[0x00A] = INSTRUCTION(addcx);
-    s_table31[0x00B] = INSTRUCTION(mulhwux);
-    s_table31[0x013] = INSTRUCTION(mfocrf);
-    s_table31[0x014] = INSTRUCTION(lwarx);
-    s_table31[0x015] = INSTRUCTION(ldx);
-    s_table31[0x017] = INSTRUCTION(lwzx);
-    s_table31[0x018] = INSTRUCTION(slwx);
-    s_table31[0x01A] = INSTRUCTION(cntlzwx);
-    s_table31[0x01B] = INSTRUCTION(sldx);
-    s_table31[0x01C] = INSTRUCTION(andx);
-    s_table31[0x020] = INSTRUCTION(cmpl);
-    s_table31[0x026] = INSTRUCTION(lvsr);
-    s_table31[0x027] = INSTRUCTION(lvehx);
-    s_table31[0x028] = INSTRUCTION(subfx);
-    s_table31[0x035] = INSTRUCTION(ldux);
-    s_table31[0x036] = INSTRUCTION(dcbst);
-    s_table31[0x037] = INSTRUCTION(lwzux);
-    s_table31[0x03A] = INSTRUCTION(cntlzdx);
-    s_table31[0x03C] = INSTRUCTION(andcx);
-    s_table31[0x044] = INSTRUCTION(td);
-    s_table31[0x047] = INSTRUCTION(lvewx);
-    s_table31[0x049] = INSTRUCTION(mulhdx);
-    s_table31[0x04B] = INSTRUCTION(mulhwx);
-    s_table31[0x054] = INSTRUCTION(ldarx);
-    s_table31[0x056] = INSTRUCTION(dcbf);
-    s_table31[0x057] = INSTRUCTION(lbzx);
-    s_table31[0x067] = INSTRUCTION(lvx);
-    s_table31[0x068] = INSTRUCTION(negx);
-    s_table31[0x077] = INSTRUCTION(lbzux);
-    s_table31[0x07C] = INSTRUCTION(norx);
-    s_table31[0x087] = INSTRUCTION(stvebx);
-    s_table31[0x088] = INSTRUCTION(subfex);
-    s_table31[0x08A] = INSTRUCTION(addex);
-    s_table31[0x090] = INSTRUCTION(mtocrf);
-    s_table31[0x095] = INSTRUCTION(stdx);
-    s_table31[0x096] = INSTRUCTION(stwcx_);
-    s_table31[0x097] = INSTRUCTION(stwx);
-    s_table31[0x0A7] = INSTRUCTION(stvehx);
-    s_table31[0x0B5] = INSTRUCTION(stdux);
-    s_table31[0x0B7] = INSTRUCTION(stwux);
-    s_table31[0x0C7] = INSTRUCTION(stvewx);
-    s_table31[0x0C8] = INSTRUCTION(subfzex);
-    s_table31[0x0CA] = INSTRUCTION(addzex);
-    s_table31[0x0D6] = INSTRUCTION(stdcx_);
-    s_table31[0x0D7] = INSTRUCTION(stbx);
-    s_table31[0x0E7] = INSTRUCTION(stvx);
-    s_table31[0x0E8] = INSTRUCTION(subfmex);
-    s_table31[0x0E9] = INSTRUCTION(mulldx);
-    s_table31[0x0EA] = INSTRUCTION(addmex);
-    s_table31[0x0EB] = INSTRUCTION(mullwx);
-    s_table31[0x0F6] = INSTRUCTION(dcbtst);
-    s_table31[0x0F7] = INSTRUCTION(stbux);
-    s_table31[0x10A] = INSTRUCTION(addx);
-    s_table31[0x116] = INSTRUCTION(dcbt);
-    s_table31[0x117] = INSTRUCTION(lhzx);
-    s_table31[0x11C] = INSTRUCTION(eqvx);
-    s_table31[0x136] = INSTRUCTION(eciwx);
-    s_table31[0x137] = INSTRUCTION(lhzux);
-    s_table31[0x13C] = INSTRUCTION(xorx);
-    s_table31[0x153] = INSTRUCTION(mfspr);
-    s_table31[0x155] = INSTRUCTION(lwax);
-    s_table31[0x156] = INSTRUCTION(dst);
-    s_table31[0x157] = INSTRUCTION(lhax);
-    s_table31[0x167] = INSTRUCTION(lvxl);
-    s_table31[0x173] = INSTRUCTION(mftb);
-    s_table31[0x175] = INSTRUCTION(lwaux);
-    s_table31[0x176] = INSTRUCTION(dstst);
-    s_table31[0x177] = INSTRUCTION(lhaux);
-    s_table31[0x197] = INSTRUCTION(sthx);
-    s_table31[0x19C] = INSTRUCTION(orcx);
-    s_table31[0x1B6] = INSTRUCTION(ecowx);
-    s_table31[0x1B7] = INSTRUCTION(sthux);
-    s_table31[0x1BC] = INSTRUCTION(orx);
-    s_table31[0x1C9] = INSTRUCTION(divdux);
-    s_table31[0x1CB] = INSTRUCTION(divwux);
-    s_table31[0x1D3] = INSTRUCTION(mtspr);
-    s_table31[0x1DC] = INSTRUCTION(nandx);
-    s_table31[0x1E7] = INSTRUCTION(stvxl);
-    s_table31[0x1E9] = INSTRUCTION(divdx);
-    s_table31[0x1EB] = INSTRUCTION(divwx);
-    s_table31[0x207] = INSTRUCTION(lvlx);
-    s_table31[0x214] = INSTRUCTION(ldbrx);
-    s_table31[0x215] = INSTRUCTION(lswx);
-    s_table31[0x216] = INSTRUCTION(lwbrx);
-    s_table31[0x217] = INSTRUCTION(lfsx);
-    s_table31[0x218] = INSTRUCTION(srwx);
-    s_table31[0x21B] = INSTRUCTION(srdx);
-    s_table31[0x227] = INSTRUCTION(lvrx);
-    s_table31[0x237] = INSTRUCTION(lfsux);
-    s_table31[0x255] = INSTRUCTION(lswi);
-    s_table31[0x256] = INSTRUCTION(sync);
-    s_table31[0x257] = INSTRUCTION(lfdx);
-    s_table31[0x277] = INSTRUCTION(lfdux);
-    s_table31[0x287] = INSTRUCTION(stvlx);
-    s_table31[0x295] = INSTRUCTION(stswx);
-    s_table31[0x296] = INSTRUCTION(stwbrx);
-    s_table31[0x297] = INSTRUCTION(stfsx);
-    s_table31[0x2A7] = INSTRUCTION(stvrx);
-    s_table31[0x2B7] = INSTRUCTION(stfsux);
-    s_table31[0x2D5] = INSTRUCTION(stswi);
-    s_table31[0x2D7] = INSTRUCTION(stfdx);
-    s_table31[0x2F7] = INSTRUCTION(stfdux);
-    s_table31[0x307] = INSTRUCTION(lvlxl);
-    s_table31[0x316] = INSTRUCTION(lhbrx);
-    s_table31[0x318] = INSTRUCTION(srawx);
-    s_table31[0x31A] = INSTRUCTION(sradx);
-    s_table31[0x327] = INSTRUCTION(lvrxl);
-    s_table31[0x336] = INSTRUCTION(dss);
-    s_table31[0x338] = INSTRUCTION(srawix);
-    s_table31[0x33A] = INSTRUCTION(sradix);
-    s_table31[0x33B] = INSTRUCTION(sradix);
-    s_table31[0x356] = INSTRUCTION(eieio);
-    s_table31[0x387] = INSTRUCTION(stvlxl);
-    s_table31[0x396] = INSTRUCTION(sthbrx);
-    s_table31[0x39A] = INSTRUCTION(extshx);
-    s_table31[0x387] = INSTRUCTION(stvrxl);
-    s_table31[0x3BA] = INSTRUCTION(extsbx);
-    s_table31[0x3D7] = INSTRUCTION(stfiwx);
-    s_table31[0x3DA] = INSTRUCTION(extswx);
-    s_table31[0x3D6] = INSTRUCTION(icbi);
-    s_table31[0x3F6] = INSTRUCTION(dcbz);
-
-    // Initialize Table 58
-    for (auto& caller : s_table58) {
-        caller = { ENTRY_INVALID };
-    }
-    s_table58[0x0] = INSTRUCTION(ld);
-    s_table58[0x1] = INSTRUCTION(ldu);
-    s_table58[0x2] = INSTRUCTION(lwa);
-
-    // Initialize Table 59
-    for (auto& caller : s_table59) {
-        caller = { ENTRY_INVALID };
-    }
-    s_table59[0x12] = INSTRUCTION(fdivsx);
-    s_table59[0x14] = INSTRUCTION(fsubsx);
-    s_table59[0x15] = INSTRUCTION(faddsx);
-    s_table59[0x16] = INSTRUCTION(fsqrtsx);
-    s_table59[0x18] = INSTRUCTION(fresx);
-    s_table59[0x19] = INSTRUCTION(fmulsx);
-    s_table59[0x1C] = INSTRUCTION(fmsubsx);
-    s_table59[0x1D] = INSTRUCTION(fmaddsx);
-    s_table59[0x1E] = INSTRUCTION(fnmsubsx);
-    s_table59[0x1F] = INSTRUCTION(fnmaddsx);
-
-    // Initialize Table 62
-    for (auto& caller : s_table62) {
-        caller = { ENTRY_INVALID };
-    }
-    s_table62[0x0] = INSTRUCTION(std);
-    s_table62[0x1] = INSTRUCTION(stdu);
-
-    // Initialize Table 63
-    for (auto& caller : s_table63) {
-        caller = TABLE(get_table63_);
-    }
-    s_table63[0x17] = INSTRUCTION(fselx);
-    s_table63[0x19] = INSTRUCTION(fmulx);
-    s_table63[0x1C] = INSTRUCTION(fmsubx);
-    s_table63[0x1D] = INSTRUCTION(fmaddx);
-    s_table63[0x1E] = INSTRUCTION(fnmsubx);
-    s_table63[0x1F] = INSTRUCTION(fnmaddx);
-
-    // Initialize Table 63 (Extended)
-    for (auto& caller : s_table63_) {
-        caller = { ENTRY_INVALID };
-    }
-    s_table63_[0x000] = INSTRUCTION(fcmpu);
-    s_table63_[0x00C] = INSTRUCTION(frspx);
-    s_table63_[0x00E] = INSTRUCTION(fctiwx);
-    s_table63_[0x00F] = INSTRUCTION(fctiwzx);
-    s_table63_[0x012] = INSTRUCTION(fdivx);
-    s_table63_[0x014] = INSTRUCTION(fsubx);
-    s_table63_[0x015] = INSTRUCTION(faddx);
-    s_table63_[0x016] = INSTRUCTION(fsqrtx);
-    s_table63_[0x01A] = INSTRUCTION(frsqrtex);
-    s_table63_[0x020] = INSTRUCTION(fcmpo);
-    s_table63_[0x026] = INSTRUCTION(mtfsb1x);
-    s_table63_[0x028] = INSTRUCTION(fnegx);
-    s_table63_[0x040] = INSTRUCTION(mcrfs);
-    s_table63_[0x046] = INSTRUCTION(mtfsb0x);
-    s_table63_[0x048] = INSTRUCTION(fmrx);
-    s_table63_[0x086] = INSTRUCTION(mtfsfix);
-    s_table63_[0x088] = INSTRUCTION(fnabsx);
-    s_table63_[0x108] = INSTRUCTION(fabsx);
-    s_table63_[0x247] = INSTRUCTION(mffsx);
-    s_table63_[0x2C7] = INSTRUCTION(mtfsfx);
-    s_table63_[0x32E] = INSTRUCTION(fctidx);
-    s_table63_[0x32F] = INSTRUCTION(fctidzx);
-    s_table63_[0x34E] = INSTRUCTION(fcfidx);
-}
+const Entry& get_table4_ (Instruction code) { return table4_[code.op4_]; }
+const Entry& get_table19 (Instruction code) { return table19[code.op19]; }
+const Entry& get_table30 (Instruction code) { return table30[code.op30]; }
+const Entry& get_table31 (Instruction code) { return table31[code.op31]; }
+const Entry& get_table58 (Instruction code) { return table58[code.op58]; }
+const Entry& get_table59 (Instruction code) { return table59[code.op59]; }
+const Entry& get_table62 (Instruction code) { return table62[code.op62]; }
+const Entry& get_table63_(Instruction code) { return table63_[code.op63_]; }
 
 }  // namespace ppu
 }  // namespace cpu
