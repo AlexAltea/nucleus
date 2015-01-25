@@ -85,9 +85,9 @@ void initTables()
     s_tablePrimary[0x0d] = INSTRUCTION(addic_);
     s_tablePrimary[0x0e] = INSTRUCTION(addi);
     s_tablePrimary[0x0f] = INSTRUCTION(addis);
-    s_tablePrimary[0x10] = INSTRUCTION(bc);
+    s_tablePrimary[0x10] = INSTRUCTION(bcx);
     s_tablePrimary[0x11] = INSTRUCTION(sc);
-    s_tablePrimary[0x12] = INSTRUCTION(b);
+    s_tablePrimary[0x12] = INSTRUCTION(bx);
     s_tablePrimary[0x14] = INSTRUCTION(rlwimix);
     s_tablePrimary[0x15] = INSTRUCTION(rlwinmx);
     s_tablePrimary[0x17] = INSTRUCTION(rlwnmx);
@@ -294,7 +294,7 @@ void initTables()
         caller = { ENTRY_INVALID };
     }
     s_table19[0x000] = INSTRUCTION(mcrf);
-    s_table19[0x010] = INSTRUCTION(bclr);
+    s_table19[0x010] = INSTRUCTION(bclrx);
     s_table19[0x021] = INSTRUCTION(crnor);
     s_table19[0x081] = INSTRUCTION(crandc);
     s_table19[0x096] = INSTRUCTION(isync);
@@ -304,7 +304,7 @@ void initTables()
     s_table19[0x121] = INSTRUCTION(creqv);
     s_table19[0x1a1] = INSTRUCTION(crorc);
     s_table19[0x1c1] = INSTRUCTION(cror);
-    s_table19[0x210] = INSTRUCTION(bcctr);
+    s_table19[0x210] = INSTRUCTION(bcctrx);
 
     // Initialize Table 30
     for (auto& caller : s_table30) {
@@ -324,41 +324,41 @@ void initTables()
     s_table31[0x004] = INSTRUCTION(tw);
     s_table31[0x006] = INSTRUCTION(lvsl);
     s_table31[0x007] = INSTRUCTION(lvebx);
-    s_table31[0x008] = INSTRUCTION(subfc);
-    s_table31[0x009] = INSTRUCTION(mulhdu);
-    s_table31[0x00A] = INSTRUCTION(addc);
-    s_table31[0x00B] = INSTRUCTION(mulhwu);
+    s_table31[0x008] = INSTRUCTION(subfcx);
+    s_table31[0x009] = INSTRUCTION(mulhdux);
+    s_table31[0x00A] = INSTRUCTION(addcx);
+    s_table31[0x00B] = INSTRUCTION(mulhwux);
     s_table31[0x013] = INSTRUCTION(mfocrf);
     s_table31[0x014] = INSTRUCTION(lwarx);
     s_table31[0x015] = INSTRUCTION(ldx);
     s_table31[0x017] = INSTRUCTION(lwzx);
-    s_table31[0x018] = INSTRUCTION(slw);
-    s_table31[0x01A] = INSTRUCTION(cntlzw);
-    s_table31[0x01B] = INSTRUCTION(sld);
+    s_table31[0x018] = INSTRUCTION(slwx);
+    s_table31[0x01A] = INSTRUCTION(cntlzwx);
+    s_table31[0x01B] = INSTRUCTION(sldx);
     s_table31[0x01C] = INSTRUCTION(andx);
     s_table31[0x020] = INSTRUCTION(cmpl);
     s_table31[0x026] = INSTRUCTION(lvsr);
     s_table31[0x027] = INSTRUCTION(lvehx);
-    s_table31[0x028] = INSTRUCTION(subf);
+    s_table31[0x028] = INSTRUCTION(subfx);
     s_table31[0x035] = INSTRUCTION(ldux);
     s_table31[0x036] = INSTRUCTION(dcbst);
     s_table31[0x037] = INSTRUCTION(lwzux);
-    s_table31[0x03A] = INSTRUCTION(cntlzd);
-    s_table31[0x03C] = INSTRUCTION(andc);
+    s_table31[0x03A] = INSTRUCTION(cntlzdx);
+    s_table31[0x03C] = INSTRUCTION(andcx);
     s_table31[0x044] = INSTRUCTION(td);
     s_table31[0x047] = INSTRUCTION(lvewx);
-    s_table31[0x049] = INSTRUCTION(mulhd);
-    s_table31[0x04B] = INSTRUCTION(mulhw);
+    s_table31[0x049] = INSTRUCTION(mulhdx);
+    s_table31[0x04B] = INSTRUCTION(mulhwx);
     s_table31[0x054] = INSTRUCTION(ldarx);
     s_table31[0x056] = INSTRUCTION(dcbf);
     s_table31[0x057] = INSTRUCTION(lbzx);
     s_table31[0x067] = INSTRUCTION(lvx);
-    s_table31[0x068] = INSTRUCTION(neg);
+    s_table31[0x068] = INSTRUCTION(negx);
     s_table31[0x077] = INSTRUCTION(lbzux);
-    s_table31[0x07C] = INSTRUCTION(nor);
+    s_table31[0x07C] = INSTRUCTION(norx);
     s_table31[0x087] = INSTRUCTION(stvebx);
-    s_table31[0x088] = INSTRUCTION(subfe);
-    s_table31[0x08A] = INSTRUCTION(adde);
+    s_table31[0x088] = INSTRUCTION(subfex);
+    s_table31[0x08A] = INSTRUCTION(addex);
     s_table31[0x090] = INSTRUCTION(mtocrf);
     s_table31[0x095] = INSTRUCTION(stdx);
     s_table31[0x096] = INSTRUCTION(stwcx_);
@@ -367,21 +367,21 @@ void initTables()
     s_table31[0x0B5] = INSTRUCTION(stdux);
     s_table31[0x0B7] = INSTRUCTION(stwux);
     s_table31[0x0C7] = INSTRUCTION(stvewx);
-    s_table31[0x0C8] = INSTRUCTION(subfze);
-    s_table31[0x0CA] = INSTRUCTION(addze);
+    s_table31[0x0C8] = INSTRUCTION(subfzex);
+    s_table31[0x0CA] = INSTRUCTION(addzex);
     s_table31[0x0D6] = INSTRUCTION(stdcx_);
     s_table31[0x0D7] = INSTRUCTION(stbx);
     s_table31[0x0E7] = INSTRUCTION(stvx);
-    s_table31[0x0E8] = INSTRUCTION(subfme);
-    s_table31[0x0E9] = INSTRUCTION(mulld);
-    s_table31[0x0EA] = INSTRUCTION(addme);
-    s_table31[0x0EB] = INSTRUCTION(mullw);
+    s_table31[0x0E8] = INSTRUCTION(subfmex);
+    s_table31[0x0E9] = INSTRUCTION(mulldx);
+    s_table31[0x0EA] = INSTRUCTION(addmex);
+    s_table31[0x0EB] = INSTRUCTION(mullwx);
     s_table31[0x0F6] = INSTRUCTION(dcbtst);
     s_table31[0x0F7] = INSTRUCTION(stbux);
-    s_table31[0x10A] = INSTRUCTION(add);
+    s_table31[0x10A] = INSTRUCTION(addx);
     s_table31[0x116] = INSTRUCTION(dcbt);
     s_table31[0x117] = INSTRUCTION(lhzx);
-    s_table31[0x11C] = INSTRUCTION(eqv);
+    s_table31[0x11C] = INSTRUCTION(eqvx);
     s_table31[0x136] = INSTRUCTION(eciwx);
     s_table31[0x137] = INSTRUCTION(lhzux);
     s_table31[0x13C] = INSTRUCTION(xorx);
@@ -395,24 +395,24 @@ void initTables()
     s_table31[0x176] = INSTRUCTION(dstst);
     s_table31[0x177] = INSTRUCTION(lhaux);
     s_table31[0x197] = INSTRUCTION(sthx);
-    s_table31[0x19C] = INSTRUCTION(orc);
+    s_table31[0x19C] = INSTRUCTION(orcx);
     s_table31[0x1B6] = INSTRUCTION(ecowx);
     s_table31[0x1B7] = INSTRUCTION(sthux);
     s_table31[0x1BC] = INSTRUCTION(orx);
-    s_table31[0x1C9] = INSTRUCTION(divdu);
-    s_table31[0x1CB] = INSTRUCTION(divwu);
+    s_table31[0x1C9] = INSTRUCTION(divdux);
+    s_table31[0x1CB] = INSTRUCTION(divwux);
     s_table31[0x1D3] = INSTRUCTION(mtspr);
-    s_table31[0x1DC] = INSTRUCTION(nand);
+    s_table31[0x1DC] = INSTRUCTION(nandx);
     s_table31[0x1E7] = INSTRUCTION(stvxl);
-    s_table31[0x1E9] = INSTRUCTION(divd);
-    s_table31[0x1EB] = INSTRUCTION(divw);
+    s_table31[0x1E9] = INSTRUCTION(divdx);
+    s_table31[0x1EB] = INSTRUCTION(divwx);
     s_table31[0x207] = INSTRUCTION(lvlx);
     s_table31[0x214] = INSTRUCTION(ldbrx);
     s_table31[0x215] = INSTRUCTION(lswx);
     s_table31[0x216] = INSTRUCTION(lwbrx);
     s_table31[0x217] = INSTRUCTION(lfsx);
-    s_table31[0x218] = INSTRUCTION(srw);
-    s_table31[0x21B] = INSTRUCTION(srd);
+    s_table31[0x218] = INSTRUCTION(srwx);
+    s_table31[0x21B] = INSTRUCTION(srdx);
     s_table31[0x227] = INSTRUCTION(lvrx);
     s_table31[0x237] = INSTRUCTION(lfsux);
     s_table31[0x255] = INSTRUCTION(lswi);
@@ -430,21 +430,21 @@ void initTables()
     s_table31[0x2F7] = INSTRUCTION(stfdux);
     s_table31[0x307] = INSTRUCTION(lvlxl);
     s_table31[0x316] = INSTRUCTION(lhbrx);
-    s_table31[0x318] = INSTRUCTION(sraw);
-    s_table31[0x31A] = INSTRUCTION(srad);
+    s_table31[0x318] = INSTRUCTION(srawx);
+    s_table31[0x31A] = INSTRUCTION(sradx);
     s_table31[0x327] = INSTRUCTION(lvrxl);
     s_table31[0x336] = INSTRUCTION(dss);
-    s_table31[0x338] = INSTRUCTION(srawi);
-    s_table31[0x33A] = INSTRUCTION(sradi);
-    s_table31[0x33B] = INSTRUCTION(sradi);
+    s_table31[0x338] = INSTRUCTION(srawix);
+    s_table31[0x33A] = INSTRUCTION(sradix);
+    s_table31[0x33B] = INSTRUCTION(sradix);
     s_table31[0x356] = INSTRUCTION(eieio);
     s_table31[0x387] = INSTRUCTION(stvlxl);
     s_table31[0x396] = INSTRUCTION(sthbrx);
-    s_table31[0x39A] = INSTRUCTION(extsh);
+    s_table31[0x39A] = INSTRUCTION(extshx);
     s_table31[0x387] = INSTRUCTION(stvrxl);
-    s_table31[0x3BA] = INSTRUCTION(extsb);
+    s_table31[0x3BA] = INSTRUCTION(extsbx);
     s_table31[0x3D7] = INSTRUCTION(stfiwx);
-    s_table31[0x3DA] = INSTRUCTION(extsw);
+    s_table31[0x3DA] = INSTRUCTION(extswx);
     s_table31[0x3D6] = INSTRUCTION(icbi);
     s_table31[0x3F6] = INSTRUCTION(dcbz);
 
@@ -460,16 +460,16 @@ void initTables()
     for (auto& caller : s_table59) {
         caller = { ENTRY_INVALID };
     }
-    s_table59[0x12] = INSTRUCTION(fdivs);
-    s_table59[0x14] = INSTRUCTION(fsubs);
-    s_table59[0x15] = INSTRUCTION(fadds);
-    s_table59[0x16] = INSTRUCTION(fsqrts);
-    s_table59[0x18] = INSTRUCTION(fres);
-    s_table59[0x19] = INSTRUCTION(fmuls);
-    s_table59[0x1C] = INSTRUCTION(fmsubs);
-    s_table59[0x1D] = INSTRUCTION(fmadds);
-    s_table59[0x1E] = INSTRUCTION(fnmsubs);
-    s_table59[0x1F] = INSTRUCTION(fnmadds);
+    s_table59[0x12] = INSTRUCTION(fdivsx);
+    s_table59[0x14] = INSTRUCTION(fsubsx);
+    s_table59[0x15] = INSTRUCTION(faddsx);
+    s_table59[0x16] = INSTRUCTION(fsqrtsx);
+    s_table59[0x18] = INSTRUCTION(fresx);
+    s_table59[0x19] = INSTRUCTION(fmulsx);
+    s_table59[0x1C] = INSTRUCTION(fmsubsx);
+    s_table59[0x1D] = INSTRUCTION(fmaddsx);
+    s_table59[0x1E] = INSTRUCTION(fnmsubsx);
+    s_table59[0x1F] = INSTRUCTION(fnmaddsx);
 
     // Initialize Table 62
     for (auto& caller : s_table62) {
@@ -482,40 +482,40 @@ void initTables()
     for (auto& caller : s_table63) {
         caller = TABLE(get_table63_);
     }
-    s_table63[0x17] = INSTRUCTION(fsel);
-    s_table63[0x19] = INSTRUCTION(fmul);
-    s_table63[0x1C] = INSTRUCTION(fmsub);
-    s_table63[0x1D] = INSTRUCTION(fmadd);
-    s_table63[0x1E] = INSTRUCTION(fnmsub);
-    s_table63[0x1F] = INSTRUCTION(fnmadd);
+    s_table63[0x17] = INSTRUCTION(fselx);
+    s_table63[0x19] = INSTRUCTION(fmulx);
+    s_table63[0x1C] = INSTRUCTION(fmsubx);
+    s_table63[0x1D] = INSTRUCTION(fmaddx);
+    s_table63[0x1E] = INSTRUCTION(fnmsubx);
+    s_table63[0x1F] = INSTRUCTION(fnmaddx);
 
     // Initialize Table 63 (Extended)
     for (auto& caller : s_table63_) {
         caller = { ENTRY_INVALID };
     }
     s_table63_[0x000] = INSTRUCTION(fcmpu);
-    s_table63_[0x00C] = INSTRUCTION(frsp);
-    s_table63_[0x00E] = INSTRUCTION(fctiw);
-    s_table63_[0x00F] = INSTRUCTION(fctiwz);
-    s_table63_[0x012] = INSTRUCTION(fdiv);
-    s_table63_[0x014] = INSTRUCTION(fsub);
-    s_table63_[0x015] = INSTRUCTION(fadd);
-    s_table63_[0x016] = INSTRUCTION(fsqrt);
-    s_table63_[0x01A] = INSTRUCTION(frsqrte);
+    s_table63_[0x00C] = INSTRUCTION(frspx);
+    s_table63_[0x00E] = INSTRUCTION(fctiwx);
+    s_table63_[0x00F] = INSTRUCTION(fctiwzx);
+    s_table63_[0x012] = INSTRUCTION(fdivx);
+    s_table63_[0x014] = INSTRUCTION(fsubx);
+    s_table63_[0x015] = INSTRUCTION(faddx);
+    s_table63_[0x016] = INSTRUCTION(fsqrtx);
+    s_table63_[0x01A] = INSTRUCTION(frsqrtex);
     s_table63_[0x020] = INSTRUCTION(fcmpo);
-    s_table63_[0x026] = INSTRUCTION(mtfsb1);
-    s_table63_[0x028] = INSTRUCTION(fneg);
+    s_table63_[0x026] = INSTRUCTION(mtfsb1x);
+    s_table63_[0x028] = INSTRUCTION(fnegx);
     s_table63_[0x040] = INSTRUCTION(mcrfs);
-    s_table63_[0x046] = INSTRUCTION(mtfsb0);
-    s_table63_[0x048] = INSTRUCTION(fmr);
-    s_table63_[0x086] = INSTRUCTION(mtfsfi);
-    s_table63_[0x088] = INSTRUCTION(fnabs);
-    s_table63_[0x108] = INSTRUCTION(fabs);
-    s_table63_[0x247] = INSTRUCTION(mffs);
-    s_table63_[0x2C7] = INSTRUCTION(mtfsf);
-    s_table63_[0x32E] = INSTRUCTION(fctid);
-    s_table63_[0x32F] = INSTRUCTION(fctidz);
-    s_table63_[0x34E] = INSTRUCTION(fcfid);
+    s_table63_[0x046] = INSTRUCTION(mtfsb0x);
+    s_table63_[0x048] = INSTRUCTION(fmrx);
+    s_table63_[0x086] = INSTRUCTION(mtfsfix);
+    s_table63_[0x088] = INSTRUCTION(fnabsx);
+    s_table63_[0x108] = INSTRUCTION(fabsx);
+    s_table63_[0x247] = INSTRUCTION(mffsx);
+    s_table63_[0x2C7] = INSTRUCTION(mtfsfx);
+    s_table63_[0x32E] = INSTRUCTION(fctidx);
+    s_table63_[0x32F] = INSTRUCTION(fctidzx);
+    s_table63_[0x34E] = INSTRUCTION(fcfidx);
 }
 
 }  // namespace ppu

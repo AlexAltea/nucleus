@@ -56,7 +56,7 @@ public:
     // Number of bytes covered by this segment
     u32 size = 0;
 
-    // Functions contained in a 
+    // Functions contained in this segment
     std::vector<Function> functions;
 };
 
