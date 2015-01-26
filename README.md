@@ -10,7 +10,7 @@ This project focuses on PlayStation 3 emulation. Please, understand that I'm not
 * __Portability__: Nucleus assumes that the host system runs on a low endian CPU, with 64-bit addresses.
 
 ### Building
-* __Windows__: Install [GLEW](http://glew.sourceforge.net/install.html), [CMake](http://www.cmake.org/download/), [Python](https://www.python.org/downloads/) and [Visual Studio 2013](http://www.visualstudio.com/), open `nucleus.sln` and press *Build* > *Rebuild solution*.
+* __Windows__: Install [GLEW](http://glew.sourceforge.net/install.html), [CMake](http://www.cmake.org/download/), [Python](https://www.python.org/downloads/) and [Visual Studio 2013](http://www.visualstudio.com/). Run `tools/nucleus-init.py` and build LLVM manually with the generated solution file. Then open `nucleus.sln` and press *Build* > *Rebuild solution*.
 * __Linux__: Follow the `.travis.yml` file.
 
 ### Dependencies

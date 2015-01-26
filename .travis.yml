@@ -11,9 +11,18 @@ branches:
 notifications:
   email: false
 
+git:
+  submodules: false
+
 before_install:
+  # Update package repositories
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo add-apt-repository "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main"
+  - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
   - sudo apt-get update
+  
+  # Install LLVM, GLEW and prepare compilers
+  - sudo apt-get install llvm-3.5
   - sudo apt-get install libglew-dev
   - if [ "$CXX" = "g++" ]; then
       sudo apt-get install g++-4.8 -qq;
