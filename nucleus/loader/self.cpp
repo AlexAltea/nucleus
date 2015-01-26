@@ -65,7 +65,8 @@ bool SELFLoader::load_elf(sys_process_t& proc)
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
             memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
             if (phdr.flags & PF_X) {
-                cpu::ppu::analyze_segment(phdr.vaddr, phdr.filesz);
+                cpu::ppu::Segment segment(phdr.vaddr, phdr.filesz);
+                segment.analyze();
             }
             break;
 

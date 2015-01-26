@@ -1450,7 +1450,7 @@ void PPUInterpreter::fctidx(Instruction code, PPUThread& thread)
         }
         else {
             thread.fpscr.FI = 1;
-            thread.fpscr.FR = ::fabs(di) > ::fabs(b);
+            thread.fpscr.FR = fabs(di) > fabs(b);
         }
     }
 
@@ -1488,7 +1488,7 @@ void PPUInterpreter::fctidzx(Instruction code, PPUThread& thread)
         }
         else {
             thread.fpscr.FI = 1;
-            thread.fpscr.FR = ::fabs(di) > ::fabs(b);
+            thread.fpscr.FR = fabs(di) > fabs(b);
         }
         r = (u64)i;
     }
@@ -1549,7 +1549,7 @@ void PPUInterpreter::fctiwx(Instruction code, PPUThread& thread)
         }
         else {
             thread.fpscr.FI = 1;
-            thread.fpscr.FR = ::fabs(di) > ::fabs(b);
+            thread.fpscr.FR = fabs(di) > fabs(b);
         }
     }
 
@@ -1583,7 +1583,7 @@ void PPUInterpreter::fctiwzx(Instruction code, PPUThread& thread)
         }
         else {
             thread.fpscr.FI = 1;
-            thread.fpscr.FR = ::fabs(di) > ::fabs(b);
+            thread.fpscr.FR = fabs(di) > fabs(b);
         }
         value = (u32)i;
     }
@@ -1772,7 +1772,7 @@ void PPUInterpreter::frspx(Instruction code, PPUThread& thread)
         }
     }
     const f64 r = static_cast<f32>(b0);
-    thread.fpscr.FR = ::fabs(r) > ::fabs(b);
+    thread.fpscr.FR = fabs(r) > fabs(b);
     if (b != r) {
         thread.fpscr.FI = 1;
         thread.fpscr.setException(FPSCR_XX);

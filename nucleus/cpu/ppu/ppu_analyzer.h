@@ -21,11 +21,8 @@ class Block
     //llvm::BasicBlock* block;
 
 public:
-    // Starting address of this block in the EA space
-    u32 address = 0;
-
-    // Number of bytes covered by this block
-    u32 size = 0;
+    u32 address = 0; // Starting address of this block in the EA space
+    u32 size = 0;    // Number of bytes covered by this block
 
     // Entry block with no predecessors
     bool initial = true;
@@ -40,27 +37,35 @@ class Function
     //llvm::Function* function;
 
 public:
+    u32 address = 0; // Starting address of this function in the EA space
+    u32 size = 0;    // Number of bytes covered by this function (sum of basic block sizes)
+
     // Initial block that starts the Control Flow Graph
     Block block;
 
     // Name extracted from the DWARF symbols if available
     std::string name;
+
+    Function(u32 address) : address(address) {}
+
+    // Analyze function: Generate graph of basic blocks
+    void analyze();
 };
 
 class Segment
 {
 public:
-    // Starting address of this segment in the EA space
-    u32 address = 0;
-
-    // Number of bytes covered by this segment
-    u32 size = 0;
+    u32 address = 0; // Starting address of this segment in the EA space
+    u32 size = 0;    // Number of bytes covered by this segment
 
     // Functions contained in this segment
     std::vector<Function> functions;
-};
 
-void analyze_segment(u32 address, u32 size);
+    Segment(u32 address, u32 size) : address(address), size(size) {}
+
+    // Analyze segment: Get list of functions and analyze them
+    void analyze();
+};
 
 }  // namespace ppu
 }  // namespace cpu
