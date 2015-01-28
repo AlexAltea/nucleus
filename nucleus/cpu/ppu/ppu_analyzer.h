@@ -44,6 +44,9 @@ public:
     // Branching
     u32 branch_a = 0; // Conditional-True or Unconditional branching address
     u32 branch_b = 0; // Conditional-False branching address
+
+    // Determines whether the specified address is part of this block
+    bool contains(u32 addr) const;
 };
 
 class Function
@@ -91,6 +94,9 @@ public:
 
     // Recompile each of the functions
     void recompile();
+
+    // Determines whether the specified address is part of this segment
+    bool contains(u32 addr) const;
 };
 
 }  // namespace ppu

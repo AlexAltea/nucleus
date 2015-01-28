@@ -12,6 +12,19 @@
 namespace cpu {
 namespace ppu {
 
+/**
+ * PPU Block methods
+ */
+bool Block::contains(u32 addr) const
+{
+    const u32 from = address;
+    const u32 to = address + size;
+    return from <= addr && addr < to;
+}
+
+/**
+ * PPU Function methods
+ */
 bool Function::analyze(u32 segAddress, u32 segSize)
 {
     blocks.clear();
@@ -19,8 +32,10 @@ bool Function::analyze(u32 segAddress, u32 segSize)
     type_out.clear();
 
     std::queue<u32> labels({ address });
-    Instruction code;
-    Block current;
+
+    Segment segment(segAddress, segSize);  // Segment that contains this function (to determine containment)
+    Instruction code;                      // Current instruction
+    Block current;                         // Current block
     current.initial = false;
 
     // Control Flow Graph generation
@@ -37,25 +52,20 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         bool continueLoop = false;
         for (auto& item : blocks) {
             Block& block_a = item.second;
-            // Ignore the block if it was already processed
-            if (block_a.address == addr) {
-                continueLoop = true;
-                break;
-            }
             // Split block if label (Block B) is inside an existing block (Block A)
-            if (block_a.address <= addr && addr < block_a.address + block_a.size) {
-                // Push Block B
+            if (block_a.contains(addr)) {
+                // Configure Block B
                 Block block_b{};
                 block_b.address = addr;
                 block_b.size = block_a.size - (addr - block_a.address);
                 block_b.branch_a = block_a.branch_a;
                 block_b.branch_b = block_a.branch_b;
-                blocks[addr] = block_b;
 
-                // Update Block A
+                // Update Block A and push Block B
                 block_a.size = addr - block_a.address;
                 block_a.branch_a = addr;
                 block_a.branch_b = 0;
+                blocks[addr] = block_b;
                 continueLoop = true;
                 break;
             }
@@ -76,8 +86,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         if (code.is_branch_conditional()) {
             const u32 target_a = code.get_target(addr);
             const u32 target_b = addr + 4;
-            if (target_a < segAddress || target_a >= (segAddress + segSize) ||
-                target_b < segAddress || target_b >= (segAddress + segSize)) {
+            if (!segment.contains(target_a) || !segment.contains(target_b)) {
                 return false;
             }
             labels.push(target_a);
@@ -87,7 +96,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         }
         if (code.is_branch_unconditional()) {
             const u32 target = code.get_target(addr);
-            if (target < segAddress || target >= (segAddress + segSize)) {
+            if (!segment.contains(target)) {
                 return false;
             }
             labels.push(target);
@@ -104,6 +113,9 @@ void Function::recompile()
 {
 }
 
+/**
+ * PPU Segment methods
+ */
 void Segment::analyze()
 {
     // List of labels, stored as blocks.
@@ -169,6 +181,13 @@ void Segment::recompile() {
     for (auto& function : functions) {
         function.recompile();
     }
+}
+
+bool Segment::contains(u32 addr) const
+{
+    const u32 from = address;
+    const u32 to = address + size;
+    return from <= addr && addr < to;
 }
 
 }  // namespace ppu
