@@ -27,7 +27,13 @@ class Analyzer
     void setFlag(AnalyzerEvent& reg, AnalyzerEvent evt);
 
 public:
-    // Integer Instructions
+    /**
+     * PPC64 Instructions:
+     * Organized according to the chapter 4 of the Programming Environments Manual
+     * for 64-bit PowerPC Microprocessors (Version 3.0 / July 15, 2005).
+     */
+
+    // UISA: Integer instructions (Section: 4.2.1)
     void addx(Instruction code);
     void addcx(Instruction code);
     void addex(Instruction code);
@@ -95,7 +101,7 @@ public:
     void xori(Instruction code);
     void xoris(Instruction code);
 
-    // Floating-Point Instructions
+    // UISA: Floating-Point Instructions (Section: 4.2.2)
     void fabsx(Instruction code);
     void faddx(Instruction code);
     void faddsx(Instruction code);
@@ -136,47 +142,24 @@ public:
     void mtfsfix(Instruction code);
     void mtfsfx(Instruction code);
 
-    // Load and Store Instructions
-    // TODO: ?
-
-    // Branch and Flow Control Instructions
-    void bx(Instruction code);
-    void bcx(Instruction code);
-    void bcctrx(Instruction code);
-    void bclrx(Instruction code);
-
-    // TODO: ?
-    void crand(Instruction code);
-    void crandc(Instruction code);
-    void creqv(Instruction code);
-    void crnand(Instruction code);
-    void crnor(Instruction code);
-    void cror(Instruction code);
-    void crorc(Instruction code);
-    void crxor(Instruction code);
-    void dcbf(Instruction code);
-    void dcbst(Instruction code);
-    void dcbt(Instruction code);
-    void dcbtst(Instruction code);
-    void dcbz(Instruction code);
-    void dss(Instruction code);
-    void dst(Instruction code);
-    void dstst(Instruction code);
-    void eciwx(Instruction code);
-    void ecowx(Instruction code);
-    void eieio(Instruction code);
-    void icbi(Instruction code);
-    void isync(Instruction code);
+    // UISA: Load and Store Instructions (Section: 4.2.3)
     void lbz(Instruction code);
     void lbzu(Instruction code);
     void lbzux(Instruction code);
     void lbzx(Instruction code);
     void ld(Instruction code);
-    void ldarx(Instruction code);
     void ldbrx(Instruction code);
     void ldu(Instruction code);
     void ldux(Instruction code);
     void ldx(Instruction code);
+    void lfd(Instruction code);
+    void lfdu(Instruction code);
+    void lfdux(Instruction code);
+    void lfdx(Instruction code);
+    void lfs(Instruction code);
+    void lfsu(Instruction code);
+    void lfsux(Instruction code);
+    void lfsx(Instruction code);
     void lha(Instruction code);
     void lhau(Instruction code);
     void lhaux(Instruction code);
@@ -190,7 +173,6 @@ public:
     void lswi(Instruction code);
     void lswx(Instruction code);
     void lwa(Instruction code);
-    void lwarx(Instruction code);
     void lwaux(Instruction code);
     void lwax(Instruction code);
     void lwbrx(Instruction code);
@@ -198,23 +180,23 @@ public:
     void lwzu(Instruction code);
     void lwzux(Instruction code);
     void lwzx(Instruction code);
-    void mcrf(Instruction code);
-    void mfocrf(Instruction code);
-    void mfspr(Instruction code);
-    void mftb(Instruction code);
-    void mtocrf(Instruction code);
-    void mtspr(Instruction code);
-    void nop(Instruction code);
-    void sc(Instruction code_code);
     void stb(Instruction code);
     void stbu(Instruction code);
     void stbux(Instruction code);
     void stbx(Instruction code);
     void std(Instruction code);
-    void stdcx_(Instruction code);
     void stdu(Instruction code);
     void stdux(Instruction code);
     void stdx(Instruction code);
+    void stfd(Instruction code);
+    void stfdu(Instruction code);
+    void stfdux(Instruction code);
+    void stfdx(Instruction code);
+    void stfiwx(Instruction code);
+    void stfs(Instruction code);
+    void stfsu(Instruction code);
+    void stfsux(Instruction code);
+    void stfsx(Instruction code);
     void sth(Instruction code);
     void sthbrx(Instruction code);
     void sthu(Instruction code);
@@ -223,18 +205,71 @@ public:
     void stmw(Instruction code);
     void stswi(Instruction code);
     void stswx(Instruction code);
-    void stvrxl(Instruction code);
     void stw(Instruction code);
     void stwbrx(Instruction code);
-    void stwcx_(Instruction code);
     void stwu(Instruction code);
     void stwux(Instruction code);
     void stwx(Instruction code);
-    void sync(Instruction code);
+
+    // UISA: Branch and Flow Control Instructions (Section: 4.2.4)
+    void bx(Instruction code);
+    void bcx(Instruction code);
+    void bcctrx(Instruction code);
+    void bclrx(Instruction code);
+    void crand(Instruction code);
+    void crandc(Instruction code);
+    void creqv(Instruction code);
+    void crnand(Instruction code);
+    void crnor(Instruction code);
+    void cror(Instruction code);
+    void crorc(Instruction code);
+    void crxor(Instruction code);
+    void mcrf(Instruction code);
+    void sc(Instruction code);
     void td(Instruction code);
     void tdi(Instruction code);
     void tw(Instruction code);
     void twi(Instruction code);
+
+    // UISA: Processor Control Instructions (Section: 4.2.5)
+    void mfocrf(Instruction code);
+    void mfspr(Instruction code);
+    void mtocrf(Instruction code);
+    void mtspr(Instruction code);
+
+    // UISA: Memory Synchronization Instructions (Section: 4.2.6)
+    void ldarx(Instruction code);
+    void lwarx(Instruction code);
+    void stdcx_(Instruction code);
+    void stwcx_(Instruction code);
+    void sync(Instruction code);
+
+    // VEA: Processor Control Instructions (Section: 4.3.1)
+    void mftb(Instruction code);
+
+    // VEA: Memory Synchronization Instructions (Section: 4.3.2)
+    void eieio(Instruction code);
+    void isync(Instruction code);
+
+    // VEA: Memory Control Instructions (Section: 4.3.3)
+    void dcbf(Instruction code);
+    void dcbst(Instruction code);
+    void dcbt(Instruction code);
+    void dcbtst(Instruction code);
+    void dcbz(Instruction code);
+    void icbi(Instruction code);
+
+    // VEA: External Control Instructions (Section: 4.3.4)
+    void eciwx(Instruction code);
+    void ecowx(Instruction code);
+
+    /**
+     * Vector/SIMD Instructions (aka AltiVec):
+     * Organized according to the chapter 4 of the Programming Environments Manual of the Vector/SIMD
+     * Multimedia Extension Technology for 64-bit PowerPC Microprocessors (Version 2.07c / October 26, 2006).
+     */
+
+    // TODO: ?
 };
 
 }  // namespace ppu
