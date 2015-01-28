@@ -7,12 +7,100 @@
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 
-#include <map>
+#include <queue>
 
 namespace cpu {
 namespace ppu {
 
-void Function::analyze()
+bool Function::analyze(u32 segAddress, u32 segSize)
+{
+    blocks.clear();
+    type_in.clear();
+    type_out.clear();
+
+    std::queue<u32> labels({ address });
+    Instruction code;
+    Block current;
+    current.initial = false;
+
+    // Control Flow Graph generation
+    while (!labels.empty()) {
+        u32 addr = labels.front();
+        code.instruction = nucleus.memory.read32(addr);
+
+        // Initial Block properties
+        current.address = addr;
+        current.size = 4;
+        current.branch_a = 0;
+        current.branch_b = 0;
+        
+        bool continueLoop = false;
+        for (auto& item : blocks) {
+            Block& block_a = item.second;
+            // Ignore the block if it was already processed
+            if (block_a.address == addr) {
+                continueLoop = true;
+                break;
+            }
+            // Split block if label (Block B) is inside an existing block (Block A)
+            if (block_a.address <= addr && addr < block_a.address + block_a.size) {
+                // Push Block B
+                Block block_b{};
+                block_b.address = addr;
+                block_b.size = block_a.size - (addr - block_a.address);
+                block_b.branch_a = block_a.branch_a;
+                block_b.branch_b = block_a.branch_b;
+                blocks[addr] = block_b;
+
+                // Update Block A
+                block_a.size = addr - block_a.address;
+                block_a.branch_a = addr;
+                block_a.branch_b = 0;
+                continueLoop = true;
+                break;
+            }
+        }
+        if (continueLoop) {
+            labels.pop();
+            continue;
+        }
+
+        // Wait for the end
+        while (!code.is_branch() || code.is_call()) {
+            addr += 4;
+            current.size += 4;
+            code.instruction = nucleus.memory.read32(addr);
+        }
+
+        // Push new labels
+        if (code.is_branch_conditional()) {
+            const u32 target_a = code.get_target(addr);
+            const u32 target_b = addr + 4;
+            if (target_a < segAddress || target_a >= (segAddress + segSize) ||
+                target_b < segAddress || target_b >= (segAddress + segSize)) {
+                return false;
+            }
+            labels.push(target_a);
+            labels.push(target_b);
+            current.branch_a = target_a;
+            current.branch_b = target_b;
+        }
+        if (code.is_branch_unconditional()) {
+            const u32 target = code.get_target(addr);
+            if (target < segAddress || target >= (segAddress + segSize)) {
+                return false;
+            }
+            labels.push(target);
+            current.branch_a = target;
+        }
+
+        blocks[labels.front()] = current;
+        labels.pop();
+    }
+    return true;
+}
+
+void Function::recompile()
 {
 }
 
@@ -70,9 +158,16 @@ void Segment::analyze()
         const Block& block = item.second;
         if (block.initial) {
             Function function(block.address);
-            function.analyze();
-            functions.push_back(function);
+            if (function.analyze(address, size)) {
+                functions.push_back(function);
+            }
         }
+    }
+}
+
+void Segment::recompile() {
+    for (auto& function : functions) {
+        function.recompile();
     }
 }
 
