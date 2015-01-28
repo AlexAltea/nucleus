@@ -65,7 +65,7 @@ struct rsx_vp_constant_t {
     union {
         u32 word[4];
         struct {
-            f32 x; 
+            f32 x;
             f32 y;
             f32 z;
             f32 w;

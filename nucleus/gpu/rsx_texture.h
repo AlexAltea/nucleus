@@ -18,7 +18,7 @@ struct rsx_texture_t {
     u8 dimension;      // Dimension: 1D texture (1), 2D texture (2) or 3D texture (3)
     u8 format;         // Color format and optional swizzle/normalization flags
     u8 mipmap;         // Amount of mipmap leves of the texture
-    
+
     // Image rectangle
     u16 width;
     u16 height;

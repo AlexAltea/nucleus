@@ -105,7 +105,7 @@ union Instruction
 
     // Determines whether the instruction is branch instruction
     bool is_branch() const;
-    bool is_branch_conditional() const;   
+    bool is_branch_conditional() const;
     bool is_branch_unconditional() const;
 
     // Determines whether the instruction is function call instruction

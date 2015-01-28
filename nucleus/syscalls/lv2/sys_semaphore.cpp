@@ -106,7 +106,7 @@ s32 sys_semaphore_trywait(u32 sem_id)
 s32 sys_semaphore_wait(u32 sem_id, u64 timeout)
 {
     auto* semaphore = nucleus.lv2.objects.get<sys_semaphore_t>(sem_id);
-    
+
     // Check requisites
     if (!semaphore) {
         return CELL_ESRCH;

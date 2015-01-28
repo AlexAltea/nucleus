@@ -14,7 +14,7 @@ void Analyzer::addx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -29,7 +29,7 @@ void Analyzer::addcx(Instruction code)
     setFlag(gpr[code.rd], REG_WRITE);
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -45,7 +45,7 @@ void Analyzer::addex(Instruction code)
     setFlag(xer, REG_READ); // XER CA
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -87,7 +87,7 @@ void Analyzer::addmex(Instruction code)
     setFlag(xer, REG_READ); // XER CA
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -102,7 +102,7 @@ void Analyzer::addzex(Instruction code)
     setFlag(xer, REG_READ); // XER CA
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -116,7 +116,7 @@ void Analyzer::andx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -127,7 +127,7 @@ void Analyzer::andcx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -178,7 +178,7 @@ void Analyzer::divdx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -191,7 +191,7 @@ void Analyzer::cntlzdx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -201,7 +201,7 @@ void Analyzer::cntlzwx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -212,7 +212,7 @@ void Analyzer::divdux(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -226,7 +226,7 @@ void Analyzer::divwx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -240,7 +240,7 @@ void Analyzer::divwux(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -254,7 +254,7 @@ void Analyzer::eqvx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -264,7 +264,7 @@ void Analyzer::extsbx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -274,7 +274,7 @@ void Analyzer::extshx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -284,7 +284,7 @@ void Analyzer::extswx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -295,7 +295,7 @@ void Analyzer::mulhdx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -306,7 +306,7 @@ void Analyzer::mulhdux(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -317,7 +317,7 @@ void Analyzer::mulhwx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -328,7 +328,7 @@ void Analyzer::mulhwux(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -339,7 +339,7 @@ void Analyzer::mulldx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -359,7 +359,7 @@ void Analyzer::mullwx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -373,7 +373,7 @@ void Analyzer::nandx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -383,7 +383,7 @@ void Analyzer::negx(Instruction code)
     setFlag(gpr[code.ra], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -397,7 +397,7 @@ void Analyzer::norx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -408,7 +408,7 @@ void Analyzer::orx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -419,7 +419,7 @@ void Analyzer::orcx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -442,7 +442,7 @@ void Analyzer::rldc_lr(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -452,7 +452,7 @@ void Analyzer::rldicx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -462,7 +462,7 @@ void Analyzer::rldiclx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -472,7 +472,7 @@ void Analyzer::rldicrx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -483,7 +483,7 @@ void Analyzer::rldimix(Instruction code)
     setFlag(gpr[code.ra], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -494,7 +494,7 @@ void Analyzer::rlwimix(Instruction code)
     setFlag(gpr[code.ra], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -503,8 +503,8 @@ void Analyzer::rlwinmx(Instruction code)
 {
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
-    
-    if (code.rc) { 
+
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -514,8 +514,8 @@ void Analyzer::rlwnmx(Instruction code)
     setFlag(gpr[code.rs], REG_READ);
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
-    
-    if (code.rc) { 
+
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -526,7 +526,7 @@ void Analyzer::sldx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -537,7 +537,7 @@ void Analyzer::slwx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -549,7 +549,7 @@ void Analyzer::sradx(Instruction code)
     setFlag(gpr[code.ra], REG_WRITE);
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -560,7 +560,7 @@ void Analyzer::sradix(Instruction code)
     setFlag(gpr[code.ra], REG_WRITE);
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -572,7 +572,7 @@ void Analyzer::srawx(Instruction code)
     setFlag(gpr[code.ra], REG_WRITE);
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -583,7 +583,7 @@ void Analyzer::srawix(Instruction code)
     setFlag(gpr[code.ra], REG_WRITE);
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -594,7 +594,7 @@ void Analyzer::srdx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -605,7 +605,7 @@ void Analyzer::srwx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }
@@ -616,7 +616,7 @@ void Analyzer::subfx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -630,8 +630,8 @@ void Analyzer::subfcx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rd], REG_WRITE);
     setFlag(xer, REG_WRITE); // XER CA
-    
-    if (code.rc) { 
+
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -647,7 +647,7 @@ void Analyzer::subfex(Instruction code)
     setFlag(xer, REG_READ); // XER CA
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -669,7 +669,7 @@ void Analyzer::subfmex(Instruction code)
     setFlag(xer, REG_READ); // XER CA
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -684,7 +684,7 @@ void Analyzer::subfzex(Instruction code)
     setFlag(xer, REG_READ); // XER CA
     setFlag(xer, REG_WRITE); // XER CA
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
     if (code.oe) {
@@ -698,7 +698,7 @@ void Analyzer::xorx(Instruction code)
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.ra], REG_WRITE);
 
-    if (code.rc) { 
+    if (code.rc) {
         setFlag(cr[0], REG_WRITE);
     }
 }

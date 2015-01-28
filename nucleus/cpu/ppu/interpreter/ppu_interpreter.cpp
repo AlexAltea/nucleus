@@ -3606,7 +3606,7 @@ void PPUInterpreter::vupklsh(Instruction code, PPUThread& thread)
 void PPUInterpreter::vxor(Instruction code, PPUThread& thread)
 {
     thread.vr[code.vd]._u64[0] = thread.vr[code.va]._u64[0] ^ thread.vr[code.vb]._u64[0];
-    thread.vr[code.vd]._u32[1] = thread.vr[code.va]._u64[1] ^ thread.vr[code.vb]._u64[1];
+    thread.vr[code.vd]._u64[1] = thread.vr[code.va]._u64[1] ^ thread.vr[code.vb]._u64[1];
 }
 
 // Unknown instruction
