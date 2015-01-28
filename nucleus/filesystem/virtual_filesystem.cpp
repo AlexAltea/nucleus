@@ -20,7 +20,7 @@ std::string VirtualFileSystem::getHostPath(const std::string& virtualPath)
     return hostPath;
 }
 
-File* VirtualFileSystem::openFile(std::string path, OpenMode mode)
+File* VirtualFileSystem::openFile(const std::string& path, OpenMode mode)
 {
     File* file = new File();
     file->virtual_path = path;
@@ -93,7 +93,7 @@ u64 VirtualFileSystem::getFileSize(File* handle)
     return size;
 }
 
-bool VirtualFileSystem::createFile(std::string path)
+bool VirtualFileSystem::createFile(const std::string& path)
 {
     const std::string& hostPath = getHostPath(path);
     std::FILE* file;
@@ -112,7 +112,7 @@ bool VirtualFileSystem::createFile(std::string path)
     return true;
 }
 
-bool VirtualFileSystem::existsFile(std::string path)
+bool VirtualFileSystem::existsFile(const std::string& path)
 {
     const std::string& hostPath = getHostPath(path);
     std::FILE* file;
@@ -131,7 +131,7 @@ bool VirtualFileSystem::existsFile(std::string path)
     return true;
 }
 
-u64 VirtualFileSystem::getFileSize(std::string path)
+u64 VirtualFileSystem::getFileSize(const std::string& path)
 {
     const std::string& hostPath = getHostPath(path);
     std::FILE* file;

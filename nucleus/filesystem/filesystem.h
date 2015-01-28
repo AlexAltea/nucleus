@@ -42,7 +42,7 @@ public:
     virtual ~FileSystem() {}
 
     // File I/O
-    virtual File* openFile(std::string path, OpenMode mode = Read) = 0;
+    virtual File* openFile(const std::string& path, OpenMode mode = Read) = 0;
     virtual void closeFile(File* handle) = 0;
     virtual u64 readFile(File* handle, void* dst, s64 size) = 0;
     virtual u64 writeFile(File* handle, const void* src, s64 size) = 0;
@@ -51,9 +51,9 @@ public:
     virtual u64 getFileSize(File* handle) = 0;
 
     // File management
-    virtual bool createFile(std::string path) = 0;
-    virtual bool existsFile(std::string path) = 0;
-    virtual u64 getFileSize(std::string path) = 0;
+    virtual bool createFile(const std::string& path) = 0;
+    virtual bool existsFile(const std::string& path) = 0;
+    virtual u64 getFileSize(const std::string& path) = 0;
 };
 
 const char* getOpenMode(OpenMode mode);
