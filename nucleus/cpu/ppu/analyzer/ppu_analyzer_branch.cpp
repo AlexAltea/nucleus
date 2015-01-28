@@ -8,5 +8,21 @@
 namespace cpu {
 namespace ppu {
 
+void bx(Instruction code)
+{
+}
+
+void bcx(Instruction code)
+{
+}
+
+void bcctrx(Instruction code)
+{
+}
+
+void bclrx(Instruction code)
+{
+}
+
 }  // namespace ppu
 }  // namespace cpu

@@ -116,13 +116,9 @@ public:
     static void lwzux(Instruction code, PPUThread& thread);
     static void lwzx(Instruction code, PPUThread& thread);
     static void mcrf(Instruction code, PPUThread& thread);
-    static void mcrfs(Instruction code, PPUThread& thread);
     static void mfocrf(Instruction code, PPUThread& thread);
     static void mfspr(Instruction code, PPUThread& thread);
     static void mftb(Instruction code, PPUThread& thread);
-    static void mtfsb0x(Instruction code, PPUThread& thread);
-    static void mtfsb1x(Instruction code, PPUThread& thread);
-    static void mtfsfix(Instruction code, PPUThread& thread);
     static void mtocrf(Instruction code, PPUThread& thread);
     static void mtspr(Instruction code, PPUThread& thread);
     static void mulhdx(Instruction code, PPUThread& thread);
@@ -205,8 +201,6 @@ public:
     static void lfsu(Instruction code, PPUThread& thread);
     static void lfsux(Instruction code, PPUThread& thread);
     static void lfsx(Instruction code, PPUThread& thread);
-    static void mffsx(Instruction code, PPUThread& thread);
-    static void mtfsfx(Instruction code, PPUThread& thread);
     static void fabsx(Instruction code, PPUThread& thread);
     static void faddx(Instruction code, PPUThread& thread);
     static void faddsx(Instruction code, PPUThread& thread);
@@ -240,6 +234,12 @@ public:
     static void fsqrtsx(Instruction code, PPUThread& thread);
     static void fsubx(Instruction code, PPUThread& thread);
     static void fsubsx(Instruction code, PPUThread& thread);
+    static void mcrfs(Instruction code, PPUThread& thread);
+    static void mffsx(Instruction code, PPUThread& thread);
+    static void mtfsb0x(Instruction code, PPUThread& thread);
+    static void mtfsb1x(Instruction code, PPUThread& thread);
+    static void mtfsfix(Instruction code, PPUThread& thread);
+    static void mtfsfx(Instruction code, PPUThread& thread);
     static void stfd(Instruction code, PPUThread& thread);
     static void stfdu(Instruction code, PPUThread& thread);
     static void stfdux(Instruction code, PPUThread& thread);
