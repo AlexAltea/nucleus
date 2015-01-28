@@ -48,7 +48,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         current.size = 4;
         current.branch_a = 0;
         current.branch_b = 0;
-        
+
         bool continueLoop = false;
         for (auto& item : blocks) {
             Block& block_a = item.second;

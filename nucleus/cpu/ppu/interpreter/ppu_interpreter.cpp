@@ -464,18 +464,6 @@ void PPUInterpreter::divwux(Instruction code, PPUThread& thread)
     }
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
 }
-void PPUInterpreter::dss(Instruction code, PPUThread& thread)
-{
-    // TODO: _mm_fence();
-}
-void PPUInterpreter::dst(Instruction code, PPUThread& thread)
-{
-    // TODO: _mm_fence();
-}
-void PPUInterpreter::dstst(Instruction code, PPUThread& thread)
-{
-    // TODO: _mm_fence();
-}
 void PPUInterpreter::eciwx(Instruction code, PPUThread& thread)
 {
     const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
@@ -825,9 +813,6 @@ void PPUInterpreter::negx(Instruction code, PPUThread& thread)
     thread.gpr[code.rd] = 0 - thread.gpr[code.ra];
     if (code.oe) unknown("nego");
     if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
-}
-void PPUInterpreter::nop(Instruction code, PPUThread& thread)
-{
 }
 void PPUInterpreter::norx(Instruction code, PPUThread& thread)
 {
@@ -1890,6 +1875,18 @@ void PPUInterpreter::stfsx(Instruction code, PPUThread& thread)
 }
 
 // Vector/SIMD instructions
+void PPUInterpreter::dss(Instruction code, PPUThread& thread)
+{
+    // TODO: _mm_fence();
+}
+void PPUInterpreter::dst(Instruction code, PPUThread& thread)
+{
+    // TODO: _mm_fence();
+}
+void PPUInterpreter::dstst(Instruction code, PPUThread& thread)
+{
+    // TODO: _mm_fence();
+}
 void PPUInterpreter::lvebx(Instruction code, PPUThread& thread)
 {
     const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;

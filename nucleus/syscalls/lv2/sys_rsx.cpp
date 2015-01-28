@@ -26,7 +26,7 @@ s32 sys_rsx_device_close()
  *  - size (IN): Local memory size. E.g. 0x0F900000 (249 MB).
  *  - flags (IN): E.g. Immediate value passed in cellGcmSys is 8.
  *  - a5 (IN): E.g. Immediate value passed in cellGcmSys is 0x00300000 (3 MB?).
- *  - a6 (IN): E.g. Immediate value passed in cellGcmSys is 16. 
+ *  - a6 (IN): E.g. Immediate value passed in cellGcmSys is 16.
  *  - a7 (IN): E.g. Immediate value passed in cellGcmSys is 8.
  */
 s32 sys_rsx_memory_allocate(be_t<u32>* mem_handle, be_t<u64>* mem_addr, u32 size, u64 flags, u64 a5, u64 a6, u64 a7)

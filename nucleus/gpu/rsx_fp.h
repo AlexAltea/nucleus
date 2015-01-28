@@ -111,7 +111,7 @@ union rsx_fp_instruction_t
             FIELD(24, 24, u32 dst_half);     // Half precision (f16)
             FIELD(25, 30, u32 dst_index);    // Destination register index
             FIELD(31, 31, u32 end);          // Last instruction flag
-        }; 
+        };
         union {
             FIELD( 0, 31, u32 word1);
         };
