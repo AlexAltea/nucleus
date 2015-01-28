@@ -8,7 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
 
-#include "nucleus/cpu/ppu/ppu_analyzer.h"
+#include "nucleus/cpu/ppu/ppu_decoder.h"
 
 #include <mutex>
 #include <vector>

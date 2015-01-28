@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_analyzer.h"
+#include "ppu_decoder.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 

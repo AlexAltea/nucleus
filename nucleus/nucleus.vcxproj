@@ -83,8 +83,14 @@
     <ClCompile Include="..\externals\sha1.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="cpu\cell.cpp" />
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer.cpp" />
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_branch.cpp" />
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_float.cpp" />
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_integer.cpp" />
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_memory.cpp" />
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_vector.cpp" />
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_analyzer.cpp" />
+    <ClCompile Include="cpu\ppu\ppu_decoder.cpp" />
     <ClCompile Include="cpu\ppu\ppu_instruction.cpp" />
     <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
@@ -102,9 +108,9 @@
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\self.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="memory\memory.cpp" />
     <ClCompile Include="memory\segment.cpp" />
-    <ClCompile Include="nucleus.cpp" />
     <ClCompile Include="syscalls\lv1\lv1_gpu.cpp" />
     <ClCompile Include="syscalls\lv2.cpp" />
     <ClCompile Include="syscalls\lv2\sys_cond.cpp" />
@@ -142,8 +148,9 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="cpu\cell.h" />
+    <ClInclude Include="cpu\ppu\analyzer\ppu_analyzer.h" />
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h" />
-    <ClInclude Include="cpu\ppu\ppu_analyzer.h" />
+    <ClInclude Include="cpu\ppu\ppu_decoder.h" />
     <ClInclude Include="cpu\ppu\ppu_instruction.h" />
     <ClInclude Include="cpu\ppu\ppu_tables.h" />
     <ClInclude Include="cpu\ppu\ppu_thread.h" />

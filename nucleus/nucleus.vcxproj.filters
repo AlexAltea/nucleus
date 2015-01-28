@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="nucleus.cpp" />
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="memory\memory.cpp">
       <Filter>memory</Filter>
@@ -158,8 +157,27 @@
     <ClCompile Include="cpu\ppu\ppu_instruction.cpp">
       <Filter>cpu\ppu</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_analyzer.cpp">
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_integer.cpp">
+      <Filter>cpu\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="cpu\ppu\ppu_decoder.cpp">
       <Filter>cpu\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_branch.cpp">
+      <Filter>cpu\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_float.cpp">
+      <Filter>cpu\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_memory.cpp">
+      <Filter>cpu\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_vector.cpp">
+      <Filter>cpu\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer.cpp">
+      <Filter>cpu\ppu\analyzer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,8 +374,11 @@
     <ClInclude Include="cpu\ppu\ppu_instruction.h">
       <Filter>cpu\ppu</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_analyzer.h">
+    <ClInclude Include="cpu\ppu\ppu_decoder.h">
       <Filter>cpu\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\analyzer\ppu_analyzer.h">
+      <Filter>cpu\ppu\analyzer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -421,8 +442,11 @@
     <Filter Include="ui\windows">
       <UniqueIdentifier>{185aee07-6b27-484a-a8a4-d09127a36a70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cpu\ppu\translator">
-      <UniqueIdentifier>{7d09f279-8d21-4f56-a3ec-64fa06b2a7a0}</UniqueIdentifier>
+    <Filter Include="cpu\ppu\analyzer">
+      <UniqueIdentifier>{56c1276a-e6ba-4d83-b87a-4a751251396b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpu\ppu\recompiler">
+      <UniqueIdentifier>{abbcc1e5-7379-43b2-935b-76d53e48beac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

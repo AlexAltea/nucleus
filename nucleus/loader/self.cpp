@@ -6,7 +6,7 @@
 #include "self.h"
 #include "nucleus/common.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/ppu/ppu_analyzer.h"
+#include "nucleus/cpu/ppu/ppu_decoder.h"
 #include "nucleus/filesystem/filesystem.h"
 #include "nucleus/loader/keys.h"
 #include "nucleus/loader/loader.h"
