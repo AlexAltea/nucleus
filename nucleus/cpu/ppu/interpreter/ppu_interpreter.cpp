@@ -712,12 +712,6 @@ void PPUInterpreter::mcrf(Instruction code, PPUThread& thread)
 {
     thread.cr.setField(code.crfd, thread.cr.getField(code.crfs));
 }
-void PPUInterpreter::mcrfs(Instruction code, PPUThread& thread)
-{
-    u64 mask = (1ULL << code.crbd);
-    thread.cr.CR &= ~mask;
-    thread.cr.CR |= thread.fpscr.FPSCR & mask;
-}
 void PPUInterpreter::mfocrf(Instruction code, PPUThread& thread)
 {
     thread.gpr[code.rd] = bitReverse32(thread.cr.CR);
@@ -736,24 +730,6 @@ void PPUInterpreter::mftb(Instruction code, PPUThread& thread)
     case 0x10D: thread.gpr[code.rd] = thread.tbu; break;
     default: unknown("mftb"); break;
     }
-}
-void PPUInterpreter::mtfsb0x(Instruction code, PPUThread& thread)
-{
-    thread.fpscr.FPSCR &= ~(1ULL << code.crbd);
-    if (code.rc) unknown("mtfsb0.");
-}
-void PPUInterpreter::mtfsb1x(Instruction code, PPUThread& thread)
-{
-    thread.fpscr.FPSCR |= (1ULL << code.crbd);
-    if (code.rc) unknown("mtfsb1.");
-}
-void PPUInterpreter::mtfsfix(Instruction code, PPUThread& thread)
-{
-    const u32 mask = 0xF << (code.crfd * 4);
-    const u32 value = (code.imm & 0xF) << (code.crfd * 4);
-    thread.fpscr.FPSCR &= ~mask;
-    thread.fpscr.FPSCR |= value;
-    if (code.rc) unknown("mtfsfi.");
 }
 void PPUInterpreter::mtocrf(Instruction code, PPUThread& thread)
 {
@@ -1819,10 +1795,34 @@ void PPUInterpreter::fsubsx(Instruction code, PPUThread& thread)
     thread.fpscr.FPRF = getFPRFlags(thread.fpr[code.frd]);
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
 }
+void PPUInterpreter::mcrfs(Instruction code, PPUThread& thread)
+{
+    u64 mask = (1ULL << code.crbd);
+    thread.cr.CR &= ~mask;
+    thread.cr.CR |= thread.fpscr.FPSCR & mask;
+}
 void PPUInterpreter::mffsx(Instruction code, PPUThread& thread)
 {
     (u64&)thread.fpr[code.frd] = thread.fpscr.FPSCR;
     if (code.rc) { thread.cr.setField(1, thread.fpscr.FPSCR >> 28); }
+}
+void PPUInterpreter::mtfsb0x(Instruction code, PPUThread& thread)
+{
+    thread.fpscr.FPSCR &= ~(1ULL << code.crbd);
+    if (code.rc) unknown("mtfsb0.");
+}
+void PPUInterpreter::mtfsb1x(Instruction code, PPUThread& thread)
+{
+    thread.fpscr.FPSCR |= (1ULL << code.crbd);
+    if (code.rc) unknown("mtfsb1.");
+}
+void PPUInterpreter::mtfsfix(Instruction code, PPUThread& thread)
+{
+    const u32 mask = 0xF << (code.crfd * 4);
+    const u32 value = (code.imm & 0xF) << (code.crfd * 4);
+    thread.fpscr.FPSCR &= ~mask;
+    thread.fpscr.FPSCR |= value;
+    if (code.rc) unknown("mtfsfi.");
 }
 void PPUInterpreter::mtfsfx(Instruction code, PPUThread& thread)
 {

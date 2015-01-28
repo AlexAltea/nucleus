@@ -8,19 +8,19 @@
 namespace cpu {
 namespace ppu {
 
-void bx(Instruction code)
+void Analyzer::bx(Instruction code)
 {
 }
 
-void bcx(Instruction code)
+void Analyzer::bcx(Instruction code)
 {
 }
 
-void bcctrx(Instruction code)
+void Analyzer::bcctrx(Instruction code)
 {
 }
 
-void bclrx(Instruction code)
+void Analyzer::bclrx(Instruction code)
 {
 }
 
