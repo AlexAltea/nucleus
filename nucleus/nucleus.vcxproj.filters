@@ -179,6 +179,9 @@
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer.cpp">
       <Filter>cpu\ppu\analyzer</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_control.cpp">
+      <Filter>cpu\ppu\analyzer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

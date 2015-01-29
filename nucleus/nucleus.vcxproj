@@ -85,6 +85,7 @@
     <ClCompile Include="cpu\cell.cpp" />
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer.cpp" />
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_branch.cpp" />
+    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_control.cpp" />
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_float.cpp" />
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_integer.cpp" />
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_memory.cpp" />

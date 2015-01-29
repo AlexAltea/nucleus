@@ -7,6 +7,7 @@
 
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
+#include "nucleus/cpu/ppu/analyzer/ppu_analyzer.h"
 
 #include <string>
 
@@ -25,9 +26,14 @@ enum EntryType {
 struct Entry
 {
     EntryType type;
+
+    // Table data
+    const Entry& (*caller)(Instruction);
+
+    // Instruction data
     const char* name;
     void (*interpreter)(Instruction, PPUThread&);
-    const Entry& (*caller)(Instruction);
+    void (Analyzer::*analyzer)(Instruction);
 };
 
 // Instruction callers

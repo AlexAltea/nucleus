@@ -8,6 +8,13 @@
 namespace cpu {
 namespace ppu {
 
+/**
+ * PPC64 Instructions:
+ *  - UISA: Load and Store Instructions (Section: 4.2.3)
+ *  - UISA: Memory Synchronization Instructions (Section: 4.2.6)
+ *  - VEA: Memory Synchronization Instructions (Section: 4.3.2)
+ */
+
 void Analyzer::lbz(Instruction code)
 {
     setFlag(gpr[code.ra], REG_READ);
@@ -521,6 +528,21 @@ void Analyzer::stwx(Instruction code)
     setFlag(gpr[code.ra], REG_READ);
     setFlag(gpr[code.rb], REG_READ);
     setFlag(gpr[code.rs], REG_READ);
+}
+
+void Analyzer::eieio(Instruction code)
+{
+    // TODO: ?
+}
+
+void Analyzer::sync(Instruction code)
+{
+    // TODO: ?
+}
+
+void Analyzer::isync(Instruction code)
+{
+    // TODO: ?
 }
 
 }  // namespace ppu

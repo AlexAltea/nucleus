@@ -8,6 +8,12 @@
 namespace cpu {
 namespace ppu {
 
+/**
+ * PPC64 Vector/SIMD Instructions (aka AltiVec):
+ *  - Vector UISA Instructions (Section: 4.2.x)
+ *  - Vector VEA Instructions (Section: 4.3.x)
+ */
+
 void Analyzer::dss(Instruction code)
 {
     // TODO: ?

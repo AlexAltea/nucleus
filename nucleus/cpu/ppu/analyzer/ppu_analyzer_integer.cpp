@@ -8,6 +8,11 @@
 namespace cpu {
 namespace ppu {
 
+/**
+ * PPC64 Instructions:
+ *  - UISA: Integer instructions (Section: 4.2.1)
+ */
+
 void Analyzer::addx(Instruction code)
 {
     setFlag(gpr[code.ra], REG_READ);

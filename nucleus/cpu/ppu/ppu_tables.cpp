@@ -8,10 +8,10 @@
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
 // Instruction entry
-#define INSTRUCTION(name) { ENTRY_INSTRUCTION, #name, PPUInterpreter::name, nullptr }
+#define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, PPUInterpreter::name, &Analyzer::name }
 
 // Table entry
-# define TABLE(caller) { ENTRY_TABLE, nullptr, nullptr, caller }
+# define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr, nullptr }
 
 namespace cpu {
 namespace ppu {

@@ -8,6 +8,11 @@
 namespace cpu {
 namespace ppu {
 
+/**
+ * PPC64 Instructions:
+ *  - UISA: Floating-Point Instructions (Section: 4.2.2)
+ */
+
 void Analyzer::fabsx(Instruction code)
 {
     setFlag(fpr[code.frb], REG_READ);

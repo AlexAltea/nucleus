@@ -23,6 +23,11 @@ class Analyzer
     AnalyzerEvent cr[8] = {};
     AnalyzerEvent fpscr = REG_NONE;
     AnalyzerEvent xer = REG_NONE;
+    AnalyzerEvent lr = REG_NONE;
+    AnalyzerEvent ctr = REG_NONE;
+
+    // PPU VEA Registers
+    AnalyzerEvent tb = REG_NONE;
 
     // PPU Vector/SIMD Registers
     AnalyzerEvent vr[32];
@@ -268,7 +273,7 @@ public:
     void ecowx(Instruction code);
 
     /**
-     * Vector/SIMD Instructions (aka AltiVec):
+     * PPC64 Vector/SIMD Instructions (aka AltiVec):
      * Organized according to the chapter 4 of the Programming Environments Manual of the Vector/SIMD
      * Multimedia Extension Technology for 64-bit PowerPC Microprocessors (Version 2.07c / October 26, 2006).
      */
