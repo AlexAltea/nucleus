@@ -53,6 +53,9 @@ class Function
 {
     //llvm::Function* function;
 
+    // Analyzer auxiliary method: Determine function arguments/return types
+    void get_type();
+
 public:
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered (sum of basic block sizes)
@@ -70,8 +73,7 @@ public:
     Function(u32 address) : address(address) {}
 
     // Analyze function relative to a specific segment:
-    // Determine CFG and arguments/return types and return if analysis succeeded.
-    // Unsuccessful analysis are caused by branches outside the segment.
+    // Generate CFG and return if analysis succeeded (branching addresses stay inside the segment)
     bool analyze(u32 segAddress, u32 segSize);
 
     // Recompile function

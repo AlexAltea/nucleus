@@ -3,6 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
+#pragma once
+
 #include "nucleus/common.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 
@@ -10,13 +12,17 @@ namespace cpu {
 namespace ppu {
 
 enum AnalyzerEvent : u8 {
-    REG_NONE = 0,  // Original register was not accessed
-    REG_READ,      // Original register was read
-    REG_WRITE,     // Original register was written
+    REG_NONE       = 0,         // Register was not accessed
+    REG_READ       = (1 << 0),  // Register was read
+    REG_WRITE      = (1 << 1),  // Register was written
+    REG_READ_ORIG  = (1 << 2),  // Original register value was read
 };
 
 class Analyzer
 {
+    void setFlag(AnalyzerEvent& reg, AnalyzerEvent evt);
+
+public:
     // PPU UISA Registers
     AnalyzerEvent gpr[32] = {};
     AnalyzerEvent fpr[32] = {};
@@ -30,12 +36,9 @@ class Analyzer
     AnalyzerEvent tb = REG_NONE;
 
     // PPU Vector/SIMD Registers
-    AnalyzerEvent vr[32];
-    AnalyzerEvent vscr;
+    AnalyzerEvent vr[32] = {};
+    AnalyzerEvent vscr = REG_NONE;
 
-    void setFlag(AnalyzerEvent& reg, AnalyzerEvent evt);
-
-public:
     /**
      * PPC64 Instructions:
      * Organized according to the chapter 4 of the Programming Environments Manual

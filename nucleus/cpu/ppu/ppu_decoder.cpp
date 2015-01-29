@@ -6,6 +6,8 @@
 #include "ppu_decoder.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
+#include "nucleus/cpu/ppu/ppu_tables.h"
+#include "nucleus/cpu/ppu/analyzer/ppu_analyzer.h"
 
 #include <queue>
 
@@ -25,6 +27,39 @@ bool Block::contains(u32 addr) const
 /**
  * PPU Function methods
  */
+void Function::get_type()
+{
+    Analyzer status;
+    Block block = blocks[address];
+
+    // Analyze read/written registers
+    for (u32 offset = 0; offset < block.size; offset += 4) {
+        Instruction code = { nucleus.memory.read32(block.address + offset) };
+
+        // Get instruction analyzer and call it
+        auto method = get_entry(code).analyzer;
+        (status.*method)(code);
+        
+        if (code.is_branch_conditional() || code.is_return()) {
+            break;
+        }
+        if (code.is_branch_unconditional()) {
+            block = blocks[block.branch_a];
+            offset = 0;
+        }
+    }
+
+    // Determine type of function arguments
+    for (u32 reg = 0; reg < 13; reg++) {
+        if ((status.gpr[reg + 3] & REG_READ_ORIG) && reg < 8) {
+            type_in.push_back(FUNCTION_IN_INTEGER);
+        }
+        if ((status.fpr[reg + 1] & REG_READ_ORIG) && reg < 13) {
+            type_in.push_back(FUNCTION_IN_FLOAT);
+        }
+    }
+}
+
 bool Function::analyze(u32 segAddress, u32 segSize)
 {
     blocks.clear();
@@ -106,6 +141,10 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         blocks[labels.front()] = current;
         labels.pop();
     }
+    
+    // Determine function arguments/return types
+    get_type();
+
     return true;
 }
 

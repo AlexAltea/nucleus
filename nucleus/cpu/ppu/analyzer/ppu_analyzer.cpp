@@ -10,10 +10,11 @@ namespace ppu {
 
 void Analyzer::setFlag(AnalyzerEvent& reg, AnalyzerEvent evt)
 {
-    // If the register was already written, the original register cannot be read
-    if (reg != REG_WRITE) {
-        reg = evt;
+    auto& regValue = (u8&)reg;
+    if (regValue == REG_NONE && evt == REG_READ) {
+        regValue |= REG_READ_ORIG;
     }
+    regValue |= evt;
 }
 
 }  // namespace ppu
