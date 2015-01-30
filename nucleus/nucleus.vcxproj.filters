@@ -182,6 +182,27 @@
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_control.cpp">
       <Filter>cpu\ppu\analyzer</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_vector.cpp">
+      <Filter>cpu\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler.cpp">
+      <Filter>cpu\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_branch.cpp">
+      <Filter>cpu\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_control.cpp">
+      <Filter>cpu\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_float.cpp">
+      <Filter>cpu\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_integer.cpp">
+      <Filter>cpu\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_memory.cpp">
+      <Filter>cpu\ppu\recompiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -382,6 +403,9 @@
     </ClInclude>
     <ClInclude Include="cpu\ppu\analyzer\ppu_analyzer.h">
       <Filter>cpu\ppu\analyzer</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\recompiler\ppu_recompiler.h">
+      <Filter>cpu\ppu\recompiler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

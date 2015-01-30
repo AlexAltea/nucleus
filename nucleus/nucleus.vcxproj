@@ -95,6 +95,13 @@
     <ClCompile Include="cpu\ppu\ppu_instruction.cpp" />
     <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler.cpp" />
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_branch.cpp" />
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_control.cpp" />
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_float.cpp" />
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_integer.cpp" />
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_memory.cpp" />
+    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_vector.cpp" />
     <ClCompile Include="cpu\thread.cpp" />
     <ClCompile Include="debugger.cpp" />
     <ClCompile Include="emulator.cpp" />
@@ -155,6 +162,7 @@
     <ClInclude Include="cpu\ppu\ppu_instruction.h" />
     <ClInclude Include="cpu\ppu\ppu_tables.h" />
     <ClInclude Include="cpu\ppu\ppu_thread.h" />
+    <ClInclude Include="cpu\ppu\recompiler\ppu_recompiler.h" />
     <ClInclude Include="cpu\thread.h" />
     <ClInclude Include="cpu\translator.h" />
     <ClInclude Include="debugger.h" />

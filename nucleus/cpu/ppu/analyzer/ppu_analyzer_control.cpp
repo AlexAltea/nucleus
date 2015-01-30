@@ -16,7 +16,6 @@ namespace ppu {
  *  - VEA: External Control Instructions (Section: 4.3.4)
  */
 
-
 void Analyzer::mfocrf(Instruction code)
 {
     for (int i = 0; i < 8; i++) {
