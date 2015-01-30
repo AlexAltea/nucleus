@@ -249,13 +249,13 @@ class PPUThread : public CellThread
 
 public:
     // PPU UISA Registers
-    PPU_GPR gpr[32];
-    PPU_FPR fpr[32];
-    PPU_CR cr;
-    PPU_FPSCR fpscr;
-    PPU_XER xer;
-    PPU_LR lr;
-    PPU_CTR ctr;
+    PPU_GPR gpr[32] = {};
+    PPU_FPR fpr[32] = {};
+    PPU_CR cr = {};
+    PPU_FPSCR fpscr = {};
+    PPU_XER xer = {};
+    PPU_LR lr = 0;
+    PPU_CTR ctr = 0;
 
     // PPU VEA Registers
     union {
@@ -267,12 +267,12 @@ public:
     };
 
     // PPU Vector Registers
-    PPU_VR vr[32];
-    PPU_VSCR vscr;
+    PPU_VR vr[32] = {};
+    PPU_VSCR vscr = {};
 
     // PPU Reservation Registers
-    u64 reserve_addr;
-    u64 reserve_value;
+    u64 reserve_addr = 0;
+    u64 reserve_value = 0;
 
     PPUThread(u32 entry);
     ~PPUThread();

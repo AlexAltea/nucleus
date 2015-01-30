@@ -11,7 +11,7 @@ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif()
 
 # Dependencies
-#find_package(LLVM REQUIRED)
+find_package(LLVM REQUIRED CONFIG)
 find_package(OpenGL REQUIRED)
 find_package(ZLIB)
 if(ZLIB_FOUND)
@@ -45,9 +45,9 @@ if (NOT WIN32)
 endif()
 
 # LLVM
-#llvm_map_components_to_libnames(LLVM_LIBS
-#    core
-#)
+llvm_map_components_to_libnames(LLVM_LIBS
+    core
+)
 
 # Project
 if(NOT MSVC)
@@ -56,12 +56,12 @@ endif()
 
 include_directories(
     ${NUCLEUS_SOLUTION_DIR}
-#    ${LLVM_INCLUDE_DIRS}
+    ${LLVM_INCLUDE_DIRS}
 )
 
-#add_definitions(
-#    ${LLVM_DEFINITIONS}
-#)
+add_definitions(
+    ${LLVM_DEFINITIONS}
+)
 
 file(GLOB_RECURSE NUCLEUS_FILES
     "${NUCLEUS_SOLUTION_DIR}/externals/mongoose/mongoose.c"
@@ -88,5 +88,5 @@ endif()
 # Target
 add_executable(nucleus ${NUCLEUS_FILES})
 
-target_link_libraries(nucleus ${ZLIB_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
+target_link_libraries(nucleus ${ZLIB_LIBRARY} ${LLVM_LIBS} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
 set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)

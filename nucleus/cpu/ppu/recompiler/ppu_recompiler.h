@@ -8,11 +8,15 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 
+#include "llvm/IR/IRBuilder.h"
+
 namespace cpu {
 namespace ppu {
 
 class Recompiler
 {
+    llvm::IRBuilder<> builder;
+
 public:
 
     /**
