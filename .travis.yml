@@ -23,10 +23,12 @@ before_install:
 
   # Install GLEW and prepare compilers
   - sudo apt-get install libglew-dev
-  - sudo apt-get install libstdc++-4.8-dev;
   - if [ "$CXX" = "g++" ]; then
       sudo apt-get install g++-4.8 -qq;
       export CXX="g++-4.8" CC="gcc-4.8";
+    fi
+  - if [ "$CXX" = "clang++" ]; then
+      sudo apt-get install libstdc++-4.8-dev;
     fi
 
   # Install LLVM
@@ -45,6 +47,7 @@ before_install:
   - cmake -DLLVM_TARGETS_TO_BUILD=X86 -DLLVM_BUILD_RUNTIME=OFF -DLLVM_BUILD_TOOLS=OFF -DLLVM_INCLUDE_DOCS=OFF -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_INCLUDE_TOOLS=OFF -DLLVM_INCLUDE_UTILS=OFF -DWITH_POLLY=OFF ../llvm
   - make -j 4
   - sudo make install
+  - cd ../..
 
 before_script:
   - cmake .

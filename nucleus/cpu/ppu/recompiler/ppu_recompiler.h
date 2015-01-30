@@ -17,6 +17,9 @@ class Recompiler
 {
     llvm::IRBuilder<> builder;
 
+    llvm::Value* getGPR(int reg);
+    void setGPR(int reg, llvm::Value* value);
+
 public:
 
     /**

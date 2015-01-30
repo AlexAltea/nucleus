@@ -8,5 +8,17 @@
 namespace cpu {
 namespace ppu {
 
+llvm::Value* Recompiler::getGPR(int reg)
+{
+    // TODO: ?
+    return nullptr;
+}
+
+void Recompiler::setGPR(int reg, llvm::Value* value)
+{
+    // TODO: ?
+    return;
+}
+
 }  // namespace ppu
 }  // namespace cpu

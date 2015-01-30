@@ -47,6 +47,7 @@ endif()
 # LLVM
 llvm_map_components_to_libnames(LLVM_LIBS
     core
+    support
 )
 
 # Project

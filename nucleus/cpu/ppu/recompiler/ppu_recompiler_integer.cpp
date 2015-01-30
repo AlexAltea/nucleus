@@ -15,6 +15,21 @@ namespace ppu {
 
 void Recompiler::addx(Instruction code)
 {
+    llvm::Value* ra = getGPR(code.ra);
+    llvm::Value* rb = getGPR(code.rb);
+    llvm::Value* rd;
+
+    if (code.oe) {
+        // TODO: ?
+    } else {
+        builder.CreateAdd(ra, rb);
+    }
+
+    if (code.rc) {
+        // TODO: Do something generic
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::addcx(Instruction code)
