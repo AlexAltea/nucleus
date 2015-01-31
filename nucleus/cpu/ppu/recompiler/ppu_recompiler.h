@@ -9,14 +9,32 @@
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 
 #include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Intrinsics.h"
 
 namespace cpu {
 namespace ppu {
 
 class Recompiler
 {
+    llvm::Module* module;
+
     llvm::IRBuilder<> builder;
 
+    // LLVM Intrinsics
+    llvm::Function* getIntrinsic8(llvm::Intrinsic::ID intr) {
+        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt8Ty());
+    }
+    llvm::Function* getIntrinsic16(llvm::Intrinsic::ID intr) {
+        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt16Ty());
+    }
+    llvm::Function* getIntrinsic32(llvm::Intrinsic::ID intr) {
+        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt32Ty());
+    }
+    llvm::Function* getIntrinsic64(llvm::Intrinsic::ID intr) {
+        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt64Ty());
+    }
+
+    // Registers
     llvm::Value* getGPR(int reg);
     void setGPR(int reg, llvm::Value* value);
 

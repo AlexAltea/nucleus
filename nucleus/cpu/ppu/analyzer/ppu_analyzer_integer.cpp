@@ -60,7 +60,9 @@ void Analyzer::addex(Instruction code)
 
 void Analyzer::addi(Instruction code)
 {
-    setFlag(gpr[code.ra], REG_READ);
+    if (code.ra) {
+        setFlag(gpr[code.ra], REG_READ);
+    }
     setFlag(gpr[code.rd], REG_WRITE);
 }
 
@@ -81,7 +83,9 @@ void Analyzer::addic_(Instruction code)
 
 void Analyzer::addis(Instruction code)
 {
-    setFlag(gpr[code.ra], REG_READ);
+    if (code.ra) {
+        setFlag(gpr[code.ra], REG_READ);
+    }
     setFlag(gpr[code.rd], REG_WRITE);
 }
 

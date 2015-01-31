@@ -7,8 +7,9 @@
 
 #include "nucleus/common.h"
 
-//#include "llvm/IR/BasicBlock.h"
-//#include "llvm/IR/Function.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Module.h"
 
 #include <map>
 #include <string>
@@ -32,7 +33,7 @@ enum FunctionTypeOut {
 
 class Block
 {
-    //llvm::BasicBlock* block;
+    llvm::BasicBlock* block;
 
 public:
     u32 address = 0; // Starting address in the EA space
@@ -51,7 +52,7 @@ public:
 
 class Function
 {
-    //llvm::Function* function;
+    llvm::Function* function;
 
     // Analyzer auxiliary method: Determine function arguments/return types
     void get_type();
@@ -82,6 +83,8 @@ public:
 
 class Segment
 {
+    llvm::Module* module;
+
 public:
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered
