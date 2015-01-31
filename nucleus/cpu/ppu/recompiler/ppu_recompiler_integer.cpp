@@ -182,8 +182,8 @@ void Recompiler::cntlzdx(Instruction code)
     llvm::Value* rs = getGPR(code.rs);
     llvm::Value* ra;
 
-    llvm::Function* ctlz = getIntrinsic64(llvm::Intrinsic::ctlz);
-    // ra = builder.CreateCall2(ctlz, rs, builder.getInt1(false)); // TODO: For some reason llvm::Function* isn't accepted
+    llvm::Function* ctlz = getIntrinsicInt64(llvm::Intrinsic::ctlz);
+    //ra = builder.CreateCall2(ctlz, rs, builder.getInt1(false)); // TODO: For some reason llvm::Function* isn't accepted
     if (code.rc) {
         // TODO: CR0 update
     }
@@ -196,8 +196,8 @@ void Recompiler::cntlzwx(Instruction code)
     llvm::Value* rs = getGPR(code.rs);
     llvm::Value* ra;
 
-    llvm::Function* ctlz = getIntrinsic32(llvm::Intrinsic::ctlz);
-    // ra = builder.CreateCall2(ctlz, rs, builder.getInt1(false)); // TODO: For some reason llvm::Function* isn't accepted
+    llvm::Function* ctlz = getIntrinsicInt32(llvm::Intrinsic::ctlz);
+    //ra = builder.CreateCall2(ctlz, rs, builder.getInt1(false)); // TODO: For some reason llvm::Function* isn't accepted
     if (code.rc) {
         // TODO: CR0 update
     }
