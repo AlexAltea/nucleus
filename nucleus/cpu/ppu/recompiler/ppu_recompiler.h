@@ -47,6 +47,12 @@ class Recompiler
     llvm::Value* getFPR(int reg);
     void setFPR(int reg, llvm::Value* value);
 
+    llvm::Value* getVR_u8(int reg);
+    llvm::Value* getVR_u16(int reg);
+    llvm::Value* getVR_u32(int reg);
+    llvm::Value* getVR_f32(int reg);
+    void setVR(int reg, llvm::Value* value);
+
 public:
 
     /**

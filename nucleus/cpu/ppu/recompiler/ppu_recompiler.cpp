@@ -32,5 +32,35 @@ void Recompiler::setFPR(int reg, llvm::Value* value)
     return;
 }
 
+llvm::Value* getVR_u8(int reg)
+{
+    // TODO: ?
+    return nullptr;
+}
+
+llvm::Value* getVR_u16(int reg)
+{
+    // TODO: ?
+    return nullptr;
+}
+
+llvm::Value* getVR_u32(int reg)
+{
+    // TODO: ?
+    return nullptr;
+}
+
+llvm::Value* getVR_f32(int reg)
+{
+    // TODO: ?
+    return nullptr;
+}
+
+void setVR(int reg, llvm::Value* value)
+{
+    // TODO: ?
+    return;
+}
+
 }  // namespace ppu
 }  // namespace cpu

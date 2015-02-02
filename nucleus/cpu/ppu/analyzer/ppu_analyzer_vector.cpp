@@ -342,10 +342,7 @@ void Analyzer::vcmpbfp(Instruction code)
 
 void Analyzer::vcmpbfp_(Instruction code)
 {
-    setFlag(vscr, REG_READ);
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpbfp(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -358,9 +355,7 @@ void Analyzer::vcmpeqfp(Instruction code)
 
 void Analyzer::vcmpeqfp_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpeqfp(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -373,9 +368,7 @@ void Analyzer::vcmpequb(Instruction code)
 
 void Analyzer::vcmpequb_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpequb(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -388,9 +381,7 @@ void Analyzer::vcmpequh(Instruction code)
 
 void Analyzer::vcmpequh_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpequh(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -403,9 +394,7 @@ void Analyzer::vcmpequw(Instruction code)
 
 void Analyzer::vcmpequw_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpequw(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -418,9 +407,7 @@ void Analyzer::vcmpgefp(Instruction code)
 
 void Analyzer::vcmpgefp_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgefp(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -433,9 +420,7 @@ void Analyzer::vcmpgtfp(Instruction code)
 
 void Analyzer::vcmpgtfp_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgtfp(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -448,9 +433,7 @@ void Analyzer::vcmpgtsb(Instruction code)
 
 void Analyzer::vcmpgtsb_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgtsb(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -463,9 +446,7 @@ void Analyzer::vcmpgtsh(Instruction code)
 
 void Analyzer::vcmpgtsh_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgtsh(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -478,9 +459,7 @@ void Analyzer::vcmpgtsw(Instruction code)
 
 void Analyzer::vcmpgtsw_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgtsw(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -493,9 +472,7 @@ void Analyzer::vcmpgtub(Instruction code)
 
 void Analyzer::vcmpgtub_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgtub(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -508,9 +485,7 @@ void Analyzer::vcmpgtuh(Instruction code)
 
 void Analyzer::vcmpgtuh_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgtuh(code);
     setFlag(cr[6], REG_WRITE);
 }
 
@@ -523,9 +498,7 @@ void Analyzer::vcmpgtuw(Instruction code)
 
 void Analyzer::vcmpgtuw_(Instruction code)
 {
-    setFlag(vr[code.va], REG_READ);
-    setFlag(vr[code.vb], REG_READ);
-    setFlag(vr[code.vd], REG_WRITE);
+    vcmpgtuw(code);
     setFlag(cr[6], REG_WRITE);
 }
 
