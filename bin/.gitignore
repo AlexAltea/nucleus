@@ -1,7 +1,14 @@
-# Nucleus
+# Firmware
 dev_flash/**/*.ttf
 dev_flash/**/*.pic
 dev_flash/**/*.sprx
+
+# Keys
+keys.xml
+
+# Executables
 *.self
 *.elf
+
+# Scripts
 *.bat

@@ -203,6 +203,7 @@
     <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_memory.cpp">
       <Filter>cpu\ppu\recompiler</Filter>
     </ClCompile>
+    <ClCompile Include="format.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

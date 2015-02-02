@@ -107,6 +107,7 @@
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="filesystem\filesystem.cpp" />
     <ClCompile Include="filesystem\virtual_filesystem.cpp" />
+    <ClCompile Include="format.cpp" />
     <ClCompile Include="gpu\opengl\opengl_fp.cpp" />
     <ClCompile Include="gpu\opengl\opengl_renderer.cpp" />
     <ClCompile Include="gpu\opengl\opengl_vp.cpp" />

@@ -63,7 +63,7 @@ void Language::open(ConfigLanguage language)
 char* Language::translate(const std::string& msgid)
 {
     auto nodeLang = doc.first_node();
-    auto nodeEntries = nodeLang->first_node()->next_sibling("entries");
+    auto nodeEntries = nodeLang->first_node("entries");
     for (auto node = nodeEntries->first_node(); node; node = node->next_sibling("msg")) {
         char* id = node->first_attribute("id")->value();
         char* value = node->first_attribute("value")->value();

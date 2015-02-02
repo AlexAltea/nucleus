@@ -37,6 +37,6 @@
 # Apitrace
 *.trace
 
-# Nucleus
+# Project objects/libraries
 /**/x64/*
 /libs/*
