@@ -19,7 +19,7 @@ enum SelfKeyType {
 };
 
 struct SelfKey {
-    u32 self_type;
+    u32 type;
     u64 version;
     u16 revision;
     u32 curve_type;
@@ -37,4 +37,4 @@ static u8 NP_KLIC_KEY[0x10] = {
     0xF2, 0xFB, 0xCA, 0x7A, 0x75, 0xB0, 0x4E, 0xDC, 0x13, 0x90, 0x63, 0x8C, 0xCD, 0xFD, 0xD1, 0xEE
 };
 
-const SelfKey* getSelfKey(u32 type, u64 version, u16 revision);
+const SelfKey getSelfKey(u32 type, u64 version, u16 revision);

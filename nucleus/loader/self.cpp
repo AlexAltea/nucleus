@@ -279,11 +279,7 @@ bool SELFLoader::decryptMetadata()
     const auto& sce_header = (SceHeader&)self[0x0];
     const auto& self_header = (SelfHeader&)self[0x20];
     const auto& app_info = (AppInfo&)self[0x70];
-    const auto* key = getSelfKey(app_info.self_type, app_info.version, sce_header.flags);
-
-    if (!key) {
-        return false;
-    }
+    const auto key = getSelfKey(app_info.self_type, app_info.version, sce_header.flags);
 
     auto& meta_info = (MetadataInfo&)self[sizeof(SceHeader) + sce_header.meta];
 
@@ -318,8 +314,8 @@ bool SELFLoader::decryptMetadata()
 
     // Decrypt Metadata Info
     u8 metadata_iv[0x10];
-    memcpy(metadata_iv, key->riv, 0x10);
-    aes_setkey_dec(&aes, key->erk, 256);
+    memcpy(metadata_iv, key.riv, 0x10);
+    aes_setkey_dec(&aes, key.erk, 256);
     aes_crypt_cbc(&aes, AES_DECRYPT, sizeof(MetadataInfo), metadata_iv, (u8*)&meta_info, (u8*)&meta_info);
 
     // Decrypt Metadata Headers (Metadata Header + Metadata Section Headers)
