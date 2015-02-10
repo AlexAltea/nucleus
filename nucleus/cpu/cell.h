@@ -14,13 +14,6 @@
 #include <vector>
 #include <set>
 
-enum CellThreadType
-{
-    CELL_THREAD_PPU,
-    CELL_THREAD_SPU,
-    CELL_THREAD_RAWSPU,
-};
-
 class Cell
 {
     std::vector<CellThread*> m_threads;

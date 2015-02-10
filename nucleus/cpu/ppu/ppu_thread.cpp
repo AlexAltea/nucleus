@@ -11,7 +11,7 @@ using namespace cpu::ppu;
 
 PPUThread::PPUThread(u32 entry)
 {
-    m_translator = new PPUInterpreter(*this);
+    m_translator = new Interpreter(*this);
 
     // Initialize stack of size 0x10000
     m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);

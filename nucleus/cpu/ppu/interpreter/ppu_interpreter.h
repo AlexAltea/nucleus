@@ -13,12 +13,12 @@
 namespace cpu {
 namespace ppu {
 
-class PPUInterpreter : public CellTranslator
+class Interpreter : public CellTranslator
 {
     PPUThread& thread;
 
 public:
-    PPUInterpreter(PPUThread& thr);
+    Interpreter(PPUThread& thr);
 
     // Decode and execute one instruction
     void step();

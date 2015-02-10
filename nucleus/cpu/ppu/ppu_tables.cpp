@@ -8,7 +8,7 @@
 #include "nucleus/cpu/ppu/ppu_thread.h"
 
 // Instruction entry
-#define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, PPUInterpreter::name, &Analyzer::name, &Recompiler::name }
+#define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, Interpreter::name, &Analyzer::name, &Recompiler::name }
 
 // Table entry
 # define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr, nullptr, nullptr }

@@ -13,6 +13,12 @@
 #include <string>
 #include <thread>
 
+enum CellThreadType {
+    CELL_THREAD_PPU,
+    CELL_THREAD_SPU,
+    CELL_THREAD_RAWSPU,
+};
+
 class CellThread
 {
     std::mutex m_mutex;
