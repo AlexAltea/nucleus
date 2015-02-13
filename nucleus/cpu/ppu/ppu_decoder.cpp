@@ -9,6 +9,9 @@
 #include "nucleus/cpu/ppu/ppu_tables.h"
 #include "nucleus/cpu/ppu/analyzer/ppu_analyzer.h"
 
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/Transforms/Scalar.h"
+
 #include <queue>
 
 namespace cpu {
@@ -222,6 +225,37 @@ void Function::recompile()
 /**
  * PPU Segment methods
  */
+Segment::Segment(u32 address, u32 size) : address(address), size(size) {
+    std::string name = format("seg_%d", address);
+    module = new llvm::Module(name, llvm::getGlobalContext());
+
+    /**
+     * Optimizations
+     */
+    fpm = new llvm::FunctionPassManager(module);
+
+    // Promote allocas to registers
+    fpm->add(llvm::createPromoteMemoryToRegisterPass());
+
+    // Simple peephole and bit-twiddling optimizations
+    fpm->add(llvm::createInstructionCombiningPass());
+
+    // Reassociate expressions
+    fpm->add(llvm::createReassociatePass());
+
+    // Eliminate Common SubExpressions
+    fpm->add(llvm::createGVNPass());
+
+    // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
+    fpm->add(llvm::createCFGSimplificationPass());
+
+    fpm->doInitialization();
+}
+
+Segment::~Segment() {
+    delete module;
+}
+
 void Segment::analyze()
 {
     // List of labels, stored as blocks.

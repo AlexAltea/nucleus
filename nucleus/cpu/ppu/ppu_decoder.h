@@ -6,10 +6,12 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/format.h"
 
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Module.h"
+#include "llvm/PassManager.h"
 
 #include <map>
 #include <string>
@@ -91,6 +93,7 @@ public:
 class Segment
 {
     llvm::Module* module;
+    llvm::FunctionPassManager* fpm;
 
 public:
     u32 address = 0; // Starting address in the EA space
@@ -99,7 +102,8 @@ public:
     // Functions contained
     std::vector<Function> functions;
 
-    Segment(u32 address, u32 size) : address(address), size(size) {}
+    Segment(u32 address, u32 size);
+    ~Segment();
 
     // Generate a list of functions and analyze them
     void analyze();

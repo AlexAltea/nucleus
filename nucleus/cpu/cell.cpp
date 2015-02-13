@@ -6,8 +6,9 @@
 #include "cell.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
-
 #include "nucleus/cpu/ppu/ppu_tables.h"
+
+#include "llvm/Support/TargetSelect.h"
 
 #include <algorithm>
 
@@ -18,6 +19,11 @@
 #endif
 
 thread_local CellThread* g_this_thread = nullptr;
+
+Cell::Cell()
+{
+    llvm::InitializeNativeTarget();
+}
 
 CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
 {
