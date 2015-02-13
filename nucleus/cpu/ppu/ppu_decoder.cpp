@@ -57,6 +57,30 @@ void Function::get_type()
         if ((status.fpr[reg + 1] & REG_READ_ORIG) && reg < 13) {
             type_in.push_back(FUNCTION_IN_FLOAT);
         }
+        if ((status.vr[reg + 2] & REG_READ_ORIG) && reg < 12) {
+            type_in.push_back(FUNCTION_IN_VECTOR);
+        }
+    }
+
+    // Determine type of function return
+    type_out = FUNCTION_OUT_VOID;
+    if (status.gpr[3] & REG_WRITE) {
+        type_out = FUNCTION_OUT_INTEGER;
+    }
+    if (status.vr[2] & REG_WRITE) {
+        type_out = FUNCTION_OUT_VECTOR;
+    }
+    if (status.fpr[1] & REG_WRITE) {
+        type_out = FUNCTION_OUT_FLOAT;
+        if (status.fpr[2] & REG_WRITE) {
+            type_out = FUNCTION_OUT_FLOAT_X2;
+        }
+        if (status.fpr[3] & REG_WRITE) {
+            type_out = FUNCTION_OUT_FLOAT_X3;
+        }
+        if (status.fpr[4] & REG_WRITE) {
+            type_out = FUNCTION_OUT_FLOAT_X4;
+        }
     }
 }
 
@@ -64,7 +88,6 @@ bool Function::analyze(u32 segAddress, u32 segSize)
 {
     blocks.clear();
     type_in.clear();
-    type_out.clear();
 
     std::queue<u32> labels({ address });
 
@@ -150,6 +173,50 @@ bool Function::analyze(u32 segAddress, u32 segSize)
 
 void Function::recompile()
 {
+    // Return type
+    llvm::Type* result = nullptr;
+    switch (type_out) {
+    case FUNCTION_OUT_INTEGER:
+        result = llvm::Type::getInt64Ty(llvm::getGlobalContext());
+        break;
+    case FUNCTION_OUT_FLOAT:
+        result = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+        break;
+    case FUNCTION_OUT_FLOAT_X2:
+        result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
+        break;
+    case FUNCTION_OUT_FLOAT_X3:
+        result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
+        break;
+    case FUNCTION_OUT_FLOAT_X4: 
+        result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
+        break;
+    case FUNCTION_OUT_VECTOR:
+        result = llvm::Type::getIntNTy(llvm::getGlobalContext(), 128);
+        break;
+    case FUNCTION_OUT_VOID:
+        result = llvm::Type::getVoidTy(llvm::getGlobalContext());
+        break;
+    }
+
+    // Arguments type
+    std::vector<llvm::Type*> params;
+    for (auto& type : type_in) {
+        switch (type) {
+        case FUNCTION_OUT_INTEGER:
+            params.push_back(llvm::Type::getInt64Ty(llvm::getGlobalContext()));
+            break;
+        case FUNCTION_OUT_FLOAT:
+            params.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+            break;
+        case FUNCTION_OUT_VECTOR:
+            params.push_back(llvm::Type::getIntNTy(llvm::getGlobalContext(), 128));
+            break;
+        }
+    }
+    
+    ftype = llvm::FunctionType::get(result, params, false);
+    function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, nullptr/*TODO*/);
 }
 
 /**

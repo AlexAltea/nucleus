@@ -23,12 +23,18 @@ enum FunctionTypeIn {
     FUNCTION_IN_UNKNOWN = 0,
     FUNCTION_IN_INTEGER,      // The u64 argument is passed on r3 to r10
     FUNCTION_IN_FLOAT,        // The f64 argument is passed on f1 to f13
+    FUNCTION_IN_VECTOR,       // The u128 arguement is passed on v2 to v13
 };
 
 enum FunctionTypeOut {
     FUNCTION_OUT_UNKNOWN = 0,
-    FUNCTION_OUT_INTEGER,     // The u64 argument is returned on r3 (to r6?)
-    FUNCTION_OUT_FLOAT,       // The f64 argument is returned on f1 to f4
+    FUNCTION_OUT_INTEGER,     // The u64 argument is returned on r3
+    FUNCTION_OUT_FLOAT,       // The f64 argument is returned on f1
+    FUNCTION_OUT_FLOAT_X2,    // The f64 argument is returned on f1:f2
+    FUNCTION_OUT_FLOAT_X3,    // The f64 argument is returned on f1:f3
+    FUNCTION_OUT_FLOAT_X4,    // The f64 argument is returned on f1:f4
+    FUNCTION_OUT_VECTOR,      // The u128 arguement is returned on v2
+    FUNCTION_OUT_VOID,        // Nothing is returned
 };
 
 class Block
@@ -53,6 +59,7 @@ public:
 class Function
 {
     llvm::Function* function;
+    llvm::FunctionType* ftype;
 
     // Analyzer auxiliary method: Determine function arguments/return types
     void get_type();
@@ -64,9 +71,9 @@ public:
     // Control Flow Graph
     std::map<u32, Block> blocks;
 
-    // Arguments/return type
+    // Return/Arguments type
+    FunctionTypeOut type_out;
     std::vector<FunctionTypeIn> type_in;
-    std::vector<FunctionTypeOut> type_out;
 
     // Name extracted from the DWARF symbols if available
     std::string name;

@@ -67,6 +67,7 @@ bool SELFLoader::load_elf(sys_process_t& proc)
             if (phdr.flags & PF_X) {
                 cpu::ppu::Segment segment(phdr.vaddr, phdr.filesz);
                 segment.analyze();
+                segment.recompile();
             }
             break;
 
