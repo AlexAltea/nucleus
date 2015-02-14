@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/ppu/ppu_decoder.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 
 #include "llvm/IR/IRBuilder.h"
@@ -54,6 +55,10 @@ class Recompiler
     void setVR(int reg, llvm::Value* value);
 
 public:
+    Recompiler();
+
+    // Specifies the block
+    void setInsertPoint(llvm::BasicBlock* block);
 
     /**
      * PPC64 Instructions:

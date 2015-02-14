@@ -8,6 +8,15 @@
 namespace cpu {
 namespace ppu {
 
+Recompiler::Recompiler() : builder(llvm::getGlobalContext())
+{
+}
+
+void Recompiler::setInsertPoint(llvm::BasicBlock* block)
+{
+    builder.SetInsertPoint(block);
+}
+
 llvm::Value* Recompiler::getGPR(int reg)
 {
     // TODO: ?

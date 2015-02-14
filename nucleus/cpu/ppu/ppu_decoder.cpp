@@ -9,6 +9,8 @@
 #include "nucleus/cpu/ppu/ppu_tables.h"
 #include "nucleus/cpu/ppu/analyzer/ppu_analyzer.h"
 
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/Transforms/Scalar.h"
 
@@ -174,7 +176,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
     return true;
 }
 
-void Function::recompile()
+void Function::recompile(llvm::Module* module)
 {
     // Return type
     llvm::Type* result = nullptr;
@@ -218,44 +220,17 @@ void Function::recompile()
         }
     }
     
-    ftype = llvm::FunctionType::get(result, params, false);
-    function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, nullptr/*TODO*/);
+    llvm::FunctionType* ftype = llvm::FunctionType::get(result, params, false);
+    llvm::Function* function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, module);
+    llvm::BasicBlock *bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", function);
+
+    Recompiler recompiler;
+    recompiler.setInsertPoint(bb);
 }
 
 /**
  * PPU Segment methods
  */
-Segment::Segment(u32 address, u32 size) : address(address), size(size) {
-    std::string name = format("seg_%d", address);
-    module = new llvm::Module(name, llvm::getGlobalContext());
-
-    /**
-     * Optimizations
-     */
-    fpm = new llvm::FunctionPassManager(module);
-
-    // Promote allocas to registers
-    fpm->add(llvm::createPromoteMemoryToRegisterPass());
-
-    // Simple peephole and bit-twiddling optimizations
-    fpm->add(llvm::createInstructionCombiningPass());
-
-    // Reassociate expressions
-    fpm->add(llvm::createReassociatePass());
-
-    // Eliminate Common SubExpressions
-    fpm->add(llvm::createGVNPass());
-
-    // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
-    fpm->add(llvm::createCFGSimplificationPass());
-
-    fpm->doInitialization();
-}
-
-Segment::~Segment() {
-    delete module;
-}
-
 void Segment::analyze()
 {
     // List of labels, stored as blocks.
@@ -318,8 +293,20 @@ void Segment::analyze()
 }
 
 void Segment::recompile() {
+    std::string name = format("seg_%d", address);
+    module = new llvm::Module(name, llvm::getGlobalContext());
+
+    // Optimizations
+    fpm = new llvm::FunctionPassManager(module);
+    fpm->add(llvm::createPromoteMemoryToRegisterPass());  // Promote allocas to registers
+    fpm->add(llvm::createInstructionCombiningPass());     // Simple peephole and bit-twiddling optimizations
+    fpm->add(llvm::createReassociatePass());              // Reassociate expressions
+    fpm->add(llvm::createGVNPass());                      // Eliminate Common SubExpressions
+    fpm->add(llvm::createCFGSimplificationPass());        // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
+    fpm->doInitialization();
+
     for (auto& function : functions) {
-        function.recompile();
+        function.recompile(module);
     }
 }
 

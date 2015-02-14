@@ -8,8 +8,6 @@
 #include "nucleus/common.h"
 #include "nucleus/format.h"
 
-#include "llvm/IR/BasicBlock.h"
-#include "llvm/IR/Function.h"
 #include "llvm/IR/Module.h"
 #include "llvm/PassManager.h"
 
@@ -41,8 +39,6 @@ enum FunctionTypeOut {
 
 class Block
 {
-    llvm::BasicBlock* block;
-
 public:
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered
@@ -60,9 +56,6 @@ public:
 
 class Function
 {
-    llvm::Function* function;
-    llvm::FunctionType* ftype;
-
     // Analyzer auxiliary method: Determine function arguments/return types
     void get_type();
 
@@ -80,20 +73,22 @@ public:
     // Name extracted from the DWARF symbols if available
     std::string name;
 
-    Function(u32 address) : address(address) {}
+    Function(u32 address) : address(address) {
+        name = format("func_%X", address);
+    }
 
     // Analyze function relative to a specific segment:
     // Generate CFG and return if analysis succeeded (branching addresses stay inside the segment)
     bool analyze(u32 segAddress, u32 segSize);
 
-    // Recompile function
-    void recompile();
+    // Recompile function inside a LLVM module
+    void recompile(llvm::Module* module);
 };
 
 class Segment
 {
-    llvm::Module* module;
-    llvm::FunctionPassManager* fpm;
+    llvm::Module* module = nullptr;
+    llvm::FunctionPassManager* fpm = nullptr;
 
 public:
     u32 address = 0; // Starting address in the EA space
@@ -102,8 +97,12 @@ public:
     // Functions contained
     std::vector<Function> functions;
 
-    Segment(u32 address, u32 size);
-    ~Segment();
+    Segment::Segment(u32 address, u32 size) : address(address), size(size) {
+    }
+
+    Segment::~Segment() {
+        delete module;
+    }
 
     // Generate a list of functions and analyze them
     void analyze();
