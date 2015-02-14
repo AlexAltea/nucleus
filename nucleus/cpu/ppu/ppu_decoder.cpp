@@ -12,6 +12,7 @@
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Verifier.h"
 #include "llvm/Transforms/Scalar.h"
 
 #include <queue>
@@ -222,10 +223,26 @@ void Function::recompile(llvm::Module* module)
     
     llvm::FunctionType* ftype = llvm::FunctionType::get(result, params, false);
     llvm::Function* function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, module);
-    llvm::BasicBlock *bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", function);
-
+    
+    // Recompile the blocks
     Recompiler recompiler;
-    recompiler.setInsertPoint(bb);
+    for (auto& item : blocks) {
+        Block& block = item.second;
+
+        std::string name = format("block_%X", block.address);
+        llvm::BasicBlock *bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function);
+        recompiler.setInsertPoint(bb);
+
+        // Recompile block instructions
+        for (u32 offset = 0; offset < block.size; offset += 4) {
+            const Instruction code = { nucleus.memory.read32(block.address + offset) };
+            auto method = get_entry(code).recompiler;
+            (recompiler.*method)(code);
+        }
+    }
+
+    // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
+    llvm::verifyFunction(*function);
 }
 
 /**
