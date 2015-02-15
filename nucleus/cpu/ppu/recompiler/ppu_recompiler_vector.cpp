@@ -523,7 +523,7 @@ void Recompiler::vexptefp(Instruction code)
     llvm::Value* vd;
 
     //llvm::Function* exp2 = getIntrinsicFloat(llvm::Intrinsic::exp2); // TODO: Get a 4xf32 intrinsic instead
-    //vd = builder.CreateCall(exp2, vb); // TODO: For some reason llvm::Function* isn't accepted
+    //vd = builder.CreateCall(exp2, vb);
 
     setVR(code.vd, vd);
 }
@@ -534,7 +534,7 @@ void Recompiler::vlogefp(Instruction code)
     llvm::Value* vd;
 
     //llvm::Function* log2 = getIntrinsicFloat(llvm::Intrinsic::log2); // TODO: Get a 4xf32 intrinsic instead
-    //vd = builder.CreateCall(log2, vb); // TODO: For some reason llvm::Function* isn't accepted
+    //vd = builder.CreateCall(log2, vb);
 
     setVR(code.vd, vd);
 }

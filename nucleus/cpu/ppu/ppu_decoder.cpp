@@ -177,7 +177,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
     return true;
 }
 
-void Function::recompile(llvm::Module* module)
+llvm::Function* Function::recompile(llvm::Module* module)
 {
     // Return type
     llvm::Type* result = nullptr;
@@ -225,7 +225,7 @@ void Function::recompile(llvm::Module* module)
     llvm::Function* function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, module);
     
     // Recompile the blocks
-    Recompiler recompiler;
+    Recompiler recompiler(module);
     recompiler.returnType = type_out;
 
     for (auto& item : blocks) {
@@ -245,6 +245,7 @@ void Function::recompile(llvm::Module* module)
 
     // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
     llvm::verifyFunction(*function);
+    return function;
 }
 
 /**
@@ -324,8 +325,8 @@ void Segment::recompile() {
     fpm->doInitialization();
 
     for (auto& function : functions) {
-        function.recompile(module);
-        break; // REMOVE ME
+        llvm::Function* func = function.recompile(module);
+        //fpm->run(*func); // TODO: FPM crashes. Reenable optimizations later.
     }
     module->dump(); // REMOVE ME
 }

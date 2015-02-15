@@ -19,7 +19,7 @@ void Recompiler::fabsx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* fabs = getIntrinsicDouble(llvm::Intrinsic::fabs);
-    //frd = builder.CreateCall(fabs, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall(fabs, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -121,7 +121,7 @@ void Recompiler::fmaddx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    //frd = builder.CreateCall3(fmuladd, fra, frc, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -137,7 +137,7 @@ void Recompiler::fmaddsx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    //frd = builder.CreateCall3(fmuladd, fra, frc, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
     frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
         // TODO: CR1 update
@@ -229,7 +229,7 @@ void Recompiler::fnabsx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* fabs = getIntrinsicDouble(llvm::Intrinsic::fabs);
-    //frd = builder.CreateCall(fabs, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall(fabs, frb);
     frd = builder.CreateFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
@@ -259,7 +259,7 @@ void Recompiler::fnmaddx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    //frd = builder.CreateCall3(fmuladd, fra, frc, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
     frd = builder.CreateFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
@@ -276,7 +276,7 @@ void Recompiler::fnmaddsx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    //frd = builder.CreateCall3(fmuladd, fra, frc, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
     frd = builder.CreateFNeg(frd);
     frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
@@ -345,7 +345,7 @@ void Recompiler::fsqrtx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* sqrt = getIntrinsicDouble(llvm::Intrinsic::sqrt);
-    //frd = builder.CreateCall(sqrt, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall(sqrt, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -359,7 +359,7 @@ void Recompiler::fsqrtsx(Instruction code)
     llvm::Value* frd;
 
     llvm::Function* sqrt = getIntrinsicDouble(llvm::Intrinsic::sqrt);
-    //frd = builder.CreateCall(sqrt, frb); // TODO: For some reason llvm::Function* isn't accepted
+    frd = builder.CreateCall(sqrt, frb);
     frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
         // TODO: CR1 update

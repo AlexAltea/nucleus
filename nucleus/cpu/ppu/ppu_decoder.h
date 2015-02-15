@@ -82,7 +82,7 @@ public:
     bool analyze(u32 segAddress, u32 segSize);
 
     // Recompile function inside a LLVM module
-    void recompile(llvm::Module* module);
+    llvm::Function* recompile(llvm::Module* module);
 };
 
 class Segment

@@ -15,7 +15,7 @@ const char* string_gpr[] = {
 namespace cpu {
 namespace ppu {
 
-Recompiler::Recompiler() : builder(llvm::getGlobalContext())
+Recompiler::Recompiler(llvm::Module* module) : builder(llvm::getGlobalContext()), module(module)
 {
 }
 

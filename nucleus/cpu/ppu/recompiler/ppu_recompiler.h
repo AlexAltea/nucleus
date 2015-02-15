@@ -58,7 +58,7 @@ class Recompiler
     void setVR(int reg, llvm::Value* value);
 
 public:
-    Recompiler();
+    Recompiler(llvm::Module* module);
 
     // Specifies the block that is being recompiled
     void setInsertPoint(llvm::BasicBlock* block);
