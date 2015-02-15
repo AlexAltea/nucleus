@@ -193,11 +193,10 @@ void Recompiler::cntlzdx(Instruction code)
 
 void Recompiler::cntlzwx(Instruction code)
 {
-    llvm::Value* rs = getGPR(code.rs);
+    llvm::Value* rs = getGPR(code.rs, 32);
     llvm::Value* ra;
 
     llvm::Function* ctlz = getIntrinsicInt32(llvm::Intrinsic::ctlz);
-    rs = builder.CreateTrunc(rs, builder.getInt32Ty());
     ra = builder.CreateCall2(ctlz, rs, builder.getInt1(false));
     ra = builder.CreateZExt(ra, builder.getInt64Ty());
     if (code.rc) {
@@ -236,10 +235,9 @@ void Recompiler::eqvx(Instruction code)
 
 void Recompiler::extsbx(Instruction code)
 {
-    llvm::Value* rs = getGPR(code.rs);
+    llvm::Value* rs = getGPR(code.rs, 8);
     llvm::Value* ra;
 
-    rs = builder.CreateTrunc(rs, builder.getInt8Ty());
     ra = builder.CreateSExt(rs, builder.getInt64Ty());
     if (code.rc) {
         // TODO: CR0 update
@@ -250,10 +248,9 @@ void Recompiler::extsbx(Instruction code)
 
 void Recompiler::extshx(Instruction code)
 {
-    llvm::Value* rs = getGPR(code.rs);
+    llvm::Value* rs = getGPR(code.rs, 16);
     llvm::Value* ra;
 
-    rs = builder.CreateTrunc(rs, builder.getInt16Ty());
     ra = builder.CreateSExt(rs, builder.getInt64Ty());
     if (code.rc) {
         // TODO: CR0 update
@@ -264,10 +261,9 @@ void Recompiler::extshx(Instruction code)
 
 void Recompiler::extswx(Instruction code)
 {
-    llvm::Value* rs = getGPR(code.rs);
+    llvm::Value* rs = getGPR(code.rs, 32);
     llvm::Value* ra;
 
-    rs = builder.CreateTrunc(rs, builder.getInt32Ty());
     ra = builder.CreateSExt(rs, builder.getInt64Ty());
     if (code.rc) {
         // TODO: CR0 update

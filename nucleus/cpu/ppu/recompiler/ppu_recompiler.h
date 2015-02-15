@@ -22,6 +22,9 @@ class Recompiler
     llvm::IRBuilder<> builder;
 
     // LLVM Intrinsics
+    llvm::Function* getIntrinsicIntN(llvm::Intrinsic::ID intr, int bits) {
+        return llvm::Intrinsic::getDeclaration(module, intr, builder.getIntNTy(bits));
+    }
     llvm::Function* getIntrinsicInt8(llvm::Intrinsic::ID intr) {
         return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt8Ty());
     }
@@ -45,17 +48,26 @@ class Recompiler
     llvm::AllocaInst* gpr[32] = {};
 
     // Register access
-    llvm::Value* getGPR(int reg);
-    void setGPR(int reg, llvm::Value* value);
+    llvm::Value* getGPR(int index, int bits=64);
+    void setGPR(int index, llvm::Value* value);
 
-    llvm::Value* getFPR(int reg);
-    void setFPR(int reg, llvm::Value* value);
+    llvm::Value* getFPR(int index);
+    void setFPR(int index, llvm::Value* value);
 
-    llvm::Value* getVR_u8(int reg);
-    llvm::Value* getVR_u16(int reg);
-    llvm::Value* getVR_u32(int reg);
-    llvm::Value* getVR_f32(int reg);
-    void setVR(int reg, llvm::Value* value);
+    llvm::Value* getVR_u8(int index);
+    llvm::Value* getVR_u16(int index);
+    llvm::Value* getVR_u32(int index);
+    llvm::Value* getVR_f32(int index);
+    void setVR(int index, llvm::Value* value);
+
+    /**
+     * Memory access
+     */
+    // Read specified number of bits from memory swapping endianness if necessary
+    llvm::Value* readMemory(llvm::Value* addr, int bits);
+
+    // Write value to memory swapping endianness if necessary
+    void writeMemory(llvm::Value* addr, llvm::Value* value);
 
 public:
     Recompiler(llvm::Module* module);

@@ -99,11 +99,11 @@ public:
 
     std::string name;
 
-    Segment::Segment(u32 address, u32 size) : address(address), size(size) {
+    Segment(u32 address, u32 size) : address(address), size(size) {
         name = format("seg_%X", address);
     }
 
-    Segment::~Segment() {
+    ~Segment() {
         delete module;
     }
 
