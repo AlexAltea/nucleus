@@ -49,7 +49,7 @@ void Function::get_type()
         if (code.is_branch_conditional() || code.is_return()) {
             break;
         }
-        if (code.is_branch_unconditional()) {
+        if (code.is_branch_unconditional() && !code.is_call()) {
             block = blocks[block.branch_a];
             offset = 0;
         }
@@ -226,6 +226,8 @@ void Function::recompile(llvm::Module* module)
     
     // Recompile the blocks
     Recompiler recompiler;
+    recompiler.returnType = type_out;
+
     for (auto& item : blocks) {
         Block& block = item.second;
 
@@ -310,7 +312,6 @@ void Segment::analyze()
 }
 
 void Segment::recompile() {
-    std::string name = format("seg_%d", address);
     module = new llvm::Module(name, llvm::getGlobalContext());
 
     // Optimizations
@@ -324,7 +325,9 @@ void Segment::recompile() {
 
     for (auto& function : functions) {
         function.recompile(module);
+        break; // REMOVE ME
     }
+    module->dump(); // REMOVE ME
 }
 
 bool Segment::contains(u32 addr) const

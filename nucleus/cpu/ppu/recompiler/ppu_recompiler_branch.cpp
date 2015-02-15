@@ -27,6 +27,37 @@ void Recompiler::bcctrx(Instruction code)
 
 void Recompiler::bclrx(Instruction code)
 {
+    llvm::Value* ret;
+
+    // Unconditional branch
+    if (code.bo == 20 && code.bi == 0) {
+        switch (returnType) {
+        case FUNCTION_OUT_INTEGER:
+            ret = getGPR(3);
+            break;
+        case FUNCTION_OUT_FLOAT:
+            ret = getFPR(1);
+            break;
+        case FUNCTION_OUT_FLOAT_X2:
+            ret = getFPR(1); // TODO
+            break;
+        case FUNCTION_OUT_FLOAT_X3:
+            ret = getFPR(1); // TODO
+            break;
+        case FUNCTION_OUT_FLOAT_X4:
+            ret = getFPR(1); // TODO
+            break;
+        case FUNCTION_OUT_VECTOR:
+            ret = getVR_u32(2);
+            break;
+        case FUNCTION_OUT_VOID:
+            builder.CreateRetVoid();
+            return;
+        }
+        builder.CreateRet(ret);
+    } else {
+        // TODO
+    }
 }
 
 void Recompiler::crand(Instruction code)

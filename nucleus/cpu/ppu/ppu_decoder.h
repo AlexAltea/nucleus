@@ -97,7 +97,10 @@ public:
     // Functions contained
     std::vector<Function> functions;
 
+    std::string name;
+
     Segment::Segment(u32 address, u32 size) : address(address), size(size) {
+        name = format("seg_%X", address);
     }
 
     Segment::~Segment() {

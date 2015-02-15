@@ -5,6 +5,13 @@
 
 #include "ppu_recompiler.h"
 
+const char* string_gpr[] = {
+     "r0",  "r1",  "r2",  "r3",  "r4",  "r5",  "r6" , "r7",
+     "r8",  "r9", "r10", "r11", "r12", "r13", "r14", "r15", 
+    "r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23", 
+    "r24", "r25", "r26", "r27", "r28", "r29", "r30", "r31",
+};
+
 namespace cpu {
 namespace ppu {
 
@@ -19,14 +26,18 @@ void Recompiler::setInsertPoint(llvm::BasicBlock* block)
 
 llvm::Value* Recompiler::getGPR(int reg)
 {
-    // TODO: ?
-    return nullptr;
+    if (!gpr[reg]) {
+        gpr[reg] = builder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[reg]);
+    }
+    return builder.CreateLoad(gpr[reg], string_gpr[reg]);
 }
 
 void Recompiler::setGPR(int reg, llvm::Value* value)
 {
-    // TODO: ?
-    return;
+    if (!gpr[reg]) {
+        gpr[reg] = builder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[reg]);
+    }
+    builder.CreateStore(value, gpr[reg]);
 }
 
 llvm::Value* Recompiler::getFPR(int reg)

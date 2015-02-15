@@ -41,7 +41,10 @@ class Recompiler
         return llvm::Intrinsic::getDeclaration(module, intr, builder.getDoubleTy());
     }
 
-    // Registers
+    // Register allocation
+    llvm::AllocaInst* gpr[32] = {};
+
+    // Register access
     llvm::Value* getGPR(int reg);
     void setGPR(int reg, llvm::Value* value);
 
@@ -57,8 +60,11 @@ class Recompiler
 public:
     Recompiler();
 
-    // Specifies the block
+    // Specifies the block that is being recompiled
     void setInsertPoint(llvm::BasicBlock* block);
+
+    // Function information
+    FunctionTypeOut returnType;
 
     /**
      * PPC64 Instructions:
