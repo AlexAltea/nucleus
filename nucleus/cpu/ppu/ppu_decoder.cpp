@@ -177,7 +177,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
     return true;
 }
 
-llvm::Function* Function::recompile(llvm::Module* module)
+llvm::Function* Function::declare(Segment* segment)
 {
     // Return type
     llvm::Type* result = nullptr;
@@ -222,10 +222,16 @@ llvm::Function* Function::recompile(llvm::Module* module)
     }
     
     llvm::FunctionType* ftype = llvm::FunctionType::get(result, params, false);
-    llvm::Function* function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, module);
-    
-    // Recompile the blocks
-    Recompiler recompiler(module);
+
+    // Declare function in module
+    parent = segment;
+    function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, segment->module);
+    return function;
+}
+
+llvm::Function* Function::recompile()
+{
+    Recompiler recompiler(parent);
     recompiler.returnType = type_out;
 
     for (auto& item : blocks) {
@@ -237,7 +243,8 @@ llvm::Function* Function::recompile(llvm::Module* module)
 
         // Recompile block instructions
         for (u32 offset = 0; offset < block.size; offset += 4) {
-            const Instruction code = { nucleus.memory.read32(block.address + offset) };
+            recompiler.currentAddress = block.address + offset;
+            const Instruction code = { nucleus.memory.read32(recompiler.currentAddress) };
             auto method = get_entry(code).recompiler;
             (recompiler.*method)(code);
         }
@@ -306,16 +313,17 @@ void Segment::analyze()
         if (block.initial) {
             Function function(block.address);
             if (function.analyze(address, size)) {
-                functions.push_back(function);
+                functions[block.address] = function;
             }
         }
     }
 }
 
-void Segment::recompile() {
+void Segment::recompile()
+{
     module = new llvm::Module(name, llvm::getGlobalContext());
 
-    // Optimizations
+    // Optimization passes
     fpm = new llvm::FunctionPassManager(module);
     fpm->add(llvm::createPromoteMemoryToRegisterPass());  // Promote allocas to registers
     fpm->add(llvm::createInstructionCombiningPass());     // Simple peephole and bit-twiddling optimizations
@@ -324,9 +332,18 @@ void Segment::recompile() {
     fpm->add(llvm::createCFGSimplificationPass());        // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
     fpm->doInitialization();
 
-    for (auto& function : functions) {
-        llvm::Function* func = function.recompile(module);
-        //fpm->run(*func); // TODO: FPM crashes. Reenable optimizations later.
+    // Declare all functions
+    for (auto& item : functions) {
+        Function& function = item.second;
+        function.declare(this);
+    }
+
+    // Recompile and optimize all functions
+    for (auto& item : functions) {
+        Function& function = item.second;
+        llvm::Function* func = function.recompile();
+        //fpm->run(*func); // TODO: FPM crashes. Reenable optimizations later
+        break; // TODO: Resume recompiler once the analyzer detects all functions (otherwise crash)
     }
     module->dump(); // REMOVE ME
 }

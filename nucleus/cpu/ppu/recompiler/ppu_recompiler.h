@@ -17,31 +17,31 @@ namespace ppu {
 
 class Recompiler
 {
-    llvm::Module* module;
+    Segment* segment;
 
     llvm::IRBuilder<> builder;
 
     // LLVM Intrinsics
     llvm::Function* getIntrinsicIntN(llvm::Intrinsic::ID intr, int bits) {
-        return llvm::Intrinsic::getDeclaration(module, intr, builder.getIntNTy(bits));
+        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getIntNTy(bits));
     }
     llvm::Function* getIntrinsicInt8(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt8Ty());
+        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt8Ty());
     }
     llvm::Function* getIntrinsicInt16(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt16Ty());
+        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt16Ty());
     }
     llvm::Function* getIntrinsicInt32(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt32Ty());
+        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt32Ty());
     }
     llvm::Function* getIntrinsicInt64(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(module, intr, builder.getInt64Ty());
+        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt64Ty());
     }
     llvm::Function* getIntrinsicFloat(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(module, intr, builder.getFloatTy());
+        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getFloatTy());
     }
     llvm::Function* getIntrinsicDouble(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(module, intr, builder.getDoubleTy());
+        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getDoubleTy());
     }
 
     // Register allocation
@@ -70,13 +70,16 @@ class Recompiler
     void writeMemory(llvm::Value* addr, llvm::Value* value);
 
 public:
-    Recompiler(llvm::Module* module);
+    Recompiler(Segment* segment);
 
     // Specifies the block that is being recompiled
     void setInsertPoint(llvm::BasicBlock* block);
 
     // Function information
     FunctionTypeOut returnType;
+
+    // Recompiler status
+    u32 currentAddress;
 
     /**
      * PPC64 Instructions:

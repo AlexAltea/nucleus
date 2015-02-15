@@ -15,6 +15,54 @@ namespace ppu {
 
 void Recompiler::bx(Instruction code)
 {
+    const u32 target = code.aa ? (code.li << 2) : (currentAddress + (code.li << 2)) & ~0x3;
+
+    // Function call
+    if (code.lk) {
+        Function& function = segment->functions.at(target);
+        
+        // Generate array of arguments
+        int index = 0;
+        std::vector<llvm::Value*> arguments;
+        for (const auto& param : function.type_in) {
+            switch (param) {
+            case FUNCTION_IN_INTEGER:
+                arguments.push_back(getGPR(3 + index));
+                break;
+            case FUNCTION_IN_FLOAT:
+                arguments.push_back(getFPR(1 + index));
+                break;
+            case FUNCTION_IN_VECTOR:
+                arguments.push_back(getVR_u32(2 + index));
+                break;
+            }
+            index += 1;
+        }
+
+        llvm::Value* result = builder.CreateCall(function.function, arguments);
+
+        // Save return value
+        switch (function.type_out) {
+        case FUNCTION_OUT_INTEGER:
+            setGPR(3, result);
+            break;
+        case FUNCTION_OUT_FLOAT:
+            setFPR(1, result);
+            break;
+        case FUNCTION_OUT_FLOAT_X2:
+            setFPR(1, result); // TODO
+            break;
+        case FUNCTION_OUT_FLOAT_X3:
+            setFPR(1, result); // TODO
+            break;
+        case FUNCTION_OUT_FLOAT_X4:
+            setFPR(1, result); // TODO
+            break;
+        case FUNCTION_OUT_VECTOR:
+            setVR(2, result);
+            break;
+        }
+    }
 }
 
 void Recompiler::bcx(Instruction code)

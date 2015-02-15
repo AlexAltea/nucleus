@@ -12,3 +12,6 @@ keys.xml
 
 # Scripts
 *.bat
+
+# Logs
+*.log

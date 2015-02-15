@@ -18,6 +18,11 @@
 namespace cpu {
 namespace ppu {
 
+// Class declarations
+class Block;
+class Function;
+class Segment;
+
 // Function type
 enum FunctionTypeIn {
     FUNCTION_IN_UNKNOWN = 0,
@@ -56,10 +61,14 @@ public:
 
 class Function
 {
+    Segment* parent = nullptr;
+
     // Analyzer auxiliary method: Determine function arguments/return types
     void get_type();
 
 public:
+    llvm::Function* function = nullptr;
+
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered (sum of basic block sizes)
 
@@ -73,7 +82,7 @@ public:
     // Name extracted from the DWARF symbols if available
     std::string name;
 
-    Function(u32 address) : address(address) {
+    Function(u32 address=0) : address(address) {
         name = format("func_%X", address);
     }
 
@@ -81,21 +90,25 @@ public:
     // Generate CFG and return if analysis succeeded (branching addresses stay inside the segment)
     bool analyze(u32 segAddress, u32 segSize);
 
-    // Recompile function inside a LLVM module
-    llvm::Function* recompile(llvm::Module* module);
+    // Declare function inside a segment
+    llvm::Function* declare(Segment* segment);
+
+    // Recompile function
+    llvm::Function* recompile();
 };
 
 class Segment
 {
-    llvm::Module* module = nullptr;
     llvm::FunctionPassManager* fpm = nullptr;
 
 public:
+    llvm::Module* module = nullptr;
+
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered
 
     // Functions contained
-    std::vector<Function> functions;
+    std::map<u32, Function> functions;
 
     std::string name;
 
