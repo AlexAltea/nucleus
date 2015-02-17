@@ -283,6 +283,14 @@ void Segment::analyze()
         if (current.address != 0 && !code.is_valid()) {
             current.address = 0;
         }
+        
+        // Function call detected
+        if (code.is_call()) {
+            const u32 target = code.get_target(i);
+            blocks.emplace(target, Block{});
+            blocks[target].address = target;
+            blocks[target].call_destination = true;
+        }
 
         // Block finished
         if (current.address != 0 && code.is_branch() && !code.is_call()) {
@@ -293,14 +301,14 @@ void Segment::analyze()
                 blocks.emplace(target_b, Block{});
                 blocks[target_a].address = target_a;
                 blocks[target_b].address = target_b;
-                blocks[target_a].initial = false;
-                blocks[target_b].initial = false;
+                blocks[target_a].jump_destination = true;
+                blocks[target_b].jump_destination = true;
             }
             if (code.is_branch_unconditional()) {
                 const u32 target = code.get_target(i);
                 blocks.emplace(target, Block{});
                 blocks[target].address = target;
-                blocks[target].initial = false;
+                blocks[target].jump_destination = true;
             }
             blocks[current.address] = current;
             current = Block{};
@@ -310,7 +318,7 @@ void Segment::analyze()
     // List the functions and analyze them
     for (const auto& item : blocks) {
         const Block& block = item.second;
-        if (block.initial) {
+        if ((block.call_destination || !block.jump_destination) && this->contains(block.address)) {
             Function function(block.address);
             if (function.analyze(address, size)) {
                 functions[block.address] = function;
@@ -343,7 +351,6 @@ void Segment::recompile()
         Function& function = item.second;
         llvm::Function* func = function.recompile();
         //fpm->run(*func); // TODO: FPM crashes. Reenable optimizations later
-        break; // TODO: Resume recompiler once the analyzer detects all functions (otherwise crash)
     }
     module->dump(); // REMOVE ME
 }

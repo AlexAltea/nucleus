@@ -48,8 +48,9 @@ public:
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered
 
-    // Entry block with no predecessors
-    bool initial = true;
+    bool initial;                   // Is this a function entry block?
+    bool jump_destination = false;  // Is this a target of a bx/bcx instruction?
+    bool call_destination = false;  // Is this a target of a bl instruction
 
     // Branching
     u32 branch_a = 0; // Conditional-True or Unconditional branching address
