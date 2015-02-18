@@ -51,6 +51,7 @@ public:
     bool initial;                   // Is this a function entry block?
     bool jump_destination = false;  // Is this a target of a bx/bcx instruction?
     bool call_destination = false;  // Is this a target of a bl instruction
+    bool recompiled = false;        // Was this recompiled?
 
     // Branching
     u32 branch_a = 0; // Conditional-True or Unconditional branching address

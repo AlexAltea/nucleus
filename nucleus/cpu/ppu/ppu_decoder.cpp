@@ -234,8 +234,14 @@ llvm::Function* Function::recompile()
     Recompiler recompiler(parent);
     recompiler.returnType = type_out;
 
-    for (auto& item : blocks) {
-        Block& block = item.second;
+    std::queue<u32> labels({ address });
+
+    while (!labels.empty()) {
+        auto& block = blocks[labels.front()];
+        if (block.recompiled) {
+            labels.pop();
+            continue;
+        }
 
         std::string name = format("block_%X", block.address);
         llvm::BasicBlock *bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function);
@@ -248,6 +254,15 @@ llvm::Function* Function::recompile()
             auto method = get_entry(code).recompiler;
             (recompiler.*method)(code);
         }
+
+        block.recompiled = true;
+        if (block.branch_a) {
+            labels.push(block.branch_a);
+        }
+        if (block.branch_b) {
+            labels.push(block.branch_b);
+        }
+        labels.pop();
     }
 
     // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
