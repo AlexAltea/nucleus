@@ -45,6 +45,8 @@ enum FunctionTypeOut {
 class Block
 {
 public:
+    llvm::BasicBlock* bb = nullptr;
+
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered
 
@@ -59,6 +61,9 @@ public:
 
     // Determines whether the specified address is part of this block
     bool contains(u32 addr) const;
+
+    // Determines whether an extra branch is required to connect this with the immediate block after
+    bool is_split() const;
 };
 
 class Function
@@ -84,16 +89,16 @@ public:
     // Name extracted from the DWARF symbols if available
     std::string name;
 
-    Function(u32 address=0) : address(address) {
+    Function(u32 address=0, Segment* parent=nullptr) : address(address), parent(parent) {
         name = format("func_%X", address);
     }
 
     // Analyze function relative to a specific segment:
-    // Generate CFG and return if analysis succeeded (branching addresses stay inside the segment)
-    bool analyze(u32 segAddress, u32 segSize);
+    // Generate CFG and return if analysis succeeded (branching addresses stay inside the parent segment)
+    bool analyze();
 
-    // Declare function inside a segment
-    llvm::Function* declare(Segment* segment);
+    // Declare function inside the parent segment
+    llvm::Function* declare();
 
     // Recompile function
     llvm::Function* recompile();

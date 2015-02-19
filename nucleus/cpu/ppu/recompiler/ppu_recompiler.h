@@ -17,6 +17,7 @@ namespace ppu {
 
 class Recompiler
 {
+    Function* function;
     Segment* segment;
 
     llvm::IRBuilder<> builder;
@@ -70,10 +71,13 @@ class Recompiler
     void writeMemory(llvm::Value* addr, llvm::Value* value);
 
 public:
-    Recompiler(Segment* segment);
+    Recompiler(Segment* segment, Function* function);
 
     // Specifies the block that is being recompiled
     void setInsertPoint(llvm::BasicBlock* block);
+
+    // Creates a branch to another basic block
+    void createBranch(Block& block);
 
     // Function information
     FunctionTypeOut returnType;

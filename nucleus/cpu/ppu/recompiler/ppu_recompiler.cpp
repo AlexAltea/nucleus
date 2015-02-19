@@ -16,13 +16,21 @@ const char* string_gpr[] = {
 namespace cpu {
 namespace ppu {
 
-Recompiler::Recompiler(Segment* segment) : builder(llvm::getGlobalContext()), segment(segment)
+Recompiler::Recompiler(Segment* segment, Function* function) :
+    builder(llvm::getGlobalContext()),
+    segment(segment),
+    function(function)
 {
 }
 
 void Recompiler::setInsertPoint(llvm::BasicBlock* block)
 {
     builder.SetInsertPoint(block);
+}
+
+void Recompiler::createBranch(Block& block)
+{
+    builder.CreateBr(block.bb);
 }
 
 llvm::Value* Recompiler::getGPR(int index, int bits)

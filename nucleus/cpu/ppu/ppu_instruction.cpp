@@ -47,8 +47,8 @@ bool Instruction::is_branch_unconditional() const
 
 bool Instruction::is_call() const
 {
-    // If instruction is {bl}
-    if (opcode == 0x12 && lk == 1) {
+    // If instruction is {bl*, bctrl}
+    if ((opcode == 0x12 || (opcode == 0x13 && op19 == 0x210)) && (lk == 1)) {
         return true;
     }
     return false;

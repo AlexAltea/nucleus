@@ -15,6 +15,7 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/Transforms/Scalar.h"
 
+#include <algorithm>
 #include <queue>
 
 namespace cpu {
@@ -28,6 +29,15 @@ bool Block::contains(u32 addr) const
     const u32 from = address;
     const u32 to = address + size;
     return from <= addr && addr < to;
+}
+
+bool Block::is_split() const
+{
+    const Instruction lastInstr = { nucleus.memory.read32(address + size - 4) };
+    if (!lastInstr.is_branch()) {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -90,16 +100,15 @@ void Function::get_type()
     }
 }
 
-bool Function::analyze(u32 segAddress, u32 segSize)
+bool Function::analyze()
 {
     blocks.clear();
     type_in.clear();
 
     std::queue<u32> labels({ address });
 
-    Segment segment(segAddress, segSize);  // Segment that contains this function (to determine containment)
-    Instruction code;                      // Current instruction
-    Block current;                         // Current block
+    Instruction code;  // Current instruction
+    Block current;     // Current block
     current.initial = false;
 
     // Control Flow Graph generation
@@ -113,9 +122,14 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         current.branch_a = 0;
         current.branch_b = 0;
 
+        u32 maxSize = 0xFFFFFFFF;
         bool continueLoop = false;
         for (auto& item : blocks) {
             Block& block_a = item.second;
+            // Determine maximum possible size for the current block
+            if ((block_a.address - current.address) < maxSize) {
+                maxSize = block_a.address - current.address;
+            }
             // Split block if label (Block B) is inside an existing block (Block A)
             if (block_a.contains(addr)) {
                 // Configure Block B
@@ -140,7 +154,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         }
 
         // Wait for the end
-        while (!code.is_branch() || code.is_call()) {
+        while ((!code.is_branch() || code.is_call()) && (current.size < maxSize)) {
             addr += 4;
             current.size += 4;
             code.instruction = nucleus.memory.read32(addr);
@@ -150,7 +164,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         if (code.is_branch_conditional()) {
             const u32 target_a = code.get_target(addr);
             const u32 target_b = addr + 4;
-            if (!segment.contains(target_a) || !segment.contains(target_b)) {
+            if (!parent->contains(target_a) || !parent->contains(target_b)) {
                 return false;
             }
             labels.push(target_a);
@@ -160,7 +174,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
         }
         if (code.is_branch_unconditional()) {
             const u32 target = code.get_target(addr);
-            if (!segment.contains(target)) {
+            if (!parent->contains(target)) {
                 return false;
             }
             labels.push(target);
@@ -177,7 +191,7 @@ bool Function::analyze(u32 segAddress, u32 segSize)
     return true;
 }
 
-llvm::Function* Function::declare(Segment* segment)
+llvm::Function* Function::declare()
 {
     // Return type
     llvm::Type* result = nullptr;
@@ -224,18 +238,28 @@ llvm::Function* Function::declare(Segment* segment)
     llvm::FunctionType* ftype = llvm::FunctionType::get(result, params, false);
 
     // Declare function in module
-    parent = segment;
-    function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, segment->module);
+    function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, parent->module);
     return function;
 }
 
 llvm::Function* Function::recompile()
 {
-    Recompiler recompiler(parent);
+    Recompiler recompiler(parent, this);
     recompiler.returnType = type_out;
 
     std::queue<u32> labels({ address });
 
+    // Create LLVM basic blocks
+    blocks[address].bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", function);
+    for (auto& item : blocks) {
+        Block& block = item.second;
+        if (block.address != address) {
+            std::string name = format("block_%X", block.address);
+            block.bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function);
+        }
+    }
+
+    // Recompile basic clocks
     while (!labels.empty()) {
         auto& block = blocks[labels.front()];
         if (block.recompiled) {
@@ -243,16 +267,19 @@ llvm::Function* Function::recompile()
             continue;
         }
 
-        std::string name = format("block_%X", block.address);
-        llvm::BasicBlock *bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function);
-        recompiler.setInsertPoint(bb);
-
         // Recompile block instructions
+        recompiler.setInsertPoint(block.bb);
         for (u32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
             const Instruction code = { nucleus.memory.read32(recompiler.currentAddress) };
             auto method = get_entry(code).recompiler;
             (recompiler.*method)(code);
+        }
+
+        // Block was splitted
+        if (block.is_split()) {
+            const u32 target = block.address + block.size;
+            recompiler.createBranch(blocks[target]);
         }
 
         block.recompiled = true;
@@ -275,68 +302,56 @@ llvm::Function* Function::recompile()
  */
 void Segment::analyze()
 {
-    // List of labels, stored as blocks.
-    std::map<u32, Block> blocks;
+    // Lists of labels
+    std::set<u32> labelBlocks;  // Detected immediately
+    std::set<u32> labelCalls;   // Direct target of a {bl*, bcl*} instruction (call)
+    std::set<u32> labelJumps;   // Direct or indirect target of a {b, ba, bc, bca} instruction (jump)
 
-    // Current basic block being processed
-    Block current;
-
-    // Basic Block Slicing: Classify them as starting or non-starting blocks
+    // Basic Block Slicing
+    u32 currentBlock = 0;
     for (u32 i = address; i < (address + size); i += 4) {
         const Instruction code = { nucleus.memory.read32(i) };
 
         // New block appeared
-        if (code.is_valid() && current.address == 0) {
-            if (blocks.find(i) != blocks.end()) {
-                current = blocks[i];
-            } else {
-                current.address = i;
-            }
+        if (code.is_valid() && currentBlock == 0) {
+            currentBlock = i;
         }
 
         // Block is corrupt
-        if (current.address != 0 && !code.is_valid()) {
-            current.address = 0;
+        if (currentBlock != 0 && !code.is_valid()) {
+            currentBlock = 0;
         }
         
         // Function call detected
-        if (code.is_call()) {
-            const u32 target = code.get_target(i);
-            blocks.emplace(target, Block{});
-            blocks[target].address = target;
-            blocks[target].call_destination = true;
+        if (currentBlock != 0 && code.is_call()) {
+            labelCalls.insert(code.get_target(i));
         }
 
         // Block finished
-        if (current.address != 0 && code.is_branch() && !code.is_call()) {
+        if (currentBlock != 0 && code.is_branch() && !code.is_call()) {
             if (code.is_branch_conditional()) {
-                const u32 target_a = code.get_target(i);
-                const u32 target_b = i + 4;
-                blocks.emplace(target_a, Block{});
-                blocks.emplace(target_b, Block{});
-                blocks[target_a].address = target_a;
-                blocks[target_b].address = target_b;
-                blocks[target_a].jump_destination = true;
-                blocks[target_b].jump_destination = true;
+                labelJumps.insert(code.get_target(i));
+                labelJumps.insert(i + 4);
             }
             if (code.is_branch_unconditional()) {
-                const u32 target = code.get_target(i);
-                blocks.emplace(target, Block{});
-                blocks[target].address = target;
-                blocks[target].jump_destination = true;
+                labelJumps.insert(code.get_target(i));
             }
-            blocks[current.address] = current;
-            current = Block{};
+            labelBlocks.insert(currentBlock);
+            currentBlock = 0;
         }
     }
 
+    // Functions := ((Blocks \ Jumps) U Calls)
+    std::set<u32> labelFunctions;
+    std::set_difference(labelBlocks.begin(), labelBlocks.end(), labelJumps.begin(), labelJumps.end(), std::inserter(labelFunctions, labelFunctions.end()));
+    std::set_union(labelFunctions.begin(), labelFunctions.end(), labelCalls.begin(), labelCalls.end(), std::inserter(labelFunctions, labelFunctions.end()));
+
     // List the functions and analyze them
-    for (const auto& item : blocks) {
-        const Block& block = item.second;
-        if ((block.call_destination || !block.jump_destination) && this->contains(block.address)) {
-            Function function(block.address);
-            if (function.analyze(address, size)) {
-                functions[block.address] = function;
+    for (const auto& label : labelFunctions) {
+        if (this->contains(label)) {
+            Function function(label, this);
+            if (function.analyze()) {
+                functions[label] = function;
             }
         }
     }
@@ -358,7 +373,7 @@ void Segment::recompile()
     // Declare all functions
     for (auto& item : functions) {
         Function& function = item.second;
-        function.declare(this);
+        function.declare();
     }
 
     // Recompile and optimize all functions

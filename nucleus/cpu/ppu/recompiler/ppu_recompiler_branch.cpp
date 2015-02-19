@@ -19,12 +19,12 @@ void Recompiler::bx(Instruction code)
 
     // Function call
     if (code.lk) {
-        Function& function = segment->functions.at(target);
+        Function& targetFunc = segment->functions.at(target);
         
         // Generate array of arguments
         int index = 0;
         std::vector<llvm::Value*> arguments;
-        for (const auto& param : function.type_in) {
+        for (const auto& param : targetFunc.type_in) {
             switch (param) {
             case FUNCTION_IN_INTEGER:
                 arguments.push_back(getGPR(3 + index));
@@ -39,10 +39,10 @@ void Recompiler::bx(Instruction code)
             index += 1;
         }
 
-        llvm::Value* result = builder.CreateCall(function.function, arguments);
+        llvm::Value* result = builder.CreateCall(targetFunc.function, arguments);
 
         // Save return value
-        switch (function.type_out) {
+        switch (targetFunc.type_out) {
         case FUNCTION_OUT_INTEGER:
             setGPR(3, result);
             break;
@@ -63,10 +63,33 @@ void Recompiler::bx(Instruction code)
             break;
         }
     }
+
+    // Simple unconditional branch
+    else {
+        Block& targetBlock = function->blocks.at(target);
+        builder.CreateBr(targetBlock.bb);
+    }
 }
 
 void Recompiler::bcx(Instruction code)
 {
+    const u32 targetAddr = code.aa ? (code.bd << 2) : (currentAddress + (code.bd << 2)) & ~0x3;
+    const u32 nextAddr = (currentAddress + 4) & ~0x3;
+
+    llvm::Value* cond;
+    cond = builder.getInt1(true); // TODO: This is wrong
+
+    // Conditional function call
+    if (code.lk) {
+        // TODO
+    }
+
+    // Simple conditional branch
+    else {
+        Block& targetBlock = function->blocks.at(targetAddr);
+        Block& nextBlock = function->blocks.at(nextAddr);
+        builder.CreateCondBr(cond, targetBlock.bb, nextBlock.bb);
+    }
 }
 
 void Recompiler::bcctrx(Instruction code)
