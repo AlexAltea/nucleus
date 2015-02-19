@@ -11,10 +11,10 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-TEST_CLASS(UnitTests) {
+TEST_CLASS(CommonTests) {
 
 public:
-    TEST_METHOD(U128Tests)
+    TEST_METHOD(Common_U128Tests)
     {
         // Operator +
         Assert::IsTrue((u128{0,0} + 1) == u128{1,0});
