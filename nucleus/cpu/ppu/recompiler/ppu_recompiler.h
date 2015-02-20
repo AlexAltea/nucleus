@@ -47,8 +47,16 @@ class Recompiler
 
     // Register allocation
     llvm::AllocaInst* gpr[32] = {};
+    llvm::AllocaInst* fpr[32] = {};
+    llvm::AllocaInst* vr[32] = {};
+    llvm::AllocaInst* cr = nullptr;
+    llvm::AllocaInst* fpscr = nullptr;
+    llvm::AllocaInst* xer = nullptr;
+    llvm::AllocaInst* ctr = nullptr;
 
     // Register access
+    llvm::AllocaInst* allocaVariable(llvm::Type* type, const llvm::Twine& name);
+
     llvm::Value* getGPR(int index, int bits=64);
     void setGPR(int index, llvm::Value* value);
 

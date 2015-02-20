@@ -6,6 +6,10 @@
 #include "ppu_recompiler.h"
 #include "nucleus/emulator.h"
 
+namespace cpu {
+namespace ppu {
+
+// Register names
 const char* string_gpr[] = {
     "r0",  "r1",  "r2",  "r3",  "r4",  "r5",  "r6",  "r7",
     "r8",  "r9",  "r10", "r11", "r12", "r13", "r14", "r15", 
@@ -13,8 +17,23 @@ const char* string_gpr[] = {
     "r24", "r25", "r26", "r27", "r28", "r29", "r30", "r31",
 };
 
-namespace cpu {
-namespace ppu {
+const char* string_fpr[] = {
+    "fr0",  "fr1",  "fr2",  "fr3",  "fr4",  "fr5",  "fr6",  "fr7",
+    "fr8",  "fr9",  "fr10", "fr11", "fr12", "fr13", "fr14", "fr15", 
+    "fr16", "fr17", "fr18", "fr19", "fr20", "fr21", "fr22", "fr23", 
+    "fr24", "fr25", "fr26", "fr27", "fr28", "fr29", "fr30", "fr31",
+};
+
+const char* string_vr[] = {
+    "vr0",  "vr1",  "vr2",  "vr3",  "vr4",  "vr5",  "vr6",  "vr7",
+    "vr8",  "vr9",  "vr10", "vr11", "vr12", "vr13", "vr14", "vr15", 
+    "vr16", "vr17", "vr18", "vr19", "vr20", "vr21", "vr22", "vr23", 
+    "vr24", "vr25", "vr26", "vr27", "vr28", "vr29", "vr30", "vr31",
+};
+
+const char* string_cr = "cr";
+const char* string_fpscr = "fpscr";
+const char* string_xer = "xer";
 
 Recompiler::Recompiler(Segment* segment, Function* function) :
     builder(llvm::getGlobalContext()),
@@ -65,11 +84,17 @@ void Recompiler::createReturn()
     }
 }
 
+llvm::AllocaInst* Recompiler::allocaVariable(llvm::Type* type, const llvm::Twine& name)
+{
+    llvm::BasicBlock& entryBlock = function->function->getEntryBlock();
+    llvm::IRBuilder<> allocaBuilder(&entryBlock, entryBlock.begin());
+    return allocaBuilder.CreateAlloca(type, 0, name);
+}
+
 llvm::Value* Recompiler::getGPR(int index, int bits)
 {
     if (!gpr[index]) {
-        llvm::IRBuilder<> allocaBuilder(&function->function->getEntryBlock(), function->function->getEntryBlock().begin());
-        gpr[index] = allocaBuilder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[index]);
+        gpr[index] = allocaVariable(builder.getInt64Ty(), string_gpr[index]);
     }
 
     llvm::Value* reg = builder.CreateLoad(gpr[index], string_gpr[index]);
@@ -83,22 +108,25 @@ llvm::Value* Recompiler::getGPR(int index, int bits)
 void Recompiler::setGPR(int index, llvm::Value* value)
 {
     if (!gpr[index]) {
-        llvm::IRBuilder<> allocaBuilder(&function->function->getEntryBlock(), function->function->getEntryBlock().begin());
-        gpr[index] = allocaBuilder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[index]);
+        gpr[index] = allocaVariable(builder.getInt64Ty(), string_gpr[index]);
     }
     builder.CreateStore(value, gpr[index]);
 }
 
 llvm::Value* Recompiler::getFPR(int index)
 {
-    // TODO: ?
-    return nullptr;
+    if (!fpr[index]) {
+        fpr[index] = allocaVariable(builder.getDoubleTy(), string_fpr[index]);
+    }
+    return builder.CreateLoad(fpr[index], string_fpr[index]);
 }
 
 void Recompiler::setFPR(int index, llvm::Value* value)
 {
-    // TODO: ?
-    return;
+    if (!fpr[index]) {
+        fpr[index] = allocaVariable(builder.getDoubleTy(), string_fpr[index]);
+    }
+    builder.CreateStore(value, fpr[index]);
 }
 
 llvm::Value* Recompiler::getVR_u8(int index)

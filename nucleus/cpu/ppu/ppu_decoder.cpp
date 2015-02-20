@@ -283,7 +283,6 @@ llvm::Function* Function::recompile()
             if (blocks.find(target) != blocks.end()) {
                 recompiler.createBranch(blocks[target]);
             }
-            
             // Required for .sceStub.text (single-block functions ending on bctr)
             else {
                 recompiler.createReturn();
@@ -302,7 +301,6 @@ llvm::Function* Function::recompile()
 
     // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
     llvm::verifyFunction(*function, &llvm::outs());
-
     return function;
 }
 
@@ -376,7 +374,7 @@ void Segment::recompile()
     fpm->add(llvm::createInstructionCombiningPass());     // Simple peephole and bit-twiddling optimizations
     fpm->add(llvm::createReassociatePass());              // Reassociate expressions
     fpm->add(llvm::createGVNPass());                      // Eliminate Common SubExpressions
-    fpm->add(llvm::createCFGSimplificationPass());        // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
+    //fpm->add(llvm::createCFGSimplificationPass());      // TODO: Uncomment once undefined behaviours are fixed  // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
     fpm->doInitialization();
 
     // Declare all functions
