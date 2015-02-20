@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/format.h"
+#include "analyzer/ppu_analyzer.h"
 
 #include "llvm/IR/Module.h"
 #include "llvm/PassManager.h"
@@ -70,8 +71,8 @@ class Function
 {
     Segment* parent = nullptr;
 
-    // Analyzer auxiliary method: Determine function arguments/return types
-    void get_type();
+    // Analyzer auxiliary method: Determine register read/writes
+    void do_register_analysis(Analyzer* status);
 
 public:
     llvm::Function* function = nullptr;
@@ -93,9 +94,9 @@ public:
         name = format("func_%X", address);
     }
 
-    // Analyze function relative to a specific segment:
-    // Generate CFG and return if analysis succeeded (branching addresses stay inside the parent segment)
-    bool analyze();
+    // Analysis
+    bool analyze_cfg();  // Generate CFG (and return if branching addresses stay inside the parent segment)
+    void analyze_type(); // Determine function arguments/return types
 
     // Declare function inside the parent segment
     llvm::Function* declare();

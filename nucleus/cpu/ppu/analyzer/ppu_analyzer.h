@@ -8,6 +8,8 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 
+#include <set>
+
 namespace cpu {
 namespace ppu {
 
@@ -38,6 +40,9 @@ public:
     // PPU Vector/SIMD Registers
     AnalyzerEvent vr[32] = {};
     AnalyzerEvent vscr = REG_NONE;
+
+    // Record of analyzed functions
+    std::set<u32> analyzedFunctions;
 
     /**
      * PPC64 Instructions:

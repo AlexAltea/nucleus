@@ -7,7 +7,6 @@
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 #include "nucleus/cpu/ppu/ppu_tables.h"
-#include "nucleus/cpu/ppu/analyzer/ppu_analyzer.h"
 
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Function.h"
@@ -44,64 +43,41 @@ bool Block::is_split() const
 /**
  * PPU Function methods
  */
-void Function::get_type()
+void Function::do_register_analysis(Analyzer* status)
 {
-    Analyzer status;
-    Block block = blocks[address];
+    // This function already went through the analyzer
+    if (status->analyzedFunctions.find(address) != status->analyzedFunctions.end()) {
+        return;
+    }
+    status->analyzedFunctions.insert(address);
 
     // Analyze read/written registers
-    for (u32 offset = 0; offset < block.size; offset += 4) {
-        Instruction code = { nucleus.memory.read32(block.address + offset) };
+    Block block = blocks[address];
+    for (u32 i = block.address; i < (block.address + block.size); i += 4) {
+        Instruction code = { nucleus.memory.read32(i) };
 
-        // Get instruction analyzer and call it
-        auto method = get_entry(code).analyzer;
-        (status.*method)(code);
+        // Check if called functions use any other registers
+        if (code.is_call()) {
+            Function& targetFunc = parent->functions[code.get_target(i)];
+            targetFunc.do_register_analysis(status);
+        }
+        // Otherwise, get instruction analyzer and call it
+        else {
+            auto method = get_entry(code).analyzer;
+            (status->*method)(code);
+        }
         
         if (code.is_branch_conditional() || code.is_return()) {
             break;
         }
         if (code.is_branch_unconditional() && !code.is_call()) {
             block = blocks[block.branch_a];
-            offset = 0;
-        }
-    }
-
-    // Determine type of function arguments
-    for (u32 reg = 0; reg < 13; reg++) {
-        if ((status.gpr[reg + 3] & REG_READ_ORIG) && reg < 8) {
-            type_in.push_back(FUNCTION_IN_INTEGER);
-        }
-        if ((status.fpr[reg + 1] & REG_READ_ORIG) && reg < 13) {
-            type_in.push_back(FUNCTION_IN_FLOAT);
-        }
-        if ((status.vr[reg + 2] & REG_READ_ORIG) && reg < 12) {
-            type_in.push_back(FUNCTION_IN_VECTOR);
-        }
-    }
-
-    // Determine type of function return
-    type_out = FUNCTION_OUT_VOID;
-    if (status.gpr[3] & REG_WRITE) {
-        type_out = FUNCTION_OUT_INTEGER;
-    }
-    if (status.vr[2] & REG_WRITE) {
-        type_out = FUNCTION_OUT_VECTOR;
-    }
-    if (status.fpr[1] & REG_WRITE) {
-        type_out = FUNCTION_OUT_FLOAT;
-        if (status.fpr[2] & REG_WRITE) {
-            type_out = FUNCTION_OUT_FLOAT_X2;
-        }
-        if (status.fpr[3] & REG_WRITE) {
-            type_out = FUNCTION_OUT_FLOAT_X3;
-        }
-        if (status.fpr[4] & REG_WRITE) {
-            type_out = FUNCTION_OUT_FLOAT_X4;
+            i = block.address;
         }
     }
 }
 
-bool Function::analyze()
+bool Function::analyze_cfg()
 {
     blocks.clear();
     type_in.clear();
@@ -185,11 +161,47 @@ bool Function::analyze()
         blocks[labels.front()] = current;
         labels.pop();
     }
-    
-    // Determine function arguments/return types
-    get_type();
+}
 
-    return true;
+void Function::analyze_type()
+{
+    // Determine function arguments/return types
+    Analyzer status;
+    do_register_analysis(&status);
+
+    // Determine type of function arguments
+    for (u32 reg = 0; reg < 13; reg++) {
+        if ((status.gpr[reg + 3] & REG_READ_ORIG) && reg < 8) {
+            type_in.push_back(FUNCTION_IN_INTEGER);
+        }
+        if ((status.fpr[reg + 1] & REG_READ_ORIG) && reg < 13) {
+            type_in.push_back(FUNCTION_IN_FLOAT);
+        }
+        if ((status.vr[reg + 2] & REG_READ_ORIG) && reg < 12) {
+            type_in.push_back(FUNCTION_IN_VECTOR);
+        }
+    }
+
+    // Determine type of function return
+    type_out = FUNCTION_OUT_VOID;
+    if (status.gpr[3] & REG_WRITE) {
+        type_out = FUNCTION_OUT_INTEGER;
+    }
+    if (status.vr[2] & REG_WRITE) {
+        type_out = FUNCTION_OUT_VECTOR;
+    }
+    if (status.fpr[1] & REG_WRITE) {
+        type_out = FUNCTION_OUT_FLOAT;
+        if (status.fpr[2] & REG_WRITE) {
+            type_out = FUNCTION_OUT_FLOAT_X2;
+        }
+        if (status.fpr[3] & REG_WRITE) {
+            type_out = FUNCTION_OUT_FLOAT_X3;
+        }
+        if (status.fpr[4] & REG_WRITE) {
+            type_out = FUNCTION_OUT_FLOAT_X4;
+        }
+    }
 }
 
 llvm::Function* Function::declare()
@@ -353,14 +365,19 @@ void Segment::analyze()
     std::set_difference(labelBlocks.begin(), labelBlocks.end(), labelJumps.begin(), labelJumps.end(), std::inserter(labelFunctions, labelFunctions.end()));
     std::set_union(labelFunctions.begin(), labelFunctions.end(), labelCalls.begin(), labelCalls.end(), std::inserter(labelFunctions, labelFunctions.end()));
 
-    // List the functions and analyze them
+    // List the functions and get their CFG
     for (const auto& label : labelFunctions) {
         if (this->contains(label)) {
             Function function(label, this);
-            if (function.analyze()) {
+            if (function.analyze_cfg()) {
                 functions[label] = function;
             }
         }
+    }
+    // Get type of every listed function
+    for (auto& item : functions) {
+        Function& function = item.second;
+        function.analyze_type();
     }
 }
 

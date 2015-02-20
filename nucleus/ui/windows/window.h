@@ -11,6 +11,9 @@
 
 #include <Windows.h>
 
+// Avoid name collisions with <Windows.h>
+#undef REG_NONE
+
 // Menu entry IDs
 enum {
     UI_FILE_EXIT,
