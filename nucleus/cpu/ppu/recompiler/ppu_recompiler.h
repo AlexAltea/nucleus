@@ -78,6 +78,7 @@ public:
 
     // Creates a branch to another basic block
     void createBranch(Block& block);
+    void createReturn();
 
     // Function information
     FunctionTypeOut returnType;

@@ -13,6 +13,7 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Scalar.h"
 
 #include <algorithm>
@@ -34,7 +35,7 @@ bool Block::contains(u32 addr) const
 bool Block::is_split() const
 {
     const Instruction lastInstr = { nucleus.memory.read32(address + size - 4) };
-    if (!lastInstr.is_branch()) {
+    if (!lastInstr.is_branch() || lastInstr.is_call() || (lastInstr.opcode == 0x13 && lastInstr.op19 == 0x210) /*bcctr*/) {
         return true;
     }
     return false;
@@ -161,7 +162,7 @@ bool Function::analyze()
         }
 
         // Push new labels
-        if (code.is_branch_conditional()) {
+        if (code.is_branch_conditional() && !code.is_call()) {
             const u32 target_a = code.get_target(addr);
             const u32 target_b = addr + 4;
             if (!parent->contains(target_a) || !parent->contains(target_b)) {
@@ -172,7 +173,7 @@ bool Function::analyze()
             current.branch_a = target_a;
             current.branch_b = target_b;
         }
-        if (code.is_branch_unconditional()) {
+        if (code.is_branch_unconditional() && !code.is_call()) {
             const u32 target = code.get_target(addr);
             if (!parent->contains(target)) {
                 return false;
@@ -279,7 +280,14 @@ llvm::Function* Function::recompile()
         // Block was splitted
         if (block.is_split()) {
             const u32 target = block.address + block.size;
-            recompiler.createBranch(blocks[target]);
+            if (blocks.find(target) != blocks.end()) {
+                recompiler.createBranch(blocks[target]);
+            }
+            
+            // Required for .sceStub.text (single-block functions ending on bctr)
+            else {
+                recompiler.createReturn();
+            }
         }
 
         block.recompiled = true;
@@ -293,7 +301,8 @@ llvm::Function* Function::recompile()
     }
 
     // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
-    llvm::verifyFunction(*function);
+    llvm::verifyFunction(*function, &llvm::outs());
+
     return function;
 }
 
@@ -380,7 +389,7 @@ void Segment::recompile()
     for (auto& item : functions) {
         Function& function = item.second;
         llvm::Function* func = function.recompile();
-        //fpm->run(*func); // TODO: FPM crashes. Reenable optimizations later
+        fpm->run(*func);
     }
     module->dump(); // REMOVE ME
 }

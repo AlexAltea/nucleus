@@ -33,10 +33,43 @@ void Recompiler::createBranch(Block& block)
     builder.CreateBr(block.bb);
 }
 
+void Recompiler::createReturn()
+{
+    llvm::Value* ret = nullptr;
+
+    switch (returnType) {
+    case FUNCTION_OUT_INTEGER:
+        ret = getGPR(3);
+        break;
+    case FUNCTION_OUT_FLOAT:
+        ret = getFPR(1);
+        break;
+    case FUNCTION_OUT_FLOAT_X2:
+        ret = getFPR(1); // TODO
+        break;
+    case FUNCTION_OUT_FLOAT_X3:
+        ret = getFPR(1); // TODO
+        break;
+    case FUNCTION_OUT_FLOAT_X4:
+        ret = getFPR(1); // TODO
+        break;
+    case FUNCTION_OUT_VECTOR:
+        ret = getVR_u32(2);
+        break;
+    }
+
+    if (returnType == FUNCTION_OUT_VOID) {
+        builder.CreateRetVoid();
+    } else {
+        builder.CreateRet(ret);
+    }
+}
+
 llvm::Value* Recompiler::getGPR(int index, int bits)
 {
     if (!gpr[index]) {
-        gpr[index] = builder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[index]);
+        llvm::IRBuilder<> allocaBuilder(&function->function->getEntryBlock(), function->function->getEntryBlock().begin());
+        gpr[index] = allocaBuilder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[index]);
     }
 
     llvm::Value* reg = builder.CreateLoad(gpr[index], string_gpr[index]);
@@ -50,7 +83,8 @@ llvm::Value* Recompiler::getGPR(int index, int bits)
 void Recompiler::setGPR(int index, llvm::Value* value)
 {
     if (!gpr[index]) {
-        gpr[index] = builder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[index]);
+        llvm::IRBuilder<> allocaBuilder(&function->function->getEntryBlock(), function->function->getEntryBlock().begin());
+        gpr[index] = allocaBuilder.CreateAlloca(builder.getInt64Ty(), 0, string_gpr[index]);
     }
     builder.CreateStore(value, gpr[index]);
 }
