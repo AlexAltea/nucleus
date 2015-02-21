@@ -8,10 +8,13 @@
 #include "nucleus/cpu/ppu/ppu_instruction.h"
 #include "nucleus/cpu/ppu/ppu_tables.h"
 
+#include "llvm/ADT/Triple.h"
+#include "llvm/ExecutionEngine/MCJIT.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Verifier.h"
+#include "llvm/Support/Host.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Scalar.h"
 
@@ -382,9 +385,7 @@ void Segment::analyze()
 
 void Segment::recompile()
 {
-    // TODO: Rewrite Segment class to use unique_ptr's when working with llvm::Module
-    std::unique_ptr<llvm::Module> moduleOwner = std::make_unique<llvm::Module>(name, llvm::getGlobalContext());
-    module = moduleOwner.get();
+    module = new llvm::Module(name, llvm::getGlobalContext());
 
     // Optimization passes
     fpm = new llvm::FunctionPassManager(module);
@@ -407,13 +408,23 @@ void Segment::recompile()
         llvm::Function* func = function.recompile();
         fpm->run(*func);
     }
-    module->dump(); // REMOVE ME
+    // REMOVEME: Just for debugging purposes
+    module->dump();
     
+    // NOTE: Avoid generating COFF objects on Windows which are not supported by MCJIT
+    llvm::Triple triple(llvm::sys::getProcessTriple());
+    if (triple.getOS() == llvm::Triple::OSType::Win32) {
+        triple.setObjectFormat(llvm::Triple::ObjectFormatType::ELF);
+    }
+    module->setTargetTriple(triple.str());
+
     // Create execution engine
-    llvm::EngineBuilder engineBuilder(std::move(moduleOwner));
+    llvm::EngineBuilder engineBuilder(module);
     engineBuilder.setEngineKind(llvm::EngineKind::JIT);
     engineBuilder.setOptLevel(llvm::CodeGenOpt::Default);
+    engineBuilder.setUseMCJIT(true);
     executionEngine = engineBuilder.create();
+    executionEngine->finalizeObject();
 }
 
 bool Segment::contains(u32 addr) const

@@ -23,6 +23,7 @@ thread_local CellThread* g_this_thread = nullptr;
 Cell::Cell()
 {
     llvm::InitializeNativeTarget();
+    llvm::InitializeNativeTargetAsmPrinter();
 }
 
 CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
