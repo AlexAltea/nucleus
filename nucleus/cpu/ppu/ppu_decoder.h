@@ -9,6 +9,7 @@
 #include "nucleus/format.h"
 #include "analyzer/ppu_analyzer.h"
 
+#include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/IR/Module.h"
 #include "llvm/PassManager.h"
 
@@ -113,6 +114,7 @@ class Segment
 
 public:
     llvm::Module* module = nullptr;
+    llvm::ExecutionEngine* executionEngine = nullptr;
 
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered
@@ -127,7 +129,8 @@ public:
     }
 
     ~Segment() {
-        delete module;
+        // The execution engines owns the module, which will be deleted
+        delete executionEngine;
     }
 
     // Generate a list of functions and analyze them

@@ -382,7 +382,9 @@ void Segment::analyze()
 
 void Segment::recompile()
 {
-    module = new llvm::Module(name, llvm::getGlobalContext());
+    // TODO: Rewrite Segment class to use unique_ptr's when working with llvm::Module
+    std::unique_ptr<llvm::Module> moduleOwner = std::make_unique<llvm::Module>(name, llvm::getGlobalContext());
+    module = moduleOwner.get();
 
     // Optimization passes
     fpm = new llvm::FunctionPassManager(module);
@@ -406,6 +408,12 @@ void Segment::recompile()
         fpm->run(*func);
     }
     module->dump(); // REMOVE ME
+    
+    // Create execution engine
+    llvm::EngineBuilder engineBuilder(std::move(moduleOwner));
+    engineBuilder.setEngineKind(llvm::EngineKind::JIT);
+    engineBuilder.setOptLevel(llvm::CodeGenOpt::Default);
+    executionEngine = engineBuilder.create();
 }
 
 bool Segment::contains(u32 addr) const

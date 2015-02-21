@@ -201,6 +201,19 @@ void Recompiler::setVR(int index, llvm::Value* value)
 }
 
 /**
+ * Operation flags
+ */
+void Recompiler::updateCR0(llvm::Value* value)
+{
+    llvm::Value* isLT = builder.CreateICmpSLT(value, builder.getInt64(0));
+    llvm::Value* isGT = builder.CreateICmpSGT(value, builder.getInt64(0));
+    llvm::Value* cr;
+
+    cr = builder.CreateSelect(isGT, builder.getInt8(2), builder.getInt8(4));
+    cr = builder.CreateSelect(isLT, builder.getInt8(1), cr);
+}
+
+/**
  * Memory access
  */
 llvm::Value* Recompiler::readMemory(llvm::Value* addr, int bits)

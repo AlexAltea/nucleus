@@ -70,6 +70,13 @@ class Recompiler
     void setVR(int index, llvm::Value* value);
 
     /**
+     * Operation flags
+     */
+    void updateCR0(llvm::Value* value); // Integer instructions with RC bit
+    void updateCR1(llvm::Value* value); // Floating-Point instructions with RC bit
+    void updateCR6(llvm::Value* value); // Vector instructions with RC bit
+
+    /**
      * Memory access
      */
     // Read specified number of bits from memory swapping endianness if necessary
