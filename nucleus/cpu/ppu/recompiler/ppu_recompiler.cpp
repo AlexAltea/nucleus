@@ -94,16 +94,15 @@ void Recompiler::createProlog()
     auto argValue = function->function->arg_begin();
     for (int i = 0; i < function->type_in.size(); i++, argValue++) {
         const auto& arg = function->type_in[i];
-        llvm::AllocaInst* allocaInst;
 
         switch (arg) {
         case FUNCTION_IN_INTEGER:
-            allocaInst = allocaVariable(builder.getInt64Ty(), string_gpr[3 + i]);
-            builder.CreateStore(argValue, allocaInst);
+            gpr[3 + i] = allocaVariable(builder.getInt64Ty(), string_gpr[3 + i]);
+            builder.CreateStore(argValue, gpr[3 + i]);
             break;
         case FUNCTION_IN_FLOAT:
-            allocaInst = allocaVariable(builder.getDoubleTy(), string_fpr[1 + i]);
-            builder.CreateStore(argValue, allocaInst);
+            fpr[1 + i] = allocaVariable(builder.getDoubleTy(), string_fpr[1 + i]);
+            builder.CreateStore(argValue, fpr[1 + i]);
             break;
         case FUNCTION_IN_VECTOR:
             // TODO
@@ -157,6 +156,17 @@ void Recompiler::setFPR(int index, llvm::Value* value)
     if (!fpr[index]) {
         fpr[index] = allocaVariable(builder.getDoubleTy(), string_fpr[index]);
     }
+
+    if (value->getType()->isIntegerTy(64)) {
+        value = builder.CreateBitCast(value, builder.getDoubleTy());
+    }
+    if (value->getType()->isIntegerTy(32)) {
+        value = builder.CreateBitCast(value, builder.getFloatTy());
+    }
+    if (value->getType()->isFloatTy()) {
+        value = builder.CreateFPExt(value, builder.getDoubleTy());
+    }
+
     builder.CreateStore(value, fpr[index]);
 }
 

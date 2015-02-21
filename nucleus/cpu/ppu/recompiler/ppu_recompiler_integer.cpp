@@ -20,6 +20,12 @@ void Recompiler::addx(Instruction code)
     llvm::Value* rd;
 
     if (code.oe) {
+        llvm::Function* sadd = getIntrinsicInt64(llvm::Intrinsic::sadd_with_overflow);
+        llvm::Value* ov;
+
+        rd = builder.CreateCall2(sadd, ra, rb);
+        rd = builder.CreateExtractValue(rd, 0);
+        ov = builder.CreateExtractValue(rd, 1);
         // TODO: XER OV update
     } else {
         rd = builder.CreateAdd(ra, rb);
