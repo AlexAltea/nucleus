@@ -11,29 +11,29 @@ namespace ppu {
 
 // Register names
 const char* string_gpr[] = {
-    "r0",  "r1",  "r2",  "r3",  "r4",  "r5",  "r6",  "r7",
-    "r8",  "r9",  "r10", "r11", "r12", "r13", "r14", "r15", 
-    "r16", "r17", "r18", "r19", "r20", "r21", "r22", "r23", 
-    "r24", "r25", "r26", "r27", "r28", "r29", "r30", "r31",
+    "r0_",  "r1_",  "r2_",  "r3_",  "r4_",  "r5_",  "r6_",  "r7_",
+    "r8_",  "r9_",  "r10_", "r11_", "r12_", "r13_", "r14_", "r15_",
+    "r16_", "r17_", "r18_", "r19_", "r20_", "r21_", "r22_", "r23_",
+    "r24_", "r25_", "r26_", "r27_", "r28_", "r29_", "r30_", "r31_",
 };
 
 const char* string_fpr[] = {
-    "fr0",  "fr1",  "fr2",  "fr3",  "fr4",  "fr5",  "fr6",  "fr7",
-    "fr8",  "fr9",  "fr10", "fr11", "fr12", "fr13", "fr14", "fr15", 
-    "fr16", "fr17", "fr18", "fr19", "fr20", "fr21", "fr22", "fr23", 
-    "fr24", "fr25", "fr26", "fr27", "fr28", "fr29", "fr30", "fr31",
+    "fr0_",  "fr1_",  "fr2_",  "fr3_",  "fr4_",  "fr5_",  "fr6_",  "fr7_",
+    "fr8_",  "fr9_",  "fr10_", "fr11_", "fr12_", "fr13_", "fr14_", "fr15_",
+    "fr16_", "fr17_", "fr18_", "fr19_", "fr20_", "fr21_", "fr22_", "fr23_",
+    "fr24_", "fr25_", "fr26_", "fr27_", "fr28_", "fr29_", "fr30_", "fr31_",
 };
 
 const char* string_vr[] = {
-    "vr0",  "vr1",  "vr2",  "vr3",  "vr4",  "vr5",  "vr6",  "vr7",
-    "vr8",  "vr9",  "vr10", "vr11", "vr12", "vr13", "vr14", "vr15", 
-    "vr16", "vr17", "vr18", "vr19", "vr20", "vr21", "vr22", "vr23", 
-    "vr24", "vr25", "vr26", "vr27", "vr28", "vr29", "vr30", "vr31",
+    "vr0_",  "vr1_",  "vr2_",  "vr3_",  "vr4_",  "vr5_",  "vr6_",  "vr7_",
+    "vr8_",  "vr9_",  "vr10_", "vr11_", "vr12_", "vr13_", "vr14_", "vr15_",
+    "vr16_", "vr17_", "vr18_", "vr19_", "vr20_", "vr21_", "vr22_", "vr23_",
+    "vr24_", "vr25_", "vr26_", "vr27_", "vr28_", "vr29_", "vr30_", "vr31_",
 };
 
-const char* string_cr = "cr";
-const char* string_fpscr = "fpscr";
-const char* string_xer = "xer";
+const char* string_cr = "cr_";
+const char* string_fpscr = "fpscr_";
+const char* string_xer = "xer_";
 
 Recompiler::Recompiler(Segment* segment, Function* function) :
     builder(llvm::getGlobalContext()),
@@ -82,6 +82,37 @@ void Recompiler::createReturn()
     } else {
         builder.CreateRet(ret);
     }
+}
+
+void Recompiler::createProlog()
+{
+    // Write LLVM IR at prolog block
+    llvm::BasicBlock* prologBlock = function->prolog;
+    builder.SetInsertPoint(prologBlock);
+
+    // Place arguments in local variables
+    auto argValue = function->function->arg_begin();
+    for (int i = 0; i < function->type_in.size(); i++, argValue++) {
+        const auto& arg = function->type_in[i];
+        llvm::AllocaInst* allocaInst;
+
+        switch (arg) {
+        case FUNCTION_IN_INTEGER:
+            allocaInst = allocaVariable(builder.getInt64Ty(), string_gpr[3 + i]);
+            builder.CreateStore(argValue, allocaInst);
+            break;
+        case FUNCTION_IN_FLOAT:
+            allocaInst = allocaVariable(builder.getDoubleTy(), string_fpr[1 + i]);
+            builder.CreateStore(argValue, allocaInst);
+            break;
+        case FUNCTION_IN_VECTOR:
+            // TODO
+            break;
+        }
+    }
+    // Branch to the real entry block
+    llvm::BasicBlock* entryBlock = function->blocks[function->address].bb;
+    builder.CreateBr(entryBlock);
 }
 
 llvm::AllocaInst* Recompiler::allocaVariable(llvm::Type* type, const llvm::Twine& name)
@@ -183,7 +214,7 @@ llvm::Value* Recompiler::readMemory(llvm::Value* addr, int bits)
 void Recompiler::writeMemory(llvm::Value* addr, llvm::Value* value)
 {
     llvm::Value* baseAddr = builder.getInt64((u64)nucleus.memory.getBaseAddr());
-    
+
     // Reverse endianness if necessary
     int bits = value->getType()->getIntegerBitWidth();
     if (bits > 8) {

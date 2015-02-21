@@ -82,6 +82,8 @@ public:
 
     // Control Flow Graph
     std::map<u32, Block> blocks;
+    llvm::BasicBlock* prolog;
+    llvm::BasicBlock* epilog;
 
     // Return/Arguments type
     FunctionTypeOut type_out;

@@ -88,6 +88,8 @@ public:
     void createBranch(Block& block);
     void createReturn();
 
+    void createProlog();
+
     // Function information
     FunctionTypeOut returnType;
 

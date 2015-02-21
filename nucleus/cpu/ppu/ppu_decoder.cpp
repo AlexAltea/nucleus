@@ -66,7 +66,7 @@ void Function::do_register_analysis(Analyzer* status)
             auto method = get_entry(code).analyzer;
             (status->*method)(code);
         }
-        
+
         if (code.is_branch_conditional() || code.is_return()) {
             break;
         }
@@ -221,7 +221,7 @@ llvm::Function* Function::declare()
     case FUNCTION_OUT_FLOAT_X3:
         result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
         break;
-    case FUNCTION_OUT_FLOAT_X4: 
+    case FUNCTION_OUT_FLOAT_X4:
         result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
         break;
     case FUNCTION_OUT_VECTOR:
@@ -247,7 +247,7 @@ llvm::Function* Function::declare()
             break;
         }
     }
-    
+
     llvm::FunctionType* ftype = llvm::FunctionType::get(result, params, false);
 
     // Declare function in module
@@ -263,14 +263,13 @@ llvm::Function* Function::recompile()
     std::queue<u32> labels({ address });
 
     // Create LLVM basic blocks
-    blocks[address].bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), "entry", function);
+    prolog = llvm::BasicBlock::Create(llvm::getGlobalContext(), "prolog", function);
     for (auto& item : blocks) {
         Block& block = item.second;
-        if (block.address != address) {
-            std::string name = format("block_%X", block.address);
-            block.bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function);
-        }
+        const std::string name = format("block_%X", block.address);
+        block.bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function);
     }
+    recompiler.createProlog();
 
     // Recompile basic clocks
     while (!labels.empty()) {
@@ -340,7 +339,7 @@ void Segment::analyze()
         if (currentBlock != 0 && !code.is_valid()) {
             currentBlock = 0;
         }
-        
+
         // Function call detected
         if (currentBlock != 0 && code.is_call()) {
             labelCalls.insert(code.get_target(i));
