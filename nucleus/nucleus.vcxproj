@@ -91,6 +91,12 @@
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_memory.cpp" />
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_vector.cpp" />
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp" />
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_branch.cpp" />
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_control.cpp" />
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_float.cpp" />
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_integer.cpp" />
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_memory.cpp" />
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_vector.cpp" />
     <ClCompile Include="cpu\ppu\ppu_decoder.cpp" />
     <ClCompile Include="cpu\ppu\ppu_instruction.cpp" />
     <ClCompile Include="cpu\ppu\ppu_tables.cpp" />

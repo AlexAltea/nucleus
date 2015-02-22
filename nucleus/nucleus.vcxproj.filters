@@ -204,6 +204,24 @@
       <Filter>cpu\ppu\recompiler</Filter>
     </ClCompile>
     <ClCompile Include="format.cpp" />
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_memory.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_vector.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_branch.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_control.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_float.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_integer.cpp">
+      <Filter>cpu\ppu\interpreter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

@@ -1,0 +1,1949 @@
+/**
+ * (c) 2015 Nucleus project. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
+
+#include "ppu_interpreter.h"
+#include "nucleus/emulator.h"
+
+namespace cpu {
+namespace ppu {
+
+// PowerPC Rotation-related functions
+inline u64 rotl64(const u64 x, const u8 n) { return (x << n) | (x >> (64 - n)); }
+inline u64 rotl32(const u32 x, const u8 n) { return rotl64((u64)x | ((u64)x << 32), n); }
+inline u16 rotl16(const u16 x, const u8 n) { return (x << n) | (x >> (16 - n)); }
+inline u8 rotl8(const u8 x, const u8 n) { return (x << n) | (x >> (8 - n)); }
+
+float CheckVSCR_NJ(PPUThread& thread, const f32 v)
+{
+    if (!thread.vscr.NJ) {
+        return v;
+    }
+    if (std::fpclassify(v) == FP_SUBNORMAL) {
+        return std::signbit(v) ? -0.0f : 0.0f;
+    }
+    return v;
+}
+
+/**
+ * PPC64 Vector/SIMD Instructions (aka AltiVec):
+ *  - Vector UISA Instructions (Section: 4.2.x)
+ *  - Vector VEA Instructions (Section: 4.3.x)
+ */
+
+void Interpreter::dss(Instruction code, PPUThread& thread)
+{
+    // TODO: _mm_fence();
+}
+
+void Interpreter::dst(Instruction code, PPUThread& thread)
+{
+    // TODO: _mm_fence();
+}
+
+void Interpreter::dstst(Instruction code, PPUThread& thread)
+{
+    // TODO: _mm_fence();
+}
+
+void Interpreter::lvebx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
+    thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
+}
+
+void Interpreter::lvehx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
+    thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
+}
+
+void Interpreter::lvewx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
+    thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
+}
+
+void Interpreter::lvlx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.readLeft(thread.vr[code.vd]._u8 + eb, addr, 16 - eb);
+}
+
+void Interpreter::lvlxl(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.readLeft(thread.vr[code.vd]._u8 + eb, addr, 16 - eb);
+}
+
+void Interpreter::lvrx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.readRight(thread.vr[code.vd]._u8, addr & ~0xf, eb);
+}
+
+void Interpreter::lvrxl(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.readRight(thread.vr[code.vd]._u8, addr & ~0xf, eb);
+}
+
+void Interpreter::lvsl(Instruction code, PPUThread& thread)
+{
+    static const u64 lvsl_values[0x10][2] = {
+        {0x08090A0B0C0D0E0F, 0x0001020304050607},
+        {0x090A0B0C0D0E0F10, 0x0102030405060708},
+        {0x0A0B0C0D0E0F1011, 0x0203040506070809},
+        {0x0B0C0D0E0F101112, 0x030405060708090A},
+        {0x0C0D0E0F10111213, 0x0405060708090A0B},
+        {0x0D0E0F1011121314, 0x05060708090A0B0C},
+        {0x0E0F101112131415, 0x060708090A0B0C0D},
+        {0x0F10111213141516, 0x0708090A0B0C0D0E},
+        {0x1011121314151617, 0x08090A0B0C0D0E0F},
+        {0x1112131415161718, 0x090A0B0C0D0E0F10},
+        {0x1213141516171819, 0x0A0B0C0D0E0F1011},
+        {0x131415161718191A, 0x0B0C0D0E0F101112},
+        {0x1415161718191A1B, 0x0C0D0E0F10111213},
+        {0x15161718191A1B1C, 0x0D0E0F1011121314},
+        {0x161718191A1B1C1D, 0x0E0F101112131415},
+        {0x1718191A1B1C1D1E, 0x0F10111213141516},
+    };
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    thread.vr[code.vd]._u64[0] = lvsl_values[addr & 0xf][0];
+    thread.vr[code.vd]._u64[1] = lvsl_values[addr & 0xf][1];
+}
+
+void Interpreter::lvsr(Instruction code, PPUThread& thread)
+{
+    static const u64 lvsr_values[0x10][2] = {
+        {0x18191A1B1C1D1E1F, 0x1011121314151617},
+        {0x1718191A1B1C1D1E, 0x0F10111213141516},
+        {0x161718191A1B1C1D, 0x0E0F101112131415},
+        {0x15161718191A1B1C, 0x0D0E0F1011121314},
+        {0x1415161718191A1B, 0x0C0D0E0F10111213},
+        {0x131415161718191A, 0x0B0C0D0E0F101112},
+        {0x1213141516171819, 0x0A0B0C0D0E0F1011},
+        {0x1112131415161718, 0x090A0B0C0D0E0F10},
+        {0x1011121314151617, 0x08090A0B0C0D0E0F},
+        {0x0F10111213141516, 0x0708090A0B0C0D0E},
+        {0x0E0F101112131415, 0x060708090A0B0C0D},
+        {0x0D0E0F1011121314, 0x05060708090A0B0C},
+        {0x0C0D0E0F10111213, 0x0405060708090A0B},
+        {0x0B0C0D0E0F101112, 0x030405060708090A},
+        {0x0A0B0C0D0E0F1011, 0x0203040506070809},
+        {0x090A0B0C0D0E0F10, 0x0102030405060708},
+    };
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    thread.vr[code.vd]._u64[0] = lvsr_values[addr & 0xf][0];
+    thread.vr[code.vd]._u64[1] = lvsr_values[addr & 0xf][1];
+}
+
+void Interpreter::lvx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
+    thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
+}
+
+void Interpreter::lvxl(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
+    thread.vr[code.vd]._u128 = nucleus.memory.read128(addr);
+}
+
+void Interpreter::mfvscr(Instruction code, PPUThread& thread)
+{
+    thread.vr[code.vd].clear();
+    thread.vr[code.vd]._u32[0] = thread.vscr.VSCR;
+}
+
+void Interpreter::mtvscr(Instruction code, PPUThread& thread)
+{
+    thread.vscr.VSCR = thread.vr[code.vb]._u32[0];
+}
+
+void Interpreter::stvebx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.write8(addr, thread.vr[code.vs]._u8[15 - eb]);
+}
+
+void Interpreter::stvehx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~1ULL;
+    const u8 eb = (addr & 0xf) >> 1;
+    nucleus.memory.write16(addr, thread.vr[code.vs]._u16[7 - eb]);
+}
+
+void Interpreter::stvewx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~3ULL;
+    const u8 eb = (addr & 0xf) >> 2;
+    nucleus.memory.write32(addr, thread.vr[code.vs]._u32[3 - eb]);
+}
+
+void Interpreter::stvlx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.writeLeft(addr, thread.vr[code.vs]._u8 + eb, 16 - eb);
+}
+
+void Interpreter::stvlxl(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.writeLeft(addr, thread.vr[code.vs]._u8 + eb, 16 - eb);
+}
+
+void Interpreter::stvrx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.writeRight(addr - eb, thread.vr[code.vs]._u8, eb);
+}
+
+void Interpreter::stvrxl(Instruction code, PPUThread& thread)
+{
+    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u8 eb = addr & 0xf;
+    nucleus.memory.writeRight(addr - eb, thread.vr[code.vs]._u8, eb);
+}
+
+void Interpreter::stvx(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
+    nucleus.memory.write128(addr, thread.vr[code.vs]._u128);
+}
+
+void Interpreter::stvxl(Instruction code, PPUThread& thread)
+{
+    const u32 addr = (code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb]) & ~0xfULL;
+    nucleus.memory.write128(addr, thread.vr[code.vs]._u128);
+}
+
+void Interpreter::vaddcuw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = ~thread.vr[code.va]._u32[w] < thread.vr[code.vb]._u32[w];
+    }
+}
+
+void Interpreter::vaddfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = thread.vr[code.va]._f32[w] + thread.vr[code.vb]._f32[w];
+    }
+}
+
+void Interpreter::vaddsbs(Instruction code, PPUThread& thread)
+{
+    for (u32 b=0; b<16; ++b) {
+        const s16 result = (s16)thread.vr[code.va]._s8[b] + (s16)thread.vr[code.vb]._s8[b];
+        if (result > 0x7F) {
+            thread.vr[code.vd]._s8[b] = 0x7F;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < -0x80) {
+            thread.vr[code.vd]._s8[b] = -0x80;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s8[b] = result;
+        }
+    }
+}
+
+void Interpreter::vaddshs(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        const s32 result = (s32)thread.vr[code.va]._s16[h] + (s32)thread.vr[code.vb]._s16[h];
+        if (result > 0x7FFF) {
+            thread.vr[code.vd]._s16[h] = 0x7FFF;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < -0x8000) {
+            thread.vr[code.vd]._s16[h] = -0x8000;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s16[h] = result;
+        }
+    }
+}
+
+void Interpreter::vaddsws(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        const s64 result = (s64)thread.vr[code.va]._s32[w] + (s64)thread.vr[code.vb]._s32[w];
+        if (result > 0x7FFFFFFF) {
+            thread.vr[code.vd]._s32[w] = 0x7FFFFFFF;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < (s32)0x80000000) {
+            thread.vr[code.vd]._s32[w] = 0x80000000;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s32[w] = result;
+        }
+    }
+}
+
+void Interpreter::vaddubm(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] + thread.vr[code.vb]._u8[b];
+    }
+}
+
+void Interpreter::vaddubs(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        const u16 result = (u16)thread.vr[code.va]._u8[b] + (u16)thread.vr[code.vb]._u8[b];
+        if (result > 0xFF) {
+            thread.vr[code.vd]._u8[b] = 0xFF;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._u8[b] = result;
+        }
+    }
+}
+
+void Interpreter::vadduhm(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] + thread.vr[code.vb]._u16[h];
+    }
+}
+
+void Interpreter::vadduhs(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        const u32 result = (u32)thread.vr[code.va]._u16[h] + (u32)thread.vr[code.vb]._u16[h];
+        if (result > 0xFFFF) {
+            thread.vr[code.vd]._u16[h] = 0xFFFF;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._u16[h] = result;
+        }
+    }
+}
+
+void Interpreter::vadduwm(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] + thread.vr[code.vb]._u32[w];
+    }
+}
+
+void Interpreter::vadduws(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        const u64 result = (u64)thread.vr[code.va]._u32[w] + (u64)thread.vr[code.vb]._u32[w];
+        if (result > 0xFFFFFFFF) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = result;
+        }
+    }
+}
+
+void Interpreter::vand(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] & thread.vr[code.vb]._u32[w];
+    }
+}
+
+void Interpreter::vandc(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] & (~thread.vr[code.vb]._u32[w]);
+    }
+}
+
+void Interpreter::vavgsb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._s8[b] = (thread.vr[code.va]._s8[b] + thread.vr[code.vb]._s8[b] + 1) >> 1;
+    }
+}
+
+void Interpreter::vavgsh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = (thread.vr[code.va]._s16[h] + thread.vr[code.vb]._s16[h] + 1) >> 1;
+    }
+}
+
+void Interpreter::vavgsw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s32[w] = ((s64)thread.vr[code.va]._s32[w] + (s64)thread.vr[code.vb]._s32[w] + 1) >> 1;
+    }
+}
+
+void Interpreter::vavgub(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = (thread.vr[code.va]._u8[b] + thread.vr[code.vb]._u8[b] + 1) >> 1;
+    }
+}
+
+void Interpreter::vavguh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = (thread.vr[code.va]._u16[h] + thread.vr[code.vb]._u16[h] + 1) >> 1;
+    }
+}
+
+void Interpreter::vavguw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = ((u64)thread.vr[code.va]._u32[w] + (u64)thread.vr[code.vb]._u32[w] + 1) >> 1;
+    }
+}
+
+void Interpreter::vcfsx(Instruction code, PPUThread& thread)
+{
+    const u32 scale = 1 << code.vuimm;
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = ((f32)thread.vr[code.vb]._s32[w]) / scale;
+    }
+}
+
+void Interpreter::vcfux(Instruction code, PPUThread& thread)
+{
+    const u32 scale = 1 << code.vuimm;
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = ((f32)thread.vr[code.vb]._u32[w]) / scale;
+    }
+}
+
+void Interpreter::vcmpbfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        u32 mask = 0;
+        const f32 A = CheckVSCR_NJ(thread, thread.vr[code.va]._f32[w]);
+        const f32 B = CheckVSCR_NJ(thread, thread.vr[code.vb]._f32[w]);
+
+        if (A >  B) mask |= 1 << 31;
+        if (A < -B) mask |= 1 << 30;
+
+        thread.vr[code.vd]._u32[w] = mask;
+    }
+}
+
+void Interpreter::vcmpbfp_(Instruction code, PPUThread& thread)
+{
+    bool allInBounds = true;
+    for (int w = 0; w < 4; w++) {
+        u32 mask = 0;
+        const f32 A = CheckVSCR_NJ(thread, thread.vr[code.va]._f32[w]);
+        const f32 B = CheckVSCR_NJ(thread, thread.vr[code.vb]._f32[w]);
+
+        if (A >  B) mask |= 1 << 31;
+        if (A < -B) mask |= 1 << 30;
+
+        thread.vr[code.vd]._u32[w] = mask;
+        if (mask) {
+            allInBounds = false;
+        }
+    }
+    thread.cr.setBit(6*4 + 2, allInBounds);
+}
+
+void Interpreter::vcmpeqfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._f32[w] == thread.vr[code.vb]._f32[w] ? 0xFFFFFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpeqfp_(Instruction code, PPUThread& thread)
+{
+    int all_equal = 0x8;
+    int none_equal = 0x2;
+
+    for (int w = 0; w < 4; w++) {
+        if (thread.vr[code.va]._f32[w] == thread.vr[code.vb]._f32[w]) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            none_equal = 0;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = 0;
+            all_equal = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_equal | none_equal);
+}
+
+void Interpreter::vcmpequb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] == thread.vr[code.vb]._u8[b] ? 0xFF : 0;
+    }
+}
+
+void Interpreter::vcmpequb_(Instruction code, PPUThread& thread)
+{
+    int all_equal = 0x8;
+    int none_equal = 0x2;
+
+    for (int b = 0; b < 16; b++) {
+        if (thread.vr[code.va]._u8[b] == thread.vr[code.vb]._u8[b]) {
+            thread.vr[code.vd]._u8[b] = 0xFF;
+            none_equal = 0;
+        }
+        else {
+            thread.vr[code.vd]._u8[b] = 0;
+            all_equal = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_equal | none_equal);
+}
+
+void Interpreter::vcmpequh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] == thread.vr[code.vb]._u16[h] ? 0xFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpequh_(Instruction code, PPUThread& thread)
+{
+    int all_equal = 0x8;
+    int none_equal = 0x2;
+
+    for (int h = 0; h < 8; h++) {
+        if (thread.vr[code.va]._u16[h] == thread.vr[code.vb]._u16[h]) {
+            thread.vr[code.vd]._u16[h] = 0xFFFF;
+            none_equal = 0;
+        }
+        else {
+            thread.vr[code.vd]._u16[h] = 0;
+            all_equal = 0;
+        }
+    }
+    thread.cr.setField(6, all_equal | none_equal);
+}
+
+void Interpreter::vcmpequw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] == thread.vr[code.vb]._u32[w] ? 0xFFFFFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpequw_(Instruction code, PPUThread& thread)
+{
+    int all_equal = 0x8;
+    int none_equal = 0x2;
+
+    for (int w = 0; w < 4; w++) {
+        if (thread.vr[code.va]._u32[w] == thread.vr[code.vb]._u32[w]) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            none_equal = 0;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = 0;
+            all_equal = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_equal | none_equal);
+}
+
+void Interpreter::vcmpgefp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._f32[w] >= thread.vr[code.vb]._f32[w] ? 0xFFFFFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpgefp_(Instruction code, PPUThread& thread)
+{
+    int all_ge = 0x8;
+    int none_ge = 0x2;
+
+    for (int w = 0; w < 4; w++) {
+        if (thread.vr[code.va]._f32[w] >= thread.vr[code.vb]._f32[w]) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            none_ge = 0;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = 0;
+            all_ge = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_ge | none_ge);
+}
+
+void Interpreter::vcmpgtfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._f32[w] > thread.vr[code.vb]._f32[w] ? 0xFFFFFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpgtfp_(Instruction code, PPUThread& thread)
+{
+    int all_ge = 0x8;
+    int none_ge = 0x2;
+
+    for (int w = 0; w < 4; w++) {
+        if (thread.vr[code.va]._f32[w] > thread.vr[code.vb]._f32[w]) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            none_ge = 0;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = 0;
+            all_ge = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_ge | none_ge);
+}
+
+void Interpreter::vcmpgtsb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = thread.vr[code.va]._s8[b] > thread.vr[code.vb]._s8[b] ? 0xFF : 0;
+    }
+}
+
+void Interpreter::vcmpgtsb_(Instruction code, PPUThread& thread)
+{
+    int all_gt = 0x8;
+    int none_gt = 0x2;
+
+    for (int b = 0; b < 16; b++) {
+        if (thread.vr[code.va]._s8[b] > thread.vr[code.vb]._s8[b]) {
+            thread.vr[code.vd]._u8[b] = 0xFF;
+            none_gt = 0;
+        }
+        else {
+            thread.vr[code.vd]._u8[b] = 0;
+            all_gt = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_gt | none_gt);
+}
+
+void Interpreter::vcmpgtsh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._s16[h] > thread.vr[code.vb]._s16[h] ? 0xFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpgtsh_(Instruction code, PPUThread& thread)
+{
+    int all_gt = 0x8;
+    int none_gt = 0x2;
+
+    for (int h = 0; h < 8; h++) {
+        if (thread.vr[code.va]._s16[h] > thread.vr[code.vb]._s16[h]) {
+            thread.vr[code.vd]._u16[h] = 0xFFFF;
+            none_gt = 0;
+        }
+        else {
+            thread.vr[code.vd]._u16[h] = 0;
+            all_gt = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_gt | none_gt);
+}
+
+void Interpreter::vcmpgtsw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._s32[w] > thread.vr[code.vb]._s32[w] ? 0xFFFFFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpgtsw_(Instruction code, PPUThread& thread)
+{
+    int all_gt = 0x8;
+    int none_gt = 0x2;
+
+    for (int w = 0; w < 4; w++) {
+        if (thread.vr[code.va]._s32[w] > thread.vr[code.vb]._s32[w]) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            none_gt = 0;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = 0;
+            all_gt = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_gt | none_gt);
+}
+
+void Interpreter::vcmpgtub(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] > thread.vr[code.vb]._u8[b] ? 0xFF : 0;
+    }
+}
+
+void Interpreter::vcmpgtub_(Instruction code, PPUThread& thread)
+{
+    int all_gt = 0x8;
+    int none_gt = 0x2;
+
+    for (int b = 0; b < 16; b++) {
+        if (thread.vr[code.va]._u8[b] > thread.vr[code.vb]._u8[b]) {
+            thread.vr[code.vd]._u8[b] = 0xFF;
+            none_gt = 0;
+        }
+        else {
+            thread.vr[code.vd]._u8[b] = 0;
+            all_gt = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_gt | none_gt);
+}
+
+void Interpreter::vcmpgtuh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] > thread.vr[code.vb]._u16[h] ? 0xFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpgtuh_(Instruction code, PPUThread& thread)
+{
+    int all_gt = 0x8;
+    int none_gt = 0x2;
+
+    for (int h = 0; h < 8; h++) {
+        if (thread.vr[code.va]._u16[h] > thread.vr[code.vb]._u16[h]) {
+            thread.vr[code.vd]._u16[h] = 0xFFFF;
+            none_gt = 0;
+        }
+        else {
+            thread.vr[code.vd]._u16[h] = 0;
+            all_gt = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_gt | none_gt);
+}
+
+void Interpreter::vcmpgtuw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] > thread.vr[code.vb]._u32[w] ? 0xFFFFFFFF : 0;
+    }
+}
+
+void Interpreter::vcmpgtuw_(Instruction code, PPUThread& thread)
+{
+    int all_gt = 0x8;
+    int none_gt = 0x2;
+
+    for (int w = 0; w < 4; w++) {
+        if (thread.vr[code.va]._u32[w] > thread.vr[code.vb]._u32[w]) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            none_gt = 0;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = 0;
+            all_gt = 0;
+        }
+    }
+
+    thread.cr.setField(6, all_gt | none_gt);
+}
+
+void Interpreter::vctsxs(Instruction code, PPUThread& thread)
+{
+    int nScale = 1 << code.vuimm;
+
+    for (int w = 0; w < 4; w++) {
+        f32 result = thread.vr[code.vb]._f32[w] * nScale;
+
+        if (result > 0x7FFFFFFF)
+            thread.vr[code.vd]._s32[w] = 0x7FFFFFFF;
+        else if (result < -0x80000000LL)
+            thread.vr[code.vd]._s32[w] = -0x80000000LL;
+        else {
+            thread.vr[code.vd]._s32[w] = (int)result;
+        }
+    }
+}
+
+void Interpreter::vctuxs(Instruction code, PPUThread& thread)
+{
+    int nScale = 1 << code.vuimm;
+
+    for (int w = 0; w < 4; w++) {
+        s64 result = (s64)(thread.vr[code.vb]._f32[w] * nScale);
+
+        if (result > 0xFFFFFFFF)
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+        else if (result < 0)
+            thread.vr[code.vd]._u32[w] = 0;
+        else
+            thread.vr[code.vd]._u32[w] = (u32)result;
+    }
+}
+
+void Interpreter::vexptefp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = exp(thread.vr[code.vb]._f32[w] * log(2.0f));
+    }
+}
+
+void Interpreter::vlogefp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = log(thread.vr[code.vb]._f32[w]) / log(2.0f);
+    }
+}
+
+void Interpreter::vmaddfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = thread.vr[code.va]._f32[w] * thread.vr[code.vc]._f32[w] + thread.vr[code.vb]._f32[w];
+    }
+}
+
+void Interpreter::vmaxfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = std::max(thread.vr[code.va]._f32[w], thread.vr[code.vb]._f32[w]);
+    }
+}
+
+void Interpreter::vmaxsb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++)
+        thread.vr[code.vd]._s8[b] = std::max(thread.vr[code.va]._s8[b], thread.vr[code.vb]._s8[b]);
+}
+
+void Interpreter::vmaxsh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = std::max(thread.vr[code.va]._s16[h], thread.vr[code.vb]._s16[h]);
+    }
+}
+
+void Interpreter::vmaxsw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s32[w] = std::max(thread.vr[code.va]._s32[w], thread.vr[code.vb]._s32[w]);
+    }
+}
+
+void Interpreter::vmaxub(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++)
+        thread.vr[code.vd]._u8[b] = std::max(thread.vr[code.va]._u8[b], thread.vr[code.vb]._u8[b]);
+}
+
+void Interpreter::vmaxuh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = std::max(thread.vr[code.va]._u16[h], thread.vr[code.vb]._u16[h]);
+    }
+}
+
+void Interpreter::vmaxuw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = std::max(thread.vr[code.va]._u32[w], thread.vr[code.vb]._u32[w]);
+    }
+}
+
+void Interpreter::vmhaddshs(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        s32 result = (s32)thread.vr[code.va]._s16[h] * (s32)thread.vr[code.vb]._s16[h] + (s32)thread.vr[code.vc]._s16[h];
+        if (result > INT16_MAX) {
+            thread.vr[code.vd]._s16[h] = (s16)INT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < INT16_MIN) {
+            thread.vr[code.vd]._s16[h] = (s16)INT16_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s16[h] = (s16)result;
+        }
+    }
+}
+
+void Interpreter::vmhraddshs(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        s32 result = (s32)thread.vr[code.va]._s16[h] * (s32)thread.vr[code.vb]._s16[h] + (s32)thread.vr[code.vc]._s16[h] + 0x4000;
+
+        if (result > INT16_MAX) {
+            thread.vr[code.vd]._s16[h] = (s16)INT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < INT16_MIN) {
+            thread.vr[code.vd]._s16[h] = (s16)INT16_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s16[h] = (s16)result;
+        }
+    }
+}
+
+void Interpreter::vminfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = std::min(thread.vr[code.va]._f32[w], thread.vr[code.vb]._f32[w]);
+    }
+}
+
+void Interpreter::vminsb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._s8[b] = std::min(thread.vr[code.va]._s8[b], thread.vr[code.vb]._s8[b]);
+    }
+}
+
+void Interpreter::vminsh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = std::min(thread.vr[code.va]._s16[h], thread.vr[code.vb]._s16[h]);
+    }
+}
+
+void Interpreter::vminsw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s32[w] = std::min(thread.vr[code.va]._s32[w], thread.vr[code.vb]._s32[w]);
+    }
+}
+
+void Interpreter::vminub(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = std::min(thread.vr[code.va]._u8[b], thread.vr[code.vb]._u8[b]);
+    }
+}
+
+void Interpreter::vminuh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = std::min(thread.vr[code.va]._u16[h], thread.vr[code.vb]._u16[h]);
+    }
+}
+
+void Interpreter::vminuw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = std::min(thread.vr[code.va]._u32[w], thread.vr[code.vb]._u32[w]);
+    }
+}
+
+void Interpreter::vmladduhm(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] * thread.vr[code.vb]._u16[h] + thread.vr[code.vc]._u16[h];
+    }
+}
+
+void Interpreter::vmrghb(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u8[15 - h*2 + 0] = thread.vr[code.va]._u8[15 - h];
+        thread.vr[code.vd]._u8[15 - h*2 - 1] = thread.vr[code.vb]._u8[15 - h];
+    }
+}
+
+void Interpreter::vmrghh(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u16[7 - w*2 + 0] = thread.vr[code.va]._u16[7 - w];
+        thread.vr[code.vd]._u16[7 - w*2 - 1] = thread.vr[code.vb]._u16[7 - w];
+    }
+}
+
+void Interpreter::vmrghw(Instruction code, PPUThread& thread)
+{
+    for (int d = 0; d < 2; d++) {
+        thread.vr[code.vd]._u32[3 - d*2 + 0] = thread.vr[code.va]._u32[3 - d];
+        thread.vr[code.vd]._u32[3 - d*2 - 1] = thread.vr[code.vb]._u32[3 - d];
+    }
+}
+
+void Interpreter::vmrglb(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u8[15 - h*2 + 0] = thread.vr[code.va]._u8[7 - h];
+        thread.vr[code.vd]._u8[15 - h*2 - 1] = thread.vr[code.vb]._u8[7 - h];
+    }
+}
+
+void Interpreter::vmrglh(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u16[7 - w*2] = thread.vr[code.va]._u16[3 - w];
+        thread.vr[code.vd]._u16[7 - w*2 - 1] = thread.vr[code.vb]._u16[3 - w];
+    }
+}
+
+void Interpreter::vmrglw(Instruction code, PPUThread& thread)
+{
+    for (int d = 0; d < 2; d++) {
+        thread.vr[code.vd]._u32[3 - d*2 + 0] = thread.vr[code.va]._u32[1 - d];
+        thread.vr[code.vd]._u32[3 - d*2 - 1] = thread.vr[code.vb]._u32[1 - d];
+    }
+}
+
+void Interpreter::vmsummbm(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        s32 result = 0;
+        for (int b = 0; b < 4; b++) {
+            result += thread.vr[code.va]._s8[w*4 + b] * thread.vr[code.vb]._u8[w*4 + b];
+        }
+        result += thread.vr[code.vc]._s32[w];
+        thread.vr[code.vd]._s32[w] = result;
+    }
+}
+
+void Interpreter::vmsumshm(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        s32 result = 0;
+        for (int h = 0; h < 2; h++) {
+            result += thread.vr[code.va]._s16[w*2 + h] * thread.vr[code.vb]._s16[w*2 + h];
+        }
+        result += thread.vr[code.vc]._s32[w];
+        thread.vr[code.vd]._s32[w] = result;
+    }
+}
+
+void Interpreter::vmsumshs(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        s64 result = 0;
+        for (int h = 0; h < 2; h++) {
+            result += thread.vr[code.va]._s16[w*2 + h] * thread.vr[code.vb]._s16[w*2 + h];
+        }
+        result += thread.vr[code.vc]._s32[w];
+
+        if (result > 0x7FFFFFFF) {
+            thread.vr[code.vd]._s32[w] = 0x7FFFFFFF;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < -0x80000000LL) {
+            thread.vr[code.vd]._s32[w] = -0x80000000LL;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s32[w] = (s32)result;
+        }
+    }
+}
+
+void Interpreter::vmsumubm(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        u32 result = 0;
+        for (int b = 0; b < 4; b++) {
+            result += thread.vr[code.va]._u8[w*4 + b] * thread.vr[code.vb]._u8[w*4 + b];
+        }
+        result += thread.vr[code.vc]._u32[w];
+        thread.vr[code.vd]._u32[w] = result;
+    }
+}
+
+void Interpreter::vmsumuhm(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        u32 result = 0;
+
+        for (int h = 0; h < 2; h++) {
+            result += thread.vr[code.va]._u16[w*2 + h] * thread.vr[code.vb]._u16[w*2 + h];
+        }
+
+        result += thread.vr[code.vc]._u32[w];
+        thread.vr[code.vd]._u32[w] = result;
+    }
+}
+
+void Interpreter::vmsumuhs(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        u64 result = 0;
+        for (int h = 0; h < 2; h++) {
+            result += thread.vr[code.va]._u16[w*2 + h] * thread.vr[code.vb]._u16[w*2 + h];
+        }
+        result += thread.vr[code.vc]._u32[w];
+
+        if (result > 0xFFFFFFFF) {
+            thread.vr[code.vd]._u32[w] = 0xFFFFFFFF;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = (u32)result;
+        }
+    }
+}
+
+void Interpreter::vmulesb(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = (s16)thread.vr[code.va]._s8[h*2+1] * (s16)thread.vr[code.vb]._s8[h*2+1];
+    }
+}
+
+void Interpreter::vmulesh(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s32[w] = (s32)thread.vr[code.va]._s16[w*2+1] * (s32)thread.vr[code.vb]._s16[w*2+1];
+    }
+}
+
+void Interpreter::vmuleub(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = (u16)thread.vr[code.va]._u8[h*2+1] * (u16)thread.vr[code.vb]._u8[h*2+1];
+    }
+}
+
+void Interpreter::vmuleuh(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = (u32)thread.vr[code.va]._u16[w*2+1] * (u32)thread.vr[code.vb]._u16[w*2+1];
+    }
+}
+
+void Interpreter::vmulosb(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = (s16)thread.vr[code.va]._s8[h*2] * (s16)thread.vr[code.vb]._s8[h*2];
+    }
+}
+
+void Interpreter::vmulosh(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s32[w] = (s32)thread.vr[code.va]._s16[w*2] * (s32)thread.vr[code.vb]._s16[w*2];
+    }
+}
+
+void Interpreter::vmuloub(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = (u16)thread.vr[code.va]._u8[h*2] * (u16)thread.vr[code.vb]._u8[h*2];
+    }
+}
+
+void Interpreter::vmulouh(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = (u32)thread.vr[code.va]._u16[w*2] * (u32)thread.vr[code.vb]._u16[w*2];
+    }
+}
+
+void Interpreter::vnmsubfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = -(thread.vr[code.va]._f32[w] * thread.vr[code.vc]._f32[w] - thread.vr[code.vb]._f32[w]);
+    }
+}
+
+void Interpreter::vnor(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = ~(thread.vr[code.va]._u32[w] | thread.vr[code.vb]._u32[w]);
+    }
+}
+
+void Interpreter::vor(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] | thread.vr[code.vb]._u32[w];
+    }
+}
+
+void Interpreter::vperm(Instruction code, PPUThread& thread)
+{
+    u8 tmpSRC[32];
+    memcpy(tmpSRC, thread.vr[code.vb]._u8, 16);
+    memcpy(tmpSRC + 16, thread.vr[code.va]._u8, 16);
+
+    for (int b = 0; b < 16; b++) {
+        u8 index = thread.vr[code.vc]._u8[b] & 0x1f;
+
+        thread.vr[code.vd]._u8[b] = tmpSRC[0x1f - index];
+    }
+}
+
+void Interpreter::vpkpx(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 4; h++) {
+        const u16 bb7  = thread.vr[code.vb]._u8[15 - (h*4 + 0)] & 0x1;
+        const u16 bb8  = thread.vr[code.vb]._u8[15 - (h*4 + 1)] >> 3;
+        const u16 bb16 = thread.vr[code.vb]._u8[15 - (h*4 + 2)] >> 3;
+        const u16 bb24 = thread.vr[code.vb]._u8[15 - (h*4 + 3)] >> 3;
+        const u16 ab7  = thread.vr[code.va]._u8[15 - (h*4 + 0)] & 0x1;
+        const u16 ab8  = thread.vr[code.va]._u8[15 - (h*4 + 1)] >> 3;
+        const u16 ab16 = thread.vr[code.va]._u8[15 - (h*4 + 2)] >> 3;
+        const u16 ab24 = thread.vr[code.va]._u8[15 - (h*4 + 3)] >> 3;
+
+        thread.vr[code.vd]._u16[3 - h] = (bb7 << 15) | (bb8 << 10) | (bb16 << 5) | bb24;
+        thread.vr[code.vd]._u16[7 - h] = (ab7 << 15) | (ab8 << 10) | (ab16 << 5) | ab24;
+    }
+}
+
+void Interpreter::vpkshss(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 8; b++) {
+        s16 result = thread.vr[code.va]._s16[b];
+
+        if (result > INT8_MAX) {
+            result = INT8_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < INT8_MIN) {
+            result = INT8_MIN;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._s8[b+8] = result;
+
+        result = thread.vr[code.vb]._s16[b];
+
+        if (result > INT8_MAX) {
+            result = INT8_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < INT8_MIN) {
+            result = INT8_MIN;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._s8[b] = result;
+    }
+}
+
+void Interpreter::vpkshus(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 8; b++) {
+        s16 result = thread.vr[code.va]._s16[b];
+
+        if (result > UINT8_MAX) {
+            result = UINT8_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < 0) {
+            result = 0;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u8[b+8] = result;
+
+        result = thread.vr[code.vb]._s16[b];
+
+        if (result > UINT8_MAX) {
+            result = UINT8_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < 0) {
+            result = 0;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u8[b] = result;
+    }
+}
+
+void Interpreter::vpkswss(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 4; h++) {
+        s32 result = thread.vr[code.va]._s32[h];
+
+        if (result > INT16_MAX) {
+            result = INT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < INT16_MIN) {
+            result = INT16_MIN;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._s16[h+4] = result;
+
+        result = thread.vr[code.vb]._s32[h];
+
+        if (result > INT16_MAX) {
+            result = INT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < INT16_MIN) {
+            result = INT16_MIN;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._s16[h] = result;
+    }
+}
+
+void Interpreter::vpkswus(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 4; h++) {
+        s32 result = thread.vr[code.va]._s32[h];
+
+        if (result > UINT16_MAX) {
+            result = UINT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < 0) {
+            result = 0;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u16[h+4] = result;
+
+        result = thread.vr[code.vb]._s32[h];
+
+        if (result > UINT16_MAX) {
+            result = UINT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (result < 0) {
+            result = 0;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u16[h] = result;
+    }
+}
+
+void Interpreter::vpkuhum(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 8; b++) {
+        thread.vr[code.vd]._u8[b+8] = thread.vr[code.va]._u8[b*2];
+        thread.vr[code.vd]._u8[b  ] = thread.vr[code.vb]._u8[b*2];
+    }
+}
+
+void Interpreter::vpkuhus(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 8; b++) {
+        u16 result = thread.vr[code.va]._u16[b];
+
+        if (result > UINT8_MAX) {
+            result = UINT8_MAX;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u8[b+8] = result;
+
+        result = thread.vr[code.vb]._u16[b];
+
+        if (result > UINT8_MAX) {
+            result = UINT8_MAX;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u8[b] = result;
+    }
+}
+
+void Interpreter::vpkuwum(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 4; h++) {
+        thread.vr[code.vd]._u16[h+4] = thread.vr[code.va]._u16[h*2];
+        thread.vr[code.vd]._u16[h  ] = thread.vr[code.vb]._u16[h*2];
+    }
+}
+
+void Interpreter::vpkuwus(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 4; h++) {
+        u32 result = thread.vr[code.va]._u32[h];
+
+        if (result > UINT16_MAX) {
+            result = UINT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u16[h+4] = result;
+
+        result = thread.vr[code.vb]._u32[h];
+
+        if (result > UINT16_MAX) {
+            result = UINT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+
+        thread.vr[code.vd]._u16[h] = result;
+    }
+}
+
+void Interpreter::vrefp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = 1.0f / thread.vr[code.vb]._f32[w];
+    }
+}
+
+void Interpreter::vrfim(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = floor(thread.vr[code.vb]._f32[w]);
+    }
+}
+
+void Interpreter::vrfin(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = floor(thread.vr[code.vb]._f32[w] + 0.5f);
+    }
+}
+
+void Interpreter::vrfip(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = ceil(thread.vr[code.vb]._f32[w]);
+    }
+}
+
+void Interpreter::vrfiz(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        f32 f;
+        modff(thread.vr[code.vb]._f32[w], &f);
+        thread.vr[code.vd]._f32[w] = f;
+    }
+}
+
+void Interpreter::vrlb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        int nRot = thread.vr[code.vb]._u8[b] & 0x7;
+
+        thread.vr[code.vd]._u8[b] = (thread.vr[code.va]._u8[b] << nRot) | (thread.vr[code.va]._u8[b] >> (8 - nRot));
+    }
+}
+
+void Interpreter::vrlh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = rotl16(thread.vr[code.va]._u16[h], thread.vr[code.vb]._u8[h*2] & 0xf);
+    }
+}
+
+void Interpreter::vrlw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = rotl32(thread.vr[code.va]._u32[w], thread.vr[code.vb]._u8[w*4] & 0x1f);
+    }
+}
+
+void Interpreter::vrsqrtefp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = 1.0f / sqrtf(thread.vr[code.vb]._f32[w]);
+    }
+}
+
+void Interpreter::vsel(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = (thread.vr[code.vb]._u8[b] & thread.vr[code.vc]._u8[b]) | (thread.vr[code.va]._u8[b] & (~thread.vr[code.vc]._u8[b]));
+    }
+}
+
+void Interpreter::vsl(Instruction code, PPUThread& thread)
+{
+    u8 sh = thread.vr[code.vb]._u8[0] & 0x7;
+
+    u32 t = 1;
+
+    for (int b = 0; b < 16; b++) {
+        t &= (thread.vr[code.vb]._u8[b] & 0x7) == sh;
+    }
+
+    if (t) {
+        thread.vr[code.vd]._u8[0] = thread.vr[code.va]._u8[0] << sh;
+
+        for (int b = 1; b < 16; b++) {
+            thread.vr[code.vd]._u8[b] = (thread.vr[code.va]._u8[b] << sh) | (thread.vr[code.va]._u8[b-1] >> (8 - sh));
+        }
+    }
+}
+
+void Interpreter::vslb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] << (thread.vr[code.vb]._u8[b] & 0x7);
+    }
+}
+
+void Interpreter::vsldoi(Instruction code, PPUThread& thread)
+{
+    u8 tmpSRC[32];
+    memcpy(tmpSRC, thread.vr[code.vb]._u8, 16);
+    memcpy(tmpSRC + 16, thread.vr[code.va]._u8, 16);
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[15 - b] = tmpSRC[31 - (b + code.sh)];
+    }
+}
+
+void Interpreter::vslh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] << (thread.vr[code.vb]._u8[h*2] & 0xf);
+    }
+}
+
+void Interpreter::vslo(Instruction code, PPUThread& thread)
+{
+    u8 nShift = (thread.vr[code.vb]._u8[0] >> 3) & 0xf;
+
+    thread.vr[code.vd].clear();
+
+    for (u8 b = 0; b < 16 - nShift; b++) {
+        thread.vr[code.vd]._u8[15 - b] = thread.vr[code.va]._u8[15 - (b + nShift)];
+    }
+}
+
+void Interpreter::vslw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] << (thread.vr[code.vb]._u32[w] & 0x1f);
+    }
+}
+
+void Interpreter::vspltb(Instruction code, PPUThread& thread)
+{
+    u8 byte = thread.vr[code.vb]._u8[15 - code.vuimm];
+
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = byte;
+    }
+}
+
+void Interpreter::vsplth(Instruction code, PPUThread& thread)
+{
+    const u16 hword = thread.vr[code.vb]._u16[7 - code.vuimm];
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = hword;
+    }
+}
+
+void Interpreter::vspltisb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = code.vsimm;
+    }
+}
+
+void Interpreter::vspltish(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = (s16)code.vsimm;
+    }
+}
+
+void Interpreter::vspltisw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = (s32)code.vsimm;
+    }
+}
+
+void Interpreter::vspltw(Instruction code, PPUThread& thread)
+{
+    const u32 word = thread.vr[code.vb]._u32[3 - code.vuimm];
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = word;
+    }
+}
+
+void Interpreter::vsr(Instruction code, PPUThread& thread)
+{
+    u8 sh = thread.vr[code.vb]._u8[0] & 0x7;
+    u32 t = 1;
+
+    for (int b = 0; b < 16; b++) {
+        t &= (thread.vr[code.vb]._u8[b] & 0x7) == sh;
+    }
+    if (t) {
+        thread.vr[code.vd]._u8[15] = thread.vr[code.va]._u8[15] >> sh;
+
+        for (int b = 0; b < 15; b++) {
+            thread.vr[code.vd]._u8[14-b] = (thread.vr[code.va]._u8[14-b] >> sh) | (thread.vr[code.va]._u8[14-b+1] << (8 - sh));
+        }
+    }
+}
+
+void Interpreter::vsrab(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._s8[b] = thread.vr[code.va]._s8[b] >> (thread.vr[code.vb]._u8[b] & 0x7);
+    }
+}
+
+void Interpreter::vsrah(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = thread.vr[code.va]._s16[h] >> (thread.vr[code.vb]._u8[h*2] & 0xf);
+    }
+}
+
+void Interpreter::vsraw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s32[w] = thread.vr[code.va]._s32[w] >> (thread.vr[code.vb]._u8[w*4] & 0x1f);
+    }
+}
+
+void Interpreter::vsrb(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b] >> (thread.vr[code.vb]._u8[b] & 0x7);
+    }
+}
+
+void Interpreter::vsrh(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] >> (thread.vr[code.vb]._u8[h*2] & 0xf);
+    }
+}
+
+void Interpreter::vsro(Instruction code, PPUThread& thread)
+{
+    const u8 nShift = (thread.vr[code.vb]._u8[0] >> 3) & 0xf;
+    thread.vr[code.vd].clear();
+
+    for (u8 b = 0; b < 16 - nShift; b++) {
+        thread.vr[code.vd]._u8[b] = thread.vr[code.va]._u8[b + nShift];
+    }
+}
+
+void Interpreter::vsrw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] >> (thread.vr[code.vb]._u8[w*4] & 0x1f);
+    }
+}
+
+void Interpreter::vsubcuw(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] < thread.vr[code.vb]._u32[w] ? 0 : 1;
+    }
+}
+
+void Interpreter::vsubfp(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._f32[w] = thread.vr[code.va]._f32[w] - thread.vr[code.vb]._f32[w];
+    }
+}
+
+void Interpreter::vsubsbs(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        s16 result = (s16)thread.vr[code.va]._s8[b] - (s16)thread.vr[code.vb]._s8[b];
+
+        if (result < INT8_MIN) {
+            thread.vr[code.vd]._s8[b] = INT8_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else if (result > INT8_MAX) {
+            thread.vr[code.vd]._s8[b] = INT8_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else
+            thread.vr[code.vd]._s8[b] = (s8)result;
+    }
+}
+
+void Interpreter::vsubshs(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        s32 result = (s32)thread.vr[code.va]._s16[h] - (s32)thread.vr[code.vb]._s16[h];
+
+        if (result < INT16_MIN) {
+            thread.vr[code.vd]._s16[h] = (s16)INT16_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else if (result > INT16_MAX) {
+            thread.vr[code.vd]._s16[h] = (s16)INT16_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else
+            thread.vr[code.vd]._s16[h] = (s16)result;
+    }
+}
+
+void Interpreter::vsubsws(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        s64 result = (s64)thread.vr[code.va]._s32[w] - (s64)thread.vr[code.vb]._s32[w];
+
+        if (result < INT32_MIN) {
+            thread.vr[code.vd]._s32[w] = (s32)INT32_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else if (result > INT32_MAX) {
+            thread.vr[code.vd]._s32[w] = (s32)INT32_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else
+            thread.vr[code.vd]._s32[w] = (s32)result;
+    }
+}
+
+void Interpreter::vsububm(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        thread.vr[code.vd]._u8[b] = (u8)((thread.vr[code.va]._u8[b] - thread.vr[code.vb]._u8[b]) & 0xFF);
+    }
+}
+
+void Interpreter::vsububs(Instruction code, PPUThread& thread)
+{
+    for (int b = 0; b < 16; b++) {
+        s16 result = (s16)thread.vr[code.va]._u8[b] - (s16)thread.vr[code.vb]._u8[b];
+
+        if (result < 0) {
+            thread.vr[code.vd]._u8[b] = 0;
+            thread.vscr.SAT = 1;
+        } else {
+            thread.vr[code.vd]._u8[b] = (u8)result;
+        }
+    }
+}
+
+void Interpreter::vsubuhm(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._u16[h] = thread.vr[code.va]._u16[h] - thread.vr[code.vb]._u16[h];
+    }
+}
+
+void Interpreter::vsubuhs(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        s32 result = (s32)thread.vr[code.va]._u16[h] - (s32)thread.vr[code.vb]._u16[h];
+
+        if (result < 0) {
+            thread.vr[code.vd]._u16[h] = 0;
+            thread.vscr.SAT = 1;
+        }
+        else
+            thread.vr[code.vd]._u16[h] = (u16)result;
+    }
+}
+
+void Interpreter::vsubuwm(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._u32[w] = thread.vr[code.va]._u32[w] - thread.vr[code.vb]._u32[w];
+    }
+}
+
+void Interpreter::vsubuws(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        s64 result = (s64)thread.vr[code.va]._u32[w] - (s64)thread.vr[code.vb]._u32[w];
+
+        if (result < 0) {
+            thread.vr[code.vd]._u32[w] = 0;
+            thread.vscr.SAT = 1;
+        }
+        else
+            thread.vr[code.vd]._u32[w] = (u32)result;
+    }
+}
+
+void Interpreter::vsum2sws(Instruction code, PPUThread& thread)
+{
+    for (int n = 0; n < 2; n++) {
+        s64 sum = (s64)thread.vr[code.va]._s32[n*2] + thread.vr[code.va]._s32[n*2 + 1] + thread.vr[code.vb]._s32[n*2];
+
+        if (sum > INT32_MAX) {
+            thread.vr[code.vd]._s32[n*2] = (s32)INT32_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (sum < INT32_MIN) {
+            thread.vr[code.vd]._s32[n*2] = (s32)INT32_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s32[n*2] = (s32)sum;
+        }
+    }
+    thread.vr[code.vd]._s32[1] = 0;
+    thread.vr[code.vd]._s32[3] = 0;
+}
+
+void Interpreter::vsum4sbs(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        s64 sum = thread.vr[code.vb]._s32[w];
+
+        for (int b = 0; b < 4; b++) {
+            sum += thread.vr[code.va]._s8[w*4 + b];
+        }
+
+        if (sum > INT32_MAX) {
+            thread.vr[code.vd]._s32[w] = (s32)INT32_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (sum < INT32_MIN) {
+            thread.vr[code.vd]._s32[w] = (s32)INT32_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s32[w] = (s32)sum;
+        }
+    }
+}
+
+void Interpreter::vsum4shs(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        s64 sum = thread.vr[code.vb]._s32[w];
+
+        for (int h = 0; h < 2; h++) {
+            sum += thread.vr[code.va]._s16[w*2 + h];
+        }
+
+        if (sum > INT32_MAX) {
+            thread.vr[code.vd]._s32[w] = (s32)INT32_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else if (sum < INT32_MIN) {
+            thread.vr[code.vd]._s32[w] = (s32)INT32_MIN;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._s32[w] = (s32)sum;
+        }
+    }
+}
+
+void Interpreter::vsum4ubs(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        u64 sum = thread.vr[code.vb]._u32[w];
+
+        for (int b = 0; b < 4; b++) {
+            sum += thread.vr[code.va]._u8[w*4 + b];
+        }
+
+        if (sum > UINT32_MAX) {
+            thread.vr[code.vd]._u32[w] = (u32)UINT32_MAX;
+            thread.vscr.SAT = 1;
+        }
+        else {
+            thread.vr[code.vd]._u32[w] = (u32)sum;
+        }
+    }
+}
+
+void Interpreter::vsumsws(Instruction code, PPUThread& thread)
+{
+    thread.vr[code.vd].clear();
+
+    s64 sum = thread.vr[code.vb]._s32[3];
+
+    for (int w = 0; w < 4; w++) {
+        sum += thread.vr[code.va]._s32[w];
+    }
+
+    if (sum > INT32_MAX) {
+        thread.vr[code.vd]._s32[0] = (s32)INT32_MAX;
+        thread.vscr.SAT = 1;
+    }
+    else if (sum < INT32_MIN) {
+        thread.vr[code.vd]._s32[0] = (s32)INT32_MIN;
+        thread.vscr.SAT = 1;
+    }
+    else
+        thread.vr[code.vd]._s32[0] = (s32)sum;
+}
+
+void Interpreter::vupkhpx(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s8[(3 - w)*4 + 3] = thread.vr[code.vb]._s8[w*2 + 0] >> 7;
+        thread.vr[code.vd]._u8[(3 - w)*4 + 2] = (thread.vr[code.vb]._u8[w*2 + 0] >> 2) & 0x1f;
+        thread.vr[code.vd]._u8[(3 - w)*4 + 1] = ((thread.vr[code.vb]._u8[w*2 + 0] & 0x3) << 3) | ((thread.vr[code.vb]._u8[w*2 + 1] >> 5) & 0x7);
+        thread.vr[code.vd]._u8[(3 - w)*4 + 0] = thread.vr[code.vb]._u8[w*2 + 1] & 0x1f;
+    }
+}
+
+void Interpreter::vupkhsb(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = thread.vr[code.vb]._s8[h];
+    }
+}
+
+void Interpreter::vupkhsh(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s32[w] = thread.vr[code.vb]._s16[w];
+    }
+}
+
+void Interpreter::vupklpx(Instruction code, PPUThread& thread)
+{
+    for (int w = 0; w < 4; w++) {
+        thread.vr[code.vd]._s8[(3 - w)*4 + 3] = thread.vr[code.vb]._s8[8 + w*2 + 0] >> 7;
+        thread.vr[code.vd]._u8[(3 - w)*4 + 2] = (thread.vr[code.vb]._u8[8 + w*2 + 0] >> 2) & 0x1f;
+        thread.vr[code.vd]._u8[(3 - w)*4 + 1] = ((thread.vr[code.vb]._u8[8 + w*2 + 0] & 0x3) << 3) | ((thread.vr[code.vb]._u8[8 + w*2 + 1] >> 5) & 0x7);
+        thread.vr[code.vd]._u8[(3 - w)*4 + 0] = thread.vr[code.vb]._u8[8 + w*2 + 1] & 0x1f;
+    }
+}
+
+void Interpreter::vupklsb(Instruction code, PPUThread& thread)
+{
+    for (int h = 0; h < 8; h++) {
+        thread.vr[code.vd]._s16[h] = thread.vr[code.vb]._s8[8 + h];
+    }
+}
+
+void Interpreter::vupklsh(Instruction code, PPUThread& thread)
+{
+    thread.vr[code.vd]._s32[0] = thread.vr[code.vb]._s16[4 + 0];
+    thread.vr[code.vd]._s32[1] = thread.vr[code.vb]._s16[4 + 1];
+    thread.vr[code.vd]._s32[2] = thread.vr[code.vb]._s16[4 + 2];
+    thread.vr[code.vd]._s32[3] = thread.vr[code.vb]._s16[4 + 3];
+}
+
+void Interpreter::vxor(Instruction code, PPUThread& thread)
+{
+    thread.vr[code.vd]._u64[0] = thread.vr[code.va]._u64[0] ^ thread.vr[code.vb]._u64[0];
+    thread.vr[code.vd]._u64[1] = thread.vr[code.va]._u64[1] ^ thread.vr[code.vb]._u64[1];
+}
+
+}  // namespace ppu
+}  // namespace cpu

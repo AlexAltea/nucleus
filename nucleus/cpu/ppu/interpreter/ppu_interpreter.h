@@ -15,6 +15,10 @@ namespace ppu {
 
 class Interpreter : public CellTranslator
 {
+    // Rotation mask
+    static u64 rotateMask[64][64];
+    static void initRotateMask();
+
     PPUThread& thread;
 
 public:
@@ -26,13 +30,20 @@ public:
     /**
      * Auxiliary functions
      */
-    static inline bool isCarry(u64 a, u64 b);
-    static inline bool isCarry(u64 a, u64 b, u64 c);
-    static inline f32 CheckVSCR_NJ(PPUThread& thread, const f32 v);
-    static inline bool CheckCondition(PPUThread& thread, u32 bo, u32 bi);
-    static inline u64& GetRegBySPR(PPUThread& thread, u32 spr);
+    static inline bool isCarry(u64 a, u64 b) {
+        return (a + b) < a;
+    }
+    static inline bool isCarry(u64 a, u64 b, u64 c) {
+        return isCarry(a, b) || isCarry(a + b, c);
+    }
 
-    // Integer Instructions
+    /**
+     * PPC64 Instructions:
+     * Organized according to the chapter 4 of the Programming Environments Manual
+     * for 64-bit PowerPC Microprocessors (Version 3.0 / July 15, 2005).
+     */
+
+    // UISA: Integer instructions (Section: 4.2.1)
     static void addx(Instruction code, PPUThread& thread);
     static void addcx(Instruction code, PPUThread& thread);
     static void addex(Instruction code, PPUThread& thread);
@@ -46,48 +57,20 @@ public:
     static void andcx(Instruction code, PPUThread& thread);
     static void andi_(Instruction code, PPUThread& thread);
     static void andis_(Instruction code, PPUThread& thread);
-    static void bx(Instruction code, PPUThread& thread);
-    static void bcx(Instruction code, PPUThread& thread);
-    static void bcctrx(Instruction code, PPUThread& thread);
-    static void bclrx(Instruction code, PPUThread& thread);
     static void cmp(Instruction code, PPUThread& thread);
     static void cmpi(Instruction code, PPUThread& thread);
     static void cmpl(Instruction code, PPUThread& thread);
     static void cmpli(Instruction code, PPUThread& thread);
     static void cntlzdx(Instruction code, PPUThread& thread);
     static void cntlzwx(Instruction code, PPUThread& thread);
-    static void crand(Instruction code, PPUThread& thread);
-    static void crandc(Instruction code, PPUThread& thread);
-    static void creqv(Instruction code, PPUThread& thread);
-    static void crnand(Instruction code, PPUThread& thread);
-    static void crnor(Instruction code, PPUThread& thread);
-    static void cror(Instruction code, PPUThread& thread);
-    static void crorc(Instruction code, PPUThread& thread);
-    static void crxor(Instruction code, PPUThread& thread);
-    static void dcbf(Instruction code, PPUThread& thread);
-    static void dcbst(Instruction code, PPUThread& thread);
-    static void dcbt(Instruction code, PPUThread& thread);
-    static void dcbtst(Instruction code, PPUThread& thread);
-    static void dcbz(Instruction code, PPUThread& thread);
     static void divdx(Instruction code, PPUThread& thread);
     static void divdux(Instruction code, PPUThread& thread);
     static void divwx(Instruction code, PPUThread& thread);
     static void divwux(Instruction code, PPUThread& thread);
-    static void eciwx(Instruction code, PPUThread& thread);
-    static void ecowx(Instruction code, PPUThread& thread);
-    static void eieio(Instruction code, PPUThread& thread);
     static void eqvx(Instruction code, PPUThread& thread);
     static void extsbx(Instruction code, PPUThread& thread);
     static void extshx(Instruction code, PPUThread& thread);
     static void extswx(Instruction code, PPUThread& thread);
-    static void icbi(Instruction code, PPUThread& thread);
-    static void isync(Instruction code, PPUThread& thread);
-    static void mcrf(Instruction code, PPUThread& thread);
-    static void mfocrf(Instruction code, PPUThread& thread);
-    static void mfspr(Instruction code, PPUThread& thread);
-    static void mftb(Instruction code, PPUThread& thread);
-    static void mtocrf(Instruction code, PPUThread& thread);
-    static void mtspr(Instruction code, PPUThread& thread);
     static void mulhdx(Instruction code, PPUThread& thread);
     static void mulhdux(Instruction code, PPUThread& thread);
     static void mulhwx(Instruction code, PPUThread& thread);
@@ -110,7 +93,6 @@ public:
     static void rlwimix(Instruction code, PPUThread& thread);
     static void rlwinmx(Instruction code, PPUThread& thread);
     static void rlwnmx(Instruction code, PPUThread& thread);
-    static void sc(Instruction code, PPUThread& thread_code);
     static void sldx(Instruction code, PPUThread& thread);
     static void slwx(Instruction code, PPUThread& thread);
     static void sradx(Instruction code, PPUThread& thread);
@@ -125,16 +107,11 @@ public:
     static void subfic(Instruction code, PPUThread& thread);
     static void subfmex(Instruction code, PPUThread& thread);
     static void subfzex(Instruction code, PPUThread& thread);
-    static void sync(Instruction code, PPUThread& thread);
-    static void td(Instruction code, PPUThread& thread);
-    static void tdi(Instruction code, PPUThread& thread);
-    static void tw(Instruction code, PPUThread& thread);
-    static void twi(Instruction code, PPUThread& thread);
     static void xorx(Instruction code, PPUThread& thread);
     static void xori(Instruction code, PPUThread& thread);
     static void xoris(Instruction code, PPUThread& thread);
 
-    // Floating-Point Instructions
+    // UISA: Floating-Point Instructions (Section: 4.2.2)
     static void fabsx(Instruction code, PPUThread& thread);
     static void faddx(Instruction code, PPUThread& thread);
     static void faddsx(Instruction code, PPUThread& thread);
@@ -175,13 +152,12 @@ public:
     static void mtfsfix(Instruction code, PPUThread& thread);
     static void mtfsfx(Instruction code, PPUThread& thread);
 
-    // Load and Store Instructions
+    // UISA: Load and Store Instructions (Section: 4.2.3)
     static void lbz(Instruction code, PPUThread& thread);
     static void lbzu(Instruction code, PPUThread& thread);
     static void lbzux(Instruction code, PPUThread& thread);
     static void lbzx(Instruction code, PPUThread& thread);
     static void ld(Instruction code, PPUThread& thread);
-    static void ldarx(Instruction code, PPUThread& thread);
     static void ldbrx(Instruction code, PPUThread& thread);
     static void ldu(Instruction code, PPUThread& thread);
     static void ldux(Instruction code, PPUThread& thread);
@@ -207,7 +183,6 @@ public:
     static void lswi(Instruction code, PPUThread& thread);
     static void lswx(Instruction code, PPUThread& thread);
     static void lwa(Instruction code, PPUThread& thread);
-    static void lwarx(Instruction code, PPUThread& thread);
     static void lwaux(Instruction code, PPUThread& thread);
     static void lwax(Instruction code, PPUThread& thread);
     static void lwbrx(Instruction code, PPUThread& thread);
@@ -220,7 +195,6 @@ public:
     static void stbux(Instruction code, PPUThread& thread);
     static void stbx(Instruction code, PPUThread& thread);
     static void std(Instruction code, PPUThread& thread);
-    static void stdcx_(Instruction code, PPUThread& thread);
     static void stdu(Instruction code, PPUThread& thread);
     static void stdux(Instruction code, PPUThread& thread);
     static void stdx(Instruction code, PPUThread& thread);
@@ -243,12 +217,68 @@ public:
     static void stswx(Instruction code, PPUThread& thread);
     static void stw(Instruction code, PPUThread& thread);
     static void stwbrx(Instruction code, PPUThread& thread);
-    static void stwcx_(Instruction code, PPUThread& thread);
     static void stwu(Instruction code, PPUThread& thread);
     static void stwux(Instruction code, PPUThread& thread);
     static void stwx(Instruction code, PPUThread& thread);
 
-    // Vector/SIMD instructions
+    // UISA: Branch and Flow Control Instructions (Section: 4.2.4)
+    static void bx(Instruction code, PPUThread& thread);
+    static void bcx(Instruction code, PPUThread& thread);
+    static void bcctrx(Instruction code, PPUThread& thread);
+    static void bclrx(Instruction code, PPUThread& thread);
+    static void crand(Instruction code, PPUThread& thread);
+    static void crandc(Instruction code, PPUThread& thread);
+    static void creqv(Instruction code, PPUThread& thread);
+    static void crnand(Instruction code, PPUThread& thread);
+    static void crnor(Instruction code, PPUThread& thread);
+    static void cror(Instruction code, PPUThread& thread);
+    static void crorc(Instruction code, PPUThread& thread);
+    static void crxor(Instruction code, PPUThread& thread);
+    static void mcrf(Instruction code, PPUThread& thread);
+    static void sc(Instruction code, PPUThread& thread);
+    static void td(Instruction code, PPUThread& thread);
+    static void tdi(Instruction code, PPUThread& thread);
+    static void tw(Instruction code, PPUThread& thread);
+    static void twi(Instruction code, PPUThread& thread);
+
+    // UISA: Processor Control Instructions (Section: 4.2.5)
+    static void mfocrf(Instruction code, PPUThread& thread);
+    static void mfspr(Instruction code, PPUThread& thread);
+    static void mtocrf(Instruction code, PPUThread& thread);
+    static void mtspr(Instruction code, PPUThread& thread);
+
+    // UISA: Memory Synchronization Instructions (Section: 4.2.6)
+    static void ldarx(Instruction code, PPUThread& thread);
+    static void lwarx(Instruction code, PPUThread& thread);
+    static void stdcx_(Instruction code, PPUThread& thread);
+    static void stwcx_(Instruction code, PPUThread& thread);
+    static void sync(Instruction code, PPUThread& thread);
+
+    // VEA: Processor Control Instructions (Section: 4.3.1)
+    static void mftb(Instruction code, PPUThread& thread);
+
+    // VEA: Memory Synchronization Instructions (Section: 4.3.2)
+    static void eieio(Instruction code, PPUThread& thread);
+    static void isync(Instruction code, PPUThread& thread);
+
+    // VEA: Memory Control Instructions (Section: 4.3.3)
+    static void dcbf(Instruction code, PPUThread& thread);
+    static void dcbst(Instruction code, PPUThread& thread);
+    static void dcbt(Instruction code, PPUThread& thread);
+    static void dcbtst(Instruction code, PPUThread& thread);
+    static void dcbz(Instruction code, PPUThread& thread);
+    static void icbi(Instruction code, PPUThread& thread);
+
+    // VEA: External Control Instructions (Section: 4.3.4)
+    static void eciwx(Instruction code, PPUThread& thread);
+    static void ecowx(Instruction code, PPUThread& thread);
+
+    /**
+     * PPC64 Vector/SIMD Instructions (aka AltiVec):
+     * Organized according to the chapter 4 of the Programming Environments Manual of the Vector/SIMD
+     * Multimedia Extension Technology for 64-bit PowerPC Microprocessors (Version 2.07c / October 26, 2006).
+     */
+
     static void dss(Instruction code, PPUThread& thread);
     static void dst(Instruction code, PPUThread& thread);
     static void dstst(Instruction code, PPUThread& thread);
