@@ -44,7 +44,21 @@ void Recompiler::addcx(Instruction code)
     llvm::Value* rb = getGPR(code.rb);
     llvm::Value* rd;
 
-    // TODO: ?
+    llvm::Function* uadd = getIntrinsicInt64(llvm::Intrinsic::uadd_with_overflow);
+    llvm::Value* result;
+    llvm::Value* ca;
+
+    result = builder.CreateCall2(uadd, ra, rb);
+    rd = builder.CreateExtractValue(result, 0);
+    ca = builder.CreateExtractValue(result, 1);
+    // TODO: XER CA update
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        // TODO: CR0 update
+    }
 
     setGPR(code.rd, rd);
 }
@@ -55,7 +69,15 @@ void Recompiler::addex(Instruction code)
     llvm::Value* rb = getGPR(code.rb);
     llvm::Value* rd;
 
-    // TODO: ?
+    // TODO: Add XER[CA]
+    rd = builder.CreateAdd(ra, rb);
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        // TODO: CR0 update
+    }
 
     setGPR(code.rd, rd);
 }
@@ -326,12 +348,10 @@ void Recompiler::negx(Instruction code)
     llvm::Value* ra = getGPR(code.ra);
     llvm::Value* rd;
 
+    rd = builder.CreateSub(builder.getInt64(0), ra);
     if (code.oe) {
         // TODO: XER OV update
-    } else {
-        rd = builder.CreateSub(builder.getInt64(0), ra);
     }
-
     if (code.rc) {
         // TODO: CR0 update
     }

@@ -24,7 +24,7 @@ class CellThread
     std::mutex m_mutex;
     std::condition_variable m_cv;
     std::string m_name;
-    std::thread* m_thread;
+    std::thread* m_thread = nullptr;
 
     EmulatorEvent m_event;
     EmulatorStatus m_status;

@@ -133,7 +133,7 @@ void Recompiler::vaddsbs(Instruction code)
 {
     llvm::Value* va = getVR_u8(code.va);
     llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
@@ -144,7 +144,7 @@ void Recompiler::vaddshs(Instruction code)
 {
     llvm::Value* va = getVR_u16(code.va);
     llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
@@ -155,7 +155,7 @@ void Recompiler::vaddsws(Instruction code)
 {
     llvm::Value* va = getVR_u32(code.va);
     llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
@@ -177,7 +177,7 @@ void Recompiler::vaddubs(Instruction code)
 {
     llvm::Value* va = getVR_u8(code.va);
     llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
@@ -199,7 +199,7 @@ void Recompiler::vadduhs(Instruction code)
 {
     llvm::Value* va = getVR_u16(code.va);
     llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
@@ -221,7 +221,7 @@ void Recompiler::vadduws(Instruction code)
 {
     llvm::Value* va = getVR_u32(code.va);
     llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
@@ -520,7 +520,7 @@ void Recompiler::vctuxs(Instruction code)
 void Recompiler::vexptefp(Instruction code)
 {
     llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = vb; // TODO: This is wrong. Just a temporary fix
 
     //llvm::Function* exp2 = getIntrinsicFloat(llvm::Intrinsic::exp2); // TODO: Get a 4xf32 intrinsic instead
     //vd = builder.CreateCall(exp2, vb);
@@ -531,7 +531,7 @@ void Recompiler::vexptefp(Instruction code)
 void Recompiler::vlogefp(Instruction code)
 {
     llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    llvm::Value* vd = vb; // TODO: This is wrong. Just a temporary fix
 
     //llvm::Function* log2 = getIntrinsicFloat(llvm::Intrinsic::log2); // TODO: Get a 4xf32 intrinsic instead
     //vd = builder.CreateCall(log2, vb);
