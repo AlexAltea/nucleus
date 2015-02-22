@@ -5,6 +5,7 @@
 
 #include "self.h"
 #include "nucleus/common.h"
+#include "nucleus/config.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_decoder.h"
 #include "nucleus/filesystem/filesystem.h"
@@ -64,10 +65,11 @@ bool SELFLoader::load_elf(sys_process_t& proc)
 
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
             memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
-            if (phdr.flags & PF_X) {
-                cpu::ppu::Segment segment(phdr.vaddr, phdr.filesz);
-                segment.analyze();
-                segment.recompile();
+            if ((phdr.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+                auto segment = new cpu::ppu::Segment(phdr.vaddr, phdr.filesz);
+                segment->analyze();
+                segment->recompile();
+                nucleus.cell.ppu_segments.push_back(segment);
             }
             break;
 
@@ -113,6 +115,12 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
             // Allocate memory and copy segment contents
             const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
             memcpy(nucleus.memory.ptr(addr), &elf[phdr.offset], phdr.filesz);
+            if ((phdr.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+                auto segment = new cpu::ppu::Segment(addr, phdr.filesz);
+                segment->analyze();
+                segment->recompile();
+                nucleus.cell.ppu_segments.push_back(segment);
+            }
 
             // Add information for PRX Object
             sys_prx_segment_t segment;

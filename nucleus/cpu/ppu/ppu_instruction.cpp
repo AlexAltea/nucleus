@@ -47,11 +47,20 @@ bool Instruction::is_branch_unconditional() const
 
 bool Instruction::is_call() const
 {
-    // If instruction is {bl*, bctrl}
-    if ((opcode == 0x12 || (opcode == 0x13 && op19 == 0x210)) && (lk == 1)) {
-        return true;
-    }
-    return false;
+    // If instruction is {bl*} U {bctrl}
+    return is_call_known() || is_call_unknown();
+}
+
+bool Instruction::is_call_known() const
+{
+    // If instruction is {bl*}
+    return (opcode == 0x12 && lk == 1);
+}
+
+bool Instruction::is_call_unknown() const
+{
+    // If instruction is {bctrl}
+    return (opcode == 0x13 && op19 == 0x210 && lk == 1);
 }
 
 bool Instruction::is_return() const

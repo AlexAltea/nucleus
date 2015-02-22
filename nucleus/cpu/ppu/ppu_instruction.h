@@ -110,6 +110,11 @@ union Instruction
 
     // Determines whether the instruction is function call instruction
     bool is_call() const;
+    bool is_call_known() const;   // Calling address can be predicted
+    bool is_call_unknown() const; // Calling address cannot be predicted
+    bool is_jump() const;
+    bool is_jump_known() const;   // Jumping address can be predicted
+    bool is_jump_unknown() const; // Jumping address cannot be predicted
 
     // Determines whether the instruction is return instruction
     bool is_return() const;

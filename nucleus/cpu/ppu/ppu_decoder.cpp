@@ -60,7 +60,7 @@ void Function::do_register_analysis(Analyzer* status)
         Instruction code = { nucleus.memory.read32(i) };
 
         // Check if called functions use any other registers
-        if (code.is_call()) {
+        if (code.is_call_known()) {
             Function& targetFunc = parent->functions[code.get_target(i)];
             targetFunc.do_register_analysis(status);
         }

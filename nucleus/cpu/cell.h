@@ -25,7 +25,7 @@ class Cell
 
 public:
     // Executable memory segments
-    std::vector<cpu::ppu::Segment> ppu_segments;
+    std::vector<cpu::ppu::Segment*> ppu_segments;
 
     Cell();
 
