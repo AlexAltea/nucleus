@@ -8,6 +8,11 @@
 
 #include <algorithm>
 
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#define fseeko64 _fseeki64
+#define ftello64 _ftelli64
+#endif
+
 std::string VirtualFileSystem::getHostPath(const std::string& virtualPath)
 {
     std::string hostPath = m_host_path;
@@ -55,11 +60,7 @@ u64 VirtualFileSystem::writeFile(File* handle, const void* src, s64 size)
 
 u64 VirtualFileSystem::seekFile(File* handle, u64 position, SeekMode type)
 {
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    return _fseeki64(handle->handler, position, getSeekMode(type));
-#else
     return fseeko64(handle->handler, position, getSeekMode(type));
-#endif
 }
 
 bool VirtualFileSystem::isOpen(File* handle)
@@ -69,24 +70,14 @@ bool VirtualFileSystem::isOpen(File* handle)
 
 u64 VirtualFileSystem::getFileSize(File* handle)
 {
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    u64 pos = _ftelli64(handle->handler);
-    if (_fseeki64(handle->handler, 0, SEEK_END) != 0) {
-#else
     u64 pos = ftello64(handle->handler);
     if (fseeko64(handle->handler, 0, SEEK_END) != 0) {
-#endif
         nucleus.log.error(LOG_FS, "VirtualFileSystem::getFileSize: Seek failed.");
         return 0;
     }
 
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    u64 size = _ftelli64(handle->handler);
-    if (_fseeki64(handle->handler, pos, SEEK_SET) != 0) {
-#else
     u64 size = ftello64(handle->handler);
     if (fseeko64(handle->handler, pos, SEEK_SET) != 0) {
-#endif
         nucleus.log.error(LOG_FS, "VirtualFileSystem::getFileSize: Seek failed.");
         return 0;
     }
@@ -138,13 +129,12 @@ u64 VirtualFileSystem::getFileSize(const std::string& path)
 
 #ifdef NUCLEUS_PLATFORM_WINDOWS
     fopen_s(&file, hostPath.c_str(), "rb");
-    _fseeki64(file, 0, SEEK_END);
-    u64 size = _ftelli64(file);
 #else
     file = fopen(hostPath.c_str(), "rb");
+#endif
+
     fseeko64(file, 0, SEEK_END);
     u64 size = ftello64(file);
-#endif
 
     fclose(file);
     return size;

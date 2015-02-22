@@ -36,7 +36,8 @@ static struct KeyvaultHandler {
 
     KeyvaultHandler() {
         // Access the Keyvault file and get its size
-        std::FILE* file = fopen(KEYVAULT_FILE, "rb");
+        std::string path = getEmulatorPath() + KEYVAULT_FILE;
+        std::FILE* file = fopen(path.c_str(), "rb");
         fseeko64(file, 0, SEEK_END);
         const u64 kvSize = ftello64(file);
 
