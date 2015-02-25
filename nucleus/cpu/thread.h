@@ -37,10 +37,6 @@ public:
     s32 prio;  // Thread priority
     u64 id;    // Thread ID (relevant for LV2)
 
-    // Program Counter and RTOC
-    u32 pc;
-    u32 rtoc;
-
     // Open a new thread that will enter the code emulation loop
     void start();
 

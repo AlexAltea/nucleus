@@ -53,10 +53,12 @@ void Emulator::run()
 
 void Emulator::pause()
 {
+    cell.pause();
 }
 
 void Emulator::stop()
 {
+    cell.stop();
 }
 
 void Emulator::idle()

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/config.h"
 
 class Callback
 {
@@ -17,24 +18,27 @@ public:
     template<typename... T>
     void call(T... args)
     {
-        const u32 pc = nucleus.memory.read32(m_addr);
-        const u32 rtoc = nucleus.memory.read32(m_addr + 4);
+        if (config.ppuTranslator == PPU_TRANSLATOR_INTERPRETER) {
+            const u32 pc = nucleus.memory.read32(m_addr);
+            const u32 rtoc = nucleus.memory.read32(m_addr + 4);
 
-        auto* thread = (PPUThread*)nucleus.cell.getCurrentThread();
-        const u32 old_lr = thread->lr;
-        const u32 old_pc = thread->pc;
-        const u32 old_rtoc = thread->rtoc;
-        thread->lr = 0;
-        thread->pc = pc;
-        thread->rtoc = rtoc;
-        thread->gpr[2] = rtoc;
+            auto* thread = (PPUThread*)nucleus.cell.getCurrentThread();
+            const u32 old_lr = thread->lr;
+            const u32 old_pc = thread->pc;
+            const u32 old_rtoc = thread->gpr[2];
+            thread->lr = 0;
+            thread->pc = pc;
+            thread->gpr[2] = rtoc;
 
-        // Run the function stored in the address
-        thread->task();
+            // Run the function stored in the address
+            thread->task();
 
-        thread->lr = old_lr;
-        thread->pc = old_pc;
-        thread->rtoc = old_rtoc;
-        thread->gpr[2] = old_rtoc;
+            thread->lr = old_lr;
+            thread->pc = old_pc;
+            thread->gpr[2] = old_rtoc;
+        }
+
+        if (config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+        }
     }
 };

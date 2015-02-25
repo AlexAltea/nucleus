@@ -248,6 +248,9 @@ class PPUThread : public CellThread
     u32 m_stackPointer;
 
 public:
+    // Program Counter
+    u32 pc;
+
     // PPU UISA Registers
     PPU_GPR gpr[32] = {};
     PPU_FPR fpr[32] = {};

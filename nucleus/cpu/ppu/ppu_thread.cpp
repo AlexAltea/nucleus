@@ -17,13 +17,16 @@ PPUThread::PPUThread(u32 entry)
     m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
     m_stackPointer = m_stackAddr + 0x10000;
 
-    pc = nucleus.memory.read32(entry);
-    rtoc = nucleus.memory.read32(entry+4);
+    const u32 entry_pc = nucleus.memory.read32(entry);
+    const u32 entry_rtoc = nucleus.memory.read32(entry+4);
 
-    // Initialize registers (TODO: All of this might be wrong)
-    gpr[0] = pc;
+    // Initialize Program Counter
+    pc = entry_pc;
+
+    // Initialize UISA Registers (TODO: All of this might be wrong)
+    gpr[0] = entry_pc;
     gpr[1] = m_stackPointer - 0x200;
-    gpr[2] = rtoc;
+    gpr[2] = entry_rtoc;
     gpr[3] = 0;
     gpr[4] = m_stackPointer - 0x80;
     gpr[5] = gpr[4] + 0x10;
