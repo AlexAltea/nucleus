@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 {
     if (argc <= 1) {
         std::cout
-            << "Nucleus v0.0.3: A PlayStation 3 emulator.\n"
+            << "Nucleus v0.0.4: A PlayStation 3 emulator.\n"
             << "Usage: nucleus [arguments] path/to/executable.ppu.self\n"
             << "Arguments:\n"
             << "  --console     Avoids the Nucleus UI window, disabling GPU backends.\n"
