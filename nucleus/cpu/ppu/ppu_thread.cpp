@@ -49,9 +49,10 @@ void Thread::start()
         if (!nucleus.lv2.initialized) {
             nucleus.lv2.init();
         }
-
         // Otherwise start emulation directly
-        task();
+        else {
+            task();
+        }
     });
 }
 

@@ -9,9 +9,6 @@
 #include "nucleus/cpu/thread.h"
 #include "nucleus/cpu/ppu/interpreter/ppu_interpreter.h"
 
-#include <cmath>
-#include <string>
-
 namespace cpu {
 namespace ppu {
 

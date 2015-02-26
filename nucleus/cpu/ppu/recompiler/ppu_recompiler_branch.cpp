@@ -20,7 +20,7 @@ void Recompiler::bx(Instruction code)
     // Function call
     if (code.lk) {
         Function& targetFunc = segment->functions.at(target);
-        
+
         // Generate array of arguments
         int index = 0;
         std::vector<llvm::Value*> arguments;
@@ -102,7 +102,7 @@ void Recompiler::bclrx(Instruction code)
     if (code.bo == 20 && code.bi == 0) {
         createReturn();
     }
-    
+
     // Conditional return
     else {
         // TODO: This is wrong

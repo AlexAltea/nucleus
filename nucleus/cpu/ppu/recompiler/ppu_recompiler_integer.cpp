@@ -93,7 +93,7 @@ void Recompiler::addi(Instruction code)
     } else {
         rd = simm;
     }
-    
+
     setGPR(code.rd, rd);
 }
 
@@ -133,7 +133,7 @@ void Recompiler::addis(Instruction code)
     } else {
         rd = simm;
     }
-    
+
     setGPR(code.rd, rd);
 }
 

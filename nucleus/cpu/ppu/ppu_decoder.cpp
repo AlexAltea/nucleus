@@ -410,7 +410,7 @@ void Segment::recompile()
     }
     // REMOVEME: Just for debugging purposes
     module->dump();
-    
+
     // NOTE: Avoid generating COFF objects on Windows which are not supported by MCJIT
     llvm::Triple triple(llvm::sys::getProcessTriple());
     if (triple.getOS() == llvm::Triple::OSType::Win32) {
