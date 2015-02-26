@@ -6,7 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/translator.h"
 
 #include <mutex>
 #include <condition_variable>
@@ -21,33 +20,30 @@ enum CellThreadType {
 
 class CellThread
 {
+protected:
+    // Thread status and management
     std::mutex m_mutex;
     std::condition_variable m_cv;
     std::string m_name;
     std::thread* m_thread = nullptr;
 
-    EmulatorEvent m_event;
-    EmulatorStatus m_status;
-
-protected:
-    // Code translation mechanism used by the thread
-    CellTranslator* m_translator;
+    EmulatorEvent m_event = NUCLEUS_EVENT_NONE;
+    EmulatorStatus m_status = NUCLEUS_STATUS_UNKNOWN;
 
 public:
     s32 prio;  // Thread priority
     u64 id;    // Thread ID (relevant for LV2)
 
     // Open a new thread that will enter the code emulation loop
-    void start();
+    virtual void start()=0;
 
     // Enter emulation loop
-    void task();
+    virtual void task()=0;
 
-    // These functions control the thread once it is started
-    void run();
-    void pause();
-    void finishCallback();
-    void stop();
+    // Control the thread once it is started
+    virtual void run()=0;
+    virtual void pause()=0;
+    virtual void stop()=0;
 
     // Block caller thread until this thread finishes
     void join();

@@ -33,9 +33,9 @@ struct Entry
 
     // Instruction data
     const char* name;
-    void (*interpreter)(Instruction, PPUThread&);
-    void (Analyzer::*analyzer)(Instruction);
-    void (Recompiler::*recompiler)(Instruction);
+    void (Analyzer::*analyze)(Instruction);
+    void (Interpreter::*interpret)(Instruction);
+    void (Recompiler::*recompile)(Instruction);
 };
 
 // Instruction callers

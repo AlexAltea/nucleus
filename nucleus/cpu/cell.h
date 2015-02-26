@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/thread.h"
+#include "nucleus/cpu/ppu/ppu_thread.h"
 
 #include "nucleus/cpu/ppu/ppu_decoder.h"
 
@@ -14,9 +14,10 @@
 #include <vector>
 #include <set>
 
+namespace cpu {
+
 class Cell
 {
-    std::vector<CellThread*> m_threads;
     std::mutex m_mutex;
 
     // Thread ID information
@@ -24,15 +25,13 @@ class Cell
     u64 m_current_id = 1;
 
 public:
+    // Cell threads
+    std::vector<cpu::ppu::Thread*> ppu_threads;
+
     // Executable memory segments
     std::vector<cpu::ppu::Segment*> ppu_segments;
 
     Cell();
-
-    // Count and iterate through threads
-    size_t size() { return m_threads.size(); }
-    std::vector<CellThread*>::const_iterator begin() { return m_threads.begin(); }
-    std::vector<CellThread*>::const_iterator end() { return m_threads.end(); }
 
     // Thread management
     CellThread* addThread(CellThreadType type, u32 entry);
@@ -48,3 +47,5 @@ public:
     void pause();
     void stop();
 };
+
+}  // namespace cpu

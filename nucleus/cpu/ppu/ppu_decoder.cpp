@@ -66,7 +66,7 @@ void Function::do_register_analysis(Analyzer* status)
         }
         // Otherwise, get instruction analyzer and call it
         else {
-            auto method = get_entry(code).analyzer;
+            auto method = get_entry(code).analyze;
             (status->*method)(code);
         }
 
@@ -287,7 +287,7 @@ llvm::Function* Function::recompile()
         for (u32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
             const Instruction code = { nucleus.memory.read32(recompiler.currentAddress) };
-            auto method = get_entry(code).recompiler;
+            auto method = get_entry(code).recompile;
             (recompiler.*method)(code);
         }
 

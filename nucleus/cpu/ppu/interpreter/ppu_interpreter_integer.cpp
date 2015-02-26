@@ -19,568 +19,568 @@ inline u8 rotl8(const u8 x, const u8 n) { return (x << n) | (x >> (8 - n)); }
  *  - UISA: Integer instructions (Section: 4.2.1)
  */
 
-void Interpreter::addx(Instruction code, PPUThread& thread)
+void Interpreter::addx(Instruction code)
 {
-    thread.gpr[code.rd] = thread.gpr[code.ra] + thread.gpr[code.rb];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    state.gpr[code.rd] = state.gpr[code.ra] + state.gpr[code.rb];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("addo");
 }
 
-void Interpreter::addcx(Instruction code, PPUThread& thread)
+void Interpreter::addcx(Instruction code)
 {
-    const s64 gpra = thread.gpr[code.ra];
-    const s64 gprb = thread.gpr[code.rb];
-    thread.gpr[code.rd] = gpra + gprb;
-    thread.xer.CA = isCarry(gpra, gprb);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    const s64 gpra = state.gpr[code.ra];
+    const s64 gprb = state.gpr[code.rb];
+    state.gpr[code.rd] = gpra + gprb;
+    state.xer.CA = isCarry(gpra, gprb);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("addco");
 }
 
-void Interpreter::addex(Instruction code, PPUThread& thread)
+void Interpreter::addex(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    const u64 gprb = thread.gpr[code.rb];
-    if (thread.xer.CA) {
+    const u64 gpra = state.gpr[code.ra];
+    const u64 gprb = state.gpr[code.rb];
+    if (state.xer.CA) {
         if (gpra == ~0ULL) {
-            thread.gpr[code.rd] = gprb;
-            thread.xer.CA = 1;
+            state.gpr[code.rd] = gprb;
+            state.xer.CA = 1;
         }
         else {
-            thread.gpr[code.rd] = gpra + 1 + gprb;
-            thread.xer.CA = isCarry(gpra + 1, gprb);
+            state.gpr[code.rd] = gpra + 1 + gprb;
+            state.xer.CA = isCarry(gpra + 1, gprb);
         }
     }
     else {
-        thread.gpr[code.rd] = gpra + gprb;
-        thread.xer.CA = isCarry(gpra, gprb);
+        state.gpr[code.rd] = gpra + gprb;
+        state.xer.CA = isCarry(gpra, gprb);
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("addeo");
 }
 
-void Interpreter::addi(Instruction code, PPUThread& thread)
+void Interpreter::addi(Instruction code)
 {
-    thread.gpr[code.rd] = code.ra ? ((s64)thread.gpr[code.ra] + code.simm) : code.simm;
+    state.gpr[code.rd] = code.ra ? ((s64)state.gpr[code.ra] + code.simm) : code.simm;
 }
 
-void Interpreter::addic(Instruction code, PPUThread& thread)
+void Interpreter::addic(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    thread.gpr[code.rd] = gpra + code.simm;
-    thread.xer.CA = isCarry(gpra, code.simm);
+    const u64 gpra = state.gpr[code.ra];
+    state.gpr[code.rd] = gpra + code.simm;
+    state.xer.CA = isCarry(gpra, code.simm);
 }
 
-void Interpreter::addic_(Instruction code, PPUThread& thread)
+void Interpreter::addic_(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    thread.gpr[code.rd] = gpra + code.simm;
-    thread.xer.CA = isCarry(gpra, code.simm);
-    thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0);
+    const u64 gpra = state.gpr[code.ra];
+    state.gpr[code.rd] = gpra + code.simm;
+    state.xer.CA = isCarry(gpra, code.simm);
+    state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0);
 }
 
-void Interpreter::addis(Instruction code, PPUThread& thread)
+void Interpreter::addis(Instruction code)
 {
-    thread.gpr[code.rd] = code.ra ? ((s64)thread.gpr[code.ra] + (code.simm << 16)) : (code.simm << 16);
+    state.gpr[code.rd] = code.ra ? ((s64)state.gpr[code.ra] + (code.simm << 16)) : (code.simm << 16);
 }
 
-void Interpreter::addmex(Instruction code, PPUThread& thread)
+void Interpreter::addmex(Instruction code)
 {
-    const s64 gpra = thread.gpr[code.ra];
-    thread.gpr[code.rd] = gpra + thread.xer.CA - 1;
-    thread.xer.CA |= gpra != 0;
+    const s64 gpra = state.gpr[code.ra];
+    state.gpr[code.rd] = gpra + state.xer.CA - 1;
+    state.xer.CA |= gpra != 0;
     if (code.oe) unknown("addmeo");
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::addzex(Instruction code, PPUThread& thread)
+void Interpreter::addzex(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    thread.gpr[code.rd] = gpra + thread.xer.CA;
-    thread.xer.CA = isCarry(gpra, thread.xer.CA);
+    const u64 gpra = state.gpr[code.ra];
+    state.gpr[code.rd] = gpra + state.xer.CA;
+    state.xer.CA = isCarry(gpra, state.xer.CA);
     if (code.oe) unknown("addzeo");
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::andx(Instruction code, PPUThread& thread)
+void Interpreter::andx(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] & thread.gpr[code.rb];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = state.gpr[code.rs] & state.gpr[code.rb];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::andcx(Instruction code, PPUThread& thread)
+void Interpreter::andcx(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] & ~thread.gpr[code.rb];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = state.gpr[code.rs] & ~state.gpr[code.rb];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::andi_(Instruction code, PPUThread& thread)
+void Interpreter::andi_(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] & code.uimm;
-    thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0);
+    state.gpr[code.ra] = state.gpr[code.rs] & code.uimm;
+    state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0);
 }
 
-void Interpreter::andis_(Instruction code, PPUThread& thread)
+void Interpreter::andis_(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] & (code.uimm << 16);
-    thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0);
+    state.gpr[code.ra] = state.gpr[code.rs] & (code.uimm << 16);
+    state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0);
 }
 
-void Interpreter::cmp(Instruction code, PPUThread& thread)
+void Interpreter::cmp(Instruction code)
 {
     if (code.l10) {
-        thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)thread.gpr[code.rb]);
+        state.cr.updateField(code.crfd, (s64)state.gpr[code.ra], (s64)state.gpr[code.rb]);
     } else {
-        thread.cr.updateField(code.crfd, (s32)thread.gpr[code.ra], (s32)thread.gpr[code.rb]);
+        state.cr.updateField(code.crfd, (s32)state.gpr[code.ra], (s32)state.gpr[code.rb]);
     }
 }
 
-void Interpreter::cmpi(Instruction code, PPUThread& thread)
+void Interpreter::cmpi(Instruction code)
 {
     if (code.l10) {
-        thread.cr.updateField(code.crfd, (s64)thread.gpr[code.ra], (s64)code.simm);
+        state.cr.updateField(code.crfd, (s64)state.gpr[code.ra], (s64)code.simm);
     } else {
-        thread.cr.updateField(code.crfd, (s32)thread.gpr[code.ra], (s32)code.simm);
+        state.cr.updateField(code.crfd, (s32)state.gpr[code.ra], (s32)code.simm);
     }
 }
 
-void Interpreter::cmpl(Instruction code, PPUThread& thread)
+void Interpreter::cmpl(Instruction code)
 {
     if (code.l10) {
-        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)thread.gpr[code.rb]);
+        state.cr.updateField(code.crfd, (u64)state.gpr[code.ra], (u64)state.gpr[code.rb]);
     } else {
-        thread.cr.updateField(code.crfd, (u32)thread.gpr[code.ra], (u32)thread.gpr[code.rb]);
+        state.cr.updateField(code.crfd, (u32)state.gpr[code.ra], (u32)state.gpr[code.rb]);
     }
 }
 
-void Interpreter::cmpli(Instruction code, PPUThread& thread)
+void Interpreter::cmpli(Instruction code)
 {
     if (code.l10) {
-        thread.cr.updateField(code.crfd, (u64)thread.gpr[code.ra], (u64)code.uimm);
+        state.cr.updateField(code.crfd, (u64)state.gpr[code.ra], (u64)code.uimm);
     } else {
-        thread.cr.updateField(code.crfd, (u32)thread.gpr[code.ra], (u32)code.uimm);
+        state.cr.updateField(code.crfd, (u32)state.gpr[code.ra], (u32)code.uimm);
     }
 }
 
-void Interpreter::cntlzdx(Instruction code, PPUThread& thread)
+void Interpreter::cntlzdx(Instruction code)
 {
     int i;
     for (i = 0; i < 64; i++) {
-        if (thread.gpr[code.rs] & (1ULL << (63 - i))) {
+        if (state.gpr[code.rs] & (1ULL << (63 - i))) {
             break;
         }
     }
-    thread.gpr[code.ra] = i;
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = i;
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::cntlzwx(Instruction code, PPUThread& thread)
+void Interpreter::cntlzwx(Instruction code)
 {
     int i;
     for (i = 0; i < 32; i++) {
-        if (thread.gpr[code.rs] & (1ULL << (31 - i))) {
+        if (state.gpr[code.rs] & (1ULL << (31 - i))) {
             break;
         }
     }
-    thread.gpr[code.ra] = i;
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = i;
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::divdx(Instruction code, PPUThread& thread)
+void Interpreter::divdx(Instruction code)
 {
-    const s64 gpra = thread.gpr[code.ra];
-    const s64 gprb = thread.gpr[code.rb];
+    const s64 gpra = state.gpr[code.ra];
+    const s64 gprb = state.gpr[code.rb];
     if (gprb == 0 || ((u64)gpra == (1ULL << 63) && gprb == -1)) {
         if (code.oe) unknown("divdo");
-        thread.gpr[code.rd] = 0;
+        state.gpr[code.rd] = 0;
     }
     else {
-        thread.gpr[code.rd] = gpra / gprb;
+        state.gpr[code.rd] = gpra / gprb;
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::divdux(Instruction code, PPUThread& thread)
+void Interpreter::divdux(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    const s64 gprb = thread.gpr[code.rb];
+    const u64 gpra = state.gpr[code.ra];
+    const s64 gprb = state.gpr[code.rb];
     if (gprb == 0) {
         if (code.oe) unknown("divduo");
-        thread.gpr[code.rd] = 0;
+        state.gpr[code.rd] = 0;
     }
     else {
-        thread.gpr[code.rd] = gpra / gprb;
+        state.gpr[code.rd] = gpra / gprb;
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::divwx(Instruction code, PPUThread& thread)
+void Interpreter::divwx(Instruction code)
 {
-    const s32 gpra = thread.gpr[code.ra];
-    const s32 gprb = thread.gpr[code.rb];
+    const s32 gpra = state.gpr[code.ra];
+    const s32 gprb = state.gpr[code.rb];
     if (gprb == 0 || ((u32)gpra == (1 << 31) && gprb == -1)) {
         if (code.oe) unknown("divwo");
-        thread.gpr[code.rd] = 0;
+        state.gpr[code.rd] = 0;
     }
     else {
-        thread.gpr[code.rd] = (u32)(gpra / gprb);
+        state.gpr[code.rd] = (u32)(gpra / gprb);
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::divwux(Instruction code, PPUThread& thread)
+void Interpreter::divwux(Instruction code)
 {
-    const u32 gpra = thread.gpr[code.ra];
-    const u32 gprb = thread.gpr[code.rb];
+    const u32 gpra = state.gpr[code.ra];
+    const u32 gprb = state.gpr[code.rb];
     if (gprb == 0) {
         if (code.oe) unknown("divwuo");
-        thread.gpr[code.rd] = 0;
+        state.gpr[code.rd] = 0;
     }
     else {
-        thread.gpr[code.rd] = gpra / gprb;
+        state.gpr[code.rd] = gpra / gprb;
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::eqvx(Instruction code, PPUThread& thread)
+void Interpreter::eqvx(Instruction code)
 {
-    thread.gpr[code.ra] = ~(thread.gpr[code.rs] ^ thread.gpr[code.rb]);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = ~(state.gpr[code.rs] ^ state.gpr[code.rb]);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::extsbx(Instruction code, PPUThread& thread)
+void Interpreter::extsbx(Instruction code)
 {
-    thread.gpr[code.ra] = (s64)(s8)thread.gpr[code.rs];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = (s64)(s8)state.gpr[code.rs];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::extshx(Instruction code, PPUThread& thread)
+void Interpreter::extshx(Instruction code)
 {
-    thread.gpr[code.ra] = (s64)(s16)thread.gpr[code.rs];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = (s64)(s16)state.gpr[code.rs];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::extswx(Instruction code, PPUThread& thread)
+void Interpreter::extswx(Instruction code)
 {
-    thread.gpr[code.ra] = (s64)(s32)thread.gpr[code.rs];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = (s64)(s32)state.gpr[code.rs];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::mulhdx(Instruction code, PPUThread& thread)
+void Interpreter::mulhdx(Instruction code)
 {
-    const s64 a = thread.gpr[code.ra];
-    const s64 b = thread.gpr[code.rb];
+    const s64 a = state.gpr[code.ra];
+    const s64 b = state.gpr[code.rb];
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-    thread.gpr[code.rd] = __mulh(a, b);
+    state.gpr[code.rd] = __mulh(a, b);
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
-    __asm__("mulq %[b]" : "=d" (thread.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
+    __asm__("mulq %[b]" : "=d" (state.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
 #endif
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::mulhdux(Instruction code, PPUThread& thread)
+void Interpreter::mulhdux(Instruction code)
 {
-    const u64 a = thread.gpr[code.ra];
-    const u64 b = thread.gpr[code.rb];
+    const u64 a = state.gpr[code.ra];
+    const u64 b = state.gpr[code.rb];
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-    thread.gpr[code.rd] = __umulh(a, b);
+    state.gpr[code.rd] = __umulh(a, b);
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
-    __asm__("imulq %[b]" : "=d" (thread.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
+    __asm__("imulq %[b]" : "=d" (state.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
 #endif
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::mulhwx(Instruction code, PPUThread& thread)
+void Interpreter::mulhwx(Instruction code)
 {
-    s32 a = thread.gpr[code.ra];
-    s32 b = thread.gpr[code.rb];
-    thread.gpr[code.rd] = ((s64)a * (s64)b) >> 32;
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    s32 a = state.gpr[code.ra];
+    s32 b = state.gpr[code.rb];
+    state.gpr[code.rd] = ((s64)a * (s64)b) >> 32;
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::mulhwux(Instruction code, PPUThread& thread)
+void Interpreter::mulhwux(Instruction code)
 {
-    u32 a = thread.gpr[code.ra];
-    u32 b = thread.gpr[code.rb];
-    thread.gpr[code.rd] = ((u64)a * (u64)b) >> 32;
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    u32 a = state.gpr[code.ra];
+    u32 b = state.gpr[code.rb];
+    state.gpr[code.rd] = ((u64)a * (u64)b) >> 32;
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::mulldx(Instruction code, PPUThread& thread)
+void Interpreter::mulldx(Instruction code)
 {
-    thread.gpr[code.rd] = (s64)((s64)thread.gpr[code.ra] * (s64)thread.gpr[code.rb]);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    state.gpr[code.rd] = (s64)((s64)state.gpr[code.ra] * (s64)state.gpr[code.rb]);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("mulldo");
 }
 
-void Interpreter::mulli(Instruction code, PPUThread& thread)
+void Interpreter::mulli(Instruction code)
 {
-    thread.gpr[code.rd] = (s64)thread.gpr[code.ra] * code.simm;
+    state.gpr[code.rd] = (s64)state.gpr[code.ra] * code.simm;
 }
 
-void Interpreter::mullwx(Instruction code, PPUThread& thread)
+void Interpreter::mullwx(Instruction code)
 {
-    thread.gpr[code.rd] = (s64)((s64)(s32)thread.gpr[code.ra] * (s64)(s32)thread.gpr[code.rb]);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    state.gpr[code.rd] = (s64)((s64)(s32)state.gpr[code.ra] * (s64)(s32)state.gpr[code.rb]);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("mullwo");
 }
 
-void Interpreter::nandx(Instruction code, PPUThread& thread)
+void Interpreter::nandx(Instruction code)
 {
-    thread.gpr[code.ra] = ~(thread.gpr[code.rs] & thread.gpr[code.rb]);
+    state.gpr[code.ra] = ~(state.gpr[code.rs] & state.gpr[code.rb]);
 
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::negx(Instruction code, PPUThread& thread)
+void Interpreter::negx(Instruction code)
 {
-    thread.gpr[code.rd] = 0 - thread.gpr[code.ra];
+    state.gpr[code.rd] = 0 - state.gpr[code.ra];
     if (code.oe) unknown("nego");
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::norx(Instruction code, PPUThread& thread)
+void Interpreter::norx(Instruction code)
 {
-    thread.gpr[code.ra] = ~(thread.gpr[code.rs] | thread.gpr[code.rb]);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = ~(state.gpr[code.rs] | state.gpr[code.rb]);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::orx(Instruction code, PPUThread& thread)
+void Interpreter::orx(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] | thread.gpr[code.rb];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = state.gpr[code.rs] | state.gpr[code.rb];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::orcx(Instruction code, PPUThread& thread)
+void Interpreter::orcx(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] | ~thread.gpr[code.rb];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = state.gpr[code.rs] | ~state.gpr[code.rb];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::ori(Instruction code, PPUThread& thread)
+void Interpreter::ori(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] | code.uimm;
+    state.gpr[code.ra] = state.gpr[code.rs] | code.uimm;
 }
 
-void Interpreter::oris(Instruction code, PPUThread& thread)
+void Interpreter::oris(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] | (code.uimm << 16);
+    state.gpr[code.ra] = state.gpr[code.rs] | (code.uimm << 16);
 }
 
-void Interpreter::rldc_lr(Instruction code, PPUThread& thread)
+void Interpreter::rldc_lr(Instruction code)
 {
-    const u32 rotate = thread.gpr[code.rb] & 0x3F;
+    const u32 rotate = state.gpr[code.rb] & 0x3F;
     const u32 mb = code.mb | (code.mb_ << 5);
     if (code.aa) {
         // rldcrx
-        thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], rotate) & rotateMask[0][mb];
+        state.gpr[code.ra] = rotl64(state.gpr[code.rs], rotate) & rotateMask[0][mb];
     }
     else {
         // rldclx
-        thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], rotate) & rotateMask[mb][63];
+        state.gpr[code.ra] = rotl64(state.gpr[code.rs], rotate) & rotateMask[mb][63];
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::rldicx(Instruction code, PPUThread& thread)
+void Interpreter::rldicx(Instruction code)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 mb = code.mb | (code.mb_ << 5);
-    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[mb][63-sh];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = rotl64(state.gpr[code.rs], sh) & rotateMask[mb][63-sh];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::rldiclx(Instruction code, PPUThread& thread)
+void Interpreter::rldiclx(Instruction code)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 mb = code.mb | (code.mb_ << 5);
-    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[mb][63];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = rotl64(state.gpr[code.rs], sh) & rotateMask[mb][63];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::rldicrx(Instruction code, PPUThread& thread)
+void Interpreter::rldicrx(Instruction code)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 me = code.me_ | (code.me__ << 5);
-    thread.gpr[code.ra] = rotl64(thread.gpr[code.rs], sh) & rotateMask[0][me];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = rotl64(state.gpr[code.rs], sh) & rotateMask[0][me];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::rldimix(Instruction code, PPUThread& thread)
+void Interpreter::rldimix(Instruction code)
 {
     const u32 sh = code.sh | (code.sh_ << 5);
     const u32 mb = code.mb | (code.mb_ << 5);
     const u64 mask = rotateMask[mb][63-sh];
-    thread.gpr[code.ra] = (thread.gpr[code.ra] & ~mask) | (rotl64(thread.gpr[code.rs], sh) & mask);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = (state.gpr[code.ra] & ~mask) | (rotl64(state.gpr[code.rs], sh) & mask);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::rlwimix(Instruction code, PPUThread& thread)
+void Interpreter::rlwimix(Instruction code)
 {
-    const u64 r = rotl32(thread.gpr[code.rs], code.sh);
+    const u64 r = rotl32(state.gpr[code.rs], code.sh);
     const u64 m = rotateMask[32 + code.mb][32 + code.me];
-    thread.gpr[code.ra] = (r & m) | (thread.gpr[code.ra] & ~m);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = (r & m) | (state.gpr[code.ra] & ~m);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::rlwinmx(Instruction code, PPUThread& thread)
+void Interpreter::rlwinmx(Instruction code)
 {
-    thread.gpr[code.ra] = rotl32(thread.gpr[code.rs], code.sh) & rotateMask[32 + code.mb][32 + code.me];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = rotl32(state.gpr[code.rs], code.sh) & rotateMask[32 + code.mb][32 + code.me];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::rlwnmx(Instruction code, PPUThread& thread)
+void Interpreter::rlwnmx(Instruction code)
 {
-    thread.gpr[code.ra] = rotl32(thread.gpr[code.rs], thread.gpr[code.rb] & 0x1f) & rotateMask[32 + code.mb][32 + code.me];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = rotl32(state.gpr[code.rs], state.gpr[code.rb] & 0x1f) & rotateMask[32 + code.mb][32 + code.me];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::sldx(Instruction code, PPUThread& thread)
+void Interpreter::sldx(Instruction code)
 {
-    const u64 shift = thread.gpr[code.rb] & 0x7F;
-    thread.gpr[code.ra] = (shift & 0x40) ? 0 : (thread.gpr[code.rs] << shift);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    const u64 shift = state.gpr[code.rb] & 0x7F;
+    state.gpr[code.ra] = (shift & 0x40) ? 0 : (state.gpr[code.rs] << shift);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::slwx(Instruction code, PPUThread& thread)
+void Interpreter::slwx(Instruction code)
 {
-    u32 n = thread.gpr[code.rb] & 0x1f;
-    u32 r = rotl32((u32)thread.gpr[code.rs], n);
-    u32 m = (thread.gpr[code.rb] & 0x20) ? 0 : rotateMask[32][63 - n];
-    thread.gpr[code.ra] = r & m;
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    u32 n = state.gpr[code.rb] & 0x1f;
+    u32 r = rotl32((u32)state.gpr[code.rs], n);
+    u32 m = (state.gpr[code.rb] & 0x20) ? 0 : rotateMask[32][63 - n];
+    state.gpr[code.ra] = r & m;
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::sradx(Instruction code, PPUThread& thread)
+void Interpreter::sradx(Instruction code)
 {
-    s64 RS = thread.gpr[code.rs];
-    u8 shift = thread.gpr[code.rb] & 127;
+    s64 RS = state.gpr[code.rs];
+    u8 shift = state.gpr[code.rb] & 127;
     if (shift > 63) {
-        thread.gpr[code.ra] = 0 - (RS < 0);
-        thread.xer.CA = (RS < 0);
+        state.gpr[code.ra] = 0 - (RS < 0);
+        state.xer.CA = (RS < 0);
     }
     else {
-        thread.gpr[code.ra] = RS >> shift;
-        thread.xer.CA = (RS < 0) & ((thread.gpr[code.ra] << shift) != RS);
+        state.gpr[code.ra] = RS >> shift;
+        state.xer.CA = (RS < 0) & ((state.gpr[code.ra] << shift) != RS);
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::sradix(Instruction code, PPUThread& thread)
+void Interpreter::sradix(Instruction code)
 {
-    const s64 rs = thread.gpr[code.rs];
+    const s64 rs = state.gpr[code.rs];
     const u32 sh = code.sh | (code.sh_ << 5);
-    thread.gpr[code.ra] = rs >> sh;
-    thread.xer.CA = (rs < 0) & ((thread.gpr[code.ra] << sh) != rs);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = rs >> sh;
+    state.xer.CA = (rs < 0) & ((state.gpr[code.ra] << sh) != rs);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::srawx(Instruction code, PPUThread& thread)
+void Interpreter::srawx(Instruction code)
 {
-    s32 gprs = thread.gpr[code.rs];
-    u8 shift = thread.gpr[code.rb] & 63;
+    s32 gprs = state.gpr[code.rs];
+    u8 shift = state.gpr[code.rb] & 63;
     if (shift > 31) {
-        thread.gpr[code.ra] = 0 - (gprs < 0);
-        thread.xer.CA = (gprs < 0);
+        state.gpr[code.ra] = 0 - (gprs < 0);
+        state.xer.CA = (gprs < 0);
     }
     else {
-        thread.gpr[code.ra] = gprs >> shift;
-        thread.xer.CA = (gprs < 0) & ((thread.gpr[code.ra] << shift) != gprs);
+        state.gpr[code.ra] = gprs >> shift;
+        state.xer.CA = (gprs < 0) & ((state.gpr[code.ra] << shift) != gprs);
     }
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::srawix(Instruction code, PPUThread& thread)
+void Interpreter::srawix(Instruction code)
 {
-    s32 gprs = (u32)thread.gpr[code.rs];
-    thread.gpr[code.ra] = gprs >> code.sh;
-    thread.xer.CA = (gprs < 0) & ((u32)(thread.gpr[code.ra] << code.sh) != gprs);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    s32 gprs = (u32)state.gpr[code.rs];
+    state.gpr[code.ra] = gprs >> code.sh;
+    state.xer.CA = (gprs < 0) & ((u32)(state.gpr[code.ra] << code.sh) != gprs);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::srdx(Instruction code, PPUThread& thread)
+void Interpreter::srdx(Instruction code)
 {
-    const u64 shift = thread.gpr[code.rb] & 0x7F;
-    thread.gpr[code.ra] = (shift & 0x40) ? 0 : (thread.gpr[code.rs] >> shift);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    const u64 shift = state.gpr[code.rb] & 0x7F;
+    state.gpr[code.ra] = (shift & 0x40) ? 0 : (state.gpr[code.rs] >> shift);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::srwx(Instruction code, PPUThread& thread)
+void Interpreter::srwx(Instruction code)
 {
-    u32 n = thread.gpr[code.rb] & 0x1f;
-    u32 m = (thread.gpr[code.rb] & 0x20) ? 0 : rotateMask[32 + n][63];
-    u32 r = rotl32((u32)thread.gpr[code.rs], 64 - n);
-    thread.gpr[code.ra] = r & m;
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    u32 n = state.gpr[code.rb] & 0x1f;
+    u32 m = (state.gpr[code.rb] & 0x20) ? 0 : rotateMask[32 + n][63];
+    u32 r = rotl32((u32)state.gpr[code.rs], 64 - n);
+    state.gpr[code.ra] = r & m;
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::subfx(Instruction code, PPUThread& thread)
+void Interpreter::subfx(Instruction code)
 {
-    thread.gpr[code.rd] = thread.gpr[code.rb] - thread.gpr[code.ra];
+    state.gpr[code.rd] = state.gpr[code.rb] - state.gpr[code.ra];
     if (code.oe) unknown("subfo");
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::subfcx(Instruction code, PPUThread& thread)
+void Interpreter::subfcx(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    const s64 gprb = thread.gpr[code.rb];
-    thread.gpr[code.rd] = ~gpra + gprb + 1;
-    thread.xer.CA = isCarry(~gpra, gprb, 1);
+    const u64 gpra = state.gpr[code.ra];
+    const s64 gprb = state.gpr[code.rb];
+    state.gpr[code.rd] = ~gpra + gprb + 1;
+    state.xer.CA = isCarry(~gpra, gprb, 1);
     if (code.oe) unknown("subfco");
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::subfex(Instruction code, PPUThread& thread)
+void Interpreter::subfex(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    const s64 gprb = thread.gpr[code.rb];
-    thread.gpr[code.rd] = ~gpra + gprb + thread.xer.CA;
-    thread.xer.CA = isCarry(~gpra, gprb, thread.xer.CA);
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    const u64 gpra = state.gpr[code.ra];
+    const s64 gprb = state.gpr[code.rb];
+    state.gpr[code.rd] = ~gpra + gprb + state.xer.CA;
+    state.xer.CA = isCarry(~gpra, gprb, state.xer.CA);
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
     if (code.oe) unknown("subfeo");
 }
 
-void Interpreter::subfic(Instruction code, PPUThread& thread)
+void Interpreter::subfic(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
+    const u64 gpra = state.gpr[code.ra];
     const u64 IMM = (s64)code.simm;
-    thread.gpr[code.rd] = ~gpra + IMM + 1;
+    state.gpr[code.rd] = ~gpra + IMM + 1;
 
-    thread.xer.CA = isCarry(~gpra, IMM, 1);
+    state.xer.CA = isCarry(~gpra, IMM, 1);
 }
 
-void Interpreter::subfmex(Instruction code, PPUThread& thread)
+void Interpreter::subfmex(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    thread.gpr[code.rd] = ~gpra + thread.xer.CA + ~0ULL;
-    thread.xer.CA = isCarry(~gpra, thread.xer.CA, ~0ULL);
+    const u64 gpra = state.gpr[code.ra];
+    state.gpr[code.rd] = ~gpra + state.xer.CA + ~0ULL;
+    state.xer.CA = isCarry(~gpra, state.xer.CA, ~0ULL);
     if (code.oe) unknown("subfmeo");
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::subfzex(Instruction code, PPUThread& thread)
+void Interpreter::subfzex(Instruction code)
 {
-    const u64 gpra = thread.gpr[code.ra];
-    thread.gpr[code.rd] = ~gpra + thread.xer.CA;
-    thread.xer.CA = isCarry(~gpra, thread.xer.CA);
+    const u64 gpra = state.gpr[code.ra];
+    state.gpr[code.rd] = ~gpra + state.xer.CA;
+    state.xer.CA = isCarry(~gpra, state.xer.CA);
     if (code.oe) unknown("subfzeo");
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.rd], (s64)0); }
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
 }
 
-void Interpreter::xorx(Instruction code, PPUThread& thread)
+void Interpreter::xorx(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] ^ thread.gpr[code.rb];
-    if (code.rc) { thread.cr.updateField(0, (s64)thread.gpr[code.ra], (s64)0); }
+    state.gpr[code.ra] = state.gpr[code.rs] ^ state.gpr[code.rb];
+    if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.ra], (s64)0); }
 }
 
-void Interpreter::xori(Instruction code, PPUThread& thread)
+void Interpreter::xori(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] ^ code.uimm;
+    state.gpr[code.ra] = state.gpr[code.rs] ^ code.uimm;
 }
 
-void Interpreter::xoris(Instruction code, PPUThread& thread)
+void Interpreter::xoris(Instruction code)
 {
-    thread.gpr[code.ra] = thread.gpr[code.rs] ^ (code.uimm << 16);
+    state.gpr[code.ra] = state.gpr[code.rs] ^ (code.uimm << 16);
 }
 
 }  // namespace ppu

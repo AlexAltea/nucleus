@@ -22,23 +22,26 @@ public:
             const u32 pc = nucleus.memory.read32(m_addr);
             const u32 rtoc = nucleus.memory.read32(m_addr + 4);
 
-            auto* thread = (PPUThread*)nucleus.cell.getCurrentThread();
-            const u32 old_lr = thread->lr;
-            const u32 old_pc = thread->pc;
-            const u32 old_rtoc = thread->gpr[2];
-            thread->lr = 0;
-            thread->pc = pc;
-            thread->gpr[2] = rtoc;
+            auto* thread = (cpu::ppu::Thread*)nucleus.cell.getCurrentThread();
+            auto* state = thread->state;
+
+            const u32 old_lr = state->lr;
+            const u32 old_pc = state->pc;
+            const u32 old_rtoc = state->gpr[2];
+            state->lr = 0;
+            state->pc = pc;
+            state->gpr[2] = rtoc;
 
             // Run the function stored in the address
             thread->task();
 
-            thread->lr = old_lr;
-            thread->pc = old_pc;
-            thread->gpr[2] = old_rtoc;
+            state->lr = old_lr;
+            state->pc = old_pc;
+            state->gpr[2] = old_rtoc;
         }
 
         if (config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+            // TODO
         }
     }
 };

@@ -40,7 +40,7 @@ bool Emulator::load(const std::string& filepath)
     }
 
     // Prepare Thread (this will initialize LV2)
-    auto* thread = (PPUThread*)cell.addThread(CELL_THREAD_PPU, self.getEntry());
+    auto* thread = (cpu::ppu::Thread*)cell.addThread(CELL_THREAD_PPU, self.getEntry());
     thread->start();
 
     return true;

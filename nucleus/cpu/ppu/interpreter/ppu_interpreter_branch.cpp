@@ -9,17 +9,17 @@
 namespace cpu {
 namespace ppu {
 
-bool CheckCondition(PPUThread& thread, u32 bo, u32 bi)
+bool CheckCondition(State& state, u32 bo, u32 bi)
 {
     const u8 bo0 = (bo & 0x10) ? 1 : 0;
     const u8 bo1 = (bo & 0x08) ? 1 : 0;
     const u8 bo2 = (bo & 0x04) ? 1 : 0;
     const u8 bo3 = (bo & 0x02) ? 1 : 0;
 
-    if (!bo2) --thread.ctr;
+    if (!bo2) --state.ctr;
 
-    const u8 ctr_ok = bo2 | ((thread.ctr != 0) ^ bo3);
-    const u8 cond_ok = bo0 | (thread.cr.getBit(bi) ^ (~bo1 & 0x1));
+    const u8 ctr_ok = bo2 | ((state.ctr != 0) ^ bo3);
+    const u8 cond_ok = bo0 | (state.cr.getBit(bi) ^ (~bo1 & 0x1));
 
     return ctr_ok && cond_ok;
 }
@@ -29,127 +29,127 @@ bool CheckCondition(PPUThread& thread, u32 bo, u32 bi)
  *  - UISA: Branch and Flow Control Instructions (Section: 4.2.4)
  */
 
-void Interpreter::bx(Instruction code, PPUThread& thread)
+void Interpreter::bx(Instruction code)
 {
-    if (code.lk) thread.lr = thread.pc + 4;
-    thread.pc = (code.aa ? (code.li << 2) : thread.pc + (code.li << 2)) & ~0x3ULL;
-    thread.pc -= 4;
+    if (code.lk) state.lr = state.pc + 4;
+    state.pc = (code.aa ? (code.li << 2) : state.pc + (code.li << 2)) & ~0x3ULL;
+    state.pc -= 4;
 }
 
-void Interpreter::bcx(Instruction code, PPUThread& thread)
+void Interpreter::bcx(Instruction code)
 {
-    if (CheckCondition(thread, code.bo, code.bi)) {
-        if (code.lk) thread.lr = thread.pc + 4;
-        thread.pc = (code.aa ? (code.bd << 2) : thread.pc + (code.bd << 2)) & ~0x3ULL;
-        thread.pc -= 4;
+    if (CheckCondition(state, code.bo, code.bi)) {
+        if (code.lk) state.lr = state.pc + 4;
+        state.pc = (code.aa ? (code.bd << 2) : state.pc + (code.bd << 2)) & ~0x3ULL;
+        state.pc -= 4;
     }
 }
 
-void Interpreter::bcctrx(Instruction code, PPUThread& thread)
+void Interpreter::bcctrx(Instruction code)
 {
-    if (code.bo & 0x10 || thread.cr.getBit(code.bi) == ((code.bo >> 3) & 1)) {
-        if (code.lk) thread.lr = thread.pc + 4;
-        thread.pc = thread.ctr & ~0x3ULL;
-        thread.pc -= 4;
+    if (code.bo & 0x10 || state.cr.getBit(code.bi) == ((code.bo >> 3) & 1)) {
+        if (code.lk) state.lr = state.pc + 4;
+        state.pc = state.ctr & ~0x3ULL;
+        state.pc -= 4;
     }
 }
 
-void Interpreter::bclrx(Instruction code, PPUThread& thread)
+void Interpreter::bclrx(Instruction code)
 {
-    if (CheckCondition(thread, code.bo, code.bi)) {
-        const u32 newLR = thread.pc + 4;
-        thread.pc = thread.lr & ~0x3ULL;
-        thread.pc -= 4;
-        if (code.lk) thread.lr = newLR;
+    if (CheckCondition(state, code.bo, code.bi)) {
+        const u32 newLR = state.pc + 4;
+        state.pc = state.lr & ~0x3ULL;
+        state.pc -= 4;
+        if (code.lk) state.lr = newLR;
     }
 }
 
-void Interpreter::crand(Instruction code, PPUThread& thread)
+void Interpreter::crand(Instruction code)
 {
-    const u8 value = thread.cr.getBit(code.crba) & thread.cr.getBit(code.crbb);
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = state.cr.getBit(code.crba) & state.cr.getBit(code.crbb);
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::crandc(Instruction code, PPUThread& thread)
+void Interpreter::crandc(Instruction code)
 {
-    const u8 value = thread.cr.getBit(code.crba) & (1 ^ thread.cr.getBit(code.crbb));
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = state.cr.getBit(code.crba) & (1 ^ state.cr.getBit(code.crbb));
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::creqv(Instruction code, PPUThread& thread)
+void Interpreter::creqv(Instruction code)
 {
-    const u8 value = 1 ^ (thread.cr.getBit(code.crba) ^ thread.cr.getBit(code.crbb));
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = 1 ^ (state.cr.getBit(code.crba) ^ state.cr.getBit(code.crbb));
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::crnand(Instruction code, PPUThread& thread)
+void Interpreter::crnand(Instruction code)
 {
-    const u8 value = 1 ^ (thread.cr.getBit(code.crba) & thread.cr.getBit(code.crbb));
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = 1 ^ (state.cr.getBit(code.crba) & state.cr.getBit(code.crbb));
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::crnor(Instruction code, PPUThread& thread)
+void Interpreter::crnor(Instruction code)
 {
-    const u8 value = 1 ^ (thread.cr.getBit(code.crba) | thread.cr.getBit(code.crbb));
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = 1 ^ (state.cr.getBit(code.crba) | state.cr.getBit(code.crbb));
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::cror(Instruction code, PPUThread& thread)
+void Interpreter::cror(Instruction code)
 {
-    const u8 value = thread.cr.getBit(code.crba) | thread.cr.getBit(code.crbb);
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = state.cr.getBit(code.crba) | state.cr.getBit(code.crbb);
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::crorc(Instruction code, PPUThread& thread)
+void Interpreter::crorc(Instruction code)
 {
-    const u8 value = thread.cr.getBit(code.crba) | (1 ^ thread.cr.getBit(code.crbb));
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = state.cr.getBit(code.crba) | (1 ^ state.cr.getBit(code.crbb));
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::crxor(Instruction code, PPUThread& thread)
+void Interpreter::crxor(Instruction code)
 {
-    const u8 value = thread.cr.getBit(code.crba) ^ thread.cr.getBit(code.crbb);
-    thread.cr.setBit(code.crbd, value);
+    const u8 value = state.cr.getBit(code.crba) ^ state.cr.getBit(code.crbb);
+    state.cr.setBit(code.crbd, value);
 }
 
-void Interpreter::mcrf(Instruction code, PPUThread& thread)
+void Interpreter::mcrf(Instruction code)
 {
-    thread.cr.setField(code.crfd, thread.cr.getField(code.crfs));
+    state.cr.setField(code.crfd, state.cr.getField(code.crfs));
 }
 
-void Interpreter::sc(Instruction code, PPUThread& thread)
+void Interpreter::sc(Instruction code)
 {
     switch (code.lev) {
     case 0:
-        nucleus.lv2.call(thread);
+        nucleus.lv2.call(state);
         break;
     case 1:
         unknown("hvsc");
         break;
     case 2:
-        nucleus.lv2.modules.call(thread);
+        nucleus.lv2.modules.call(state);
         break;
     default:
         unknown("sc");
     }
 }
 
-void Interpreter::td(Instruction code, PPUThread& thread)
+void Interpreter::td(Instruction code)
 {
     unknown("td");
 }
 
-void Interpreter::tdi(Instruction code, PPUThread& thread)
+void Interpreter::tdi(Instruction code)
 {
     unknown("tdi");
 }
 
-void Interpreter::tw(Instruction code, PPUThread& thread)
+void Interpreter::tw(Instruction code)
 {
     unknown("tw");
 }
 
-void Interpreter::twi(Instruction code, PPUThread& thread)
+void Interpreter::twi(Instruction code)
 {
     unknown("twi");
 }

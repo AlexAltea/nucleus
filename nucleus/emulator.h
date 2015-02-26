@@ -27,7 +27,7 @@ class Emulator
 public:
     // Hardware & OS
     Memory memory;
-    Cell cell;
+    cpu::Cell cell;
     RSX rsx;
     LV2 lv2;
 

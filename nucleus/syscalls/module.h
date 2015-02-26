@@ -30,5 +30,5 @@ public:
     bool find(const std::string& libraryName, u32 functionId);
 
     // Get function ID from the current thread and call it
-    void call(PPUThread& thread);
+    void call(cpu::ppu::State& state);
 };

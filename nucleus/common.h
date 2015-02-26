@@ -58,7 +58,6 @@ enum EmulatorEvent
     // Emulator events
     NUCLEUS_EVENT_RUN,    // Start Nucleus, Cell, CellThreads, RSX, etc.
     NUCLEUS_EVENT_PAUSE,  // Pause Nucleus, Cell, CellThreads, RSX, etc.
-    NUCLEUS_EVENT_FINISH, // Exit the current CellThread emulation loop (e.g. exiting a Callback)
     NUCLEUS_EVENT_STOP,   // Stop Nucleus, Cell, CellThreads, RSX, etc.
     NUCLEUS_EVENT_CLOSE,  // Exit Nucleus
 };

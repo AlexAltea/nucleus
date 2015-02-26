@@ -18,6 +18,8 @@
 #define thread_local __thread
 #endif
 
+namespace cpu {
+
 thread_local CellThread* g_this_thread = nullptr;
 
 Cell::Cell()
@@ -33,11 +35,14 @@ CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
 
     switch (type) {
     case CELL_THREAD_PPU:
-        thread = new PPUThread(entry);
+        thread = new ppu::Thread(entry);
+        ppu_threads.push_back(dynamic_cast<ppu::Thread*>(thread));
         break;
+
     case CELL_THREAD_SPU:
         nucleus.log.error(LOG_CPU, "Unimplemented Cell thread type");
         return nullptr;
+
     case CELL_THREAD_RAWSPU:
         nucleus.log.error(LOG_CPU, "Unimplemented Cell thread type");
         return nullptr;
@@ -55,14 +60,12 @@ CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
     m_thread_ids.insert(m_current_id);
     m_current_id += 1;
 
-    // Store and return the thread
-    m_threads.push_back(thread);
     return thread;
 }
 
 CellThread* Cell::getThread(u64 id)
 {
-    for (CellThread* thread : m_threads) {
+    for (CellThread* thread : ppu_threads) {
         if (thread->id == id) {
             return thread;
         }
@@ -72,9 +75,9 @@ CellThread* Cell::getThread(u64 id)
 void Cell::removeThread(u64 id)
 {
     // Remove thread
-    m_threads.erase(
-        std::remove_if(m_threads.begin(), m_threads.end(), [&](CellThread* thread){ return thread->id == id; }),
-        m_threads.end());
+    ppu_threads.erase(
+        std::remove_if(ppu_threads.begin(), ppu_threads.end(), [&](CellThread* thread){ return thread->id == id; }),
+        ppu_threads.end());
 
     // Remove thread ID
     m_thread_ids.erase(id);
@@ -92,21 +95,23 @@ void Cell::setCurrentThread(CellThread* thread)
 
 void Cell::run()
 {
-    for (CellThread* thread : m_threads) {
+    for (CellThread* thread : ppu_threads) {
         thread->run();
     }
 }
 
 void Cell::pause()
 {
-    for (CellThread* thread : m_threads) {
+    for (CellThread* thread : ppu_threads) {
         thread->pause();
     }
 }
 
 void Cell::stop()
 {
-    for (CellThread* thread : m_threads) {
+    for (CellThread* thread : ppu_threads) {
         thread->stop();
     }
 }
+
+}  // namespace cpu

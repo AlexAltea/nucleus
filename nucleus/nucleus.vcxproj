@@ -167,11 +167,11 @@
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h" />
     <ClInclude Include="cpu\ppu\ppu_decoder.h" />
     <ClInclude Include="cpu\ppu\ppu_instruction.h" />
+    <ClInclude Include="cpu\ppu\ppu_state.h" />
     <ClInclude Include="cpu\ppu\ppu_tables.h" />
     <ClInclude Include="cpu\ppu\ppu_thread.h" />
     <ClInclude Include="cpu\ppu\recompiler\ppu_recompiler.h" />
     <ClInclude Include="cpu\thread.h" />
-    <ClInclude Include="cpu\translator.h" />
     <ClInclude Include="debugger.h" />
     <ClInclude Include="emulator.h" />
     <ClInclude Include="filesystem\filesystem.h" />

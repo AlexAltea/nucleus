@@ -150,14 +150,14 @@ bool LV2::init()
     return true;
 }
 
-void LV2::call(PPUThread& thread)
+void LV2::call(cpu::ppu::State& state)
 {
-    const u32 id = thread.gpr[11];
+    const u32 id = state.gpr[11];
 
     if (!m_syscalls[id].func) {
         nucleus.log.warning(LOG_HLE, "LV2 Syscall %d (0x%x) called", id, id);
         return;
     }
     //nucleus.log.notice(LOG_HLE, "LV2 Syscall %d (0x%x: %s) called", id, id, m_syscalls[id].name);
-    m_syscalls[id].func->call(thread, nucleus.memory.getBaseAddr());
+    m_syscalls[id].func->call(state, nucleus.memory.getBaseAddr());
 }

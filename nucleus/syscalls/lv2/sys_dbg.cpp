@@ -21,14 +21,14 @@ s32 sys_dbg_get_thread_list(u32 pid, u64* ids, u64* ids_num, u64* all_ids_num)
     }
 
     size_t i = 0;
-    for (auto* thread : nucleus.cell) {
-        ids[i] = thread->id;
+    for (auto* ppu_thread : nucleus.cell.ppu_threads) {
+        ids[i] = ppu_thread->id;
         if (i >= *ids_num) {
             break;
         }
     }
 
-    *all_ids_num = nucleus.cell.size();
+    *all_ids_num = nucleus.cell.ppu_threads.size();
     *ids_num = i;
     return CELL_OK;
 }

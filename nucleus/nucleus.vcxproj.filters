@@ -253,9 +253,6 @@
     <ClInclude Include="cpu\thread.h">
       <Filter>cpu</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\translator.h">
-      <Filter>cpu</Filter>
-    </ClInclude>
     <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h">
       <Filter>cpu\ppu\interpreter</Filter>
     </ClInclude>
@@ -425,6 +422,9 @@
     </ClInclude>
     <ClInclude Include="cpu\ppu\recompiler\ppu_recompiler.h">
       <Filter>cpu\ppu\recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu\ppu\ppu_state.h">
+      <Filter>cpu\ppu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

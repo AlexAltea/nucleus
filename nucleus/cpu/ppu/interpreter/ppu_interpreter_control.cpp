@@ -49,18 +49,18 @@ u64 getTimebase()
 #endif
 }
 
-u64& getRegBySPR(PPUThread& thread, u32 spr)
+u64& getRegBySPR(State& state, u32 spr)
 {
     const u32 n = (spr >> 5) | ((spr & 0x1f) << 5);
 
     switch (n) {
-    case 0x001: return thread.xer.XER;
-    case 0x008: return thread.lr;
-    case 0x009: return thread.ctr;
+    case 0x001: return state.xer.XER;
+    case 0x008: return state.lr;
+    case 0x009: return state.ctr;
     }
 
     //unknown("GetRegBySPR error: Unknown SPR!");
-    return thread.xer.XER;
+    return state.xer.XER;
 }
 
 /**
@@ -71,17 +71,17 @@ u64& getRegBySPR(PPUThread& thread, u32 spr)
  *  - VEA: External Control Instructions (Section: 4.3.4)
  */
 
-void Interpreter::mfocrf(Instruction code, PPUThread& thread)
+void Interpreter::mfocrf(Instruction code)
 {
-    thread.gpr[code.rd] = bitReverse32(thread.cr.CR);
+    state.gpr[code.rd] = bitReverse32(state.cr.CR);
 }
 
-void Interpreter::mfspr(Instruction code, PPUThread& thread)
+void Interpreter::mfspr(Instruction code)
 {
-    thread.gpr[code.rd] = getRegBySPR(thread, code.spr);
+    state.gpr[code.rd] = getRegBySPR(state, code.spr);
 }
 
-void Interpreter::mtocrf(Instruction code, PPUThread& thread)
+void Interpreter::mtocrf(Instruction code)
 {
     if (code.l11) {
         u32 n = 0, count = 0;
@@ -92,10 +92,10 @@ void Interpreter::mtocrf(Instruction code, PPUThread& thread)
             }
         }
         if (count == 1) {
-            thread.cr.setField(7 - n, (thread.gpr[code.rs] >> (4*n)) & 0xf);
+            state.cr.setField(7 - n, (state.gpr[code.rs] >> (4*n)) & 0xf);
         }
         else {
-            thread.cr.CR = 0;
+            state.cr.CR = 0;
         }
     }
     else {
@@ -105,54 +105,54 @@ void Interpreter::mtocrf(Instruction code, PPUThread& thread)
                 mask |= (0xF << (i * 4));
             }
         }
-        thread.cr.CR = bitReverse32(thread.gpr[code.rs] & mask) | (bitReverse32(thread.cr.CR) & ~mask);
+        state.cr.CR = bitReverse32(state.gpr[code.rs] & mask) | (bitReverse32(state.cr.CR) & ~mask);
     }
 }
 
-void Interpreter::mtspr(Instruction code, PPUThread& thread)
+void Interpreter::mtspr(Instruction code)
 {
-    getRegBySPR(thread, code.spr) = thread.gpr[code.rs];
+    getRegBySPR(state, code.spr) = state.gpr[code.rs];
 }
 
-void Interpreter::mftb(Instruction code, PPUThread& thread)
+void Interpreter::mftb(Instruction code)
 {
     const u32 n = (code.spr >> 5) | ((code.spr & 0x1f) << 5);
-    thread.tb = getTimebase();
+    state.tb.TB = getTimebase();
 
     switch (n) {
-    case 0x10C: thread.gpr[code.rd] = thread.tb; break;
-    case 0x10D: thread.gpr[code.rd] = thread.tbu; break;
+    case 0x10C: state.gpr[code.rd] = state.tb.TB; break;
+    case 0x10D: state.gpr[code.rd] = state.tb.TBU; break;
     default: unknown("mftb"); break;
     }
 }
 
-void Interpreter::dcbf(Instruction code, PPUThread& thread)
+void Interpreter::dcbf(Instruction code)
 {
     //unknown("dcbf", false);
     // TODO: _mm_fence();
 }
 
-void Interpreter::dcbst(Instruction code, PPUThread& thread)
+void Interpreter::dcbst(Instruction code)
 {
     //unknown("dcbst", false);
     // TODO: _mm_fence();
 }
 
-void Interpreter::dcbt(Instruction code, PPUThread& thread)
+void Interpreter::dcbt(Instruction code)
 {
     //unknown("dcbt", false);
     // TODO: _mm_fence();
 }
 
-void Interpreter::dcbtst(Instruction code, PPUThread& thread)
+void Interpreter::dcbtst(Instruction code)
 {
     //unknown("dcbtst", false);
     // TODO: _mm_fence();
 }
 
-void Interpreter::dcbz(Instruction code, PPUThread& thread)
+void Interpreter::dcbz(Instruction code)
 {
-    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
+    const u32 addr = code.ra ? state.gpr[code.ra] + state.gpr[code.rb] : state.gpr[code.rb];
     void* cache_line = nucleus.memory.ptr(addr & ~127);
     if (cache_line) {
         memset(cache_line, 0, 128);
@@ -160,21 +160,21 @@ void Interpreter::dcbz(Instruction code, PPUThread& thread)
     // TODO: _mm_fence();
 }
 
-void Interpreter::icbi(Instruction code, PPUThread& thread)
+void Interpreter::icbi(Instruction code)
 {
     // Nothing to do in the interpreter.
 }
 
-void Interpreter::eciwx(Instruction code, PPUThread& thread)
+void Interpreter::eciwx(Instruction code)
 {
-    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
-    thread.gpr[code.rd] = nucleus.memory.read32(addr);
+    const u32 addr = code.ra ? state.gpr[code.ra] + state.gpr[code.rb] : state.gpr[code.rb];
+    state.gpr[code.rd] = nucleus.memory.read32(addr);
 }
 
-void Interpreter::ecowx(Instruction code, PPUThread& thread)
+void Interpreter::ecowx(Instruction code)
 {
-    const u32 addr = code.ra ? thread.gpr[code.ra] + thread.gpr[code.rb] : thread.gpr[code.rb];
-    nucleus.memory.write32(addr, thread.gpr[code.rs]);
+    const u32 addr = code.ra ? state.gpr[code.ra] + state.gpr[code.rb] : state.gpr[code.rb];
+    nucleus.memory.write32(addr, state.gpr[code.rs]);
 }
 
 }  // namespace ppu
