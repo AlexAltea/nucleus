@@ -34,32 +34,6 @@ void Interpreter::initRotateMask()
 Interpreter::Interpreter(u32 entry, u32 stack)
 {
     Interpreter::initRotateMask();
-
-    const u32 entry_pc = nucleus.memory.read32(entry);
-    const u32 entry_rtoc = nucleus.memory.read32(entry+4);
-
-    // Initialize Program Counter
-    state.pc = entry_pc;
-
-    // Initialize UISA Registers (TODO: All of this might be wrong)
-    state.gpr[0] = entry_pc;
-    state.gpr[1] = stack - 0x200;
-    state.gpr[2] = entry_rtoc;
-    state.gpr[3] = 0;
-    state.gpr[4] = stack - 0x80;
-    state.gpr[5] = state.gpr[4] + 0x10;
-    state.gpr[11] = entry;
-    state.gpr[12] = nucleus.lv2.proc.param.malloc_pagesize;
-    state.gpr[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
-    state.cr.CR = 0x22000082;
-    state.tb.TBL = 1;
-    state.tb.TBU = 1;
-
-    // Arguments passed to sys_initialize_tls on liblv2.sprx's start function
-    state.gpr[7] = 0x0; // TODO
-    state.gpr[8] = 0x0; // TODO
-    state.gpr[9] = 0x0; // TODO
-    state.gpr[10] = 0x90;
 }
 
 void Interpreter::step()

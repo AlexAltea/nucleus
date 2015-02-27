@@ -218,7 +218,7 @@ void Recompiler::updateCR0(llvm::Value* value)
  */
 llvm::Value* Recompiler::readMemory(llvm::Value* addr, int bits)
 {
-    llvm::Value* baseAddr = builder.getInt64((u64)nucleus.memory.getBaseAddr());
+    llvm::Value* baseAddr = builder.CreateLoad(segment->memoryBase, false);
     llvm::Value* value;
 
     addr = builder.CreateAdd(addr, baseAddr);
@@ -236,7 +236,7 @@ llvm::Value* Recompiler::readMemory(llvm::Value* addr, int bits)
 
 void Recompiler::writeMemory(llvm::Value* addr, llvm::Value* value)
 {
-    llvm::Value* baseAddr = builder.getInt64((u64)nucleus.memory.getBaseAddr());
+    llvm::Value* baseAddr = builder.CreateLoad(segment->memoryBase, false);
 
     // Reverse endianness if necessary
     int bits = value->getType()->getIntegerBitWidth();

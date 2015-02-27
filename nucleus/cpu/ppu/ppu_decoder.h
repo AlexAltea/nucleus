@@ -116,6 +116,10 @@ public:
     llvm::Module* module = nullptr;
     llvm::ExecutionEngine* executionEngine = nullptr;
 
+    // Global variables
+    llvm::GlobalVariable* memoryBase;
+    llvm::GlobalVariable* ppuState;
+
     u32 address = 0; // Starting address in the EA space
     u32 size = 0;    // Number of bytes covered
 

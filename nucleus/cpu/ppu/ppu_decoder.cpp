@@ -396,6 +396,29 @@ void Segment::recompile()
     fpm->add(llvm::createCFGSimplificationPass());        // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
     fpm->doInitialization();
 
+    // Global variables
+    module->getOrInsertGlobal("memoryBase",
+        llvm::Type::getInt64Ty(llvm::getGlobalContext())
+    );
+    module->getOrInsertGlobal("ppuState",
+        llvm::PointerType::get(
+            llvm::StructType::create(std::vector<llvm::Type*>{
+                llvm::ArrayType::get( llvm::Type::getInt64Ty(llvm::getGlobalContext()),  32 ), // GPR's
+                llvm::ArrayType::get( llvm::Type::getDoubleTy(llvm::getGlobalContext()), 32 ), // FPR's
+            }),
+        0)
+    );
+
+    memoryBase = module->getNamedGlobal("memoryBase");
+    memoryBase->setConstant(true);
+    memoryBase->setLinkage(llvm::GlobalValue::PrivateLinkage);
+    memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (u64)nucleus.memory.getBaseAddr())));
+
+    ppuState = module->getNamedGlobal("ppuState");
+    ppuState->setConstant(false);
+    ppuState->setThreadLocal(true);
+    ppuState->setLinkage(llvm::GlobalValue::ExternalLinkage);
+
     // Declare all functions
     for (auto& item : functions) {
         Function& function = item.second;
@@ -414,7 +437,7 @@ void Segment::recompile()
     // NOTE: Avoid generating COFF objects on Windows which are not supported by MCJIT
     llvm::Triple triple(llvm::sys::getProcessTriple());
     if (triple.getOS() == llvm::Triple::OSType::Win32) {
-        triple.setObjectFormat(llvm::Triple::ObjectFormatType::ELF);
+        triple.setObjectFormat(llvm::Triple::ObjectFormatType::MachO);
     }
     module->setTargetTriple(triple.str());
 
