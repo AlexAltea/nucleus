@@ -26,12 +26,17 @@ class Cell
 
 public:
     // Cell threads
-    std::vector<cpu::ppu::Thread*> ppu_threads;
+    std::vector<ppu::Thread*> ppu_threads;
 
     // Executable memory segments
-    std::vector<cpu::ppu::Segment*> ppu_segments;
+    std::vector<ppu::Segment*> ppu_segments;
 
     Cell();
+
+    void init();
+
+    // Recompiler utilities
+    llvm::Module* module;
 
     // Thread management
     CellThread* addThread(CellThreadType type, u32 entry);

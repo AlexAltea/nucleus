@@ -8,6 +8,9 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
 
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Module.h"
+
 #include <cmath>
 #include <string>
 
@@ -269,6 +272,12 @@ struct State {
 
     // Program Counter
     u32 pc;
+
+    /**
+     * Recompiler utilities
+     */
+    static void declareGlobalState(llvm::Module* module);
+    static llvm::Value* readGPR(llvm::IRBuilder<>& builder, int index);
 };
 
 }  // namespace ppu

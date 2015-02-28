@@ -222,6 +222,9 @@
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_integer.cpp">
       <Filter>cpu\ppu\interpreter</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\ppu\ppu_state.cpp">
+      <Filter>cpu\ppu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />

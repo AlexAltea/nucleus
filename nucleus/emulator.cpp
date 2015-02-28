@@ -13,8 +13,9 @@ Emulator nucleus;
 
 bool Emulator::load(const std::string& filepath)
 {
-    // Initialize everything
+    // Initialize hardware
     memory.init();
+    cell.init();
     rsx.init();
 
     // Create mount points

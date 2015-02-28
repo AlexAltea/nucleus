@@ -397,27 +397,8 @@ void Segment::recompile()
     fpm->doInitialization();
 
     // Global variables
-    module->getOrInsertGlobal("memoryBase",
-        llvm::Type::getInt64Ty(llvm::getGlobalContext())
-    );
-    module->getOrInsertGlobal("ppuState",
-        llvm::PointerType::get(
-            llvm::StructType::create(std::vector<llvm::Type*>{
-                llvm::ArrayType::get( llvm::Type::getInt64Ty(llvm::getGlobalContext()),  32 ), // GPR's
-                llvm::ArrayType::get( llvm::Type::getDoubleTy(llvm::getGlobalContext()), 32 ), // FPR's
-            }),
-        0)
-    );
-
+    module->getOrInsertGlobal("memoryBase", llvm::Type::getInt64Ty(llvm::getGlobalContext()));
     memoryBase = module->getNamedGlobal("memoryBase");
-    memoryBase->setConstant(true);
-    memoryBase->setLinkage(llvm::GlobalValue::PrivateLinkage);
-    memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (u64)nucleus.memory.getBaseAddr())));
-
-    ppuState = module->getNamedGlobal("ppuState");
-    ppuState->setConstant(false);
-    ppuState->setThreadLocal(true);
-    ppuState->setLinkage(llvm::GlobalValue::ExternalLinkage);
 
     // Declare all functions
     for (auto& item : functions) {
@@ -431,8 +412,6 @@ void Segment::recompile()
         llvm::Function* func = function.recompile();
         fpm->run(*func);
     }
-    // REMOVEME: Just for debugging purposes
-    module->dump();
 
     // NOTE: Avoid generating COFF objects on Windows which are not supported by MCJIT
     llvm::Triple triple(llvm::sys::getProcessTriple());
@@ -447,6 +426,7 @@ void Segment::recompile()
     engineBuilder.setOptLevel(llvm::CodeGenOpt::Default);
     engineBuilder.setUseMCJIT(true);
     executionEngine = engineBuilder.create();
+    executionEngine->addModule(nucleus.cell.module);
     executionEngine->finalizeObject();
 }
 

@@ -4,10 +4,13 @@
  */
 
 #include "cell.h"
+#include "nucleus/config.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_thread.h"
 #include "nucleus/cpu/ppu/ppu_tables.h"
 
+#include "llvm/ADT/Triple.h"
+#include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
 
 #include <algorithm>
@@ -26,6 +29,38 @@ Cell::Cell()
 {
     llvm::InitializeNativeTarget();
     llvm::InitializeNativeTargetAsmPrinter();
+}
+
+void Cell::init()
+{
+    if (config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+        // Global target triple
+        llvm::Triple triple(llvm::sys::getProcessTriple());
+        if (triple.getOS() == llvm::Triple::OSType::Win32) {
+            triple.setObjectFormat(llvm::Triple::ObjectFormatType::MachO);
+        }
+
+        // Global Nucleus module
+        module = new llvm::Module("Nucleus", llvm::getGlobalContext());
+        module->setTargetTriple(triple.str());
+
+        // Global variables
+        module->getOrInsertGlobal("memoryBase", llvm::Type::getInt64Ty(llvm::getGlobalContext()));
+        llvm::GlobalVariable* memoryBase = module->getNamedGlobal("memoryBase");
+        memoryBase->setConstant(true);
+        memoryBase->setLinkage(llvm::GlobalValue::ExternalLinkage);
+        memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (u64)nucleus.memory.getBaseAddr())));
+
+        ppu::State::declareGlobalState(module);
+        
+        // Build module
+        llvm::EngineBuilder engineBuilder(module);
+        engineBuilder.setEngineKind(llvm::EngineKind::JIT);
+        engineBuilder.setOptLevel(llvm::CodeGenOpt::Default);
+        engineBuilder.setUseMCJIT(true);
+        llvm::ExecutionEngine* executionEngine = engineBuilder.create();
+        executionEngine->finalizeObject();
+    }
 }
 
 CellThread* Cell::addThread(CellThreadType type, u32 entry=0)

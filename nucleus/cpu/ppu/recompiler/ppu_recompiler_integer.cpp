@@ -84,11 +84,12 @@ void Recompiler::addex(Instruction code)
 
 void Recompiler::addi(Instruction code)
 {
-    llvm::Value* ra = getGPR(code.ra);
     llvm::Value* simm = builder.getInt64(code.simm);
+    llvm::Value* ra;
     llvm::Value* rd;
 
     if (code.ra) {
+        ra = getGPR(code.ra);
         rd = builder.CreateAdd(ra, simm);
     } else {
         rd = simm;

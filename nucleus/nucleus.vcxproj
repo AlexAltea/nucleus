@@ -99,6 +99,7 @@
     <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_vector.cpp" />
     <ClCompile Include="cpu\ppu\ppu_decoder.cpp" />
     <ClCompile Include="cpu\ppu\ppu_instruction.cpp" />
+    <ClCompile Include="cpu\ppu\ppu_state.cpp" />
     <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
     <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
     <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler.cpp" />
