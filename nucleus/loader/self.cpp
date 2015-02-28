@@ -115,15 +115,10 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
             // Allocate memory and copy segment contents
             const u32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
             memcpy(nucleus.memory.ptr(addr), &elf[phdr.offset], phdr.filesz);
-            if ((phdr.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
-                auto segment = new cpu::ppu::Segment(addr, phdr.filesz);
-                segment->analyze();
-                segment->recompile();
-                nucleus.cell.ppu_segments.push_back(segment);
-            }
 
             // Add information for PRX Object
             sys_prx_segment_t segment;
+            segment.flags = (u32)phdr.flags;
             segment.align = (u32)phdr.align;
             segment.size_file = (u32)phdr.filesz;
             segment.size_memory = (u32)phdr.memsz;
@@ -271,6 +266,16 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
         for (const auto& import : importedLib.exports) {
             const u32 fnid = import.first;
             nucleus.memory.write32(import.second, targetLibrary->exports.at(fnid));
+        }
+    }
+
+    // Recompile executable segments
+    for (auto& prx_segment : prx.segments) {
+        if ((prx_segment.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+            auto segment = new cpu::ppu::Segment(prx_segment.addr, prx_segment.size_file);
+            segment->analyze();
+            segment->recompile();
+            nucleus.cell.ppu_segments.push_back(segment);
         }
     }
     return true;

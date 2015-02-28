@@ -120,6 +120,7 @@ struct sys_prx_library_t
 struct sys_prx_segment_t
 {
     u32 addr;          // Base address where the PRX segment has been copied
+    u32 flags;         // R|W|X-flags for the PPU/SPU/RSX (PHDR's flags)
     u32 align;         // Alignment (PHDR's align)
     u32 size_file;     // Size of the segment in the ELF file (PHDR's filesz)
     u32 size_memory;   // Size of the segment in memory (PHDR's memsz). Filled with zeros after allocation

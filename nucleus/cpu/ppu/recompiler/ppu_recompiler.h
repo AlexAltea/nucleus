@@ -85,6 +85,11 @@ class Recompiler
     // Write value to memory swapping endianness if necessary
     void writeMemory(llvm::Value* addr, llvm::Value* value);
 
+    /**
+     * Logging & Debugging
+     */
+    void emit_printf(const char* format, std::vector<llvm::Value*> args);
+
 public:
     Recompiler(Segment* segment, Function* function);
 

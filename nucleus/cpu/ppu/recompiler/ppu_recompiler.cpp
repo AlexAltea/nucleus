@@ -93,9 +93,7 @@ void Recompiler::createProlog()
     // Place arguments in local variables
     auto argValue = function->function->arg_begin();
     for (int i = 0; i < function->type_in.size(); i++, argValue++) {
-        const auto& arg = function->type_in[i];
-
-        switch (arg) {
+        switch (function->type_in[i]) {
         case FUNCTION_IN_INTEGER:
             gpr[3 + i] = allocaVariable(builder.getInt64Ty(), string_gpr[3 + i]);
             builder.CreateStore(argValue, gpr[3 + i]);
@@ -109,6 +107,13 @@ void Recompiler::createProlog()
             break;
         }
     }
+
+    // Print name of the function and registers r3 to r10
+    std::string functionInfo = function->name + "\nr3  = %016llX\nr4  = %016llX\nr5  = %016llX\nr6  = %016llX\nr7  = %016llX\nr8  = %016llX\nr9  = %016llX\nr10 = %016llX\n\n";
+    emit_printf(functionInfo.c_str(), std::vector<llvm::Value*>{
+        getGPR(3), getGPR(4), getGPR(5), getGPR(6), getGPR(7), getGPR(8), getGPR(9), getGPR(10)
+    });
+
     // Branch to the real entry block
     llvm::BasicBlock* entryBlock = function->blocks[function->address].bb;
     builder.CreateBr(entryBlock);
@@ -248,6 +253,22 @@ void Recompiler::writeMemory(llvm::Value* addr, llvm::Value* value)
     addr = builder.CreateAdd(addr, baseAddr);
     addr = builder.CreateIntToPtr(addr, builder.getIntNTy(bits)->getPointerTo());
     builder.CreateStore(value, addr);
+}
+
+void Recompiler::emit_printf(const char* format, std::vector<llvm::Value*> args)
+{
+    llvm::FunctionType* printfType = nullptr;
+    llvm::Function* printfFunc = segment->module->getFunction("printf");
+
+    if (!printfFunc) {
+        printfType = llvm::FunctionType::get(builder.getInt32Ty(), std::vector<llvm::Type*>{}, true);
+        printfFunc = llvm::Function::Create(printfType, llvm::Function::ExternalLinkage, "printf", segment->module);
+        printfFunc->setCallingConv(llvm::CallingConv::C);
+    }
+
+    args.insert(args.begin(), builder.CreateGlobalString(format));
+    llvm::CallInst* printfCall = builder.CreateCall(printfFunc, args);
+    printfCall->setTailCall(false);
 }
 
 }  // namespace ppu
