@@ -37,7 +37,7 @@ void Cell::init()
         // Global target triple
         llvm::Triple triple(llvm::sys::getProcessTriple());
         if (triple.getOS() == llvm::Triple::OSType::Win32) {
-            triple.setObjectFormat(llvm::Triple::ObjectFormatType::MachO);
+            triple.setObjectFormat(llvm::Triple::ObjectFormatType::ELF);
         }
 
         // Global Nucleus module
@@ -58,7 +58,7 @@ void Cell::init()
         engineBuilder.setEngineKind(llvm::EngineKind::JIT);
         engineBuilder.setOptLevel(llvm::CodeGenOpt::Default);
         engineBuilder.setUseMCJIT(true);
-        llvm::ExecutionEngine* executionEngine = engineBuilder.create();
+        executionEngine = engineBuilder.create();
         executionEngine->finalizeObject();
     }
 }

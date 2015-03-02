@@ -276,6 +276,10 @@ struct State {
     /**
      * Recompiler utilities
      */
+
+    // Get the LLVM type of this class
+    static llvm::StructType* type();
+
     static void declareGlobalState(llvm::Module* module);
     static llvm::Value* readGPR(llvm::IRBuilder<>& builder, int index);
 };

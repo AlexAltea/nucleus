@@ -6,6 +6,7 @@
 #include "ppu_decoder.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/ppu/ppu_instruction.h"
+#include "nucleus/cpu/ppu/ppu_state.h"
 #include "nucleus/cpu/ppu/ppu_tables.h"
 
 #include "llvm/ADT/Triple.h"
@@ -399,6 +400,9 @@ void Segment::recompile()
     // Global variables
     module->getOrInsertGlobal("memoryBase", llvm::Type::getInt64Ty(llvm::getGlobalContext()));
     memoryBase = module->getNamedGlobal("memoryBase");
+    module->getOrInsertGlobal("ppuState", State::type());
+    ppuState = module->getNamedGlobal("ppuState");
+    ppuState->setThreadLocal(true);
 
     // Declare all functions
     for (auto& item : functions) {
@@ -416,7 +420,7 @@ void Segment::recompile()
     // NOTE: Avoid generating COFF objects on Windows which are not supported by MCJIT
     llvm::Triple triple(llvm::sys::getProcessTriple());
     if (triple.getOS() == llvm::Triple::OSType::Win32) {
-        triple.setObjectFormat(llvm::Triple::ObjectFormatType::MachO);
+        triple.setObjectFormat(llvm::Triple::ObjectFormatType::ELF);
     }
     module->setTargetTriple(triple.str());
 

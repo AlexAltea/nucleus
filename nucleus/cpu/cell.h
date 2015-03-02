@@ -37,6 +37,7 @@ public:
 
     // Recompiler utilities
     llvm::Module* module;
+    llvm::ExecutionEngine* executionEngine;
 
     // Thread management
     CellThread* addThread(CellThreadType type, u32 entry);
