@@ -15,8 +15,8 @@ You need to provide the PlayStation 3 firmware keys by placing a file named `key
 * __Windows__: Install [GLEW](http://glew.sourceforge.net/install.html), [CMake](http://www.cmake.org/download/), [Python](https://www.python.org/downloads/) and [Visual Studio 2013](http://www.visualstudio.com/). Run `tools/nucleus-init.py` and build LLVM manually with the generated solution file. Then open `nucleus.sln` and press *Build* > *Rebuild solution*.
 * __Linux__: Follow the `.travis.yml` file.
 * __OS X__: Unknown status. Use the `.travis.yml` file as reference.
-* __Android__: *TBA*.
-* __iOS__: *TBA*.
+* __Android__: Install the [Android SDK](http://developer.android.com/sdk/index.html) and [Android NDK](https://developer.android.com/tools/sdk/ndk/index.html#download). *TBA*.
+* __iOS__: Install [Xcode](https://developer.apple.com/xcode/). *TBA*.
 
 ### Limitations
 * __Memory__: Nucleus emulates the PS3 user-mode environment, which uses 32-bit addresses. This reflects on the CPU / Memory related code, and could cause issues if you use it for other platforms, or for designing a low-level PS3 emulator.

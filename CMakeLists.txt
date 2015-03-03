@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(nucleus)
 
+# Options
+option(TARGET_ANDROID "Enable to target an Android device")
+option(TARGET_IOS "Enable to target an iOS device")
+
 # Paths
 set(NUCLEUS_SOLUTION_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(EXECUTABLE_OUTPUT_PATH "${NUCLEUS_SOLUTION_DIR}/bin/")

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plist version="1.0">
+  <dict>
+    <!-- Application -->
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleDisplayName</key>
+    <string>Nucleus</string>
+    <key>CFBundleExecutable</key>
+    <string>Nucleus</string>
+    <key>CFBundleName</key>
+    <string>Nucleus</string>
+    <key>CFBundleVersion</key>
+    <string>0.0.4</string>
+    
+    <!-- Requirements -->
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+      <string>opengles-3</string>
+    </array>
+    <key>UIDeviceFamily</key>
+    <array>
+      <integer>1</integer>
+      <integer>2</integer>
+    </array>
+  </dict>
+</plist>
