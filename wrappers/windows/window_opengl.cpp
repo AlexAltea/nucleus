@@ -53,7 +53,7 @@ void WindowOpenGL::init()
         return;
     }
 
-    m_hrc = wglCreateContext(m_hdc);
+    /*m_hrc = wglCreateContext(m_hdc);
     if (!m_hrc) {
         MessageBox(m_hwnd, "Can't create a GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
@@ -62,12 +62,12 @@ void WindowOpenGL::init()
     if (!wglMakeCurrent(m_hdc, m_hrc)) {
         MessageBox(m_hwnd, "Can't activate the GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
-    }
+    }*/
 
-    if (glewInit() != GLEW_OK) {
+    /*if (glewInit() != GLEW_OK) {
         MessageBox(m_hwnd, "Failed to initialize GLEW.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
-    }
+    }*/
 }
 
 void WindowOpenGL::swap_buffers()

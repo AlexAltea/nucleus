@@ -4,9 +4,7 @@
  */
 
 #include "window.h"
-#include "nucleus/emulator.h"
-#include "nucleus/resource.h"
-#include "nucleus/ui/ui.h"
+#include "resource.h"
 
 // Translate UI strings
 #define _(s) ui.language.translate(s)
@@ -16,7 +14,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch(msg) {
     case WM_CLOSE:
         DestroyWindow(hwnd);
-        nucleus.task(NUCLEUS_EVENT_CLOSE);
+        //nucleus.task(NUCLEUS_EVENT_CLOSE);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -81,11 +79,11 @@ Window::Window(const std::string& title, int width, int height) : m_title(title)
     HMENU hSubMenu;
 
     hSubMenu = CreatePopupMenu();
-    AppendMenu(hSubMenu, MF_STRING, 0, _("&Exit"));
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, _("&File"));
+    AppendMenu(hSubMenu, MF_STRING, 0, /*_*/("&Exit"));
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, /*_*/("&File"));
     hSubMenu = CreatePopupMenu();
-    AppendMenu(hSubMenu, MF_STRING, 0, _("About..."));
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, _("&Help"));
+    AppendMenu(hSubMenu, MF_STRING, 0, /*_*/("About..."));
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, /*_*/("&Help"));
     SetMenu(m_hwnd, hMenu);
 }
 

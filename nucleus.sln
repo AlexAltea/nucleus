@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus", "nucleus\nucleus.vcxproj", "{D355BE01-81EB-4204-97CF-1C273C287E9F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F761046E-6C38-4428-A5F1-38391A37BB34} = {F761046E-6C38-4428-A5F1-38391A37BB34}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "externals", "externals", "{697C8FFB-2D7C-418D-A387-054747206AC2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "externals\zlib\zlib.vcxproj", "{F761046E-6C38-4428-A5F1-38391A37BB34}"
@@ -16,16 +11,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{04EA3EAD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unit", "tests\unit\unit.vcxproj", "{B1FF30F1-16CC-43E9-A896-CE8D54312F62}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wrappers", "wrappers", "{23F66B7C-9BC8-409B-8135-3C3AC7423527}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "windows", "windows", "{61FB041F-37E1-428A-B735-345A24C94CA1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus-core", "nucleus\nucleus-core.vcxproj", "{D355BE01-81EB-4204-97CF-1C273C287E9F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus", "wrappers\windows\nucleus.vcxproj", "{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Debug|x64.ActiveCfg = Debug|x64
-		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Debug|x64.Build.0 = Debug|x64
-		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Release|x64.ActiveCfg = Release|x64
-		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Release|x64.Build.0 = Release|x64
 		{F761046E-6C38-4428-A5F1-38391A37BB34}.Debug|x64.ActiveCfg = Debug|x64
 		{F761046E-6C38-4428-A5F1-38391A37BB34}.Debug|x64.Build.0 = Debug|x64
 		{F761046E-6C38-4428-A5F1-38391A37BB34}.Release|x64.ActiveCfg = Release|x64
@@ -34,6 +33,14 @@ Global
 		{B1FF30F1-16CC-43E9-A896-CE8D54312F62}.Debug|x64.Build.0 = Debug|x64
 		{B1FF30F1-16CC-43E9-A896-CE8D54312F62}.Release|x64.ActiveCfg = Release|x64
 		{B1FF30F1-16CC-43E9-A896-CE8D54312F62}.Release|x64.Build.0 = Release|x64
+		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Debug|x64.ActiveCfg = Debug|x64
+		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Debug|x64.Build.0 = Debug|x64
+		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Release|x64.ActiveCfg = Release|x64
+		{D355BE01-81EB-4204-97CF-1C273C287E9F}.Release|x64.Build.0 = Release|x64
+		{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}.Debug|x64.ActiveCfg = Debug|x64
+		{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}.Debug|x64.Build.0 = Debug|x64
+		{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}.Release|x64.ActiveCfg = Release|x64
+		{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,5 +48,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F761046E-6C38-4428-A5F1-38391A37BB34} = {697C8FFB-2D7C-418D-A387-054747206AC2}
 		{B1FF30F1-16CC-43E9-A896-CE8D54312F62} = {04EA3EAD-EA25-4335-8AB4-743FD64EA58E}
+		{61FB041F-37E1-428A-B735-345A24C94CA1} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
+		{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B} = {61FB041F-37E1-428A-B735-345A24C94CA1}
 	EndGlobalSection
 EndGlobal

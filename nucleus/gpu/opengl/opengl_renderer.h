@@ -14,7 +14,7 @@
 #include <unordered_map>
 
 class PGRAPH_OpenGL : public PGRAPH {
-    Window* m_window;
+    //Window* m_window;
 
     // Cache
     std::unordered_map<u64, OpenGLVertexProgram> cache_vp;

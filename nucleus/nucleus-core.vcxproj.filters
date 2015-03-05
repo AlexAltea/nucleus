@@ -115,14 +115,8 @@
     <ClCompile Include="syscalls\modules\libsysmodule.cpp">
       <Filter>syscalls\modules</Filter>
     </ClCompile>
-    <ClCompile Include="ui\windows\window.cpp">
-      <Filter>ui\windows</Filter>
-    </ClCompile>
     <ClCompile Include="ui\ui.cpp">
       <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\windows\window_opengl.cpp">
-      <Filter>ui\windows</Filter>
     </ClCompile>
     <ClCompile Include="gpu\opengl\opengl_renderer.cpp">
       <Filter>gpu\opengl</Filter>
@@ -160,7 +154,6 @@
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_integer.cpp">
       <Filter>cpu\ppu\analyzer</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="cpu\ppu\ppu_decoder.cpp">
       <Filter>cpu\ppu</Filter>
     </ClCompile>
@@ -225,6 +218,7 @@
     <ClCompile Include="cpu\ppu\ppu_state.cpp">
       <Filter>cpu\ppu</Filter>
     </ClCompile>
+    <ClCompile Include="nucleus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -364,12 +358,6 @@
     <ClInclude Include="ui\ui.h">
       <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="ui\windows\window.h">
-      <Filter>ui\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\windows\window_opengl.h">
-      <Filter>ui\windows</Filter>
-    </ClInclude>
     <ClInclude Include="gpu\opengl\opengl_renderer.h">
       <Filter>gpu\opengl</Filter>
     </ClInclude>
@@ -389,7 +377,6 @@
     <ClInclude Include="gpu\rsx_texture.h">
       <Filter>gpu</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="syscalls\lv2\sys_synchronization.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
@@ -429,6 +416,7 @@
     <ClInclude Include="cpu\ppu\ppu_state.h">
       <Filter>cpu\ppu</Filter>
     </ClInclude>
+    <ClInclude Include="nucleus.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -488,17 +476,11 @@
     <Filter Include="ui">
       <UniqueIdentifier>{1a3d9deb-1064-46ed-8c66-1115220cd6bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ui\windows">
-      <UniqueIdentifier>{185aee07-6b27-484a-a8a4-d09127a36a70}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cpu\ppu\analyzer">
       <UniqueIdentifier>{56c1276a-e6ba-4d83-b87a-4a751251396b}</UniqueIdentifier>
     </Filter>
     <Filter Include="cpu\ppu\recompiler">
       <UniqueIdentifier>{abbcc1e5-7379-43b2-935b-76d53e48beac}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="nucleus.rc" />
   </ItemGroup>
 </Project>

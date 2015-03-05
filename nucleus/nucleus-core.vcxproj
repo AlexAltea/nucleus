@@ -12,17 +12,18 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D355BE01-81EB-4204-97CF-1C273C287E9F}</ProjectGuid>
-    <RootNamespace>nucleus</RootNamespace>
+    <RootNamespace>NucleusCore</RootNamespace>
+    <ProjectName>nucleus-core</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -39,15 +40,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)bin\</OutDir>
-    <TargetName>$(ProjectName)-dbg</TargetName>
     <IncludePath>$(SolutionDir)\externals\llvm\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(SolutionDir)\externals\llvm\$(Configuration)\lib\;$(SolutionDir)\libs\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
+    <OutDir>$(SolutionDir)libs\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)bin\</OutDir>
     <IncludePath>$(SolutionDir)\externals\llvm\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)\externals\llvm\$(Configuration)\lib\;$(SolutionDir)\libs\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
+    <OutDir>$(SolutionDir)libs\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -124,9 +123,9 @@
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\self.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="memory\memory.cpp" />
     <ClCompile Include="memory\segment.cpp" />
+    <ClCompile Include="nucleus.cpp" />
     <ClCompile Include="syscalls\lv1\lv1_gpu.cpp" />
     <ClCompile Include="syscalls\lv2.cpp" />
     <ClCompile Include="syscalls\lv2\sys_cond.cpp" />
@@ -154,8 +153,6 @@
     <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp" />
     <ClCompile Include="ui\language.cpp" />
     <ClCompile Include="ui\ui.cpp" />
-    <ClCompile Include="ui\windows\window_opengl.cpp" />
-    <ClCompile Include="ui\windows\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\externals\aes.h" />
@@ -195,7 +192,7 @@
     <ClInclude Include="logging.h" />
     <ClInclude Include="memory\memory.h" />
     <ClInclude Include="memory\segment.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="nucleus.h" />
     <ClInclude Include="syscalls\callback.h" />
     <ClInclude Include="syscalls\lv1.h" />
     <ClInclude Include="syscalls\lv1\lv1_gpu.h" />
@@ -228,11 +225,6 @@
     <ClInclude Include="syscalls\syscall.h" />
     <ClInclude Include="ui\language.h" />
     <ClInclude Include="ui\ui.h" />
-    <ClInclude Include="ui\windows\window_opengl.h" />
-    <ClInclude Include="ui\windows\window.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="nucleus.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

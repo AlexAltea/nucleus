@@ -22,12 +22,12 @@
 PGRAPH_OpenGL::PGRAPH_OpenGL()
 {
     // Wait until Nucleus window is ready
-    while (!ui.get()) {
+    /*while (!ui.get()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     m_window = ui.get();
-    m_window->init();
+    m_window->init();*/
 }
 
 void PGRAPH_OpenGL::AlphaFunc(u32 func, f32 ref)
@@ -265,7 +265,7 @@ void PGRAPH_OpenGL::End()
 
 void PGRAPH_OpenGL::Flip()
 {
-    m_window->swap_buffers();
+    //m_window->swap_buffers();
 }
 
 void PGRAPH_OpenGL::UnbindVertexAttributes()

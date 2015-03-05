@@ -15,6 +15,10 @@
 
 #include "nucleus/gpu/opengl/opengl_renderer.h"
 
+#ifdef NUCLEUS_PLATFORM_WINDOWS
+#include <Windows.h>
+#endif
+
 // Method matching
 #define case_2(offset, step) \
     case offset: \

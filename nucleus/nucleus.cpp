@@ -3,14 +3,15 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "config.h"
-#include "debugger.h"
-#include "emulator.h"
-#include "ui/ui.h"
+#include "nucleus.h"
+#include "nucleus/config.h"
+#include "nucleus/debugger.h"
+#include "nucleus/emulator.h"
+#include "nucleus/ui/ui.h"
 
 #include <iostream>
 
-int main(int argc, char **argv)
+int nucleusInitialize(int argc, char **argv)
 {
     if (argc <= 1) {
         std::cout
