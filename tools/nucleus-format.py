@@ -43,7 +43,6 @@ def main():
                     w = open(os.path.join(root, filename), "wb")
                     w.write(codeOutput)
                     w.close()
-                    break
 
 
 if __name__ == "__main__":

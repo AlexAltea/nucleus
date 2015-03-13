@@ -47,7 +47,7 @@ Thread::Thread(u32 entry)
     state->cr.CR = 0x22000082;
     state->tb.TBL = 1;
     state->tb.TBU = 1;
-    
+
     // Arguments passed to sys_initialize_tls on liblv2.sprx's start function
     state->gpr[7] = 0x0; // TODO
     state->gpr[8] = 0x0; // TODO

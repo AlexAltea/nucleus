@@ -18,6 +18,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus-core", "nucleus\nucleus-core.vcxproj", "{D355BE01-81EB-4204-97CF-1C273C287E9F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus", "wrappers\windows\nucleus.vcxproj", "{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D355BE01-81EB-4204-97CF-1C273C287E9F} = {D355BE01-81EB-4204-97CF-1C273C287E9F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

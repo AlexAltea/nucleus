@@ -52,7 +52,7 @@ void Cell::init()
         memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (u64)nucleus.memory.getBaseAddr())));
 
         ppu::State::declareGlobalState(module);
-        
+
         // Build module
         llvm::EngineBuilder engineBuilder(module);
         engineBuilder.setEngineKind(llvm::EngineKind::JIT);

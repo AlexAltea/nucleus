@@ -63,15 +63,30 @@ s32 lv1_gpu_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2
             sys_event_port_send(eport_handlers, 0, (1 << 6), 0);
         break;
 
-    case 0x104: // Display buffer
+    case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_BUFFER: {
+        u8 id = p1 & 0xFF;
+        u32 width = (p2 >> 32) & 0xFFFFFFFF;
+        u32 height = p2 & 0xFFFFFFFF;
+        u32 pitch = (p3 >> 32) & 0xFFFFFFFF;
+        u32 offset = p3 & 0xFFFFFFFF;
+
+        if (id > 7 || width > 0x1000 || height > 0x1000 /* TODO: || offset >= something*/) {
+            return LV1_ILLEGAL_PARAMETER_VALUE;
+        }
         break;
+    }
 
     case 0x106: // ? (Used by cellGcmInitPerfMon)
         break;
 
-    case 0x10A: // ? (Involved in managing flip status through cellGcmResetFlipStatus)
-        nucleus.rsx.driver_info->head[p1].flip &= p2;
+    case 0x10A: { // ? (Involved in managing flip status through cellGcmResetFlipStatus)
+        if (p1 > 7) {
+            return LV1_ILLEGAL_PARAMETER_VALUE;
+        }
+        auto& flipStatus = nucleus.rsx.driver_info->head[p1].flip;
+        flipStatus = (flipStatus & p2) | p3;
         break;
+    }
 
     case 0x10D: // Called by cellGcmInitCursor
         break;
