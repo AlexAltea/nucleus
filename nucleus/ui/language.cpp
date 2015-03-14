@@ -5,12 +5,12 @@
 
 #include "language.h"
 #include "nucleus/emulator.h"
-#include "nucleus/resource.h"
 #include "externals/rapidxml/rapidxml.hpp"
 
 #include <cstring>
 
 #ifdef NUCLEUS_PLATFORM_WINDOWS
+#include "wrappers/windows/resource.h"
 #include <Windows.h>
 #endif
 

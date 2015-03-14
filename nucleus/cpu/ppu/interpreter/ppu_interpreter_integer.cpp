@@ -271,7 +271,7 @@ void Interpreter::mulhdx(Instruction code)
     const s64 b = state.gpr[code.rb];
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     state.gpr[code.rd] = __mulh(a, b);
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     __asm__("mulq %[b]" : "=d" (state.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
 #endif
     if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }
@@ -283,7 +283,7 @@ void Interpreter::mulhdux(Instruction code)
     const u64 b = state.gpr[code.rb];
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     state.gpr[code.rd] = __umulh(a, b);
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     __asm__("imulq %[b]" : "=d" (state.gpr[code.rd]) : [a] "a" (a), [b] "rm" (b));
 #endif
     if (code.rc) { state.cr.updateField(0, (s64)state.gpr[code.rd], (s64)0); }

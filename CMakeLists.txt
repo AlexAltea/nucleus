@@ -30,24 +30,6 @@ else()
     set(ZLIB_LIBRARY zlib)
 endif()
 
-# Find GLEW
-if (NOT WIN32)
-    find_path(GLEW_INCLUDE_PATH GL/glew.h
-        /usr/include
-        /usr/local/include
-        /sw/include
-        /opt/local/include
-    )
-    find_library(GLEW_LIBRARY NAMES GLEW glew PATHS
-        /usr/lib64
-        /usr/lib
-        /usr/local/lib64
-        /usr/local/lib
-        /sw/lib
-        /opt/local/lib
-    )
-endif()
-
 # LLVM
 llvm_map_components_to_libnames(LLVM_LIBS
     core
@@ -95,5 +77,5 @@ endif()
 # Target
 add_executable(nucleus ${NUCLEUS_FILES})
 
-target_link_libraries(nucleus ${ZLIB_LIBRARY} ${LLVM_LIBS} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
+target_link_libraries(nucleus ${ZLIB_LIBRARY} ${LLVM_LIBS} ${OPENGL_LIBRARIES})
 set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)

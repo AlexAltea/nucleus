@@ -8,7 +8,7 @@
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
 #include <sys/mman.h>
 #endif
 
@@ -27,7 +27,7 @@ MemoryBlock::MemoryBlock(u32 block_addr, u32 block_size)
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     if (::mprotect(realaddr, block_size, PROT_READ | PROT_WRITE)) {
 #endif
         // Error

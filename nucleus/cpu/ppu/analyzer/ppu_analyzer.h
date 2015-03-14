@@ -13,6 +13,11 @@
 namespace cpu {
 namespace ppu {
 
+// Avoid a collision with <Windows.h>
+#ifdef NUCLEUS_PLATFORM_WINDOWS
+#undef REG_NONE
+#endif
+
 enum AnalyzerEvent : u8 {
     REG_NONE       = 0,         // Register was not accessed
     REG_READ       = (1 << 0),  // Register was read

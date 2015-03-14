@@ -25,7 +25,7 @@
 #define NUCLEUS_PLATFORM_WINDOWS
 #endif
 #if defined(__APPLE__) && defined(__MACH__)
-#define NUCLEUS_PLATFORM_MACOS
+#define NUCLEUS_PLATFORM_OSX
 #endif
 #if defined(__ANDROID_API__)
 #define NUCLEUS_PLATFORM_ANDROID

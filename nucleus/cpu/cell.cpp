@@ -17,7 +17,7 @@
 
 #ifdef NUCLEUS_PLATFORM_WINDOWS
 #define thread_local __declspec(thread)
-#elif NUCLEUS_PLATFORM_MACOS
+#elif NUCLEUS_PLATFORM_OSX
 #define thread_local __thread
 #endif
 

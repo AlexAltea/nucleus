@@ -13,7 +13,7 @@
 #ifdef NUCLEUS_PLATFORM_LINUX
 #include <sys/mman.h>
 #endif
-#ifdef NUCLEUS_PLATFORM_MACOS
+#ifdef NUCLEUS_PLATFORM_OSX
 #include <sys/mman.h>
 #define MAP_ANONYMOUS MAP_ANON
 #endif
@@ -23,7 +23,7 @@ void Memory::init()
     // Reserve 4 GB of memory for any 32-bit pointer in the PS3 memory
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     m_base = VirtualAlloc(nullptr, 0x100000000ULL, MEM_RESERVE, PAGE_NOACCESS);
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     m_base = ::mmap(nullptr, 0x100000000ULL, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
 #endif
 
@@ -45,7 +45,7 @@ void Memory::close()
 {
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (!VirtualFree(m_base, 0, MEM_RELEASE)) {
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_MACOS)
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     if (::munmap(m_base, 0x100000000ULL)) {
 #endif
         nucleus.log.error(LOG_MEMORY, "Could not release memory");

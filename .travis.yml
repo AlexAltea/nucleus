@@ -21,8 +21,7 @@ before_install:
   - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
   - sudo apt-get update
 
-  # Install GLEW and prepare compilers
-  - sudo apt-get install libglew-dev
+  # Prepare compilers
   - if [ "$CXX" = "g++" ]; then
       sudo apt-get install g++-4.8 -qq;
       export CXX="g++-4.8" CC="gcc-4.8";
