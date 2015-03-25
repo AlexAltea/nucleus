@@ -22,7 +22,7 @@ struct SelfKey {
     u32 type;
     u64 version;
     u16 revision;
-    u32 curve_type;
+    u32 ctype;
     u8 erk[0x20];
     u8 riv[0x10];
     u8 pub[0x28];

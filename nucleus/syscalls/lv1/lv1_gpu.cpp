@@ -48,7 +48,7 @@ s32 lv1_gpu_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2
         break;
 
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_FLIP:
-        nucleus.rsx.driver_info->head[p1].flip |= 0x80000000; // TODO: Check if this actually happens.
+        nucleus.rsx.driver_info->head[p1].flip |= 0x80000000;
         if (p1 == 0)
             sys_event_port_send(eport_handlers, 0, (1 << 3), 0);
         if (p1 == 1)

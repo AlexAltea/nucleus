@@ -54,4 +54,12 @@ enum {
     RSX_REPORT_ZCULL_STATS1     = 3,
     RSX_REPORT_ZCULL_STATS2     = 4,
     RSX_REPORT_ZCULL_STATS3     = 5,
+
+    // Surfaces
+    RSX_SURFACE_TARGET_NONE     = 0,
+    RSX_SURFACE_TARGET_0        = 1,
+    RSX_SURFACE_TARGET_1        = 2,
+    RSX_SURFACE_TARGET_MRT1     = 0x10 | 0x3,
+    RSX_SURFACE_TARGET_MRT2     = 0x10 | 0x7,
+    RSX_SURFACE_TARGET_MRT3     = 0x10 | 0xF,
 };

@@ -9,7 +9,7 @@
 #include "nucleus/gpu/rsx_fp.h"
 
 // OpenGL dependencies
-#include <GL/glew.h>
+#include "nucleus/opengl.h"
 
 // Input register
 struct fp_input_register_t {

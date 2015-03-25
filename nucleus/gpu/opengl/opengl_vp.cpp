@@ -9,7 +9,7 @@
 #include "nucleus/gpu/rsx_vp.h"
 
 // OpenGL dependencies
-#include <GL/glew.h>
+#include "nucleus/opengl.h"
 
 // Output register
 struct vp_output_register_t {

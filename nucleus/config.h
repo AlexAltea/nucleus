@@ -37,9 +37,12 @@ enum ConfigGpuBackend {
 class Config
 {
 public:
-    // Settings
-    bool debugger = false;  // Start Nerve debugging server
+    // Immediate settings
+    std::string boot;       // Boot the specified file automatically
     bool console = false;   // Run Nucleus in console-only mode, preventing UI or GPU backends from running
+    bool debugger = false;  // Start Nerve debugging server
+
+    // Saved settings
     ConfigLanguage language = LANGUAGE_DEFAULT;
     ConfigPpuTranslator ppuTranslator = PPU_TRANSLATOR_INTERPRETER;
     ConfigSpuTranslator spuTranslator = SPU_TRANSLATOR_INTERPRETER;
