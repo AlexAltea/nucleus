@@ -23,6 +23,7 @@ bool Emulator::load(const std::string& filepath)
     const std::string& processPath = getProcessPath(filepath);
     devices.push_back(new VirtualFileSystem("/dev_flash", nucleusPath + "dev_flash"));
     devices.push_back(new VirtualFileSystem("/dev_hdd0", nucleusPath + "dev_hdd0"));
+    devices.push_back(new VirtualFileSystem("/dev_hdd1", nucleusPath + "dev_hdd1"));
     devices.push_back(new VirtualFileSystem("/app_home", processPath));
     devices.push_back(new VirtualFileSystem("/host_root/", ""));
     devices.push_back(new VirtualFileSystem("", ""));

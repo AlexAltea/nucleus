@@ -124,6 +124,7 @@
     <ClCompile Include="gpu\rsx_pgraph.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
+    <ClCompile Include="loader\psf.cpp" />
     <ClCompile Include="loader\self.cpp" />
     <ClCompile Include="memory\memory.cpp" />
     <ClCompile Include="memory\segment.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="gpu\rsx_vp.h" />
     <ClInclude Include="loader\keys.h" />
     <ClInclude Include="loader\loader.h" />
+    <ClInclude Include="loader\psf.h" />
     <ClInclude Include="loader\self.h" />
     <ClInclude Include="logging.h" />
     <ClInclude Include="memory\memory.h" />

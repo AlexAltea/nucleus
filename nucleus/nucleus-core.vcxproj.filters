@@ -250,6 +250,9 @@
     <ClCompile Include="ui\widgets\widget_text.cpp">
       <Filter>ui\widgets</Filter>
     </ClCompile>
+    <ClCompile Include="loader\psf.cpp">
+      <Filter>loader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -479,6 +482,9 @@
     <ClInclude Include="opengl_tables.h" />
     <ClInclude Include="ui\widgets\widget_text.h">
       <Filter>ui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="loader\psf.h">
+      <Filter>loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
