@@ -7,12 +7,21 @@
 #include "nucleus/config.h"
 #include "nucleus/debugger.h"
 #include "nucleus/emulator.h"
+#include "nucleus/filesystem/virtual_filesystem.h"
 #include "nucleus/ui/ui.h"
 
 #include <iostream>
 
 void nucleusConfigure(int argc, char **argv)
 {
+    // Create mount points
+    const std::string& nucleusPath = getEmulatorPath();
+    nucleus.devices.push_back(new VirtualFileSystem("/dev_flash", nucleusPath + "dev_flash"));
+    nucleus.devices.push_back(new VirtualFileSystem("/dev_hdd0", nucleusPath + "dev_hdd0"));
+    nucleus.devices.push_back(new VirtualFileSystem("/dev_hdd1", nucleusPath + "dev_hdd1"));
+    nucleus.devices.push_back(new VirtualFileSystem("/host_root/", ""));
+    nucleus.devices.push_back(new VirtualFileSystem("", ""));
+
     // Configure emulator
     config.parseArguments(argc, argv);
 }
@@ -22,9 +31,8 @@ int nucleusInitialize(int argc, char **argv)
     if (argc <= 1) {
         std::cout
             << "Nucleus v0.0.4: A PlayStation 3 emulator.\n"
-            << "Usage: nucleus [arguments]\n"
+            << "Usage: nucleus [arguments] path/to/executable.ppu.self\n"
             << "Arguments:\n"
-            << "  --boot [file]  Boot the specified file automatically.\n"
             << "  --console      Avoids the Nucleus UI window, disabling GPU backends.\n"
             << "  --debugger     Create a Nerve backend debugging server.\n"
             << "                 More information at: http://alexaltea.github.io/nerve/ \n"

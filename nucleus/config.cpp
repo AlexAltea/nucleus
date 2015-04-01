@@ -4,6 +4,7 @@
  */
 
 #include "config.h"
+#include "nucleus/loader/loader.h"
 
 #include <cstring>
 
@@ -12,15 +13,21 @@ Config config;
 
 void Config::parseArguments(int argc, char** argv)
 {
+    // Parse arguments
     for (int i = 0; i < argc; i++) {
-        if (!strcmp(argv[i], "--boot")) {
-            boot = argv[i+1];
-        }
         if (!strcmp(argv[i], "--console")) {
             console = true;
         }
         if (!strcmp(argv[i], "--debugger")) {
             debugger = true;
         }
+    }
+
+    // Check if booting an executable was requested
+    std::string lastArgument = argv[argc - 1];
+    switch (detectFiletype(lastArgument)) {
+    case FILETYPE_ELF:
+    case FILETYPE_SELF:
+        boot = lastArgument;
     }
 }
