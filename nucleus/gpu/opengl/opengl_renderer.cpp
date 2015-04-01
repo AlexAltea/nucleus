@@ -41,7 +41,6 @@ void PGRAPH_OpenGL::SetColorTarget(u32 address, u8 attachment)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         colorTargets[address] = colorTexture;
     }
-    glBindTexture(GL_TEXTURE_2D, colorTargets[address]);
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachment, colorTargets[address], 0);
     checkRendererError("SetColorTarget");
 }

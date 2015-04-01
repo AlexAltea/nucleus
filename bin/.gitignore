@@ -1,7 +1,22 @@
+###########
+# PS3 HDD #
+###########
+
 # Firmware
 dev_flash/**/*.ttf
 dev_flash/**/*.pic
 dev_flash/**/*.sprx
+
+# User
+dev_hdd0/*
+
+# Cache
+dev_hdd1/*
+
+
+###########
+# NUCLEUS #
+###########
 
 # Keys
 keys.xml

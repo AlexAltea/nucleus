@@ -162,6 +162,7 @@
     <ClCompile Include="ui\ui.cpp" />
     <ClCompile Include="ui\widget.cpp" />
     <ClCompile Include="ui\widgets\widget_image.cpp" />
+    <ClCompile Include="ui\widgets\widget_text.cpp" />
     <ClCompile Include="ui\widgets\widget_texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +246,7 @@
     <ClInclude Include="ui\ui.h" />
     <ClInclude Include="ui\widget.h" />
     <ClInclude Include="ui\widgets\widget_image.h" />
+    <ClInclude Include="ui\widgets\widget_text.h" />
     <ClInclude Include="ui\widgets\widget_texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
