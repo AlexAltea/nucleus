@@ -219,6 +219,34 @@
       <Filter>cpu\ppu</Filter>
     </ClCompile>
     <ClCompile Include="nucleus.cpp" />
+    <ClCompile Include="ui\screen.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\screens\screen_logo.cpp">
+      <Filter>ui\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\screens\screen_main.cpp">
+      <Filter>ui\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\screens\screen_emulator.cpp">
+      <Filter>ui\screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externals\stb\stb_image.c">
+      <Filter>externals\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externals\stb\stb_truetype.c">
+      <Filter>externals\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\widgets\widget_image.cpp">
+      <Filter>ui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\widget.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\widgets\widget_texture.cpp">
+      <Filter>ui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -417,6 +445,35 @@
       <Filter>cpu\ppu</Filter>
     </ClInclude>
     <ClInclude Include="nucleus.h" />
+    <ClInclude Include="ui\screen.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\screens\screen_logo.h">
+      <Filter>ui\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\screens\screen_main.h">
+      <Filter>ui\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\screens\screen_emulator.h">
+      <Filter>ui\screens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externals\stb\stb_image.h">
+      <Filter>externals\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externals\stb\stb_truetype.h">
+      <Filter>externals\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\widgets\widget_image.h">
+      <Filter>ui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\widget.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\widgets\widget_texture.h">
+      <Filter>ui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl.h" />
+    <ClInclude Include="opengl_tables.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -464,9 +521,6 @@
     <Filter Include="gpu\null">
       <UniqueIdentifier>{43252559-7d28-47cc-b1eb-73bdc8e4466d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gpu\directx">
-      <UniqueIdentifier>{6ecc0a11-292c-4e55-b66a-3014fd0b78ff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="gpu\opengl">
       <UniqueIdentifier>{137cfb6a-f833-4228-bc33-ece142cebab8}</UniqueIdentifier>
     </Filter>
@@ -481,6 +535,15 @@
     </Filter>
     <Filter Include="cpu\ppu\recompiler">
       <UniqueIdentifier>{abbcc1e5-7379-43b2-935b-76d53e48beac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\screens">
+      <UniqueIdentifier>{1258d299-3155-4ae7-9c4d-59f6513082c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externals\stb">
+      <UniqueIdentifier>{3437dee8-85fc-483f-a84a-64fea19d469d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\widgets">
+      <UniqueIdentifier>{1221f87e-84aa-495c-9b9e-ac8974d05e98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

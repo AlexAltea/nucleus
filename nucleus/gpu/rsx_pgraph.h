@@ -11,6 +11,9 @@
 #include "nucleus/gpu/rsx_fp.h"
 #include "nucleus/gpu/rsx_texture.h"
 
+// OpenGL dependencies
+#include "nucleus/opengl.h"
+
 #include <vector>
 
 // RSX Vertex Program attribute
@@ -23,6 +26,35 @@ struct rsx_vp_attribute_t {
     u8 type;                // Format (S1, F, SF, UB, S32K, CMP, UB256).
     u32 location;           // Location (Local Memory or Main Memory).
     u32 offset;             // Offset at the specified location.
+};
+
+struct rsx_surface_t {
+    bool dirty;
+
+    u8 type;
+    u8 antialias;
+    u8 colorFormat;
+    u8 colorTarget;
+    u8 colorLocation[4];
+    u32 colorOffset[4];
+    u32 colorPitch[4];
+    u8 depthFormat;
+    u8 depthLocation;
+    u32 depthOffset;
+    u32 depthPitch;
+    u16 width;
+    u16 height;
+    u16 x;
+    u16 y;
+};
+
+struct rsx_viewport_t {
+    bool dirty;
+
+    u16 width;
+    u16 height;
+    u16 x;
+    u16 y;
 };
 
 // RSX's PGRAPH engine (Curie)
@@ -39,6 +71,9 @@ public:
     u32 vertex_data_base_offset;
     u32 vertex_data_base_index;
     u32 vertex_primitive;
+
+    rsx_surface_t surface;
+    rsx_viewport_t viewport;
 
     // DMA
     u32 dma_report;
@@ -70,6 +105,7 @@ public:
 
     // Auxiliary methods
     void LoadVertexAttributes(u32 first, u32 count);
+    virtual GLuint GetColorTarget(u32 address)=0;
 
     // Rendering methods
     virtual void AlphaFunc(u32 func, f32 ref)=0;
@@ -85,5 +121,6 @@ public:
     virtual void Enable(u32 prop, u32 enabled)=0;
     virtual void End()=0;
     virtual void Flip()=0;
+    virtual void SurfaceColorTarget(u32 target)=0;
     virtual void UnbindVertexAttributes()=0;
 };

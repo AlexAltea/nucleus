@@ -11,24 +11,68 @@
 #include "nucleus/gpu/opengl/opengl_vp.h"
 #include "nucleus/gpu/opengl/opengl_fp.h"
 
-// OpenGL dependencies
-#include <GL/glew.h>
-
-#define checkRendererError(name) \
-    if (glGetError() != GL_NO_ERROR) { \
-        nucleus.log.error(LOG_GPU, "Something went wrong in %s", name); \
-    }
+#define checkRendererError(name) { \
+    GLenum error = glGetError(); \
+    if (error != GL_NO_ERROR) { \
+        nucleus.log.error(LOG_GPU, "Something went wrong in %s. Error code: %x", name, error); \
+    } \
+}
 
 PGRAPH_OpenGL::PGRAPH_OpenGL()
 {
-    // Wait until Nucleus window is ready
-    /*while (!ui.get()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-
-    m_window = ui.get();
-    m_window->init();*/
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
+
+PGRAPH_OpenGL::~PGRAPH_OpenGL() 
+{
+    glDeleteFramebuffers(1, &framebuffer);
+}
+
+void PGRAPH_OpenGL::SetColorTarget(u32 address, u8 attachment)
+{
+    // Generate a texture to hold the color buffer
+    if (colorTargets.find(address) == colorTargets.end()) {
+        GLuint colorTexture;
+        glGenTextures(1, &colorTexture);
+        glBindTexture(GL_TEXTURE_2D, colorTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface.width, surface.height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        colorTargets[address] = colorTexture;
+    }
+    glBindTexture(GL_TEXTURE_2D, colorTargets[address]);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachment, colorTargets[address], 0);
+    checkRendererError("SetColorTarget");
+}
+
+void PGRAPH_OpenGL::SetDepthTarget(u32 address)
+{
+    // Generate a texture to hold the depth buffer
+    if (depthTargets.find(address) == depthTargets.end()) {
+        GLuint depthTexture;
+        glGenTextures(1, &depthTexture);
+        glBindTexture(GL_TEXTURE_2D, depthTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, surface.width, surface.height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        depthTargets[address] = depthTexture;
+    }
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTargets[address], 0);
+    checkRendererError("SetDepthTarget");
+}
+
+GLuint PGRAPH_OpenGL::GetColorTarget(u32 address)
+{
+    if (colorTargets.find(address) == colorTargets.end()) {
+        return 0;
+    }
+    return colorTargets[address];
+}
+
+/**
+ * PGRAPH methods
+ */
 
 void PGRAPH_OpenGL::AlphaFunc(u32 func, f32 ref)
 {
@@ -116,6 +160,53 @@ void PGRAPH_OpenGL::DrawArrays(u32 first, u32 count)
 {
     // State
     glBlendFuncSeparate(blend_sfactor_rgb, blend_dfactor_rgb, blend_sfactor_alpha, blend_dfactor_alpha);
+
+    // Surface
+    if (surface.dirty) {
+        surface.dirty = false;
+        switch (surface.colorTarget) {
+        case RSX_SURFACE_TARGET_NONE:    
+            break;
+
+        case RSX_SURFACE_TARGET_0:
+            SetColorTarget(surface.colorOffset[0], 0);
+            break;
+
+        case RSX_SURFACE_TARGET_1:
+            SetColorTarget(surface.colorOffset[1], 1);
+            break;
+
+        case RSX_SURFACE_TARGET_MRT1:
+            SetColorTarget(surface.colorOffset[0], 0);
+            SetColorTarget(surface.colorOffset[1], 1);
+            break;
+
+        case RSX_SURFACE_TARGET_MRT2:
+            SetColorTarget(surface.colorOffset[0], 0);
+            SetColorTarget(surface.colorOffset[1], 1);
+            SetColorTarget(surface.colorOffset[2], 2);
+            break;
+
+        case RSX_SURFACE_TARGET_MRT3:
+            SetColorTarget(surface.colorOffset[0], 0);
+            SetColorTarget(surface.colorOffset[1], 1);
+            SetColorTarget(surface.colorOffset[2], 2);
+            SetColorTarget(surface.colorOffset[3], 3);
+            break;
+        }
+        SetDepthTarget(surface.depthOffset);
+
+        GLuint fbStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (fbStatus != GL_FRAMEBUFFER_COMPLETE) {
+            nucleus.log.error(LOG_GPU, "PGRAPH_OpenGL::DrawArrays: Framebuffer is not complete (0x%X)", fbStatus);
+        }
+    }
+
+    // Viewport
+    if (viewport.dirty) {
+        viewport.dirty = false;
+        glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+    }
 
     // Shaders
     auto vp_data = &vpe.data[vpe.start];
@@ -265,7 +356,49 @@ void PGRAPH_OpenGL::End()
 
 void PGRAPH_OpenGL::Flip()
 {
-    //m_window->swap_buffers();
+    glFlush();
+}
+
+void PGRAPH_OpenGL::SurfaceColorTarget(u32 target)
+{
+    GLenum bufs[4];
+    switch (target) {
+    case RSX_SURFACE_TARGET_NONE:
+        glDrawBuffers(0, nullptr);
+        break;
+
+    case RSX_SURFACE_TARGET_0:
+        bufs[0] = GL_COLOR_ATTACHMENT0;
+        glDrawBuffers(1, bufs);
+        break;
+
+    case RSX_SURFACE_TARGET_1:
+        bufs[0] = GL_COLOR_ATTACHMENT1;
+        glDrawBuffers(1, bufs);
+        break;
+
+    case RSX_SURFACE_TARGET_MRT1:
+        bufs[0] = GL_COLOR_ATTACHMENT0;
+        bufs[1] = GL_COLOR_ATTACHMENT1;
+        glDrawBuffers(2, bufs);
+        break;
+
+    case RSX_SURFACE_TARGET_MRT2:
+        bufs[0] = GL_COLOR_ATTACHMENT0;
+        bufs[1] = GL_COLOR_ATTACHMENT1;
+        bufs[2] = GL_COLOR_ATTACHMENT2;
+        glDrawBuffers(3, bufs);
+        break;
+
+    case RSX_SURFACE_TARGET_MRT3:
+        bufs[0] = GL_COLOR_ATTACHMENT0;
+        bufs[1] = GL_COLOR_ATTACHMENT1;
+        bufs[2] = GL_COLOR_ATTACHMENT2;
+        bufs[3] = GL_COLOR_ATTACHMENT3;
+        glDrawBuffers(4, bufs);
+        break;
+    }
+    checkRendererError("SurfaceColorTarget");
 }
 
 void PGRAPH_OpenGL::UnbindVertexAttributes()

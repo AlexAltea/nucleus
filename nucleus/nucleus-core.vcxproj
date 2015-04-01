@@ -80,6 +80,8 @@
     <ClCompile Include="..\externals\aes.cpp" />
     <ClCompile Include="..\externals\mongoose\mongoose.c" />
     <ClCompile Include="..\externals\sha1.cpp" />
+    <ClCompile Include="..\externals\stb\stb_image.c" />
+    <ClCompile Include="..\externals\stb\stb_truetype.c" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="cpu\cell.cpp" />
     <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer.cpp" />
@@ -126,6 +128,7 @@
     <ClCompile Include="memory\memory.cpp" />
     <ClCompile Include="memory\segment.cpp" />
     <ClCompile Include="nucleus.cpp" />
+    <ClCompile Include="opengl.cpp" />
     <ClCompile Include="syscalls\lv1\lv1_gpu.cpp" />
     <ClCompile Include="syscalls\lv2.cpp" />
     <ClCompile Include="syscalls\lv2\sys_cond.cpp" />
@@ -152,12 +155,21 @@
     <ClCompile Include="syscalls\modules\libsysmodule.cpp" />
     <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp" />
     <ClCompile Include="ui\language.cpp" />
+    <ClCompile Include="ui\screen.cpp" />
+    <ClCompile Include="ui\screens\screen_emulator.cpp" />
+    <ClCompile Include="ui\screens\screen_logo.cpp" />
+    <ClCompile Include="ui\screens\screen_main.cpp" />
     <ClCompile Include="ui\ui.cpp" />
+    <ClCompile Include="ui\widget.cpp" />
+    <ClCompile Include="ui\widgets\widget_image.cpp" />
+    <ClCompile Include="ui\widgets\widget_texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\externals\aes.h" />
     <ClInclude Include="..\externals\mongoose\mongoose.h" />
     <ClInclude Include="..\externals\sha1.h" />
+    <ClInclude Include="..\externals\stb\stb_image.h" />
+    <ClInclude Include="..\externals\stb\stb_truetype.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="cpu\cell.h" />
@@ -193,6 +205,8 @@
     <ClInclude Include="memory\memory.h" />
     <ClInclude Include="memory\segment.h" />
     <ClInclude Include="nucleus.h" />
+    <ClInclude Include="opengl.h" />
+    <ClInclude Include="opengl_tables.h" />
     <ClInclude Include="syscalls\callback.h" />
     <ClInclude Include="syscalls\lv1.h" />
     <ClInclude Include="syscalls\lv1\lv1_gpu.h" />
@@ -224,7 +238,14 @@
     <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
     <ClInclude Include="ui\language.h" />
+    <ClInclude Include="ui\screen.h" />
+    <ClInclude Include="ui\screens\screen_emulator.h" />
+    <ClInclude Include="ui\screens\screen_logo.h" />
+    <ClInclude Include="ui\screens\screen_main.h" />
     <ClInclude Include="ui\ui.h" />
+    <ClInclude Include="ui\widget.h" />
+    <ClInclude Include="ui\widgets\widget_image.h" />
+    <ClInclude Include="ui\widgets\widget_texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

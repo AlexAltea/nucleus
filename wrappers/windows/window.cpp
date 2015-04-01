@@ -6,8 +6,7 @@
 #include "window.h"
 #include "resource.h"
 
-// Translate UI strings
-#define _(s) ui.language.translate(s)
+#include "nucleus/nucleus.h"
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -15,6 +14,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_CLOSE:
         DestroyWindow(hwnd);
         //nucleus.task(NUCLEUS_EVENT_CLOSE);
+        break;
+    case WM_SIZE:
+        nucleusOnResize(LOWORD(lParam), HIWORD(lParam), 100, 60);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -52,7 +54,7 @@ Window::Window(const std::string& title, int width, int height) : m_title(title)
 
     // Set initial size
     RECT rc = {0, 0, m_width, m_height};
-    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, TRUE);
+    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
     // Create the Window
     m_hwnd = CreateWindowEx(
@@ -72,19 +74,8 @@ Window::Window(const std::string& title, int width, int height) : m_title(title)
         return;
     }
 
-    // Configure menus
     ShowWindow(m_hwnd, SW_SHOWNORMAL);
     UpdateWindow(m_hwnd);
-    HMENU hMenu = CreateMenu();
-    HMENU hSubMenu;
-
-    hSubMenu = CreatePopupMenu();
-    AppendMenu(hSubMenu, MF_STRING, 0, /*_*/("&Exit"));
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, /*_*/("&File"));
-    hSubMenu = CreatePopupMenu();
-    AppendMenu(hSubMenu, MF_STRING, 0, /*_*/("About..."));
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hSubMenu, /*_*/("&Help"));
-    SetMenu(m_hwnd, hMenu);
 }
 
 void Window::loop()

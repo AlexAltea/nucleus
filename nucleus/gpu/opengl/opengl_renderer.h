@@ -9,19 +9,32 @@
 #include "nucleus/gpu/rsx_pgraph.h"
 #include "nucleus/gpu/opengl/opengl_vp.h"
 #include "nucleus/gpu/opengl/opengl_fp.h"
-#include "nucleus/ui/ui.h"
+
+// OpenGL dependencies
+#include "nucleus/opengl.h"
 
 #include <unordered_map>
 
 class PGRAPH_OpenGL : public PGRAPH {
-    //Window* m_window;
-
     // Cache
     std::unordered_map<u64, OpenGLVertexProgram> cache_vp;
     std::unordered_map<u64, OpenGLFragmentProgram> cache_fp;
 
+    // Surface
+    GLuint framebuffer;
+    std::unordered_map<u32, GLuint> colorTargets;
+    std::unordered_map<u32, GLuint> depthTargets;
+
+    // Auxiliary methods
+    void SetColorTarget(u32 address, u8 attachment);
+    void SetDepthTarget(u32 address);
+
 public:
     PGRAPH_OpenGL();
+    ~PGRAPH_OpenGL();
+
+    // Auxiliary methods
+    virtual GLuint GetColorTarget(u32 address) override;
 
     virtual void AlphaFunc(u32 func, f32 ref) override;
     virtual void Begin(u32 mode) override;
@@ -36,5 +49,6 @@ public:
     virtual void Enable(u32 prop, u32 enabled) override;
     virtual void End() override;
     virtual void Flip() override;
+    virtual void SurfaceColorTarget(u32 target) override;
     virtual void UnbindVertexAttributes() override;
 };

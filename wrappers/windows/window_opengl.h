@@ -12,12 +12,14 @@
 #include <Windows.h>
 
 class WindowOpenGL : public Window {
-    HDC m_hdc;
-    HGLRC m_hrc;
+    HDC hdc;
+    HGLRC hrc_ui;
+    HGLRC hrc_rsx;
 
 public:
     WindowOpenGL(const std::string& title, int width, int height);
 
-    virtual void init() override;
+    virtual void connect_ui() override;
+    virtual void connect_rsx() override;
     virtual void swap_buffers() override;
 };

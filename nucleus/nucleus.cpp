@@ -11,44 +11,56 @@
 
 #include <iostream>
 
+void nucleusConfigure(int argc, char **argv)
+{
+    // Configure emulator
+    config.parseArguments(argc, argv);
+}
+
 int nucleusInitialize(int argc, char **argv)
 {
     if (argc <= 1) {
         std::cout
             << "Nucleus v0.0.4: A PlayStation 3 emulator.\n"
-            << "Usage: nucleus [arguments] path/to/executable.ppu.self\n"
+            << "Usage: nucleus [arguments]\n"
             << "Arguments:\n"
-            << "  --console     Avoids the Nucleus UI window, disabling GPU backends.\n"
-            << "  --debugger    Create a Nerve backend debugging server.\n"
-            << "                More information at: http://alexaltea.github.io/nerve/ \n"
+            << "  --boot [file]  Boot the specified file automatically.\n"
+            << "  --console      Avoids the Nucleus UI window, disabling GPU backends.\n"
+            << "  --debugger     Create a Nerve backend debugging server.\n"
+            << "                 More information at: http://alexaltea.github.io/nerve/ \n"
             << std::endl;
     }
 
-    else {
-        // Configure emulator
-        config.parseArguments(argc, argv);
-        std::string elfPath = argv[argc-1];
+    // Start debugger
+    if (config.debugger) {
+        debugger.init();
+        std::cerr << "Debugger listening on 127.0.0.1:8000" << std::endl;
+    }
 
-        // Start UI if console-only mode is disabled
-        if (!config.console) {
-            ui.init();
-        }
+    // Start UI if console-only mode is disabled
+    if (!config.console) {
+        ui.init();
+    }
 
-        // Start emulator
-        if (!nucleus.load(elfPath)) {
-            std::cerr << "Could not load the given executable." << std::endl;
-            return 1;
-        }
-
-        // Start debugger
-        if (config.debugger) {
-            debugger.init();
-            std::cerr << "Debugger listening on 127.0.0.1:8000" << std::endl;
-        }
-
+    // Start emulator
+    if (!config.boot.empty()) {
+        nucleus.load(config.boot);
         nucleus.run();
         nucleus.idle();
     }
 
     return 0;
+}
+
+/**
+ * Events
+ */
+void nucleusOnResize(unsigned int w, unsigned int h, unsigned int dpi, unsigned int hz)
+{
+    ui.surfaceWidth = w;
+    ui.surfaceHeight = h;
+    ui.surfaceDpi = dpi;
+    ui.surfaceHz = hz;
+    ui.surfaceProportion = float(w) / float(h);
+    ui.surfaceChanged = true;
 }

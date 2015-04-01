@@ -5,25 +5,13 @@
 
 #pragma once
 
-#include "nucleus/common.h"
-
 #include <string>
 
 #include <Windows.h>
 
-// Avoid name collisions with <Windows.h>
-#undef REG_NONE
-
-// Menu entry IDs
-enum {
-    UI_FILE_EXIT,
-    UI_HELP_ABOUT,
-};
-
 class Window {
 protected:
     HWND m_hwnd;
-    HMENU m_hmenu;
 
     std::string m_title;
     int m_width;
@@ -34,6 +22,7 @@ public:
 
     void loop();
 
-    virtual void init()=0;
+    virtual void connect_ui()=0;
+    virtual void connect_rsx()=0;
     virtual void swap_buffers()=0;
 };

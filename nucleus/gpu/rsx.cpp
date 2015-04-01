@@ -12,11 +12,13 @@
 #include "nucleus/gpu/rsx_enum.h"
 #include "nucleus/gpu/rsx_methods.h"
 #include "nucleus/gpu/rsx_vp.h"
-
 #include "nucleus/gpu/opengl/opengl_renderer.h"
 
+// Platform specific drawing contexts
 #ifdef NUCLEUS_PLATFORM_WINDOWS
 #include <Windows.h>
+#include "wrappers/windows/window.h"
+extern Window* window;
 #endif
 
 // Method matching
@@ -39,7 +41,8 @@
     case_##n(baseOffset, step) \
     index = (offset - baseOffset) / step;
 
-void RSX::init() {
+void RSX::init()
+{
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
     nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x40000000, 0x1000);
     nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x40100000, 0x1000);
@@ -66,11 +69,13 @@ void RSX::init() {
     dma_control->put = 0;
 
     m_pfifo_thread = new std::thread([&](){
+        connect();
         task();
     });
 }
 
-void RSX::task() {
+void RSX::task()
+{
     // Initialize renderer
     switch (config.gpuBackend) {
     case GPU_BACKEND_OPENGL:
@@ -235,15 +240,60 @@ void RSX::method(u32 offset, u32 parameter)
         pgraph->dma_report = parameter;
         break;
 
-    /*
+    case NV4097_SET_SURFACE_COLOR_AOFFSET:
+        pgraph->surface.dirty = true;
+        pgraph->surface.colorOffset[0] = parameter;
+        break;
+
+    case NV4097_SET_SURFACE_COLOR_BOFFSET:
+        pgraph->surface.dirty = true;
+        pgraph->surface.colorOffset[1] = parameter;
+        break;
+
+    case NV4097_SET_SURFACE_COLOR_COFFSET:
+        pgraph->surface.dirty = true;
+        pgraph->surface.colorOffset[2] = parameter;
+        break;
+
+    case NV4097_SET_SURFACE_COLOR_DOFFSET:
+        pgraph->surface.dirty = true;
+        pgraph->surface.colorOffset[3] = parameter;
+        break;
+
+    case NV4097_SET_SURFACE_ZETA_OFFSET:
+        pgraph->surface.dirty = true;
+        pgraph->surface.depthOffset = parameter;
+        break;
+
+    case NV4097_SET_SURFACE_CLIP_HORIZONTAL:
+        pgraph->surface.dirty = true;
+        pgraph->surface.x = parameter & 0xFFFF;
+        pgraph->surface.width = (parameter >> 16) & 0xFFFF;
+        break;
+
+    case NV4097_SET_SURFACE_CLIP_VERTICAL:
+        pgraph->surface.dirty = true;
+        pgraph->surface.y = parameter & 0xFFFF;
+        pgraph->surface.height = (parameter >> 16) & 0xFFFF;
+        break;
+
+    case NV4097_SET_SURFACE_COLOR_TARGET:
+        pgraph->surface.dirty = true;
+        pgraph->surface.colorTarget = parameter;
+        pgraph->SurfaceColorTarget(parameter);
+        break;
+
     case NV4097_SET_VIEWPORT_HORIZONTAL:
+        pgraph->viewport.x = parameter & 0xFFFF;
+        pgraph->viewport.width = (parameter >> 16) & 0xFFFF;
+        pgraph->viewport.dirty = true;
+        break;
 
     case NV4097_SET_VIEWPORT_VERTICAL:
-
-    case NV4097_SET_CLIP_MIN:
-
-    case NV4097_SET_VIEWPORT_OFFSET:
-    */
+        pgraph->viewport.y = parameter & 0xFFFF;
+        pgraph->viewport.height = (parameter >> 16) & 0xFFFF;
+        pgraph->viewport.dirty = true;
+        break;
 
     case_range(32, NV4097_SET_TRANSFORM_PROGRAM, 4)
         pgraph->vpe.data[pgraph->vpe.load].word[index % 4] = parameter;
@@ -396,6 +446,7 @@ void RSX::method(u32 offset, u32 parameter)
         break;
 
     case_range(2, SCE_DRIVER_QUEUE, 4)
+        queued_display = parameter;
         lv1_gpu_context_attribute(0x55555555, 0x103, index, parameter, 0, 0);
         break;
 
@@ -456,4 +507,17 @@ u32 RSX::get_ea(u32 offset)
     }
     nucleus.log.warning(LOG_GPU, "Queried invalid IO address");
     return 0;
+}
+
+GLuint RSX::get_display()
+{
+    u32 displayAddr = display[queued_display].offset;
+    return pgraph->GetColorTarget(displayAddr);
+}
+
+void RSX::connect()
+{
+#ifdef NUCLEUS_PLATFORM_WINDOWS
+    window->connect_rsx();
+#endif
 }

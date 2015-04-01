@@ -73,6 +73,11 @@ s32 lv1_gpu_context_attribute(s32 context_id, u32 operation_code, u64 p1, u64 p2
         if (id > 7 || width > 0x1000 || height > 0x1000 /* TODO: || offset >= something*/) {
             return LV1_ILLEGAL_PARAMETER_VALUE;
         }
+
+        nucleus.rsx.display[id].width = width;
+        nucleus.rsx.display[id].height = height;
+        nucleus.rsx.display[id].pitch = pitch;
+        nucleus.rsx.display[id].offset = offset;
         break;
     }
 

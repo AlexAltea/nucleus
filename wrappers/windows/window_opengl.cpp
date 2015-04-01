@@ -6,71 +6,98 @@
 #include "window_opengl.h"
 
 // OpenGL dependencies
-#include <GL/glew.h>
+#include "nucleus/opengl.h"
+
+static const PIXELFORMATDESCRIPTOR pfd = {
+    sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
+    1,                              // Version
+    PFD_DRAW_TO_WINDOW |            // Format must support Window
+    PFD_SUPPORT_OPENGL |            // Format must support OpenGL
+    PFD_DOUBLEBUFFER,               // Format must support double buffering
+    PFD_TYPE_RGBA,                  // Request an RGBA format
+    24,                             // Select our color depth
+    0, 0, 0, 0, 0, 0,               // Color bits ignored
+    8,                              // No alpha buffer
+    0,                              // Shift bit ignored
+    0,                              // No accumulation Buffer
+    0, 0, 0, 0,                     // Accumulation bits Ignored
+    16,                             // At least a 16-bit Z-buffer (depth buffer)
+    8,                              // 8-bit stencil buffer
+    0,                              // No auxiliary buffer
+    PFD_MAIN_PLANE,                 // Main drawing layer
+    0,                              // Reserved
+    0, 0, 0                         // Layer masks ignored
+};
 
 WindowOpenGL::WindowOpenGL(const std::string& title, int width, int height) : Window(title, width, height)
 {
-    m_hdc = GetDC(m_hwnd);
-}
+    hdc = GetDC(m_hwnd);
 
-void WindowOpenGL::init()
-{
-    GLuint PixelFormat;
-    static const PIXELFORMATDESCRIPTOR pfd = {
-        sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
-        1,                              // Version
-        PFD_DRAW_TO_WINDOW |            // Format must support Window
-        PFD_SUPPORT_OPENGL |            // Format must support OpenGL
-        PFD_DOUBLEBUFFER,               // Format must support double buffering
-        PFD_TYPE_RGBA,                  // Request an RGBA format
-        24,                             // Select our color depth
-        0, 0, 0, 0, 0, 0,               // Color bits ignored
-        8,                              // No alpha buffer
-        0,                              // Shift bit ignored
-        0,                              // No accumulation Buffer
-        0, 0, 0, 0,                     // Accumulation bits Ignored
-        16,                             // At least a 16-bit Z-buffer (depth buffer)
-        8,                              // 8-bit stencil buffer
-        0,                              // No auxiliary buffer
-        PFD_MAIN_PLANE,                 // Main drawing layer
-        0,                              // Reserved
-        0, 0, 0                         // Layer masks ignored
-    };
-
-    if (!m_hdc) {
+    /**
+     * Setting up drawing context
+     */
+    if (!hdc) {
         MessageBox(m_hwnd, "Failed to get a device context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
-
-    PixelFormat = ChoosePixelFormat(m_hdc, &pfd);
+    GLuint PixelFormat = ChoosePixelFormat(hdc, &pfd);
     if (!PixelFormat) {
         MessageBox(m_hwnd, "Can't find a suitable PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
-
-    if (!SetPixelFormat(m_hdc, PixelFormat, &pfd)) {
+    if (!SetPixelFormat(hdc, PixelFormat, &pfd)) {
         MessageBox(m_hwnd, "Can't set the PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
 
-    /*m_hrc = wglCreateContext(m_hdc);
-    if (!m_hrc) {
-        MessageBox(m_hwnd, "Can't create a GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+    /**
+     * Initialize OpenGL extensions (through a dummy context)
+     */
+    HGLRC dummyRc = wglCreateContext(hdc);
+    wglMakeCurrent(hdc, dummyRc);
+    if (!openglInit()) {
+        MessageBox(m_hwnd, "Could not initialize all OpenGL extensions.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
+    wglMakeCurrent(nullptr, nullptr);
+    wglDeleteContext(dummyRc);
 
-    if (!wglMakeCurrent(m_hdc, m_hrc)) {
-        MessageBox(m_hwnd, "Can't activate the GL rendering context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+    /**
+     * Setting up OpenGL contexts
+     */
+    static const int contextAttribs[] = {
+        WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
+        0
+    };
+    hrc_ui = wglCreateContextAttribsARB(hdc, 0, contextAttribs);
+    if (!hrc_ui) {
+        MessageBox(m_hwnd, "UI OpenGL context: wglCreateContext failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
-    }*/
+    }
+    hrc_rsx = wglCreateContextAttribsARB(hdc, hrc_ui, contextAttribs);
+    if (!hrc_rsx) {
+        MessageBox(m_hwnd, "RSX OpenGL context: wglCreateContext failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
+}
 
-    /*if (glewInit() != GLEW_OK) {
-        MessageBox(m_hwnd, "Failed to initialize GLEW.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+void WindowOpenGL::connect_ui()
+{
+    if (!wglMakeCurrent(hdc, hrc_ui)) {
+        MessageBox(m_hwnd, "UI OpenGL context: wglMakeCurrent failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
-    }*/
+    }
+}
+
+void WindowOpenGL::connect_rsx()
+{
+    if (!wglMakeCurrent(hdc, hrc_rsx)) {
+        MessageBox(m_hwnd, "RSX OpenGL context: wglMakeCurrent failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 }
 
 void WindowOpenGL::swap_buffers()
 {
-    SwapBuffers(m_hdc);
+    SwapBuffers(hdc);
 }
