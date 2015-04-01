@@ -5,7 +5,9 @@
 
 #include "screen_logo.h"
 #include "nucleus/ui/ui.h"
+#include "nucleus/ui/transitions.h"
 #include "nucleus/ui/screens/screen_emulator.h"
+#include "nucleus/ui/screens/screen_main.h"
 
 // OpenGL dependencies
 #include "nucleus/opengl.h"
@@ -26,8 +28,15 @@ void ScreenLogo::render()
 
 void ScreenLogo::update()
 {
-    if (frame > 30) {
-        ui.push_screen(new ScreenEmulator());
+    if (frame > 120) {
+        logo.style.opacity = 1.0 - transition::easeOut((frame - 120) / 60.0);
+    }
+    if (frame > 180) {
+        if (!config.boot.empty()) {
+            ui.push_screen(new ScreenEmulator());
+        } else {
+            ui.push_screen(new ScreenMain());
+        }
         finished = true;
     }
 }

@@ -1,0 +1,20 @@
+/**
+ * (c) 2015 Nucleus project. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
+
+#include "transitions.h"
+
+namespace transition {
+
+double easeIn(double t)
+{
+    return 0.0;
+}
+
+double easeOut(double t)
+{
+    return -1.0 * t * (t - 2.0);
+}
+
+}  // namespace transition

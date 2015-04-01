@@ -20,6 +20,7 @@ void WidgetTexture::render()
 
     glBindTexture(GL_TEXTURE_2D, textureId);
     glBegin(GL_QUADS);
+    glColor4f(1.0f, 1.0f, 1.0f, style.opacity);
     glTexCoord2f(0, 1); glVertex2f(x1, y1);
     glTexCoord2f(0, 0); glVertex2f(x1, y2);
     glTexCoord2f(1, 0); glVertex2f(x2, y2);

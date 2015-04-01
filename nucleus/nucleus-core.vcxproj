@@ -160,6 +160,7 @@
     <ClCompile Include="ui\screens\screen_emulator.cpp" />
     <ClCompile Include="ui\screens\screen_logo.cpp" />
     <ClCompile Include="ui\screens\screen_main.cpp" />
+    <ClCompile Include="ui\transitions.cpp" />
     <ClCompile Include="ui\ui.cpp" />
     <ClCompile Include="ui\widget.cpp" />
     <ClCompile Include="ui\widgets\widget_image.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="ui\screens\screen_emulator.h" />
     <ClInclude Include="ui\screens\screen_logo.h" />
     <ClInclude Include="ui\screens\screen_main.h" />
+    <ClInclude Include="ui\transitions.h" />
     <ClInclude Include="ui\ui.h" />
     <ClInclude Include="ui\widget.h" />
     <ClInclude Include="ui\widgets\widget_image.h" />

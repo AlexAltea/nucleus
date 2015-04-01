@@ -253,6 +253,9 @@
     <ClCompile Include="loader\psf.cpp">
       <Filter>loader</Filter>
     </ClCompile>
+    <ClCompile Include="ui\transitions.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -485,6 +488,9 @@
     </ClInclude>
     <ClInclude Include="loader\psf.h">
       <Filter>loader</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\transitions.h">
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
