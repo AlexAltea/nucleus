@@ -28,10 +28,10 @@ void ScreenLogo::render()
 
 void ScreenLogo::update()
 {
-    if (frame > 120) {
-        logo.style.opacity = 1.0 - transition::easeOut((frame - 120) / 60.0);
+    if (dtime > 2000.0) {
+        logo.style.opacity = 1.0 - transition::easeOut((dtime - 2000.0) / 1000.0);
     }
-    if (frame > 180) {
+    if (dtime > 3000.0) {
         if (!config.boot.empty()) {
             ui.push_screen(new ScreenEmulator());
         } else {

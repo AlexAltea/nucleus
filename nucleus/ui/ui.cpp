@@ -53,9 +53,10 @@ void UI::task()
         auto it = m_screens.begin();
         while (it != m_screens.end()) {
             Screen* screen = *it;
+            screen->prologue();
             screen->render();
             screen->update();
-            screen->frame++;
+            screen->epilogue();
 
             if (screen->finished) {
                 delete screen;
