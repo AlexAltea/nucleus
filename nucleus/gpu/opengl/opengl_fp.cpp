@@ -255,7 +255,10 @@ bool OpenGLFragmentProgram::compile()
     GLint status;
     glGetShaderiv(id, GL_COMPILE_STATUS, &status);
     if (status != GL_TRUE) {
-        nucleus.log.error(LOG_GPU, "OpenGLFragmentProgram::compile: Can't compile shader");
+        GLsizei infoLenght;
+        char infoBuffer[4096];
+        glGetShaderInfoLog(id, sizeof(infoBuffer), &infoLenght, infoBuffer);
+        nucleus.log.error(LOG_GPU, "OpenGLFragmentProgram::compile: Can't compile shader. Reason:\n%s", infoBuffer);
         return false;
     }
 
