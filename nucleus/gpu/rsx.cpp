@@ -446,6 +446,7 @@ void RSX::method(u32 offset, u32 parameter)
         break;
 
     case_range(2, SCE_DRIVER_QUEUE, 4)
+        glFinish();
         queued_display = parameter;
         lv1_gpu_context_attribute(0x55555555, 0x103, index, parameter, 0, 0);
         break;

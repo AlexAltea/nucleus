@@ -32,6 +32,11 @@ void UI::init()
 
 void UI::task()
 {
+    // Prepare context
+#ifdef NUCLEUS_PLATFORM_WINDOWS
+    wglSwapIntervalEXT(0);
+#endif
+
     // Prepare state
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
@@ -72,6 +77,9 @@ void UI::task()
             m_screens.push_back(screen);
             m_new_screens.pop();
         }
+
+        // TODO: Adjusting the framerate manually at 60 FPS is a terrible idea
+        std::this_thread::sleep_for(std::chrono::milliseconds(15));
 
         swap_buffers();
     }

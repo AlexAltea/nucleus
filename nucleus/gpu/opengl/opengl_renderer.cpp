@@ -355,7 +355,6 @@ void PGRAPH_OpenGL::End()
 
 void PGRAPH_OpenGL::Flip()
 {
-    glFlush();
 }
 
 void PGRAPH_OpenGL::SurfaceColorTarget(u32 target)

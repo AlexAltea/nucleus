@@ -21,6 +21,7 @@ void ScreenEmulator::render()
 {
     rsxDisplay.textureId = nucleus.rsx.get_display();
     rsxDisplay.render();
+    glFinish();
 }
 
 void ScreenEmulator::update()
