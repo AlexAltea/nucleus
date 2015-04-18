@@ -28,7 +28,7 @@ public:
     // Hardware & OS
     Memory memory;
     cpu::Cell cell;
-    RSX rsx;
+    gpu::RSX rsx;
     LV2 lv2;
 
     // Mount points

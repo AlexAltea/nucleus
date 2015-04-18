@@ -15,6 +15,8 @@
 
 #include <unordered_map>
 
+namespace gpu {
+
 class PGRAPH_OpenGL : public PGRAPH {
     // Cache
     std::unordered_map<u64, OpenGLVertexProgram> cache_vp;
@@ -52,3 +54,5 @@ public:
     virtual void SurfaceColorTarget(u32 target) override;
     virtual void UnbindVertexAttributes() override;
 };
+
+}  // namespace gpu

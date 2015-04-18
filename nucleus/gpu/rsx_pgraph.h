@@ -16,6 +16,8 @@
 
 #include <vector>
 
+namespace gpu {
+
 // RSX Vertex Program attribute
 struct rsx_vp_attribute_t {
     bool dirty;             // Flag: Needs to be reloaded and rebinded.
@@ -124,3 +126,5 @@ public:
     virtual void SurfaceColorTarget(u32 target)=0;
     virtual void UnbindVertexAttributes()=0;
 };
+
+}  // namespace gpu

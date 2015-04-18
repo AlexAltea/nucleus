@@ -11,6 +11,8 @@
 // OpenGL dependencies
 #include "nucleus/opengl.h"
 
+namespace gpu {
+
 // Input register
 struct fp_input_register_t {
     const char* glReg;
@@ -264,3 +266,5 @@ bool OpenGLFragmentProgram::compile()
 
     return true;
 }
+
+}  // namespace gpu

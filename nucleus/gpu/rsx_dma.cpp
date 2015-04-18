@@ -6,6 +6,8 @@
 #include "rsx_dma.h"
 #include "nucleus/emulator.h"
 
+namespace gpu {
+
 DMAObject dma_address(u32 dma_object)
 {
     // NOTE: RAMIN is not emulated, therefore DMA Objects are hardcoded in this function
@@ -117,3 +119,5 @@ void dma_write64(u32 dma_object, u32 offset, u64 value)
 
     nucleus.log.warning(LOG_GPU, "Illegal DMA 64-bit write");
 }
+
+}  // namespace gpu

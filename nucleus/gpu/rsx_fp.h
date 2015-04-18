@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+namespace gpu {
+
 // RSX Fragment Program opcodes
 enum {
     RSX_FP_OPCODE_NOP        = 0x00, // No-Operation
@@ -141,3 +143,5 @@ union rsx_fp_instruction_source_t
         u32 neg       : 1; // Negated value
     };
 };
+
+}  // namespace gpu

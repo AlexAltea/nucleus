@@ -41,6 +41,8 @@ extern Window* window;
     case_##n(baseOffset, step) \
     index = (offset - baseOffset) / step;
 
+namespace gpu {
+
 void RSX::init()
 {
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
@@ -522,3 +524,5 @@ void RSX::connect()
     window->connect_rsx();
 #endif
 }
+
+}  // namespace gpu

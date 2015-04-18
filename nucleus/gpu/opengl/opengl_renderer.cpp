@@ -18,6 +18,8 @@
     } \
 }
 
+namespace gpu {
+
 PGRAPH_OpenGL::PGRAPH_OpenGL()
 {
     glGenFramebuffers(1, &framebuffer);
@@ -407,3 +409,5 @@ void PGRAPH_OpenGL::UnbindVertexAttributes()
     }
     glBindVertexArray(0);
 }
+
+}  // namespace gpu

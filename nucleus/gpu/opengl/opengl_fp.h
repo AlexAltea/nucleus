@@ -9,6 +9,8 @@
 
 #include <string>
 
+namespace gpu {
+
 class OpenGLFragmentProgram
 {
     // OpenGL shader source
@@ -48,3 +50,5 @@ public:
     // Compile the generated GLSL code for the host GPU
     bool compile();
 };
+
+}  // namespace gpu

@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+namespace gpu {
+
 // RSX Vertex Program opcodes
 enum {
     // Vertex Program VEC Opcodes
@@ -124,3 +126,5 @@ union rsx_vp_instruction_source_t
         u32 neg       : 1;
     };
 };
+
+}  // namespace gpu

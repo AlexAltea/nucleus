@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+namespace gpu {
+
 enum {
     // NV40_CHANNEL_DMA (NV406E)
     // These methods are executed by the PFIFO puller itself, instead of being forwared to an engine.
@@ -307,3 +309,5 @@ enum {
     SCE_DRIVER_QUEUE                         = 0x0000E940, // Head is specified by the 8 possible indices [0xE940:0E95C]
     SCE_DRIVER_INTERRUPT                     = 0x0000EB00,
 };
+
+}  // namespace gpu

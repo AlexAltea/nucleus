@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+namespace gpu {
+
 // Properties
 enum {
     RSX_MAX_TEXTURES = 16,
@@ -63,3 +65,5 @@ enum {
     RSX_SURFACE_TARGET_MRT2     = 0x10 | 0x7,
     RSX_SURFACE_TARGET_MRT3     = 0x10 | 0xF,
 };
+
+}  // namespace gpu

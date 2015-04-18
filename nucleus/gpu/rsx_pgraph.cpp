@@ -7,6 +7,8 @@
 #include "nucleus/emulator.h"
 #include "nucleus/gpu/rsx_enum.h"
 
+namespace gpu {
+
 u64 PGRAPH::HashTexture()
 {
     return 0;
@@ -88,3 +90,5 @@ void PGRAPH::LoadVertexAttributes(u32 first, u32 count)
         }
     }
 }
+
+}  // namespace gpu

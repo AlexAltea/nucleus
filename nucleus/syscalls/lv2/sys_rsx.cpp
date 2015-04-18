@@ -92,7 +92,7 @@ s32 sys_rsx_context_free(u32 context_id)
  */
 s32 sys_rsx_context_iomap(u32 context_id, u32 io, u32 ea, u32 size, u64 flags)
 {
-    rsx_iomap_t iomap;
+    gpu::rsx_iomap_t iomap;
     iomap.io = io;
     iomap.ea = ea;
     iomap.size = size;

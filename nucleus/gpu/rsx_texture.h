@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+namespace gpu {
+
 struct rsx_texture_t {
     // Offset
     u32 offset;        // Offset at the specified location
@@ -118,3 +120,5 @@ enum {
     RSX_TEXTURE_MIRROR_ONCE_BORDER          = 7,
     RSX_TEXTURE_MIRROR_ONCE_CLAMP           = 8,
 };
+
+}  // namespace gpu

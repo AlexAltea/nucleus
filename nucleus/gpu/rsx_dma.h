@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+namespace gpu {
+
 // RSX DMA class handles
 enum {
     RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY0   = 0x66604200, // Target: lpar_reports[0x1000 : 0x????]
@@ -51,3 +53,5 @@ void dma_write8(u32 dma_object, u32 offset, u8 value);
 void dma_write16(u32 dma_object, u32 offset, u16 value);
 void dma_write32(u32 dma_object, u32 offset, u32 value);
 void dma_write64(u32 dma_object, u32 offset, u64 value);
+
+}  // namespace gpu

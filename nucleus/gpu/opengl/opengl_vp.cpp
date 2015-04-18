@@ -11,6 +11,8 @@
 // OpenGL dependencies
 #include "nucleus/opengl.h"
 
+namespace gpu {
+
 // Output register
 struct vp_output_register_t {
     const char* glReg;
@@ -272,3 +274,5 @@ bool OpenGLVertexProgram::compile()
 
     return true;
 }
+
+}  // namespace gpu

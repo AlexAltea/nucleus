@@ -14,6 +14,8 @@
 // OpenGL dependencies
 #include "nucleus/opengl.h"
 
+namespace gpu {
+
 struct rsx_device_t {
 };
 
@@ -162,3 +164,5 @@ public:
 
     void method(u32 offset, u32 parameter);
 };
+
+}  // namespace gpu
