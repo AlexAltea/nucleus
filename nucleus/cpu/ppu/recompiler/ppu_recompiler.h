@@ -58,16 +58,21 @@ class Recompiler
     llvm::AllocaInst* allocaVariable(llvm::Type* type, const llvm::Twine& name);
 
     llvm::Value* getGPR(int index, int bits=64);
-    void setGPR(int index, llvm::Value* value);
-
     llvm::Value* getFPR(int index);
-    void setFPR(int index, llvm::Value* value);
-
     llvm::Value* getVR_u8(int index);
     llvm::Value* getVR_u16(int index);
     llvm::Value* getVR_u32(int index);
     llvm::Value* getVR_f32(int index);
+
+    void setGPR(int index, llvm::Value* value);
+    void setFPR(int index, llvm::Value* value);
     void setVR(int index, llvm::Value* value);
+
+    // State pointer allocation
+    llvm::AllocaInst* state = nullptr;
+
+    // State pointer access
+    llvm::Value* getState();
 
     /**
      * Operation flags

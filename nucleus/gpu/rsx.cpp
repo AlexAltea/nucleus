@@ -515,7 +515,10 @@ u32 RSX::get_ea(u32 offset)
 GLuint RSX::get_display()
 {
     u32 displayAddr = display[queued_display].offset;
-    return pgraph->GetColorTarget(displayAddr);
+    if (pgraph) {
+        return pgraph->GetColorTarget(displayAddr);
+    }
+    return 0;
 }
 
 void RSX::connect()

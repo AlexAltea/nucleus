@@ -92,6 +92,11 @@ void Recompiler::createProlog()
 
     // Place arguments in local variables
     auto argValue = function->function->arg_begin();
+
+    // NOTE: Remove once MCJIT + TLS is supported in LLVM
+    state = allocaVariable(llvm::PointerType::get(State::type(), 0), "state");
+    builder.CreateStore(argValue++, state);
+
     for (int i = 0; i < function->type_in.size(); i++, argValue++) {
         switch (function->type_in[i]) {
         case FUNCTION_IN_INTEGER:
@@ -203,6 +208,11 @@ void Recompiler::setVR(int index, llvm::Value* value)
 {
     // TODO: ?
     return;
+}
+
+llvm::Value* Recompiler::getState()
+{
+    return builder.CreateLoad(state, "state");
 }
 
 /**

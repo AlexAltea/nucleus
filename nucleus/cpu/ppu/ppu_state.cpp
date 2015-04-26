@@ -22,28 +22,5 @@ llvm::StructType* State::type()
     return ppuStateType;
 }
 
-void State::declareGlobalState(llvm::Module* module)
-{
-    module->getOrInsertGlobal("ppuState", State::type());
-
-    // Configure global PPU state
-    llvm::GlobalVariable* ppuState = module->getNamedGlobal("ppuState");
-    ppuState->setConstant(false);
-    ppuState->setThreadLocal(true);
-    ppuState->setLinkage(llvm::GlobalValue::ExternalLinkage);
-    ppuState->setInitializer(llvm::ConstantAggregateZero::get(State::type()));
-}
-
-llvm::Value* State::readGPR(llvm::IRBuilder<>& builder, int index)
-{
-    llvm::Module* module = builder.GetInsertBlock()->getParent()->getParent();
-    llvm::GlobalVariable* ppuState = module->getNamedGlobal("ppuState");
-
-    llvm::Value* location = nullptr;
-    location = builder.CreateStructGEP(ppuState, 0);
-    location = builder.CreateStructGEP(location, index);
-    return builder.CreateLoad(location);
-}
-
 }  // namespace ppu
 }  // namespace cpu

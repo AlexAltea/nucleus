@@ -237,7 +237,10 @@ llvm::Function* Function::declare()
     }
 
     // Arguments type
-    std::vector<llvm::Type*> params;
+    std::vector<llvm::Type*> params = {
+        // NOTE: Remove once MCJIT + TLS is supported in LLVM
+        llvm::PointerType::get(State::type(), 0)
+    };
     for (auto& type : type_in) {
         switch (type) {
         case FUNCTION_OUT_INTEGER:
@@ -400,9 +403,6 @@ void Segment::recompile()
     // Global variables
     module->getOrInsertGlobal("memoryBase", llvm::Type::getInt64Ty(llvm::getGlobalContext()));
     memoryBase = module->getNamedGlobal("memoryBase");
-    module->getOrInsertGlobal("ppuState", State::type());
-    ppuState = module->getNamedGlobal("ppuState");
-    ppuState->setThreadLocal(true);
 
     // Declare all functions
     for (auto& item : functions) {
@@ -423,6 +423,7 @@ void Segment::recompile()
         triple.setObjectFormat(llvm::Triple::ObjectFormatType::ELF);
     }
     module->setTargetTriple(triple.str());
+    module->dump();
 
     // Create execution engine
     llvm::EngineBuilder engineBuilder(module);

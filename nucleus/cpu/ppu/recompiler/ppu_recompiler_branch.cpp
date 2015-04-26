@@ -23,7 +23,10 @@ void Recompiler::bx(Instruction code)
 
         // Generate array of arguments
         int index = 0;
-        std::vector<llvm::Value*> arguments;
+        std::vector<llvm::Value*> arguments = {
+            // NOTE: Remove once MCJIT + TLS is supported in LLVM
+            getState()
+        };
         for (const auto& param : targetFunc.type_in) {
             switch (param) {
             case FUNCTION_IN_INTEGER:
