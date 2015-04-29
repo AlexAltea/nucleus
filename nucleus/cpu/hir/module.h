@@ -10,6 +10,7 @@
 #include "llvm/IR/Module.h"
 
 namespace cpu {
+namespace hir {
 
 class Module
 {
@@ -17,4 +18,5 @@ public:
     llvm::Module* value = nullptr;
 };
 
+}  // namespace hir
 }  // namespace cpu

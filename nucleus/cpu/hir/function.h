@@ -10,6 +10,7 @@
 #include "llvm/IR/Function.h"
 
 namespace cpu {
+namespace hir {
 
 template<typename TR, typename... TArgs>
 class Function
@@ -18,4 +19,5 @@ public:
     llvm::Function* value = nullptr;
 };
 
+}  // namespace hir
 }  // namespace cpu

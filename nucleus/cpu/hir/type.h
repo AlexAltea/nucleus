@@ -13,6 +13,8 @@
 namespace cpu {
 namespace hir {
 
+typedef size_t TypeSize;
+
 class Type
 {
 public:
@@ -21,26 +23,35 @@ public:
 
 // Integer types
 struct I1 {
+    static const TypeSize size = 1;
     static Type type() {
         return Type{ llvm::Type::getInt1Ty(llvm::getGlobalContext()) };
     }
 };
+
 struct I8 {
+    static const TypeSize size = 1;
     static Type type() {
         return Type{ llvm::Type::getInt8Ty(llvm::getGlobalContext()) };
     }
 };
+
 struct I16 {
+    static const TypeSize size = 2;
     static Type type() {
         return Type{ llvm::Type::getInt16Ty(llvm::getGlobalContext()) };
     }
 };
+
 struct I32 {
+    static const TypeSize size = 4;
     static Type type() {
         return Type{ llvm::Type::getInt32Ty(llvm::getGlobalContext()) };
     }
 };
+
 struct I64 {
+    static const TypeSize size = 8;
     static Type type() {
         return Type{ llvm::Type::getInt64Ty(llvm::getGlobalContext()) };
     }
@@ -48,11 +59,13 @@ struct I64 {
 
 // Floating-point types
 struct F32 {
+    static const TypeSize size = 8;
     static Type type() {
         return Type{ llvm::Type::getFloatTy(llvm::getGlobalContext()) };
     }
 };
 struct F64 {
+    static const TypeSize size = 8;
     static Type type() {
         return Type{ llvm::Type::getDoubleTy(llvm::getGlobalContext()) };
     }
@@ -61,6 +74,7 @@ struct F64 {
 // Aggregate types
 template<typename T, int N>
 struct Array {
+    static const TypeSize size = N * T::size;
     static Type type() {
         return Type{ llvm::ArrayType::get(T::type().type, N) };
     }
@@ -68,6 +82,7 @@ struct Array {
 
 template<typename T, int N>
 struct Vector {
+    static const TypeSize size = N * T::size;
     static Type type() {
         return Type{ llvm::VectorType::get(T::type().type, N) };
     }
@@ -75,6 +90,7 @@ struct Vector {
 
 template<typename... Ts>
 struct Struct {
+    static const TypeSize size = 0; // TODO
     static Type type() {
         return Type{ llvm::StructType::get(Ts::type().type) };
     }

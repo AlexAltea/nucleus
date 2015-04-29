@@ -10,6 +10,7 @@
 #include "llvm/IR/Value.h"
 
 namespace cpu {
+namespace hir {
 
 template<typename T>
 class Value
@@ -18,4 +19,5 @@ public:
     llvm::Value* value = nullptr;
 };
 
+}  // namespace hir
 }  // namespace cpu

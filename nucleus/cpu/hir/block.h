@@ -10,6 +10,7 @@
 #include "llvm/IR/BasicBlock.h"
 
 namespace cpu {
+namespace hir {
 
 class Block
 {
@@ -17,4 +18,5 @@ public:
     llvm::BasicBlock* bb = nullptr;
 };
 
+}  // namespace hir
 }  // namespace cpu

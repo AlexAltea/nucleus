@@ -6,5 +6,7 @@
 #include "module.h"
 
 namespace cpu {
+namespace hir {
 
+}  // namespace hir
 }  // namespace cpu
