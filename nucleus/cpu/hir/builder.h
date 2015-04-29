@@ -7,11 +7,13 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/type.h"
 #include "nucleus/cpu/hir/value.h"
 
 #include "llvm/IR/IRBuilder.h"
 
 namespace cpu {
+namespace hir {
 
 class Builder
 {
@@ -117,6 +119,23 @@ public:
         return builder.CreateFNeg(v.value);
     }
 
+    // Conversion operations
+    template<typename TI, typename TO>
+    Value<TO> CreateSExt(Value<TI> v) {
+        return builder.CreateSExt(v, TO::type().type);
+    }
+
+    template<typename TI, typename TO>
+    Value<TO> CreateZExt(Value<TI> v) {
+        return builder.CreateZExt(v, TO::type().type);
+    }
+
+    // Pointer operations
+    template<typename TV, typename TP>
+    Value<Pointer<TP>> CreateIntToPtr(Value<TV> v, Pointer<TP> pointer) {
+        return builder.CreateIntToPtr(v, pointer::type());
+    }
+
     // Function operations
     template<typename TR, typename... TArgs>
     Value<TR> CreateCall(Function<TR, TArgs...>, TArgs... args) {
@@ -143,4 +162,5 @@ public:
     }
 };
 
+}  // namespace hir
 }  // namespace cpu
