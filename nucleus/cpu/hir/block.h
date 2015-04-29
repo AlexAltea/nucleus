@@ -14,7 +14,7 @@ namespace cpu {
 class Block
 {
 public:
-    llvm::BasicBlock* value = nullptr;
+    llvm::BasicBlock* bb = nullptr;
 };
 
 }  // namespace cpu

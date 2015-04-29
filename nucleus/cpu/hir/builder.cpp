@@ -7,4 +7,13 @@
 
 namespace cpu {
 
+Builder::Builder() : builder(llvm::getGlobalContext())
+{
+}
+
+void Builder::SetInsertPoint(const Block& block)
+{
+    builder.SetInsertPoint(block.bb);
+}
+
 }  // namespace cpu
