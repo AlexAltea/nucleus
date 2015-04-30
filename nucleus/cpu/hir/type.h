@@ -23,6 +23,7 @@ public:
 
 // Integer types
 struct I1 {
+    using type = u1;
     static const TypeSize size = 1;
     static Type type() {
         return Type{ llvm::Type::getInt1Ty(llvm::getGlobalContext()) };
@@ -30,28 +31,32 @@ struct I1 {
 };
 
 struct I8 {
-    static const TypeSize size = 1;
+    using type = u8;
+    static const TypeSize size = 8;
     static Type type() {
         return Type{ llvm::Type::getInt8Ty(llvm::getGlobalContext()) };
     }
 };
 
 struct I16 {
-    static const TypeSize size = 2;
+    using type = u16;
+    static const TypeSize size = 16;
     static Type type() {
         return Type{ llvm::Type::getInt16Ty(llvm::getGlobalContext()) };
     }
 };
 
 struct I32 {
-    static const TypeSize size = 4;
+    using type = u32;
+    static const TypeSize size = 32;
     static Type type() {
         return Type{ llvm::Type::getInt32Ty(llvm::getGlobalContext()) };
     }
 };
 
 struct I64 {
-    static const TypeSize size = 8;
+    using type = u64;
+    static const TypeSize size = 64;
     static Type type() {
         return Type{ llvm::Type::getInt64Ty(llvm::getGlobalContext()) };
     }
@@ -59,13 +64,16 @@ struct I64 {
 
 // Floating-point types
 struct F32 {
-    static const TypeSize size = 8;
+    using type = f32;
+    static const TypeSize size = 32;
     static Type type() {
         return Type{ llvm::Type::getFloatTy(llvm::getGlobalContext()) };
     }
 };
+
 struct F64 {
-    static const TypeSize size = 8;
+    using type = f64;
+    static const TypeSize size = 64;
     static Type type() {
         return Type{ llvm::Type::getDoubleTy(llvm::getGlobalContext()) };
     }
@@ -74,6 +82,7 @@ struct F64 {
 // Aggregate types
 template<typename T, int N>
 struct Array {
+    using type = T::type[N];
     static const TypeSize size = N * T::size;
     static Type type() {
         return Type{ llvm::ArrayType::get(T::type().type, N) };
@@ -82,6 +91,7 @@ struct Array {
 
 template<typename T, int N>
 struct Vector {
+    using type = T::type[N];
     static const TypeSize size = N * T::size;
     static Type type() {
         return Type{ llvm::VectorType::get(T::type().type, N) };
