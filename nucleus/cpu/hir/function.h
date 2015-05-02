@@ -12,7 +12,6 @@
 namespace cpu {
 namespace hir {
 
-template<typename TR, typename... TArgs>
 class Function
 {
 public:

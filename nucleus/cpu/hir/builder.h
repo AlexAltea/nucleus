@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/hir/type.h"
 #include "nucleus/cpu/hir/value.h"
 
@@ -31,7 +32,7 @@ public:
      * HIR constants
      */
     template<typename T>
-    Value<T> get(T::type constant) {
+    Value<T> get(typename T::type constant) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::get accepts only integer values.");
         return builder.getIntN(T::size, constant);
@@ -142,7 +143,7 @@ public:
     }
 
     // Conversion operations
-    template<typename TI, typename TO>
+    template<typename TO, typename TI>
     Value<TO> CreateTrunc(Value<TI> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
             "Builder::CreateTrunc accepts only integer values.");
@@ -151,7 +152,7 @@ public:
         return builder.CreateTrunc(v, TO::type().type);
     }
 
-    template<typename TI, typename TO>
+    template<typename TO, typename TI>
     Value<TO> CreateSExt(Value<TI> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
             "Builder::CreateSExt accepts only integer values.");
@@ -160,7 +161,7 @@ public:
         return builder.CreateSExt(v, TO::type().type);
     }
 
-    template<typename TI, typename TO>
+    template<typename TO, typename TI>
     Value<TO> CreateZExt(Value<TI> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
             "Builder::CreateZExt accepts only integer values.");
@@ -169,7 +170,7 @@ public:
         return builder.CreateZExt(v, TO::type().type);
     }
 
-    template<typename TI, typename TO>
+    template<typename TO, typename TI>
     Value<TO> CreateFPTrunc(Value<TI> v) {
         static_assert(std::is_floating_point<TI::type>::value && std::is_floating_point<TO::type>::value,
             "Builder::CreateFPTrunc accepts only floating-point values.");
@@ -178,7 +179,7 @@ public:
         return builder.CreateFPTruc(v, TO::type().type);
     }
 
-    template<typename TI, typename TO>
+    template<typename TO, typename TI>
     Value<TO> CreateFPExt(Value<TI> v) {
         static_assert(std::is_floating_point<TI::type>::value && std::is_floating_point<TO::type>::value,
             "Builder::CreateFPExt accepts only floating-point values.");
@@ -186,16 +187,113 @@ public:
             "Builder::CreateFPExt converts only to larger floating-point types.");
         return builder.CreateFPExt(v, TO::type().type);
     }
+    
+    template<typename TO, typename TI>
+    Value<TO> CreateBitCast(Value<TI> v) {
+        static_assert(TI::size == TO::size,
+            "Builder::CreateFPExt converts only to larger floating-point types.");
+        return builder.CreateBitCast(v, TO::type().type);
+    }
+
+    // Comparison operations
+    template<typename T>
+    typename T::cmp CreateICmpEQ(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpEQ(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpNE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpNE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpSLT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpSLT(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpSLE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpSLE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpSGE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpSGE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpSGT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpSGT(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpULT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpULT(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpULE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpULE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpUGE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpUGE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateICmpUGT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateICmpUGT(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpOEQ(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpOEQ(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpONE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpONE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpOLT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpOLT(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpOLE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpOLE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpOGE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpOGE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpOGT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpOGT(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpUEQ(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpUEQ(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpUNE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpUNE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpULT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpULT(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpULE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpULE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpUGE(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpUGE(lhs.value, rhs.value);
+    }
+    template<typename T>
+    typename T::cmp CreateFCmpUGT(Value<T> lhs, Value<T> rhs) {
+        builder.CreateFCmpUGT(lhs.value, rhs.value);
+    }
 
     // Pointer operations
     template<typename TV, typename TP>
     Value<Pointer<TP>> CreateIntToPtr(Value<TV> v, Pointer<TP> pointer) {
-        return builder.CreateIntToPtr(v, pointer::type());
+        return builder.CreateIntToPtr(v, pointer::type().type);
     }
 
     // Function operations
     template<typename TR, typename... TArgs>
-    Value<TR> CreateCall(Function<TR, TArgs...>, TArgs... args) {
+    Value<TR> CreateCall(Function func, TArgs... args) {
         return Value<TR>{}; // TODO
     }
 
