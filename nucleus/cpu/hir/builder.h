@@ -42,109 +42,109 @@ public:
      * HIR instruction generation
      */
     // Arithmetic operations
-    template<typename T>
-    Value<T> CreateAdd(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateAdd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateAdd accepts only integer values.");
         return builder.CreateAdd(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateSub(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateSub(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateSub accepts only integer values.");
         return builder.CreateSub(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateMul(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateMul(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateMul accepts only integer values.");
         return builder.CreateMul(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateDiv(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateDiv(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateDiv accepts only integer values.");
         return builder.CreateDiv(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateNeg(Value<T> v) {
+    template<typename T, int N>
+    Value<T, N> CreateNeg(Value<T, N> v) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateNot accepts only integer values.");
         return builder.CreateNeg(v.value);
     }
 
     // Binary operations
-    template<typename T>
-    Value<T> CreateAnd(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateAnd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateAnd accepts only integer values.");
         return builder.CreateAnd(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateOr(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateOr(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateOr accepts only integer values.");
         return builder.CreateOr(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateXor(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateXor(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateXor accepts only integer values.");
         return builder.CreateXor(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateNot(Value<T> v) {
+    template<typename T, int N>
+    Value<T, N> CreateNot(Value<T, N> v) {
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateNot accepts only integer values.");
         return builder.CreateNot(v.value);
     }
 
     // Floating-point arithmetic operations
-    template<typename T>
-    Value<T> CreateFAdd(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateFAdd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
             "Builder::CreateFAdd accepts only floating-point values.");
         return builder.CreateFAdd(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateFSub(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateFSub(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
             "Builder::CreateFSub accepts only floating-point values.");
         return builder.CreateFSub(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateFMul(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateFMul(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
             "Builder::CreateFMul accepts only floating-point values.");
         return builder.CreateFMul(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateFDiv(Value<T> lhs, Value<T> rhs) {
+    template<typename T, int N>
+    Value<T, N> CreateFDiv(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
             "Builder::CreateFDiv accepts only floating-point values.");
         return builder.CreateFDiv(lhs.value, rhs.value);
     }
 
-    template<typename T>
-    Value<T> CreateFNeg(Value<T> v) {
+    template<typename T, int N>
+    Value<T, N> CreateFNeg(Value<T, N> v) {
         static_assert(std::is_floating_point<T::type>::value,
             "Builder::CreateFNeg accepts only floating-point values.");
         return builder.CreateFNeg(v.value);
     }
 
     // Conversion operations
-    template<typename TO, typename TI>
-    Value<TO> CreateTrunc(Value<TI> v) {
+    template<typename TO, typename TI, int N>
+    Value<TO, N> CreateTrunc(Value<TI, N> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
             "Builder::CreateTrunc accepts only integer values.");
         static_assert(TI::size < TO::size,
@@ -152,8 +152,8 @@ public:
         return builder.CreateTrunc(v, TO::type().type);
     }
 
-    template<typename TO, typename TI>
-    Value<TO> CreateSExt(Value<TI> v) {
+    template<typename TO, typename TI, int N>
+    Value<TO, N> CreateSExt(Value<TI, N> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
             "Builder::CreateSExt accepts only integer values.");
         static_assert(TI::size < TO::size,
@@ -161,8 +161,8 @@ public:
         return builder.CreateSExt(v, TO::type().type);
     }
 
-    template<typename TO, typename TI>
-    Value<TO> CreateZExt(Value<TI> v) {
+    template<typename TO, typename TI, int N>
+    Value<TO, N> CreateZExt(Value<TI, N> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
             "Builder::CreateZExt accepts only integer values.");
         static_assert(TI::size < TO::size,
@@ -196,93 +196,93 @@ public:
     }
 
     // Comparison operations
-    template<typename T>
-    typename T::cmp CreateICmpEQ(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpEQ(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpEQ(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpEQ(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpNE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpNE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpNE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpNE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpSLT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpSLT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpSLT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpSLT(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpSLE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpSLE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpSLE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpSLE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpSGE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpSGE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpSGE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpSGE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpSGT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpSGT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpSGT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpSGT(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpULT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpULT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpULT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpULT(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpULE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpULE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpULE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpULE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpUGE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpUGE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpUGE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpUGE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateICmpUGT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateICmpUGT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateICmpUGT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateICmpUGT(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpOEQ(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpOEQ(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpOEQ(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpOEQ(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpONE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpONE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpONE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpONE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpOLT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpOLT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpOLT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpOLT(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpOLE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpOLE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpOLE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpOLE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpOGE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpOGE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpOGE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpOGE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpOGT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpOGT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpOGT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpOGT(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpUEQ(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpUEQ(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpUEQ(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpUEQ(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpUNE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpUNE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpUNE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpUNE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpULT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpULT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpULT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpULT(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpULE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpULE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpULE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpULE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpUGE(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpUGE(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpUGE(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpUGE(lhs.value, rhs.value);
     }
-    template<typename T>
-    typename T::cmp CreateFCmpUGT(Value<T> lhs, Value<T> rhs) {
-        builder.CreateFCmpUGT(lhs.value, rhs.value);
+    template<typename T, int N>
+    Value<I1, N> CreateFCmpUGT(Value<T, N> lhs, Value<T, N> rhs) {
+        return builder.CreateFCmpUGT(lhs.value, rhs.value);
     }
 
     // Pointer operations
