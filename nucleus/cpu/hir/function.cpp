@@ -8,5 +8,10 @@
 namespace cpu {
 namespace hir {
 
+Block Function::getEntryBlock()
+{
+    return Block{ &(function->getEntryBlock()) };
+}
+
 }  // namespace hir
 }  // namespace cpu

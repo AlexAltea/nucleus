@@ -12,10 +12,16 @@ Builder::Builder() : builder(llvm::getGlobalContext())
 {
 }
 
-void Builder::SetInsertPoint(const Block& block)
+void Builder::SetInsertPoint(Block block)
 {
     builder.SetInsertPoint(block.bb);
 }
+
+void Builder::SetInsertPoint(Block block, llvm::BasicBlock::iterator ip)
+{
+    builder.SetInsertPoint(block.bb, ip);
+}
+
 
 }  // namespace hir
 }  // namespace cpu

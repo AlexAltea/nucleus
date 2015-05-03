@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/hir/block.h"
 
 #include "llvm/IR/Function.h"
 
@@ -15,7 +16,9 @@ namespace hir {
 class Function
 {
 public:
-    llvm::Function* value = nullptr;
+    llvm::Function* function = nullptr;
+
+    Block getEntryBlock();
 };
 
 }  // namespace hir

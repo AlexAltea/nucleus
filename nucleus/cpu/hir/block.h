@@ -16,6 +16,13 @@ class Block
 {
 public:
     llvm::BasicBlock* bb = nullptr;
+
+    llvm::BasicBlock::iterator begin() {
+        bb->begin();
+    }
+    llvm::BasicBlock::iterator end() {
+        bb->end();
+    }
 };
 
 }  // namespace hir

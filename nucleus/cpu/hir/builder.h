@@ -13,6 +13,8 @@
 
 #include "llvm/IR/IRBuilder.h"
 
+#include <string>
+
 namespace cpu {
 namespace hir {
 
@@ -26,7 +28,8 @@ public:
     /**
      * HIR insertion
      */
-    void SetInsertPoint(const Block& block);
+    void SetInsertPoint(Block block);
+    void SetInsertPoint(Block block, llvm::BasicBlock::iterator ip);
 
     /**
      * HIR constants
@@ -195,6 +198,23 @@ public:
         return builder.CreateBitCast(v, TO::type().type);
     }
 
+    // Memory access operations
+    template<typename T, int N=1>
+    Value<T*, N> CreateAlloca(const std::string& name) {
+        // TODO: Support vectors (i.e. use the template parameter N)
+        return builder.CreateAlloca(T::getType(), nullptr, name);
+    }
+
+    template<typename T>
+    Value<T> CreateLoad(Value<T*> ptr) {
+        return builder.CreateLoad(ptr.value);
+    }
+
+    template<typename T>
+    void CreateStore(Value<T> val, Value<T*> ptr) {
+        builder.CreateStore(val.value, ptr.value);
+    }
+
     // Comparison operations
     template<typename T, int N>
     Value<I1, N> CreateICmpEQ(Value<T, N> lhs, Value<T, N> rhs) {
@@ -285,10 +305,16 @@ public:
         return builder.CreateFCmpUGT(lhs.value, rhs.value);
     }
 
+    // Other operations
+    template<typename T, int N>
+    void CreateSelect(Value<I1, N> cond, Value<T, N> isTrue, Value<T, N> isFalse) {
+        builder.CreateSelect(cond.value, isTrue.value, isFalse.value);
+    }
+
     // Pointer operations
-    template<typename TV, typename TP>
-    Value<Pointer<TP>> CreateIntToPtr(Value<TV> v, Pointer<TP> pointer) {
-        return builder.CreateIntToPtr(v, pointer::type().type);
+    template<typename TP, typename TV>
+    Value<TP*> CreateIntToPtr(Value<TV> v) {
+        return builder.CreateIntToPtr(v.value, llvm::PointerType::get(TP::getType()));
     }
 
     // Function operations

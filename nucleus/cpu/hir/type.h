@@ -62,6 +62,14 @@ struct I64 {
     }
 };
 
+struct I128 {
+    using type = u128;
+    static const TypeSize size = 128;
+    static Type getType() {
+        return Type{ llvm::Type::getIntNTy(llvm::getGlobalContext(), 128) };
+    }
+};
+
 // Floating-point types
 struct F32 {
     using cmp = I1;
