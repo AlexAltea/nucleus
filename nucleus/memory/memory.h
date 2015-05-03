@@ -55,9 +55,9 @@ public:
 
     MemorySegment& operator()(size_t id) { return m_segments[id]; }
 
-    template<typename T>
+    template <typename T>
     T& ref(u32 addr) { return *(T*)((u64)m_base + addr); }
 
-    template<typename T=void>
+    template <typename T=void>
     T* ptr(u32 addr) { return (T*)((u64)m_base + addr); }
 };

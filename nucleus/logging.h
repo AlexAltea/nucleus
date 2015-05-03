@@ -28,21 +28,21 @@ enum LoggingType
 class Logger
 {
 public:
-    template<typename... Args>
+    template <typename... Args>
     void notice(LoggingType type, const char* pattern, Args... args)
     {
         const std::string log = "N: " + format(pattern, std::forward<Args>(args)...) + "\n";
         std::cerr << log.c_str();
     }
 
-    template<typename... Args>
+    template <typename... Args>
     void warning(LoggingType type, const char* pattern, Args... args)
     {
         const std::string log = "W: " + format(pattern, std::forward<Args>(args)...) + "\n";
         std::cerr << log.c_str();
     }
 
-    template<typename... Args>
+    template <typename... Args>
     void error(LoggingType type, const char* pattern, Args... args)
     {
         const std::string log = "E: " + format(pattern, std::forward<Args>(args)...) + "\n";

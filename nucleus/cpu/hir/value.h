@@ -12,7 +12,7 @@
 namespace cpu {
 namespace hir {
 
-template<typename T, int N=1>
+template <typename T, int N=1>
 class Value
 {
 public:

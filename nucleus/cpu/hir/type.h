@@ -89,7 +89,7 @@ struct F64 {
 };
 
 // Aggregate types
-template<typename T, int N>
+template <typename T, int N>
 struct Array {
     using type = typename T::type[N];
     static const TypeSize size = N * T::size;
@@ -98,7 +98,7 @@ struct Array {
     }
 };
 
-template<typename T, int N>
+template <typename T, int N>
 struct Vector {
     using type = typename T::type[N];
     static const TypeSize size = N * T::size;
@@ -107,7 +107,7 @@ struct Vector {
     }
 };
 
-template<typename... Ts>
+template <typename... Ts>
 struct Struct {
     static const TypeSize size = 0; // TODO
     static Type getType() {
@@ -116,7 +116,7 @@ struct Struct {
 };
 
 // Pointer type
-template<typename T>
+template <typename T>
 struct Pointer {
     static Type getType() {
         return Type{ llvm::PointerType::get(T::getType().type, 0) };
