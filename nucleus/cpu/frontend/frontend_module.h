@@ -6,22 +6,26 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/module.h"
+#include "nucleus/cpu/frontend/frontend_function.h"
 
 namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class Block : public hir::Block
+class Module : public hir::Module
 {
 public:
-    // Starting address
+    // Starting address of this module
     TAddr address = 0;
 
-    // Number of bytes covered by this block
+    // Number of bytes covered by this module
     TAddr size = 0;
 
-    // Check whether an address is inside this block
+    // List of functions
+    std::unordered_map<TAddr, Function<TAddr>> functions;
+
+    // Check whether an address is inside this module
     bool contains(TAddr addr) {
         const TAddr from = address;
         const TAddr to = address + size;

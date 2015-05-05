@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "frontend_function.h"
+#include "frontend_module.h"
 
 namespace cpu {
 namespace frontend {

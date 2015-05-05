@@ -15,7 +15,7 @@
 namespace cpu {
 namespace frontend {
 
-template<typename TAddr>
+template <typename TAddr>
 class Function : public hir::Function
 {
 public:
@@ -27,8 +27,8 @@ public:
 
     // Control Flow Graph
     std::unordered_map<TAddr, Block<TAddr>> blocks;
-    hir::Block<TAddr> prolog;
-    hir::Block<TAddr> epilog;
+    hir::Block prolog;
+    hir::Block epilog;
 
     // Check whether an address is inside any CFG block
     bool contains(TAddr addr) {
