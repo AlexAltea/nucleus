@@ -45,8 +45,8 @@ public:
     /**
      * HIR symbol generation
      */
-    void CreateGlobalString(const std::string& str) {
-        builder.CreateGlobalString(str);
+    Value<I8> CreateGlobalString(const std::string& str) {
+        return builder.CreateGlobalString(str);
     }
 
     /**
@@ -216,7 +216,7 @@ public:
 
     // Aggregate operations
     template <int N, typename... TMembers>
-    Value<std::tuple_element<N, std::tuple<TMembers...>>::type> CreateExtractValue(Value<Struct<TMembers...>> agg) {
+    Value<typename std::tuple_element<N, std::tuple<TMembers...>>::type> CreateExtractValue(Value<Struct<TMembers...>> agg) {
         return builder.CreateExtractValue(vec.value, N);
     }
 
@@ -361,11 +361,9 @@ public:
     }
 
     // Function operations
-    template <typename TR, typename... TArgs>
-    Value<TR> CreateCall(Function callee, TArgs... args) {
-        //return Value<TR>{}; // TODO
-        std::vector<llvm::Value*> values = { args... };
-        return builder.CreateCall(callee.function, values);
+    template <typename TR>
+    Value<TR> CreateCall(Function callee, std::vector<llvm::Value*> args) {
+        return builder.CreateCall(callee.function, args);
     }
 
     template <typename T, int N>

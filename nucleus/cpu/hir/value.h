@@ -16,7 +16,10 @@ template <typename T, int N=1>
 class Value
 {
 public:
-    llvm::Value* value = nullptr;
+    llvm::Value* value;
+
+    // Constructor
+    Value(llvm::Value* v = nullptr) : value(v) {}
 };
 
 }  // namespace hir

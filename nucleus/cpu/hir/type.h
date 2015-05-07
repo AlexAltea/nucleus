@@ -111,7 +111,7 @@ template <typename... Ts>
 struct Struct {
     static const TypeSize size = 0; // TODO
     static Type getType() {
-        return Type{ llvm::StructType::get(Ts::getType().type) };
+        return Type{ llvm::StructType::get() }; // TODO
     }
 };
 
@@ -120,6 +120,21 @@ template <typename T>
 struct Pointer {
     static Type getType() {
         return Type{ llvm::PointerType::get(T::getType().type, 0) };
+    }
+};
+
+// Void type
+struct Void {
+    static Type getType() {
+        return Type{ llvm::Type::getVoidTy(llvm::getGlobalContext()) };
+    }
+};
+
+// Any type
+struct Any {
+    static Type getType() {
+        // TODO: This should never happen
+        return Type{ llvm::Type::getVoidTy(llvm::getGlobalContext()) };
     }
 };
 

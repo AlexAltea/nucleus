@@ -6,13 +6,12 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/hir/block.h"
 
 namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class Block : public hir::Block
+class Block
 {
 public:
     // Starting address
@@ -21,11 +20,30 @@ public:
     // Number of bytes covered by this block
     TAddr size = 0;
 
+    // Branching
+    TAddr branch_a = 0; // Conditional-True or Unconditional branching address
+    TAddr branch_b = 0; // Conditional-False branching address
+
     // Check whether an address is inside this block
-    bool contains(TAddr addr) {
+    bool contains(TAddr addr) const {
         const TAddr from = address;
         const TAddr to = address + size;
         return from <= addr && addr < to;
+    }
+
+    // Cut this block and return the remaining part as a new object
+    Block split(TAddr cut) {
+        // Configure new block
+        Block new_block{};
+        new_block.address = cut;
+        new_block.size = size - (cut - address);
+        new_block.branch_a = branch_a;
+        new_block.branch_b = branch_b;
+
+        // Update this block
+        size = cut - address;
+        branch_a = addr;
+        branch_b = 0;
     }
 };
 

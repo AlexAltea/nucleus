@@ -6,17 +6,16 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/hir/block.h"
-#include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/frontend/frontend_block.h"
 
+#include <string>
 #include <unordered_map>
 
 namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class Function : public hir::Function
+class Function
 {
 public:
     // Starting address of the entry block
@@ -25,15 +24,16 @@ public:
     // Number of bytes covered by all CFG blocks
     TAddr size = 0;
 
+    // Name of this function
+    std::string name;
+
     // Control Flow Graph
     std::unordered_map<TAddr, Block<TAddr>> blocks;
-    hir::Block prolog;
-    hir::Block epilog;
 
     // Check whether an address is inside any CFG block
-    bool contains(TAddr addr) {
-        for (auto& item : blocks) {
-            auto& block = block.second;
+    bool contains(TAddr addr) const {
+        for (const auto& item : blocks) {
+            const auto& block = block.second;
             if (block.contains(addr)) {
                 return true;
             }
