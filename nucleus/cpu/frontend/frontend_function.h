@@ -15,9 +15,11 @@ namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class Function
+class IFunction
 {
 public:
+    hir::Function function;
+
     // Starting address of the entry block
     TAddr address = 0;
 
@@ -28,7 +30,7 @@ public:
     std::string name;
 
     // Control Flow Graph
-    std::unordered_map<TAddr, Block<TAddr>> blocks;
+    std::unordered_map<TAddr, IBlock<TAddr>> blocks;
 
     // Check whether an address is inside any CFG block
     bool contains(TAddr addr) const {

@@ -14,7 +14,7 @@ namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class Recompiler
+class IRecompiler
 {
 protected:
     // Function to be generated and its parent module
@@ -31,7 +31,7 @@ public:
     std::map<TAddr, hir::Block> blocks;
 
     // Constructor
-    Recompiler(hir::Function f) : function(f) {
+    IRecompiler(hir::Function f) : function(f) {
         prolog = hir::Block::Create("prolog", function);
         epilog = hir::Block::Create("epilog", function);
         module = function.getParent();

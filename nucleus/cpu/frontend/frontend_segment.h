@@ -12,9 +12,11 @@ namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class Segment
+class ISegment
 {
 public:
+    hir::Module module;
+
     // Starting address of this module
     TAddr address = 0;
 
@@ -25,7 +27,7 @@ public:
     std::string name;
 
     // List of functions
-    std::unordered_map<TAddr, Function<TAddr>> functions;
+    std::unordered_map<TAddr, IFunction<TAddr>> functions;
 
     // Check whether an address is inside this module
     bool contains(TAddr addr) const {

@@ -11,7 +11,7 @@ namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class Block
+class IBlock
 {
 public:
     // Starting address
@@ -32,7 +32,7 @@ public:
     }
 
     // Cut this block and return the remaining part as a new object
-    Block split(TAddr cut) {
+    IBlock split(TAddr cut) {
         // Configure new block
         Block new_block{};
         new_block.address = cut;
