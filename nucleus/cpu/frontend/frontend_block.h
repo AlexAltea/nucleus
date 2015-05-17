@@ -32,9 +32,9 @@ public:
     }
 
     // Cut this block and return the remaining part as a new object
-    IBlock split(TAddr cut) {
+    IBlock<TAddr> split(TAddr cut) {
         // Configure new block
-        Block new_block{};
+        IBlock<TAddr> new_block{};
         new_block.address = cut;
         new_block.size = size - (cut - address);
         new_block.branch_a = branch_a;
@@ -42,8 +42,10 @@ public:
 
         // Update this block
         size = cut - address;
-        branch_a = addr;
+        branch_a = cut;
         branch_b = 0;
+
+        return new_block;
     }
 };
 

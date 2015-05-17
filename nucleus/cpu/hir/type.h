@@ -111,7 +111,7 @@ template <typename... Ts>
 struct Struct {
     static const TypeSize size = 0; // TODO
     static Type getType() {
-        return Type{ llvm::StructType::get() }; // TODO
+        return Type{ nullptr/*llvm::StructType::get()*/ }; // TODO
     }
 };
 

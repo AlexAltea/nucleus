@@ -38,7 +38,7 @@ public:
     template <typename T>
     Value<T> get(typename T::type constant) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::get accepts only integer values.");
+            "Builder::get accepts only integer values");
         return builder.getIntN(T::size, constant);
     }
 
@@ -56,35 +56,35 @@ public:
     template <typename T, int N>
     Value<T, N> CreateAdd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateAdd accepts only integer values.");
+            "Builder::CreateAdd accepts only integer values");
         return builder.CreateAdd(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateSub(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateSub accepts only integer values.");
+            "Builder::CreateSub accepts only integer values");
         return builder.CreateSub(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateMul(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateMul accepts only integer values.");
+            "Builder::CreateMul accepts only integer values");
         return builder.CreateMul(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateDiv(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateDiv accepts only integer values.");
+            "Builder::CreateDiv accepts only integer values");
         return builder.CreateDiv(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateNeg(Value<T, N> v) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateNot accepts only integer values.");
+            "Builder::CreateNeg accepts only integer values");
         return builder.CreateNeg(v.value);
     }
 
@@ -92,28 +92,28 @@ public:
     template <typename T, int N>
     Value<T, N> CreateAnd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateAnd accepts only integer values.");
+            "Builder::CreateAnd accepts only integer values");
         return builder.CreateAnd(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateOr(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateOr accepts only integer values.");
+            "Builder::CreateOr accepts only integer values");
         return builder.CreateOr(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateXor(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateXor accepts only integer values.");
+            "Builder::CreateXor accepts only integer values");
         return builder.CreateXor(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateNot(Value<T, N> v) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateNot accepts only integer values.");
+            "Builder::CreateNot accepts only integer values");
         return builder.CreateNot(v.value);
     }
 
@@ -121,35 +121,35 @@ public:
     template <typename T, int N>
     Value<T, N> CreateFAdd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
-            "Builder::CreateFAdd accepts only floating-point values.");
+            "Builder::CreateFAdd accepts only floating-point values");
         return builder.CreateFAdd(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFSub(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
-            "Builder::CreateFSub accepts only floating-point values.");
+            "Builder::CreateFSub accepts only floating-point values");
         return builder.CreateFSub(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFMul(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
-            "Builder::CreateFMul accepts only floating-point values.");
+            "Builder::CreateFMul accepts only floating-point values");
         return builder.CreateFMul(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFDiv(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_floating_point<T::type>::value,
-            "Builder::CreateFDiv accepts only floating-point values.");
+            "Builder::CreateFDiv accepts only floating-point values");
         return builder.CreateFDiv(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFNeg(Value<T, N> v) {
         static_assert(std::is_floating_point<T::type>::value,
-            "Builder::CreateFNeg accepts only floating-point values.");
+            "Builder::CreateFNeg accepts only floating-point values");
         return builder.CreateFNeg(v.value);
     }
 
@@ -157,74 +157,74 @@ public:
     template <typename TO, typename TI, int N>
     Value<TO, N> CreateTrunc(Value<TI, N> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
-            "Builder::CreateTrunc accepts only integer values.");
-        static_assert(TI::size < TO::size,
-            "Builder::CreateTrunc converts only to smaller integer types.");
-        return builder.CreateTrunc(v, TO::type().type);
+            "Builder::CreateTrunc accepts only integer values");
+        static_assert(TI::size > TO::size,
+            "Builder::CreateTrunc converts only to smaller integer types");
+        return builder.CreateTrunc(v, TO::getType().type);
     }
 
     template <typename TO, typename TI, int N>
     Value<TO, N> CreateSExt(Value<TI, N> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
-            "Builder::CreateSExt accepts only integer values.");
+            "Builder::CreateSExt accepts only integer values");
         static_assert(TI::size < TO::size,
-            "Builder::CreateSExt converts only to larger integer types.");
-        return builder.CreateSExt(v, TO::type().type);
+            "Builder::CreateSExt converts only to larger integer types");
+        return builder.CreateSExt(v, TO::getType().type);
     }
 
     template <typename TO, typename TI, int N>
     Value<TO, N> CreateZExt(Value<TI, N> v) {
         static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
-            "Builder::CreateZExt accepts only integer values.");
+            "Builder::CreateZExt accepts only integer values");
         static_assert(TI::size < TO::size,
-            "Builder::CreateZExt converts only to larger integer types.");
-        return builder.CreateZExt(v, TO::type().type);
+            "Builder::CreateZExt converts only to larger integer types");
+        return builder.CreateZExt(v, TO::getType().type);
     }
 
     template <typename TO, typename TI>
     Value<TO> CreateFPTrunc(Value<TI> v) {
         static_assert(std::is_floating_point<TI::type>::value && std::is_floating_point<TO::type>::value,
-            "Builder::CreateFPTrunc accepts only floating-point values.");
+            "Builder::CreateFPTrunc accepts only floating-point values");
         static_assert(TI::size > TO::size,
-            "Builder::CreateFPTrunc converts only to smaller floating-point types.");
-        return builder.CreateFPTruc(v, TO::type().type);
+            "Builder::CreateFPTrunc converts only to smaller floating-point types");
+        return builder.CreateFPTrunc(v, TO::getType().type);
     }
 
     template <typename TO, typename TI>
     Value<TO> CreateFPExt(Value<TI> v) {
         static_assert(std::is_floating_point<TI::type>::value && std::is_floating_point<TO::type>::value,
-            "Builder::CreateFPExt accepts only floating-point values.");
+            "Builder::CreateFPExt accepts only floating-point values");
         static_assert(TI::size < TO::size,
-            "Builder::CreateFPExt converts only to larger floating-point types.");
-        return builder.CreateFPExt(v, TO::type().type);
+            "Builder::CreateFPExt converts only to larger floating-point types");
+        return builder.CreateFPExt(v, TO::getType().type);
     }
     
     template <typename TO, int NO=1, typename TI, int NI>
     Value<TO, NO> CreateBitCast(Value<TI, NI> v) {
-        static_assert(TI::size == TO::size,
-            "Builder::CreateFPExt converts only to larger floating-point types.");
-        return builder.CreateBitCast(v, TO::type().type);
+        static_assert(TI::size * NI == TO::size * NO,
+            "Builder::CreateBitCast converts only to types of the same size");
+        return builder.CreateBitCast(v, TO::getType().type);
     }
 
     // Vector operations
     template <typename TVec, int N, typename TIdx>
     Value<TVec> CreateExtractElement(Value<TVec, N> vec, Value<TIdx> idx) {
         static_assert(std::is_integral<TIdx::type>::value,
-            "Builder::CreateExtractElement accepts only integer indices.");
+            "Builder::CreateExtractElement accepts only integer indices");
         return builder.CreateExtractElement(vec.value, idx.value);
     }
 
     // Aggregate operations
     template <int N, typename... TMembers>
     Value<typename std::tuple_element<N, std::tuple<TMembers...>>::type> CreateExtractValue(Value<Struct<TMembers...>> agg) {
-        return builder.CreateExtractValue(vec.value, N);
+        return builder.CreateExtractValue(agg.value, N);
     }
 
     // Memory access operations
     template <typename T, int N=1>
     Value<T*, N> CreateAlloca(const std::string& name) {
         // TODO: Support vectors (i.e. use the template parameter N)
-        return builder.CreateAlloca(T::getType(), nullptr, name);
+        return builder.CreateAlloca(T::getType().type, nullptr, name);
     }
 
     template <typename T>
@@ -357,12 +357,15 @@ public:
     // Pointer operations
     template <typename TP, typename TV>
     Value<TP*> CreateIntToPtr(Value<TV> v) {
-        return builder.CreateIntToPtr(v.value, llvm::PointerType::get(TP::getType()));
+        return builder.CreateIntToPtr(v.value, llvm::PointerType::get(TP::getType().type, 0));
     }
 
     // Function operations
-    template <typename TR>
-    Value<TR> CreateCall(Function callee, std::vector<llvm::Value*> args) {
+    llvm::Value* CreateCall(Function callee, llvm::Value* args...) {
+        return builder.CreateCall(callee.function, args);
+    }
+
+    llvm::Value* CreateCall(Function callee, std::vector<llvm::Value*> args) {
         return builder.CreateCall(callee.function, args);
     }
 
@@ -375,13 +378,20 @@ public:
         builder.CreateRetVoid();
     }
 
-    // Branching operations
+    // Terminator operations
     void CreateBr(const Block& block) {
         builder.CreateBr(block.bb);
     }
 
     void CreateCondBr(Value<I1> cond, const Block& blockTrue, const Block& blockFalse) {
         builder.CreateCondBr(cond.value, blockTrue.bb, blockFalse.bb);
+    }
+
+    template <typename T>
+    llvm::SwitchInst* CreateSwitch(Value<T> v, const Block& dest) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateSwitch accepts only integer values");
+        return builder.CreateSwitch(v.value, dest.bb, 1);
     }
 };
 

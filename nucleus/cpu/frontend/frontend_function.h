@@ -7,12 +7,17 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/frontend_block.h"
+#include "nucleus/cpu/frontend/frontend_segment.h"
 
 #include <string>
 #include <unordered_map>
 
 namespace cpu {
 namespace frontend {
+
+// Class declarations
+template <typename TAddr>
+class ISegment;
 
 template <typename TAddr>
 class IFunction
@@ -29,8 +34,11 @@ public:
     // Name of this function
     std::string name;
 
+    // Parent segment
+    ISegment<TAddr>* parent;
+
     // Control Flow Graph
-    std::unordered_map<TAddr, IBlock<TAddr>> blocks;
+    std::unordered_map<TAddr, IBlock<TAddr>*> blocks;
 
     // Check whether an address is inside any CFG block
     bool contains(TAddr addr) const {

@@ -12,7 +12,7 @@
 namespace cpu {
 namespace hir {
 
-template <typename T, int N=1>
+template <typename T=Any, int N=1>
 class Value
 {
 public:
@@ -20,6 +20,9 @@ public:
 
     // Constructor
     Value(llvm::Value* v = nullptr) : value(v) {}
+
+    // Conversion
+    operator llvm::Value*() { return value; }
 };
 
 }  // namespace hir

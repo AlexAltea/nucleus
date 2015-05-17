@@ -8,8 +8,14 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/frontend_function.h"
 
+#include <map>
+
 namespace cpu {
 namespace frontend {
+
+// Class declarations
+template <typename TAddr>
+class IFunction;
 
 template <typename TAddr>
 class ISegment
@@ -27,7 +33,7 @@ public:
     std::string name;
 
     // List of functions
-    std::unordered_map<TAddr, IFunction<TAddr>> functions;
+    std::map<TAddr, IFunction<TAddr>*> functions;
 
     // Check whether an address is inside this module
     bool contains(TAddr addr) const {

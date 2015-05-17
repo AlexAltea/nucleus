@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/frontend/frontend_function.h"
 
 #include <map>
 
@@ -17,9 +18,8 @@ template <typename TAddr>
 class IRecompiler
 {
 protected:
-    // Function to be generated and its parent module
-    hir::Function hir_function;
-    hir::Module hir_module; 
+    // Function to be generated
+    IFunction<TAddr>* function;
 
 public:
     // HIR builder
@@ -31,10 +31,9 @@ public:
     std::map<TAddr, hir::Block> blocks;
 
     // Constructor
-    IRecompiler(hir::Function f) : function(f) {
-        prolog = hir::Block::Create("prolog", function);
-        epilog = hir::Block::Create("epilog", function);
-        module = function.getParent();
+    IRecompiler(IFunction<TAddr>* f) : function(f) {
+        prolog = hir::Block::Create("prolog", function->function);
+        epilog = hir::Block::Create("epilog", function->function);
     }
 };
 
