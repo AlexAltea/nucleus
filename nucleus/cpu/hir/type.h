@@ -10,6 +10,8 @@
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/LLVMContext.h"
 
+#include <algorithm>
+
 namespace cpu {
 namespace hir {
 
@@ -108,16 +110,40 @@ struct Vector {
 };
 
 template <typename... Ts>
-struct Struct {
-    static const TypeSize size = 0; // TODO
+class Struct {
+private:
+    template <typename TFirst, typename... TRest>
+    struct PartialStruct {
+        static const TypeSize size = TFirst::size + PartialStruct<TRest...>::size;
+        static std::vector<llvm::Type*> getTypeArray() {
+            auto typeArray = PartialStruct<TRest...>::getTypeArray();
+            typeArray.push_back(TFirst::getType().type);
+            return typeArray;
+        }
+    };
+
+    template <typename TFirst>
+    struct PartialStruct<TFirst> {
+        static const TypeSize size = TFirst::size;
+        static std::vector<llvm::Type*> getTypeArray() {
+            return { TFirst::getType().type };
+        }
+    };
+
+public:
+    static const TypeSize size = PartialStruct<Ts...>::size;
     static Type getType() {
-        return Type{ nullptr/*llvm::StructType::get()*/ }; // TODO
+        // TODO: Is there a better way to handle this that doesn't involve reversing the vector?
+        auto typeArray = PartialStruct<Ts...>::getTypeArray();
+        std::reverse(typeArray.begin(), typeArray.end());
+        return Type{ llvm::StructType::get(llvm::getGlobalContext(), typeArray) };
     }
 };
 
 // Pointer type
 template <typename T>
 struct Pointer {
+    static const TypeSize size = 64; // TODO: This is only true in some architectures
     static Type getType() {
         return Type{ llvm::PointerType::get(T::getType().type, 0) };
     }
