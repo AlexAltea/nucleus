@@ -40,20 +40,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\externals\llvm\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <OutDir>$(SolutionDir)libs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)libs\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDir);$(SolutionDir)\externals\llvm\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\externals\llvm\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(SolutionDir)\externals\llvm\$(Configuration)\lib\;$(SolutionDir)\libs\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
-    <OutDir>$(SolutionDir)libs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)libs\$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDir);$(SolutionDir)\externals\llvm\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -67,7 +65,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -83,45 +80,10 @@
     <ClCompile Include="..\externals\stb\stb_image.c" />
     <ClCompile Include="..\externals\stb\stb_truetype.c" />
     <ClCompile Include="config.cpp" />
-    <ClCompile Include="cpu\cell.cpp" />
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer.cpp" />
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_branch.cpp" />
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_control.cpp" />
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_float.cpp" />
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_integer.cpp" />
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_memory.cpp" />
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_vector.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_branch.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_control.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_float.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_integer.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_memory.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_vector.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_decoder.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_instruction.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_state.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_tables.cpp" />
-    <ClCompile Include="cpu\ppu\ppu_thread.cpp" />
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler.cpp" />
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_branch.cpp" />
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_control.cpp" />
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_float.cpp" />
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_integer.cpp" />
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_memory.cpp" />
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_vector.cpp" />
-    <ClCompile Include="cpu\thread.cpp" />
-    <ClCompile Include="debugger.cpp" />
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="filesystem\filesystem.cpp" />
     <ClCompile Include="filesystem\virtual_filesystem.cpp" />
     <ClCompile Include="format.cpp" />
-    <ClCompile Include="gpu\opengl\opengl_fp.cpp" />
-    <ClCompile Include="gpu\opengl\opengl_renderer.cpp" />
-    <ClCompile Include="gpu\opengl\opengl_vp.cpp" />
-    <ClCompile Include="gpu\rsx.cpp" />
-    <ClCompile Include="gpu\rsx_dma.cpp" />
-    <ClCompile Include="gpu\rsx_pgraph.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\psf.cpp" />
@@ -155,17 +117,6 @@
     <ClCompile Include="syscalls\module.cpp" />
     <ClCompile Include="syscalls\modules\libsysmodule.cpp" />
     <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp" />
-    <ClCompile Include="ui\language.cpp" />
-    <ClCompile Include="ui\screen.cpp" />
-    <ClCompile Include="ui\screens\screen_emulator.cpp" />
-    <ClCompile Include="ui\screens\screen_logo.cpp" />
-    <ClCompile Include="ui\screens\screen_main.cpp" />
-    <ClCompile Include="ui\transitions.cpp" />
-    <ClCompile Include="ui\ui.cpp" />
-    <ClCompile Include="ui\widget.cpp" />
-    <ClCompile Include="ui\widgets\widget_image.cpp" />
-    <ClCompile Include="ui\widgets\widget_text.cpp" />
-    <ClCompile Include="ui\widgets\widget_texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\externals\aes.h" />
@@ -175,32 +126,10 @@
     <ClInclude Include="..\externals\stb\stb_truetype.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="config.h" />
-    <ClInclude Include="cpu\cell.h" />
-    <ClInclude Include="cpu\ppu\analyzer\ppu_analyzer.h" />
-    <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h" />
-    <ClInclude Include="cpu\ppu\ppu_decoder.h" />
-    <ClInclude Include="cpu\ppu\ppu_instruction.h" />
-    <ClInclude Include="cpu\ppu\ppu_state.h" />
-    <ClInclude Include="cpu\ppu\ppu_tables.h" />
-    <ClInclude Include="cpu\ppu\ppu_thread.h" />
-    <ClInclude Include="cpu\ppu\recompiler\ppu_recompiler.h" />
-    <ClInclude Include="cpu\thread.h" />
-    <ClInclude Include="debugger.h" />
     <ClInclude Include="emulator.h" />
     <ClInclude Include="filesystem\filesystem.h" />
     <ClInclude Include="filesystem\virtual_filesystem.h" />
     <ClInclude Include="format.h" />
-    <ClInclude Include="gpu\opengl\opengl_fp.h" />
-    <ClInclude Include="gpu\opengl\opengl_renderer.h" />
-    <ClInclude Include="gpu\opengl\opengl_vp.h" />
-    <ClInclude Include="gpu\rsx.h" />
-    <ClInclude Include="gpu\rsx_dma.h" />
-    <ClInclude Include="gpu\rsx_enum.h" />
-    <ClInclude Include="gpu\rsx_fp.h" />
-    <ClInclude Include="gpu\rsx_methods.h" />
-    <ClInclude Include="gpu\rsx_pgraph.h" />
-    <ClInclude Include="gpu\rsx_texture.h" />
-    <ClInclude Include="gpu\rsx_vp.h" />
     <ClInclude Include="loader\keys.h" />
     <ClInclude Include="loader\loader.h" />
     <ClInclude Include="loader\psf.h" />
@@ -241,17 +170,6 @@
     <ClInclude Include="syscalls\modules\libsysutil_avconf_ext.h" />
     <ClInclude Include="syscalls\object.h" />
     <ClInclude Include="syscalls\syscall.h" />
-    <ClInclude Include="ui\language.h" />
-    <ClInclude Include="ui\screen.h" />
-    <ClInclude Include="ui\screens\screen_emulator.h" />
-    <ClInclude Include="ui\screens\screen_logo.h" />
-    <ClInclude Include="ui\screens\screen_main.h" />
-    <ClInclude Include="ui\transitions.h" />
-    <ClInclude Include="ui\ui.h" />
-    <ClInclude Include="ui\widget.h" />
-    <ClInclude Include="ui\widgets\widget_image.h" />
-    <ClInclude Include="ui\widgets\widget_text.h" />
-    <ClInclude Include="ui\widgets\widget_texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

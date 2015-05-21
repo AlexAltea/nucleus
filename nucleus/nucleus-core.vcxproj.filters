@@ -14,18 +14,6 @@
     <ClCompile Include="memory\segment.cpp">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="cpu\cell.cpp">
-      <Filter>cpu</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_thread.cpp">
-      <Filter>cpu\ppu</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\thread.cpp">
-      <Filter>cpu</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter.cpp">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClCompile>
     <ClCompile Include="syscalls\lv2.cpp">
       <Filter>syscalls</Filter>
     </ClCompile>
@@ -40,9 +28,6 @@
     </ClCompile>
     <ClCompile Include="syscalls\lv2\sys_prx.cpp">
       <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_tables.cpp">
-      <Filter>cpu\ppu</Filter>
     </ClCompile>
     <ClCompile Include="syscalls\lv2\sys_tty.cpp">
       <Filter>syscalls\lv2</Filter>
@@ -98,11 +83,7 @@
     <ClCompile Include="syscalls\lv2\sys_event.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="gpu\rsx.cpp">
-      <Filter>gpu</Filter>
-    </ClCompile>
     <ClCompile Include="config.cpp" />
-    <ClCompile Include="debugger.cpp" />
     <ClCompile Include="..\externals\mongoose\mongoose.c">
       <Filter>externals\mongoose</Filter>
     </ClCompile>
@@ -114,24 +95,6 @@
     </ClCompile>
     <ClCompile Include="syscalls\modules\libsysmodule.cpp">
       <Filter>syscalls\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="gpu\opengl\opengl_renderer.cpp">
-      <Filter>gpu\opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="gpu\opengl\opengl_vp.cpp">
-      <Filter>gpu\opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="gpu\opengl\opengl_fp.cpp">
-      <Filter>gpu\opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="gpu\rsx_pgraph.cpp">
-      <Filter>gpu</Filter>
-    </ClCompile>
-    <ClCompile Include="gpu\rsx_dma.cpp">
-      <Filter>gpu</Filter>
     </ClCompile>
     <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp">
       <Filter>syscalls\modules</Filter>
@@ -145,116 +108,17 @@
     <ClCompile Include="syscalls\lv2\sys_config.cpp">
       <Filter>syscalls\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="ui\language.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_instruction.cpp">
-      <Filter>cpu\ppu</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_integer.cpp">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_decoder.cpp">
-      <Filter>cpu\ppu</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_branch.cpp">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_float.cpp">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_memory.cpp">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_vector.cpp">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer.cpp">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\analyzer\ppu_analyzer_control.cpp">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_vector.cpp">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler.cpp">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_branch.cpp">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_control.cpp">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_float.cpp">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_integer.cpp">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\recompiler\ppu_recompiler_memory.cpp">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClCompile>
     <ClCompile Include="format.cpp" />
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_memory.cpp">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_vector.cpp">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_branch.cpp">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_control.cpp">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_float.cpp">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\interpreter\ppu_interpreter_integer.cpp">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu\ppu\ppu_state.cpp">
-      <Filter>cpu\ppu</Filter>
-    </ClCompile>
     <ClCompile Include="nucleus.cpp" />
-    <ClCompile Include="ui\screen.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\screens\screen_logo.cpp">
-      <Filter>ui\screens</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\screens\screen_main.cpp">
-      <Filter>ui\screens</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\screens\screen_emulator.cpp">
-      <Filter>ui\screens</Filter>
-    </ClCompile>
     <ClCompile Include="..\externals\stb\stb_image.c">
       <Filter>externals\stb</Filter>
     </ClCompile>
     <ClCompile Include="..\externals\stb\stb_truetype.c">
       <Filter>externals\stb</Filter>
     </ClCompile>
-    <ClCompile Include="ui\widgets\widget_image.cpp">
-      <Filter>ui\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\widget.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\widgets\widget_texture.cpp">
-      <Filter>ui\widgets</Filter>
-    </ClCompile>
     <ClCompile Include="opengl.cpp" />
-    <ClCompile Include="ui\widgets\widget_text.cpp">
-      <Filter>ui\widgets</Filter>
-    </ClCompile>
     <ClCompile Include="loader\psf.cpp">
       <Filter>loader</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\transitions.cpp">
-      <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -278,18 +142,6 @@
     <ClInclude Include="syscalls\lv2\sys_process.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="cpu\cell.h">
-      <Filter>cpu</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_thread.h">
-      <Filter>cpu\ppu</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\thread.h">
-      <Filter>cpu</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\interpreter\ppu_interpreter.h">
-      <Filter>cpu\ppu\interpreter</Filter>
-    </ClInclude>
     <ClInclude Include="syscalls\lv2.h">
       <Filter>syscalls</Filter>
     </ClInclude>
@@ -301,9 +153,6 @@
     </ClInclude>
     <ClInclude Include="..\externals\sha1.h">
       <Filter>externals</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_tables.h">
-      <Filter>cpu\ppu</Filter>
     </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_tty.h">
       <Filter>syscalls\lv2</Filter>
@@ -363,11 +212,7 @@
     <ClInclude Include="syscalls\lv2\sys_event.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="gpu\rsx.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
     <ClInclude Include="config.h" />
-    <ClInclude Include="debugger.h" />
     <ClInclude Include="..\externals\mongoose\mongoose.h">
       <Filter>externals\mongoose</Filter>
     </ClInclude>
@@ -383,45 +228,12 @@
     <ClInclude Include="syscalls\modules\libsysmodule.h">
       <Filter>syscalls\modules</Filter>
     </ClInclude>
-    <ClInclude Include="gpu\rsx_vp.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\rsx_fp.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\rsx_methods.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\ui.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\opengl\opengl_renderer.h">
-      <Filter>gpu\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\rsx_enum.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\opengl\opengl_fp.h">
-      <Filter>gpu\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\opengl\opengl_vp.h">
-      <Filter>gpu\opengl</Filter>
-    </ClInclude>
     <ClInclude Include="format.h" />
-    <ClInclude Include="gpu\rsx_pgraph.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\rsx_texture.h">
-      <Filter>gpu</Filter>
-    </ClInclude>
     <ClInclude Include="syscalls\lv2\sys_synchronization.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
     <ClInclude Include="syscalls\lv1.h">
       <Filter>syscalls</Filter>
-    </ClInclude>
-    <ClInclude Include="gpu\rsx_dma.h">
-      <Filter>gpu</Filter>
     </ClInclude>
     <ClInclude Include="syscalls\modules\libsysutil_avconf_ext.h">
       <Filter>syscalls\modules</Filter>
@@ -435,62 +247,17 @@
     <ClInclude Include="syscalls\lv2\sys_config.h">
       <Filter>syscalls\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="ui\language.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_instruction.h">
-      <Filter>cpu\ppu</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_decoder.h">
-      <Filter>cpu\ppu</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\analyzer\ppu_analyzer.h">
-      <Filter>cpu\ppu\analyzer</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\recompiler\ppu_recompiler.h">
-      <Filter>cpu\ppu\recompiler</Filter>
-    </ClInclude>
-    <ClInclude Include="cpu\ppu\ppu_state.h">
-      <Filter>cpu\ppu</Filter>
-    </ClInclude>
     <ClInclude Include="nucleus.h" />
-    <ClInclude Include="ui\screen.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\screens\screen_logo.h">
-      <Filter>ui\screens</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\screens\screen_main.h">
-      <Filter>ui\screens</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\screens\screen_emulator.h">
-      <Filter>ui\screens</Filter>
-    </ClInclude>
     <ClInclude Include="..\externals\stb\stb_image.h">
       <Filter>externals\stb</Filter>
     </ClInclude>
     <ClInclude Include="..\externals\stb\stb_truetype.h">
       <Filter>externals\stb</Filter>
     </ClInclude>
-    <ClInclude Include="ui\widgets\widget_image.h">
-      <Filter>ui\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\widget.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\widgets\widget_texture.h">
-      <Filter>ui\widgets</Filter>
-    </ClInclude>
     <ClInclude Include="opengl.h" />
     <ClInclude Include="opengl_tables.h" />
-    <ClInclude Include="ui\widgets\widget_text.h">
-      <Filter>ui\widgets</Filter>
-    </ClInclude>
     <ClInclude Include="loader\psf.h">
       <Filter>loader</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\transitions.h">
-      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -500,12 +267,6 @@
     <Filter Include="loader">
       <UniqueIdentifier>{479b5b01-f2da-42d5-a4e5-0fda62fbb44f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cpu">
-      <UniqueIdentifier>{5a59cd46-0107-45aa-8c3a-f6e90f81ea6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="gpu">
-      <UniqueIdentifier>{e73e9bb7-26a5-4038-9c4b-8cd6d55b4b0e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="filesystem">
       <UniqueIdentifier>{03497551-abec-49d6-a70c-7fca3e33223d}</UniqueIdentifier>
     </Filter>
@@ -514,15 +275,6 @@
     </Filter>
     <Filter Include="syscalls\lv2">
       <UniqueIdentifier>{c4dacbb1-5a4c-4b3b-863b-3081f65cf594}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cpu\ppu">
-      <UniqueIdentifier>{b9d5fcc3-3779-418c-b69b-f466239485ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cpu\spu">
-      <UniqueIdentifier>{c47659f4-1b74-48cc-ab31-c1af611742b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cpu\ppu\interpreter">
-      <UniqueIdentifier>{f788fe4b-e985-4668-8282-ec98f9c35c96}</UniqueIdentifier>
     </Filter>
     <Filter Include="externals">
       <UniqueIdentifier>{e68c46f9-ed48-4999-80bd-da820720b686}</UniqueIdentifier>
@@ -536,32 +288,8 @@
     <Filter Include="syscalls\modules">
       <UniqueIdentifier>{b973ebaf-0e09-48e8-b507-02288f5c29e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gpu\null">
-      <UniqueIdentifier>{43252559-7d28-47cc-b1eb-73bdc8e4466d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="gpu\opengl">
-      <UniqueIdentifier>{137cfb6a-f833-4228-bc33-ece142cebab8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="gpu\software">
-      <UniqueIdentifier>{d5b85229-91f1-4c09-9a62-d6a2d2634bd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui">
-      <UniqueIdentifier>{1a3d9deb-1064-46ed-8c66-1115220cd6bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cpu\ppu\analyzer">
-      <UniqueIdentifier>{56c1276a-e6ba-4d83-b87a-4a751251396b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="cpu\ppu\recompiler">
-      <UniqueIdentifier>{abbcc1e5-7379-43b2-935b-76d53e48beac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\screens">
-      <UniqueIdentifier>{1258d299-3155-4ae7-9c4d-59f6513082c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="externals\stb">
       <UniqueIdentifier>{3437dee8-85fc-483f-a84a-64fea19d469d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\widgets">
-      <UniqueIdentifier>{1221f87e-84aa-495c-9b9e-ac8974d05e98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

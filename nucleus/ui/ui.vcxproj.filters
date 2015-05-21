@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="transitions.cpp" />
+    <ClCompile Include="ui.cpp" />
+    <ClCompile Include="widget.cpp" />
+    <ClCompile Include="language.cpp" />
+    <ClCompile Include="screen.cpp" />
+    <ClCompile Include="widgets\widget_text.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="widgets\widget_texture.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="widgets\widget_image.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="screens\screen_logo.cpp">
+      <Filter>screens</Filter>
+    </ClCompile>
+    <ClCompile Include="screens\screen_main.cpp">
+      <Filter>screens</Filter>
+    </ClCompile>
+    <ClCompile Include="screens\screen_emulator.cpp">
+      <Filter>screens</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="transitions.h" />
+    <ClInclude Include="ui.h" />
+    <ClInclude Include="widget.h" />
+    <ClInclude Include="language.h" />
+    <ClInclude Include="screen.h" />
+    <ClInclude Include="widgets\widget_text.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="widgets\widget_texture.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="widgets\widget_image.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="screens\screen_logo.h">
+      <Filter>screens</Filter>
+    </ClInclude>
+    <ClInclude Include="screens\screen_main.h">
+      <Filter>screens</Filter>
+    </ClInclude>
+    <ClInclude Include="screens\screen_emulator.h">
+      <Filter>screens</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="screens">
+      <UniqueIdentifier>{11cfb7c9-5260-4937-9ada-0c553c51bd86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="widgets">
+      <UniqueIdentifier>{8abaea12-cb65-42ff-9fc0-c8354b8dc049}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
