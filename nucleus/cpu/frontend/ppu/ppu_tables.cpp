@@ -4,8 +4,6 @@
  */
 
 #include "ppu_tables.h"
-#include "nucleus/cpu/ppu/interpreter/ppu_interpreter.h"
-#include "nucleus/cpu/ppu/ppu_thread.h"
 
 // Instruction entry
 #define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, &Analyzer::name, &Interpreter::name, &Recompiler::name }

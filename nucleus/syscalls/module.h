@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/ppu/ppu_thread.h"
+#include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/syscalls/syscall.h"
 
 #include <string>

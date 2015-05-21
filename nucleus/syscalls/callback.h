@@ -14,7 +14,7 @@ class Callback
 public:
     Callback(u32 addr) : m_addr(addr) {}
 
-    template<typename... T>
+    template <typename... T>
     void call(T... args)
     {
         const u32 pc = nucleus.memory.read32(m_addr);

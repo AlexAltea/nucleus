@@ -7,7 +7,7 @@
 #include "nucleus/common.h"
 #include "nucleus/config.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/ppu/ppu_decoder.h"
+#include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 #include "nucleus/filesystem/filesystem.h"
 #include "nucleus/loader/keys.h"
 #include "nucleus/loader/loader.h"
@@ -66,7 +66,9 @@ bool SELFLoader::load_elf(sys_process_t& proc)
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
             memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
             if ((phdr.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
-                auto segment = new cpu::ppu::Segment(phdr.vaddr, phdr.filesz);
+                auto segment = new cpu::ppu::Segment();
+                segment->address = phdr.vaddr;
+                segment->size = phdr.filesz;
                 segment->analyze();
                 segment->recompile();
                 nucleus.cell.ppu_segments.push_back(segment);
@@ -272,7 +274,9 @@ bool SELFLoader::load_prx(sys_prx_t& prx)
     // Recompile executable segments
     for (auto& prx_segment : prx.segments) {
         if ((prx_segment.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
-            auto segment = new cpu::ppu::Segment(prx_segment.addr, prx_segment.size_file);
+            auto segment = new cpu::ppu::Segment();
+            segment->address = prx_segment.addr;
+            segment->size = prx_segment.size_file;
             segment->analyze();
             segment->recompile();
             nucleus.cell.ppu_segments.push_back(segment);

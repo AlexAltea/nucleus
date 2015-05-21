@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/ppu/ppu_state.h"
+#include "nucleus/cpu/frontend/ppu/ppu_state.h"
 
 // Syscall arguments
 #define ARG_GPR(T,n) (T)(std::is_pointer<T>::value ? (u64)memoryBase + state.gpr[3+n] : state.gpr[3+n])
@@ -20,10 +20,10 @@ public:
 };
 
 // Derived class
-template<typename TR, typename... TA>
+template <typename TR, typename... TA>
 class SyscallBinder;
 
-template<typename TR>
+template <typename TR>
 class SyscallBinder<TR> : public Syscall
 {
     TR(*m_func)();
@@ -37,7 +37,7 @@ public:
     }
 };
 
-template<typename TR, typename T1>
+template <typename TR, typename T1>
 class SyscallBinder<TR, T1> : public Syscall
 {
     TR(*m_func)(T1);
@@ -51,7 +51,7 @@ public:
     }
 };
 
-template<typename TR, typename T1, typename T2>
+template <typename TR, typename T1, typename T2>
 class SyscallBinder<TR, T1, T2> : public Syscall
 {
     TR(*m_func)(T1, T2);
@@ -65,10 +65,10 @@ public:
     }
 };
 
-template<typename TR, typename... TA>
+template <typename TR, typename... TA>
 class SyscallBinder;
 
-template<typename TR, typename T1, typename T2, typename T3>
+template <typename TR, typename T1, typename T2, typename T3>
 class SyscallBinder<TR, T1, T2, T3> : public Syscall
 {
     TR(*m_func)(T1, T2, T3);
@@ -82,7 +82,7 @@ public:
     }
 };
 
-template<typename TR, typename T1, typename T2, typename T3, typename T4>
+template <typename TR, typename T1, typename T2, typename T3, typename T4>
 class SyscallBinder<TR, T1, T2, T3, T4> : public Syscall
 {
     TR(*m_func)(T1, T2, T3, T4);
@@ -96,7 +96,7 @@ public:
     }
 };
 
-template<typename TR, typename T1, typename T2, typename T3, typename T4, typename T5>
+template <typename TR, typename T1, typename T2, typename T3, typename T4, typename T5>
 class SyscallBinder<TR, T1, T2, T3, T4, T5> : public Syscall
 {
     TR(*m_func)(T1, T2, T3, T4, T5);
@@ -110,7 +110,7 @@ public:
     }
 };
 
-template<typename TR, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
+template <typename TR, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6>
 class SyscallBinder<TR, T1, T2, T3, T4, T5, T6> : public Syscall
 {
     TR(*m_func)(T1, T2, T3, T4, T5, T6);
@@ -124,7 +124,7 @@ public:
     }
 };
 
-template<typename TR, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+template <typename TR, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
 class SyscallBinder<TR, T1, T2, T3, T4, T5, T6, T7> : public Syscall
 {
     TR(*m_func)(T1, T2, T3, T4, T5, T6, T7);
@@ -138,7 +138,7 @@ public:
     }
 };
 
-template<typename TR, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+template <typename TR, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
 class SyscallBinder<TR, T1, T2, T3, T4, T5, T6, T7, T8> : public Syscall
 {
     TR(*m_func)(T1, T2, T3, T4, T5, T6, T7, T8);
@@ -152,7 +152,7 @@ public:
     }
 };
 
-template<typename TR, typename... TA>
+template <typename TR, typename... TA>
 Syscall* wrap(TR(*func)(TA...))
 {
     return new SyscallBinder<TR, TA...>(func);

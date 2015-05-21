@@ -423,6 +423,14 @@ public:
     }
 
     // Bit Manipulation Intrinsics
+    template <typename T>
+    Value<T> CreateIntrinsic_Bswap(Value<T> val) {
+        static_assert(std::is_integral<T::type>::value && T::size % 16 == 0,
+            "Builder::CreateIntrinsic_Bswap accepts only integer values with even number of bytes");
+        Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::bswap);
+        return CreateCall(intrinsic, {val});
+    }
+
     template <typename T, int N>
     Value<T, N> CreateIntrinsic_Ctlz(Value<T, N> val, Value<I1> isZeroUndef) {
         static_assert(std::is_integral<T::type>::value,

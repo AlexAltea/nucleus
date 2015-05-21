@@ -5,7 +5,7 @@
 
 #include "nucleus.h"
 #include "nucleus/config.h"
-#include "nucleus/debugger.h"
+#include "nucleus/debugger/debugger.h"
 #include "nucleus/emulator.h"
 #include "nucleus/filesystem/virtual_filesystem.h"
 #include "nucleus/ui/ui.h"

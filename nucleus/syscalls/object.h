@@ -20,7 +20,7 @@ public:
     virtual u32 getType()=0;
 };
 
-template<typename T>
+template <typename T>
 class Object : public ObjectBase
 {
     T* m_data;
@@ -68,7 +68,7 @@ public:
     std::unordered_map<u32, ObjectBase*>::const_iterator end() { return m_objects.end(); }
 
     // Add a new object to the set and return the generated ID
-    template<typename T>
+    template <typename T>
     u32 add(T* data, const u32 type)
     {
         std::lock_guard<std::mutex> lock(m_mutex);
@@ -78,7 +78,7 @@ public:
     }
 
     // Get a pointer to the object data of a certain ID
-    template<typename T>
+    template <typename T>
     T* get(const u32 id)
     {
         std::lock_guard<std::mutex> lock(m_mutex);

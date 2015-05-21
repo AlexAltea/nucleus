@@ -20,7 +20,7 @@
 #endif
 
 // Equivalent of snprintf returning std::string objects
-template<typename... Args>
+template <typename... Args>
 std::string format(const char* pattern, Args... args)
 {
     char buffer[4096];

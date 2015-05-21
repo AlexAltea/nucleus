@@ -5,10 +5,11 @@
 
 #pragma once
 
-#include "nucleus/cpu/ppu/ppu_instruction.h"
-#include "nucleus/cpu/ppu/ppu_thread.h"
-#include "nucleus/cpu/ppu/analyzer/ppu_analyzer.h"
-#include "nucleus/cpu/ppu/recompiler/ppu_recompiler.h"
+#include "nucleus/common.h"
+#include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
+#include "nucleus/cpu/frontend/ppu/analyzer/ppu_analyzer.h"
+#include "nucleus/cpu/frontend/ppu/interpreter/ppu_interpreter.h"
+#include "nucleus/cpu/frontend/ppu/recompiler/ppu_recompiler.h"
 
 #include <string>
 
