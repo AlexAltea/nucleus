@@ -11,6 +11,7 @@
 #include "nucleus/cpu/hir/type.h"
 #include "nucleus/cpu/hir/value.h"
 
+#include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/IRBuilder.h"
 
 #include <string>
@@ -237,6 +238,11 @@ public:
         builder.CreateStore(val.value, ptr.value);
     }
 
+    template <typename... TMembers>
+    llvm::Value* CreateInBoundsGEP(Value<Struct<TMembers...>*> agg, std::vector<llvm::Value*> idxList) {
+        return builder.CreateInBoundsGEP(agg.value, idxList);
+    }
+
     // Comparison operations
     template <typename T, int N>
     Value<I1, N> CreateICmpEQ(Value<T, N> lhs, Value<T, N> rhs) {
@@ -361,11 +367,7 @@ public:
     }
 
     // Function operations
-    llvm::Value* CreateCall(Function callee, llvm::Value* args...) {
-        return builder.CreateCall(callee.function, args);
-    }
-
-    llvm::Value* CreateCall(Function callee, std::vector<llvm::Value*> args) {
+    llvm::Value* CreateCall(Function callee, std::vector<llvm::Value*> args = {}) {
         return builder.CreateCall(callee.function, args);
     }
 
@@ -392,6 +394,67 @@ public:
         static_assert(std::is_integral<T::type>::value,
             "Builder::CreateSwitch accepts only integer values");
         return builder.CreateSwitch(v.value, dest.bb, 1);
+    }
+
+    /**
+     * HIR intrinsic generation
+     */
+    template <typename T>
+    Function getIntrinsic(llvm::Intrinsic::ID id) {
+        llvm::Module* module = builder.GetInsertBlock()->getParent()->getParent();
+        return llvm::Intrinsic::getDeclaration(module, id, T::getType().type);
+    }
+
+    // Standard C Library Intrinsics
+    template <typename T>
+    Value<T> CreateIntrinsic_Fabs(Value<T> val) {
+        static_assert(std::is_floating_point<T::type>::value,
+            "Builder::CreateIntrinsic_Fabs accepts only floating-point values");
+        Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::fabs);
+        return CreateCall(intrinsic, {val});
+    }
+
+    template <typename T>
+    Value<T> CreateIntrinsic_Sqrt(Value<T> val) {
+        static_assert(std::is_floating_point<T::type>::value,
+            "Builder::CreateIntrinsic_Sqrt accepts only floating-point values");
+        Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::sqrt);
+        return CreateCall(intrinsic, {val});
+    }
+
+    // Bit Manipulation Intrinsics
+    template <typename T, int N>
+    Value<T, N> CreateIntrinsic_Ctlz(Value<T, N> val, Value<I1> isZeroUndef) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateIntrinsic_Ctlz accepts only integer and integer-vector values");
+        Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::ctlz);
+        return CreateCall(intrinsic, {val, isZeroUndef});
+    }
+
+    // Arithmetic with Overflow Intrinsics
+    template <typename T>
+    Value<Struct<T, I1>> CreateIntrinsic_SaddWithOverflow(Value<T> lhs, Value<T> rhs) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateIntrinsic_SaddWithOverflow accepts only integer values");
+        Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::sadd_with_overflow);
+        return CreateCall(intrinsic, {lhs, rhs});
+    }
+
+    template <typename T>
+    Value<Struct<T, I1>> CreateIntrinsic_UaddWithOverflow(Value<T> lhs, Value<T> rhs) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateIntrinsic_UaddWithOverflow accepts only integer values");
+        Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::uadd_with_overflow);
+        return CreateCall(intrinsic, {lhs, rhs});
+    }
+
+    // Specialised Arithmetic Intrinsics
+    template <typename T>
+    Value<T> CreateIntrinsic_Fmuladd(Value<T> a, Value<T> b, Value<T> c) {
+        static_assert(std::is_floating_point<T::type>::value,
+            "Builder::CreateIntrinsic_Fmuladd accepts only floating-point values");
+        Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::fmuladd);
+        return CreateCall(intrinsic, {a, b, c});
     }
 };
 
