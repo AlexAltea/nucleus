@@ -5,7 +5,7 @@
 
 #include "ppu_interpreter.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/ppu/ppu_tables.h"
+#include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
 #include <algorithm>
 #include <cmath>

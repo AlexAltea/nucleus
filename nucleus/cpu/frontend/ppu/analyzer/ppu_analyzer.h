@@ -6,36 +6,48 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/ppu/ppu_state.h"
-#include "nucleus/cpu/ppu/ppu_thread.h"
-#include "nucleus/cpu/ppu/ppu_instruction.h"
+#include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
+
+#include <set>
 
 namespace cpu {
 namespace ppu {
 
-class Interpreter
+// Avoid a collision with <Windows.h>
+#ifdef NUCLEUS_PLATFORM_WINDOWS
+#undef REG_NONE
+#endif
+
+enum AnalyzerEvent : u8 {
+    REG_NONE       = 0,         // Register was not accessed
+    REG_READ       = (1 << 0),  // Register was read
+    REG_WRITE      = (1 << 1),  // Register was written
+    REG_READ_ORIG  = (1 << 2),  // Original register value was read
+};
+
+class Analyzer
 {
-    // Rotation mask
-    static u64 rotateMask[64][64];
-    static void initRotateMask();
+    void setFlag(AnalyzerEvent& reg, AnalyzerEvent evt);
 
 public:
-    State state;
+    // PPU UISA Registers
+    AnalyzerEvent gpr[32] = {};
+    AnalyzerEvent fpr[32] = {};
+    AnalyzerEvent cr[8] = {};
+    AnalyzerEvent fpscr = REG_NONE;
+    AnalyzerEvent xer = REG_NONE;
+    AnalyzerEvent lr = REG_NONE;
+    AnalyzerEvent ctr = REG_NONE;
 
-    Interpreter(u32 entry, u32 stack);
+    // PPU VEA Registers
+    AnalyzerEvent tb = REG_NONE;
 
-    // Decode and execute one instruction
-    void step();
+    // PPU Vector/SIMD Registers
+    AnalyzerEvent vr[32] = {};
+    AnalyzerEvent vscr = REG_NONE;
 
-    /**
-     * Auxiliary functions
-     */
-    static inline bool isCarry(u64 a, u64 b) {
-        return (a + b) < a;
-    }
-    static inline bool isCarry(u64 a, u64 b, u64 c) {
-        return isCarry(a, b) || isCarry(a + b, c);
-    }
+    // Record of analyzed functions
+    std::set<u32> analyzedFunctions;
 
     /**
      * PPC64 Instructions:
@@ -459,10 +471,6 @@ public:
     void vupklsb(Instruction code);
     void vupklsh(Instruction code);
     void vxor(Instruction code);
-
-    // Unknown instruction
-    void unknown(Instruction code);
-    static void unknown(const char* instruction);
 };
 
 }  // namespace ppu
