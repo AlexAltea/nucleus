@@ -8,9 +8,6 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
 
-#include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/Module.h"
-
 #include <cmath>
 #include <string>
 
@@ -68,8 +65,7 @@ enum FPSCR_EXP {
 typedef u64 PPU_GPR;
 
 // Condition Register
-union PPU_CR
-{
+union PPU_CR {
     u32 CR;
 
     // Bit index
@@ -90,7 +86,7 @@ union PPU_CR
         CR = (CR & (u32)maskHigh) | (value << field*4) | (CR & (u32)maskLow);
     }
 
-    template<typename T>
+    template <typename T>
     void updateField(u32 field, T a, T b) {
         if (a < b) {
             setField(field, 1 << CR_LT);
@@ -108,8 +104,7 @@ union PPU_CR
 };
 
 // Floating-Point Register
-union PPU_FPR
-{
+union PPU_FPR {
     f64 _f64;
     u64 _u64;
 
@@ -144,8 +139,7 @@ union PPU_FPR
 };
 
 // Floating-Point Status and Control Register
-union PPU_FPSCR
-{
+union PPU_FPSCR {
     u32 FPSCR;
 
     struct {
@@ -187,9 +181,9 @@ union PPU_FPSCR
 };
 
 // XER Register (SPR 1)
-union PPU_XER
-{
+union PPU_XER {
     u64 XER;
+
     struct {
         u32 BC : 7;  // Byte count
         u32    : 22;
@@ -208,6 +202,7 @@ typedef u64 PPU_CTR;
 
 union PPU_TB {
     u64 TB;
+
     struct {
         u32 TBL;
         u32 TBU;
@@ -215,8 +210,7 @@ union PPU_TB {
 };
 
 // Vector Register
-union PPU_VR
-{
+union PPU_VR {
     u128 _u128;
     u64 _u64[2];
     s64 _s64[2];
@@ -229,16 +223,14 @@ union PPU_VR
     f32 _f32[4];
     f64 _f64[2];
 
-    inline void clear()
-    {
+    inline void clear() {
         _u64[0] = 0;
         _u64[1] = 0;
     }
 };
 
 // Vector Status and Control Register
-union PPU_VSCR
-{
+union PPU_VSCR {
     u32 VSCR;
 
     struct {
@@ -272,13 +264,6 @@ struct State {
 
     // Program Counter
     u32 pc;
-
-    /**
-     * Recompiler utilities
-     */
-
-    // Get the LLVM type of this class
-    static llvm::StructType* type();
 };
 
 }  // namespace ppu

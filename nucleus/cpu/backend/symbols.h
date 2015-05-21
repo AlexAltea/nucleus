@@ -13,6 +13,14 @@ namespace backend {
 // Types
 using SymbolInfo = llvm::RuntimeDyld::SymbolInfo;
 
+// Nucleus-defined symbols
+extern "C" {
+    void* nucleusGetState();
+    void nucleusLogState(u64 address);
+    void nucleusIntermodularCall(u64 address);
+    void nucleusSystemCall();
+}
+
 class SymbolResolver : public llvm::RuntimeDyld::SymbolResolver {
 public:
     virtual SymbolInfo findSymbol(const std::string &name) override;
