@@ -4,5 +4,5 @@
 [submodule "llvm"]
 	path = externals/llvm
 	url = http://llvm.org/git/llvm.git
-	branch = release_35
+	branch = master
 	ignore = dirty
