@@ -38,7 +38,7 @@ public:
      */
     template <typename T>
     Value<T> get(typename T::type constant) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::get accepts only integer values");
         return builder.getIntN(T::size, constant);
     }
@@ -56,50 +56,49 @@ public:
     // Arithmetic operations
     template <typename T, int N>
     Value<T, N> CreateAdd(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateAdd accepts only integer values");
         return builder.CreateAdd(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateSub(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateSub accepts only integer values");
         return builder.CreateSub(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateMul(Value<T, N> lhs, Value<T, N> rhs) {
-        // TODO: Proper type checks for integers wider than 64 bits
-        /*static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateMul accepts only integer values");*/
+        static_assert(is_integer<T>::value,
+            "Builder::CreateMul accepts only integer values");
         return builder.CreateMul(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateDiv(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateDiv accepts only integer and integer-vector values");
         return builder.CreateDiv(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateSDiv(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateSDiv accepts only integer and integer-vector values");
         return builder.CreateSDiv(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateUDiv(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateUDiv accepts only integer and integer-vector values");
         return builder.CreateUDiv(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateNeg(Value<T, N> v) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateNeg accepts only integer and integer-vector values");
         return builder.CreateNeg(v.value);
     }
@@ -107,70 +106,70 @@ public:
     // Bitwise Binary Operations
     template <typename T, int N>
     Value<T, N> CreateShl(Value<T, N> val, u64 amount) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateShl accepts only integer and integer-vector values");
         return builder.CreateShl(val.value, amount);
     }
 
     template <typename T, int N>
     Value<T, N> CreateShl(Value<T, N> val, Value<T, N> amount) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateShl accepts only integer and integer-vector values");
         return builder.CreateShl(val.value, amount.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateLShr(Value<T, N> val, u64 amount) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateLShr accepts only integer and integer-vector values");
         return builder.CreateLShr(val.value, amount);
     }
 
     template <typename T, int N>
     Value<T, N> CreateLShr(Value<T, N> val, Value<T, N> amount) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateLShr accepts only integer and integer-vector values");
         return builder.CreateLShr(val.value, amount.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateAShr(Value<T, N> val, u64 amount) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateAShr accepts only integer and integer-vector values");
         return builder.CreateAShr(val.value, amount);
     }
 
     template <typename T, int N>
     Value<T, N> CreateAShr(Value<T, N> val, Value<T, N> amount) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateAShr accepts only integer and integer-vector values");
         return builder.CreateAShr(val.value, amount.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateAnd(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateAnd accepts only integer values");
         return builder.CreateAnd(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateOr(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateOr accepts only integer values");
         return builder.CreateOr(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateXor(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateXor accepts only integer values");
         return builder.CreateXor(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateNot(Value<T, N> v) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateNot accepts only integer values");
         return builder.CreateNot(v.value);
     }
@@ -214,9 +213,8 @@ public:
     // Conversion operations
     template <typename TO, typename TI, int N>
     Value<TO, N> CreateTrunc(Value<TI, N> v) {
-        // TODO: Proper type checks for integers wider than 64 bits
-        /*static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
-            "Builder::CreateTrunc accepts only integer values");*/
+        static_assert(is_integer<TI>::value && is_integer<TO>::value,
+            "Builder::CreateTrunc accepts only integer values");
         static_assert(TI::size > TO::size,
             "Builder::CreateTrunc converts only to smaller integer types");
         return builder.CreateTrunc(v, TO::getType().type);
@@ -224,7 +222,7 @@ public:
 
     template <typename TO, typename TI, int N>
     Value<TO, N> CreateSExt(Value<TI, N> v) {
-        static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
+        static_assert(is_integer<TI>::value && is_integer<TO>::value,
             "Builder::CreateSExt accepts only integer values");
         static_assert(TI::size < TO::size,
             "Builder::CreateSExt converts only to larger integer types");
@@ -233,7 +231,7 @@ public:
 
     template <typename TO, typename TI, int N>
     Value<TO, N> CreateZExt(Value<TI, N> v) {
-        static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
+        static_assert(is_integer<TI>::value && is_integer<TO>::value,
             "Builder::CreateZExt accepts only integer values");
         static_assert(TI::size < TO::size,
             "Builder::CreateZExt converts only to larger integer types");
@@ -449,7 +447,7 @@ public:
 
     template <typename T>
     llvm::SwitchInst* CreateSwitch(Value<T> v, const Block& dest) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateSwitch accepts only integer values");
         return builder.CreateSwitch(v.value, dest.bb, 1);
     }
@@ -483,7 +481,7 @@ public:
     // Bit Manipulation Intrinsics
     template <typename T>
     Value<T> CreateIntrinsic_Bswap(Value<T> val) {
-        static_assert(std::is_integral<T::type>::value && T::size % 16 == 0,
+        static_assert(is_integer<T>::value && T::size % 16 == 0,
             "Builder::CreateIntrinsic_Bswap accepts only integer values with even number of bytes");
         Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::bswap);
         return CreateCall(intrinsic, {val});
@@ -491,7 +489,7 @@ public:
 
     template <typename T, int N>
     Value<T, N> CreateIntrinsic_Ctlz(Value<T, N> val, Value<I1> isZeroUndef) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateIntrinsic_Ctlz accepts only integer and integer-vector values");
         Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::ctlz);
         return CreateCall(intrinsic, {val, isZeroUndef});
@@ -500,7 +498,7 @@ public:
     // Arithmetic with Overflow Intrinsics
     template <typename T>
     Value<Struct<T, I1>> CreateIntrinsic_SaddWithOverflow(Value<T> lhs, Value<T> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateIntrinsic_SaddWithOverflow accepts only integer values");
         Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::sadd_with_overflow);
         return CreateCall(intrinsic, {lhs, rhs});
@@ -508,7 +506,7 @@ public:
 
     template <typename T>
     Value<Struct<T, I1>> CreateIntrinsic_UaddWithOverflow(Value<T> lhs, Value<T> rhs) {
-        static_assert(std::is_integral<T::type>::value,
+        static_assert(is_integer<T>::value,
             "Builder::CreateIntrinsic_UaddWithOverflow accepts only integer values");
         Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::uadd_with_overflow);
         return CreateCall(intrinsic, {lhs, rhs});
