@@ -33,6 +33,7 @@
     <ClCompile Include="frontend\ppu\ppu_state.cpp" />
     <ClCompile Include="frontend\ppu\ppu_tables.cpp" />
     <ClCompile Include="frontend\ppu\ppu_thread.cpp" />
+    <ClCompile Include="frontend\ppu\ppu_utils.cpp" />
     <ClCompile Include="frontend\ppu\recompiler\ppu_recompiler.cpp" />
     <ClCompile Include="frontend\ppu\recompiler\ppu_recompiler_branch.cpp" />
     <ClCompile Include="frontend\ppu\recompiler\ppu_recompiler_control.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="frontend\ppu\ppu_state.h" />
     <ClInclude Include="frontend\ppu\ppu_tables.h" />
     <ClInclude Include="frontend\ppu\ppu_thread.h" />
+    <ClInclude Include="frontend\ppu\ppu_utils.h" />
     <ClInclude Include="frontend\ppu\recompiler\ppu_recompiler.h" />
     <ClInclude Include="hir\block.h" />
     <ClInclude Include="hir\builder.h" />

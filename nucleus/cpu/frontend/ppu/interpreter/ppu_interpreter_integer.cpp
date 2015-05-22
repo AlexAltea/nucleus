@@ -4,11 +4,12 @@
  */
 
 #include "ppu_interpreter.h"
+#include "nucleus/cpu/frontend/ppu/ppu_utils.h"
 
 namespace cpu {
 namespace ppu {
 
-// PowerPC Rotation-related functions
+// PowerPC rotation-related functions
 inline u64 rotl64(const u64 x, const u8 n) { return (x << n) | (x >> (64 - n)); }
 inline u64 rotl32(const u32 x, const u8 n) { return rotl64((u64)x | ((u64)x << 32), n); }
 inline u16 rotl16(const u16 x, const u8 n) { return (x << n) | (x >> (16 - n)); }

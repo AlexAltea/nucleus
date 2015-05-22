@@ -4,6 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/cpu/frontend/ppu/ppu_utils.h"
 
 namespace cpu {
 namespace ppu {

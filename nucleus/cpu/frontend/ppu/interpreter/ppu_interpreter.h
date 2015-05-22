@@ -14,10 +14,6 @@ namespace ppu {
 
 class Interpreter
 {
-    // Rotation mask
-    static u64 rotateMask[64][64];
-    static void initRotateMask();
-
 public:
     State state;
 

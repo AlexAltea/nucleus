@@ -131,6 +131,9 @@
     <ClCompile Include="backend\symbols.cpp">
       <Filter>backend</Filter>
     </ClCompile>
+    <ClCompile Include="frontend\ppu\ppu_utils.cpp">
+      <Filter>frontend\ppu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -194,6 +197,9 @@
     </ClInclude>
     <ClInclude Include="backend\symbols.h">
       <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="frontend\ppu\ppu_utils.h">
+      <Filter>frontend\ppu</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
