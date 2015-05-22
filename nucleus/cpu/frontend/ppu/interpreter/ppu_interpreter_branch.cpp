@@ -16,11 +16,12 @@ bool CheckCondition(State& state, u32 bo, u32 bi)
     const u8 bo2 = (bo & 0x04) ? 1 : 0;
     const u8 bo3 = (bo & 0x02) ? 1 : 0;
 
-    if (!bo2) --state.ctr;
+    if (!bo2) {
+        state.ctr--;
+    }
 
     const u8 ctr_ok = bo2 | ((state.ctr != 0) ^ bo3);
     const u8 cond_ok = bo0 | (state.cr.getBit(bi) ^ (~bo1 & 0x1));
-
     return ctr_ok && cond_ok;
 }
 

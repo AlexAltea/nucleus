@@ -17,7 +17,7 @@ extern "C" {
     }
 
     void nucleusLogState(u64 address) {
-        nucleus.log.notice(LOG_CPU, "-> 0x%08X", address);
+        printf("> 0x%08X\n", address);
     }
 
     void nucleusIntermodularCall(u64 address) {
@@ -25,7 +25,8 @@ extern "C" {
     }
 
     void nucleusSystemCall() {
-        return;
+        ppu::State& state = *static_cast<ppu::Thread*>(nucleus.cell.getCurrentThread())->state;
+        nucleus.lv2.call(state);
     }
 }
 

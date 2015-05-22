@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backend\engine.cpp" />
-    <ClCompile Include="backend\symbol_resolver.cpp" />
+    <ClCompile Include="backend\symbols.cpp" />
     <ClCompile Include="cell.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_branch.cpp" />
@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backend\engine.h" />
-    <ClInclude Include="backend\symbol_resolver.h" />
+    <ClInclude Include="backend\symbols.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="frontend\frontend_block.h" />
     <ClInclude Include="frontend\frontend_function.h" />

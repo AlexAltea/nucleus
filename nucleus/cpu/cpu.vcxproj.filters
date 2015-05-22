@@ -128,7 +128,7 @@
     <ClCompile Include="backend\engine.cpp">
       <Filter>backend</Filter>
     </ClCompile>
-    <ClCompile Include="backend\symbol_resolver.cpp">
+    <ClCompile Include="backend\symbols.cpp">
       <Filter>backend</Filter>
     </ClCompile>
   </ItemGroup>
@@ -192,7 +192,7 @@
     <ClInclude Include="backend\engine.h">
       <Filter>backend</Filter>
     </ClInclude>
-    <ClInclude Include="backend\symbol_resolver.h">
+    <ClInclude Include="backend\symbols.h">
       <Filter>backend</Filter>
     </ClInclude>
   </ItemGroup>

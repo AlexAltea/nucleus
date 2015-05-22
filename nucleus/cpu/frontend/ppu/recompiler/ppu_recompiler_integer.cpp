@@ -221,10 +221,6 @@ void Recompiler::cmpli(Instruction code)
     }
 }
 
-void Recompiler::divdx(Instruction code)
-{
-}
-
 void Recompiler::cntlzdx(Instruction code)
 {
     Value<I64> rs = getGPR(code.rs);
@@ -251,16 +247,78 @@ void Recompiler::cntlzwx(Instruction code)
     setGPR(code.ra, ra_i64);
 }
 
+void Recompiler::divdx(Instruction code)
+{
+    Value<I64> ra = getGPR(code.ra);
+    Value<I64> rb = getGPR(code.rb);
+    Value<I64> rd;
+
+    rd = builder.CreateSDiv(ra, rb);
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
+}
+
 void Recompiler::divdux(Instruction code)
 {
+    Value<I64> ra = getGPR(code.ra);
+    Value<I64> rb = getGPR(code.rb);
+    Value<I64> rd;
+
+    rd = builder.CreateUDiv(ra, rb);
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::divwx(Instruction code)
 {
+    Value<I32> ra = getGPR<I32>(code.ra);
+    Value<I32> rb = getGPR<I32>(code.rb);
+    Value<I64> rd;
+
+    auto result = builder.CreateSDiv(ra, rb);
+    rd = builder.CreateZExt<I64>(result);
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::divwux(Instruction code)
 {
+    Value<I32> ra = getGPR<I32>(code.ra);
+    Value<I32> rb = getGPR<I32>(code.rb);
+    Value<I64> rd;
+
+    auto result = builder.CreateUDiv(ra, rb);
+    rd = builder.CreateZExt<I64>(result);
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::eqvx(Instruction code)
@@ -391,14 +449,50 @@ void Recompiler::mulhwux(Instruction code)
 
 void Recompiler::mulldx(Instruction code)
 {
+    Value<I64> ra = getGPR(code.ra);
+    Value<I64> rb = getGPR(code.rb);
+    Value<I64> rd;
+
+    rd = builder.CreateMul(ra, rb);
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::mulli(Instruction code)
 {
+    Value<I64> ra = getGPR(code.ra);
+    Value<I64> rd;
+
+    rd = builder.CreateMul(ra, builder.get<I64>(code.simm));
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::mullwx(Instruction code)
 {
+    Value<I32> ra = getGPR<I32>(code.ra);
+    Value<I32> rb = getGPR<I32>(code.rb);
+    Value<I64> rd;
+
+    auto ra_i64 = builder.CreateSExt<I64>(ra);
+    auto rb_i64 = builder.CreateSExt<I64>(rb);
+    rd = builder.CreateMul(ra_i64, rb_i64);
+
+    if (code.oe) {
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::nandx(Instruction code)
