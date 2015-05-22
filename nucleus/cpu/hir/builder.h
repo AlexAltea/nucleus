@@ -70,26 +70,83 @@ public:
 
     template <typename T, int N>
     Value<T, N> CreateMul(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateMul accepts only integer values");
+        // TODO: Proper type checks for integers wider than 64 bits
+        /*static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateMul accepts only integer values");*/
         return builder.CreateMul(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateDiv(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateDiv accepts only integer values");
+            "Builder::CreateDiv accepts only integer and integer-vector values");
         return builder.CreateDiv(lhs.value, rhs.value);
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateSDiv(Value<T, N> lhs, Value<T, N> rhs) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateSDiv accepts only integer and integer-vector values");
+        return builder.CreateSDiv(lhs.value, rhs.value);
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateUDiv(Value<T, N> lhs, Value<T, N> rhs) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateUDiv accepts only integer and integer-vector values");
+        return builder.CreateUDiv(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateNeg(Value<T, N> v) {
         static_assert(std::is_integral<T::type>::value,
-            "Builder::CreateNeg accepts only integer values");
+            "Builder::CreateNeg accepts only integer and integer-vector values");
         return builder.CreateNeg(v.value);
     }
 
-    // Binary operations
+    // Bitwise Binary Operations
+    template <typename T, int N>
+    Value<T, N> CreateShl(Value<T, N> val, u64 amount) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateShl accepts only integer and integer-vector values");
+        return builder.CreateShl(val.value, amount);
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateShl(Value<T, N> val, Value<T, N> amount) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateShl accepts only integer and integer-vector values");
+        return builder.CreateShl(val.value, amount.value);
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateLShr(Value<T, N> val, u64 amount) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateLShr accepts only integer and integer-vector values");
+        return builder.CreateLShr(val.value, amount);
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateLShr(Value<T, N> val, Value<T, N> amount) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateLShr accepts only integer and integer-vector values");
+        return builder.CreateLShr(val.value, amount.value);
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateAShr(Value<T, N> val, u64 amount) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateAShr accepts only integer and integer-vector values");
+        return builder.CreateAShr(val.value, amount);
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateAShr(Value<T, N> val, Value<T, N> amount) {
+        static_assert(std::is_integral<T::type>::value,
+            "Builder::CreateAShr accepts only integer and integer-vector values");
+        return builder.CreateAShr(val.value, amount.value);
+    }
+
     template <typename T, int N>
     Value<T, N> CreateAnd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(std::is_integral<T::type>::value,
@@ -157,8 +214,9 @@ public:
     // Conversion operations
     template <typename TO, typename TI, int N>
     Value<TO, N> CreateTrunc(Value<TI, N> v) {
-        static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
-            "Builder::CreateTrunc accepts only integer values");
+        // TODO: Proper type checks for integers wider than 64 bits
+        /*static_assert(std::is_integral<TI::type>::value && std::is_integral<TO::type>::value,
+            "Builder::CreateTrunc accepts only integer values");*/
         static_assert(TI::size > TO::size,
             "Builder::CreateTrunc converts only to smaller integer types");
         return builder.CreateTrunc(v, TO::getType().type);
@@ -229,8 +287,8 @@ public:
     }
 
     template <typename T>
-    Value<T> CreateLoad(Value<T*> ptr) {
-        return builder.CreateLoad(ptr.value);
+    Value<T> CreateLoad(Value<T*> ptr, const std::string& name = "") {
+        return builder.CreateLoad(ptr.value, name);
     }
 
     template <typename T>
@@ -239,8 +297,8 @@ public:
     }
 
     template <typename... TMembers>
-    llvm::Value* CreateInBoundsGEP(Value<Struct<TMembers...>*> agg, std::vector<llvm::Value*> idxList) {
-        return builder.CreateInBoundsGEP(agg.value, idxList);
+    llvm::Value* CreateInBoundsGEP(Value<Struct<TMembers...>*> agg, std::vector<llvm::Value*> idxList, const std::string& name = "") {
+        return builder.CreateInBoundsGEP(agg.value, idxList, name);
     }
 
     // Comparison operations
