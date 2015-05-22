@@ -8,6 +8,8 @@
 namespace cpu {
 namespace ppu {
 
+using namespace cpu::hir;
+
 /**
  * PPC64 Vector/SIMD Instructions (aka AltiVec):
  *  - Vector UISA Instructions (Section: 4.2.x)
@@ -120,135 +122,135 @@ void Recompiler::vaddcuw(Instruction code)
 
 void Recompiler::vaddfp(Instruction code)
 {
-    llvm::Value* va = getVR_f32(code.va);
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    Value<F32, 4> va = getVR<F32>(code.va);
+    Value<F32, 4> vb = getVR<F32>(code.vb);
+    Value<F32, 4> vd;
 
     vd = builder.CreateFAdd(va, vb);
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vaddsbs(Instruction code)
 {
-    llvm::Value* va = getVR_u8(code.va);
-    llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
+    Value<I8, 16> vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vaddshs(Instruction code)
 {
-    llvm::Value* va = getVR_u16(code.va);
-    llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
+    Value<I16, 8> vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vaddsws(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vaddubm(Instruction code)
 {
-    llvm::Value* va = getVR_u8(code.va);
-    llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd;
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
+    Value<I8, 16> vd;
 
     vd = builder.CreateAdd(va, vb);
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vaddubs(Instruction code)
 {
-    llvm::Value* va = getVR_u8(code.va);
-    llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
+    Value<I8, 16> vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vadduhm(Instruction code)
 {
-    llvm::Value* va = getVR_u16(code.va);
-    llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd;
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
+    Value<I16, 8> vd;
 
     vd = builder.CreateAdd(va, vb);
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vadduhs(Instruction code)
 {
-    llvm::Value* va = getVR_u16(code.va);
-    llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
+    Value<I16, 8> vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vadduwm(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
 
     vd = builder.CreateAdd(va, vb);
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vadduws(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd = va; // TODO: This is wrong. Just a temporary fix
 
     // TODO: ?
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vand(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
 
     vd = builder.CreateAnd(va, vb);
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vandc(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
 
     vb = builder.CreateNot(vb);
     vd = builder.CreateAnd(va, vb);
 
-    setVR(code.vd, vd);
+    //setVR(code.vd, vd);
 }
 
 void Recompiler::vavgsb(Instruction code)
@@ -295,12 +297,11 @@ void Recompiler::vcmpbfp_(Instruction code)
 
 void Recompiler::vcmpeqfp(Instruction code)
 {
-    llvm::Value* va = getVR_f32(code.va);
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    Value<F32, 4> va = getVR<F32>(code.va);
+    Value<F32, 4> vb = getVR<F32>(code.vb);
 
-    vd = builder.CreateFCmpOEQ(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt32Ty(), 4));
+    auto result = builder.CreateFCmpOEQ(va, vb);
+    auto vd = builder.CreateSExt<I32>(result);
 
     setVR(code.vd, vd);
 }
@@ -313,12 +314,11 @@ void Recompiler::vcmpeqfp_(Instruction code)
 
 void Recompiler::vcmpequb(Instruction code)
 {
-    llvm::Value* va = getVR_u8(code.va);
-    llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd;
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
 
-    vd = builder.CreateICmpEQ(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt8Ty(), 16));
+    auto result = builder.CreateICmpEQ(va, vb);
+    auto vd = builder.CreateSExt<I8>(result);
 
     setVR(code.vd, vd);
 }
@@ -331,12 +331,11 @@ void Recompiler::vcmpequb_(Instruction code)
 
 void Recompiler::vcmpequh(Instruction code)
 {
-    llvm::Value* va = getVR_u16(code.va);
-    llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd;
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
 
-    vd = builder.CreateICmpEQ(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt16Ty(), 8));
+    auto result = builder.CreateICmpEQ(va, vb);
+    auto vd = builder.CreateSExt<I16>(result);
 
     setVR(code.vd, vd);
 }
@@ -349,12 +348,11 @@ void Recompiler::vcmpequh_(Instruction code)
 
 void Recompiler::vcmpequw(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
 
-    vd = builder.CreateICmpEQ(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt32Ty(), 4));
+    auto result = builder.CreateICmpEQ(va, vb);
+    auto vd = builder.CreateSExt<I32>(result);
 
     setVR(code.vd, vd);
 }
@@ -367,12 +365,11 @@ void Recompiler::vcmpequw_(Instruction code)
 
 void Recompiler::vcmpgefp(Instruction code)
 {
-    llvm::Value* va = getVR_f32(code.va);
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    Value<F32, 4> va = getVR<F32>(code.va);
+    Value<F32, 4> vb = getVR<F32>(code.vb);
 
-    vd = builder.CreateFCmpOGE(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt32Ty(), 4));
+    auto result = builder.CreateFCmpOGE(va, vb);
+    auto vd = builder.CreateSExt<I32>(result);
 
     setVR(code.vd, vd);
 }
@@ -385,12 +382,11 @@ void Recompiler::vcmpgefp_(Instruction code)
 
 void Recompiler::vcmpgtfp(Instruction code)
 {
-    llvm::Value* va = getVR_f32(code.va);
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    Value<F32, 4> va = getVR<F32>(code.va);
+    Value<F32, 4> vb = getVR<F32>(code.vb);
 
-    vd = builder.CreateFCmpOGT(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt32Ty(), 4));
+    auto result = builder.CreateFCmpOGT(va, vb);
+    auto vd = builder.CreateSExt<I32>(result);
 
     setVR(code.vd, vd);
 }
@@ -403,12 +399,11 @@ void Recompiler::vcmpgtfp_(Instruction code)
 
 void Recompiler::vcmpgtsb(Instruction code)
 {
-    llvm::Value* va = getVR_u8(code.va);
-    llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd;
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
 
-    vd = builder.CreateICmpSGT(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt8Ty(), 16));
+    auto result = builder.CreateICmpSGT(va, vb);
+    auto vd = builder.CreateSExt<I8>(result);
 
     setVR(code.vd, vd);
 }
@@ -421,12 +416,11 @@ void Recompiler::vcmpgtsb_(Instruction code)
 
 void Recompiler::vcmpgtsh(Instruction code)
 {
-    llvm::Value* va = getVR_u16(code.va);
-    llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd;
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
 
-    vd = builder.CreateICmpSGT(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt16Ty(), 8));
+    auto result = builder.CreateICmpSGT(va, vb);
+    auto vd = builder.CreateSExt<I16>(result);
 
     setVR(code.vd, vd);
 }
@@ -439,12 +433,11 @@ void Recompiler::vcmpgtsh_(Instruction code)
 
 void Recompiler::vcmpgtsw(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
 
-    vd = builder.CreateICmpSGT(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt32Ty(), 4));
+    auto result = builder.CreateICmpSGT(va, vb);
+    auto vd = builder.CreateSExt<I32>(result);
 
     setVR(code.vd, vd);
 }
@@ -457,12 +450,11 @@ void Recompiler::vcmpgtsw_(Instruction code)
 
 void Recompiler::vcmpgtub(Instruction code)
 {
-    llvm::Value* va = getVR_u8(code.va);
-    llvm::Value* vb = getVR_u8(code.vb);
-    llvm::Value* vd;
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
 
-    vd = builder.CreateICmpUGT(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt8Ty(), 16));
+    auto result = builder.CreateICmpUGT(va, vb);
+    auto vd = builder.CreateSExt<I8>(result);
 
     setVR(code.vd, vd);
 }
@@ -475,12 +467,11 @@ void Recompiler::vcmpgtub_(Instruction code)
 
 void Recompiler::vcmpgtuh(Instruction code)
 {
-    llvm::Value* va = getVR_u16(code.va);
-    llvm::Value* vb = getVR_u16(code.vb);
-    llvm::Value* vd;
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
 
-    vd = builder.CreateICmpUGT(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt16Ty(), 8));
+    auto result = builder.CreateICmpUGT(va, vb);
+    auto vd = builder.CreateSExt<I16>(result);
 
     setVR(code.vd, vd);
 }
@@ -493,12 +484,11 @@ void Recompiler::vcmpgtuh_(Instruction code)
 
 void Recompiler::vcmpgtuw(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
 
-    vd = builder.CreateICmpUGT(va, vb);
-    vd = builder.CreateSExt(vd, llvm::VectorType::get(builder.getInt32Ty(), 4));
+    auto result = builder.CreateICmpUGT(va, vb);
+    auto vd = builder.CreateSExt<I32>(result);
 
     setVR(code.vd, vd);
 }
@@ -519,8 +509,8 @@ void Recompiler::vctuxs(Instruction code)
 
 void Recompiler::vexptefp(Instruction code)
 {
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd = vb; // TODO: This is wrong. Just a temporary fix
+    Value<F32, 4> vb = getVR<F32>(code.vb);
+    Value<F32, 4> vd = vb; // TODO: This is wrong. Just a temporary fix
 
     //llvm::Function* exp2 = getIntrinsicFloat(llvm::Intrinsic::exp2); // TODO: Get a 4xf32 intrinsic instead
     //vd = builder.CreateCall(exp2, vb);
@@ -530,8 +520,8 @@ void Recompiler::vexptefp(Instruction code)
 
 void Recompiler::vlogefp(Instruction code)
 {
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd = vb; // TODO: This is wrong. Just a temporary fix
+    Value<F32, 4> vb = getVR<F32>(code.vb);
+    Value<F32, 4> vd = vb; // TODO: This is wrong. Just a temporary fix
 
     //llvm::Function* log2 = getIntrinsicFloat(llvm::Intrinsic::log2); // TODO: Get a 4xf32 intrinsic instead
     //vd = builder.CreateCall(log2, vb);
@@ -541,13 +531,13 @@ void Recompiler::vlogefp(Instruction code)
 
 void Recompiler::vmaddfp(Instruction code)
 {
-    llvm::Value* va = getVR_f32(code.va);
-    llvm::Value* vc = getVR_f32(code.vc);
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    Value<F32, 4> va = getVR<F32>(code.va);
+    Value<F32, 4> vc = getVR<F32>(code.vc);
+    Value<F32, 4> vb = getVR<F32>(code.vb);
+    Value<F32, 4> vd;
 
     vd = builder.CreateFMul(va, vc);
-    vd = builder.CreateAdd(vd, vb);
+    vd = builder.CreateFAdd(vd, vb);
 
     setVR(code.vd, vd);
 }
@@ -702,23 +692,23 @@ void Recompiler::vmulouh(Instruction code)
 
 void Recompiler::vnmsubfp(Instruction code)
 {
-    llvm::Value* va = getVR_f32(code.va);
-    llvm::Value* vc = getVR_f32(code.vc);
-    llvm::Value* vb = getVR_f32(code.vb);
-    llvm::Value* vd;
+    Value<F32, 4> va = getVR<F32>(code.va);
+    Value<F32, 4> vc = getVR<F32>(code.vc);
+    Value<F32, 4> vb = getVR<F32>(code.vb);
+    Value<F32, 4> vd;
 
     // NOTE: vb-(va*vc) = -((va*vc)-vb)
     vd = builder.CreateFMul(va, vc);
-    vd = builder.CreateSub(vb, vd);
+    vd = builder.CreateFSub(vb, vd);
 
     setVR(code.vd, vd);
 }
 
 void Recompiler::vnor(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
 
     vd = builder.CreateOr(va, vb);
     vd = builder.CreateNot(vd);
@@ -728,9 +718,9 @@ void Recompiler::vnor(Instruction code)
 
 void Recompiler::vor(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
 
     vd = builder.CreateOr(va, vb);
 
@@ -987,9 +977,9 @@ void Recompiler::vupklsh(Instruction code)
 
 void Recompiler::vxor(Instruction code)
 {
-    llvm::Value* va = getVR_u32(code.va);
-    llvm::Value* vb = getVR_u32(code.vb);
-    llvm::Value* vd;
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
 
     vd = builder.CreateXor(va, vb);
 

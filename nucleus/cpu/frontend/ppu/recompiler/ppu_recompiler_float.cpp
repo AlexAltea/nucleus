@@ -8,6 +8,8 @@
 namespace cpu {
 namespace ppu {
 
+using namespace cpu::hir;
+
 /**
  * PPC64 Instructions:
  *  - UISA: Floating-Point Instructions (Section: 4.2.2)
@@ -15,11 +17,10 @@ namespace ppu {
 
 void Recompiler::fabsx(Instruction code)
 {
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* fabs = getIntrinsicDouble(llvm::Intrinsic::fabs);
-    frd = builder.CreateCall(fabs, frb);
+    frd = builder.CreateIntrinsic_Fabs(frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -29,9 +30,9 @@ void Recompiler::fabsx(Instruction code)
 
 void Recompiler::faddx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFAdd(fra, frb);
     if (code.rc) {
@@ -43,12 +44,11 @@ void Recompiler::faddx(Instruction code)
 
 void Recompiler::faddsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
 
-    frd = builder.CreateFAdd(fra, frb);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
+    auto result = builder.CreateFAdd(fra, frb);
+    auto frd = builder.CreateFPTrunc<F32>(result);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -86,9 +86,9 @@ void Recompiler::fctiwzx(Instruction code)
 
 void Recompiler::fdivx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFDiv(fra, frb);
     if (code.rc) {
@@ -100,28 +100,26 @@ void Recompiler::fdivx(Instruction code)
 
 void Recompiler::fdivsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFDiv(fra, frb);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::fmaddx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
+    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -131,25 +129,23 @@ void Recompiler::fmaddx(Instruction code)
 
 void Recompiler::fmaddsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
+    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::fmrx(Instruction code)
 {
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = frb;
     if (code.rc) {
@@ -161,10 +157,10 @@ void Recompiler::fmrx(Instruction code)
 
 void Recompiler::fmsubx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
     frd = builder.CreateFMul(fra, frc);
@@ -178,27 +174,26 @@ void Recompiler::fmsubx(Instruction code)
 
 void Recompiler::fmsubsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
     frd = builder.CreateFMul(fra, frc);
     frd = builder.CreateFSub(frd, frb);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::fmulx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFMul(fra, frb);
     if (code.rc) {
@@ -210,26 +205,24 @@ void Recompiler::fmulx(Instruction code)
 
 void Recompiler::fmulsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFMul(fra, frb);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::fnabsx(Instruction code)
 {
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* fabs = getIntrinsicDouble(llvm::Intrinsic::fabs);
-    frd = builder.CreateCall(fabs, frb);
+    frd = builder.CreateIntrinsic_Fabs(frb);
     frd = builder.CreateFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
@@ -240,8 +233,8 @@ void Recompiler::fnabsx(Instruction code)
 
 void Recompiler::fnegx(Instruction code)
 {
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFNeg(frb);
     if (code.rc) {
@@ -253,13 +246,12 @@ void Recompiler::fnegx(Instruction code)
 
 void Recompiler::fnmaddx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
+    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
     frd = builder.CreateFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
@@ -270,33 +262,31 @@ void Recompiler::fnmaddx(Instruction code)
 
 void Recompiler::fnmaddsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* fmuladd = getIntrinsicDouble(llvm::Intrinsic::fmuladd);
-    frd = builder.CreateCall3(fmuladd, fra, frc, frb);
+    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
     frd = builder.CreateFNeg(frd);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::fnmsubx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
     frd = builder.CreateFMul(fra, frc);
     frd = builder.CreateFSub(frd, frb);
-    frd = builder.CreateNeg(frd);
+    frd = builder.CreateFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -306,21 +296,20 @@ void Recompiler::fnmsubx(Instruction code)
 
 void Recompiler::fnmsubsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frc = getFPR(code.frc);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frc = getFPR(code.frc);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
     frd = builder.CreateFMul(fra, frc);
     frd = builder.CreateFSub(frd, frb);
-    frd = builder.CreateNeg(frd);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
+    frd = builder.CreateFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::fresx(Instruction code)
@@ -341,11 +330,10 @@ void Recompiler::fselx(Instruction code)
 
 void Recompiler::fsqrtx(Instruction code)
 {
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* sqrt = getIntrinsicDouble(llvm::Intrinsic::sqrt);
-    frd = builder.CreateCall(sqrt, frb);
+    frd = builder.CreateIntrinsic_Sqrt(frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -355,24 +343,22 @@ void Recompiler::fsqrtx(Instruction code)
 
 void Recompiler::fsqrtsx(Instruction code)
 {
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
-    llvm::Function* sqrt = getIntrinsicDouble(llvm::Intrinsic::sqrt);
-    frd = builder.CreateCall(sqrt, frb);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
+    frd = builder.CreateIntrinsic_Sqrt(frb);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::fsubx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFSub(fra, frb);
     if (code.rc) {
@@ -384,17 +370,16 @@ void Recompiler::fsubx(Instruction code)
 
 void Recompiler::fsubsx(Instruction code)
 {
-    llvm::Value* fra = getFPR(code.fra);
-    llvm::Value* frb = getFPR(code.frb);
-    llvm::Value* frd;
+    Value<F64> fra = getFPR(code.fra);
+    Value<F64> frb = getFPR(code.frb);
+    Value<F64> frd;
 
     frd = builder.CreateFSub(fra, frb);
-    frd = builder.CreateFPTrunc(frd, builder.getFloatTy());
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
 }
 
 void Recompiler::mcrfs(Instruction code)

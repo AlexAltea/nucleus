@@ -6,109 +6,175 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/ppu/ppu_decoder.h"
-#include "nucleus/cpu/ppu/ppu_instruction.h"
+#include "nucleus/cpu/hir/builder.h"
+#include "nucleus/cpu/hir/value.h"
+#include "nucleus/cpu/frontend/frontend_recompiler.h"
+#include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
+#include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
 
-#include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Intrinsics.h"
 
 namespace cpu {
 namespace ppu {
 
-class Recompiler
+class Recompiler : public frontend::IRecompiler<u32>
 {
-    Function* function;
-    Segment* segment;
-
-    llvm::IRBuilder<> builder;
-
-    // LLVM Intrinsics
-    llvm::Function* getIntrinsicIntN(llvm::Intrinsic::ID intr, int bits) {
-        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getIntNTy(bits));
-    }
-    llvm::Function* getIntrinsicInt8(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt8Ty());
-    }
-    llvm::Function* getIntrinsicInt16(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt16Ty());
-    }
-    llvm::Function* getIntrinsicInt32(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt32Ty());
-    }
-    llvm::Function* getIntrinsicInt64(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getInt64Ty());
-    }
-    llvm::Function* getIntrinsicFloat(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getFloatTy());
-    }
-    llvm::Function* getIntrinsicDouble(llvm::Intrinsic::ID intr) {
-        return llvm::Intrinsic::getDeclaration(segment->module, intr, builder.getDoubleTy());
-    }
-
     // Register allocation
-    llvm::AllocaInst* gpr[32] = {};
-    llvm::AllocaInst* fpr[32] = {};
-    llvm::AllocaInst* vr[32] = {};
-    llvm::AllocaInst* cr = nullptr;
-    llvm::AllocaInst* fpscr = nullptr;
-    llvm::AllocaInst* xer = nullptr;
-    llvm::AllocaInst* ctr = nullptr;
+    hir::Value<hir::I64*> gpr[32];
+    hir::Value<hir::F64*> fpr[32];
+    hir::Value<hir::I128*> vr[32];
+    hir::Value<hir::I8*> cr[8];
+    hir::Value<hir::I32*> fpscr;
+    hir::Value<hir::I64*> xer;
+    hir::Value<hir::I64*> ctr;
 
-    // Register access
-    llvm::AllocaInst* allocaVariable(llvm::Type* type, const llvm::Twine& name);
+    template <typename T>
+    hir::Value<T*> allocaVariable(const std::string& name) {
+        hir::Block entryBlock = function->function.getEntryBlock();
+        hir::Builder allocaBuilder;
+        allocaBuilder.SetInsertPoint(entryBlock, entryBlock.begin());
+        return allocaBuilder.CreateAlloca<T>(name);
+    }
 
-    llvm::Value* getGPR(int index, int bits=64);
-    llvm::Value* getFPR(int index);
-    llvm::Value* getVR_u8(int index);
-    llvm::Value* getVR_u16(int index);
-    llvm::Value* getVR_u32(int index);
-    llvm::Value* getVR_f32(int index);
+    /**
+     * Register read
+     */
+    hir::Value<hir::I64> getGPR(int index);
+    hir::Value<hir::F64> getFPR(int index);
+    hir::Value<hir::I8> getCR(int index);
+    hir::Value<hir::I64> getXER();
+    hir::Value<hir::I64> getCTR();
 
-    void setGPR(int index, llvm::Value* value);
-    void setFPR(int index, llvm::Value* value);
-    void setVR(int index, llvm::Value* value);
+    template <typename T=I64>
+    hir::Value<T> getGPR(int index) {
+        static_assert(std::is_integral<T::type>::value,
+            "ppu::Recompiler::getGPR accepts only integer values");
+        static_assert(T::size < 64,
+            "ppu::Recompiler::getGPR accepts only up to 64-bit integer values");
+        return builder.CreateTrunc<T>(getGPR(index));
+    }
+
+    template <typename T>
+    hir::Value<T, 128 / T::size> getVR(int index) {
+        // TODO: ?
+        return hir::Value<T, 128 / T::size> {};
+    }
+
+    /**
+     * Register write
+     */
+    void setGPR(int index, hir::Value<hir::I64> value);
+    void setFPR(int index, hir::Value<hir::F64> value);
+    void setCR(int index, hir::Value<hir::I8> value);
+    void setXER(hir::Value<hir::I64> value);
+    void setCTR(hir::Value<hir::I64> value);
+
+    void setFPR(int index, hir::Value<hir::I32> value) {
+        setFPR(index, builder.CreateFPExt<hir::F64>(builder.CreateBitCast<hir::F32>(value)));
+    }
+    void setFPR(int index, hir::Value<hir::I64> value) {
+        setFPR(index, builder.CreateBitCast<hir::F64>(value));
+    }
+    void setFPR(int index, hir::Value<hir::F32> value) {
+        setFPR(index, builder.CreateFPExt<hir::F64>(value));
+    }
+
+    template <typename T, int N>
+    void setVR(int index, hir::Value<T, N> value) {
+        static_assert(T::size * N == 128,
+            "ppu::Recompiler::getGPR accepts only 32-bit or 64-bit arithmetic values");
+
+        if (!vr[index]) {
+            vr[index] = allocaVariable<hir::I128>("vrTEST");
+        }
+
+        auto value_i128 = builder.CreateBitCast<hir::I128>(value);
+        builder.CreateStore(value_i128, vr[index]);
+    }
 
     // State pointer allocation
-    llvm::AllocaInst* state = nullptr;
-
-    // State pointer access
-    llvm::Value* getState();
+    hir::Value<StateType*> state;
 
     /**
      * Operation flags
      */
-    void updateCR0(llvm::Value* value); // Integer instructions with RC bit
+    void updateCR0(hir::Value<hir::I64> value); // Integer instructions with RC bit
     void updateCR1(llvm::Value* value); // Floating-Point instructions with RC bit
     void updateCR6(llvm::Value* value); // Vector instructions with RC bit
+
+    template <typename T>
+    void updateCR(int field, hir::Value<T> lhs, hir::Value<T> rhs, bool logicalComparison) {
+        hir::Value<I1> isLT;
+        hir::Value<I1> isGT;
+        hir::Value<I8> cr;
+
+        if (logicalComparison) {
+            isLT = builder.CreateICmpULT(lhs, rhs);
+            isGT = builder.CreateICmpUGT(lhs, rhs);
+        } else {
+            isLT = builder.CreateICmpSLT(lhs, rhs);
+            isGT = builder.CreateICmpSGT(lhs, rhs);
+        }
+
+        cr = builder.CreateSelect(isGT, builder.get<hir::I8>(2), builder.get<hir::I8>(4));
+        cr = builder.CreateSelect(isLT, builder.get<hir::I8>(1), cr);
+        setCR(field, cr);
+    }
 
     /**
      * Memory access
      */
     // Read specified number of bits from memory swapping endianness if necessary
-    llvm::Value* readMemory(llvm::Value* addr, int bits);
+    template <typename T>
+    hir::Value<T> readMemory(hir::Value<hir::I64> addr) {
+        auto ppuSegment = static_cast<Segment*>(function->parent);
+        hir::Value<hir::I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
+
+        addr = builder.CreateAdd(addr, baseAddr);
+        auto pointer = builder.CreateIntToPtr<T>(addr);
+        auto value = builder.CreateLoad(pointer);
+        return builder.CreateIntrinsic_Bswap(value);
+    }
+
+    template <>
+    hir::Value<hir::I8> readMemory(hir::Value<hir::I64> addr) {
+        auto ppuSegment = static_cast<Segment*>(function->parent);
+        hir::Value<hir::I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
+
+        addr = builder.CreateAdd(addr, baseAddr);
+        auto pointer = builder.CreateIntToPtr<hir::I8>(addr);
+        auto value = builder.CreateLoad(pointer);
+        return value;
+    }
 
     // Write value to memory swapping endianness if necessary
-    void writeMemory(llvm::Value* addr, llvm::Value* value);
+    template <typename T>
+    void writeMemory(hir::Value<hir::I64> addr, hir::Value<T> value) {
+        auto ppuSegment = static_cast<Segment*>(function->parent);
+        hir::Value<hir::I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
 
-    /**
-     * Logging & Debugging
-     */
-    void emit_printf(const char* format, std::vector<llvm::Value*> args);
+        value = builder.CreateIntrinsic_Bswap(value);
+        addr = builder.CreateAdd(addr, baseAddr);
+        auto pointer = builder.CreateIntToPtr<T>(addr);
+        builder.CreateStore(value, pointer);
+    }
+
+    void writeMemory(hir::Value<hir::I64> addr, hir::Value<hir::I8> value) {
+        auto ppuSegment = static_cast<Segment*>(function->parent);
+        hir::Value<hir::I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
+
+        addr = builder.CreateAdd(addr, baseAddr);
+        auto pointer = builder.CreateIntToPtr<hir::I8>(addr);
+        builder.CreateStore(value, pointer);
+    }
 
 public:
-    Recompiler(Segment* segment, Function* function);
+    hir::Builder builder;
 
-    // Specifies the block that is being recompiled
-    void setInsertPoint(llvm::BasicBlock* block);
-
-    // Creates a branch to another basic block
-    void createBranch(Block& block);
-    void createReturn();
+    Recompiler(Function* function);
 
     void createProlog();
-
-    // Function information
-    FunctionTypeOut returnType;
+    void createEpilog();
 
     // Recompiler status
     u32 currentAddress;

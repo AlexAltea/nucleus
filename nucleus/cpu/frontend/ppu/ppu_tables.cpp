@@ -9,7 +9,7 @@
 #define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, &Analyzer::name, &Interpreter::name, &Recompiler::name }
 
 // Table entry
-# define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr, nullptr, nullptr }
+#define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr, nullptr, nullptr }
 
 namespace cpu {
 namespace ppu {

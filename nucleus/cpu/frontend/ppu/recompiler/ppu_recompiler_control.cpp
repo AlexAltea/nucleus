@@ -8,6 +8,8 @@
 namespace cpu {
 namespace ppu {
 
+using namespace cpu::hir;
+
 /**
  * PPC64 Instructions:
  *  - UISA: Processor Control Instructions (Section: 4.2.5)

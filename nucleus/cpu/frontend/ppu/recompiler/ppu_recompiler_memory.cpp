@@ -8,6 +8,8 @@
 namespace cpu {
 namespace ppu {
 
+using namespace cpu::hir;
+
 /**
  * PPC64 Instructions:
  *  - UISA: Load and Store Instructions (Section: 4.2.3)
@@ -17,26 +19,28 @@ namespace ppu {
 
 void Recompiler::lbz(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I8> result;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    rd = readMemory(addr, 8);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I8>(addr);
+    rd = builder.CreateZExt<I64>(result);
     setGPR(code.rd, rd);
 }
 
 void Recompiler::lbzu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I8> result;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    rd = readMemory(addr, 8);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I8>(addr);
+    rd = builder.CreateZExt<I64>(result);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -44,12 +48,13 @@ void Recompiler::lbzu(Instruction code)
 
 void Recompiler::lbzux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I8> result;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 8);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I8>(addr);
+    rd = builder.CreateZExt<I64>(result);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -57,26 +62,27 @@ void Recompiler::lbzux(Instruction code)
 
 void Recompiler::lbzx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I8> result;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 8);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I8>(addr);
+    rd = builder.CreateZExt<I64>(result);
 
     setGPR(code.rd, rd);
 }
 
 void Recompiler::ld(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
+    rd = readMemory<I64>(addr);
 
-    rd = readMemory(addr, 64);
     setGPR(code.rd, rd);
 }
 
@@ -90,11 +96,11 @@ void Recompiler::ldbrx(Instruction code)
 
 void Recompiler::ldu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    rd = readMemory(addr, 64);
+    rd = readMemory<I64>(addr);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -102,11 +108,11 @@ void Recompiler::ldu(Instruction code)
 
 void Recompiler::ldux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 64);
+    rd = readMemory<I64>(addr);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -114,133 +120,135 @@ void Recompiler::ldux(Instruction code)
 
 void Recompiler::ldx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 64);
+    rd = readMemory<I64>(addr);
 
     setGPR(code.rd, rd);
 }
 
 void Recompiler::lfd(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frd;
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F64> frd;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    frd = readMemory(addr, 64);
-    setGPR(code.frd, frd);
+    frd = builder.CreateBitCast<F64>(readMemory<I64>(addr));
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::lfdu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frd;
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F64> frd;
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    frd = readMemory(addr, 64);
+    frd = builder.CreateBitCast<F64>(readMemory<I64>(addr));
 
     setGPR(code.ra, addr);
-    setGPR(code.frd, frd);
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::lfdux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frd;
+    Value<I64> addr;
+    Value<F64> frd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frd = readMemory(addr, 64);
+    frd = builder.CreateBitCast<F64>(readMemory<I64>(addr));
 
     setGPR(code.ra, addr);
-    setGPR(code.frd, frd);
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::lfdx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frd;
+    Value<I64> addr;
+    Value<F64> frd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frd = readMemory(addr, 64);
+    frd = builder.CreateBitCast<F64>(readMemory<I64>(addr));
 
     setFPR(code.frd, frd);
 }
 
 void Recompiler::lfs(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frd;
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F32> result;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    frd = readMemory(addr, 32);
-    setGPR(code.frd, frd);
+    result = builder.CreateBitCast<F32>(readMemory<I32>(addr));
+    setFPR(code.frd, result);
 }
 
 void Recompiler::lfsu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frd;
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F32> result;
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    frd = readMemory(addr, 32);
+    result = builder.CreateBitCast<F32>(readMemory<I32>(addr));
 
     setGPR(code.ra, addr);
-    setGPR(code.frd, frd);
+    setFPR(code.frd, result);
 }
 
 void Recompiler::lfsux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frd;
+    Value<I64> addr;
+    Value<F32> result;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frd = readMemory(addr, 32);
+    result = builder.CreateBitCast<F32>(readMemory<I32>(addr));
 
     setGPR(code.ra, addr);
-    setGPR(code.frd, frd);
+    setFPR(code.frd, result);
 }
 
 void Recompiler::lfsx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frd;
+    Value<I64> addr;
+    Value<F32> result;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frd = readMemory(addr, 32);
+    result = builder.CreateBitCast<F32>(readMemory<I32>(addr));
 
-    setFPR(code.frd, frd);
+    setFPR(code.frd, result);
 }
 
 void Recompiler::lha(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    rd = readMemory(addr, 16);
-    rd = builder.CreateSExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateSExt<I64>(result);
     setGPR(code.rd, rd);
 }
 
 void Recompiler::lhau(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    rd = readMemory(addr, 16);
-    rd = builder.CreateSExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateSExt<I64>(result);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -248,12 +256,13 @@ void Recompiler::lhau(Instruction code)
 
 void Recompiler::lhaux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 16);
-    rd = builder.CreateSExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateSExt<I64>(result);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -261,12 +270,13 @@ void Recompiler::lhaux(Instruction code)
 
 void Recompiler::lhax(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 16);
-    rd = builder.CreateSExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateSExt<I64>(result);
 
     setGPR(code.rd, rd);
 }
@@ -277,26 +287,28 @@ void Recompiler::lhbrx(Instruction code)
 
 void Recompiler::lhz(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    rd = readMemory(addr, 16);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateZExt<I64>(result);
     setGPR(code.rd, rd);
 }
 
 void Recompiler::lhzu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    rd = readMemory(addr, 16);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateZExt<I64>(result);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -304,12 +316,13 @@ void Recompiler::lhzu(Instruction code)
 
 void Recompiler::lhzux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 16);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateZExt<I64>(result);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -317,12 +330,13 @@ void Recompiler::lhzux(Instruction code)
 
 void Recompiler::lhzx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I16> result;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 16);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    result = readMemory<I16>(addr);
+    rd = builder.CreateZExt<I64>(result);
 
     setGPR(code.rd, rd);
 }
@@ -341,15 +355,15 @@ void Recompiler::lswx(Instruction code)
 
 void Recompiler::lwa(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    rd = readMemory(addr, 32);
-    rd = builder.CreateSExt(rd, builder.getInt64Ty());
+    auto rd_i32 = readMemory<I32>(addr);
+    rd = builder.CreateSExt<I64>(rd_i32);
     setGPR(code.rd, rd);
 }
 
@@ -359,12 +373,12 @@ void Recompiler::lwarx(Instruction code)
 
 void Recompiler::lwaux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 32);
-    rd = builder.CreateSExt(rd, builder.getInt64Ty());
+    auto rd_i32 = readMemory<I32>(addr);
+    rd = builder.CreateSExt<I64>(rd_i32);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -372,12 +386,12 @@ void Recompiler::lwaux(Instruction code)
 
 void Recompiler::lwax(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 32);
-    rd = builder.CreateSExt(rd, builder.getInt64Ty());
+    auto rd_i32 = readMemory<I32>(addr);
+    rd = builder.CreateSExt<I64>(rd_i32);
 
     setGPR(code.rd, rd);
 }
@@ -388,26 +402,26 @@ void Recompiler::lwbrx(Instruction code)
 
 void Recompiler::lwz(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    rd = readMemory(addr, 32);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    auto rd_i32 = readMemory<I32>(addr);
+    rd = builder.CreateZExt<I64>(rd_i32);
     setGPR(code.rd, rd);
 }
 
 void Recompiler::lwzu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rd;
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rd;
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    rd = readMemory(addr, 32);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    auto rd_i32 = readMemory<I32>(addr);
+    rd = builder.CreateZExt<I64>(rd_i32);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -415,12 +429,12 @@ void Recompiler::lwzu(Instruction code)
 
 void Recompiler::lwzux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 32);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    auto rd_i32 = readMemory<I32>(addr);
+    rd = builder.CreateZExt<I64>(rd_i32);
 
     setGPR(code.ra, addr);
     setGPR(code.rd, rd);
@@ -428,20 +442,20 @@ void Recompiler::lwzux(Instruction code)
 
 void Recompiler::lwzx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rd;
+    Value<I64> addr;
+    Value<I64> rd;
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    rd = readMemory(addr, 32);
-    rd = builder.CreateZExt(rd, builder.getInt64Ty());
+    auto rd_i32 = readMemory<I32>(addr);
+    rd = builder.CreateZExt<I64>(rd_i32);
 
     setGPR(code.rd, rd);
 }
 
 void Recompiler::stb(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<I64> rs = getGPR(code.rs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
@@ -452,8 +466,8 @@ void Recompiler::stb(Instruction code)
 
 void Recompiler::stbu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
     writeMemory(addr, rs);
@@ -463,8 +477,8 @@ void Recompiler::stbu(Instruction code)
 
 void Recompiler::stbux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -474,8 +488,8 @@ void Recompiler::stbux(Instruction code)
 
 void Recompiler::stbx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -483,8 +497,8 @@ void Recompiler::stbx(Instruction code)
 
 void Recompiler::std(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<I64> rs = getGPR(code.rs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
@@ -499,8 +513,8 @@ void Recompiler::stdcx_(Instruction code)
 
 void Recompiler::stdu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
     writeMemory(addr, rs);
@@ -510,8 +524,8 @@ void Recompiler::stdu(Instruction code)
 
 void Recompiler::stdux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -521,8 +535,8 @@ void Recompiler::stdux(Instruction code)
 
 void Recompiler::stdx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -530,49 +544,49 @@ void Recompiler::stdx(Instruction code)
 
 void Recompiler::stfd(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F64> frs = getFPR(code.frs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    frs = builder.CreateBitCast(frs, builder.getInt64Ty());
-    writeMemory(addr, frs);
+    auto frs_i64 = builder.CreateBitCast<I64>(frs);
+    writeMemory(addr, frs_i64);
 }
 
 void Recompiler::stfdu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F64> frs = getFPR(code.frs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    frs = builder.CreateBitCast(frs, builder.getInt64Ty());
-    writeMemory(addr, frs);
+    auto frs_i64 = builder.CreateBitCast<I64>(frs);
+    writeMemory(addr, frs_i64);
 
     setGPR(code.ra, addr);
 }
 
 void Recompiler::stfdux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr;
+    Value<F64> frs = getFPR(code.frs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frs = builder.CreateBitCast(frs, builder.getInt64Ty());
-    writeMemory(addr, frs);
+    auto frs_i64 = builder.CreateBitCast<I64>(frs);
+    writeMemory(addr, frs_i64);
 
     setGPR(code.ra, addr);
 }
 
 void Recompiler::stfdx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr;
+    Value<F64> frs = getFPR(code.frs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frs = builder.CreateBitCast(frs, builder.getInt64Ty());
-    writeMemory(addr, frs);
+    auto frs_i64 = builder.CreateBitCast<I64>(frs);
+    writeMemory(addr, frs_i64);
 }
 
 void Recompiler::stfiwx(Instruction code)
@@ -581,59 +595,59 @@ void Recompiler::stfiwx(Instruction code)
 
 void Recompiler::stfs(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F64> frs = getFPR(code.frs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
     }
 
-    frs = builder.CreateFPTrunc(frs, builder.getFloatTy());
-    frs = builder.CreateBitCast(frs, builder.getInt32Ty());
-    writeMemory(addr, frs);
+    auto frs_f32 = builder.CreateFPTrunc<F32>(frs);
+    auto frs_i32 = builder.CreateBitCast<I32>(frs_f32);
+    writeMemory(addr, frs_i32);
 }
 
 void Recompiler::stfsu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<F64> frs = getFPR(code.frs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
-    frs = builder.CreateFPTrunc(frs, builder.getFloatTy());
-    frs = builder.CreateBitCast(frs, builder.getInt32Ty());
-    writeMemory(addr, frs);
+    auto frs_f32 = builder.CreateFPTrunc<F32>(frs);
+    auto frs_i32 = builder.CreateBitCast<I32>(frs_f32);
+    writeMemory(addr, frs_i32);
 
     setGPR(code.ra, addr);
 }
 
 void Recompiler::stfsux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr;
+    Value<F64> frs = getFPR(code.frs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frs = builder.CreateFPTrunc(frs, builder.getFloatTy());
-    frs = builder.CreateBitCast(frs, builder.getInt32Ty());
-    writeMemory(addr, frs);
+    auto frs_f32 = builder.CreateFPTrunc<F32>(frs);
+    auto frs_i32 = builder.CreateBitCast<I32>(frs_f32);
+    writeMemory(addr, frs_i32);
 
     setGPR(code.ra, addr);
 }
 
 void Recompiler::stfsx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* frs = getFPR(code.frs);
+    Value<I64> addr;
+    Value<F64> frs = getFPR(code.frs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
-    frs = builder.CreateFPTrunc(frs, builder.getFloatTy());
-    frs = builder.CreateBitCast(frs, builder.getInt32Ty());
-    writeMemory(addr, frs);
+    auto frs_f32 = builder.CreateFPTrunc<F32>(frs);
+    auto frs_i32 = builder.CreateBitCast<I32>(frs_f32);
+    writeMemory(addr, frs_i32);
 }
 
 void Recompiler::sth(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<I64> rs = getGPR(code.rs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
@@ -648,8 +662,8 @@ void Recompiler::sthbrx(Instruction code)
 
 void Recompiler::sthu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
     writeMemory(addr, rs);
@@ -659,8 +673,8 @@ void Recompiler::sthu(Instruction code)
 
 void Recompiler::sthux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -670,8 +684,8 @@ void Recompiler::sthux(Instruction code)
 
 void Recompiler::sthx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -691,8 +705,8 @@ void Recompiler::stswx(Instruction code)
 
 void Recompiler::stw(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.d);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.d);
+    Value<I64> rs = getGPR(code.rs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
@@ -711,8 +725,8 @@ void Recompiler::stwcx_(Instruction code)
 
 void Recompiler::stwu(Instruction code)
 {
-    llvm::Value* addr = builder.getInt64(code.ds << 2);
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr = builder.get<I64>(code.ds << 2);
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
     writeMemory(addr, rs);
@@ -722,8 +736,8 @@ void Recompiler::stwu(Instruction code)
 
 void Recompiler::stwux(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -733,8 +747,8 @@ void Recompiler::stwux(Instruction code)
 
 void Recompiler::stwx(Instruction code)
 {
-    llvm::Value* addr;
-    llvm::Value* rs = getGPR(code.rs);
+    Value<I64> addr;
+    Value<I64> rs = getGPR(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
