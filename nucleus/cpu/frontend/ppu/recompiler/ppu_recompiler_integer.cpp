@@ -890,10 +890,41 @@ void Recompiler::srwx(Instruction code)
 
 void Recompiler::subfx(Instruction code)
 {
+    Value<I64> ra = getGPR(code.ra);
+    Value<I64> rb = getGPR(code.rb);
+    Value<I64> rd;
+
+    if (code.oe) {
+        // TODO
+    } else {
+        rd = builder.CreateSub(rb, ra);
+    }
+
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::subfcx(Instruction code)
 {
+    Value<I64> ra = builder.CreateNeg(getGPR(code.ra));
+    Value<I64> rb = getGPR(code.rb);
+    Value<I64> rd;
+
+    if (code.oe) {
+        // TODO
+    } else {
+        auto result = builder.CreateIntrinsic_UaddWithOverflow(ra, rb);
+        rd = builder.CreateExtractValue<0>(result);
+    }
+
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::subfex(Instruction code)

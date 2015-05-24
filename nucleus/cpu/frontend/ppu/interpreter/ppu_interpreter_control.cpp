@@ -51,7 +51,7 @@ u64 getTimebase()
 
 u64& getRegBySPR(State& state, u32 spr)
 {
-    const u32 n = (spr >> 5) | ((spr & 0x1f) << 5);
+    const u32 n = (spr >> 5) | ((spr & 0x1F) << 5);
 
     switch (n) {
     case 0x001: return state.xer.XER;
@@ -128,26 +128,18 @@ void Interpreter::mftb(Instruction code)
 
 void Interpreter::dcbf(Instruction code)
 {
-    //unknown("dcbf", false);
-    // TODO: _mm_fence();
 }
 
 void Interpreter::dcbst(Instruction code)
 {
-    //unknown("dcbst", false);
-    // TODO: _mm_fence();
 }
 
 void Interpreter::dcbt(Instruction code)
 {
-    //unknown("dcbt", false);
-    // TODO: _mm_fence();
 }
 
 void Interpreter::dcbtst(Instruction code)
 {
-    //unknown("dcbtst", false);
-    // TODO: _mm_fence();
 }
 
 void Interpreter::dcbz(Instruction code)
@@ -157,7 +149,7 @@ void Interpreter::dcbz(Instruction code)
     if (cache_line) {
         memset(cache_line, 0, 128);
     }
-    // TODO: _mm_fence();
+    // TODO: ?
 }
 
 void Interpreter::icbi(Instruction code)

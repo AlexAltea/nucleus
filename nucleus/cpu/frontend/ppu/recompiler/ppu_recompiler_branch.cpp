@@ -134,6 +134,12 @@ void Recompiler::bclrx(Instruction code)
 
 void Recompiler::crand(Instruction code)
 {
+    Value<I8> crba = getCR(code.crba);
+    Value<I8> crbb = getCR(code.crbb);
+    Value<I8> crbd;
+
+    crbd = builder.CreateAnd(crba, crbb);
+    setCR(code.crbd, crbd);
 }
 
 void Recompiler::crandc(Instruction code)
@@ -172,10 +178,10 @@ void Recompiler::sc(Instruction code)
 {
     // Store parameter registers in the PPU state
     for (int index = 3; index <= 10; index++) {
-        hir::Value<hir::I64*> regPointer = builder.CreateInBoundsGEP(state, {
-            builder.get<hir::I32>(0),
-            builder.get<hir::I32>(0),
-            builder.get<hir::I32>(index)});
+        Value<I64*> regPointer = builder.CreateInBoundsGEP(state, {
+            builder.get<I32>(0),
+            builder.get<I32>(0),
+            builder.get<I32>(index)});
         builder.CreateStore(getGPR(index), regPointer);
     }
 
