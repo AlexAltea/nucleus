@@ -96,6 +96,14 @@ union Instruction
     FIELD(11, 15, u32 vuimm);   // Vector/SIMD: Immediate 5-bit unsigned integer
 
     /**
+     * PPU Instruction methods:
+     */
+
+    // Constructors
+    Instruction();
+    Instruction(u32 addr);
+
+    /**
      * PPU Instruction properties:
      * Properties of the current instruction, required by the analyzer.
      */

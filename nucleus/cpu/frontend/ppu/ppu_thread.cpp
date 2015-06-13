@@ -6,8 +6,9 @@
 #include "ppu_thread.h"
 #include "nucleus/config.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/ppu/interpreter/ppu_interpreter.h"
+#include "nucleus/cpu/frontend/ppu/interpreter/ppu_interpreter.h"
 
+#include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/ExecutionEngine/GenericValue.h"
 
 namespace cpu {
@@ -120,38 +121,9 @@ void Thread::task()
                 continue;
             }
 
-            // Execute function at PC
-            const Function& func = ppu_segment->functions[state->pc];
-
-            std::vector<llvm::GenericValue> arguments;
-            for (size_t i = 0; i < func.type_in.size(); i++) {
-                llvm::GenericValue genValue;
-                switch (func.type_in[i]) {
-                case FUNCTION_IN_INTEGER:
-                    genValue.IntVal = llvm::APInt(64, state->gpr[3+i]);
-                    break;
-                case FUNCTION_IN_FLOAT:
-                    genValue.DoubleVal = state->fpr[1+i]._f64;
-                    break;
-                case FUNCTION_IN_VECTOR:
-                    // TODO
-                    break;
-                }
-                arguments.push_back(genValue);
-            }
-
-            llvm::ExecutionEngine* ee = ppu_segment->executionEngine;
-            llvm::GenericValue ret = ee->runFunction(func.function, arguments);
-
-            switch (func.type_out) {
-            case FUNCTION_OUT_INTEGER:
-                state->gpr[3] = *ret.IntVal.getRawData();
-            case FUNCTION_OUT_FLOAT:
-                state->fpr[1]._f64 = ret.DoubleVal;
-            default:
-                // TODO
-                break;
-            }
+            hir::Function functionCaller = ppu_segment->module.getFunction("caller");
+            auto functionCallerPtr = (void(*)(u32))ppu_segment->ee->getPointerToFunction(functionCaller.function);
+            functionCallerPtr(state->pc);
         }
     }
 }

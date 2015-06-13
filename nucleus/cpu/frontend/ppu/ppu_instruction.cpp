@@ -4,10 +4,19 @@
  */
 
 #include "ppu_instruction.h"
-#include "nucleus/cpu/ppu/ppu_tables.h"
+#include "nucleus/emulator.h"
+#include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
 namespace cpu {
 namespace ppu {
+
+Instruction::Instruction() : instruction(0)
+{
+}
+
+Instruction::Instruction(u32 addr) : instruction(nucleus.memory.read32(addr))
+{
+}
 
 bool Instruction::is_valid() const
 {
