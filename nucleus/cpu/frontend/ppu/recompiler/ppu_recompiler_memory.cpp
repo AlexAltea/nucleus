@@ -455,7 +455,7 @@ void Recompiler::lwzx(Instruction code)
 void Recompiler::stb(Instruction code)
 {
     Value<I64> addr = builder.get<I64>(code.d);
-    Value<I64> rs = getGPR(code.rs);
+    Value<I8> rs = getGPR<I8>(code.rs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
@@ -467,7 +467,7 @@ void Recompiler::stb(Instruction code)
 void Recompiler::stbu(Instruction code)
 {
     Value<I64> addr = builder.get<I64>(code.ds << 2);
-    Value<I64> rs = getGPR(code.rs);
+    Value<I8> rs = getGPR<I8>(code.rs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
     writeMemory(addr, rs);
@@ -478,7 +478,7 @@ void Recompiler::stbu(Instruction code)
 void Recompiler::stbux(Instruction code)
 {
     Value<I64> addr;
-    Value<I64> rs = getGPR(code.rs);
+    Value<I8> rs = getGPR<I8>(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -489,7 +489,7 @@ void Recompiler::stbux(Instruction code)
 void Recompiler::stbx(Instruction code)
 {
     Value<I64> addr;
-    Value<I64> rs = getGPR(code.rs);
+    Value<I8> rs = getGPR<I8>(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -647,7 +647,7 @@ void Recompiler::stfsx(Instruction code)
 void Recompiler::sth(Instruction code)
 {
     Value<I64> addr = builder.get<I64>(code.d);
-    Value<I64> rs = getGPR(code.rs);
+    Value<I16> rs = getGPR<I16>(code.rs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
@@ -663,7 +663,7 @@ void Recompiler::sthbrx(Instruction code)
 void Recompiler::sthu(Instruction code)
 {
     Value<I64> addr = builder.get<I64>(code.ds << 2);
-    Value<I64> rs = getGPR(code.rs);
+    Value<I16> rs = getGPR<I16>(code.rs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
     writeMemory(addr, rs);
@@ -674,7 +674,7 @@ void Recompiler::sthu(Instruction code)
 void Recompiler::sthux(Instruction code)
 {
     Value<I64> addr;
-    Value<I64> rs = getGPR(code.rs);
+    Value<I16> rs = getGPR<I16>(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -685,7 +685,7 @@ void Recompiler::sthux(Instruction code)
 void Recompiler::sthx(Instruction code)
 {
     Value<I64> addr;
-    Value<I64> rs = getGPR(code.rs);
+    Value<I16> rs = getGPR<I16>(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -706,7 +706,7 @@ void Recompiler::stswx(Instruction code)
 void Recompiler::stw(Instruction code)
 {
     Value<I64> addr = builder.get<I64>(code.d);
-    Value<I64> rs = getGPR(code.rs);
+    Value<I32> rs = getGPR<I32>(code.rs);
 
     if (code.ra) {
         addr = builder.CreateAdd(addr, getGPR(code.ra));
@@ -726,7 +726,7 @@ void Recompiler::stwcx_(Instruction code)
 void Recompiler::stwu(Instruction code)
 {
     Value<I64> addr = builder.get<I64>(code.ds << 2);
-    Value<I64> rs = getGPR(code.rs);
+    Value<I32> rs = getGPR<I32>(code.rs);
 
     addr = builder.CreateAdd(addr, getGPR(code.ra));
     writeMemory(addr, rs);
@@ -737,7 +737,7 @@ void Recompiler::stwu(Instruction code)
 void Recompiler::stwux(Instruction code)
 {
     Value<I64> addr;
-    Value<I64> rs = getGPR(code.rs);
+    Value<I32> rs = getGPR<I32>(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
@@ -748,7 +748,7 @@ void Recompiler::stwux(Instruction code)
 void Recompiler::stwx(Instruction code)
 {
     Value<I64> addr;
-    Value<I64> rs = getGPR(code.rs);
+    Value<I32> rs = getGPR<I32>(code.rs);
 
     addr = builder.CreateAdd(getGPR(code.ra), getGPR(code.rb));
     writeMemory(addr, rs);
