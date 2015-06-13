@@ -5,8 +5,15 @@
 
 #include "block.h"
 
+#include "llvm/IR/LLVMContext.h"
+
 namespace cpu {
 namespace hir {
+
+Block Block::Create(const std::string& name, Function function)
+{
+    return llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function.function);
+}
 
 }  // namespace hir
 }  // namespace cpu

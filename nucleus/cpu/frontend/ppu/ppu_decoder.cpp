@@ -5,17 +5,17 @@
 
 #include "ppu_decoder.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/ppu/ppu_instruction.h"
-#include "nucleus/cpu/ppu/ppu_state.h"
-#include "nucleus/cpu/ppu/ppu_tables.h"
+#include "nucleus/cpu/hir/builder.h"
+#include "nucleus/cpu/backend/engine.h"
+#include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
+#include "nucleus/cpu/frontend/ppu/ppu_state.h"
+#include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
-#include "llvm/ADT/Triple.h"
-#include "llvm/ExecutionEngine/MCJIT.h"
+#include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Verifier.h"
-#include "llvm/Support/Host.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Transforms/Scalar.h"
 
@@ -28,16 +28,9 @@ namespace ppu {
 /**
  * PPU Block methods
  */
-bool Block::contains(u32 addr) const
-{
-    const u32 from = address;
-    const u32 to = address + size;
-    return from <= addr && addr < to;
-}
-
 bool Block::is_split() const
 {
-    const Instruction lastInstr = { nucleus.memory.read32(address + size - 4) };
+    const Instruction lastInstr(address + size - 4);
     if (!lastInstr.is_branch() || lastInstr.is_call() || (lastInstr.opcode == 0x13 && lastInstr.op19 == 0x210) /*bcctr*/) {
         return true;
     }
@@ -56,13 +49,13 @@ void Function::do_register_analysis(Analyzer* status)
     status->analyzedFunctions.insert(address);
 
     // Analyze read/written registers
-    Block block = blocks[address];
-    for (u32 i = block.address; i < (block.address + block.size); i += 4) {
-        Instruction code = { nucleus.memory.read32(i) };
+    Block currentBlock = static_cast<Block&>(*blocks[address]);
+    for (u32 i = currentBlock.address; i < (currentBlock.address + currentBlock.size); i += 4) {
+        Instruction code(i);
 
         // Check if called functions use any other registers
         if (code.is_call_known()) {
-            Function& targetFunc = parent->functions[code.get_target(i)];
+            auto& targetFunc = static_cast<Function&>(*parent->functions[code.get_target(i)]);
             targetFunc.do_register_analysis(status);
         }
         // Otherwise, get instruction analyzer and call it
@@ -75,8 +68,8 @@ void Function::do_register_analysis(Analyzer* status)
             break;
         }
         if (code.is_branch_unconditional() && !code.is_call()) {
-            block = blocks[block.branch_a];
-            i = block.address;
+            currentBlock = *blocks[currentBlock.branch_a];
+            i = currentBlock.address;
         }
     }
 }
@@ -106,25 +99,14 @@ bool Function::analyze_cfg()
         u32 maxSize = 0xFFFFFFFF;
         bool continueLoop = false;
         for (auto& item : blocks) {
-            Block& block_a = item.second;
+            auto& block_a = *item.second;
             // Determine maximum possible size for the current block
             if ((block_a.address - current.address) < maxSize) {
                 maxSize = block_a.address - current.address;
             }
             // Split block if label (Block B) is inside an existing block (Block A)
             if (block_a.contains(addr)) {
-                // Configure Block B
-                Block block_b{};
-                block_b.address = addr;
-                block_b.size = block_a.size - (addr - block_a.address);
-                block_b.branch_a = block_a.branch_a;
-                block_b.branch_b = block_a.branch_b;
-
-                // Update Block A and push Block B
-                block_a.size = addr - block_a.address;
-                block_a.branch_a = addr;
-                block_a.branch_b = 0;
-                blocks[addr] = block_b;
+                blocks[addr] = new Block(block_a.split(addr));
                 continueLoop = true;
                 break;
             }
@@ -162,7 +144,7 @@ bool Function::analyze_cfg()
             current.branch_a = target;
         }
 
-        blocks[labels.front()] = current;
+        blocks[labels.front()] = new Block(current);
         labels.pop();
     }
 }
@@ -208,89 +190,87 @@ void Function::analyze_type()
     }
 }
 
-llvm::Function* Function::declare()
+void Function::declare(hir::Module module)
 {
     // Return type
-    llvm::Type* result = nullptr;
+    hir::Type result;
     switch (type_out) {
     case FUNCTION_OUT_INTEGER:
-        result = llvm::Type::getInt64Ty(llvm::getGlobalContext());
+        result = hir::I64::getType();
         break;
     case FUNCTION_OUT_FLOAT:
-        result = llvm::Type::getDoubleTy(llvm::getGlobalContext());
+        result = hir::F64::getType();
         break;
     case FUNCTION_OUT_FLOAT_X2:
-        result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
+        result = hir::F64::getType(); // TODO
         break;
     case FUNCTION_OUT_FLOAT_X3:
-        result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
+        result = hir::F64::getType(); // TODO
         break;
     case FUNCTION_OUT_FLOAT_X4:
-        result = llvm::Type::getDoubleTy(llvm::getGlobalContext()); // TODO
+        result = hir::F64::getType(); // TODO
         break;
     case FUNCTION_OUT_VECTOR:
-        result = llvm::Type::getIntNTy(llvm::getGlobalContext(), 128);
+        result = hir::I128::getType();
         break;
     case FUNCTION_OUT_VOID:
-        result = llvm::Type::getVoidTy(llvm::getGlobalContext());
+        result = hir::Void::getType();
         break;
     }
 
     // Arguments type
-    std::vector<llvm::Type*> params = {
-        // NOTE: Remove once MCJIT + TLS is supported in LLVM
-        llvm::PointerType::get(State::type(), 0)
-    };
+    std::vector<llvm::Type*> params;
     for (auto& type : type_in) {
         switch (type) {
         case FUNCTION_OUT_INTEGER:
-            params.push_back(llvm::Type::getInt64Ty(llvm::getGlobalContext()));
+            params.push_back(hir::I64::getType().type);
             break;
         case FUNCTION_OUT_FLOAT:
-            params.push_back(llvm::Type::getDoubleTy(llvm::getGlobalContext()));
+            params.push_back(hir::F64::getType().type);
             break;
         case FUNCTION_OUT_VECTOR:
-            params.push_back(llvm::Type::getIntNTy(llvm::getGlobalContext(), 128));
+            params.push_back(hir::I128::getType().type);
             break;
         }
     }
 
-    llvm::FunctionType* ftype = llvm::FunctionType::get(result, params, false);
+    llvm::FunctionType* ftype = llvm::FunctionType::get(result.type, params, false);
 
     // Declare function in module
-    function = llvm::Function::Create(ftype, llvm::Function::ExternalLinkage, name, parent->module);
-    return function;
+    function = hir::Function::Create(ftype, llvm::Function::ExternalLinkage, name, module);
 }
 
-llvm::Function* Function::recompile()
+void Function::recompile()
 {
-    Recompiler recompiler(parent, this);
-    recompiler.returnType = type_out;
+    Recompiler recompiler(this);
 
-    std::queue<u32> labels({ address });
+    hir::Builder& builder = recompiler.builder;
 
-    // Create LLVM basic blocks
-    prolog = llvm::BasicBlock::Create(llvm::getGlobalContext(), "prolog", function);
-    for (auto& item : blocks) {
-        Block& block = item.second;
-        const std::string name = format("block_%X", block.address);
-        block.bb = llvm::BasicBlock::Create(llvm::getGlobalContext(), name, function);
+    // Declare CFG blocks
+    for (const auto& item : blocks) {
+        u32 address = item.second->address;
+        std::string name = format("block_%X", address);
+        recompiler.blocks[address] = hir::Block::Create(name, function);
     }
+
+    // Generate prolog/epilog blocks
     recompiler.createProlog();
+    recompiler.createEpilog();
 
     // Recompile basic clocks
+    std::queue<u32> labels({ address });
     while (!labels.empty()) {
-        auto& block = blocks[labels.front()];
+        auto& block = static_cast<Block&>(*blocks[labels.front()]);
         if (block.recompiled) {
             labels.pop();
             continue;
         }
 
         // Recompile block instructions
-        recompiler.setInsertPoint(block.bb);
+        builder.SetInsertPoint(recompiler.blocks[block.address]);
         for (u32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
-            const Instruction code = { nucleus.memory.read32(recompiler.currentAddress) };
+            const Instruction code(recompiler.currentAddress);
             auto method = get_entry(code).recompile;
             (recompiler.*method)(code);
         }
@@ -299,11 +279,11 @@ llvm::Function* Function::recompile()
         if (block.is_split()) {
             const u32 target = block.address + block.size;
             if (blocks.find(target) != blocks.end()) {
-                recompiler.createBranch(blocks[target]);
+                builder.CreateBr(recompiler.blocks[target]);
             }
             // Required for .sceStub.text (single-block functions ending on bctr)
             else {
-                recompiler.createReturn();
+                builder.CreateBr(recompiler.epilog);
             }
         }
 
@@ -318,8 +298,7 @@ llvm::Function* Function::recompile()
     }
 
     // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
-    llvm::verifyFunction(*function, &llvm::outs());
-    return function;
+    llvm::verifyFunction(*function.function, &llvm::outs());
 }
 
 /**
@@ -335,31 +314,31 @@ void Segment::analyze()
     // Basic Block Slicing
     u32 currentBlock = 0;
     for (u32 i = address; i < (address + size); i += 4) {
-        const Instruction code = { nucleus.memory.read32(i) };
+        const Instruction instr(i);
 
         // New block appeared
-        if (code.is_valid() && currentBlock == 0) {
+        if (currentBlock == 0 && instr.is_valid()) {
             currentBlock = i;
         }
 
         // Block is corrupt
-        if (currentBlock != 0 && !code.is_valid()) {
+        if (currentBlock != 0 && !instr.is_valid()) {
             currentBlock = 0;
         }
 
         // Function call detected
-        if (currentBlock != 0 && code.is_call()) {
-            labelCalls.insert(code.get_target(i));
+        if (currentBlock != 0 && instr.is_call()) {
+            labelCalls.insert(instr.get_target(i));
         }
 
         // Block finished
-        if (currentBlock != 0 && code.is_branch() && !code.is_call()) {
-            if (code.is_branch_conditional()) {
-                labelJumps.insert(code.get_target(i));
+        if (currentBlock != 0 && instr.is_branch() && !instr.is_call()) {
+            if (instr.is_branch_conditional()) {
+                labelJumps.insert(instr.get_target(i));
                 labelJumps.insert(i + 4);
             }
-            if (code.is_branch_unconditional()) {
-                labelJumps.insert(code.get_target(i));
+            if (instr.is_branch_unconditional()) {
+                labelJumps.insert(instr.get_target(i));
             }
             labelBlocks.insert(currentBlock);
             currentBlock = 0;
@@ -374,25 +353,27 @@ void Segment::analyze()
     // List the functions and get their CFG
     for (const auto& label : labelFunctions) {
         if (this->contains(label)) {
-            Function function(label, this);
+            Function function(this);
+            function.name = format("func_%X", label);
+            function.address = label;
             if (function.analyze_cfg()) {
-                functions[label] = function;
+                functions[label] = new Function(function);
             }
         }
     }
     // Get type of every listed function
     for (auto& item : functions) {
-        Function& function = item.second;
+        auto& function = static_cast<Function&>(*item.second);
         function.analyze_type();
     }
 }
 
 void Segment::recompile()
 {
-    module = new llvm::Module(name, llvm::getGlobalContext());
+    module = hir::Module::Create(name);
 
     // Optimization passes
-    fpm = new llvm::FunctionPassManager(module);
+    auto fpm = new llvm::legacy::FunctionPassManager(module.module);
     fpm->add(llvm::createPromoteMemoryToRegisterPass());  // Promote allocas to registers
     fpm->add(llvm::createInstructionCombiningPass());     // Simple peephole and bit-twiddling optimizations
     fpm->add(llvm::createReassociatePass());              // Reassociate expressions
@@ -401,45 +382,106 @@ void Segment::recompile()
     fpm->doInitialization();
 
     // Global variables
-    module->getOrInsertGlobal("memoryBase", llvm::Type::getInt64Ty(llvm::getGlobalContext()));
-    memoryBase = module->getNamedGlobal("memoryBase");
+    memoryBase = module.getOrInsertGlobal<hir::I64>("memoryBase");
+    funcGetState = hir::Function::Create(
+        llvm::FunctionType::get(hir::Pointer<StateType>::getType().type, false),
+        llvm::Function::ExternalLinkage, "nucleusGetState", module);
+    funcLogState = hir::Function::Create(
+        llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
+        llvm::Function::ExternalLinkage, "nucleusLogState", module);
+    funcIntermodularCall = hir::Function::Create(
+        llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
+        llvm::Function::ExternalLinkage, "nucleusIntermodularCall", module);
+    funcSystemCall = hir::Function::Create(
+        llvm::FunctionType::get(hir::Void::getType().type, false),
+        llvm::Function::ExternalLinkage, "nucleusSystemCall", module);
 
     // Declare all functions
     for (auto& item : functions) {
-        Function& function = item.second;
-        function.declare();
+        auto& function = static_cast<Function&>(*item.second);
+        function.declare(module);
     }
 
     // Recompile and optimize all functions
     for (auto& item : functions) {
-        Function& function = item.second;
-        llvm::Function* func = function.recompile();
-        fpm->run(*func);
+        auto& function = static_cast<Function&>(*item.second);
+        function.recompile();
+        fpm->run(*function.function.function); // TODO: This is unreadable
     }
 
-    // NOTE: Avoid generating COFF objects on Windows which are not supported by MCJIT
-    llvm::Triple triple(llvm::sys::getProcessTriple());
-    if (triple.getOS() == llvm::Triple::OSType::Win32) {
-        triple.setObjectFormat(llvm::Triple::ObjectFormatType::ELF);
+    // Add function caller
+    llvm::FunctionType* callerType = llvm::FunctionType::get(
+        llvm::Type::getVoidTy(llvm::getGlobalContext()),
+        llvm::Type::getInt32Ty(llvm::getGlobalContext()),
+        false);
+    hir::Function callerFunction = hir::Function::Create(callerType, llvm::Function::InternalLinkage, "caller", module);
+    hir::Block entryBlock = hir::Block::Create("entry", callerFunction);
+    hir::Block defaultBlock = hir::Block::Create("caller", callerFunction);
+
+    hir::Builder builder;
+    builder.SetInsertPoint(entryBlock);
+    hir::Value<StateType*> state = builder.CreateCall(funcGetState);
+    auto switchInst = builder.CreateSwitch(hir::Value<hir::I32>{ callerFunction.function->arg_begin() }, defaultBlock);
+    
+    for (auto& item : functions) {
+        auto& function = static_cast<Function&>(*item.second);
+
+        // Declare block
+        hir::Block callerBlock = hir::Block::Create(function.name + "_caller", callerFunction);
+        switchInst->addCase(llvm::ConstantInt::get(
+            llvm::IntegerType::getInt32Ty(llvm::getGlobalContext()), function.address),
+            callerBlock.bb);
+
+        // Proxy
+        int index = 0;
+        builder.SetInsertPoint(callerBlock);
+        std::vector<llvm::Value*> args;
+        for (auto& type : function.type_in) {
+            switch (type) {
+            case FUNCTION_IN_INTEGER:
+                args.push_back(builder.CreateLoad<hir::I64>(
+                    builder.CreateInBoundsGEP(state, {
+                        builder.get<hir::I32>(0),
+                        builder.get<hir::I32>(0),
+                        builder.get<hir::I32>(3 + index++)
+                    })
+                ));
+                break;
+
+            case FUNCTION_IN_FLOAT: {
+                args.push_back(builder.CreateLoad<hir::I64>(
+                    builder.CreateInBoundsGEP(state, {
+                        builder.get<hir::I32>(0),
+                        builder.get<hir::I32>(1),
+                        builder.get<hir::I32>(1 + index++)
+                    })
+                ));
+                break;
+            }
+            case FUNCTION_IN_VECTOR: {
+                // TODO
+                break;
+            }
+            default:
+                break;
+            }
+        }
+
+        llvm::Value* value = builder.CreateCall(function.function, args);
+
+        // TODO: ?
+
+        builder.CreateRetVoid();
     }
-    module->setTargetTriple(triple.str());
-    module->dump();
 
-    // Create execution engine
-    llvm::EngineBuilder engineBuilder(module);
-    engineBuilder.setEngineKind(llvm::EngineKind::JIT);
-    engineBuilder.setOptLevel(llvm::CodeGenOpt::Default);
-    engineBuilder.setUseMCJIT(true);
-    executionEngine = engineBuilder.create();
-    executionEngine->addModule(nucleus.cell.module);
-    executionEngine->finalizeObject();
-}
+    builder.SetInsertPoint(defaultBlock);
+    builder.CreateRetVoid();
 
-bool Segment::contains(u32 addr) const
-{
-    const u32 from = address;
-    const u32 to = address + size;
-    return from <= addr && addr < to;
+    // NOTE: Debugging purposes
+    module.dump();
+
+    // Compile
+    backend::Generate(static_cast<frontend::ISegment<u32>*>(this));
 }
 
 }  // namespace ppu

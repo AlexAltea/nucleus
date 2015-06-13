@@ -6,23 +6,31 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/hir/function.h"
 
 #include "llvm/IR/BasicBlock.h"
 
 namespace cpu {
 namespace hir {
 
+class Function;
+
 class Block
 {
 public:
-    llvm::BasicBlock* bb = nullptr;
+    llvm::BasicBlock* bb;
+
+    // Constructor
+    Block(llvm::BasicBlock* block = nullptr) : bb(block) {}
 
     llvm::BasicBlock::iterator begin() {
-        bb->begin();
+        return bb->begin();
     }
     llvm::BasicBlock::iterator end() {
-        bb->end();
+        return bb->end();
     }
+
+    static Block Create(const std::string& name, Function function);
 };
 
 }  // namespace hir

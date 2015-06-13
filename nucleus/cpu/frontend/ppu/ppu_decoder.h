@@ -7,11 +7,13 @@
 
 #include "nucleus/common.h"
 #include "nucleus/format.h"
-#include "analyzer/ppu_analyzer.h"
-
-#include "llvm/ExecutionEngine/ExecutionEngine.h"
-#include "llvm/IR/Module.h"
-#include "llvm/PassManager.h"
+#include "nucleus/cpu/hir/module.h"
+#include "nucleus/cpu/hir/type.h"
+#include "nucleus/cpu/hir/value.h"
+#include "nucleus/cpu/frontend/frontend_block.h"
+#include "nucleus/cpu/frontend/frontend_function.h"
+#include "nucleus/cpu/frontend/frontend_segment.h"
+#include "nucleus/cpu/frontend/ppu/analyzer/ppu_analyzer.h"
 
 #include <map>
 #include <string>
@@ -19,6 +21,13 @@
 
 namespace cpu {
 namespace ppu {
+
+using StateType = hir::Struct<
+    hir::Array<hir::I64,  32>, // GPRs
+    hir::Array<hir::I64,  32>, // FPRs
+    hir::Array<hir::I128, 32>, // VRs
+    hir::Array<hir::I64,   4> // Other
+>;
 
 // Class declarations
 class Block;
@@ -44,57 +53,34 @@ enum FunctionTypeOut {
     FUNCTION_OUT_VOID,        // Nothing is returned
 };
 
-class Block
+class Block : public frontend::IBlock<u32>
 {
 public:
-    llvm::BasicBlock* bb = nullptr;
-
-    u32 address = 0; // Starting address in the EA space
-    u32 size = 0;    // Number of bytes covered
-
     bool initial;                   // Is this a function entry block?
     bool jump_destination = false;  // Is this a target of a bx/bcx instruction?
     bool call_destination = false;  // Is this a target of a bl instruction
     bool recompiled = false;        // Was this recompiled?
 
-    // Branching
-    u32 branch_a = 0; // Conditional-True or Unconditional branching address
-    u32 branch_b = 0; // Conditional-False branching address
-
-    // Determines whether the specified address is part of this block
-    bool contains(u32 addr) const;
+    // Constructors
+    Block() {}
+    Block(frontend::IBlock<u32>& block) : frontend::IBlock<u32>(block) {}
 
     // Determines whether an extra branch is required to connect this with the immediate block after
     bool is_split() const;
 };
 
-class Function
+class Function : public frontend::IFunction<u32>
 {
-    Segment* parent = nullptr;
-
     // Analyzer auxiliary method: Determine register read/writes
     void do_register_analysis(Analyzer* status);
 
 public:
-    llvm::Function* function = nullptr;
-
-    u32 address = 0; // Starting address in the EA space
-    u32 size = 0;    // Number of bytes covered (sum of basic block sizes)
-
-    // Control Flow Graph
-    std::map<u32, Block> blocks;
-    llvm::BasicBlock* prolog;
-    llvm::BasicBlock* epilog;
-
     // Return/Arguments type
     FunctionTypeOut type_out;
     std::vector<FunctionTypeIn> type_in;
 
-    // Name extracted from the DWARF symbols if available
-    std::string name;
-
-    Function(u32 address=0, Segment* parent=nullptr) : address(address), parent(parent) {
-        name = format("func_%X", address);
+    Function(Segment* seg) {
+        parent = reinterpret_cast<frontend::ISegment<u32>*>(seg);
     }
 
     // Analysis
@@ -102,49 +88,29 @@ public:
     void analyze_type(); // Determine function arguments/return types
 
     // Declare function inside the parent segment
-    llvm::Function* declare();
+    void declare(hir::Module module);
 
     // Recompile function
-    llvm::Function* recompile();
+    void recompile();
 };
 
-class Segment
+class Segment : public frontend::ISegment<u32>
 {
-    llvm::FunctionPassManager* fpm = nullptr;
-
 public:
-    llvm::Module* module = nullptr;
-    llvm::ExecutionEngine* executionEngine = nullptr;
+    // Globals
+    hir::Value<hir::I64*> memoryBase;
 
-    // Global variables
-    llvm::GlobalVariable* memoryBase;
-    llvm::GlobalVariable* ppuState;
-
-    u32 address = 0; // Starting address in the EA space
-    u32 size = 0;    // Number of bytes covered
-
-    // Functions contained
-    std::map<u32, Function> functions;
-
-    std::string name;
-
-    Segment(u32 address, u32 size) : address(address), size(size) {
-        name = format("seg_%X", address);
-    }
-
-    ~Segment() {
-        // The execution engines owns the module, which will be deleted
-        delete executionEngine;
-    }
+    // Emulator functions
+    hir::Function funcGetState;
+    hir::Function funcLogState;
+    hir::Function funcIntermodularCall;
+    hir::Function funcSystemCall;
 
     // Generate a list of functions and analyze them
     void analyze();
 
     // Recompile each of the functions
     void recompile();
-
-    // Determines whether the specified address is part of this segment
-    bool contains(u32 addr) const;
 };
 
 }  // namespace ppu
