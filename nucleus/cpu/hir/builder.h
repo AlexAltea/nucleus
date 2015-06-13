@@ -147,6 +147,13 @@ public:
     }
 
     template <typename T, int N>
+    Value<T, N> CreateAnd(Value<T, N> lhs, u64 rhs) {
+        static_assert(is_integer<T>::value,
+            "Builder::CreateAnd accepts only integer values");
+        return builder.CreateAnd(lhs.value, rhs);
+    }
+
+    template <typename T, int N>
     Value<T, N> CreateAnd(Value<T, N> lhs, Value<T, N> rhs) {
         static_assert(is_integer<T>::value,
             "Builder::CreateAnd accepts only integer values");

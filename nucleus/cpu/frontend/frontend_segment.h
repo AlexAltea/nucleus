@@ -8,6 +8,8 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/frontend_function.h"
 
+#include "llvm/ExecutionEngine/MCJIT.h"
+
 #include <map>
 
 namespace cpu {
@@ -34,6 +36,9 @@ public:
 
     // List of functions
     std::map<TAddr, IFunction<TAddr>*> functions;
+
+    // Execution engine and global functions
+    llvm::ExecutionEngine* ee;
 
     // Check whether an address is inside this module
     bool contains(TAddr addr) const {

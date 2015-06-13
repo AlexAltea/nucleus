@@ -23,6 +23,9 @@ public:
     llvm::Type* type;
 };
 
+/**
+ * Type classes
+ */
 // Integer types
 struct I1 {
     using type = bool;
@@ -162,6 +165,27 @@ struct Any {
         // TODO: This should never happen
         return Type{ llvm::Type::getVoidTy(llvm::getGlobalContext()) };
     }
+};
+
+/**
+ * Type checks
+ */
+template <typename T>
+struct is_integer {
+    static const bool value =
+        std::is_same<T, I1>::value  ||
+        std::is_same<T, I8>::value  ||
+        std::is_same<T, I16>::value ||
+        std::is_same<T, I32>::value ||
+        std::is_same<T, I64>::value ||
+        std::is_same<T, I128>::value;
+};
+
+template <typename T>
+struct is_floating_point {
+    static const bool value =
+        std::is_same<T, F32>::value ||
+        std::is_same<T, F64>::value;
 };
 
 }  // namespace hir

@@ -6,9 +6,8 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/ppu/ppu_thread.h"
-
-#include "nucleus/cpu/ppu/ppu_decoder.h"
+#include "nucleus/cpu/frontend/ppu/ppu_thread.h"
+#include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 
 #include <mutex>
 #include <vector>
@@ -37,7 +36,6 @@ public:
 
     // Recompiler utilities
     llvm::Module* module;
-    llvm::ExecutionEngine* executionEngine;
 
     // Thread management
     CellThread* addThread(CellThreadType type, u32 entry);

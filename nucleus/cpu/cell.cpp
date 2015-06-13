@@ -6,8 +6,8 @@
 #include "cell.h"
 #include "nucleus/config.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/ppu/ppu_thread.h"
-#include "nucleus/cpu/ppu/ppu_tables.h"
+#include "nucleus/cpu/frontend/ppu/ppu_thread.h"
+#include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
 #include "llvm/ADT/Triple.h"
 #include "llvm/Support/Host.h"
