@@ -59,7 +59,6 @@ public:
     bool initial;                   // Is this a function entry block?
     bool jump_destination = false;  // Is this a target of a bx/bcx instruction?
     bool call_destination = false;  // Is this a target of a bl instruction
-    bool recompiled = false;        // Was this recompiled?
 
     // Constructors
     Block() {}
@@ -103,6 +102,7 @@ public:
     // Emulator functions
     hir::Function funcGetState;
     hir::Function funcLogState;
+    hir::Function funcDebugState;
     hir::Function funcIntermodularCall;
     hir::Function funcSystemCall;
 

@@ -259,12 +259,8 @@ void Function::recompile()
 
     // Recompile basic clocks
     std::queue<u32> labels({ address });
-    while (!labels.empty()) {
-        auto& block = static_cast<Block&>(*blocks[labels.front()]);
-        if (block.recompiled) {
-            labels.pop();
-            continue;
-        }
+    for (auto& item : blocks) {
+        auto& block = static_cast<Block&>(*item.second);
 
         // Recompile block instructions
         builder.SetInsertPoint(recompiler.blocks[block.address]);
@@ -272,6 +268,7 @@ void Function::recompile()
             recompiler.currentAddress = block.address + offset;
             const Instruction code(recompiler.currentAddress);
             auto method = get_entry(code).recompile;
+            builder.CreateCall(static_cast<Segment*>(parent)->funcDebugState, {builder.get<hir::I64>(recompiler.currentAddress)});
             (recompiler.*method)(code);
         }
 
@@ -286,15 +283,6 @@ void Function::recompile()
                 builder.CreateBr(recompiler.epilog);
             }
         }
-
-        block.recompiled = true;
-        if (block.branch_a) {
-            labels.push(block.branch_a);
-        }
-        if (block.branch_b) {
-            labels.push(block.branch_b);
-        }
-        labels.pop();
     }
 
     // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
@@ -389,6 +377,9 @@ void Segment::recompile()
     funcLogState = hir::Function::Create(
         llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
         llvm::Function::ExternalLinkage, "nucleusLogState", module);
+    funcDebugState = hir::Function::Create(
+        llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
+        llvm::Function::ExternalLinkage, "nucleusDebugState", module);
     funcIntermodularCall = hir::Function::Create(
         llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
         llvm::Function::ExternalLinkage, "nucleusIntermodularCall", module);
