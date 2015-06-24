@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="backend">
+      <UniqueIdentifier>{ead88e74-d63b-4e0f-9a0f-701006c666ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backend\opengl">
+      <UniqueIdentifier>{87cf1e7c-fd4f-49ee-b82c-25a0df60d5f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hir">
+      <UniqueIdentifier>{1d46846f-7248-4b02-bf2d-2b9ca13ff384}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="backend\opengl\opengl.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="graphics.h" />
+    <ClInclude Include="backend\opengl\opengl.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

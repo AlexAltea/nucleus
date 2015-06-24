@@ -3,10 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_state.h"
+#include "logger.h"
 
-namespace cpu {
-namespace ppu {
-
-}  // namespace ppu
-}  // namespace cpu
+// Global debugger object
+Logger logger;
