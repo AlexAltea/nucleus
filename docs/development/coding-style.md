@@ -40,7 +40,7 @@ The following layout appplies both to source files (_.cpp_) and header files (_.
 __License__. Mandatory comment:
 ```cpp
 /**
- * (c) 2015 Alexandro Sánchez Bach. All rights reserved.
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 ```
@@ -57,7 +57,7 @@ __Includes__. Only if necessary. The following order is preferred:
 3. Header files of external dependencies.
 4. Header files of the Standard Template Library.
 
-__Namespace (begin)__. They do not affect indentation in anyway. E.g.:
+__Namespace (begin)__. They do not affect indentation in any way. E.g.:
 ```cpp
 namespace name {
 ```
