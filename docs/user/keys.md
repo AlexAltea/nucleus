@@ -1,4 +1,5 @@
-# Keys Documentation
+Keys Documentation
+==================
 
 Certain types of binary files used by the PlayStation 3 system are encrypted. For legal reasons, Nucleus cannot provide the decryption keys, hence the need for the users to dump the keys from their own legally purchased console. These keys have to be saved in a Keyvault file named `keys.xml` next to the Nucleus executable.
 

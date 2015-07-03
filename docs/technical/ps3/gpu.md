@@ -1,4 +1,5 @@
-# GPU Documentation
+GPU Documentation
+=================
 
 The PlayStation 3 GPU is the *Reality Synthesizer* (**RSX**), designed by Sony and Nvidia. Its based on the NV47 chipset (Curie family). There is no official public documentation about the RSX from Sony. Nvidia doesn't provide low-level documentation about any of their GPUs either, making reverse engineering and intensive testing the only way to understand all aspects of this GPU. This document attempts to fill the gaps caused by the scarce information and to explain how Nucleus emulates the RSX. Some useful resources for this task were:
 

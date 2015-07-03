@@ -1,5 +1,7 @@
-Coding Style
-============
+Conventions
+===========
+
+This document describes the coding-style rules that apply on this repository.
 
 ## Syntax
 

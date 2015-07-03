@@ -1,4 +1,5 @@
-# CPU Documentation
+CPU Documentation
+=================
 
 This document briefly describes the PlayStation 3 CPU, provides relevant links to specifications, ABIs and other official documentation and explains how Nucleus emulates it.
 
