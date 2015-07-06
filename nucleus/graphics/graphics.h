@@ -17,29 +17,11 @@ enum PrimitiveTopology {
     TOPOLOGY_QUAD_STRIP,
 };
 
-enum LogicOp {
-    LOGIC_OP_COPY,
-    LOGIC_OP_CLEAR,
-    LOGIC_OP_AND,
-    LOGIC_OP_AND_REVERSE,
-    LOGIC_OP_AND_INVERTED,
-    LOGIC_OP_NOOP,
-    LOGIC_OP_XOR,
-    LOGIC_OP_OR,
-    LOGIC_OP_NOR,
-    LOGIC_OP_EQUIV,
-    LOGIC_OP_INVERT,
-    LOGIC_OP_OR_REVERSE,
-    LOGIC_OP_COPY_INVERTED,
-    LOGIC_OP_OR_INVERTED,
-    LOGIC_OP_NAND,
-    LOGIC_OP_SET,
-};
-
 class IBackend {
 
-    // Queue management
-    virtual void QueueSubmit() = 0;
+    // Command queue management
+    virtual void CreateCommandQueue() = 0;
+    virtual void CommandQueueSubmit() = 0;
 
     // Command buffer management
     virtual void CreateCommandBuffer() = 0;
@@ -55,6 +37,9 @@ class IBackend {
 
     // Pipeline management
     virtual void CreatePipeline() = 0;
+
+    // Shader management
+    virtual void CreateShader() = 0;
 };
 
-}  // graphics
+}  // namespace graphics
