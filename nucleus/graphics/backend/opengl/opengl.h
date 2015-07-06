@@ -5,12 +5,25 @@
 
 #pragma once
 
-#include "nucleus/graphics/graphics.h"
+#include "nucleus/common.h"
 
 namespace graphics {
 
-class OpenGLBackend : public IBackend {
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#include <Windows.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/wglext.h>
+#endif
 
-};
+// Declare extensions
+#define DECLARE_EXTENSION(type, function) extern type function;
+#define EXTENSION DECLARE_EXTENSION
+#include "opengl.inc"
+#undef EXTENSION
+#undef DECLARE_EXTENSION
+
+// Load extensions
+bool initializeOpenGL();
 
 }  // namespace graphics
