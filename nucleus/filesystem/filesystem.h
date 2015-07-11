@@ -6,60 +6,39 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/filesystem/device.h"
+#include "nucleus/filesystem/directory.h"
+#include "nucleus/filesystem/file.h"
+#include "nucleus/filesystem/path.h"
+
+// Devices
+#include "device/host_path/host_path_device.h"
+#include "device/iso_container/iso_container_device.h"
 
 #include <string>
+#include <vector>
 
-enum OpenMode
-{
-    Read = 0x1,
-    Write = 0x2,
-    Excl = 0x4,
-    Append = 0x8,
-    ReadWrite = Read | Write,
-    WriteExcl = Write | Excl,
-    WriteAppend = Write | Append,
-};
+namespace fs {
 
-enum SeekMode
-{
-    SeekSet,
-    SeekCur,
-    SeekEnd,
-};
+class VirtualFileSystem {
+    std::vector<IDevice*> devices;
 
-struct File
-{
-    std::FILE* handler;
-    std::string virtual_path;
-};
-
-class FileSystem
-{
+    // Find an appropriate device to handle the given path
+    IDevice* getDevice(const Path& path);
+    
 public:
-    std::string m_mount_point;
-    std::string m_host_path;
+    bool registerDevice(IDevice* device);
 
-    virtual ~FileSystem() {}
+    File* openFile(const Path& path, OpenMode mode);
+    bool createFile(const Path& path);
+    bool existsFile(const Path& path);
+    bool removeFile(const Path& path);
 
-    // File I/O
-    virtual File* openFile(const std::string& path, OpenMode mode = Read) = 0;
-    virtual void closeFile(File* handle) = 0;
-    virtual u64 readFile(File* handle, void* dst, s64 size) = 0;
-    virtual u64 writeFile(File* handle, const void* src, s64 size) = 0;
-    virtual u64 seekFile(File* handle, u64 position, SeekMode type) = 0;
-    virtual bool isOpen(File* handle) = 0;
-    virtual u64 getFileSize(File* handle) = 0;
+    IDir* openDir(const Path& path);
+    bool existsDir(const Path& path);
+    bool removeDir(const Path& path);
 
-    // File management
-    virtual bool createFile(const std::string& path) = 0;
-    virtual bool existsFile(const std::string& path) = 0;
-    virtual u64 getFileSize(const std::string& path) = 0;
+    File::Attributes getFileAttributes(const Path& path);
 };
 
-const char* getOpenMode(OpenMode mode);
-const int getSeekMode(SeekMode mode);
-FileSystem* getFilesystem(const s8* path);
-
-// Utilities
-std::string getEmulatorPath();
-std::string getProcessPath(const std::string& elfPath);
+}  // namespace fs

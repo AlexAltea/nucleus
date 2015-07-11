@@ -1,0 +1,28 @@
+/**
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
+
+#pragma once
+
+#include "nucleus/common.h"
+#include "nucleus/filesystem/file.h"
+#include "nucleus/filesystem/path.h"
+
+namespace fs {
+
+class IDevice {
+public:
+    Path mountPath;
+
+    U64 blockSize;
+
+    IDevice(const Path& mountPath) : mountPath(mountPath) {
+    }
+
+    virtual File* openFile(const Path& path, OpenMode mode) = 0;
+    virtual bool existsFile(const Path& path) = 0;
+    virtual bool removeFile(const Path& path) = 0;
+};
+
+}  // namespace fs
