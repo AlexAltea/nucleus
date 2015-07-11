@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/ui/length.h"
+
 enum ProportionMode {
     PROPORTION_FIXED,      // Use the provided width/height dimensions
     PROPORTION_AUTOWIDTH,  // Calculate width based on the given height
@@ -12,29 +14,7 @@ enum ProportionMode {
     PROPORTION_AUTO,       // Calculate width and height
 };
 
-struct Length {
-    float value;
-    enum Unit {
-        PX,  // Pixel
-        CM,  // Centimeter
-        PCT, // Percentage
-    } unit;
-
-    // Scalar operations
-    Length operator+ (float rhs) { return Length{value + rhs, unit}; }
-    Length operator- (float rhs) { return Length{value - rhs, unit}; }
-    Length operator* (float rhs) { return Length{value * rhs, unit}; }
-    Length operator/ (float rhs) { return Length{value / rhs, unit}; }
-
-    // Length operations // TODO: Check unit used
-    Length operator+ (const Length& rhs) { return Length{value + rhs.value, unit}; }
-    Length operator- (const Length& rhs) { return Length{value - rhs.value, unit}; }
-    Length operator* (const Length& rhs) { return Length{value * rhs.value, unit}; }
-    Length operator/ (const Length& rhs) { return Length{value / rhs.value, unit}; }
-};
-
-class Widget
-{
+class Widget {
 public:
     struct Style {
         // Position of the image in the [+0.0, +1.0] system
@@ -56,5 +36,5 @@ public:
     static float getCoordinateY(Length y);
 
     // Render the screen components
-    virtual void render()=0;
+    virtual void render() = 0;
 };

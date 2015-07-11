@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/graphics/graphics.h"
 #include "nucleus/ui/language.h"
 #include "nucleus/ui/screen.h"
 
@@ -13,8 +14,9 @@
 #include <thread>
 #include <vector>
 
-class UI
-{
+class UI {
+    graphics::IBackend* graphics;
+
     std::thread* m_thread;
     std::vector<Screen*> m_screens;
 

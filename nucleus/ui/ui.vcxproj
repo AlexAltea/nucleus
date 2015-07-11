@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="language.h" />
+    <ClInclude Include="length.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="screens\screen_emulator.h" />
     <ClInclude Include="screens\screen_logo.h" />

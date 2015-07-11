@@ -49,6 +49,7 @@
     <ClInclude Include="screens\screen_emulator.h">
       <Filter>screens</Filter>
     </ClInclude>
+    <ClInclude Include="length.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="screens">
