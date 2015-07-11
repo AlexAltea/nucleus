@@ -11,17 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="opengl\opengl_fp.cpp" />
-    <ClCompile Include="opengl\opengl_renderer.cpp" />
-    <ClCompile Include="opengl\opengl_vp.cpp" />
     <ClCompile Include="rsx.cpp" />
     <ClCompile Include="rsx_dma.cpp" />
+    <ClCompile Include="rsx_fp.cpp" />
     <ClCompile Include="rsx_pgraph.cpp" />
+    <ClCompile Include="rsx_vp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="opengl\opengl_fp.h" />
-    <ClInclude Include="opengl\opengl_renderer.h" />
-    <ClInclude Include="opengl\opengl_vp.h" />
     <ClInclude Include="rsx.h" />
     <ClInclude Include="rsx_dma.h" />
     <ClInclude Include="rsx_enum.h" />

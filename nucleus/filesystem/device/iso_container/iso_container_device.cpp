@@ -21,13 +21,13 @@ File* ISOContainerDevice::openFile(const Path& path, OpenMode mode)
         return nullptr;
     }
 
-    logger.error(LOG_FS, "ISOContainerDevice::openFile is not implemented");
+    logger.warning(LOG_FS, "ISOContainerDevice::openFile is not implemented");
     return nullptr;
 }
 
 bool ISOContainerDevice::existsFile(const Path& path)
 {
-    logger.error(LOG_FS, "ISOContainerDevice::existsFile is not implemented");
+    logger.warning(LOG_FS, "ISOContainerDevice::existsFile is not implemented");
     return false;
 }
 

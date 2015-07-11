@@ -1,41 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="rsx_fp.cpp" />
+    <ClCompile Include="rsx_pgraph.cpp" />
+    <ClCompile Include="rsx_vp.cpp" />
     <ClCompile Include="rsx.cpp" />
     <ClCompile Include="rsx_dma.cpp" />
-    <ClCompile Include="rsx_pgraph.cpp" />
-    <ClCompile Include="opengl\opengl_vp.cpp">
-      <Filter>opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="opengl\opengl_fp.cpp">
-      <Filter>opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="opengl\opengl_renderer.cpp">
-      <Filter>opengl</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rsx.h" />
-    <ClInclude Include="rsx_dma.h" />
-    <ClInclude Include="rsx_enum.h" />
     <ClInclude Include="rsx_fp.h" />
     <ClInclude Include="rsx_methods.h" />
     <ClInclude Include="rsx_pgraph.h" />
     <ClInclude Include="rsx_texture.h" />
     <ClInclude Include="rsx_vp.h" />
-    <ClInclude Include="opengl\opengl_renderer.h">
-      <Filter>opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="opengl\opengl_vp.h">
-      <Filter>opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="opengl\opengl_fp.h">
-      <Filter>opengl</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="opengl">
-      <UniqueIdentifier>{dbe8c448-7eb7-4b07-8a08-9f581b3581f6}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="rsx.h" />
+    <ClInclude Include="rsx_dma.h" />
+    <ClInclude Include="rsx_enum.h" />
   </ItemGroup>
 </Project>

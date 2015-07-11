@@ -36,22 +36,22 @@ struct DMAObject {
         WRITE     = 1 << 1,
         READWRITE = READ | WRITE,
     };
-    u32 addr;
-    u32 size;
-    u32 flags;
+    U32 addr;
+    U32 size;
+    U32 flags;
 };
 
 // RSX Direct Memory Access
-DMAObject dma_address(u32 dma_object);
+DMAObject dma_address(U32 dma_object);
 
-u8 dma_read8(u32 dma_object, u32 offset);
-u16 dma_read16(u32 dma_object, u32 offset);
-u32 dma_read32(u32 dma_object, u32 offset);
-u64 dma_read64(u32 dma_object, u32 offset);
+U8 dma_read8(U32 dma_object, U32 offset);
+U16 dma_read16(U32 dma_object, U32 offset);
+U32 dma_read32(U32 dma_object, U32 offset);
+U64 dma_read64(U32 dma_object, U32 offset);
 
-void dma_write8(u32 dma_object, u32 offset, u8 value);
-void dma_write16(u32 dma_object, u32 offset, u16 value);
-void dma_write32(u32 dma_object, u32 offset, u32 value);
-void dma_write64(u32 dma_object, u32 offset, u64 value);
+void dma_write8(U32 dma_object, U32 offset, U8 value);
+void dma_write16(U32 dma_object, U32 offset, U16 value);
+void dma_write32(U32 dma_object, U32 offset, U32 value);
+void dma_write64(U32 dma_object, U32 offset, U64 value);
 
 }  // namespace gpu

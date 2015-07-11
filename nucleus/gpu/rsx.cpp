@@ -5,14 +5,14 @@
 
 #include "rsx.h"
 #include "nucleus/emulator.h"
+#include "nucleus/logger/logger.h"
 #include "nucleus/config.h"
-#include "nucleus/syscalls/lv1/lv1_gpu.h"
+#include "nucleus/system/lv1/lv1_gpu.h"
 
 #include "nucleus/gpu/rsx_dma.h"
 #include "nucleus/gpu/rsx_enum.h"
 #include "nucleus/gpu/rsx_methods.h"
 #include "nucleus/gpu/rsx_vp.h"
-#include "nucleus/gpu/opengl/opengl_renderer.h"
 
 // Platform specific drawing contexts
 #ifdef NUCLEUS_PLATFORM_WINDOWS
@@ -78,19 +78,13 @@ void RSX::init()
 
 void RSX::task()
 {
-    // Initialize renderer
-    switch (config.gpuBackend) {
-    case GPU_BACKEND_OPENGL:
-        pgraph = new PGRAPH_OpenGL();
-    }
-
     while (true) {
         // Wait until GET and PUT are different
         while (dma_control->get == dma_control->put) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-        const u32 get = dma_control->get;
-        const u32 put = dma_control->put;
+        const U32 get = dma_control->get;
+        const U32 put = dma_control->put;
 
         const rsx_method_t cmd = { io_read32(get) };
 
@@ -111,23 +105,20 @@ void RSX::task()
         }
 
         for (int i = 0; i < cmd.method_count; i++) {
-            const u32 offset = (cmd.method_offset << 2) + (cmd.flag_ni ? 0 : 4*i);
-            const u32 parameter = io_read32(get + 4*(i+1));
-            //nucleus.log.notice(LOG_GPU, "METHOD: 0x%X;  IO: 0x%X;  PARAM: 0x%X", offset, get, parameter);
+            const U32 offset = (cmd.method_offset << 2) + (cmd.flag_ni ? 0 : 4*i);
+            const U32 parameter = io_read32(get + 4*(i+1));
+            //logger.notice(LOG_GPU, "METHOD: 0x%X;  IO: 0x%X;  PARAM: 0x%X", offset, get, parameter);
             method(offset, parameter);
         }
 
         dma_control->get += 4 * (cmd.method_count + 1);
     }
-
-    // Finish renderer
-    delete pgraph;
 }
 
-void RSX::method(u32 offset, u32 parameter)
+void RSX::method(U32 offset, U32 parameter)
 {
     // Slot used on multiple-register methods
-    u32 index;
+    U32 index;
 
     switch (offset) {
     // NV40_CHANNEL_DMA
@@ -168,49 +159,49 @@ void RSX::method(u32 offset, u32 parameter)
     case NV4097_SET_SPECULAR_ENABLE:
     case NV4097_SET_LINE_SMOOTH_ENABLE:
     case NV4097_SET_POLY_SMOOTH_ENABLE:
-        pgraph->Enable(offset, parameter);
+        pgraph.Enable(offset, parameter);
         break;
 
     case NV4097_SET_SEMAPHORE_OFFSET:
-        pgraph->semaphore_index = parameter >> 4;
+        pgraph.semaphore_index = parameter >> 4;
         break;
 
     case NV4097_TEXTURE_READ_SEMAPHORE_RELEASE:
-        reports->semaphore[pgraph->semaphore_index].value = parameter;
-        reports->semaphore[pgraph->semaphore_index].padding = 0;
-        reports->semaphore[pgraph->semaphore_index].timestamp = ptimer_gettime();
+        reports->semaphore[pgraph.semaphore_index].value = parameter;
+        reports->semaphore[pgraph.semaphore_index].padding = 0;
+        reports->semaphore[pgraph.semaphore_index].timestamp = ptimer_gettime();
         break;
 
     case NV4097_BACK_END_WRITE_SEMAPHORE_RELEASE: {
-        const u32 value = (parameter & 0xFF00FF00) | ((parameter & 0xFF) << 16) | ((parameter >> 16) & 0xFF);
-        reports->semaphore[pgraph->semaphore_index].value = value;
-        reports->semaphore[pgraph->semaphore_index].padding = 0;
-        reports->semaphore[pgraph->semaphore_index].timestamp = ptimer_gettime();
+        const U32 value = (parameter & 0xFF00FF00) | ((parameter & 0xFF) << 16) | ((parameter >> 16) & 0xFF);
+        reports->semaphore[pgraph.semaphore_index].value = value;
+        reports->semaphore[pgraph.semaphore_index].padding = 0;
+        reports->semaphore[pgraph.semaphore_index].timestamp = ptimer_gettime();
         break;
     }
 
     case NV4097_SET_ALPHA_FUNC:
-        pgraph->alpha_func = parameter;
-        pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
+        pgraph.alpha_func = parameter;
+        pgraph.AlphaFunc(pgraph.alpha_func, pgraph.alpha_ref);
         break;
 
     case NV4097_SET_ALPHA_REF:
-        pgraph->alpha_ref = parameter;
-        pgraph->AlphaFunc(pgraph->alpha_func, pgraph->alpha_ref);
+        pgraph.alpha_ref = parameter;
+        pgraph.AlphaFunc(pgraph.alpha_func, pgraph.alpha_ref);
         break;
 
     case NV4097_SET_BLEND_FUNC_SFACTOR:
-        pgraph->blend_sfactor_rgb = parameter & 0xFFFF;
-        pgraph->blend_sfactor_alpha = parameter >> 16;
+        pgraph.blend_sfactor_rgb = parameter & 0xFFFF;
+        pgraph.blend_sfactor_alpha = parameter >> 16;
         break;
 
     case NV4097_SET_BLEND_FUNC_DFACTOR:
-        pgraph->blend_dfactor_rgb = parameter & 0xFFFF;
-        pgraph->blend_dfactor_alpha = parameter >> 16;
+        pgraph.blend_dfactor_rgb = parameter & 0xFFFF;
+        pgraph.blend_dfactor_alpha = parameter >> 16;
         break;
 
     case NV4097_SET_COLOR_MASK:
-        pgraph->ColorMask(
+        pgraph.ColorMask(
             (parameter & 0x1000000),
             (parameter & 0x0010000),
             (parameter & 0x0000100),
@@ -218,7 +209,7 @@ void RSX::method(u32 offset, u32 parameter)
         break;
 
     case NV4097_SET_COLOR_CLEAR_VALUE:
-        pgraph->ClearColor(
+        pgraph.ClearColor(
             (parameter >> 24) & 0xFF,
             (parameter >> 16) & 0xFF,
             (parameter >>  8) & 0xFF,
@@ -226,243 +217,243 @@ void RSX::method(u32 offset, u32 parameter)
         break;
 
     case NV4097_SET_ZSTENCIL_CLEAR_VALUE:
-        pgraph->ClearDepth(parameter >> 8);
-        pgraph->ClearStencil(parameter & 0xFF);
+        pgraph.ClearDepth(parameter >> 8);
+        pgraph.ClearStencil(parameter & 0xFF);
         break;
 
     case NV4097_CLEAR_SURFACE:
-        pgraph->ClearSurface(parameter);
+        pgraph.ClearSurface(parameter);
         break;
 
     case NV4097_SET_DEPTH_FUNC:
-        pgraph->DepthFunc(parameter);
+        pgraph.DepthFunc(parameter);
         break;
 
     case NV4097_SET_CONTEXT_DMA_REPORT:
-        pgraph->dma_report = parameter;
+        pgraph.dma_report = parameter;
         break;
 
     case NV4097_SET_SURFACE_COLOR_AOFFSET:
-        pgraph->surface.dirty = true;
-        pgraph->surface.colorOffset[0] = parameter;
+        pgraph.surface.dirty = true;
+        pgraph.surface.colorOffset[0] = parameter;
         break;
 
     case NV4097_SET_SURFACE_COLOR_BOFFSET:
-        pgraph->surface.dirty = true;
-        pgraph->surface.colorOffset[1] = parameter;
+        pgraph.surface.dirty = true;
+        pgraph.surface.colorOffset[1] = parameter;
         break;
 
     case NV4097_SET_SURFACE_COLOR_COFFSET:
-        pgraph->surface.dirty = true;
-        pgraph->surface.colorOffset[2] = parameter;
+        pgraph.surface.dirty = true;
+        pgraph.surface.colorOffset[2] = parameter;
         break;
 
     case NV4097_SET_SURFACE_COLOR_DOFFSET:
-        pgraph->surface.dirty = true;
-        pgraph->surface.colorOffset[3] = parameter;
+        pgraph.surface.dirty = true;
+        pgraph.surface.colorOffset[3] = parameter;
         break;
 
     case NV4097_SET_SURFACE_ZETA_OFFSET:
-        pgraph->surface.dirty = true;
-        pgraph->surface.depthOffset = parameter;
+        pgraph.surface.dirty = true;
+        pgraph.surface.depthOffset = parameter;
         break;
 
     case NV4097_SET_SURFACE_CLIP_HORIZONTAL:
-        pgraph->surface.dirty = true;
-        pgraph->surface.x = parameter & 0xFFFF;
-        pgraph->surface.width = (parameter >> 16) & 0xFFFF;
+        pgraph.surface.dirty = true;
+        pgraph.surface.x = parameter & 0xFFFF;
+        pgraph.surface.width = (parameter >> 16) & 0xFFFF;
         break;
 
     case NV4097_SET_SURFACE_CLIP_VERTICAL:
-        pgraph->surface.dirty = true;
-        pgraph->surface.y = parameter & 0xFFFF;
-        pgraph->surface.height = (parameter >> 16) & 0xFFFF;
+        pgraph.surface.dirty = true;
+        pgraph.surface.y = parameter & 0xFFFF;
+        pgraph.surface.height = (parameter >> 16) & 0xFFFF;
         break;
 
     case NV4097_SET_SURFACE_COLOR_TARGET:
-        pgraph->surface.dirty = true;
-        pgraph->surface.colorTarget = parameter;
-        pgraph->SurfaceColorTarget(parameter);
+        pgraph.surface.dirty = true;
+        pgraph.surface.colorTarget = parameter;
+        pgraph.SurfaceColorTarget(parameter);
         break;
 
     case NV4097_SET_VIEWPORT_HORIZONTAL:
-        pgraph->viewport.x = parameter & 0xFFFF;
-        pgraph->viewport.width = (parameter >> 16) & 0xFFFF;
-        pgraph->viewport.dirty = true;
+        pgraph.viewport.x = parameter & 0xFFFF;
+        pgraph.viewport.width = (parameter >> 16) & 0xFFFF;
+        pgraph.viewport.dirty = true;
         break;
 
     case NV4097_SET_VIEWPORT_VERTICAL:
-        pgraph->viewport.y = parameter & 0xFFFF;
-        pgraph->viewport.height = (parameter >> 16) & 0xFFFF;
-        pgraph->viewport.dirty = true;
+        pgraph.viewport.y = parameter & 0xFFFF;
+        pgraph.viewport.height = (parameter >> 16) & 0xFFFF;
+        pgraph.viewport.dirty = true;
         break;
 
     case_range(32, NV4097_SET_TRANSFORM_PROGRAM, 4)
-        pgraph->vpe.data[pgraph->vpe.load].word[index % 4] = parameter;
+        pgraph.vpe.data[pgraph.vpe.load].word[index % 4] = parameter;
         if (index % 4 == 3) {
-            pgraph->vpe.load += 1;
+            pgraph.vpe.load += 1;
         }
         break;
 
     case NV4097_SET_TRANSFORM_PROGRAM_LOAD:
-        pgraph->vpe.load = parameter;
+        pgraph.vpe.load = parameter;
         break;
 
     case NV4097_SET_TRANSFORM_PROGRAM_START:
-        pgraph->vpe.start = parameter;
+        pgraph.vpe.start = parameter;
         break;
 
     case_range(32, NV4097_SET_TRANSFORM_CONSTANT, 4)
-        pgraph->vpe.constant[pgraph->vpe.constant_load].word[index % 4] = parameter;
+        pgraph.vpe.constant[pgraph.vpe.constant_load].word[index % 4] = parameter;
         if (index % 4 == 3) {
-            pgraph->vpe.constant[pgraph->vpe.constant_load].dirty = true;
-            pgraph->vpe.constant_load += 1;
+            pgraph.vpe.constant[pgraph.vpe.constant_load].dirty = true;
+            pgraph.vpe.constant_load += 1;
         }
         break;
 
     case NV4097_SET_TRANSFORM_CONSTANT_LOAD:
-        pgraph->vpe.constant_load = parameter;
+        pgraph.vpe.constant_load = parameter;
         break;
 
     case NV4097_SET_SHADER_PROGRAM:
-        pgraph->fp_location = (parameter & 0x3) - 1;
-        pgraph->fp_offset = (parameter & ~0x3);
+        pgraph.fp_location = (parameter & 0x3) - 1;
+        pgraph.fp_offset = (parameter & ~0x3);
         break;
 
     case NV4097_SET_SHADER_CONTROL:
-        pgraph->fp_control = parameter;
+        pgraph.fp_control = parameter;
         break;
 
     case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_FORMAT, 4)
-        pgraph->vpe.attr[index].type = parameter & 0xF;
-        pgraph->vpe.attr[index].size = (parameter >> 4) & 0xF;
-        pgraph->vpe.attr[index].stride = (parameter >> 8) & 0xFF;
-        pgraph->vpe.attr[index].frequency = (parameter >> 16);
-        pgraph->vpe.attr[index].dirty = true;
+        pgraph.vpe.attr[index].type = parameter & 0xF;
+        pgraph.vpe.attr[index].size = (parameter >> 4) & 0xF;
+        pgraph.vpe.attr[index].stride = (parameter >> 8) & 0xFF;
+        pgraph.vpe.attr[index].frequency = (parameter >> 16);
+        pgraph.vpe.attr[index].dirty = true;
         break;
 
     case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_OFFSET, 4)
-        pgraph->vpe.attr[index].offset = parameter & 0x7FFFFFFF;
-        pgraph->vpe.attr[index].location = (parameter >> 31);
-        pgraph->vpe.attr[index].dirty = true;
+        pgraph.vpe.attr[index].offset = parameter & 0x7FFFFFFF;
+        pgraph.vpe.attr[index].location = (parameter >> 31);
+        pgraph.vpe.attr[index].dirty = true;
         break;
 
     case NV4097_SET_VERTEX_DATA_BASE_OFFSET:
-        pgraph->vertex_data_base_offset = parameter;
+        pgraph.vertex_data_base_offset = parameter;
         break;
 
     case NV4097_SET_VERTEX_DATA_BASE_INDEX:
-        pgraph->vertex_data_base_index = parameter;
+        pgraph.vertex_data_base_index = parameter;
         break;
 
     case_range(16, NV4097_SET_TEXTURE_OFFSET, 0x20)
-        pgraph->texture[index].offset = parameter;
+        pgraph.texture[index].offset = parameter;
         break;
 
     case_range(16, NV4097_SET_TEXTURE_FORMAT, 0x20)
-        pgraph->texture[index].location = (parameter & 0x3) - 1;
-        pgraph->texture[index].cubemap = (parameter >> 2) & 0x1;
-        pgraph->texture[index].border = (parameter >> 3) & 0x1;
-        pgraph->texture[index].dimension = (parameter >> 4) & 0xF;
-        pgraph->texture[index].format = (parameter >> 8) & 0xFF;
-        pgraph->texture[index].mipmap = (parameter >> 16);
+        pgraph.texture[index].location = (parameter & 0x3) - 1;
+        pgraph.texture[index].cubemap = (parameter >> 2) & 0x1;
+        pgraph.texture[index].border = (parameter >> 3) & 0x1;
+        pgraph.texture[index].dimension = (parameter >> 4) & 0xF;
+        pgraph.texture[index].format = (parameter >> 8) & 0xFF;
+        pgraph.texture[index].mipmap = (parameter >> 16);
         break;
 
     case_range(16, NV4097_SET_TEXTURE_ADDRESS, 0x20)
-        pgraph->texture[index].wrap_s = parameter & 0xF;
-        pgraph->texture[index].anisoBias = (parameter >> 4) & 0xF;
-        pgraph->texture[index].wrap_t = (parameter >> 8) & 0xF;
-        pgraph->texture[index].unsignedRemap = (parameter >> 12) & 0xF;
-        pgraph->texture[index].wrap_r = (parameter >> 16) & 0xF;
-        pgraph->texture[index].gamma = (parameter >> 20) & 0xF;
-        pgraph->texture[index].signedRemap = (parameter >> 24) & 0xF;
-        pgraph->texture[index].zfunc = (parameter >> 28) & 0xF;
+        pgraph.texture[index].wrap_s = parameter & 0xF;
+        pgraph.texture[index].anisoBias = (parameter >> 4) & 0xF;
+        pgraph.texture[index].wrap_t = (parameter >> 8) & 0xF;
+        pgraph.texture[index].unsignedRemap = (parameter >> 12) & 0xF;
+        pgraph.texture[index].wrap_r = (parameter >> 16) & 0xF;
+        pgraph.texture[index].gamma = (parameter >> 20) & 0xF;
+        pgraph.texture[index].signedRemap = (parameter >> 24) & 0xF;
+        pgraph.texture[index].zfunc = (parameter >> 28) & 0xF;
         break;
 
     case_range(16, NV4097_SET_TEXTURE_CONTROL0, 0x20)
-        pgraph->texture[index].alphakill = (parameter >> 2) & 0x3;
-        pgraph->texture[index].max_aniso = (parameter >> 4) & 0x7;
-        pgraph->texture[index].max_lod = (parameter >> 7) & 0xFFF;
-        pgraph->texture[index].min_lod = (parameter >> 19) & 0xFFF;
-        pgraph->texture[index].enable = (parameter >> 31);
+        pgraph.texture[index].alphakill = (parameter >> 2) & 0x3;
+        pgraph.texture[index].max_aniso = (parameter >> 4) & 0x7;
+        pgraph.texture[index].max_lod = (parameter >> 7) & 0xFFF;
+        pgraph.texture[index].min_lod = (parameter >> 19) & 0xFFF;
+        pgraph.texture[index].enable = (parameter >> 31);
         break;
 
     case_range(16, NV4097_SET_TEXTURE_CONTROL1, 0x20)
-        pgraph->texture[index].remap = parameter;
+        pgraph.texture[index].remap = parameter;
         break;
 
     case_range(16, NV4097_SET_TEXTURE_FILTER, 0x20)
-        pgraph->texture[index].filter.value = parameter;
+        pgraph.texture[index].filter.value = parameter;
         break;
 
     case_range(16, NV4097_SET_TEXTURE_IMAGE_RECT, 0x20)
-        pgraph->texture[index].width = parameter >> 16;
-        pgraph->texture[index].height = parameter & 0xFFFF;
+        pgraph.texture[index].width = parameter >> 16;
+        pgraph.texture[index].height = parameter & 0xFFFF;
         break;
 
     case_range(16, NV4097_SET_TEXTURE_BORDER_COLOR, 0x20)
-        pgraph->texture[index].border_color = parameter;
+        pgraph.texture[index].border_color = parameter;
         break;
 
     case_range(16, NV4097_SET_TEXTURE_CONTROL3, 4)
-        pgraph->texture[index].pitch = parameter & 0xFFFFF;
-        pgraph->texture[index].depth = parameter >> 20;
+        pgraph.texture[index].pitch = parameter & 0xFFFFF;
+        pgraph.texture[index].depth = parameter >> 20;
         break;
 
     case NV4097_SET_BEGIN_END:
         if (parameter) {
-            pgraph->Begin(parameter);
+            pgraph.Begin(parameter);
         } else {
-            pgraph->End();
+            pgraph.End();
         }
         break;
 
     case NV4097_DRAW_ARRAYS: {
-        const u32 first = parameter & 0xFFFFFF;
-        const u32 count = (parameter >> 24) + 1;
-        pgraph->LoadVertexAttributes(first, count);
-        pgraph->BindVertexAttributes();
-        pgraph->DrawArrays(first, count);
-        pgraph->UnbindVertexAttributes();
+        const U32 first = parameter & 0xFFFFFF;
+        const U32 count = (parameter >> 24) + 1;
+        pgraph.LoadVertexAttributes(first, count);
+        pgraph.BindVertexAttributes();
+        pgraph.DrawArrays(first, count);
+        pgraph.UnbindVertexAttributes();
         break;
     }
 
     case NV4097_GET_REPORT: {
-        const u32 type = parameter >> 24;
-        const u32 offset = parameter & 0xFFFFFF;
+        const U32 type = parameter >> 24;
+        const U32 offset = parameter & 0xFFFFFF;
 
         // TODO: Get the value for the requested report type
-        u64 timestamp = ptimer_gettime();
-        u32 value = 0;
+        U64 timestamp = ptimer_gettime();
+        U32 value = 0;
 
-        dma_write64(pgraph->dma_report, offset + 0x0, timestamp);
-        dma_write32(pgraph->dma_report, offset + 0x8, value);
-        dma_write32(pgraph->dma_report, offset + 0xC, 0);
+        dma_write64(pgraph.dma_report, offset + 0x0, timestamp);
+        dma_write32(pgraph.dma_report, offset + 0x8, value);
+        dma_write32(pgraph.dma_report, offset + 0xC, 0);
         break;
     }
 
     // SCE DRIVER
     case_range(2, SCE_DRIVER_FLIP, 4)
-        pgraph->Flip();
-        lv1_gpu_context_attribute(0x55555555, 0x102, index, parameter, 0, 0);
+        pgraph.Flip();
+        sys::lv1_gpu_context_attribute(0x55555555, 0x102, index, parameter, 0, 0);
         break;
 
     case_range(2, SCE_DRIVER_QUEUE, 4)
-        glFinish();
+        //glFinish();
         queued_display = parameter;
-        lv1_gpu_context_attribute(0x55555555, 0x103, index, parameter, 0, 0);
+        sys::lv1_gpu_context_attribute(0x55555555, 0x103, index, parameter, 0, 0);
         break;
 
     default:
-        ;//nucleus.log.notice(LOG_GPU, "METHOD: 0x%X; PARAM: 0x%X", offset, parameter);
+        ;//logger.notice(LOG_GPU, "METHOD: 0x%X; PARAM: 0x%X", offset, parameter);
     }
 }
 
-u64 RSX::ptimer_gettime()
+U64 RSX::ptimer_gettime()
 {
 #ifdef NUCLEUS_PLATFORM_WINDOWS
     static struct PerformanceFreqHolder {
-        u64 value;
+        U64 value;
         PerformanceFreqHolder() {
             LARGE_INTEGER freq;
             QueryPerformanceFrequency(&freq);
@@ -472,54 +463,51 @@ u64 RSX::ptimer_gettime()
 
     LARGE_INTEGER cycle;
     QueryPerformanceCounter(&cycle);
-    const u64 sec = cycle.QuadPart / freq.value;
+    const U64 sec = cycle.QuadPart / freq.value;
     return sec * 1000000000 + (cycle.QuadPart % freq.value) * 1000000000 / freq.value;
 #else
-    nucleus.log.error(LOG_CPU, "Could not get the PTIMER value");
+    logger.error(LOG_CPU, "Could not get the PTIMER value");
     return 0;
 #endif
 }
 
-u32 RSX::io_read32(u32 offset)
+U32 RSX::io_read32(U32 offset)
 {
     for (const auto& map : iomaps) {
         if (map.io <= offset && (offset & ~0x3) < map.io + map.size) {
             return nucleus.memory.read32(map.ea + (offset - map.io));
         }
     }
-    nucleus.log.error(LOG_GPU, "Illegal IO 32-bit read");
+    logger.error(LOG_GPU, "Illegal IO 32-bit read");
     return 0;
 }
 
-void RSX::io_write32(u32 offset, u32 value)
+void RSX::io_write32(U32 offset, U32 value)
 {
     for (const auto& map : iomaps) {
         if (map.io <= offset && (offset & ~0x3) <= map.io + map.size) {
             nucleus.memory.write32(map.ea + (offset - map.io), value);
         }
     }
-    nucleus.log.error(LOG_GPU, "Illegal IO 32-bit write");
+    logger.error(LOG_GPU, "Illegal IO 32-bit write");
 }
 
-u32 RSX::get_ea(u32 offset)
+U32 RSX::get_ea(U32 offset)
 {
     for (const auto& map : iomaps) {
         if (map.io <= offset && offset < map.io + map.size) {
             return map.ea + (offset - map.io);
         }
     }
-    nucleus.log.warning(LOG_GPU, "Queried invalid IO address");
+    logger.warning(LOG_GPU, "Queried invalid IO address");
     return 0;
 }
 
-GLuint RSX::get_display()
+/*GLuint RSX::get_display()
 {
-    u32 displayAddr = display[queued_display].offset;
-    if (pgraph) {
-        return pgraph->GetColorTarget(displayAddr);
-    }
-    return 0;
-}
+    U32 displayAddr = display[queued_display].offset;
+    return pgraph.GetColorTarget(displayAddr);
+}*/
 
 void RSX::connect()
 {

@@ -20,6 +20,9 @@ ISOContainerFile::~ISOContainerFile()
 Size ISOContainerFile::read(void* dst, Size size)
 {
     std::lock_guard<std::mutex> lock(parent->mutex);
+
+    logger.warning(LOG_FS, "ISOContainerFile::read is not implemented");
+    return 0;
 }
 
 Size ISOContainerFile::write(const void* src, Size size)
@@ -30,10 +33,14 @@ Size ISOContainerFile::write(const void* src, Size size)
 
 Position ISOContainerFile::seek(Position pos, SeekMode mode)
 {
+    logger.warning(LOG_FS, "ISOContainerFile::seek is not implemented");
+    return 0;
 }
 
 Position ISOContainerFile::tell()
 {
+    logger.warning(LOG_FS, "ISOContainerFile::tell is not implemented");
+    return 0;
 }
 
 }  // namespace fs

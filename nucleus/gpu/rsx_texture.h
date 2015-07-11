@@ -11,62 +11,62 @@ namespace gpu {
 
 struct rsx_texture_t {
     // Offset
-    u32 offset;        // Offset at the specified location
+    U32 offset;        // Offset at the specified location
 
     // Format
-    u8 location;       // Location: Local Memory (0) or Main Memory (1)
-    u8 cubemap;
-    u8 border;
-    u8 dimension;      // Dimension: 1D texture (1), 2D texture (2) or 3D texture (3)
-    u8 format;         // Color format and optional swizzle/normalization flags
-    u8 mipmap;         // Amount of mipmap leves of the texture
+    U8 location;       // Location: Local Memory (0) or Main Memory (1)
+    U8 cubemap;
+    U8 border;
+    U8 dimension;      // Dimension: 1D texture (1), 2D texture (2) or 3D texture (3)
+    U8 format;         // Color format and optional swizzle/normalization flags
+    U8 mipmap;         // Amount of mipmap leves of the texture
 
     // Image rectangle
-    u16 width;
-    u16 height;
+    U16 width;
+    U16 height;
 
     // Border color
-    u32 border_color;
+    U32 border_color;
 
     // Address
-    u8 wrap_r;
-    u8 wrap_s;
-    u8 wrap_t;
-    u8 anisoBias;
-    u8 unsignedRemap;
-    u8 signedRemap;
-    u8 gamma;
-    u8 zfunc;
+    U8 wrap_r;
+    U8 wrap_s;
+    U8 wrap_t;
+    U8 anisoBias;
+    U8 unsignedRemap;
+    U8 signedRemap;
+    U8 gamma;
+    U8 zfunc;
 
     // Filter
     union {
-        u32 value;
+        U32 value;
 
         struct {
-            u32 bias : 13;
-            u32 conv :  3;
-            u32 min  :  8;
-            u32 mag  :  4;
-            u32 as   :  1;
-            u32 rs   :  1;
-            u32 gs   :  1;
-            u32 bs   :  1;
+            U32 bias : 13;
+            U32 conv :  3;
+            U32 min  :  8;
+            U32 mag  :  4;
+            U32 as   :  1;
+            U32 rs   :  1;
+            U32 gs   :  1;
+            U32 bs   :  1;
         };
     } filter;
 
     // Control 0
-    u8 alphakill;
-    u8 max_aniso;
-    u16 max_lod;
-    u16 min_lod;
-    u8 enable;         // Texture is enabled: True (1) or False (0)
+    U8 alphakill;
+    U8 max_aniso;
+    U16 max_lod;
+    U16 min_lod;
+    U8 enable;         // Texture is enabled: True (1) or False (0)
 
     // Control 1
-    u32 remap;
+    U32 remap;
 
     // Control 3
-    u16 depth;
-    u32 pitch;
+    U16 depth;
+    U32 pitch;
 };
 
 // Texture format

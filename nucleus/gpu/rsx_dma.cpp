@@ -5,10 +5,11 @@
 
 #include "rsx_dma.h"
 #include "nucleus/emulator.h"
+#include "nucleus/logger/logger.h"
 
 namespace gpu {
 
-DMAObject dma_address(u32 dma_object)
+DMAObject dma_address(U32 dma_object)
 {
     // NOTE: RAMIN is not emulated, therefore DMA Objects are hardcoded in this function
     switch (dma_object) {
@@ -23,12 +24,12 @@ DMAObject dma_address(u32 dma_object)
     case RSX_CONTEXT_DMA_SEMAPHORE_R:
         return DMAObject{0x40100000, 0x1000, DMAObject::READWRITE}; // TODO: Inconsistency: Gitbrew says R, test says RW
     default:
-        nucleus.log.warning(LOG_GPU, "Unknown DMA object (0x%08X)", dma_object);
+        logger.warning(LOG_GPU, "Unknown DMA object (0x%08X)", dma_object);
         return DMAObject{};
     }
 }
 
-u8 dma_read8(u32 dma_object, u8 offset)
+U8 dma_read8(U32 dma_object, U8 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -36,11 +37,11 @@ u8 dma_read8(u32 dma_object, u8 offset)
         return nucleus.memory.read8(dma.addr + offset);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 8-bit read");
+    logger.warning(LOG_GPU, "Illegal DMA 8-bit read");
     return 0;
 }
 
-u16 dma_read16(u32 dma_object, u16 offset)
+U16 dma_read16(U32 dma_object, U16 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -48,11 +49,11 @@ u16 dma_read16(u32 dma_object, u16 offset)
         return nucleus.memory.read16(dma.addr + offset);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 16-bit read");
+    logger.warning(LOG_GPU, "Illegal DMA 16-bit read");
     return 0;
 }
 
-u32 dma_read32(u32 dma_object, u32 offset)
+U32 dma_read32(U32 dma_object, U32 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -60,11 +61,11 @@ u32 dma_read32(u32 dma_object, u32 offset)
         return nucleus.memory.read32(dma.addr + offset);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 32-bit read");
+    logger.warning(LOG_GPU, "Illegal DMA 32-bit read");
     return 0;
 }
 
-u64 dma_read64(u32 dma_object, u64 offset)
+U64 dma_read64(U32 dma_object, U64 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -72,11 +73,11 @@ u64 dma_read64(u32 dma_object, u64 offset)
         return nucleus.memory.read64(dma.addr + offset);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 64-bit read");
+    logger.warning(LOG_GPU, "Illegal DMA 64-bit read");
     return 0;
 }
 
-void dma_write8(u32 dma_object, u32 offset, u8 value)
+void dma_write8(U32 dma_object, U32 offset, U8 value)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -84,10 +85,10 @@ void dma_write8(u32 dma_object, u32 offset, u8 value)
         return nucleus.memory.write8(dma.addr + offset, value);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 32-bit write");
+    logger.warning(LOG_GPU, "Illegal DMA 32-bit write");
 }
 
-void dma_write16(u32 dma_object, u32 offset, u16 value)
+void dma_write16(U32 dma_object, U32 offset, U16 value)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -95,10 +96,10 @@ void dma_write16(u32 dma_object, u32 offset, u16 value)
         return nucleus.memory.write16(dma.addr + offset, value);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 32-bit write");
+    logger.warning(LOG_GPU, "Illegal DMA 32-bit write");
 }
 
-void dma_write32(u32 dma_object, u32 offset, u32 value)
+void dma_write32(U32 dma_object, U32 offset, U32 value)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -106,10 +107,10 @@ void dma_write32(u32 dma_object, u32 offset, u32 value)
         return nucleus.memory.write32(dma.addr + offset, value);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 32-bit write");
+    logger.warning(LOG_GPU, "Illegal DMA 32-bit write");
 }
 
-void dma_write64(u32 dma_object, u32 offset, u64 value)
+void dma_write64(U32 dma_object, U32 offset, U64 value)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -117,7 +118,7 @@ void dma_write64(u32 dma_object, u32 offset, u64 value)
         return nucleus.memory.write64(dma.addr + offset, value);
     }
 
-    nucleus.log.warning(LOG_GPU, "Illegal DMA 64-bit write");
+    logger.warning(LOG_GPU, "Illegal DMA 64-bit write");
 }
 
 }  // namespace gpu

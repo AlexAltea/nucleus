@@ -15,10 +15,9 @@ This document describes the coding-style rules that apply on this repository.
 ## Coding
 
 * High-level emulated primitive types should be defined through the following fixed-sized types:
-    * `SI8`, `SI16`, `SI32`, `SI64` for signed integer types.
-    * `UI8`, `UI16`, `SI32`, `SI64` for unsigned integer types.
-    * `I8`, `I16`, `I32`, `I64`, `I128` for integer types.
-    * `F16`, `F32`, `F64` for floating-point types.
+    * `S8`, `S16`, `S32`, `S64` for signed integer types.
+    * `U8`, `U16`, `U32`, `U64` for unsigned integer types.
+    * `F32`, `F64` for floating-point types.
 * High-level emulated primitive types bigger than 8-bit byte should be wrapped with `LE` or `BE` depending on the emulated architecture:
     * `LE<T>` is a little-endian representation of the type `T`.
     * `BE<T>` is a big-endian representation of the type `T`.
