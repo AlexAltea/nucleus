@@ -49,7 +49,7 @@ void Language::open(ConfigLanguage language)
     DWORD langSize = SizeofResource(GetModuleHandle(NULL), hRes);
     LPVOID langData = LockResource(hGlob);
 #else
-    nucleus.log.error(LOG_UI, "Languages not supported in your platform");
+    logger.error(LOG_UI, "Languages not supported in your platform");
     unsigned long langSize = 0;
     char* langData = nullptr;
 #endif

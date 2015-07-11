@@ -14,9 +14,6 @@
     <ClCompile Include="memory\segment.cpp">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="syscalls\lv2.cpp">
-      <Filter>syscalls</Filter>
-    </ClCompile>
     <ClCompile Include="loader\keys.cpp">
       <Filter>loader</Filter>
     </ClCompile>
@@ -26,87 +23,9 @@
     <ClCompile Include="..\externals\aes.cpp">
       <Filter>externals</Filter>
     </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_prx.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_tty.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_process.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_mutex.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_memory.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_lwmutex.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_cond.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_time.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_dbg.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_fs.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="filesystem\virtual_filesystem.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="filesystem\filesystem.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_ss.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_mmapper.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_rsx.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_semaphore.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_ppu_thread.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_timer.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_event.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
     <ClCompile Include="config.cpp" />
     <ClCompile Include="..\externals\mongoose\mongoose.c">
       <Filter>externals\mongoose</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv1\lv1_gpu.cpp">
-      <Filter>syscalls\lv1</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\module.cpp">
-      <Filter>syscalls</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\modules\libsysmodule.cpp">
-      <Filter>syscalls\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\modules\libsysutil_avconf_ext.cpp">
-      <Filter>syscalls\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_hid.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_gamepad.cpp">
-      <Filter>syscalls\lv2</Filter>
-    </ClCompile>
-    <ClCompile Include="syscalls\lv2\sys_config.cpp">
-      <Filter>syscalls\lv2</Filter>
     </ClCompile>
     <ClCompile Include="format.cpp" />
     <ClCompile Include="nucleus.cpp" />
@@ -116,7 +35,6 @@
     <ClCompile Include="..\externals\stb\stb_truetype.c">
       <Filter>externals\stb</Filter>
     </ClCompile>
-    <ClCompile Include="opengl.cpp" />
     <ClCompile Include="loader\psf.cpp">
       <Filter>loader</Filter>
     </ClCompile>
@@ -136,15 +54,6 @@
     <ClInclude Include="memory\segment.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_prx.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_process.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2.h">
-      <Filter>syscalls</Filter>
-    </ClInclude>
     <ClInclude Include="loader\keys.h">
       <Filter>loader</Filter>
     </ClInclude>
@@ -154,99 +63,11 @@
     <ClInclude Include="..\externals\sha1.h">
       <Filter>externals</Filter>
     </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_tty.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\syscall.h">
-      <Filter>syscalls</Filter>
-    </ClInclude>
-    <ClInclude Include="logging.h" />
-    <ClInclude Include="syscalls\lv2\sys_mutex.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_memory.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_lwmutex.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_cond.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_time.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_dbg.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_fs.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="filesystem\filesystem.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="filesystem\virtual_filesystem.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\callback.h">
-      <Filter>syscalls</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_ss.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_mmapper.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_rsx.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_semaphore.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_ppu_thread.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_timer.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_event.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
     <ClInclude Include="config.h" />
     <ClInclude Include="..\externals\mongoose\mongoose.h">
       <Filter>externals\mongoose</Filter>
     </ClInclude>
-    <ClInclude Include="syscalls\object.h">
-      <Filter>syscalls</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv1\lv1_gpu.h">
-      <Filter>syscalls\lv1</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\module.h">
-      <Filter>syscalls</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\modules\libsysmodule.h">
-      <Filter>syscalls\modules</Filter>
-    </ClInclude>
     <ClInclude Include="format.h" />
-    <ClInclude Include="syscalls\lv2\sys_synchronization.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv1.h">
-      <Filter>syscalls</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\modules\libsysutil_avconf_ext.h">
-      <Filter>syscalls\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_hid.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_gamepad.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
-    <ClInclude Include="syscalls\lv2\sys_config.h">
-      <Filter>syscalls\lv2</Filter>
-    </ClInclude>
     <ClInclude Include="nucleus.h" />
     <ClInclude Include="..\externals\stb\stb_image.h">
       <Filter>externals\stb</Filter>
@@ -254,11 +75,11 @@
     <ClInclude Include="..\externals\stb\stb_truetype.h">
       <Filter>externals\stb</Filter>
     </ClInclude>
-    <ClInclude Include="opengl.h" />
-    <ClInclude Include="opengl_tables.h" />
     <ClInclude Include="loader\psf.h">
       <Filter>loader</Filter>
     </ClInclude>
+    <ClInclude Include="endianness.h" />
+    <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">
@@ -267,26 +88,11 @@
     <Filter Include="loader">
       <UniqueIdentifier>{479b5b01-f2da-42d5-a4e5-0fda62fbb44f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="filesystem">
-      <UniqueIdentifier>{03497551-abec-49d6-a70c-7fca3e33223d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="syscalls">
-      <UniqueIdentifier>{a8b82903-091e-4314-9b63-b4403ee2fb2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="syscalls\lv2">
-      <UniqueIdentifier>{c4dacbb1-5a4c-4b3b-863b-3081f65cf594}</UniqueIdentifier>
-    </Filter>
     <Filter Include="externals">
       <UniqueIdentifier>{e68c46f9-ed48-4999-80bd-da820720b686}</UniqueIdentifier>
     </Filter>
     <Filter Include="externals\mongoose">
       <UniqueIdentifier>{ba021b58-b3bb-40c5-be21-d6333cb88b4d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="syscalls\lv1">
-      <UniqueIdentifier>{05d8309f-e821-40da-b226-1363ec5c64d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="syscalls\modules">
-      <UniqueIdentifier>{b973ebaf-0e09-48e8-b507-02288f5c29e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="externals\stb">
       <UniqueIdentifier>{3437dee8-85fc-483f-a84a-64fea19d469d}</UniqueIdentifier>

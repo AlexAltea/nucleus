@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lv1">
+      <UniqueIdentifier>{56db7a5b-9a75-440e-8037-ccbb4d0d09f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lv2">
+      <UniqueIdentifier>{a81c3811-93b4-4c90-ae88-b53e55a5c60a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules">
+      <UniqueIdentifier>{d0528db7-6e08-4841-b8d2-2be796d11caa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lv2.cpp" />
+    <ClCompile Include="module.cpp" />
+    <ClCompile Include="lv2\sys_dbg.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_event.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_fs.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_gamepad.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_hid.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_lwmutex.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_memory.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_mmapper.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_mutex.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_ppu_thread.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_process.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_prx.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_rsx.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_semaphore.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_ss.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_time.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_timer.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_tty.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_cond.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="lv2\sys_config.cpp">
+      <Filter>lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\libsysutil_avconf_ext.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\libsysmodule.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="lv1\lv1_gpu.cpp">
+      <Filter>lv1</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="system.h" />
+    <ClInclude Include="lv2.h" />
+    <ClInclude Include="module.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="syscall.h" />
+    <ClInclude Include="callback.h" />
+    <ClInclude Include="lv1.h" />
+    <ClInclude Include="lv2\sys_dbg.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_event.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_fs.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_gamepad.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_hid.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_lwmutex.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_memory.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_mmapper.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_mutex.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_ppu_thread.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_process.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_prx.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_rsx.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_semaphore.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_ss.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_synchronization.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_time.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_timer.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_tty.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_cond.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="lv2\sys_config.h">
+      <Filter>lv2</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\libsysutil_avconf_ext.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\libsysmodule.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="lv1\lv1_gpu.h">
+      <Filter>lv1</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
