@@ -9,7 +9,7 @@
 
 namespace sys {
 
-S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 arg, U64 unk0, S32 prio, U32 stacksize, U64 flags, U8* threadname)
+S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 arg, U64 unk0, S32 prio, U32 stacksize, U64 flags, S8* threadname)
 {
     U32 entry = attr->entry;
     U32 tls_addr = attr->tls_addr;

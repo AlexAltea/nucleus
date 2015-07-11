@@ -6,8 +6,8 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/syscalls/lv2/sys_process.h"
-#include "nucleus/syscalls/lv2/sys_prx.h"
+#include "nucleus/system/lv2/sys_process.h"
+#include "nucleus/system/lv2/sys_prx.h"
 
 #include <string>
 #include <vector>
@@ -81,111 +81,111 @@ enum {
 // SELF structs
 struct SceHeader
 {
-    be_t<u32> magic;
-    be_t<u32> hver;
-    be_t<u16> flags;
-    be_t<u16> type;
-    be_t<u32> meta;
-    be_t<u64> hsize;
-    be_t<u64> esize;
+    BE<U32> magic;
+    BE<U32> hver;
+    BE<U16> flags;
+    BE<U16> type;
+    BE<U32> meta;
+    BE<U64> hsize;
+    BE<U64> esize;
 };
 
 struct SelfHeader
 {
-    be_t<u64> htype;
-    be_t<u64> appinfooff;
-    be_t<u64> elfoff;
-    be_t<u64> phdroff;
-    be_t<u64> shdroff;
-    be_t<u64> secinfoff;
-    be_t<u64> sceveroff;
-    be_t<u64> controloff;
-    be_t<u64> controlsize;
-    be_t<u64> pad;
+    BE<U64> htype;
+    BE<U64> appinfooff;
+    BE<U64> elfoff;
+    BE<U64> phdroff;
+    BE<U64> shdroff;
+    BE<U64> secinfoff;
+    BE<U64> sceveroff;
+    BE<U64> controloff;
+    BE<U64> controlsize;
+    BE<U64> pad;
 };
 
 struct AppInfo
 {
-    be_t<u64> authid;
-    be_t<u32> vendor_id;
-    be_t<u32> self_type;
-    be_t<u64> version;
-    be_t<u64> padding;
+    BE<U64> authid;
+    BE<U32> vendor_id;
+    BE<U32> self_type;
+    BE<U64> version;
+    BE<U64> padding;
 };
 
 struct MetadataInfo
 {
-    u8 key[0x10];
-    u8 key_pad[0x10];
-    u8 iv[0x10];
-    u8 iv_pad[0x10];
+    U8 key[0x10];
+    U8 key_pad[0x10];
+    U8 iv[0x10];
+    U8 iv_pad[0x10];
 };
 
 struct MetadataHeader
 {
-    be_t<u64> signature_input_length;
-    be_t<u32> unknown1;
-    be_t<u32> section_count;
-    be_t<u32> key_count;
-    be_t<u32> opt_header_size;
-    be_t<u32> unknown2;
-    be_t<u32> unknown3;
+    BE<U64> signature_input_length;
+    BE<U32> unknown1;
+    BE<U32> section_count;
+    BE<U32> key_count;
+    BE<U32> opt_header_size;
+    BE<U32> unknown2;
+    BE<U32> unknown3;
 };
 
 struct MetadataSectionHeader
 {
-    be_t<u64> data_offset;
-    be_t<u64> data_size;
-    be_t<u32> type;
-    be_t<u32> program_idx;
-    be_t<u32> hashed;
-    be_t<u32> sha1_idx;
-    be_t<u32> encrypted;
-    be_t<u32> key_idx;
-    be_t<u32> iv_idx;
-    be_t<u32> compressed;
+    BE<U64> data_offset;
+    BE<U64> data_size;
+    BE<U32> type;
+    BE<U32> program_idx;
+    BE<U32> hashed;
+    BE<U32> sha1_idx;
+    BE<U32> encrypted;
+    BE<U32> key_idx;
+    BE<U32> iv_idx;
+    BE<U32> compressed;
 };
 
 struct ControlInfo
 {
-    be_t<u32> type;
-    be_t<u32> size;
-    be_t<u64> next;
+    BE<U32> type;
+    BE<U32> size;
+    BE<U64> next;
 
     union {
         struct {  // Type 1 (0x30 bytes)
-            be_t<u32> ctrl_flag1;
-            be_t<u32> unknown1;
-            be_t<u32> unknown2;
-            be_t<u32> unknown3;
-            be_t<u32> unknown4;
-            be_t<u32> unknown5;
-            be_t<u32> unknown6;
-            be_t<u32> unknown7;
+            BE<U32> ctrl_flag1;
+            BE<U32> unknown1;
+            BE<U32> unknown2;
+            BE<U32> unknown3;
+            BE<U32> unknown4;
+            BE<U32> unknown5;
+            BE<U32> unknown6;
+            BE<U32> unknown7;
         } control_flags;
 
         struct {  // Type 2 (0x30 bytes)
-            u8 digest[20];
-            u64 unknown;
+            U8 digest[20];
+            U64 unknown;
         } file_digest40;
 
         struct {  // Type 2 (0x40 bytes)
-          u8 digest1[20];
-          u8 digest2[20];
-          be_t<u64> unknown;
+          U8 digest1[20];
+          U8 digest2[20];
+          BE<U64> unknown;
         } file_digest30;
 
         struct {  // Type 3 (0x90 bytes)
-            be_t<u32> magic;
-            be_t<u32> unknown1;
-            be_t<u32> license;
-            be_t<u32> type;
-            u8 content_id[48];
-            u8 digest[16];
-            u8 invdigest[16];
-            u8 xordigest[16];
-            be_t<u64> unknown2;
-            be_t<u64> unknown3;
+            BE<U32> magic;
+            BE<U32> unknown1;
+            BE<U32> license;
+            BE<U32> type;
+            U8 content_id[48];
+            U8 digest[16];
+            U8 invdigest[16];
+            U8 xordigest[16];
+            BE<U64> unknown2;
+            BE<U64> unknown3;
         } npdrm;
     };
 };
@@ -193,51 +193,51 @@ struct ControlInfo
 // ELF64 structs
 struct Elf64_Ehdr
 {
-    be_t<u32> magic;
-    be_t<u8>  elf_class;
-    be_t<u8>  data;
-    be_t<u8>  curver;
-    be_t<u8>  os_abi;
-    be_t<u64> abi_ver;
-    be_t<u16> type;
-    be_t<u16> machine;
-    be_t<u32> version;
-    be_t<u64> entry;
-    be_t<u64> phoff;
-    be_t<u64> shoff;
-    be_t<u32> flags;
-    be_t<u16> ehsize;
-    be_t<u16> phentsize;
-    be_t<u16> phnum;
-    be_t<u16> shentsize;
-    be_t<u16> shnum;
-    be_t<u16> shstrndx;
+    BE<U32> magic;
+    BE<U8>  elf_class;
+    BE<U8>  data;
+    BE<U8>  curver;
+    BE<U8>  os_abi;
+    BE<U64> abi_ver;
+    BE<U16> type;
+    BE<U16> machine;
+    BE<U32> version;
+    BE<U64> entry;
+    BE<U64> phoff;
+    BE<U64> shoff;
+    BE<U32> flags;
+    BE<U16> ehsize;
+    BE<U16> phentsize;
+    BE<U16> phnum;
+    BE<U16> shentsize;
+    BE<U16> shnum;
+    BE<U16> shstrndx;
 };
 
 struct Elf64_Phdr
 {
-    be_t<u32> type;
-    be_t<u32> flags;
-    be_t<u64> offset;
-    be_t<u64> vaddr;
-    be_t<u64> paddr;
-    be_t<u64> filesz;
-    be_t<u64> memsz;
-    be_t<u64> align;
+    BE<U32> type;
+    BE<U32> flags;
+    BE<U64> offset;
+    BE<U64> vaddr;
+    BE<U64> paddr;
+    BE<U64> filesz;
+    BE<U64> memsz;
+    BE<U64> align;
 };
 
 struct Elf64_Shdr
 {
-    be_t<u32> name;
-    be_t<u32> type;
-    be_t<u64> flags;
-    be_t<u64> addr;
-    be_t<u64> offset;
-    be_t<u64> size;
-    be_t<u32> link;
-    be_t<u32> info;
-    be_t<u64> addralign;
-    be_t<u64> entsize;
+    BE<U32> name;
+    BE<U32> type;
+    BE<U64> flags;
+    BE<U64> addr;
+    BE<U64> offset;
+    BE<U64> size;
+    BE<U32> link;
+    BE<U32> info;
+    BE<U64> addralign;
+    BE<U64> entsize;
 };
 
 class SELFLoader
@@ -250,15 +250,15 @@ class SELFLoader
 
     // Returns the size of the ELF file after the SELF decryption/decompression
     // by using accessing the SELF's EHDR and decrypted Metadata headers.
-    u32 getDecryptedElfSize();
+    U32 getDecryptedElfSize();
 
 public:
     bool open(const std::string& path);
-    bool load_elf(sys_process_t& proc);
-    bool load_prx(sys_prx_t& prx);
+    bool load_elf(sys::sys_process_t& proc);
+    bool load_prx(sys::sys_prx_t& prx);
     bool decrypt();
     void close();
 
-    u16 getMachine();
-    u64 getEntry();
+    U16 getMachine();
+    U64 getEntry();
 };

@@ -14,8 +14,7 @@
 namespace sys {
 
 // Return codes
-enum
-{
+enum {
     CELL_PRX_ERROR_ERROR                       = 0x80011001,  // Error state
     CELL_PRX_ERROR_ILLEGAL_PERM                = 0x800110d1,  // No permission to execute API
     CELL_PRX_ERROR_UNKNOWN_MODULE              = 0x8001112e,  // Specified PRX could not be found
@@ -46,7 +45,7 @@ struct sys_prx_module_info_t
 {
     BE<U16> attributes;
     BE<U16> version;
-    U8 name[28];
+    S8 name[28];
     BE<U32> toc;
     BE<U32> exports_start;
     BE<U32> exports_end;
@@ -146,7 +145,7 @@ struct sys_prx_t
 
 // SysCalls
 S32 sys_prx_0x1CE();
-S32 sys_prx_load_module(const U8* path, U64 flags, sys_prx_load_module_option_t* pOpt);
+S32 sys_prx_load_module(const S8* path, U64 flags, sys_prx_load_module_option_t* pOpt);
 S32 sys_prx_load_module_by_fd();
 S32 sys_prx_load_module_list(S32 count, BE<U64>* pathList, U64 flags, void* pOpt, BE<U32>* idList);
 S32 sys_prx_load_module_on_memcontainer();

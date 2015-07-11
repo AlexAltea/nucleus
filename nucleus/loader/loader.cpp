@@ -4,18 +4,18 @@
  */
 
 #include "loader.h"
+#include "nucleus/emulator.h"
 #include "nucleus/filesystem/filesystem.h"
 
 Filetype detectFiletype(const std::string& filepath)
 {
-    FileSystem* fs = getFilesystem(filepath.c_str());
-    File* file = fs->openFile(filepath, Read);
-    be_t<u32> magic;
+    fs::File* file = nucleus.lv2.vfs.openFile(filepath, fs::Read);
+    BE<U32> magic;
 
-    if (!fs->isOpen(file) || !fs->readFile(file, &magic, sizeof(magic))) {
+    if (!file || !file->read(&magic, sizeof(magic))) {
         return FILETYPE_ERROR;
     }
-    fs->closeFile(file);
+    delete file;
 
     switch (magic.ToBE()) {
     case 0x464C457F:

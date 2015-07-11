@@ -250,7 +250,7 @@ void Interpreter::eqvx(Instruction code)
 
 void Interpreter::extsbx(Instruction code)
 {
-    state.gpr[code.ra] = (S64)(U8)state.gpr[code.rs];
+    state.gpr[code.ra] = (S64)(S8)state.gpr[code.rs];
     if (code.rc) { state.cr.updateField(0, (S64)state.gpr[code.ra], (S64)0); }
 }
 

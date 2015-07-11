@@ -4,9 +4,10 @@
  */
 
 #include "keys.h"
-#include "nucleus/emulator.h"
 #include "nucleus/format.h"
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/utils.h"
+#include "nucleus/logger/logger.h"
+
 #include "externals/rapidxml/rapidxml.hpp"
 
 #include <map>
@@ -18,7 +19,7 @@
 
 #define KEYVAULT_FILE "keys.xml"
 
-static const std::map<u32, const char*> keyType = {
+static const std::map<U32, const char*> keyType = {
     { KEY_LV0,   "LV0"   },
     { KEY_LV1,   "LV1"   },
     { KEY_LV2,   "LV2"   },
@@ -36,14 +37,14 @@ static struct KeyvaultHandler {
 
     KeyvaultHandler() {
         // Access the Keyvault file and get its size
-        std::string path = getEmulatorPath() + KEYVAULT_FILE;
+        std::string path = fs::getEmulatorPath() + KEYVAULT_FILE;
         std::FILE* file = fopen(path.c_str(), "rb");
         fseeko64(file, 0, SEEK_END);
-        const u64 kvSize = ftello64(file);
+        const U64 kvSize = ftello64(file);
 
         // Copy and parse its contents
         buffer = new char[kvSize+1]();
-        fseeko64(file, 0, SeekSet);
+        fseeko64(file, 0, SEEK_SET);
         fread(buffer, 1, kvSize, file);
         fclose(file);
         doc.parse<0>(buffer);
@@ -53,7 +54,7 @@ static struct KeyvaultHandler {
     }
 } keyvault;
 
-const SelfKey getSelfKey(u32 type, u64 version, u16 revision)
+const SelfKey getSelfKey(U32 type, U64 version, U16 revision)
 {
     // Locate the SELF keys node
     auto nodeKeyvault = keyvault.doc.first_node();
@@ -69,8 +70,8 @@ const SelfKey getSelfKey(u32 type, u64 version, u16 revision)
         }
 
         // Check version/revision IDs
-        const u64 versionValue = hexToNumber(node->first_attribute("version")->value());
-        const u16 revisionValue = hexToNumber(node->first_attribute("revision")->value());
+        const U64 versionValue = hexToNumber(node->first_attribute("version")->value());
+        const U16 revisionValue = hexToNumber(node->first_attribute("revision")->value());
         if (versionValue != version && (type == KEY_LV1 || type == KEY_LV2 || type == KEY_UNK7 || type == KEY_ISO)) {
             continue;
         }
@@ -90,6 +91,6 @@ const SelfKey getSelfKey(u32 type, u64 version, u16 revision)
         return key;
     }
 
-    nucleus.log.error(LOG_LOADER, "Key not found in keyvault!");
+    logger.error(LOG_LOADER, "Key not found in keyvault!");
     return SelfKey{};
 }

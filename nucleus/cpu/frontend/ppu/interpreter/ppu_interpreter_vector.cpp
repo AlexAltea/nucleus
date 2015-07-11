@@ -1678,8 +1678,9 @@ void Interpreter::vsubsbs(Instruction code)
             state.vr[code.vd].s8[b] = INT8_MAX;
             state.vscr.SAT = 1;
         }
-        else
-            state.vr[code.vd].s8[b] = (U8)result;
+        else {
+            state.vr[code.vd].s8[b] = (S8)result;
+        }
     }
 }
 

@@ -8,31 +8,30 @@
 #include "nucleus/format.h"
 #include "nucleus/filesystem/filesystem.h"
 #include "nucleus/loader/loader.h"
+#include "nucleus/logger/logger.h"
 
 bool PSFLoader::open(const std::string& path)
 {
-    // Load file
-    FileSystem* fs = getFilesystem(path.c_str());
-    File* file = fs->openFile(path, Read);
-
-    if (!fs->isOpen(file)) {
-        return false;
-    }
-
-    const u64 psfSize = fs->getFileSize(path);
-    psf.resize(psfSize);
-    fs->seekFile(file, 0, SeekSet);
-    fs->readFile(file, &psf[0], psfSize);
-    fs->closeFile(file);
-
     if (detectFiletype(path) != FILETYPE_PSF) {
         return false;
     }
 
+    // Load file
+    fs::File* file = nucleus.lv2.vfs.openFile(path, fs::Read);
+    if (!file) {
+        return false;
+    }
+
+    const U64 psfSize = file->attributes().size;
+    psf.resize(psfSize);
+    file->seek(0, fs::SeekSet);
+    file->read(&psf[0], psfSize);
+    delete file;
+
     // Parse file contents
     const auto& header = (PSFHeader&)psf[0];
-    for (u32 i = 0; i < header.entries; i++) {
-        const u32 offset = sizeof(PSFHeader) + i * sizeof(PSFEntry);
+    for (U32 i = 0; i < header.entries; i++) {
+        const U32 offset = sizeof(PSFHeader) + i * sizeof(PSFEntry);
         const auto& entry = (PSFEntry&)psf[offset];
 
         std::string key = &psf[header.table_keys + entry.offset_key];
@@ -41,7 +40,7 @@ bool PSFLoader::open(const std::string& path)
             map_strings[key] = &psf[header.table_data + entry.offset_data];
         }
         if (entry.type == PSFEntry::Type::INTEGER) {
-            map_integers[key] = (u32&)psf[header.table_data + entry.offset_data];
+            map_integers[key] = (U32&)psf[header.table_data + entry.offset_data];
         }
     }
     return true;
@@ -49,10 +48,8 @@ bool PSFLoader::open(const std::string& path)
 
 bool PSFLoader::save(const std::string& path)
 {
-    FileSystem* fs = getFilesystem(path.c_str());
-    File* file = fs->openFile(path, Write);
-
-    if (!fs->isOpen(file)) {
+    fs::File* file = nucleus.lv2.vfs.openFile(path, fs::Write);
+    if (!file) {
         return false;
     }
 
@@ -63,9 +60,9 @@ bool PSFLoader::save(const std::string& path)
     header.table_data = 0; // TODO
     header.version = 0x00000101;
 
-    u32 offsetKey = 0;
-    u32 offsetData = 0;
-    fs->seekFile(file, sizeof(PSFHeader), SeekSet);
+    U32 offsetKey = 0;
+    U32 offsetData = 0;
+    file->seek(sizeof(PSFHeader), fs::SeekSet);
     for (auto& item : map_strings) {
         auto& key = item.first;
         auto& string = item.second;
@@ -91,9 +88,9 @@ bool PSFLoader::save(const std::string& path)
         offsetKey += key.size() + 1;
     }
 
-    fs->seekFile(file, 0, SeekSet);
-    fs->writeFile(file, &header, sizeof(PSFHeader));
-    fs->closeFile(file);
+    file->seek(0, fs::SeekSet);
+    file->write(&header, sizeof(PSFHeader));
+    delete file;
 }
 
 std::string PSFLoader::get_string(const std::string& key)
@@ -104,6 +101,6 @@ std::string PSFLoader::get_string(const std::string& key)
     if (map_integers.find(key) != map_integers.end()) {
         return format("%u", map_integers.at(key));
     }
-    nucleus.log.error(LOG_LOADER, "PSFLoader: Entry not found (%s)", key.c_str());
+    logger.error(LOG_LOADER, "PSFLoader: Entry not found (%s)", key.c_str());
     return "";
 }

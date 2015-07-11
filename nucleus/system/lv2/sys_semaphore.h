@@ -19,7 +19,7 @@ struct sys_semaphore_attribute_t
     BE<U64> ipc_key;
     BE<S32> flags;
     BE<U32> pad;
-    U8 name[8];
+    S8 name[8];
 };
 
 // Auxiliary classes

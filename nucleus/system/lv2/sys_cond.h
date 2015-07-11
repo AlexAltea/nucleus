@@ -18,7 +18,7 @@ struct sys_cond_attribute_t
     BE<U32> pshared;
     BE<U64> ipc_key;
     BE<S32> flags;
-    U8 name[8];
+    S8 name[8];
 };
 
 // Auxiliary classes
