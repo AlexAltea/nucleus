@@ -7,8 +7,6 @@
 
 #include "nucleus/common.h"
 
-namespace graphics {
-
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
 #include <GL/gl.h>
@@ -22,6 +20,8 @@ namespace graphics {
 #include "opengl.inc"
 #undef EXTENSION
 #undef DECLARE_EXTENSION
+
+namespace graphics {
 
 // Load extensions
 bool initializeOpenGL();

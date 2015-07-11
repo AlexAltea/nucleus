@@ -6,7 +6,7 @@
 #include "window_opengl.h"
 
 // OpenGL dependencies
-#include "nucleus/opengl.h"
+#include "nucleus/graphics/backend/opengl/opengl.h"
 
 static const PIXELFORMATDESCRIPTOR pfd = {
     sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
@@ -55,7 +55,7 @@ WindowOpenGL::WindowOpenGL(const std::string& title, int width, int height) : Wi
      */
     HGLRC dummyRc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, dummyRc);
-    if (!openglInit()) {
+    if (!graphics::initializeOpenGL()) {
         MessageBox(m_hwnd, "Could not initialize all OpenGL extensions.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }

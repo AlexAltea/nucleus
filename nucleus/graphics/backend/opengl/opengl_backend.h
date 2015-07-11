@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
 
 namespace graphics {
@@ -14,8 +15,8 @@ public:
     OpenGLBackend();
     ~OpenGLBackend();
 
-    // Queue management
-    virtual void QueueSubmit() = 0;
+    // Command queue management
+    virtual void CommandQueueSubmit() override;
 
     // Command buffer management
     virtual void CreateCommandBuffer() override;

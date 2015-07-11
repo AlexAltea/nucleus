@@ -3,10 +3,9 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#pragma once
-
 #include "opengl.h"
 #include "nucleus/common.h"
+#include "nucleus/logger/logger.h"
 
 namespace graphics {
 
