@@ -17,8 +17,8 @@ class Interpreter;
 
 class Thread : public CellThread
 {
-    u32 m_stackAddr;
-    u32 m_stackPointer;
+    U32 m_stackAddr;
+    U32 m_stackPointer;
 
     // Translators
     Interpreter* interpreter = nullptr;
@@ -26,7 +26,7 @@ class Thread : public CellThread
 public:
     State* state;
 
-    Thread(u32 entry);
+    Thread(U32 entry);
     ~Thread();
 
     virtual void start() override;

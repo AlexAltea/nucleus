@@ -11,34 +11,34 @@
 
 struct MemoryBlock
 {
-    u32 addr;
-    u32 size;
+    U32 addr;
+    U32 size;
     void* realaddr;
 
-    MemoryBlock(u32 block_addr, u32 block_size);
+    MemoryBlock(U32 block_addr, U32 block_size);
 };
 
 class MemorySegment
 {
-    u32 m_start;
-    u32 m_size;
+    U32 m_start;
+    U32 m_size;
     std::mutex m_mutex;
     std::vector<MemoryBlock> m_allocated;
 
 public:
     MemorySegment();
-    MemorySegment(u32 start, u32 size);
+    MemorySegment(U32 start, U32 size);
     ~MemorySegment();
 
-    void init(u32 start, u32 size);
+    void init(U32 start, U32 size);
     void close();
 
-    u32 alloc(u32 size, u32 align=1);
-    u32 allocFixed(u32 addr, u32 size);
-    bool free(u32 addr);
+    U32 alloc(U32 size, U32 align=1);
+    U32 allocFixed(U32 addr, U32 size);
+    bool free(U32 addr);
 
-    bool isValid(u32 addr);
-    u32 getTotalMemory() const;
-    u32 getUsedMemory() const;
-    u32 getBaseAddr() const;
+    bool isValid(U32 addr);
+    U32 getTotalMemory() const;
+    U32 getUsedMemory() const;
+    U32 getBaseAddr() const;
 };

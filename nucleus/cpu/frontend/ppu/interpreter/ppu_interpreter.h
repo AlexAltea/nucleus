@@ -17,7 +17,7 @@ class Interpreter
 public:
     State state;
 
-    Interpreter(u32 entry, u32 stack);
+    Interpreter(U32 entry, U32 stack);
 
     // Decode and execute one instruction
     void step();
@@ -25,10 +25,10 @@ public:
     /**
      * Auxiliary functions
      */
-    static inline bool isCarry(u64 a, u64 b) {
+    static inline bool isCarry(U64 a, U64 b) {
         return (a + b) < a;
     }
-    static inline bool isCarry(u64 a, u64 b, u64 c) {
+    static inline bool isCarry(U64 a, U64 b, U64 c) {
         return isCarry(a, b) || isCarry(a + b, c);
     }
 

@@ -31,33 +31,33 @@ public:
     void init();
     void close();
 
-    u32 alloc(u32 size, u32 align=1);
-    void free(u32 addr);
-    bool check(u32 addr);
+    U32 alloc(U32 size, U32 align=1);
+    void free(U32 addr);
+    bool check(U32 addr);
 
-    u8 read8(u32 addr);
-    u16 read16(u32 addr);
-    u32 read32(u32 addr);
-    u64 read64(u32 addr);
-    u128 read128(u32 addr);
-    void readLeft(u8* dst, u32 src, u32 size);
-    void readRight(u8* dst, u32 src, u32 size);
+    U8 read8(U32 addr);
+    U16 read16(U32 addr);
+    U32 read32(U32 addr);
+    U64 read64(U32 addr);
+    U128 read128(U32 addr);
+    void readLeft(U8* dst, U32 src, U32 size);
+    void readRight(U8* dst, U32 src, U32 size);
 
-    void write8(u32 addr, u8 value);
-    void write16(u32 addr, u16 value);
-    void write32(u32 addr, u32 value);
-    void write64(u32 addr, u64 value);
-    void write128(u32 addr, u128 value);
-    void writeLeft(u32 dst, u8* src, u32 size);
-    void writeRight(u32 dst, u8* src, u32 size);
+    void write8(U32 addr, U8 value);
+    void write16(U32 addr, U16 value);
+    void write32(U32 addr, U32 value);
+    void write64(U32 addr, U64 value);
+    void write128(U32 addr, U128 value);
+    void writeLeft(U32 dst, U8* src, U32 size);
+    void writeRight(U32 dst, U8* src, U32 size);
 
     void* getBaseAddr() { return m_base; }
 
     MemorySegment& operator()(size_t id) { return m_segments[id]; }
 
     template <typename T>
-    T& ref(u32 addr) { return *(T*)((u64)m_base + addr); }
+    T& ref(U32 addr) { return *(T*)((U64)m_base + addr); }
 
     template <typename T=void>
-    T* ptr(u32 addr) { return (T*)((u64)m_base + addr); }
+    T* ptr(U32 addr) { return (T*)((U64)m_base + addr); }
 };

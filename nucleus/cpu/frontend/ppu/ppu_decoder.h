@@ -1,5 +1,5 @@
 /**
- * (c) 2015 Alexandro Sánchez Bach. All rights reserved.
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -23,10 +23,10 @@ namespace cpu {
 namespace ppu {
 
 using StateType = hir::Struct<
-    hir::Array<hir::I64,  32>, // GPRs
-    hir::Array<hir::I64,  32>, // FPRs
+    hir::Array<I64,  32>, // GPRs
+    hir::Array<I64,  32>, // FPRs
     hir::Array<hir::I128, 32>, // VRs
-    hir::Array<hir::I64,   4> // Other
+    hir::Array<I64,   4> // Other
 >;
 
 // Class declarations
@@ -37,14 +37,14 @@ class Segment;
 // Function type
 enum FunctionTypeIn {
     FUNCTION_IN_UNKNOWN = 0,
-    FUNCTION_IN_INTEGER,      // The u64 argument is passed on r3 to r10
+    FUNCTION_IN_INTEGER,      // The U64 argument is passed on r3 to r10
     FUNCTION_IN_FLOAT,        // The f64 argument is passed on f1 to f13
     FUNCTION_IN_VECTOR,       // The u128 arguement is passed on v2 to v13
 };
 
 enum FunctionTypeOut {
     FUNCTION_OUT_UNKNOWN = 0,
-    FUNCTION_OUT_INTEGER,     // The u64 argument is returned on r3
+    FUNCTION_OUT_INTEGER,     // The U64 argument is returned on r3
     FUNCTION_OUT_FLOAT,       // The f64 argument is returned on f1
     FUNCTION_OUT_FLOAT_X2,    // The f64 argument is returned on f1:f2
     FUNCTION_OUT_FLOAT_X3,    // The f64 argument is returned on f1:f3
@@ -53,7 +53,7 @@ enum FunctionTypeOut {
     FUNCTION_OUT_VOID,        // Nothing is returned
 };
 
-class Block : public frontend::IBlock<u32>
+class Block : public frontend::IBlock<U32>
 {
 public:
     bool initial;                   // Is this a function entry block?
@@ -62,13 +62,13 @@ public:
 
     // Constructors
     Block() {}
-    Block(frontend::IBlock<u32>& block) : frontend::IBlock<u32>(block) {}
+    Block(frontend::IBlock<U32>& block) : frontend::IBlock<U32>(block) {}
 
     // Determines whether an extra branch is required to connect this with the immediate block after
     bool is_split() const;
 };
 
-class Function : public frontend::IFunction<u32>
+class Function : public frontend::IFunction<U32>
 {
     // Analyzer auxiliary method: Determine register read/writes
     void do_register_analysis(Analyzer* status);
@@ -79,7 +79,7 @@ public:
     std::vector<FunctionTypeIn> type_in;
 
     Function(Segment* seg) {
-        parent = reinterpret_cast<frontend::ISegment<u32>*>(seg);
+        parent = reinterpret_cast<frontend::ISegment<U32>*>(seg);
     }
 
     // Analysis
@@ -93,11 +93,11 @@ public:
     void recompile();
 };
 
-class Segment : public frontend::ISegment<u32>
+class Segment : public frontend::ISegment<U32>
 {
 public:
     // Globals
-    hir::Value<hir::I64*> memoryBase;
+    hir::Value<I64*> memoryBase;
 
     // Emulator functions
     hir::Function funcGetState;

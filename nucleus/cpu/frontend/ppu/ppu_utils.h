@@ -14,18 +14,18 @@ namespace ppu {
 
 // PowerPC rotation-masks
 struct RotateMask {
-    u64 rotateMask[64][64];
+    U64 rotateMask[64][64];
 
     RotateMask() {
-        for (u32 mb = 0; mb < 64; mb++) {
-            for (u32 me = 0; me < 64; me++) {
-                const u64 mask = (~0ULL >> mb) ^ ((me >= 63) ? 0 : ~0ULL >> (me + 1));
+        for (U32 mb = 0; mb < 64; mb++) {
+            for (U32 me = 0; me < 64; me++) {
+                const U64 mask = (~0ULL >> mb) ^ ((me >= 63) ? 0 : ~0ULL >> (me + 1));
                 rotateMask[mb][me] = mb > me ? ~mask : mask;
             }
         }
     }
 
-    u64* operator[](size_t mb) {
+    U64* operator[](size_t mb) {
         return rotateMask[mb];
     }
 };

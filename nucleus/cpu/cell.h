@@ -20,8 +20,8 @@ class Cell
     std::mutex m_mutex;
 
     // Thread ID information
-    std::set<u64> m_thread_ids;
-    u64 m_current_id = 1;
+    std::set<U64> m_thread_ids;
+    U64 m_current_id = 1;
 
 public:
     // Cell threads
@@ -38,9 +38,9 @@ public:
     llvm::Module* module;
 
     // Thread management
-    CellThread* addThread(CellThreadType type, u32 entry);
-    CellThread* getThread(u64 id);
-    void removeThread(u64 id);
+    CellThread* addThread(CellThreadType type, U32 entry);
+    CellThread* getThread(U64 id);
+    void removeThread(U64 id);
 
     // Current thread ID
     CellThread* getCurrentThread();

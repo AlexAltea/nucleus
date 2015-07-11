@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/hir/type.h"
 
 #include "llvm/IR/Value.h"
 
@@ -13,8 +14,7 @@ namespace cpu {
 namespace hir {
 
 template <typename T=Any, int N=1>
-class Value
-{
+class Value {
 public:
     llvm::Value* value;
 
@@ -23,6 +23,8 @@ public:
 
     // Conversion
     operator llvm::Value*() { return value; }
+
+    Type getType();
 };
 
 }  // namespace hir

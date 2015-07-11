@@ -4,9 +4,10 @@
  */
 
 #include "emulator.h"
-#include "nucleus/filesystem/virtual_filesystem.h"
+#include "nucleus/filesystem/utils.h"
 #include "nucleus/loader/self.h"
-#include "nucleus/syscalls/lv2.h"
+#include "nucleus/logger/logger.h"
+#include "nucleus/system/lv2.h"
 
 // Global emulator object
 Emulator nucleus;
@@ -18,20 +19,20 @@ bool Emulator::load(const std::string& filepath)
     cell.init();
     rsx.init();
 
-    // Create mount points
-    const std::string& processPath = getProcessPath(filepath);
-    nucleus.devices.push_back(new VirtualFileSystem("/app_home", processPath));
+    // Initialize application filesystem devices
+    const fs::Path& processPath = fs::getProcessPath(filepath);
+    lv2.vfs.registerDevice(new fs::HostPathDevice("/app_home", processPath));
 
     // Load ELF/SELF file
     SELFLoader self;
     if (!self.open(filepath)) {
-        log.error(LOG_COMMON, "Invalid file given.");
+        logger.error(LOG_COMMON, "Invalid file given.");
         return false;
     }
 
     self.load_elf(lv2.proc);
     if (self.getMachine() != EM_PPC64) {
-        log.error(LOG_COMMON, "Only PPC64 executables are allowed");
+        logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;
     }
 
@@ -77,7 +78,7 @@ void Emulator::idle()
         case NUCLEUS_EVENT_CLOSE:
             return;
         default:
-            log.warning(LOG_COMMON, "Unknown event");
+            logger.warning(LOG_COMMON, "Unknown event");
             break;
         }
 

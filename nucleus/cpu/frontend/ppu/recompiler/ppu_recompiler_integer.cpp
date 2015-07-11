@@ -602,8 +602,8 @@ void Recompiler::rldicx(Instruction code)
     Value<I64> rs = getGPR(code.rs);
     Value<I64> ra = rs;
 
-    const u32 sh = code.sh | (code.sh_ << 5);
-    const u32 mb = code.mb | (code.mb_ << 5);
+    const U32 sh = code.sh | (code.sh_ << 5);
+    const U32 mb = code.mb | (code.mb_ << 5);
     if (sh) {
         auto resl = builder.CreateLShr(rs, 64 - sh);
         auto resh = builder.CreateShl(rs, sh);
@@ -623,8 +623,8 @@ void Recompiler::rldiclx(Instruction code)
     Value<I64> rs = getGPR(code.rs);
     Value<I64> ra = rs;
 
-    const u32 sh = code.sh | (code.sh_ << 5);
-    const u32 mb = code.mb | (code.mb_ << 5);
+    const U32 sh = code.sh | (code.sh_ << 5);
+    const U32 mb = code.mb | (code.mb_ << 5);
     if (sh) {
         auto resl = builder.CreateLShr(rs, 64 - sh);
         auto resh = builder.CreateShl(rs, sh);
@@ -644,8 +644,8 @@ void Recompiler::rldicrx(Instruction code)
     Value<I64> rs = getGPR(code.rs);
     Value<I64> ra = rs;
 
-    const u32 sh = code.sh | (code.sh_ << 5);
-    const u32 me = code.me_ | (code.me__ << 5);
+    const U32 sh = code.sh | (code.sh_ << 5);
+    const U32 me = code.me_ | (code.me__ << 5);
     if (sh) {
         auto resl = builder.CreateLShr(rs, 64 - sh);
         auto resh = builder.CreateShl(rs, sh);
@@ -666,15 +666,15 @@ void Recompiler::rldimix(Instruction code)
     Value<I64> ra = getGPR(code.ra);
     Value<I64> temp = rs;
 
-    const u32 sh = code.sh | (code.sh_ << 5);
-    const u32 mb = code.mb | (code.mb_ << 5);
+    const U32 sh = code.sh | (code.sh_ << 5);
+    const U32 mb = code.mb | (code.mb_ << 5);
     if (sh) {
         auto resl = builder.CreateLShr(rs, 64 - sh);
         auto resh = builder.CreateShl(rs, sh);
         temp = builder.CreateOr(resh, resl);
     }
     
-    const u64 mask = rotateMask[mb][63 - sh];
+    const U64 mask = rotateMask[mb][63 - sh];
     temp = builder.CreateAnd(temp, mask);
     ra = builder.CreateAnd(ra, ~mask);
     ra = builder.CreateOr(ra, temp);
@@ -700,7 +700,7 @@ void Recompiler::rlwimix(Instruction code)
         temp = builder.CreateOr(resh, resl);
     }
 
-    const u64 mask = rotateMask[32 + code.mb][32 + code.me];
+    const U64 mask = rotateMask[32 + code.mb][32 + code.me];
     temp = builder.CreateAnd(temp, mask);
     ra = builder.CreateAnd(ra, ~mask);
     ra = builder.CreateOr(ra, temp);
@@ -809,7 +809,7 @@ void Recompiler::sradix(Instruction code)
     Value<I128> temp;
     Value<I64> ra;
 
-    const u32 sh = code.sh | (code.sh_ << 5);
+    const U32 sh = code.sh | (code.sh_ << 5);
     rs = builder.CreateShl(rs, 64);
     temp = builder.CreateAShr(rs, sh);
     temp = builder.CreateAShr(temp, 64);

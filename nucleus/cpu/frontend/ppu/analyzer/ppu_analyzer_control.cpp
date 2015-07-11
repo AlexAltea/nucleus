@@ -26,7 +26,7 @@ void Analyzer::mfocrf(Instruction code)
 
 void Analyzer::mfspr(Instruction code)
 {
-    const u32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
+    const U32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
     switch (n) {
     case 0x001: setFlag(xer, REG_READ); break;
     case 0x008: setFlag(lr,  REG_READ); break;
@@ -39,7 +39,7 @@ void Analyzer::mtocrf(Instruction code)
 {
     setFlag(gpr[code.rs], REG_READ);
     if (code.l11) {
-        u32 n = 0, count = 0;
+        U32 n = 0, count = 0;
         for (int i = 0; i < 8; i++) {
             if (code.crm & (1 << i)) {
                 n = i;
@@ -65,7 +65,7 @@ void Analyzer::mtocrf(Instruction code)
 void Analyzer::mtspr(Instruction code)
 {
     setFlag(gpr[code.rs], REG_READ);
-    const u32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
+    const U32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
     switch (n) {
     case 0x001: setFlag(xer, REG_WRITE); break;
     case 0x008: setFlag(lr,  REG_WRITE); break;

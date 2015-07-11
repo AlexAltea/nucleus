@@ -18,7 +18,7 @@ namespace ppu {
 #undef REG_NONE
 #endif
 
-enum AnalyzerEvent : u8 {
+enum AnalyzerEvent : U8 {
     REG_NONE       = 0,         // Register was not accessed
     REG_READ       = (1 << 0),  // Register was read
     REG_WRITE      = (1 << 1),  // Register was written
@@ -47,7 +47,7 @@ public:
     AnalyzerEvent vscr = REG_NONE;
 
     // Record of analyzed functions
-    std::set<u32> analyzedFunctions;
+    std::set<U32> analyzedFunctions;
 
     /**
      * PPC64 Instructions:

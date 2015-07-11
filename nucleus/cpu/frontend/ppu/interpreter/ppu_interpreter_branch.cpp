@@ -9,19 +9,19 @@
 namespace cpu {
 namespace ppu {
 
-bool CheckCondition(State& state, u32 bo, u32 bi)
+bool CheckCondition(State& state, U32 bo, U32 bi)
 {
-    const u8 bo0 = (bo & 0x10) ? 1 : 0;
-    const u8 bo1 = (bo & 0x08) ? 1 : 0;
-    const u8 bo2 = (bo & 0x04) ? 1 : 0;
-    const u8 bo3 = (bo & 0x02) ? 1 : 0;
+    const U8 bo0 = (bo & 0x10) ? 1 : 0;
+    const U8 bo1 = (bo & 0x08) ? 1 : 0;
+    const U8 bo2 = (bo & 0x04) ? 1 : 0;
+    const U8 bo3 = (bo & 0x02) ? 1 : 0;
 
     if (!bo2) {
         state.ctr--;
     }
 
-    const u8 ctr_ok = bo2 | ((state.ctr != 0) ^ bo3);
-    const u8 cond_ok = bo0 | (state.cr.getBit(bi) ^ (~bo1 & 0x1));
+    const U8 ctr_ok = bo2 | ((state.ctr != 0) ^ bo3);
+    const U8 cond_ok = bo0 | (state.cr.getBit(bi) ^ (~bo1 & 0x1));
     return ctr_ok && cond_ok;
 }
 
@@ -58,7 +58,7 @@ void Interpreter::bcctrx(Instruction code)
 void Interpreter::bclrx(Instruction code)
 {
     if (CheckCondition(state, code.bo, code.bi)) {
-        const u32 newLR = state.pc + 4;
+        const U32 newLR = state.pc + 4;
         state.pc = state.lr & ~0x3ULL;
         state.pc -= 4;
         if (code.lk) state.lr = newLR;
@@ -67,49 +67,49 @@ void Interpreter::bclrx(Instruction code)
 
 void Interpreter::crand(Instruction code)
 {
-    const u8 value = state.cr.getBit(code.crba) & state.cr.getBit(code.crbb);
+    const U8 value = state.cr.getBit(code.crba) & state.cr.getBit(code.crbb);
     state.cr.setBit(code.crbd, value);
 }
 
 void Interpreter::crandc(Instruction code)
 {
-    const u8 value = state.cr.getBit(code.crba) & (1 ^ state.cr.getBit(code.crbb));
+    const U8 value = state.cr.getBit(code.crba) & (1 ^ state.cr.getBit(code.crbb));
     state.cr.setBit(code.crbd, value);
 }
 
 void Interpreter::creqv(Instruction code)
 {
-    const u8 value = 1 ^ (state.cr.getBit(code.crba) ^ state.cr.getBit(code.crbb));
+    const U8 value = 1 ^ (state.cr.getBit(code.crba) ^ state.cr.getBit(code.crbb));
     state.cr.setBit(code.crbd, value);
 }
 
 void Interpreter::crnand(Instruction code)
 {
-    const u8 value = 1 ^ (state.cr.getBit(code.crba) & state.cr.getBit(code.crbb));
+    const U8 value = 1 ^ (state.cr.getBit(code.crba) & state.cr.getBit(code.crbb));
     state.cr.setBit(code.crbd, value);
 }
 
 void Interpreter::crnor(Instruction code)
 {
-    const u8 value = 1 ^ (state.cr.getBit(code.crba) | state.cr.getBit(code.crbb));
+    const U8 value = 1 ^ (state.cr.getBit(code.crba) | state.cr.getBit(code.crbb));
     state.cr.setBit(code.crbd, value);
 }
 
 void Interpreter::cror(Instruction code)
 {
-    const u8 value = state.cr.getBit(code.crba) | state.cr.getBit(code.crbb);
+    const U8 value = state.cr.getBit(code.crba) | state.cr.getBit(code.crbb);
     state.cr.setBit(code.crbd, value);
 }
 
 void Interpreter::crorc(Instruction code)
 {
-    const u8 value = state.cr.getBit(code.crba) | (1 ^ state.cr.getBit(code.crbb));
+    const U8 value = state.cr.getBit(code.crba) | (1 ^ state.cr.getBit(code.crbb));
     state.cr.setBit(code.crbd, value);
 }
 
 void Interpreter::crxor(Instruction code)
 {
-    const u8 value = state.cr.getBit(code.crba) ^ state.cr.getBit(code.crbb);
+    const U8 value = state.cr.getBit(code.crba) ^ state.cr.getBit(code.crbb);
     state.cr.setBit(code.crbd, value);
 }
 

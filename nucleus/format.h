@@ -29,7 +29,7 @@ std::string format(const char* pattern, Args... args)
 }
 
 // E.g.: Transform a "0777" hexadicimal string ([0-9A-Fa-f]+) into the unsigned numerical value 1911 (up to 64-bits)
-u64 hexToNumber(const char* hex);
+U64 hexToNumber(const char* hex);
 
 // E.g.: Transform a "1A2B" hexadicimal string ([0-9A-F]+) into a byte array "\x1A\x2B" (provided a zeroed buffer)
 void hexToBytes(const char* hex, char* dst);

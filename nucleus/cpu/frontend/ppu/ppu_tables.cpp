@@ -25,7 +25,7 @@ template <int N>
 struct Table {
     Entry table[N];
 
-    const Entry& operator[] (const u32 i) const {
+    const Entry& operator[] (const U32 i) const {
         return table[i];
     }
 };

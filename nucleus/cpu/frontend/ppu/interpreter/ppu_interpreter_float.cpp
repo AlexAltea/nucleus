@@ -14,9 +14,9 @@ namespace ppu {
 #define DOUBLE_ZERO 0x0000000000000000ULL
 
 // Return the corresponding FPSCR flags for the FPRF field for a given double value
-u32 getFPRFlags(PPU_FPR reg)
+U32 getFPRFlags(PPU_FPR reg)
 {
-    const f64 value = reg._f64;
+    const F64 value = reg.f64;
     switch (std::fpclassify(value)) {
     case FP_NAN:        return FPR_FPRF_QNAN;
     case FP_INFINITE:   return std::signbit(value) ? FPR_FPRF_NINF : FPR_FPRF_PINF;
@@ -33,25 +33,25 @@ u32 getFPRFlags(PPU_FPR reg)
 
 void Interpreter::fabsx(Instruction code)
 {
-    const f64 value = state.fpr[code.frb]._f64;
-    state.fpr[code.frd]._f64 = (value < 0.0) ? -value : value;
+    const F64 value = state.fpr[code.frb].f64;
+    state.fpr[code.frd].f64 = (value < 0.0) ? -value : value;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::faddx(Instruction code)
 {
-    const f64 a = state.fpr[code.fra]._f64;
-    const f64 b = state.fpr[code.frb]._f64;
-    const f64 t = a + b;
+    const F64 a = state.fpr[code.fra].f64;
+    const F64 b = state.fpr[code.frb].f64;
+    const F64 t = a + b;
     if (a != a) {
-        state.fpr[code.frd]._f64 = a;
+        state.fpr[code.frd].f64 = a;
     } else if (b != b) {
-        state.fpr[code.frd]._f64 = b;
+        state.fpr[code.frd].f64 = b;
     } else if (t != t) {
         state.fpscr.setException(FPSCR_VXISI);
-        (u64&)state.fpr[code.frd] = 0x7FF8000000000000ULL;
+        (U64&)state.fpr[code.frd] = 0x7FF8000000000000ULL;
     } else {
-        state.fpr[code.frd]._f64 = t;
+        state.fpr[code.frd].f64 = t;
     }
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPRF >> 28); }
@@ -59,29 +59,29 @@ void Interpreter::faddx(Instruction code)
 
 void Interpreter::faddsx(Instruction code)
 {
-    const f64 a = state.fpr[code.fra]._f64;
-    const f64 b = state.fpr[code.frb]._f64;
-    const f64 t = a + b;
+    const F64 a = state.fpr[code.fra].f64;
+    const F64 b = state.fpr[code.frb].f64;
+    const F64 t = a + b;
     if (a != a) {
-        state.fpr[code.frd]._f64 = a;
+        state.fpr[code.frd].f64 = a;
     } else if (b != b) {
-        state.fpr[code.frd]._f64 = b;
+        state.fpr[code.frd].f64 = b;
     } else if (t != t) {
         state.fpscr.setException(FPSCR_VXISI);
-        (u64&)state.fpr[code.frd] = 0x7FF8000000000000ULL;
+        (U64&)state.fpr[code.frd] = 0x7FF8000000000000ULL;
     } else {
-        state.fpr[code.frd]._f64 = t;
+        state.fpr[code.frd].f64 = t;
     }
-    state.fpr[code.frd]._f64 = static_cast<f32>(state.fpr[code.frd]._f64);
+    state.fpr[code.frd].f64 = static_cast<F32>(state.fpr[code.frd].f64);
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fcfidx(Instruction code)
 {
-    const s64 bi = (s64&)state.fpr[code.frb];
-    const f64 bf = (f64)bi;
-    const s64 bfi = (s64)bf;
+    const S64 bi = (S64&)state.fpr[code.frb];
+    const F64 bf = (F64)bi;
+    const S64 bfi = (S64)bf;
     if (bi == bfi) {
         state.fpscr.FI = 0;
         state.fpscr.FR = 0;
@@ -90,7 +90,7 @@ void Interpreter::fcfidx(Instruction code)
         state.fpscr.setException(FPSCR_XX);
         state.fpscr.FR = abs(bfi) > abs(bi);
     }
-    state.fpr[code.frd]._f64 = bf;
+    state.fpr[code.frd].f64 = bf;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
@@ -117,7 +117,7 @@ void Interpreter::fcmpu(Instruction code)
 {
     const int compareResult = PPU_FPR::compare(state.fpr[code.fra], state.fpr[code.frb]);
     if (compareResult == PPU_CR::CR_SO) {
-        if (std::isnan(state.fpr[code.fra]._f64) || std::isnan(state.fpr[code.frb]._f64)) {
+        if (std::isnan(state.fpr[code.fra].f64) || std::isnan(state.fpr[code.frb].f64)) {
             state.fpscr.setException(FPSCR_VXSNAN);
         }
     }
@@ -127,9 +127,9 @@ void Interpreter::fcmpu(Instruction code)
 
 void Interpreter::fctidx(Instruction code)
 {
-    const f64 b = state.fpr[code.frb]._f64;
-    u64 r;
-    if (b > (f64)0x7FFFFFFFFFFFFFFF) {
+    const F64 b = state.fpr[code.frb].f64;
+    U64 r;
+    if (b > (F64)0x7FFFFFFFFFFFFFFF) {
         r = 0x7FFFFFFFFFFFFFFF;
         if (state.fpscr.VXCVI) {
             state.fpscr.FX = 1;
@@ -138,7 +138,7 @@ void Interpreter::fctidx(Instruction code)
         state.fpscr.FI = 0;
         state.fpscr.FR = 0;
     }
-    else if (b < -(f64)0x8000000000000000) {
+    else if (b < -(F64)0x8000000000000000) {
         r = 0x8000000000000000;
         if (state.fpscr.VXCVI) {
             state.fpscr.FX = 1;
@@ -148,29 +148,29 @@ void Interpreter::fctidx(Instruction code)
         state.fpscr.FR = 0;
     }
     else {
-        s64 i = 0;
+        S64 i = 0;
         switch (state.fpscr.RN) {
         case FPSCR_RN_NEAR:
             {
-                f64 t = b + 0.5;
-                i = (s64)t;
+                F64 t = b + 0.5;
+                i = (S64)t;
                 if (t - i < 0 || (t - i == 0 && b > 0)) i--;
                 break;
             }
         case FPSCR_RN_ZERO:
-            i = (s64)b;
+            i = (S64)b;
             break;
         case FPSCR_RN_PINF:
-            i = (s64)b;
+            i = (S64)b;
             if (b - i > 0) i++;
             break;
         case FPSCR_RN_MINF:
-            i = (s64)b;
+            i = (S64)b;
             if (b - i < 0) i--;
             break;
         }
-        r = (u64)i;
-        f64 di = i;
+        r = (U64)i;
+        F64 di = i;
         if (di == b) {
             state.fpscr.FI = 0;
             state.fpscr.FR = 0;
@@ -181,15 +181,15 @@ void Interpreter::fctidx(Instruction code)
         }
     }
 
-    state.fpr[code.frd]._u64 = r;
+    state.fpr[code.frd].u64 = r;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fctidzx(Instruction code)
 {
-    const f64 b = state.fpr[code.frb]._f64;
-    u64 r;
-    if (b > (f64)0x7FFFFFFFFFFFFFFF) {
+    const F64 b = state.fpr[code.frb].f64;
+    U64 r;
+    if (b > (F64)0x7FFFFFFFFFFFFFFF) {
         r = 0x7FFFFFFFFFFFFFFF;
         if (state.fpscr.VXCVI) {
             state.fpscr.FX = 1;
@@ -198,7 +198,7 @@ void Interpreter::fctidzx(Instruction code)
         state.fpscr.FI = 0;
         state.fpscr.FR = 0;
     }
-    else if (b < -(f64)0x8000000000000000) {
+    else if (b < -(F64)0x8000000000000000) {
         r = 0x8000000000000000;
         if (state.fpscr.VXCVI) {
             state.fpscr.FX = 1;
@@ -208,8 +208,8 @@ void Interpreter::fctidzx(Instruction code)
         state.fpscr.FR = 0;
     }
     else {
-        s64 i = (s64)b;
-        f64 di = i;
+        S64 i = (S64)b;
+        F64 di = i;
         if (di == b) {
             state.fpscr.FI = 0;
             state.fpscr.FR = 0;
@@ -218,18 +218,18 @@ void Interpreter::fctidzx(Instruction code)
             state.fpscr.FI = 1;
             state.fpscr.FR = fabs(di) > fabs(b);
         }
-        r = (u64)i;
+        r = (U64)i;
     }
 
-    state.fpr[code.frd]._u64 = r;
+    state.fpr[code.frd].u64 = r;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fctiwx(Instruction code)
 {
-    const f64 b = state.fpr[code.frb]._f64;
-    u32 r;
-    if (b > (f64)0x7FFFFFFF) {
+    const F64 b = state.fpr[code.frb].f64;
+    U32 r;
+    if (b > (F64)0x7FFFFFFF) {
         r = 0x7FFFFFFF;
         if (state.fpscr.VXCVI) {
             state.fpscr.FX = 1;
@@ -238,7 +238,7 @@ void Interpreter::fctiwx(Instruction code)
         state.fpscr.FI = 0;
         state.fpscr.FR = 0;
     }
-    else if (b < -(f64)0x80000000) {
+    else if (b < -(F64)0x80000000) {
         r = 0x80000000;
         if (state.fpscr.VXCVI) {
             state.fpscr.FX = 1;
@@ -248,30 +248,30 @@ void Interpreter::fctiwx(Instruction code)
         state.fpscr.FR = 0;
     }
     else {
-        s32 i = 0;
+        S32 i = 0;
         switch (state.fpscr.RN)
         {
         case FPSCR_RN_NEAR:
             {
-                f64 t = b + 0.5;
-                i = (s32)t;
+                F64 t = b + 0.5;
+                i = (S32)t;
                 if (t - i < 0 || (t - i == 0 && b > 0)) i--;
                 break;
             }
         case FPSCR_RN_ZERO:
-            i = (s32)b;
+            i = (S32)b;
             break;
         case FPSCR_RN_PINF:
-            i = (s32)b;
+            i = (S32)b;
             if (b - i > 0) i++;
             break;
         case FPSCR_RN_MINF:
-            i = (s32)b;
+            i = (S32)b;
             if (b - i < 0) i--;
             break;
         }
-        r = (u32)i;
-        f64 di = i;
+        r = (U32)i;
+        F64 di = i;
         if (di == b) {
             state.fpscr.FI = 0;
             state.fpscr.FR = 0;
@@ -282,22 +282,22 @@ void Interpreter::fctiwx(Instruction code)
         }
     }
 
-    (u64&)state.fpr[code.frd] = r;
+    (U64&)state.fpr[code.frd] = r;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fctiwzx(Instruction code)
 {
-    const f64 b = state.fpr[code.frb]._f64;
-    u32 value;
-    if (b > (f64)0x7FFFFFFF) {
+    const F64 b = state.fpr[code.frb].f64;
+    U32 value;
+    if (b > (F64)0x7FFFFFFF) {
         value = 0x7FFFFFFF;
         if (state.fpscr.VXCVI) state.fpscr.FX = 1;
         state.fpscr.VXCVI = 1;
         state.fpscr.FI = 0;
         state.fpscr.FR = 0;
     }
-    else if (b < -(f64)0x80000000) {
+    else if (b < -(F64)0x80000000) {
         value = 0x80000000;
         if (state.fpscr.VXCVI) state.fpscr.FX = 1;
         state.fpscr.VXCVI = 1;
@@ -305,8 +305,8 @@ void Interpreter::fctiwzx(Instruction code)
         state.fpscr.FR = 0;
     }
     else {
-        s32 i = (s32)b;
-        f64 di = i;
+        S32 i = (S32)b;
+        F64 di = i;
         if (di == b) {
             state.fpscr.FI = 0;
             state.fpscr.FR = 0;
@@ -315,38 +315,38 @@ void Interpreter::fctiwzx(Instruction code)
             state.fpscr.FI = 1;
             state.fpscr.FR = fabs(di) > fabs(b);
         }
-        value = (u32)i;
+        value = (U32)i;
     }
 
-    (u64&)state.fpr[code.frd] = value;
+    (U64&)state.fpr[code.frd] = value;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fdivx(Instruction code)
 {
-    if (std::isnan(state.fpr[code.fra]._f64)) {
+    if (std::isnan(state.fpr[code.fra].f64)) {
         state.fpr[code.frd] = state.fpr[code.fra];
     }
-    else if (std::isnan(state.fpr[code.frb]._f64)) {
+    else if (std::isnan(state.fpr[code.frb].f64)) {
         state.fpr[code.frd] = state.fpr[code.frb];
     }
     else {
         if (state.fpr[code.frb] == 0.0) {
             if (state.fpr[code.fra] == 0.0) {
                 state.fpscr.VXZDZ = 1;
-                state.fpr[code.frd]._u64 = PPU_FPR::FPR_NAN;
+                state.fpr[code.frd].u64 = PPU_FPR::FPR_NAN;
             }
             else {
-                state.fpr[code.frd]._f64 = state.fpr[code.fra]._f64 / state.fpr[code.frb]._f64;
+                state.fpr[code.frd].f64 = state.fpr[code.fra].f64 / state.fpr[code.frb].f64;
             }
             state.fpscr.setException(FPSCR_ZX);
         }
         else if (state.fpr[code.fra].isInf() && state.fpr[code.frb].isInf()) {
             state.fpscr.VXIDI = 1;
-            state.fpr[code.frd]._u64 = PPU_FPR::FPR_NAN;
+            state.fpr[code.frd].u64 = PPU_FPR::FPR_NAN;
         }
         else {
-            state.fpr[code.frd]._f64 = state.fpr[code.fra]._f64 / state.fpr[code.frb]._f64;
+            state.fpr[code.frd].f64 = state.fpr[code.fra].f64 / state.fpr[code.frb].f64;
         }
     }
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
@@ -355,30 +355,30 @@ void Interpreter::fdivx(Instruction code)
 
 void Interpreter::fdivsx(Instruction code)
 {
-    if (std::isnan(state.fpr[code.fra]._f64)) {
+    if (std::isnan(state.fpr[code.fra].f64)) {
         state.fpr[code.frd] = state.fpr[code.fra];
     }
-    else if (std::isnan(state.fpr[code.frb]._f64)) {
+    else if (std::isnan(state.fpr[code.frb].f64)) {
         state.fpr[code.frd] = state.fpr[code.frb];
     }
     else {
         if (state.fpr[code.frb] == 0.0) {
             if (state.fpr[code.fra] == 0.0) {
                 state.fpscr.VXZDZ = true;
-                state.fpr[code.frd]._u64 = PPU_FPR::FPR_NAN;
+                state.fpr[code.frd].u64 = PPU_FPR::FPR_NAN;
             }
             else {
-                state.fpr[code.frd]._f64 = (f32)(state.fpr[code.fra]._f64 / state.fpr[code.frb]._f64);
+                state.fpr[code.frd].f64 = (F32)(state.fpr[code.fra].f64 / state.fpr[code.frb].f64);
             }
 
             state.fpscr.ZX = true;
         }
         else if (state.fpr[code.fra].isInf() && state.fpr[code.frb].isInf()) {
             state.fpscr.VXIDI = true;
-            state.fpr[code.frd]._u64 = PPU_FPR::FPR_NAN;
+            state.fpr[code.frd].u64 = PPU_FPR::FPR_NAN;
         }
         else {
-            state.fpr[code.frd]._f64 = (f32)(state.fpr[code.fra]._f64 / state.fpr[code.frb]._f64);
+            state.fpr[code.frd].f64 = (F32)(state.fpr[code.fra].f64 / state.fpr[code.frb].f64);
         }
     }
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
@@ -387,14 +387,14 @@ void Interpreter::fdivsx(Instruction code)
 
 void Interpreter::fmaddx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 + state.fpr[code.frb]._f64;
+    state.fpr[code.frd].f64 = state.fpr[code.fra].f64 * state.fpr[code.frc].f64 + state.fpr[code.frb].f64;
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fmaddsx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = static_cast<f32>(state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 + state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = static_cast<F32>(state.fpr[code.fra].f64 * state.fpr[code.frc].f64 + state.fpr[code.frb].f64);
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
@@ -407,14 +407,14 @@ void Interpreter::fmrx(Instruction code)
 
 void Interpreter::fmsubx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 - state.fpr[code.frb]._f64;
+    state.fpr[code.frd].f64 = state.fpr[code.fra].f64 * state.fpr[code.frc].f64 - state.fpr[code.frb].f64;
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fmsubsx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = static_cast<f32>(state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 - state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = static_cast<F32>(state.fpr[code.fra].f64 * state.fpr[code.frc].f64 - state.fpr[code.frb].f64);
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
@@ -424,7 +424,7 @@ void Interpreter::fmulx(Instruction code)
     if ((state.fpr[code.fra].isInf() && state.fpr[code.frc] == 0.0) ||
         (state.fpr[code.frc].isInf() && state.fpr[code.fra] == 0.0)) {
         state.fpscr.setException(FPSCR_VXIMZ);
-        state.fpr[code.frd]._u64 = PPU_FPR::FPR_NAN;
+        state.fpr[code.frd].u64 = PPU_FPR::FPR_NAN;
         state.fpscr.FI = 0;
         state.fpscr.FR = 0;
         state.fpscr.FPRF = FPSCR_FPRF::FPR_FPRF_QNAN;
@@ -433,7 +433,7 @@ void Interpreter::fmulx(Instruction code)
         if (state.fpr[code.fra].isSNaN() || state.fpr[code.frc].isSNaN()) {
             state.fpscr.setException(FPSCR_VXSNAN);
         }
-        state.fpr[code.frd]._f64 = state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64;
+        state.fpr[code.frd].f64 = state.fpr[code.fra].f64 * state.fpr[code.frc].f64;
         state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     }
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
@@ -441,18 +441,18 @@ void Interpreter::fmulx(Instruction code)
 
 void Interpreter::fmulsx(Instruction code)
 {
-    const f64 a = state.fpr[code.fra]._f64;
-    const f64 b = state.fpr[code.frc]._f64;
-    const f32 t = a * b;
+    const F64 a = state.fpr[code.fra].f64;
+    const F64 b = state.fpr[code.frc].f64;
+    const F32 t = a * b;
     if (a != a) {
-        state.fpr[code.frd]._f64 = a;
+        state.fpr[code.frd].f64 = a;
     } else if (b != b) {
-        state.fpr[code.frd]._f64 = b;
+        state.fpr[code.frd].f64 = b;
     } else if (t != t) {
         state.fpscr.setException(FPSCR_VXISI);
-        (u64&)state.fpr[code.frd] = 0x7FF8000000000000ULL;
+        (U64&)state.fpr[code.frd] = 0x7FF8000000000000ULL;
     } else {
-        state.fpr[code.frd]._f64 = t;
+        state.fpr[code.frd].f64 = t;
     }
     state.fpscr.FI = 0;
     state.fpscr.FR = 0;
@@ -462,40 +462,40 @@ void Interpreter::fmulsx(Instruction code)
 
 void Interpreter::fnabsx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = -::fabs(state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = -::fabs(state.fpr[code.frb].f64);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fnegx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = -state.fpr[code.frb]._f64;
+    state.fpr[code.frd].f64 = -state.fpr[code.frb].f64;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fnmaddx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = -(state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 + state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = -(state.fpr[code.fra].f64 * state.fpr[code.frc].f64 + state.fpr[code.frb].f64);
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fnmaddsx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = static_cast<f32>(-(state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 + state.fpr[code.frb]._f64));
+    state.fpr[code.frd].f64 = static_cast<F32>(-(state.fpr[code.fra].f64 * state.fpr[code.frc].f64 + state.fpr[code.frb].f64));
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fnmsubx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = -(state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 - state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = -(state.fpr[code.fra].f64 * state.fpr[code.frc].f64 - state.fpr[code.frb].f64);
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fnmsubsx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = static_cast<f32>(-(state.fpr[code.fra]._f64 * state.fpr[code.frc]._f64 - state.fpr[code.frb]._f64));
+    state.fpr[code.frd].f64 = static_cast<F32>(-(state.fpr[code.fra].f64 * state.fpr[code.frc].f64 - state.fpr[code.frb].f64));
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
@@ -505,20 +505,20 @@ void Interpreter::fresx(Instruction code)
     if (state.fpr[code.frb] == 0.0) {
         state.fpscr.setException(FPSCR_ZX);
     }
-    state.fpr[code.frd]._f64 = static_cast<f32>(1.0 / state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = static_cast<F32>(1.0 / state.fpr[code.frb].f64);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::frspx(Instruction code)
 {
-    const f64 b = state.fpr[code.frb]._f64;
-    f64 b0 = b;
+    const F64 b = state.fpr[code.frb].f64;
+    F64 b0 = b;
     if (state.fpscr.NI) {
-        if (((u64&)b0 & DOUBLE_EXP) < 0x3800000000000000ULL) {
-            (u64&)b0 &= DOUBLE_SIGN;
+        if (((U64&)b0 & DOUBLE_EXP) < 0x3800000000000000ULL) {
+            (U64&)b0 &= DOUBLE_SIGN;
         }
     }
-    const f64 r = static_cast<f32>(b0);
+    const F64 r = static_cast<F32>(b0);
     state.fpscr.FR = fabs(r) > fabs(b);
     if (b != r) {
         state.fpscr.FI = 1;
@@ -526,7 +526,7 @@ void Interpreter::frspx(Instruction code)
     } else {
         state.fpscr.FI = 0;
     }
-    state.fpr[code.frd]._f64 = r;
+    state.fpr[code.frd].f64 = r;
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
 }
 
@@ -535,54 +535,54 @@ void Interpreter::frsqrtex(Instruction code)
     if (state.fpr[code.frb] == 0.0) {
         state.fpscr.setException(FPSCR_ZX);
     }
-    state.fpr[code.frd]._f64 = 1.0 / sqrt(state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = 1.0 / sqrt(state.fpr[code.frb].f64);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fselx(Instruction code)
 {
-    state.fpr[code.frd] = state.fpr[code.fra]._f64 >= 0.0 ? state.fpr[code.frc] : state.fpr[code.frb];
+    state.fpr[code.frd] = state.fpr[code.fra].f64 >= 0.0 ? state.fpr[code.frc] : state.fpr[code.frb];
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fsqrtx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = sqrt(state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = sqrt(state.fpr[code.frb].f64);
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fsqrtsx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = static_cast<f32>(sqrt(state.fpr[code.frb]._f64));
+    state.fpr[code.frd].f64 = static_cast<F32>(sqrt(state.fpr[code.frb].f64));
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fsubx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = state.fpr[code.fra]._f64 - state.fpr[code.frb]._f64;
+    state.fpr[code.frd].f64 = state.fpr[code.fra].f64 - state.fpr[code.frb].f64;
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::fsubsx(Instruction code)
 {
-    state.fpr[code.frd]._f64 = static_cast<f32>(state.fpr[code.fra]._f64 - state.fpr[code.frb]._f64);
+    state.fpr[code.frd].f64 = static_cast<F32>(state.fpr[code.fra].f64 - state.fpr[code.frb].f64);
     state.fpscr.FPRF = getFPRFlags(state.fpr[code.frd]);
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
 void Interpreter::mcrfs(Instruction code)
 {
-    u64 mask = (1ULL << code.crbd);
+    U64 mask = (1ULL << code.crbd);
     state.cr.CR &= ~mask;
     state.cr.CR |= state.fpscr.FPSCR & mask;
 }
 
 void Interpreter::mffsx(Instruction code)
 {
-    (u64&)state.fpr[code.frd] = state.fpscr.FPSCR;
+    (U64&)state.fpr[code.frd] = state.fpscr.FPSCR;
     if (code.rc) { state.cr.setField(1, state.fpscr.FPSCR >> 28); }
 }
 
@@ -600,8 +600,8 @@ void Interpreter::mtfsb1x(Instruction code)
 
 void Interpreter::mtfsfix(Instruction code)
 {
-    const u32 mask = 0xF << (code.crfd * 4);
-    const u32 value = (code.imm & 0xF) << (code.crfd * 4);
+    const U32 mask = 0xF << (code.crfd * 4);
+    const U32 value = (code.imm & 0xF) << (code.crfd * 4);
     state.fpscr.FPSCR &= ~mask;
     state.fpscr.FPSCR |= value;
     if (code.rc) unknown("mtfsfi.");
@@ -609,13 +609,13 @@ void Interpreter::mtfsfix(Instruction code)
 
 void Interpreter::mtfsfx(Instruction code)
 {
-    u32 mask = 0;
+    U32 mask = 0;
     for (int i = 0; i < 8; i++) {
         if (code.fm & (1 << i)) {
             mask |= 0xf << (i * 4);
         }
     }
-    state.fpscr.FPSCR = (state.fpscr.FPSCR & ~mask) | ((u32&)state.fpr[code.frb] & mask);
+    state.fpscr.FPSCR = (state.fpscr.FPSCR & ~mask) | ((U32&)state.fpr[code.frb] & mask);
     if (code.rc) unknown("mtfsf.");
 }
 

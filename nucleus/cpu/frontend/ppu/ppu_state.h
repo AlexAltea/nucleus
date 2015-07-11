@@ -62,11 +62,11 @@ enum FPSCR_EXP {
  */
 
 // General-Purpose Register
-typedef u64 PPU_GPR;
+typedef U64 PPU_GPR;
 
 // Condition Register
 union PPU_CR {
-    u32 CR;
+    U32 CR;
 
     // Bit index
     enum {
@@ -76,18 +76,18 @@ union PPU_CR {
         CR_SO = 3,
     };
 
-    u8 getBit(u32 bit) { return (CR >> bit) & 1; }
-    void setBit(u32 bit, bool value) { CR = value ? CR | (1 << bit) : CR & ~(1 << bit); }
+    U8 getBit(U32 bit) { return (CR >> bit) & 1; }
+    void setBit(U32 bit, bool value) { CR = value ? CR | (1 << bit) : CR & ~(1 << bit); }
 
-    u8 getField(u32 field) { return (CR >> field*4) & 0xf; }
-    void setField(u32 field, u8 value) {
-        u64 maskHigh = ~((1ULL << (field+1)*4)-1);
-        u64 maskLow = ((1ULL << field*4)-1);
-        CR = (CR & (u32)maskHigh) | (value << field*4) | (CR & (u32)maskLow);
+    U8 getField(U32 field) { return (CR >> field*4) & 0xf; }
+    void setField(U32 field, U8 value) {
+        U64 maskHigh = ~((1ULL << (field+1)*4)-1);
+        U64 maskLow = ((1ULL << field*4)-1);
+        CR = (CR & (U32)maskHigh) | (value << field*4) | (CR & (U32)maskLow);
     }
 
     template <typename T>
-    void updateField(u32 field, T a, T b) {
+    void updateField(U32 field, T a, T b) {
         if (a < b) {
             setField(field, 1 << CR_LT);
         }
@@ -105,74 +105,74 @@ union PPU_CR {
 
 // Floating-Point Register
 union PPU_FPR {
-    f64 _f64;
-    u64 _u64;
+    F64 f64;
+    U64 u64;
 
-    enum : u64 {
+    enum : U64 {
         FPR_NAN = 0x7FF8000000000000ULL,
     };
 
-    bool operator== (f64 right) { return _f64 == right; }
-    bool operator== (u64 right) { return _u64 == right; }
+    bool operator== (F64 right) { return f64 == right; }
+    bool operator== (U64 right) { return u64 == right; }
 
     bool isInf() {
-        return (_u64 & 0x7FFFFFFFFFFFFFFFULL) == 0x7FF0000000000000ULL;
+        return (u64 & 0x7FFFFFFFFFFFFFFFULL) == 0x7FF0000000000000ULL;
     }
 
     bool isNaN() {
-        return std::isnan(_f64);
+        return std::isnan(f64);
     }
 
     bool isSNaN() {
         return
-            (_u64 & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL &&
-            (_u64 & 0x000FFFFFFFFFFFFFULL) != 0ULL &&
-            (_u64 & 0x0008000000000000ULL) == 0ULL;
+            (u64 & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL &&
+            (u64 & 0x000FFFFFFFFFFFFFULL) != 0ULL &&
+            (u64 & 0x0008000000000000ULL) == 0ULL;
     }
 
     static int compare(PPU_FPR& a, PPU_FPR& b) {
-        if(a._f64  < b._f64) return PPU_CR::CR_LT;
-        if(a._f64  > b._f64) return PPU_CR::CR_GT;
-        if(a._f64 == b._f64) return PPU_CR::CR_EQ;
+        if(a.f64  < b.f64) return PPU_CR::CR_LT;
+        if(a.f64  > b.f64) return PPU_CR::CR_GT;
+        if(a.f64 == b.f64) return PPU_CR::CR_EQ;
         return PPU_CR::CR_SO;
     }
 };
 
 // Floating-Point Status and Control Register
 union PPU_FPSCR {
-    u32 FPSCR;
+    U32 FPSCR;
 
     struct {
-        u32 RN      :2; // Rounding control
-        u32 NI      :1; // Non-IEEE mode
-        u32 XE      :1; // Inexact exception enable
-        u32 ZE      :1; // IEEE Zero divide exception enable
-        u32 UE      :1; // IEEE Underflow exception enable
-        u32 OE      :1; // IEEE Overflow exception enable
-        u32 VE      :1; // Invalid operation exception enable
-        u32 VXCVI   :1; // Invalid operation exception for invalid integer convert
-        u32 VXSQRT  :1; // Invalid operation exception for invalid square root
-        u32 VXSOFT  :1; // Invalid operation exception for software request
-        u32         :1;
-        u32 FPRF    :5; // Result flags
-        u32 FI      :1; // Fraction inexact
-        u32 FR      :1; // Fraction rounded
-        u32 VXVC    :1; // Invalid operation exception for invalid compare
-        u32 VXIMZ   :1; // Invalid operation exception for Inf * 0
-        u32 VXZDZ   :1; // Invalid operation exception for 0 / 0
-        u32 VXIDI   :1; // Invalid operation exception for Inf + Inf
-        u32 VXISI   :1; // Invalid operation exception for Inf - Inf
-        u32 VXSNAN  :1; // Invalid operation exception for SNaN
-        u32 XX      :1; // Inexact exception
-        u32 ZX      :1; // Zero divide exception
-        u32 UX      :1; // Underflow exception
-        u32 OX      :1; // Overflow exception
-        u32 VX      :1; // Invalid operation exception summary
-        u32 FEX     :1; // Enabled exception summary
-        u32 FX      :1; // Exception summary
+        U32 RN      :2; // Rounding control
+        U32 NI      :1; // Non-IEEE mode
+        U32 XE      :1; // Inexact exception enable
+        U32 ZE      :1; // IEEE Zero divide exception enable
+        U32 UE      :1; // IEEE Underflow exception enable
+        U32 OE      :1; // IEEE Overflow exception enable
+        U32 VE      :1; // Invalid operation exception enable
+        U32 VXCVI   :1; // Invalid operation exception for invalid integer convert
+        U32 VXSQRT  :1; // Invalid operation exception for invalid square root
+        U32 VXSOFT  :1; // Invalid operation exception for software request
+        U32         :1; // Reserved
+        U32 FPRF    :5; // Result flags
+        U32 FI      :1; // Fraction inexact
+        U32 FR      :1; // Fraction rounded
+        U32 VXVC    :1; // Invalid operation exception for invalid compare
+        U32 VXIMZ   :1; // Invalid operation exception for Inf * 0
+        U32 VXZDZ   :1; // Invalid operation exception for 0 / 0
+        U32 VXIDI   :1; // Invalid operation exception for Inf + Inf
+        U32 VXISI   :1; // Invalid operation exception for Inf - Inf
+        U32 VXSNAN  :1; // Invalid operation exception for SNaN
+        U32 XX      :1; // Inexact exception
+        U32 ZX      :1; // Zero divide exception
+        U32 UX      :1; // Underflow exception
+        U32 OX      :1; // Overflow exception
+        U32 VX      :1; // Invalid operation exception summary
+        U32 FEX     :1; // Enabled exception summary
+        U32 FX      :1; // Exception summary
     };
 
-    void setException(const u32 mask) {
+    void setException(const U32 mask) {
         if ((FPSCR & mask) != mask) {
             FX = 1;
         }
@@ -182,62 +182,62 @@ union PPU_FPSCR {
 
 // XER Register (SPR 1)
 union PPU_XER {
-    u64 XER;
+    U64 XER;
 
     struct {
-        u32 BC : 7;  // Byte count
-        u32    : 22;
-        u32 CA : 1;  // Carry
-        u32 OV : 1;  // Overflow
-        u32 SO : 1;  // Summary overflow
-        u32    : 32;
+        U32 BC : 7;  // Byte count
+        U32    : 22; // Reserved
+        U32 CA : 1;  // Carry
+        U32 OV : 1;  // Overflow
+        U32 SO : 1;  // Summary overflow
+        U32    : 32; // Reserved
     };
 };
 
 // LR Register (SPR 8)
-typedef u64 PPU_LR;
+typedef U64 PPU_LR;
 
 // CTR Register (SPR 9)
-typedef u64 PPU_CTR;
+typedef U64 PPU_CTR;
 
 union PPU_TB {
-    u64 TB;
+    U64 TB;
 
     struct {
-        u32 TBL;
-        u32 TBU;
+        U32 TBL;
+        U32 TBU;
     };
 };
 
 // Vector Register
 union PPU_VR {
-    u128 _u128;
-    u64 _u64[2];
-    s64 _s64[2];
-    u32 _u32[4];
-    s32 _s32[4];
-    u16 _u16[8];
-    s16 _s16[8];
-    u8 _u8[16];
-    s8 _s8[16];
-    f32 _f32[4];
-    f64 _f64[2];
+    U128 u128;
+    U64 u64[2];
+    S64 s64[2];
+    U32 u32[4];
+    S32 s32[4];
+    U16 u16[8];
+    S16 s16[8];
+    U8 u8[16];
+    U8 s8[16];
+    F32 f32[4];
+    F64 f64[2];
 
     inline void clear() {
-        _u64[0] = 0;
-        _u64[1] = 0;
+        u64[0] = 0;
+        u64[1] = 0;
     }
 };
 
 // Vector Status and Control Register
 union PPU_VSCR {
-    u32 VSCR;
+    U32 VSCR;
 
     struct {
-        u32 SAT : 1;  // Saturation
-        u32     : 15;
-        u32 NJ  : 1;  // Non-Java
-        u32     : 15;
+        U32 SAT : 1;  // Saturation
+        U32     : 15; // Reserved
+        U32 NJ  : 1;  // Non-Java
+        U32     : 15; // Reserved
     };
 };
 
@@ -259,11 +259,11 @@ struct State {
     PPU_VSCR vscr = {};
 
     // Reservation Registers
-    u64 reserve_addr = 0;
-    u64 reserve_value = 0;
+    U64 reserve_addr = 0;
+    U64 reserve_value = 0;
 
     // Program Counter
-    u32 pc;
+    U32 pc;
 };
 
 }  // namespace ppu

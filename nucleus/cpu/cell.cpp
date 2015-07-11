@@ -8,6 +8,7 @@
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
+#include "nucleus/logger/logger.h"
 
 #include "llvm/ADT/Triple.h"
 #include "llvm/Support/Host.h"
@@ -49,11 +50,11 @@ void Cell::init()
         llvm::GlobalVariable* memoryBase = module->getNamedGlobal("memoryBase");
         memoryBase->setConstant(true);
         memoryBase->setLinkage(llvm::GlobalValue::ExternalLinkage);
-        memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (u64)nucleus.memory.getBaseAddr())));
+        memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (U64)nucleus.memory.getBaseAddr())));
     }
 }
 
-CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
+CellThread* Cell::addThread(CellThreadType type, U32 entry=0)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     CellThread* thread;
@@ -65,15 +66,15 @@ CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
         break;
 
     case CELL_THREAD_SPU:
-        nucleus.log.error(LOG_CPU, "Unimplemented Cell thread type");
+        logger.error(LOG_CPU, "Unimplemented Cell thread type");
         return nullptr;
 
     case CELL_THREAD_RAWSPU:
-        nucleus.log.error(LOG_CPU, "Unimplemented Cell thread type");
+        logger.error(LOG_CPU, "Unimplemented Cell thread type");
         return nullptr;
 
     default:
-        nucleus.log.error(LOG_CPU, "Unsupported Cell thread type");
+        logger.error(LOG_CPU, "Unsupported Cell thread type");
         return nullptr;
     }
 
@@ -88,7 +89,7 @@ CellThread* Cell::addThread(CellThreadType type, u32 entry=0)
     return thread;
 }
 
-CellThread* Cell::getThread(u64 id)
+CellThread* Cell::getThread(U64 id)
 {
     for (CellThread* thread : ppu_threads) {
         if (thread->id == id) {
@@ -97,7 +98,7 @@ CellThread* Cell::getThread(u64 id)
     }
 }
 
-void Cell::removeThread(u64 id)
+void Cell::removeThread(U64 id)
 {
     // Remove thread
     ppu_threads.erase(

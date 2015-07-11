@@ -17,7 +17,7 @@ using namespace cpu::hir;
 
 void Recompiler::bx(Instruction code)
 {
-    const u32 target = code.aa ? (code.li << 2) : (currentAddress + (code.li << 2)) & ~0x3;
+    const U32 target = code.aa ? (code.li << 2) : (currentAddress + (code.li << 2)) & ~0x3;
 
     // Function call
     if (code.lk) {
@@ -75,14 +75,14 @@ void Recompiler::bx(Instruction code)
 
 void Recompiler::bcx(Instruction code)
 {
-    const u32 targetAddr = code.aa ? (code.bd << 2) : (currentAddress + (code.bd << 2)) & ~0x3;
-    const u32 nextAddr = (currentAddress + 4) & ~0x3;
+    const U32 targetAddr = code.aa ? (code.bd << 2) : (currentAddress + (code.bd << 2)) & ~0x3;
+    const U32 nextAddr = (currentAddress + 4) & ~0x3;
 
     // Check condition
-    const u8 bo0 = (code.bo & 0x10) ? 1 : 0;
-    const u8 bo1 = (code.bo & 0x08) ? 1 : 0;
-    const u8 bo2 = (code.bo & 0x04) ? 1 : 0;
-    const u8 bo3 = (code.bo & 0x02) ? 1 : 0;
+    const U8 bo0 = (code.bo & 0x10) ? 1 : 0;
+    const U8 bo1 = (code.bo & 0x08) ? 1 : 0;
+    const U8 bo2 = (code.bo & 0x04) ? 1 : 0;
+    const U8 bo3 = (code.bo & 0x02) ? 1 : 0;
 
     if (!bo2) {
         // TODO: Decrement CTR register by 1

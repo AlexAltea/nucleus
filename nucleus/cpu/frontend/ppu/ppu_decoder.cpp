@@ -1,5 +1,5 @@
 /**
- * (c) 2015 Alexandro Sánchez Bach. All rights reserved.
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -50,7 +50,7 @@ void Function::do_register_analysis(Analyzer* status)
 
     // Analyze read/written registers
     Block currentBlock = static_cast<Block&>(*blocks[address]);
-    for (u32 i = currentBlock.address; i < (currentBlock.address + currentBlock.size); i += 4) {
+    for (U32 i = currentBlock.address; i < (currentBlock.address + currentBlock.size); i += 4) {
         Instruction code(i);
 
         // Check if called functions use any other registers
@@ -79,7 +79,7 @@ bool Function::analyze_cfg()
     blocks.clear();
     type_in.clear();
 
-    std::queue<u32> labels({ address });
+    std::queue<U32> labels({ address });
 
     Instruction code;  // Current instruction
     Block current;     // Current block
@@ -87,7 +87,7 @@ bool Function::analyze_cfg()
 
     // Control Flow Graph generation
     while (!labels.empty()) {
-        u32 addr = labels.front();
+        U32 addr = labels.front();
         code.instruction = nucleus.memory.read32(addr);
 
         // Initial Block properties
@@ -96,7 +96,7 @@ bool Function::analyze_cfg()
         current.branch_a = 0;
         current.branch_b = 0;
 
-        u32 maxSize = 0xFFFFFFFF;
+        U32 maxSize = 0xFFFFFFFF;
         bool continueLoop = false;
         for (auto& item : blocks) {
             auto& block_a = *item.second;
@@ -125,8 +125,8 @@ bool Function::analyze_cfg()
 
         // Push new labels
         if (code.is_branch_conditional() && !code.is_call()) {
-            const u32 target_a = code.get_target(addr);
-            const u32 target_b = addr + 4;
+            const U32 target_a = code.get_target(addr);
+            const U32 target_b = addr + 4;
             if (!parent->contains(target_a) || !parent->contains(target_b)) {
                 return false;
             }
@@ -136,7 +136,7 @@ bool Function::analyze_cfg()
             current.branch_b = target_b;
         }
         if (code.is_branch_unconditional() && !code.is_call()) {
-            const u32 target = code.get_target(addr);
+            const U32 target = code.get_target(addr);
             if (!parent->contains(target)) {
                 return false;
             }
@@ -156,7 +156,7 @@ void Function::analyze_type()
     do_register_analysis(&status);
 
     // Determine type of function arguments
-    for (u32 reg = 0; reg < 13; reg++) {
+    for (U32 reg = 0; reg < 13; reg++) {
         if ((status.gpr[reg + 3] & REG_READ_ORIG) && reg < 8) {
             type_in.push_back(FUNCTION_IN_INTEGER);
         }
@@ -248,7 +248,7 @@ void Function::recompile()
 
     // Declare CFG blocks
     for (const auto& item : blocks) {
-        u32 address = item.second->address;
+        U32 address = item.second->address;
         std::string name = format("block_%X", address);
         recompiler.blocks[address] = hir::Block::Create(name, function);
     }
@@ -258,13 +258,13 @@ void Function::recompile()
     recompiler.createEpilog();
 
     // Recompile basic clocks
-    std::queue<u32> labels({ address });
+    std::queue<U32> labels({ address });
     for (auto& item : blocks) {
         auto& block = static_cast<Block&>(*item.second);
 
         // Recompile block instructions
         builder.SetInsertPoint(recompiler.blocks[block.address]);
-        for (u32 offset = 0; offset < block.size; offset += 4) {
+        for (U32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
             const Instruction code(recompiler.currentAddress);
             auto method = get_entry(code).recompile;
@@ -274,7 +274,7 @@ void Function::recompile()
 
         // Block was splitted
         if (block.is_split()) {
-            const u32 target = block.address + block.size;
+            const U32 target = block.address + block.size;
             if (blocks.find(target) != blocks.end()) {
                 builder.CreateBr(recompiler.blocks[target]);
             }
@@ -295,13 +295,13 @@ void Function::recompile()
 void Segment::analyze()
 {
     // Lists of labels
-    std::set<u32> labelBlocks;  // Detected immediately
-    std::set<u32> labelCalls;   // Direct target of a {bl*, bcl*} instruction (call)
-    std::set<u32> labelJumps;   // Direct or indirect target of a {b, ba, bc, bca} instruction (jump)
+    std::set<U32> labelBlocks;  // Detected immediately
+    std::set<U32> labelCalls;   // Direct target of a {bl*, bcl*} instruction (call)
+    std::set<U32> labelJumps;   // Direct or indirect target of a {b, ba, bc, bca} instruction (jump)
 
     // Basic Block Slicing
-    u32 currentBlock = 0;
-    for (u32 i = address; i < (address + size); i += 4) {
+    U32 currentBlock = 0;
+    for (U32 i = address; i < (address + size); i += 4) {
         const Instruction instr(i);
 
         // New block appeared
@@ -334,7 +334,7 @@ void Segment::analyze()
     }
 
     // Functions := ((Blocks \ Jumps) U Calls)
-    std::set<u32> labelFunctions;
+    std::set<U32> labelFunctions;
     std::set_difference(labelBlocks.begin(), labelBlocks.end(), labelJumps.begin(), labelJumps.end(), std::inserter(labelFunctions, labelFunctions.end()));
     std::set_union(labelFunctions.begin(), labelFunctions.end(), labelCalls.begin(), labelCalls.end(), std::inserter(labelFunctions, labelFunctions.end()));
 
@@ -472,7 +472,7 @@ void Segment::recompile()
     module.dump();
 
     // Compile
-    backend::Generate(static_cast<frontend::ISegment<u32>*>(this));
+    backend::Generate(static_cast<frontend::ISegment<U32>*>(this));
 }
 
 }  // namespace ppu

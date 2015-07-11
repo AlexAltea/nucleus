@@ -15,7 +15,7 @@
 namespace cpu {
 namespace ppu {
 
-Interpreter::Interpreter(u32 entry, u32 stack)
+Interpreter::Interpreter(U32 entry, U32 stack)
 {
 }
 
@@ -31,11 +31,11 @@ void Interpreter::step()
 // Unknown instruction
 void Interpreter::unknown(Instruction code)
 {
-    nucleus.log.error(LOG_CPU, "Unknown instruction: %08X (PC: %08X)", code.instruction, state.pc);
+    logger.error(LOG_CPU, "Unknown instruction: %08X (PC: %08X)", code.instruction, state.pc);
 }
 void Interpreter::unknown(const char* instruction)
 {
-    nucleus.log.error(LOG_CPU, "Unknown instruction: %s", instruction);
+    logger.error(LOG_CPU, "Unknown instruction: %s", instruction);
 }
 
 }  // namespace ppu

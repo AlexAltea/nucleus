@@ -20,8 +20,7 @@ template <typename TAddr>
 class ISegment;
 
 template <typename TAddr>
-class IFunction
-{
+class IFunction {
 public:
     hir::Function function;
 

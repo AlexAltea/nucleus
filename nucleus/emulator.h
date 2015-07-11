@@ -6,12 +6,11 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/logging.h"
 #include "nucleus/cpu/cell.h"
 #include "nucleus/filesystem/filesystem.h"
 #include "nucleus/memory/memory.h"
 #include "nucleus/gpu/rsx.h"
-#include "nucleus/syscalls/lv2.h"
+#include "nucleus/system/lv2.h"
 
 #include <mutex>
 #include <condition_variable>
@@ -29,15 +28,9 @@ public:
     Memory memory;
     cpu::Cell cell;
     gpu::RSX rsx;
-    LV2 lv2;
+    sys::LV2 lv2;
 
-    // Mount points
-    std::vector<FileSystem*> devices;
-
-    // Logging
-    Logger log;
-
-    Emulator() : lv2(LV2_DEX) {}
+    Emulator() : lv2(sys::LV2_DEX) {}
 
     // Control the emulated process
     bool load(const std::string& filepath);

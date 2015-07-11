@@ -18,12 +18,12 @@
 #define PAGE_4K(x) (((x) + 4095) & ~(4095))
 
 // Memory blocks
-MemoryBlock::MemoryBlock(u32 block_addr, u32 block_size)
+MemoryBlock::MemoryBlock(U32 block_addr, U32 block_size)
 {
     // Initialize members
     addr = block_addr;
     size = PAGE_4K(block_size);
-    realaddr = (void*)((u64)nucleus.memory.getBaseAddr() + block_addr);
+    realaddr = (void*)((U64)nucleus.memory.getBaseAddr() + block_addr);
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
@@ -44,7 +44,7 @@ MemorySegment::MemorySegment()
 {
 }
 
-MemorySegment::MemorySegment(u32 start, u32 size)
+MemorySegment::MemorySegment(U32 start, U32 size)
 {
     init(start, size);
 }
@@ -54,7 +54,7 @@ MemorySegment::~MemorySegment()
     close();
 }
 
-void MemorySegment::init(u32 start, u32 size)
+void MemorySegment::init(U32 start, U32 size)
 {
     close();
     m_start = start;
@@ -65,10 +65,10 @@ void MemorySegment::close()
 {
 }
 
-u32 MemorySegment::alloc(u32 size, u32 align)
+U32 MemorySegment::alloc(U32 size, U32 align)
 {
     size = PAGE_4K(size);
-    u32 exsize;
+    U32 exsize;
 
     if (align <= 4096) {
         align = 0;
@@ -81,7 +81,7 @@ u32 MemorySegment::alloc(u32 size, u32 align)
 
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    for (u32 addr = m_start; addr <= m_start + m_size - exsize;) {
+    for (U32 addr = m_start; addr <= m_start + m_size - exsize;) {
         for (const auto& block : m_allocated) {
             if ((block.addr <= addr && addr < block.addr + block.size) ||
                 (addr <= block.addr && block.addr < addr + exsize)) {
@@ -101,7 +101,7 @@ u32 MemorySegment::alloc(u32 size, u32 align)
     return 0;
 }
 
-u32 MemorySegment::allocFixed(u32 addr, u32 size)
+U32 MemorySegment::allocFixed(U32 addr, U32 size)
 {
     size = PAGE_4K(size + (addr & 4095)); // Align size
     addr &= ~4095; // Align start address
@@ -122,7 +122,7 @@ u32 MemorySegment::allocFixed(u32 addr, u32 size)
     return addr;
 }
 
-bool MemorySegment::free(u32 addr)
+bool MemorySegment::free(U32 addr)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -136,7 +136,7 @@ bool MemorySegment::free(u32 addr)
     return false;
 }
 
-bool MemorySegment::isValid(u32 addr)
+bool MemorySegment::isValid(U32 addr)
 {
     if (addr < m_start || addr >= m_start + m_size) {
         return false;
@@ -144,21 +144,21 @@ bool MemorySegment::isValid(u32 addr)
     return true;
 }
 
-u32 MemorySegment::getTotalMemory() const
+U32 MemorySegment::getTotalMemory() const
 {
     return m_size;
 }
 
-u32 MemorySegment::getUsedMemory() const
+U32 MemorySegment::getUsedMemory() const
 {
-    u32 usedMemory = 0;
+    U32 usedMemory = 0;
     for (const auto& block : m_allocated) {
         usedMemory += block.size;
     }
     return usedMemory;
 }
 
-u32 MemorySegment::getBaseAddr() const
+U32 MemorySegment::getBaseAddr() const
 {
     return m_start;
 }

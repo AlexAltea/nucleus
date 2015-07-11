@@ -1,5 +1,5 @@
 /**
- * (c) 2015 Nucleus project. All rights reserved.
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -16,8 +16,9 @@ using SymbolInfo = llvm::RuntimeDyld::SymbolInfo;
 // Nucleus-defined symbols
 extern "C" {
     void* nucleusGetState();
-    void nucleusLogState(u64 address);
-    void nucleusIntermodularCall(u64 address);
+    void nucleusLogState(U64 address);
+    void nucleusDebugState(U64 address);
+    void nucleusIntermodularCall(U64 address);
     void nucleusSystemCall();
 }
 

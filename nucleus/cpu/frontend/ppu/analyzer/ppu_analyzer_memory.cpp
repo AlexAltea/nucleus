@@ -209,7 +209,7 @@ void Analyzer::lhzx(Instruction code)
 void Analyzer::lmw(Instruction code)
 {
     setFlag(gpr[code.ra], REG_READ);
-    for (u32 i = code.rd; i < 32; i++) {
+    for (U32 i = code.rd; i < 32; i++) {
         setFlag(gpr[i], REG_WRITE);
     }
 }
@@ -217,8 +217,8 @@ void Analyzer::lmw(Instruction code)
 void Analyzer::lswi(Instruction code)
 {
     setFlag(gpr[code.ra], REG_READ);
-    u8 reg = code.rd;
-    u64 n = code.nb ? code.nb : 32;
+    U8 reg = code.rd;
+    U64 n = code.nb ? code.nb : 32;
     while (n > 0) {
         setFlag(gpr[reg], REG_WRITE);
         n = (n > 3) ? (n - 4) : 0;
@@ -471,8 +471,8 @@ void Analyzer::stmw(Instruction code)
 void Analyzer::stswi(Instruction code)
 {
     setFlag(gpr[code.ra], REG_READ);
-    u64 n = code.nb ? code.nb : 32;
-    u8 reg = code.rd;
+    U64 n = code.nb ? code.nb : 32;
+    U8 reg = code.rd;
     while (n > 0) {
         setFlag(gpr[reg], REG_READ);
         n = (n > 3) ? (n - 4) : 0;

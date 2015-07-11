@@ -31,8 +31,8 @@ protected:
     EmulatorStatus m_status = NUCLEUS_STATUS_UNKNOWN;
 
 public:
-    s32 prio;  // Thread priority
-    u64 id;    // Thread ID (relevant for LV2)
+    S32 prio;  // Thread priority
+    U64 id;    // Thread ID (relevant for LV2)
 
     // Open a new thread that will enter the code emulation loop
     virtual void start()=0;

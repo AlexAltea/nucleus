@@ -15,8 +15,7 @@ namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class IRecompiler
-{
+class IRecompiler {
 protected:
     // Function to be generated
     IFunction<TAddr>* function;

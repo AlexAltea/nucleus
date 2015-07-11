@@ -5,6 +5,7 @@
 
 #include "ppu_recompiler.h"
 #include "nucleus/emulator.h"
+#include "nucleus/logger/logger.h"
 
 namespace cpu {
 namespace ppu {
@@ -27,7 +28,7 @@ void Recompiler::mfspr(Instruction code)
 {
     Value<I64> rd;
 
-    const u32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
+    const U32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
     switch (n) {
     case 0x001: // XER register
         rd = getXER();
@@ -42,7 +43,7 @@ void Recompiler::mfspr(Instruction code)
         break;
 
     default:
-        nucleus.log.error(LOG_CPU, "Recompiler::mfspr error: Unknown SPR");
+        logger.error(LOG_CPU, "Recompiler::mfspr error: Unknown SPR");
     }
 
     setGPR(code.rd, rd);
@@ -56,7 +57,7 @@ void Recompiler::mtspr(Instruction code)
 {
     Value<I64> rs = getGPR(code.rs);
 
-    const u32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
+    const U32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
     switch (n) {
     case 0x001: // XER register
         setXER(rs);
@@ -70,7 +71,7 @@ void Recompiler::mtspr(Instruction code)
         break;
 
     default:
-        nucleus.log.error(LOG_CPU, "Recompiler::mtspr error: Unknown SPR");
+        logger.error(LOG_CPU, "Recompiler::mtspr error: Unknown SPR");
     }
 }
 

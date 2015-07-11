@@ -14,7 +14,7 @@ Instruction::Instruction() : instruction(0)
 {
 }
 
-Instruction::Instruction(u32 addr) : instruction(nucleus.memory.read32(addr))
+Instruction::Instruction(U32 addr) : instruction(nucleus.memory.read32(addr))
 {
 }
 
@@ -81,7 +81,7 @@ bool Instruction::is_return() const
     return false;
 }
 
-u32 Instruction::get_target(u32 currentAddr) const
+U32 Instruction::get_target(U32 currentAddr) const
 {
     // If instruction is {bc*}
     if (opcode == 0x10) {

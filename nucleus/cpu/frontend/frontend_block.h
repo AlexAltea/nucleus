@@ -11,8 +11,7 @@ namespace cpu {
 namespace frontend {
 
 template <typename TAddr>
-class IBlock
-{
+class IBlock {
 public:
     // Starting address
     TAddr address = 0;
