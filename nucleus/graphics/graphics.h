@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/graphics/command_buffer.h"
+
 namespace graphics {
 
 enum PrimitiveTopology {
@@ -23,17 +25,10 @@ class IBackend {
     virtual void CreateCommandQueue() = 0;
     virtual void CommandQueueSubmit() = 0;
 
-    // Command buffer management
-    virtual void CreateCommandBuffer() = 0;
-    virtual void BeginCommandBuffer() = 0;
-    virtual void EndCommandBuffer() = 0;
-    virtual void ResetCommandBuffer() = 0;
-
-    virtual void CmdBindPipeline() = 0;
-    virtual void CmdDraw() = 0;
-    virtual void CmdDrawIndexed() = 0;
-    virtual void CmdDrawIndirect() = 0;
-    virtual void CmdDrawIndexedIndirect() = 0;
+    /**
+     * Create a new command buffer
+     */
+    virtual ICommandBuffer* CreateCommandBuffer() = 0;
 
     // Pipeline management
     virtual void CreatePipeline() = 0;

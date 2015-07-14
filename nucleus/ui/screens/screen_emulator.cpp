@@ -6,9 +6,6 @@
 #include "screen_emulator.h"
 #include "nucleus/emulator.h"
 
-// OpenGL dependencies
-#include "nucleus/opengl.h"
-
 ScreenEmulator::ScreenEmulator()
 {
     rsxDisplay.style.top = Length{0.00, Length::Unit::PCT};
@@ -19,9 +16,9 @@ ScreenEmulator::ScreenEmulator()
 
 void ScreenEmulator::render()
 {
-    rsxDisplay.textureId = nucleus.rsx.get_display();
+    //rsxDisplay.textureId = nucleus.rsx.get_display();
     rsxDisplay.render();
-    glFinish();
+    //glFinish();
 }
 
 void ScreenEmulator::update()

@@ -5,9 +5,6 @@
 
 #include "screen_main.h"
 
-// OpenGL dependencies
-#include "nucleus/opengl.h"
-
 ScreenMain::ScreenMain()
 {
 }

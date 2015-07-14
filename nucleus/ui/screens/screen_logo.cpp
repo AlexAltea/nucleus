@@ -9,9 +9,6 @@
 #include "nucleus/ui/screens/screen_emulator.h"
 #include "nucleus/ui/screens/screen_main.h"
 
-// OpenGL dependencies
-#include "nucleus/opengl.h"
-
 ScreenLogo::ScreenLogo()
 {
     logo.init("..\\resources\\images\\nucleus-logo.png");

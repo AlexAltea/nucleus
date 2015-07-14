@@ -10,17 +10,100 @@
     <Filter Include="hir">
       <UniqueIdentifier>{1d46846f-7248-4b02-bf2d-2b9ca13ff384}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backend\direct3d12">
+      <UniqueIdentifier>{b4f630a9-8353-4a1a-927e-8fd826fb2fb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="graphics.cpp" />
+    <ClCompile Include="hir\builder.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\opengl\opengl_command_buffer.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
     <ClCompile Include="backend\opengl\opengl.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\opengl\opengl_backend.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\direct3d12\direct3d12_command_buffer.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="hir\function.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="hir\module.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="hir\block.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\opengl\opengl_command_queue.cpp">
       <Filter>backend\opengl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="hir\builder.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\opengl\opengl_command_buffer.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="command_buffer.h" />
+    <ClInclude Include="device.h" />
     <ClInclude Include="backend\opengl\opengl.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="backend\opengl\opengl_backend.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d12\direct3d12_command_buffer.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="hir\block.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\function.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\module.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\type.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\instruction.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\value.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\hir.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="command_queue.h" />
+    <ClInclude Include="backend\opengl\opengl_command_queue.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="target.h" />
+    <ClInclude Include="backend\opengl\opengl_target.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d12\direct3d12_pipeline.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\opengl\opengl_pipeline.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="pipeline.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="backend\opengl\opengl.inc">
+      <Filter>backend\opengl</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -19,10 +19,7 @@ public:
     virtual void CommandQueueSubmit() override;
 
     // Command buffer management
-    virtual void CreateCommandBuffer() override;
-    virtual void BeginCommandBuffer() override;
-    virtual void EndCommandBuffer() override;
-    virtual void ResetCommandBuffer() override;
+    virtual ICommandBuffer* CreateCommandBuffer() override;
 
     // Pipeline management
     virtual void CreatePipeline() override;

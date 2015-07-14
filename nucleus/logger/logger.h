@@ -14,9 +14,10 @@ enum LogType {
     LOG_COMMON = 0,
     LOG_CPU,
     LOG_FS,
+    LOG_GPU,
+    LOG_GRAPHICS,
     LOG_LOADER,
     LOG_MEMORY,
-    LOG_GPU,
     LOG_HLE,
     LOG_UI,
 };

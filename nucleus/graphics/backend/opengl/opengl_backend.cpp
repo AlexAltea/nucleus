@@ -4,11 +4,18 @@
  */
 
 #include "opengl_backend.h"
+#include "nucleus/graphics/backend/opengl/opengl_command_buffer.h"
 
 namespace graphics {
 
 OpenGLBackend::OpenGLBackend()
 {
+}
+
+ICommandBuffer* OpenGLBackend::CreateCommandBuffer()
+{
+    ICommandBuffer* commandBuffer = new OpenGLCommandBuffer();
+    return commandBuffer;
 }
 
 }  // namespace graphics
