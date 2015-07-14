@@ -18,6 +18,22 @@ namespace graphics {
         return false; \
     } \
 }
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#define LOAD_EXTENSION(type, function) { \
+    function = reinterpret_cast<type>(glXGetProcAddress(#function)); \
+    if (!function) { \
+        logger.error(LOG_HLE, "Could not load OpenGL extension '%s'", #function); \
+        return false; \
+    } \
+}
+#elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
+#define LOAD_EXTENSION(type, function) { \
+    function = reinterpret_cast<type>(eglGetProcAddress(#function)); \
+    if (!function) { \
+        logger.error(LOG_HLE, "Could not load OpenGL ES extension '%s'", #function); \
+        return false; \
+    } \
+}
 #endif
 
 // Declare extensions
