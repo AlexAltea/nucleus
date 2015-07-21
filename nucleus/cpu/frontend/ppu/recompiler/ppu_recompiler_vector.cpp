@@ -255,26 +255,68 @@ void Recompiler::vandc(Instruction code)
 
 void Recompiler::vavgsb(Instruction code)
 {
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
+    Value<I8, 16> vd;
+
+    vd = builder.CreateSAverage(va, vb);
+
+    setVR(code.vd, vd);
 }
 
 void Recompiler::vavgsh(Instruction code)
 {
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
+    Value<I16, 8> vd;
+
+    vd = builder.CreateSAverage(va, vb);
+
+    setVR(code.vd, vd);
 }
 
 void Recompiler::vavgsw(Instruction code)
 {
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
+
+    vd = builder.CreateSAverage(va, vb);
+
+    setVR(code.vd, vd);
 }
 
 void Recompiler::vavgub(Instruction code)
 {
+    Value<I8, 16> va = getVR<I8>(code.va);
+    Value<I8, 16> vb = getVR<I8>(code.vb);
+    Value<I8, 16> vd;
+
+    vd = builder.CreateUAverage(va, vb);
+
+    setVR(code.vd, vd);
 }
 
 void Recompiler::vavguh(Instruction code)
 {
+    Value<I16, 8> va = getVR<I16>(code.va);
+    Value<I16, 8> vb = getVR<I16>(code.vb);
+    Value<I16, 8> vd;
+
+    vd = builder.CreateUAverage(va, vb);
+
+    setVR(code.vd, vd);
 }
 
 void Recompiler::vavguw(Instruction code)
 {
+    Value<I32, 4> va = getVR<I32>(code.va);
+    Value<I32, 4> vb = getVR<I32>(code.vb);
+    Value<I32, 4> vd;
+
+    vd = builder.CreateUAverage(va, vb);
+
+    setVR(code.vd, vd);
 }
 
 void Recompiler::vcfsx(Instruction code)

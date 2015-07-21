@@ -37,7 +37,7 @@ public:
      * HIR constants
      */
     template <typename T>
-    Value<T> get(typename T::type constant) {
+    Value<T> get(U64 constant) {
         static_assert(is_integer<T>::value,
             "Builder::get accepts only integer values");
         return builder.getIntN(T::size, constant);
@@ -46,7 +46,7 @@ public:
     /**
      * HIR symbol generation
      */
-    Value<I8> CreateGlobalString(const std::string& str) {
+    Value<hir::I8> CreateGlobalString(const std::string& str) {
         return builder.CreateGlobalString(str);
     }
 
@@ -105,7 +105,7 @@ public:
 
     // Bitwise Binary Operations
     template <typename T, int N>
-    Value<T, N> CreateShl(Value<T, N> val, u64 amount) {
+    Value<T, N> CreateShl(Value<T, N> val, U64 amount) {
         static_assert(is_integer<T>::value,
             "Builder::CreateShl accepts only integer and integer-vector values");
         return builder.CreateShl(val.value, amount);
@@ -119,7 +119,7 @@ public:
     }
 
     template <typename T, int N>
-    Value<T, N> CreateLShr(Value<T, N> val, u64 amount) {
+    Value<T, N> CreateLShr(Value<T, N> val, U64 amount) {
         static_assert(is_integer<T>::value,
             "Builder::CreateLShr accepts only integer and integer-vector values");
         return builder.CreateLShr(val.value, amount);
@@ -133,7 +133,7 @@ public:
     }
 
     template <typename T, int N>
-    Value<T, N> CreateAShr(Value<T, N> val, u64 amount) {
+    Value<T, N> CreateAShr(Value<T, N> val, U64 amount) {
         static_assert(is_integer<T>::value,
             "Builder::CreateAShr accepts only integer and integer-vector values");
         return builder.CreateAShr(val.value, amount);
@@ -147,7 +147,7 @@ public:
     }
 
     template <typename T, int N>
-    Value<T, N> CreateAnd(Value<T, N> lhs, u64 rhs) {
+    Value<T, N> CreateAnd(Value<T, N> lhs, U64 rhs) {
         static_assert(is_integer<T>::value,
             "Builder::CreateAnd accepts only integer values");
         return builder.CreateAnd(lhs.value, rhs);
@@ -184,35 +184,35 @@ public:
     // Floating-point arithmetic operations
     template <typename T, int N>
     Value<T, N> CreateFAdd(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateFAdd accepts only floating-point values");
         return builder.CreateFAdd(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFSub(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateFSub accepts only floating-point values");
         return builder.CreateFSub(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFMul(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateFMul accepts only floating-point values");
         return builder.CreateFMul(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFDiv(Value<T, N> lhs, Value<T, N> rhs) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateFDiv accepts only floating-point values");
         return builder.CreateFDiv(lhs.value, rhs.value);
     }
 
     template <typename T, int N>
     Value<T, N> CreateFNeg(Value<T, N> v) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateFNeg accepts only floating-point values");
         return builder.CreateFNeg(v.value);
     }
@@ -247,7 +247,7 @@ public:
 
     template <typename TO, typename TI>
     Value<TO> CreateFPTrunc(Value<TI> v) {
-        static_assert(std::is_floating_point<TI::type>::value && std::is_floating_point<TO::type>::value,
+        static_assert(is_floating_point<TI>::value && is_floating_point<TO>::value,
             "Builder::CreateFPTrunc accepts only floating-point values");
         static_assert(TI::size > TO::size,
             "Builder::CreateFPTrunc converts only to smaller floating-point types");
@@ -256,7 +256,7 @@ public:
 
     template <typename TO, typename TI>
     Value<TO> CreateFPExt(Value<TI> v) {
-        static_assert(std::is_floating_point<TI::type>::value && std::is_floating_point<TO::type>::value,
+        static_assert(is_floating_point<TI>::value && is_floating_point<TO>::value,
             "Builder::CreateFPExt accepts only floating-point values");
         static_assert(TI::size < TO::size,
             "Builder::CreateFPExt converts only to larger floating-point types");
@@ -273,7 +273,7 @@ public:
     // Vector operations
     template <typename TVec, int N, typename TIdx>
     Value<TVec> CreateExtractElement(Value<TVec, N> vec, Value<TIdx> idx) {
-        static_assert(std::is_integral<TIdx::type>::value,
+        static_assert(is_integer<TIdx>::value,
             "Builder::CreateExtractElement accepts only integer indices");
         return builder.CreateExtractElement(vec.value, idx.value);
     }
@@ -471,7 +471,7 @@ public:
     // Standard C Library Intrinsics
     template <typename T>
     Value<T> CreateIntrinsic_Fabs(Value<T> val) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateIntrinsic_Fabs accepts only floating-point values");
         Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::fabs);
         return CreateCall(intrinsic, {val});
@@ -479,7 +479,7 @@ public:
 
     template <typename T>
     Value<T> CreateIntrinsic_Sqrt(Value<T> val) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateIntrinsic_Sqrt accepts only floating-point values");
         Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::sqrt);
         return CreateCall(intrinsic, {val});
@@ -522,10 +522,35 @@ public:
     // Specialised Arithmetic Intrinsics
     template <typename T>
     Value<T> CreateIntrinsic_Fmuladd(Value<T> a, Value<T> b, Value<T> c) {
-        static_assert(std::is_floating_point<T::type>::value,
+        static_assert(is_floating_point<T>::value,
             "Builder::CreateIntrinsic_Fmuladd accepts only floating-point values");
         Function intrinsic = getIntrinsic<T>(llvm::Intrinsic::fmuladd);
         return CreateCall(intrinsic, {a, b, c});
+    }
+
+    /**
+     * HIR custom instructions
+     */
+    template <typename T, int N>
+    Value<T, N> CreateSAverage(Value<T, N> a, Value<T, N> b) {
+        static_assert(is_integer<T>::value,
+            "Builder::CreateAverage accepts only integer values");
+        auto aExt = builder.CreateSExt(a, llvm::VectorType::get(builder.getIntNTy(2 * T::size), N));
+        auto bExt = builder.CreateSExt(b, llvm::VectorType::get(builder.getIntNTy(2 * T::size), N));
+        auto cExt = builder.CreateVectorSplat(N, builder.getIntN(2 * T::size, 1));
+        auto res = builder.CreateAShr(builder.CreateAdd(builder.CreateAdd(aExt, bExt), cExt), 1);
+        return builder.CreateTrunc(res, llvm::VectorType::get(builder.getIntNTy(T::size), N));
+    }
+
+    template <typename T, int N>
+    Value<T, N> CreateUAverage(Value<T, N> a, Value<T, N> b) {
+        static_assert(is_integer<T>::value,
+            "Builder::CreateAverage accepts only integer values");
+        auto aExt = builder.CreateZExt(a, llvm::VectorType::get(builder.getIntNTy(2 * T::size), N));
+        auto bExt = builder.CreateZExt(b, llvm::VectorType::get(builder.getIntNTy(2 * T::size), N));
+        auto cExt = builder.CreateVectorSplat(N, builder.getIntN(2 * T::size, 1));
+        auto res = builder.CreateAShr(builder.CreateAdd(builder.CreateAdd(aExt, bExt), cExt), 1);
+        return builder.CreateTrunc(res, llvm::VectorType::get(builder.getIntNTy(T::size), N));
     }
 };
 
