@@ -23,6 +23,8 @@ public:
     virtual File* openFile(const Path& path, OpenMode mode) = 0;
     virtual bool existsFile(const Path& path) = 0;
     virtual bool removeFile(const Path& path) = 0;
+
+    virtual File::Attributes getFileAttributes(const Path& path) = 0;
 };
 
 }  // namespace fs

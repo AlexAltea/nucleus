@@ -76,6 +76,15 @@ Position HostPathFile::tell()
     return ftello64(handle);
 }
 
+File::Attributes HostPathFile::attributes()
+{
+    // TODO
+    File::Attributes attr;
+    attr.timestamp_access = 0;
+
+    return attr;
+}
+
 bool HostPathFile::isOpen()
 {
     return handle != nullptr;

@@ -24,4 +24,31 @@ File* HostPathDevice::openFile(const Path& path, OpenMode mode)
     return file;
 }
 
+bool HostPathDevice::existsFile(const Path& path)
+{
+    std::FILE* handle;
+    fopen_s(&handle, (localPath + path).c_str(), "r");
+    if (!handle) {
+        return false;
+    }
+
+    fclose(handle);
+    return true;
+}
+
+bool HostPathDevice::removeFile(const Path& path)
+{
+    int result = remove((localPath + path).c_str());
+    if (!remove) {
+        return false;
+    }
+
+    return true;
+}
+
+File::Attributes HostPathDevice::getFileAttributes(const Path& path)
+{
+    return File::Attributes{};
+}
+
 }  // namespace fs

@@ -36,4 +36,49 @@ File* VirtualFileSystem::openFile(const Path& path, OpenMode mode)
     device->openFile(relativePath, mode);
 }
 
+bool VirtualFileSystem::createFile(const Path& path)
+{
+    auto* device = getDevice(path);
+    if (!device) {
+        return nullptr;
+    }
+
+    Path relativePath = path.substr(device->mountPath.length());
+    File* file = device->openFile(relativePath, Write);
+    delete file;
+}
+
+bool VirtualFileSystem::existsFile(const Path& path)
+{
+    auto* device = getDevice(path);
+    if (!device) {
+        return nullptr;
+    }
+
+    Path relativePath = path.substr(device->mountPath.length());
+    device->existsFile(relativePath);
+}
+
+bool VirtualFileSystem::removeFile(const Path& path)
+{
+    auto* device = getDevice(path);
+    if (!device) {
+        return nullptr;
+    }
+
+    Path relativePath = path.substr(device->mountPath.length());
+    device->removeFile(relativePath);
+}
+
+File::Attributes VirtualFileSystem::getFileAttributes(const Path& path)
+{
+    auto* device = getDevice(path);
+    if (!device) {
+        return File::Attributes{};
+    }
+
+    Path relativePath = path.substr(device->mountPath.length());
+    return device->getFileAttributes(relativePath);
+}
+
 }  // namespace fs
