@@ -31,22 +31,7 @@ before_install:
     fi
 
   # Install LLVM
-  # NOTE: Ubuntu 12.04 does not set up the LLVM package properly.
-  #       Wait for TravisCI to update to Ubuntu 14.04, and use:
-  #       $ sudo apt-get install llvm-3.7
-  #       instead.
-  # Building LLVM requires CMake >=2.8.8
-  - sudo apt-get install lib32stdc++6 -qq &&
-    wget http://www.cmake.org/files/v3.0/cmake-3.0.0-Linux-i386.sh &&
-    chmod a+x cmake-3.0.0-Linux-i386.sh &&
-    sudo ./cmake-3.0.0-Linux-i386.sh --skip-license --prefix=/usr;
-  - git submodule update --init externals/llvm
-  - mkdir externals/llvm_build
-  - cd externals/llvm_build
-  - cmake -DLLVM_TARGETS_TO_BUILD=X86 -DLLVM_BUILD_RUNTIME=OFF -DLLVM_BUILD_TOOLS=OFF -DLLVM_INCLUDE_DOCS=OFF -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_INCLUDE_TOOLS=OFF -DLLVM_INCLUDE_UTILS=OFF -DWITH_POLLY=OFF ../llvm
-  - make -j 4
-  - sudo make install
-  - cd ../..
+  - sudo apt-get install llvm-3.6 llvm-3.6-dev
 
 before_script:
   - cmake .
