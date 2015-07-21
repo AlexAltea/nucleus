@@ -7,8 +7,6 @@
 #include "nucleus/common.h"
 #include "nucleus/logger/logger.h"
 
-namespace graphics {
-
 // Load extensions
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #define LOAD_EXTENSION(type, function) { \
@@ -42,6 +40,8 @@ namespace graphics {
 #include "opengl.inc"
 #undef EXTENSION
 #undef DECLARE_EXTENSION
+
+namespace graphics {
 
 bool initializeOpenGL()
 {

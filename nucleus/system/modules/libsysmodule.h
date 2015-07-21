@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+namespace sys {
+
 // Return codes
 enum {
     CELL_VIDEO_OUT_SUCCEEDED                      = 0,
@@ -136,3 +138,5 @@ S32 cellVideoOutConfigure(U32 videoOut, CellVideoOutConfiguration* config, CellV
 S32 cellVideoOutGetDeviceInfo();
 S32 cellVideoOutGetResolution(U32 resolutionId, CellVideoOutResolution* resolution);
 S32 cellVideoOutGetState(U32 videoOut, U32 deviceIndex, CellVideoOutState* state);
+
+}  // namespace sys

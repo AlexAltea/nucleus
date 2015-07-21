@@ -13,6 +13,8 @@
 #include <unordered_map>
 #include <vector>
 
+namespace sys {
+
 struct Module {
     std::string name;
     std::unordered_map<U32, Syscall*> functions;
@@ -32,3 +34,5 @@ public:
     // Get function ID from the current thread and call it
     void call(cpu::ppu::State& state);
 };
+
+}  // namespace sys

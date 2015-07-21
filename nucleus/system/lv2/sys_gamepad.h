@@ -7,5 +7,9 @@
 
 #include "nucleus/common.h"
 
+namespace sys {
+
 // SysCalls
 S32 sys_gamepad_ycon_if();
+
+}  // namespace sys

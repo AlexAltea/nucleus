@@ -7,5 +7,9 @@
 
 #include "nucleus/common.h"
 
+namespace sys {
+
 // Functions
 S32 cellVideoOutGetGamma();
+
+}  // namespace sys

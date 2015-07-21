@@ -38,7 +38,7 @@ void OpenGLCommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 
 {
     auto glTarget = static_cast<OpenGLDepthStencilTarget*>(target);
     if (!glTarget) {
-        logger.error(LOG_GRAPHICS, "OpenGLCommandBuffer::cmdClearColor: Invalid target specified");
+        logger.error(LOG_GRAPHICS, "OpenGLCommandBuffer::cmdClearDepthStencil: Invalid target specified");
         return;
     }
 

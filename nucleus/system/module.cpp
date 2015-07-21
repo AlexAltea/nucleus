@@ -10,6 +10,8 @@
 #include "modules/libsysmodule.h"
 #include "modules/libsysutil_avconf_ext.h"
 
+namespace sys {
+
 ModuleManager::ModuleManager()
 {
     m_modules.emplace_back(Module("cellSysutil", {
@@ -53,3 +55,5 @@ void ModuleManager::call(cpu::ppu::State& state)
     }
     logger.warning(LOG_HLE, "Unknown Function ID: 0x%X", fnid);
 }
+
+}  // namespace sys

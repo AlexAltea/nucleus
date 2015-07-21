@@ -31,13 +31,13 @@ union sys_dbg_spu_gpr_t {
 };
 
 struct sys_dbg_spu_thread_context2_t {
-    sys_dbg_spu_gpr_t gpr[128];  // General Purpose Registers GPR[0-127]
+    sys_dbg_spu_gpr_t gpr[128];  // General Purpose Registers GPR[0:127]
     U32 npc;                     // Next Program Counter
     sys_dbg_spu_fpscr_t fpscr;   // FPSCR
     U32 srr0;                    // SRR0
     U32 spu_status;              // SPU STATUS
     U64 spu_cfg;                 // SPU CFG
-    U32 mb_stat;                 // MB_stat
+    U32 mb_stat;                 // Mailbox Status
     U32 ppu_mb;                  // PPU Mail Box
     U32 spu_mb[4];               // SPU Mail Box
     U32 decrementer;             // Decrementer
@@ -75,7 +75,7 @@ S32 sys_dbg_get_rwlock_information();
 S32 sys_dbg_get_semaphore_list();
 S32 sys_dbg_get_semaphore_information();
 S32 sys_dbg_get_spu_thread_group_event_cntl_flag();
-S32 sys_dbg_get_thread_list(U32 pid, u64* ids, u64* ids_num, u64* all_ids_num);
+S32 sys_dbg_get_thread_list(U32 pid, U64* ids, U64* ids_num, U64* all_ids_num);
 S32 sys_dbg_get_ppu_thread_name();
 S32 sys_dbg_get_process_list();
 S32 sys_dbg_get_process_info();
