@@ -1,5 +1,7 @@
 ﻿Nucleus
 =======
+
+[![Join the chat at https://gitter.im/AlexAltea/nucleus](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AlexAltea/nucleus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/AlexAltea/nucleus.svg)](https://travis-ci.org/AlexAltea/nucleus)
 [![Last Release](https://img.shields.io/badge/version-0.0.4-brightgreen.svg?style=flat)](https://github.com/AlexAltea/nucleus/releases)
 
