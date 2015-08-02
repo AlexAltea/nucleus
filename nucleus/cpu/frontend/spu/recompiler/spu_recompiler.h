@@ -6,14 +6,24 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/hir/builder.h"
+#include "nucleus/cpu/hir/value.h"
 #include "nucleus/cpu/frontend/frontend_recompiler.h"
 #include "nucleus/cpu/frontend/spu/spu_instruction.h"
 
 namespace cpu {
 namespace spu {
 
-class SPURecompiler : public frontend::IRecompiler<U32> {
+class Recompiler : public frontend::IRecompiler<U32> {
 public:
+    /**
+     * SPU Register access
+     */
+    template <typename T>
+    hir::Value<T, 128 / T::size> getGPR(int index);
+
+    template <typename T>
+    void setGPR(int index, hir::Value<T, 128 / T::size> value);
 
     /**
      * SPU Instructions:
