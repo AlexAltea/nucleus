@@ -185,7 +185,7 @@ public:
      * for 64-bit PowerPC Microprocessors (Version 3.0 / July 15, 2005).
      */
 
-    // UISA: Integer instructions (Section: 4.2.1)
+    // UISA: Integer Instructions (Section: 4.2.1)
     void addx(Instruction code);
     void addcx(Instruction code);
     void addex(Instruction code);

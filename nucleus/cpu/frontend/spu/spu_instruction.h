@@ -13,29 +13,29 @@ namespace spu {
 // SPU Instruction
 union Instruction
 {
-#define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
+#define FIELD(from, to, type) struct{ U32:(32-to-1); type:(to-from+1); U32:from; }
 
     /**
      * SPU Instruction fields:
      * Represents the bit fields contained in 32-bit SPU instructions.
      */
 
-    u32 instruction;
+    U32 instruction;
 
     // Opcode fields
-    FIELD( 0,  3, u32 opcode);  // Primary opcode
-    FIELD(26, 31, u32 op4);     // Extended opcode of 6-bits (up to 0x3F)
+    FIELD( 0,  3, U32 opcode);  // Primary opcode
+    FIELD(26, 31, U32 op4);     // Extended opcode of 6-bits (up to 0x3F)
 
     // Instruction fields
-    FIELD(11, 17, u32 i7);      // Immediate (7-bit)
-    FIELD( 8, 17, u32 i10);     // Immediate (10-bit)
-    FIELD( 9, 24, u32 i16);     // Immediate (16-bit)
-    FIELD( 7, 24, u32 i18);     // Immediate (18-bit)
-    FIELD(18, 24, u32 ra);      // GPR: Source
-    FIELD(11, 17, u32 rb);      // GPR: Source
-    FIELD(25, 31, u32 rc);      // GPR: Source
-    FIELD(25, 31, u32 rt);      // GPR: Source
-    FIELD( 4, 10, u32 rt_);     // GPR: Source
+    FIELD(11, 17, U32 i7);      // Immediate (7-bit)
+    FIELD( 8, 17, U32 i10);     // Immediate (10-bit)
+    FIELD( 9, 24, U32 i16);     // Immediate (16-bit)
+    FIELD( 7, 24, U32 i18);     // Immediate (18-bit)
+    FIELD(18, 24, U32 ra);      // GPR: Source
+    FIELD(11, 17, U32 rb);      // GPR: Source
+    FIELD(25, 31, U32 rc);      // GPR: Source
+    FIELD(25, 31, U32 rt);      // GPR: Source
+    FIELD( 4, 10, U32 rt_);     // GPR: Source
 
     /**
      * SPU Instruction properties:
@@ -62,7 +62,7 @@ union Instruction
     bool is_return() const;
 
     // Obtain the target address if the branch is taken
-    u32 get_target(u32 currentAddr) const;
+    U32 get_target(U32 currentAddr) const;
 
 #undef FIELD
 };
