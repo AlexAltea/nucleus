@@ -1,10 +1,10 @@
 /**
- * (c) 2015 Nucleus project. All rights reserved.
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
 #include "ppu_recompiler.h"
-#include "nucleus/emulator.h"
+#include "nucleus/logger/logger.h"
 
 namespace cpu {
 namespace ppu {
@@ -23,7 +23,7 @@ const char* string_cr = "cr_";
 const char* string_fpscr = "fpscr_";
 const char* string_xer = "xer_";
 
-Recompiler::Recompiler(Function* function) : frontend::IRecompiler<u32>(function)
+Recompiler::Recompiler(Function* function) : frontend::IRecompiler<U32>(function)
 {
 }
 
@@ -88,7 +88,7 @@ void Recompiler::createEpilog()
         break;
 
     default:
-        nucleus.log.error(LOG_CPU, "Recompiler::createReturn: Invalid returnType");
+        logger.error(LOG_CPU, "Recompiler::createReturn: Invalid returnType");
         builder.CreateRetVoid();
         break;
     }
@@ -104,7 +104,7 @@ Value<I64> Recompiler::getGPR(int index)
         if (!gpr[index]) {
             gpr[index] = allocaVariable<hir::I64>(format("r%d_", index));
         }
-        return builder.CreateLoad(gpr[index]);
+        return builder.CreateLoad(gpr[index], format("r%d_", index));
     }
 
     // Other volatile registers

@@ -10,8 +10,7 @@
 // OpenGL dependencies
 #include "nucleus/opengl.h"
 
-class WidgetTexture : public Widget
-{
+class WidgetTexture : public Widget {
 public:
     // OpenGL information
     GLuint textureId;

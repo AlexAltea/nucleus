@@ -10,9 +10,9 @@
 namespace fs {
 
 enum OpenMode {
-    Read     = (1 << 1),
-    Write    = (1 << 2),
-    Append   = (1 << 3),
+    Read     = (1 << 0),
+    Write    = (1 << 1),
+    Append   = (1 << 2),
     ReadWrite = Read | Write,
     WriteAppend = Write | Append,
 };
@@ -23,7 +23,7 @@ enum SeekMode {
     SeekEnd,  // End of file
 };
 
-using Position = U64;
+using Position = S64;
 using Size = U64;
 
 class File {

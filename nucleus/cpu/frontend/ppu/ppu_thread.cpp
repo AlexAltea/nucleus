@@ -1,5 +1,5 @@
 /**
- * (c) 2015 Nucleus project. All rights reserved.
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -14,7 +14,7 @@
 namespace cpu {
 namespace ppu {
 
-Thread::Thread(u32 entry)
+Thread::Thread(U32 entry)
 {
     // Initialize stack of size 0x10000
     m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
@@ -29,8 +29,8 @@ Thread::Thread(u32 entry)
         state = new State();
     }
 
-    const u32 entry_pc = nucleus.memory.read32(entry);
-    const u32 entry_rtoc = nucleus.memory.read32(entry+4);
+    const U32 entry_pc = nucleus.memory.read32(entry);
+    const U32 entry_rtoc = nucleus.memory.read32(entry+4);
 
     // Initialize Program Counter
     state->pc = entry_pc;
@@ -122,7 +122,7 @@ void Thread::task()
             }
 
             hir::Function functionCaller = ppu_segment->module.getFunction("caller");
-            auto functionCallerPtr = (void(*)(u32))ppu_segment->ee->getPointerToFunction(functionCaller.function);
+            auto functionCallerPtr = (void(*)(U32))ppu_segment->ee->getPointerToFunction(functionCaller.function);
             functionCallerPtr(state->pc);
         }
     }
