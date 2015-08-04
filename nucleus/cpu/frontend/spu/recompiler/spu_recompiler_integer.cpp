@@ -46,22 +46,59 @@ void Recompiler::iohl(Instruction code)
 // Integer and Logical Instructions (Chapter 5)
 void Recompiler::a(Instruction code)
 {
+    Value<I32, 4> ra = getGPR<I32>(code.ra);
+    Value<I32, 4> rb = getGPR<I32>(code.rb);
+    Value<I32, 4> rt;
+
+    rt = builder.CreateAdd(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::absdb(Instruction code)
 {
+    Value<I8, 16> ra = getGPR<I8>(code.ra);
+    Value<I8, 16> rb = getGPR<I8>(code.rb);
+    Value<I8, 16> rt;
+
+    rt = builder.CreateSub(ra, rb);
+    rt = builder.CreateAbs(rt);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::addx(Instruction code)
 {
+    Value<I32, 4> ra = getGPR<I32>(code.ra);
+    Value<I32, 4> rb = getGPR<I32>(code.rb);
+    Value<I32, 4> rt = getGPR<I32>(code.rt);
+
+    rt = builder.CreateAnd(rt, 1);
+    rt = builder.CreateAdd(rt, ra);
+    rt = builder.CreateAdd(rt, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::ah(Instruction code)
 {
+    Value<I16, 8> ra = getGPR<I16>(code.ra);
+    Value<I16, 8> rb = getGPR<I16>(code.rb);
+    Value<I16, 8> rt;
+
+    rt = builder.CreateAdd(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::ahi(Instruction code)
 {
+    Value<I16, 8> ra = getGPR<I16>(code.ra);
+    Value<I16, 8> rt;
+
+    rt = builder.CreateAdd(ra, code.i10); // TODO: ADD with (code.i10)^8
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::ai(Instruction code)
@@ -70,30 +107,78 @@ void Recompiler::ai(Instruction code)
 
 void Recompiler::and(Instruction code)
 {
+    Value<I32, 4> ra = getGPR<I32>(code.ra);
+    Value<I32, 4> rb = getGPR<I32>(code.rb);
+    Value<I32, 4> rt;
+
+    rt = builder.CreateAnd(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::andc(Instruction code)
 {
+    Value<I32, 4> ra = getGPR<I32>(code.ra);
+    Value<I32, 4> rb = getGPR<I32>(code.rb);
+    Value<I32, 4> rt;
+
+    rb = builder.CreateNot(rb);
+    rt = builder.CreateAnd(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::andbi(Instruction code)
 {
+    Value<I8, 16> ra = getGPR<I8>(code.ra);
+    Value<I8, 16> rt;
+
+    rt = builder.CreateAnd(ra, (code.i10 & 0xFF)); // TODO: AND with (code.i10 & 0xFF)^16
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::andhi(Instruction code)
 {
+    Value<I16, 8> ra = getGPR<I16>(code.ra);
+    Value<I16, 8> rt;
+
+    rt = builder.CreateAnd(ra, code.i10); // TODO: AND with (code.i10)^8
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::andi(Instruction code)
 {
+    Value<I32, 4> ra = getGPR<I32>(code.ra);
+    Value<I32, 4> rt;
+
+    rt = builder.CreateAnd(ra, code.i10); // TODO: AND with (code.i10)^8
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::avgb(Instruction code)
 {
+    Value<I8, 16> ra = getGPR<I8>(code.ra);
+    Value<I8, 16> rb = getGPR<I8>(code.rb);
+    Value<I8, 16> rt;
+
+    rt = builder.CreateUAverage(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::bg(Instruction code)
 {
+    Value<I32, 4> ra = getGPR<I32>(code.ra);
+    Value<I32, 4> rb = getGPR<I32>(code.rb);
+    Value<I32, 4> rt;
+
+    auto result = builder.CreateICmpUGT(ra, rb);
+    rt = builder.CreateZExt<I32>(result);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::bgx(Instruction code)
