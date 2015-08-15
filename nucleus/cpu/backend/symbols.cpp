@@ -22,7 +22,7 @@ extern "C" {
         printf("> 0x%08X\n", address);
     }
 
-    void nucleusIntermodularCall(u64 address) {
+    void nucleusIntermodularCall(U64 address) {
         return;
     }
 
@@ -40,6 +40,9 @@ SymbolInfo SymbolResolver::findSymbol(const std::string& name)
     }
     if (name == "nucleusLogState") {
         return SymbolInfo((uint64_t)nucleusLogState, llvm::JITSymbolFlags::Exported);
+    }
+    if (name == "nucleusDebugState") {
+        return SymbolInfo((uint64_t)nucleusDebugState, llvm::JITSymbolFlags::Exported);
     }
     if (name == "nucleusIntermodularCall") {
         return SymbolInfo((uint64_t)nucleusIntermodularCall, llvm::JITSymbolFlags::Exported);

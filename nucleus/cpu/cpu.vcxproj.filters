@@ -25,6 +25,9 @@
     <Filter Include="frontend\ppu\recompiler">
       <UniqueIdentifier>{6f4e5a8e-2425-46a5-8f28-f6fbfb337b35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="frontend\spu\recompiler">
+      <UniqueIdentifier>{4d041573-090b-4769-864b-1bae72b07743}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="frontend\ppu\ppu_decoder.cpp">
@@ -134,6 +137,27 @@
     <ClCompile Include="frontend\ppu\ppu_utils.cpp">
       <Filter>frontend\ppu</Filter>
     </ClCompile>
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler.cpp">
+      <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_integer.cpp">
+      <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_memory.cpp">
+      <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_branch.cpp">
+      <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_control.cpp">
+      <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_float.cpp">
+      <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_channel.cpp">
+      <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -200,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="frontend\ppu\ppu_utils.h">
       <Filter>frontend\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="frontend\spu\recompiler\spu_recompiler.h">
+      <Filter>frontend\spu\recompiler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

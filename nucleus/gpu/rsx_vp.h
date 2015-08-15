@@ -65,12 +65,12 @@ enum {
 struct rsx_vp_constant_t {
     bool dirty = false; // Flag: Needs to be reuploaded
     union {
-        u32 word[4];
+        U32 word[4];
         struct {
-            f32 x;
-            f32 y;
-            f32 z;
-            f32 w;
+            F32 x;
+            F32 y;
+            F32 z;
+            F32 w;
         };
     };
 };
@@ -78,37 +78,37 @@ struct rsx_vp_constant_t {
 // RSX Vertex Program instruction
 union rsx_vp_instruction_t
 {
-#define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
+#define FIELD(from, to, type) struct{ U32:(32-to-1); type:(to-from+1); U32:from; }
 
-    u32 word[4];
-    u64 dword[2];
+    U32 word[4];
+    U64 dword[2];
 
     struct {
         union {
-            FIELD( 8,  8, u32 abs_src0);
-            FIELD( 9,  9, u32 abs_src1);
-            FIELD(10, 10, u32 abs_src2);
-            FIELD(11, 16, u32 dst_data);
-            FIELD(22, 29, u32 swizzling);
+            FIELD( 8,  8, U32 abs_src0);
+            FIELD( 9,  9, U32 abs_src1);
+            FIELD(10, 10, U32 abs_src2);
+            FIELD(11, 16, U32 dst_data);
+            FIELD(22, 29, U32 swizzling);
         };
         union {
-            FIELD( 0,  4, u32 opcode_sca);
-            FIELD( 5,  9, u32 opcode_vec);
-            FIELD(10, 19, u32 src_const);
-            FIELD(20, 23, u32 src_input);
-            FIELD(24, 31, u32 src0_hi);
+            FIELD( 0,  4, U32 opcode_sca);
+            FIELD( 5,  9, U32 opcode_vec);
+            FIELD(10, 19, U32 src_const);
+            FIELD(20, 23, U32 src_input);
+            FIELD(24, 31, U32 src0_hi);
         };
         union {
-            FIELD( 0,  8, u32 src0_lo);
-            FIELD( 9, 25, u32 src1);
-            FIELD(26, 31, u32 src2_hi);
+            FIELD( 0,  8, U32 src0_lo);
+            FIELD( 9, 25, U32 src1);
+            FIELD(26, 31, U32 src2_hi);
         };
         union {
-            FIELD( 0, 10, u32 src2_lo);
-            FIELD(11, 14, u32 mask_sca);
-            FIELD(15, 18, u32 masc_vec);
-            FIELD(25, 29, u32 dst);
-            FIELD(31, 31, u32 end);
+            FIELD( 0, 10, U32 src2_lo);
+            FIELD(11, 14, U32 mask_sca);
+            FIELD(15, 18, U32 masc_vec);
+            FIELD(25, 29, U32 dst);
+            FIELD(31, 31, U32 end);
         };
     };
 
@@ -117,13 +117,13 @@ union rsx_vp_instruction_t
 
 union rsx_vp_instruction_source_t
 {
-    u32 value;
+    U32 value;
 
     struct {
-        u32 type      : 2;
-        u32 index     : 6;
-        u32 swizzling : 8;
-        u32 neg       : 1;
+        U32 type      : 2;
+        U32 index     : 6;
+        U32 swizzling : 8;
+        U32 neg       : 1;
     };
 };
 

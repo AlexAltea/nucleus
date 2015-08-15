@@ -83,12 +83,12 @@ enum {
 // RSX Fragment Program inlined vector constant
 struct rsx_fp_constant_t {
     union {
-        u32 word[4];
+        U32 word[4];
         struct {
-            f32 x;
-            f32 y;
-            f32 z;
-            f32 w;
+            F32 x;
+            F32 y;
+            F32 z;
+            F32 w;
         };
     };
 };
@@ -96,32 +96,32 @@ struct rsx_fp_constant_t {
 // RSX Fragment Program instruction
 union rsx_fp_instruction_t
 {
-#define FIELD(from, to, type) struct{ u32:(32-to-1); type:(to-from+1); u32:from; }
+#define FIELD(from, to, type) struct{ U32:(32-to-1); type:(to-from+1); U32:from; }
 
     // NOTE: To read the data with the fields below, reverse the byte and half-word endianness of these words
     // In other words, do following map for each word [A,B,C,D] -> [D,C,B,A] -> [B,A,D,C], where A,B,C,D represent bytes.
-    u32 word[4];
-    u64 dword[2];
+    U32 word[4];
+    U64 dword[2];
 
     struct {
         union {
-            FIELD( 0,  0, u32 saturate);
-            FIELD( 2,  7, u32 opcode);
-            FIELD(10, 13, u32 tex);
-            FIELD(15, 18, u32 input_index);  // Input attribute register index
-            FIELD(19, 22, u32 dst_mask);
-            FIELD(24, 24, u32 dst_half);     // Half precision (f16)
-            FIELD(25, 30, u32 dst_index);    // Destination register index
-            FIELD(31, 31, u32 end);          // Last instruction flag
+            FIELD( 0,  0, U32 saturate);
+            FIELD( 2,  7, U32 opcode);
+            FIELD(10, 13, U32 tex);
+            FIELD(15, 18, U32 input_index);  // Input attribute register index
+            FIELD(19, 22, U32 dst_mask);
+            FIELD(24, 24, U32 dst_half);     // Half precision (f16)
+            FIELD(25, 30, U32 dst_index);    // Destination register index
+            FIELD(31, 31, U32 end);          // Last instruction flag
         };
         union {
-            FIELD( 0, 31, u32 word1);
+            FIELD( 0, 31, U32 word1);
         };
         union {
-            FIELD(29, 31, u32 type);
+            FIELD(29, 31, U32 type);
         };
         union {
-            FIELD( 0, 31, u32 end_offset);
+            FIELD( 0, 31, U32 end_offset);
         };
     };
 
@@ -130,17 +130,17 @@ union rsx_fp_instruction_t
 
 union rsx_fp_instruction_source_t
 {
-    u32 value;
+    U32 value;
 
     struct {
-        u32 type      : 2; // Register type: { 0: Data, 1: Input, 2: Constant }
-        u32 index     : 6; // Register input
-        u32 half      : 1; // Half precision (f16)
-        u32 swizzle_x : 2; // Swizzling mask on the component x
-        u32 swizzle_y : 2; // Swizzling mask on the component y
-        u32 swizzle_z : 2; // Swizzling mask on the component z
-        u32 swizzle_w : 2; // Swizzling mask on the component w
-        u32 neg       : 1; // Negated value
+        U32 type      : 2; // Register type: { 0: Data, 1: Input, 2: Constant }
+        U32 index     : 6; // Register input
+        U32 half      : 1; // Half precision (f16)
+        U32 swizzle_x : 2; // Swizzling mask on the component x
+        U32 swizzle_y : 2; // Swizzling mask on the component y
+        U32 swizzle_z : 2; // Swizzling mask on the component z
+        U32 swizzle_w : 2; // Swizzling mask on the component w
+        U32 neg       : 1; // Negated value
     };
 };
 

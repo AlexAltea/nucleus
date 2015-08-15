@@ -41,6 +41,13 @@
     <ClCompile Include="frontend\ppu\recompiler\ppu_recompiler_integer.cpp" />
     <ClCompile Include="frontend\ppu\recompiler\ppu_recompiler_memory.cpp" />
     <ClCompile Include="frontend\ppu\recompiler\ppu_recompiler_vector.cpp" />
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler.cpp" />
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_branch.cpp" />
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_channel.cpp" />
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_control.cpp" />
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_float.cpp" />
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_integer.cpp" />
+    <ClCompile Include="frontend\spu\recompiler\spu_recompiler_memory.cpp" />
     <ClCompile Include="hir\block.cpp" />
     <ClCompile Include="hir\builder.cpp" />
     <ClCompile Include="hir\function.cpp" />
@@ -66,6 +73,7 @@
     <ClInclude Include="frontend\ppu\ppu_thread.h" />
     <ClInclude Include="frontend\ppu\ppu_utils.h" />
     <ClInclude Include="frontend\ppu\recompiler\ppu_recompiler.h" />
+    <ClInclude Include="frontend\spu\recompiler\spu_recompiler.h" />
     <ClInclude Include="hir\block.h" />
     <ClInclude Include="hir\builder.h" />
     <ClInclude Include="hir\function.h" />
