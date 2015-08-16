@@ -17,13 +17,16 @@ enum ConfigLanguage {
 
 // CPU Settings
 enum ConfigPpuTranslator {
-    PPU_TRANSLATOR_INTERPRETER,
-    PPU_TRANSLATOR_RECOMPILER,
+    PPU_TRANSLATOR_INSTRUCTION,
+    PPU_TRANSLATOR_BLOCK,
+    PPU_TRANSLATOR_FUNCTION,
+    PPU_TRANSLATOR_MODULE,
 };
 
 enum ConfigSpuTranslator {
-    SPU_TRANSLATOR_INTERPRETER,
-    SPU_TRANSLATOR_RECOMPILER,
+    SPU_TRANSLATOR_INSTRUCTION,
+    SPU_TRANSLATOR_BLOCK,
+    SPU_TRANSLATOR_FUNCTION,
 };
 
 // GPU Settings
@@ -44,8 +47,8 @@ public:
 
     // Saved settings
     ConfigLanguage language = LANGUAGE_DEFAULT;
-    ConfigPpuTranslator ppuTranslator = PPU_TRANSLATOR_INTERPRETER;
-    ConfigSpuTranslator spuTranslator = SPU_TRANSLATOR_INTERPRETER;
+    ConfigPpuTranslator ppuTranslator = PPU_TRANSLATOR_FUNCTION;
+    ConfigSpuTranslator spuTranslator = SPU_TRANSLATOR_INSTRUCTION;
     ConfigGpuBackend gpuBackend = GPU_BACKEND_OPENGL;
 
     // Modify settings with arguments or JSON files
