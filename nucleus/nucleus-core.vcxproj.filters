@@ -80,6 +80,7 @@
     </ClInclude>
     <ClInclude Include="endianness.h" />
     <ClInclude Include="types.h" />
+    <ClInclude Include="assert.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="memory">

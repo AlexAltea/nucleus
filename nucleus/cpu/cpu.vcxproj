@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -21,13 +21,6 @@
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_integer.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_memory.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_vector.cpp" />
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter.cpp" />
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_branch.cpp" />
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_control.cpp" />
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_float.cpp" />
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_integer.cpp" />
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_memory.cpp" />
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_vector.cpp" />
     <ClCompile Include="frontend\ppu\ppu_decoder.cpp" />
     <ClCompile Include="frontend\ppu\ppu_instruction.cpp" />
     <ClCompile Include="frontend\ppu\ppu_state.cpp" />
@@ -65,7 +58,6 @@
     <ClInclude Include="frontend\frontend_recompiler.h" />
     <ClInclude Include="frontend\frontend_segment.h" />
     <ClInclude Include="frontend\ppu\analyzer\ppu_analyzer.h" />
-    <ClInclude Include="frontend\ppu\interpreter\ppu_interpreter.h" />
     <ClInclude Include="frontend\ppu\ppu_decoder.h" />
     <ClInclude Include="frontend\ppu\ppu_instruction.h" />
     <ClInclude Include="frontend\ppu\ppu_state.h" />
@@ -77,7 +69,9 @@
     <ClInclude Include="hir\block.h" />
     <ClInclude Include="hir\builder.h" />
     <ClInclude Include="hir\function.h" />
+    <ClInclude Include="hir\instruction.h" />
     <ClInclude Include="hir\module.h" />
+    <ClInclude Include="hir\opcodes.h" />
     <ClInclude Include="hir\type.h" />
     <ClInclude Include="hir\value.h" />
     <ClInclude Include="thread.h" />
@@ -90,13 +84,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>

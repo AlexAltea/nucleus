@@ -19,9 +19,6 @@
     <Filter Include="frontend\ppu\analyzer">
       <UniqueIdentifier>{0a1c45d6-0d4b-4b6b-b023-7f2066d3ec66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="frontend\ppu\interpreter">
-      <UniqueIdentifier>{84ecb65f-9597-444e-8b9e-8fee19f708fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="frontend\ppu\recompiler">
       <UniqueIdentifier>{6f4e5a8e-2425-46a5-8f28-f6fbfb337b35}</UniqueIdentifier>
     </Filter>
@@ -65,27 +62,6 @@
     </ClCompile>
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_control.cpp">
       <Filter>frontend\ppu\analyzer</Filter>
-    </ClCompile>
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_branch.cpp">
-      <Filter>frontend\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_control.cpp">
-      <Filter>frontend\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_float.cpp">
-      <Filter>frontend\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_integer.cpp">
-      <Filter>frontend\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_memory.cpp">
-      <Filter>frontend\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter_vector.cpp">
-      <Filter>frontend\ppu\interpreter</Filter>
-    </ClCompile>
-    <ClCompile Include="frontend\ppu\interpreter\ppu_interpreter.cpp">
-      <Filter>frontend\ppu\interpreter</Filter>
     </ClCompile>
     <ClCompile Include="frontend\ppu\recompiler\ppu_recompiler_branch.cpp">
       <Filter>frontend\ppu\recompiler</Filter>
@@ -178,9 +154,6 @@
     <ClInclude Include="frontend\ppu\analyzer\ppu_analyzer.h">
       <Filter>frontend\ppu\analyzer</Filter>
     </ClInclude>
-    <ClInclude Include="frontend\ppu\interpreter\ppu_interpreter.h">
-      <Filter>frontend\ppu\interpreter</Filter>
-    </ClInclude>
     <ClInclude Include="frontend\ppu\recompiler\ppu_recompiler.h">
       <Filter>frontend\ppu\recompiler</Filter>
     </ClInclude>
@@ -227,6 +200,12 @@
     </ClInclude>
     <ClInclude Include="frontend\spu\recompiler\spu_recompiler.h">
       <Filter>frontend\spu\recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\opcodes.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\instruction.h">
+      <Filter>hir</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
