@@ -15,12 +15,6 @@ git:
   submodules: false
 
 before_install:
-  # Update package repositories
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo add-apt-repository "deb http://llvm.org/apt/precise/ llvm-toolchain-precise main"
-  - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
-  - sudo apt-get update
-
   # Prepare compilers
   - if [ "$CXX" = "g++" ]; then
       sudo apt-get install g++-4.8 -qq;
@@ -29,9 +23,6 @@ before_install:
   - if [ "$CXX" = "clang++" ]; then
       sudo apt-get install libstdc++-4.8-dev;
     fi
-
-  # Install LLVM
-  - sudo apt-get install llvm-3.6 llvm-3.6-dev
 
 before_script:
   - cmake .

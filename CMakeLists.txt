@@ -15,7 +15,6 @@ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif()
 
 # Dependencies
-find_package(LLVM REQUIRED CONFIG)
 find_package(OpenGL REQUIRED)
 find_package(ZLIB)
 if(ZLIB_FOUND)
@@ -30,14 +29,6 @@ else()
     set(ZLIB_LIBRARY zlib)
 endif()
 
-# LLVM
-llvm_map_components_to_libnames(LLVM_LIBS
-    core
-    mcjit
-    support
-    x86codegen
-)
-
 # Project
 if(NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
@@ -45,11 +36,6 @@ endif()
 
 include_directories(
     ${NUCLEUS_SOLUTION_DIR}
-    ${LLVM_INCLUDE_DIRS}
-)
-
-add_definitions(
-    ${LLVM_DEFINITIONS}
 )
 
 file(GLOB_RECURSE NUCLEUS_FILES
@@ -77,5 +63,5 @@ endif()
 # Target
 add_executable(nucleus ${NUCLEUS_FILES})
 
-target_link_libraries(nucleus ${ZLIB_LIBRARY} ${LLVM_LIBS} ${OPENGL_LIBRARIES})
+target_link_libraries(nucleus ${ZLIB_LIBRARY} ${OPENGL_LIBRARIES})
 set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)
