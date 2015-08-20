@@ -6,12 +6,9 @@
 #include "ppu_thread.h"
 #include "nucleus/config.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/frontend/ppu/interpreter/ppu_interpreter.h"
-
-#include "llvm/ExecutionEngine/ExecutionEngine.h"
-#include "llvm/ExecutionEngine/GenericValue.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 Thread::Thread(U32 entry)
@@ -93,7 +90,7 @@ void Thread::start()
 
 void Thread::task()
 {
-    if (config.ppuTranslator == PPU_TRANSLATOR_INTERPRETER) {
+    if (config.ppuTranslator == PPU_TRANSLATOR_INSTRUCTION) {
         while (true) {
             // Handle events
             if (m_event) {
@@ -115,12 +112,31 @@ void Thread::task()
             interpreter->step();
         }
     }
-    if (config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+	if (config.ppuTranslator == PPU_TRANSLATOR_BLOCK) {
         for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
 
+            // TODO: ?
+        }
+	}
+	if (config.ppuTranslator == PPU_TRANSLATOR_FUNCTION) {
+		for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
+			if (!ppu_segment->contains(state->pc)) {
+				continue;
+			}
+
+            // TODO: ?
+		}
+	}
+    if (config.ppuTranslator == PPU_TRANSLATOR_MODULE) {
+        for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
+            if (!ppu_segment->contains(state->pc)) {
+                continue;
+            }
+
+            // TODO: ?
             hir::Function functionCaller = ppu_segment->module.getFunction("caller");
             auto functionCallerPtr = (void(*)(U32))ppu_segment->ee->getPointerToFunction(functionCaller.function);
             functionCallerPtr(state->pc);
@@ -148,4 +164,5 @@ void Thread::stop()
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

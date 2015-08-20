@@ -25,6 +25,9 @@
     <Filter Include="frontend\spu\recompiler">
       <UniqueIdentifier>{4d041573-090b-4769-864b-1bae72b07743}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backend\x86">
+      <UniqueIdentifier>{841491b9-6b50-4f3a-80eb-35890d7f4fda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="frontend\ppu\ppu_decoder.cpp">
@@ -134,6 +137,9 @@
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_channel.cpp">
       <Filter>frontend\spu\recompiler</Filter>
     </ClCompile>
+    <ClCompile Include="backend\x86\x86_emitter.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -206,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="hir\instruction.h">
       <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\x86\x86_emitter.h">
+      <Filter>backend\x86</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

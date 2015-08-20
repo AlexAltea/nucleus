@@ -8,8 +8,6 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/frontend_function.h"
 
-#include "llvm/ExecutionEngine/MCJIT.h"
-
 #include <map>
 
 namespace cpu {

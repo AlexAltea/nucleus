@@ -14,6 +14,7 @@
 #include <string>
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 enum EntryType {
@@ -53,4 +54,5 @@ const Entry& get_table63 (Instruction code);
 const Entry& get_table63_(Instruction code);
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

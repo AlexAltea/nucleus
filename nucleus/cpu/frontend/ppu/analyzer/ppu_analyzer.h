@@ -11,6 +11,7 @@
 #include <set>
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 // Avoid a collision with <Windows.h>
@@ -474,4 +475,5 @@ public:
 };
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

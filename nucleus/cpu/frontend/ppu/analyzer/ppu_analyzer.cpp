@@ -6,6 +6,7 @@
 #include "ppu_analyzer.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 void Analyzer::setFlag(AnalyzerEvent& reg, AnalyzerEvent evt)
@@ -18,4 +19,5 @@ void Analyzer::setFlag(AnalyzerEvent& reg, AnalyzerEvent evt)
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

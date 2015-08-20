@@ -8,6 +8,7 @@
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 Instruction::Instruction() : instruction(0)
@@ -101,4 +102,5 @@ U32 Instruction::get_target(U32 currentAddr) const
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

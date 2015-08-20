@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <cassert>
+
 #define _NUCLEUS_ARGUMENT_EXTRACT(a1, a2, a3, a4, a5, a6, a7, a8, N, ...) \
 	N
 #define _NUCLEUS_ARGUMENT_COUNT(...) \
@@ -51,4 +53,7 @@
 #define assert_nonnull2(expr, message) assert((expr) != nullptr && message)
 
 // Trigger an exception
-#define assert_always(...) assert(0)
+#define assert_always(...) \
+    _NUCLEUS_MACRO_DISPATCH(assert_always, __VA_ARGS__)(__VA_ARGS__)
+#define assert_always0(...) assert(0)
+#define assert_always1(message) assert(0 && message)

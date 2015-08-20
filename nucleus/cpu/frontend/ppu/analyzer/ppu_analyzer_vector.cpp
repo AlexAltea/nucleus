@@ -6,6 +6,7 @@
 #include "ppu_analyzer.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 /**
@@ -1270,4 +1271,5 @@ void Analyzer::vxor(Instruction code)
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

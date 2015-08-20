@@ -12,85 +12,44 @@
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 #include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
 
-#include "llvm/IR/Intrinsics.h"
-
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 class Recompiler : public frontend::IRecompiler<U32> {
 
     // Register allocation
-    hir::Value<hir::I64*> gpr[32];
-    hir::Value<hir::F64*> fpr[32];
-    hir::Value<hir::I128*> vr[32];
-    hir::Value<hir::I8*> cr[8];
-    hir::Value<hir::I32*> fpscr;
-    hir::Value<hir::I64*> xer;
-    hir::Value<hir::I64*> ctr;
+    hir::Value* gpr[32];
+    hir::Value* fpr[32];
+    hir::Value* vr[32];
+    hir::Value* cr[8];
+    hir::Value* fpscr;
+    hir::Value* xer;
+    hir::Value* ctr;
 
     template <typename T>
     hir::Value<T*> allocaVariable(const std::string& name) {
         hir::Block entryBlock = function->function.getEntryBlock();
         hir::Builder allocaBuilder;
         allocaBuilder.SetInsertPoint(entryBlock, entryBlock.begin());
-        return allocaBuilder.CreateAlloca<T>(name);
+        return allocabuilder.createAlloca<T>(name);
     }
 
-    /**
-     * Register read
-     */
-    hir::Value<hir::I64> getGPR(int index);
-    hir::Value<hir::F64> getFPR(int index);
-    hir::Value<hir::I8> getCR(int index);
-    hir::Value<hir::I64> getXER();
-    hir::Value<hir::I64> getCTR();
+    // Register read
+    hir::Value* getGPR(int index, hir::Type type = TYPE_I64);
+    hir::Value* getFPR(int index, hir::Type type = TYPE_F64);
+    hir::Value* getVR(int index);
+    hir::Value* getCR(int index);
+    hir::Value* getXER();
+    hir::Value* getCTR();
 
-    template <typename T=I64>
-    hir::Value<T> getGPR(int index) {
-        static_assert(hir::is_integer<T>::value,
-            "ppu::Recompiler::getGPR accepts only integer values");
-        static_assert(T::size < 64,
-            "ppu::Recompiler::getGPR accepts only up to 64-bit integer values");
-        return builder.CreateTrunc<T>(getGPR(index));
-    }
-
-    template <typename T>
-    hir::Value<T, 128 / T::size> getVR(int index) {
-        // TODO: ?
-        return hir::Value<T, 128 / T::size> {};
-    }
-
-    /**
-     * Register write
-     */
-    void setGPR(int index, hir::Value<hir::I64> value);
-    void setFPR(int index, hir::Value<hir::F64> value);
-    void setCR(int index, hir::Value<hir::I8> value);
-    void setXER(hir::Value<hir::I64> value);
-    void setCTR(hir::Value<hir::I64> value);
-
-    void setFPR(int index, hir::Value<hir::I32> value) {
-        setFPR(index, builder.CreateFPExt<hir::F64>(builder.CreateBitCast<hir::F32>(value)));
-    }
-    void setFPR(int index, hir::Value<hir::I64> value) {
-        setFPR(index, builder.CreateBitCast<hir::F64>(value));
-    }
-    void setFPR(int index, hir::Value<hir::F32> value) {
-        setFPR(index, builder.CreateFPExt<hir::F64>(value));
-    }
-
-    template <typename T, int N>
-    void setVR(int index, hir::Value<T, N> value) {
-        static_assert(T::size * N == 128,
-            "ppu::Recompiler::getGPR accepts only 32-bit or 64-bit arithmetic values");
-
-        if (!vr[index]) {
-            vr[index] = allocaVariable<I128>("vrTEST");
-        }
-
-        auto value_i128 = builder.CreateBitCast<I128>(value);
-        builder.CreateStore(value_i128, vr[index]);
-    }
+    // Register write
+    void setGPR(int index, hir::Value* value, hir::Type type = TYPE_I64);
+    void setFPR(int index, hir::Value* value, hir::Type type = TYPE_F64);
+    void setVR(int index, hir::Value* value);
+    void setCR(int index, hir::Value* value);
+    void setXER(hir::Value* value);
+    void setCTR(hir::Value* value);
 
     // State pointer allocation
     hir::Value<StateType*> state;
@@ -102,22 +61,21 @@ class Recompiler : public frontend::IRecompiler<U32> {
     void updateCR1(llvm::Value* value); // Floating-Point instructions with RC bit
     void updateCR6(llvm::Value* value); // Vector instructions with RC bit
 
-    template <typename T>
-    void updateCR(int field, hir::Value<T> lhs, hir::Value<T> rhs, bool logicalComparison) {
+    void updateCR(int field, hir::Value* lhs, hir::Value* rhs, bool logicalComparison) {
         hir::Value<hir::I1> isLT;
         hir::Value<hir::I1> isGT;
         hir::Value<hir::I8> cr;
 
         if (logicalComparison) {
-            isLT = builder.CreateICmpULT(lhs, rhs);
-            isGT = builder.CreateICmpUGT(lhs, rhs);
+            isLT = builder.createICmpULT(lhs, rhs);
+            isGT = builder.createICmpUGT(lhs, rhs);
         } else {
-            isLT = builder.CreateICmpSLT(lhs, rhs);
-            isGT = builder.CreateICmpSGT(lhs, rhs);
+            isLT = builder.createICmpSLT(lhs, rhs);
+            isGT = builder.createICmpSGT(lhs, rhs);
         }
 
-        cr = builder.CreateSelect(isGT, builder.get<I8>(2), builder.get<I8>(4));
-        cr = builder.CreateSelect(isLT, builder.get<I8>(1), cr);
+        cr = builder.createSelect(isGT, builder.getConstantI8(2), builder.getConstantI8(4));
+        cr = builder.createSelect(isLT, builder.getConstantI8(1), cr);
         setCR(field, cr);
     }
 
@@ -128,22 +86,22 @@ class Recompiler : public frontend::IRecompiler<U32> {
     template <typename T>
     hir::Value<T> readMemory(hir::Value<hir::I64> addr) {
         auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value<I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
+        hir::Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
 
-        addr = builder.CreateAdd(addr, baseAddr);
-        auto pointer = builder.CreateIntToPtr<T>(addr);
-        auto value = builder.CreateLoad(pointer);
-        return builder.CreateIntrinsic_Bswap(value);
+        addr = builder.createAdd(addr, baseAddr);
+        auto pointer = builder.createIntToPtr<T>(addr);
+        auto value = builder.createLoad(pointer);
+        return builder.createIntrinsic_Bswap(value);
     }
 
     template <>
     hir::Value<hir::I8> readMemory(hir::Value<hir::I64> addr) {
         auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value<hir::I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
+        hir::Value<hir::I64> baseAddr = builder.createLoad(ppuSegment->memoryBase);
 
-        addr = builder.CreateAdd(addr, baseAddr);
-        auto pointer = builder.CreateIntToPtr<hir::I8>(addr);
-        auto value = builder.CreateLoad(pointer);
+        addr = builder.createAdd(addr, baseAddr);
+        auto pointer = builder.createIntToPtr<hir::I8>(addr);
+        auto value = builder.createLoad(pointer);
         return value;
     }
 
@@ -151,21 +109,21 @@ class Recompiler : public frontend::IRecompiler<U32> {
     template <typename T>
     void writeMemory(hir::Value<hir::I64> addr, hir::Value<T> value) {
         auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value<I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
+        hir::Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
 
-        value = builder.CreateIntrinsic_Bswap(value);
-        addr = builder.CreateAdd(addr, baseAddr);
-        auto pointer = builder.CreateIntToPtr<T>(addr);
-        builder.CreateStore(value, pointer);
+        value = builder.createIntrinsic_Bswap(value);
+        addr = builder.createAdd(addr, baseAddr);
+        auto pointer = builder.createIntToPtr<T>(addr);
+        builder.createStore(value, pointer);
     }
 
     void writeMemory(hir::Value<hir::I64> addr, hir::Value<hir::I8> value) {
         auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value<hir::I64> baseAddr = builder.CreateLoad(ppuSegment->memoryBase);
+        hir::Value<hir::I64> baseAddr = builder.createLoad(ppuSegment->memoryBase);
 
-        addr = builder.CreateAdd(addr, baseAddr);
-        auto pointer = builder.CreateIntToPtr<hir::I8>(addr);
-        builder.CreateStore(value, pointer);
+        addr = builder.createAdd(addr, baseAddr);
+        auto pointer = builder.createIntToPtr<hir::I8>(addr);
+        builder.createStore(value, pointer);
     }
 
 public:

@@ -6,10 +6,12 @@
 #include "ppu_utils.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 // PowerPC rotation-masks
 RotateMask rotateMask;
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

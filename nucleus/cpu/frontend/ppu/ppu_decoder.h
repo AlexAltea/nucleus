@@ -20,6 +20,7 @@
 #include <vector>
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 using StateType = hir::Struct<
@@ -111,4 +112,5 @@ public:
 };
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

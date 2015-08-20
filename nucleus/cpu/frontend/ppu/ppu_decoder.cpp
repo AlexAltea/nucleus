@@ -11,18 +11,11 @@
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
-#include "llvm/IR/LegacyPassManager.h"
-#include "llvm/IR/BasicBlock.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/Verifier.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/Transforms/Scalar.h"
-
 #include <algorithm>
 #include <queue>
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 /**
@@ -268,7 +261,7 @@ void Function::recompile()
             recompiler.currentAddress = block.address + offset;
             const Instruction code(recompiler.currentAddress);
             auto method = get_entry(code).recompile;
-            builder.CreateCall(static_cast<Segment*>(parent)->funcDebugState, {builder.get<hir::I64>(recompiler.currentAddress)});
+            builder.createCall(static_cast<Segment*>(parent)->funcDebugState, {builder.get<hir::I64>(recompiler.currentAddress)});
             (recompiler.*method)(code);
         }
 
@@ -276,11 +269,11 @@ void Function::recompile()
         if (block.is_split()) {
             const U32 target = block.address + block.size;
             if (blocks.find(target) != blocks.end()) {
-                builder.CreateBr(recompiler.blocks[target]);
+                builder.createBr(recompiler.blocks[target]);
             }
             // Required for .sceStub.text (single-block functions ending on bctr)
             else {
-                builder.CreateBr(recompiler.epilog);
+                builder.createBr(recompiler.epilog);
             }
         }
     }
@@ -458,15 +451,15 @@ void Segment::recompile()
             }
         }
 
-        llvm::Value* value = builder.CreateCall(function.function, args);
+        llvm::Value* value = builder.createCall(function.function, args);
 
         // TODO: ?
 
-        builder.CreateRetVoid();
+        builder.createRetVoid();
     }
 
     builder.SetInsertPoint(defaultBlock);
-    builder.CreateRetVoid();
+    builder.createRetVoid();
 
     // NOTE: Debugging purposes
     module.dump();
@@ -476,4 +469,5 @@ void Segment::recompile()
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

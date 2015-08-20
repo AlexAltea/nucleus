@@ -8,6 +8,7 @@
 #include "nucleus/logger/logger.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 using namespace cpu::hir;
@@ -26,7 +27,7 @@ void Recompiler::mfocrf(Instruction code)
 
 void Recompiler::mfspr(Instruction code)
 {
-    Value<I64> rd;
+    Value* rd;
 
     const U32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
     switch (n) {
@@ -39,7 +40,7 @@ void Recompiler::mfspr(Instruction code)
 
     // Registers ignored by the recompiler
     case 0x008: // LR register
-        rd = builder.get<I64>(0);
+        rd = builder.getConstantI64(0);
         break;
 
     default:
@@ -55,7 +56,7 @@ void Recompiler::mtocrf(Instruction code)
 
 void Recompiler::mtspr(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
+    Value* rs = getGPR(code.rs);
 
     const U32 n = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
     switch (n) {
@@ -112,4 +113,5 @@ void Recompiler::ecowx(Instruction code)
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

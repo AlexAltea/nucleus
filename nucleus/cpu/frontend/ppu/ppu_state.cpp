@@ -6,7 +6,9 @@
 #include "ppu_state.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

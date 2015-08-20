@@ -7,21 +7,15 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
-#include "nucleus/cpu/frontend/ppu/interpreter/ppu_interpreter.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
-
-// Translator declarations
-class Interpreter;
 
 class Thread : public CellThread
 {
     U32 m_stackAddr;
     U32 m_stackPointer;
-
-    // Translators
-    Interpreter* interpreter = nullptr;
 
 public:
     State* state;
@@ -39,4 +33,5 @@ public:
 };
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

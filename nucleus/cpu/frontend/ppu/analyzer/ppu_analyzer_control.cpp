@@ -6,6 +6,7 @@
 #include "ppu_analyzer.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 /**
@@ -126,4 +127,5 @@ void Analyzer::ecowx(Instruction code)
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

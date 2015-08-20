@@ -10,6 +10,7 @@
 #include "nucleus/cpu/frontend/ppu/interpreter/ppu_interpreter.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 // PowerPC rotation-masks
@@ -33,4 +34,5 @@ struct RotateMask {
 extern RotateMask rotateMask;
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

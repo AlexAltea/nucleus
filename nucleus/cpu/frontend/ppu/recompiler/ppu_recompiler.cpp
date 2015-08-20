@@ -7,6 +7,7 @@
 #include "nucleus/logger/logger.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 using namespace cpu::hir;
@@ -56,7 +57,7 @@ void Recompiler::createProlog()
 
     // Branch to the real entry block
     hir::Block entryBlock = blocks.at(function->address);
-    builder.CreateBr(entryBlock);
+    builder.createBr(entryBlock);
 }
 
 void Recompiler::createEpilog()
@@ -66,30 +67,30 @@ void Recompiler::createEpilog()
     auto ppuFunc = static_cast<Function*>(function);
     switch (ppuFunc->type_out) {
     case FUNCTION_OUT_INTEGER:
-        builder.CreateRet(getGPR(3));
+        builder.createRet(getGPR(3));
         break;
     case FUNCTION_OUT_FLOAT:
-        builder.CreateRet(getFPR(1));
+        builder.createRet(getFPR(1));
         break;
     case FUNCTION_OUT_FLOAT_X2:
-        builder.CreateRet(getFPR(1)); // TODO
+        builder.createRet(getFPR(1)); // TODO
         break;
     case FUNCTION_OUT_FLOAT_X3:
-        builder.CreateRet(getFPR(1)); // TODO
+        builder.createRet(getFPR(1)); // TODO
         break;
     case FUNCTION_OUT_FLOAT_X4:
-        builder.CreateRet(getFPR(1)); // TODO
+        builder.createRet(getFPR(1)); // TODO
         break;
     case FUNCTION_OUT_VECTOR:
-        builder.CreateRet(getVR<I32>(2));
+        builder.createRet(getVR<I32>(2));
         break;
     case FUNCTION_OUT_VOID:
-        builder.CreateRetVoid();
+        builder.createRetVoid();
         break;
 
     default:
         logger.error(LOG_CPU, "Recompiler::createReturn: Invalid returnType");
-        builder.CreateRetVoid();
+        builder.createRetVoid();
         break;
     }
 }
@@ -97,14 +98,14 @@ void Recompiler::createEpilog()
 /**
  * Register read
  */
-Value<I64> Recompiler::getGPR(int index)
+Value* Recompiler::getGPR(int index, Type type)
 {
     // Return+Parameter registers and nonvolatile registers
     if ((3 <= index && index <= 10) || (index >= 14)) {
         if (!gpr[index]) {
             gpr[index] = allocaVariable<hir::I64>(format("r%d_", index));
         }
-        return builder.CreateLoad(gpr[index], format("r%d_", index));
+        return builder.createLoad(gpr[index], format("r%d_", index));
     }
 
     // Other volatile registers
@@ -117,7 +118,7 @@ Value<I64> Recompiler::getGPR(int index)
     }
 }
 
-Value<F64> Recompiler::getFPR(int index)
+Value* Recompiler::getFPR(int index)
 {
     // Return+Parameter registers and nonvolatile registers
     if ((1 <= index && index <= 13) || (index >= 14)) {
@@ -137,44 +138,44 @@ Value<F64> Recompiler::getFPR(int index)
     }
 }
 
-Value<I8> Recompiler::getCR(int index)
+Value* Recompiler::getCR(int index)
 {
     // TODO: We are considering all CR fields nonvolatile
     if (!cr[index].value) {
         cr[index] = allocaVariable<I8>(format("cr%d_", index));
     }
-    return builder.CreateLoad(cr[index]);
+    return builder.createLoad(cr[index]);
 }
 
-Value<I64> Recompiler::getXER()
+Value* Recompiler::getXER()
 {
     // TODO: We are considering the XER field nonvolatile
     if (!ctr.value) {
         ctr = allocaVariable<I64>("xer_");
     }
-    return builder.CreateLoad(ctr);
+    return builder.createLoad(ctr);
 }
 
-Value<I64> Recompiler::getCTR()
+Value* Recompiler::getCTR()
 {
     // TODO: We are considering the CTR field nonvolatile
     if (!ctr.value) {
         ctr = allocaVariable<I64>("ctr_");
     }
-    return builder.CreateLoad(ctr);
+    return builder.createLoad(ctr);
 }
 
 /**
  * Register write
  */
-void Recompiler::setGPR(int index, Value<I64> value)
+void Recompiler::setGPR(int index, Value* value)
 {
     // Return+Parameter registers and non-volatile registers
     if ((3 <= index && index <= 10) || (index >= 14)) {
         if (!gpr[index].value) {
             gpr[index] = allocaVariable<I64>(format("r%d_", index));
         }
-        builder.CreateStore(value, gpr[index]);
+        builder.createStore(value, gpr[index]);
     }
 
     // Other volatile registers
@@ -187,14 +188,14 @@ void Recompiler::setGPR(int index, Value<I64> value)
     }
 }
 
-void Recompiler::setFPR(int index, Value<F64> value)
+void Recompiler::setFPR(int index, Value* value)
 {
     // Return+Parameter registers and nonvolatile registers
     if ((1 <= index && index <= 13) || (index >= 14)) {
         if (!fpr[index].value) {
             fpr[index] = allocaVariable<F64>(format("f%d_", index));
         }
-        builder.CreateStore(value, fpr[index]);
+        builder.createStore(value, fpr[index]);
     }
 
     // Other volatile registers
@@ -207,40 +208,41 @@ void Recompiler::setFPR(int index, Value<F64> value)
     }
 }
 
-void Recompiler::setCR(int index, Value<I8> value)
+void Recompiler::setCR(int index, Value* value)
 {
     // TODO: We are considering all CR fields nonvolatile
     if (!cr[index].value) {
         cr[index] = allocaVariable<I8>(format("cr%d_", index));
     }
-    builder.CreateStore(value, cr[index]);
+    builder.createStore(value, cr[index]);
 }
 
-void Recompiler::setXER(Value<I64> value)
+void Recompiler::setXER(Value* value)
 {
     // TODO: We are considering the XER field nonvolatile
     if (!xer.value) {
         xer = allocaVariable<I64>("xer_");
     }
-    builder.CreateStore(value, xer);
+    builder.createStore(value, xer);
 }
 
-void Recompiler::setCTR(Value<I64> value)
+void Recompiler::setCTR(Value* value)
 {
     // TODO: We are considering the CTR field nonvolatile
     if (!ctr.value) {
         ctr = allocaVariable<I64>("ctr_");
     }
-    builder.CreateStore(value, ctr);
+    builder.createStore(value, ctr);
 }
 
 /**
  * Operation flags
  */
-void Recompiler::updateCR0(Value<I64> value)
+void Recompiler::updateCR0(Value* value)
 {
-    updateCR(0, value, builder.get<I64>(0), false);
+    updateCR(0, value, builder.getConstantI64(0), false);
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

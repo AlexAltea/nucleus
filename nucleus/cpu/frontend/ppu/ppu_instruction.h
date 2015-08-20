@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 // PPU Instruction
@@ -134,4 +135,5 @@ union Instruction
 };
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

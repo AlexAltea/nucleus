@@ -12,6 +12,7 @@
 #define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr, nullptr, nullptr }
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 /**
@@ -532,4 +533,5 @@ const Entry& get_table62 (Instruction code) { return table62[code.op62]; }
 const Entry& get_table63_(Instruction code) { return table63_[code.op63_]; }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu
