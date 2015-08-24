@@ -8,34 +8,7 @@
 namespace cpu {
 namespace hir {
 
-Block Function::getEntryBlock()
-{
-    return Block{ &(function->getEntryBlock()) };
-}
-
-Module Function::getParent()
-{
-    return function->getParent();
-}
-
-std::string Function::getName() const
-{
-    return function->getName();
-}
-
-void Function::setCallingConv(llvm::CallingConv::ID cc)
-{
-    function->setCallingConv(cc);
-}
-
-void Function::setName(const std::string& name)
-{
-    function->setName(name);
-}
-
-Function Function::Create(llvm::FunctionType* type, llvm::GlobalValue::LinkageTypes linkage, const std::string& name, Module module)
-{
-    return llvm::Function::Create(type, linkage, name, module.module);
+Function::Function(Module* parent) : parent(parent) {
 }
 
 }  // namespace hir

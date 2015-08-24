@@ -6,12 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/hir/block.h"
-#include "nucleus/cpu/hir/module.h"
-
-#include "llvm/IR/Function.h"
-
-#include <string>
 
 namespace cpu {
 namespace hir {
@@ -19,26 +13,23 @@ namespace hir {
 class Block;
 class Module;
 
-class Function
-{
+class Function {
+	Module* parent;
+
 public:
-    llvm::Function* function;
+	Block* entry;
 
     // Constructor
-    Function(llvm::Function* f = nullptr) : function(f) {}
+	Function(Module* parent);
 
-    static Function Create(
-        llvm::FunctionType* type,
-        llvm::GlobalValue::LinkageTypes linkage,
-        const std::string& name,
-        Module module);
+    
+    // Backend methods
 
-    Block getEntryBlock();
-    Module getParent();
-    std::string getName() const;
-
-    void setCallingConv(llvm::CallingConv::ID cc);
-    void setName(const std::string& name);
+    /**
+     * Compile this function
+     * @return           True on success
+     */
+    bool compile();
 };
 
 }  // namespace hir
