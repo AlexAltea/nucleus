@@ -15,36 +15,18 @@ namespace x86 {
 
 using namespace cpu::hir;
 
-struct I8Op : ValueOp<TYPE_I8, Xbyak::Reg8, S8> {
-};
-
-struct I16Op : ValueOp<TYPE_I16, Xbyak::Reg16, S16> {
-};
-
-struct I32Op : ValueOp<TYPE_I32, Xbyak::Reg32, S32> {
-};
-
-struct I64Op : ValueOp<TYPE_I64, Xbyak::Reg64, S64> {
-};
-
-struct F32Op : ValueOp<TYPE_F32, Xbyak::Fpu, F32> {
-};
-
-struct F64Op : ValueOp<TYPE_F64, Xbyak::Fpu, F64> {
-};
-
-struct V128Op : ValueOp<TYPE_V128, Xbyak::Xmm, V128> {
-};
-
-struct V256Op : ValueOp<TYPE_V256, Xbyak::Ymm, V256> {
-};
-
-struct PtrOp : ValueOp<TYPE_PTR, Xbyak::Reg64, void*> {
-};
-
+using I8Op = I8OpBase<Xbyak::Reg8>;
+using I16Op = I16OpBase<Xbyak::Reg16>;
+using I32Op = I32OpBase<Xbyak::Reg32>;
+using I64Op = I64OpBase<Xbyak::Reg64>;
+using F32Op = F32OpBase<Xbyak::Fpu>;
+using F64Op = F64OpBase<Xbyak::Fpu>;
+using V128Op = V128OpBase<Xbyak::Xmm>;
+using V256Op = V256OpBase<Xbyak::Ymm>;
+using PtrOp = PtrOpBase<Xbyak::Reg64>;
 
 template <typename S, typename I>
-struct Sequence : ISequence<S, I> {
+struct Sequence : SequenceBase<S, I> {
     template <typename FuncType>
     static void emitCommutativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
         // Constant, Constant
