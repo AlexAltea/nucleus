@@ -39,8 +39,31 @@ struct V128Op : ValueOp<TYPE_V128, Xbyak::Xmm, V128> {
 struct V256Op : ValueOp<TYPE_V256, Xbyak::Ymm, V256> {
 };
 
-// TODO
 struct PtrOp : ValueOp<TYPE_PTR, Xbyak::Reg64, void*> {
+};
+
+
+template <typename S, typename I>
+struct Sequence : ISequence<S, I> {
+    template <typename FuncType>
+    static void emitCommutativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
+        // Constant, Constant
+        if (i.src1.isConstant && i.src2.isConstant) {
+            func(e, i.dest.reg, i.src2.constant());
+        }
+        // Constant, Register
+        if (i.src1.isConstant && i.src2.isRegister) {
+        }
+        // Register, Constant
+        if (i.src1.isRegister && i.src2.isConstant) {
+        }
+        // Register, Register
+        if (i.src1.isRegister && i.src2.isRegister) {
+        }
+    }
+    template <typename FuncType>
+    static void emitAssociativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
+    }
 };
 
 /**
@@ -48,22 +71,30 @@ struct PtrOp : ValueOp<TYPE_PTR, Xbyak::Reg64, void*> {
  */
 struct ADD_I8 : Sequence<ADD_I8, I<OPCODE_ADD, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.add(dest, src);
+        });
     }
 };
 struct ADD_I16 : Sequence<ADD_I16, I<OPCODE_ADD, I16Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.add(dest, src);
+        });
     }
 };
 struct ADD_I32 : Sequence<ADD_I32, I<OPCODE_ADD, I32Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.add(dest, src);
+        });
     }
 };
 struct ADD_I64 : Sequence<ADD_I64, I<OPCODE_ADD, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.add(dest, src);
+        });
     }
 };
 
@@ -72,22 +103,30 @@ struct ADD_I64 : Sequence<ADD_I64, I<OPCODE_ADD, I64Op, I64Op, I64Op>> {
  */
 struct SUB_I8 : Sequence<SUB_I8, I<OPCODE_SUB, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitAssociativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.sub(dest, src);
+        });
     }
 };
 struct SUB_I16 : Sequence<SUB_I16, I<OPCODE_SUB, I16Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitAssociativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.sub(dest, src);
+        });
     }
 };
 struct SUB_I32 : Sequence<SUB_I32, I<OPCODE_SUB, I32Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitAssociativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.sub(dest, src);
+        });
     }
 };
 struct SUB_I64 : Sequence<SUB_I64, I<OPCODE_SUB, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        emitAssociativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.sub(dest, src);
+        });
     }
 };
 
@@ -170,6 +209,102 @@ struct DIV_I64 : Sequence<DIV_I64, I<OPCODE_DIV, I64Op, I64Op, I64Op>> {
         } else {
             // TODO
         }
+    }
+};
+
+/**
+ * Opcode: AND
+ */
+struct AND_I8 : Sequence<AND_I8, I<OPCODE_AND, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.and_(dest, src);
+        });
+    }
+};
+struct AND_I16 : Sequence<AND_I16, I<OPCODE_AND, I16Op, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.and_(dest, src);
+        });
+    }
+};
+struct AND_I32 : Sequence<AND_I32, I<OPCODE_AND, I32Op, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.and_(dest, src);
+        });
+    }
+};
+struct AND_I64 : Sequence<AND_I64, I<OPCODE_AND, I64Op, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.and_(dest, src);
+        });
+    }
+};
+
+/**
+ * Opcode: OR
+ */
+struct OR_I8 : Sequence<OR_I8, I<OPCODE_OR, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.or_(dest, src);
+        });
+    }
+};
+struct OR_I16 : Sequence<OR_I16, I<OPCODE_OR, I16Op, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.or_(dest, src);
+        });
+    }
+};
+struct OR_I32 : Sequence<OR_I32, I<OPCODE_OR, I32Op, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.or_(dest, src);
+        });
+    }
+};
+struct OR_I64 : Sequence<OR_I64, I<OPCODE_OR, I64Op, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.or_(dest, src);
+        });
+    }
+};
+
+/**
+ * Opcode: XOR
+ */
+struct XOR_I8 : Sequence<XOR_I8, I<OPCODE_XOR, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.xor_(dest, src);
+        });
+    }
+};
+struct XOR_I16 : Sequence<XOR_I16, I<OPCODE_XOR, I16Op, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.xor_(dest, src);
+        });
+    }
+};
+struct XOR_I32 : Sequence<XOR_I32, I<OPCODE_XOR, I32Op, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.xor_(dest, src);
+        });
+    }
+};
+struct XOR_I64 : Sequence<XOR_I64, I<OPCODE_XOR, I64Op, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+            e.xor_(dest, src);
+        });
     }
 };
 
