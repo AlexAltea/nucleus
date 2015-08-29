@@ -8,18 +8,43 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/backend/sequences.h"
 
+#include <unordered_map>
+
 namespace cpu {
 namespace backend {
 namespace x86 {
 
 class X86Sequences {
-    static std::unordered_map<InstrKey, X86SequenceFunction> sequences;
+    // Sequence selection function type
+    using SelectFunction = void(*)(X86Emitter&, hir::Instruction*);
+
+    // Registered sequences
+    static std::unordered_map<InstrKey, SelectFunction> sequences;
+
+    // Sequence registration
+    template <typename T>
+    void registerSequence() {
+        sequences.insert({ T::key, T::emit });
+    }
+    template <typename T, typename... Ts>
+    void registerSequence() {
+        registerSequence<T>();
+        registerSequence<Ts...>();
+    }
+
 public:
+    /**
+     * Initialize the table of sequences
+     */
+    static void init();
 
-    // Constructor
-    X86Sequences();
-
-void emit();
+    /**
+     * Emit the corresponding x86 instructions for a given IR instruction sequence
+     * @param[in]  emitter  Emitter of x86 machine code
+     * @param[in]  instr    Instruction pointer
+     * @return              True on success
+     */
+    static bool select(X86Emitter* emitter, const hir::Instruction* instr);
 };
 
 }  // namespace x86

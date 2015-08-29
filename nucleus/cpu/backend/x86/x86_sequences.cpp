@@ -4,8 +4,9 @@
  */
 
 #include "x86_sequences.h"
-#include "nucleus/cpu/backend/x86/x86_emitter.h"
 #include "nucleus/assert.h"
+#include "nucleus/logger/logger.h"
+#include "nucleus/cpu/backend/x86/x86_emitter.h"
 
 #include <unordered_map>
 
@@ -25,8 +26,13 @@ using V128Op = V128OpBase<Xbyak::Xmm>;
 using V256Op = V256OpBase<Xbyak::Ymm>;
 using PtrOp = PtrOpBase<Xbyak::Reg64>;
 
+// Sequences
 template <typename S, typename I>
 struct Sequence : SequenceBase<S, I> {
+    static void select(X86Emitter& emitter, const hir::Instruction* instr) {
+        S::emit(emitter, instr);
+    }
+
     template <typename FuncType>
     static void emitCommutativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
         // Constant, Constant
@@ -462,12 +468,25 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
     }
 };
 
-X86Sequences::X86Sequences()
-{
+void X86Sequences::init() {
     // Initialize sequences if necessary
     if (sequences.empty()) {
-
+        registerSequence<ADD_I8, ADD_I16, ADD_I32, ADD_I64>();
+        registerSequence<SUB_I8, SUB_I16, SUB_I32, SUB_I64>();
+        registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
+        registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
     }
+}
+
+bool X86Sequences::select(X86Emitter* emitter, const hir::Instruction* instr) {
+    auto it = sequences.find(instr);
+    if (it != sequences.end()) {
+        it->second(*emitter, instr);
+        return true;
+    }
+
+    logger.error(LOG_CPU, "No sequence found");
+    return false;
 }
 
 }  // namespace x86

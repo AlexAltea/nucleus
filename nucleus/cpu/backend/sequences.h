@@ -26,6 +26,14 @@ union InstrKey {
     };
 
     Value value;
+
+    InstrKey(const hir::Instruction* instr) {
+        opcode = instr->opcode;
+        dest = instr->dest.value->type;
+        src1 = instr->src1.value->type;
+        src2 = instr->src2.value->type;
+        src3 = instr->src3.value->type;
+    }
 };
 
 struct Op {
@@ -133,7 +141,7 @@ struct I {
     S2 src2;
     S3 src3;
 
-    void load(const hir::Instruction* i) {
+    I(const hir::Instruction* i) {
         instr = i;
         src1.load(i->src1);
         src2.load(i->src2);
