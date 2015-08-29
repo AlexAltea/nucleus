@@ -112,7 +112,6 @@ struct SUB_I64 : Sequence<SUB_I64, I<OPCODE_SUB, I64Op, I64Op, I64Op>> {
     }
 };
 
-
 /**
  * Opcode: MUL
  */
@@ -152,7 +151,6 @@ struct MUL_I64 : Sequence<MUL_I64, I<OPCODE_MUL, I64Op, I64Op, I64Op>> {
         }
     }
 };
-
 
 /**
  * Opcode: DIV
@@ -293,12 +291,12 @@ struct XOR_I64 : Sequence<XOR_I64, I<OPCODE_XOR, I64Op, I64Op, I64Op>> {
 /**
  * Opcode: LOAD
  */
-struct LOAD_I8 : Sequence<LOAD_I8, I<OPCODE_LOAD, I8Op, PtrOp>> {
+struct LOAD_I8 : Sequence<LOAD_I8, I<OPCODE_LOAD, PtrOp, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         // TODO
     }
 };
-struct LOAD_I16 : Sequence<LOAD_I16, I<OPCODE_LOAD, I16Op, PtrOp>> {
+struct LOAD_I16 : Sequence<LOAD_I16, I<OPCODE_LOAD, PtrOp, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -311,7 +309,7 @@ struct LOAD_I16 : Sequence<LOAD_I16, I<OPCODE_LOAD, I16Op, PtrOp>> {
         }
     }
 };
-struct LOAD_I32 : Sequence<LOAD_I32, I<OPCODE_LOAD, I32Op, PtrOp>> {
+struct LOAD_I32 : Sequence<LOAD_I32, I<OPCODE_LOAD, PtrOp, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -324,7 +322,7 @@ struct LOAD_I32 : Sequence<LOAD_I32, I<OPCODE_LOAD, I32Op, PtrOp>> {
         }
     }
 };
-struct LOAD_I64 : Sequence<LOAD_I64, I<OPCODE_LOAD, I64Op, PtrOp>> {
+struct LOAD_I64 : Sequence<LOAD_I64, I<OPCODE_LOAD, PtrOp, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -337,7 +335,7 @@ struct LOAD_I64 : Sequence<LOAD_I64, I<OPCODE_LOAD, I64Op, PtrOp>> {
         }
     }
 };
-struct LOAD_F32 : Sequence<LOAD_F32, I<OPCODE_LOAD, F32Op, PtrOp>> {
+struct LOAD_F32 : Sequence<LOAD_F32, I<OPCODE_LOAD, PtrOp, F32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -350,7 +348,7 @@ struct LOAD_F32 : Sequence<LOAD_F32, I<OPCODE_LOAD, F32Op, PtrOp>> {
         }
     }
 };
-struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
+struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, PtrOp, F64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -363,7 +361,7 @@ struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
         }
     }
 };
-struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
+struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, PtrOp, V128Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -380,12 +378,12 @@ struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
 /**
  * Opcode: STORE
  */
-struct STORE_I8 : Sequence<STORE_I8, I<OPCODE_STORE, I8Op, PtrOp>> {
+struct STORE_I8 : Sequence<STORE_I8, I<OPCODE_STORE, VoidOp, PtrOp, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         // TODO
     }
 };
-struct STORE_I16 : Sequence<STORE_I16, I<OPCODE_STORE, I16Op, PtrOp>> {
+struct STORE_I16 : Sequence<STORE_I16, I<OPCODE_STORE, VoidOp, PtrOp, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -398,7 +396,7 @@ struct STORE_I16 : Sequence<STORE_I16, I<OPCODE_STORE, I16Op, PtrOp>> {
         }
     }
 };
-struct STORE_I32 : Sequence<STORE_I32, I<OPCODE_STORE, I32Op, PtrOp>> {
+struct STORE_I32 : Sequence<STORE_I32, I<OPCODE_STORE, VoidOp, PtrOp, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -411,7 +409,7 @@ struct STORE_I32 : Sequence<STORE_I32, I<OPCODE_STORE, I32Op, PtrOp>> {
         }
     }
 };
-struct STORE_I64 : Sequence<STORE_I64, I<OPCODE_STORE, I64Op, PtrOp>> {
+struct STORE_I64 : Sequence<STORE_I64, I<OPCODE_STORE, VoidOp, PtrOp, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -424,7 +422,7 @@ struct STORE_I64 : Sequence<STORE_I64, I<OPCODE_STORE, I64Op, PtrOp>> {
         }
     }
 };
-struct STORE_F32 : Sequence<STORE_F32, I<OPCODE_STORE, F32Op, PtrOp>> {
+struct STORE_F32 : Sequence<STORE_F32, I<OPCODE_STORE, VoidOp, PtrOp, F32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -437,7 +435,7 @@ struct STORE_F32 : Sequence<STORE_F32, I<OPCODE_STORE, F32Op, PtrOp>> {
         }
     }
 };
-struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, F64Op, PtrOp>> {
+struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, VoidOp, PtrOp, F64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
@@ -450,7 +448,7 @@ struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, F64Op, PtrOp>> {
         }
     }
 };
-struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, V128Op, PtrOp>> {
+struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {

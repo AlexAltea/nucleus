@@ -31,8 +31,15 @@ union InstrKey {
 struct Op {
 };
 
+struct VoidOp : Op {
+};
+
+
 /**
  * Generic Value operand
+ * @tparam  KeyValue   Operand key
+ * @tparam  RegType    Type of emitter register
+ * @tparam  ConstType  Type of constant value
  */
 template <int KeyValue, typename RegType, typename ConstType>
 struct ValueOp : Op {
@@ -42,9 +49,16 @@ struct ValueOp : Op {
     bool isConstant;
     bool isRegister;
     RegType reg;
+    operator const RegType&() const {
+        return reg;
+    }
     void load(const hir::Instruction::Operand op) {
         value = op.value;
-        // TODO
+        isConstant = value->isConstant;
+        isRegister = !isConstant;
+        if (isRegister) {
+            // TODO
+        }
     }
 };
 

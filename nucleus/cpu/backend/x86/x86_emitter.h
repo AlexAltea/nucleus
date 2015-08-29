@@ -19,19 +19,20 @@ enum X86Extension {
     MOVBE = (1 << 2),  // Move Data After Swapping Bytes
 };
 
-class X86Emitter : public Xbyak::CodeGenerator {
-    enum Mode {
-        X86_MODE_32BITS = (1 << 0),
-        X86_MODE_64BITS = (1 << 1),
-    };
+enum X86Mode {
+    X86_MODE_32BITS = (1 << 0),
+    X86_MODE_64BITS = (1 << 1),
+};
 
+class X86Emitter : public Xbyak::CodeGenerator {
+private:
     // Available x86 extensions
     U32 extensions;
 
+public:
     // Chosen x86 mode
     U32 mode;
 
-public:
     bool isExtensionAvailable(U32 queriedExtensions) const;
 };
 
