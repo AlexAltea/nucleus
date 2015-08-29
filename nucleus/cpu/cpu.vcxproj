@@ -11,9 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="backend\engine.cpp" />
-    <ClCompile Include="backend\symbols.cpp" />
+    <ClCompile Include="backend\compiler.cpp" />
+    <ClCompile Include="backend\sequences.cpp" />
+    <ClCompile Include="backend\x86\x86_compiler.cpp" />
     <ClCompile Include="backend\x86\x86_emitter.cpp" />
+    <ClCompile Include="backend\x86\x86_sequences.cpp" />
     <ClCompile Include="cell.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_branch.cpp" />
@@ -51,9 +53,11 @@
     <ClCompile Include="thread.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="backend\engine.h" />
-    <ClInclude Include="backend\symbols.h" />
+    <ClInclude Include="backend\compiler.h" />
+    <ClInclude Include="backend\sequences.h" />
+    <ClInclude Include="backend\x86\x86_compiler.h" />
     <ClInclude Include="backend\x86\x86_emitter.h" />
+    <ClInclude Include="backend\x86\x86_sequences.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="frontend\frontend_block.h" />
     <ClInclude Include="frontend\frontend_function.h" />

@@ -107,12 +107,6 @@
     <ClCompile Include="hir\type.cpp">
       <Filter>hir</Filter>
     </ClCompile>
-    <ClCompile Include="backend\engine.cpp">
-      <Filter>backend</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\symbols.cpp">
-      <Filter>backend</Filter>
-    </ClCompile>
     <ClCompile Include="frontend\ppu\ppu_utils.cpp">
       <Filter>frontend\ppu</Filter>
     </ClCompile>
@@ -136,6 +130,18 @@
     </ClCompile>
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_channel.cpp">
       <Filter>frontend\spu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\compiler.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\x86\x86_compiler.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\x86\x86_sequences.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\sequences.cpp">
+      <Filter>backend</Filter>
     </ClCompile>
     <ClCompile Include="backend\x86\x86_emitter.cpp">
       <Filter>backend\x86</Filter>
@@ -195,12 +201,6 @@
     <ClInclude Include="frontend\frontend_segment.h">
       <Filter>frontend</Filter>
     </ClInclude>
-    <ClInclude Include="backend\engine.h">
-      <Filter>backend</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\symbols.h">
-      <Filter>backend</Filter>
-    </ClInclude>
     <ClInclude Include="frontend\ppu\ppu_utils.h">
       <Filter>frontend\ppu</Filter>
     </ClInclude>
@@ -212,6 +212,18 @@
     </ClInclude>
     <ClInclude Include="hir\instruction.h">
       <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\compiler.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\x86\x86_compiler.h">
+      <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\x86\x86_sequences.h">
+      <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\sequences.h">
+      <Filter>backend</Filter>
     </ClInclude>
     <ClInclude Include="backend\x86\x86_emitter.h">
       <Filter>backend\x86</Filter>

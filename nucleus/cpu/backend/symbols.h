@@ -20,7 +20,7 @@ extern "C" {
     void nucleusSystemCall();
 }
 
-class SymbolResolver : public llvm::RuntimeDyld::SymbolResolver {
+class SymbolResolver {
 public:
     virtual SymbolInfo findSymbol(const std::string &name) override;
     virtual SymbolInfo findSymbolInLogicalDylib(const std::string &name) override;
