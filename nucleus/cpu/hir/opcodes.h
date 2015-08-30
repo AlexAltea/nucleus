@@ -18,9 +18,9 @@ enum ArithmeticFlags : OpcodeFlags {
 };
 
 enum MemoryFlags : OpcodeFlags {
-	ENDIAN_DEFAULT   = 0,
-	ENDIAN_BIG       = 1 << 0,  // Big Endian memory access
-	ENDIAN_LITTLE    = 1 << 1,  // Little Endian memory access
+    ENDIAN_DEFAULT   = 0,
+    ENDIAN_BIG       = 1 << 0,  // Big Endian memory access
+    ENDIAN_LITTLE    = 1 << 1,  // Little Endian memory access
 };
 
 enum VectorFlags : OpcodeFlags {

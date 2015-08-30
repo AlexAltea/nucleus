@@ -46,9 +46,9 @@ public:
     // Arithmetic operations
     Value* createAdd(Value* lhs, Value* rhs);
     Value* createSub(Value* lhs, Value* rhs);
-    Value* createMul(Value* lhs, Value* rhs, ArithmeticFlags flags);
-    Value* createMulH(Value* lhs, Value* rhs, ArithmeticFlags flags);
-    Value* createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags);
+    Value* createMul(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
+    Value* createMulH(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
+    Value* createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
     Value* createNeg(Value* value);
 	Value* createSqrt(Value* value);
     Value* createCtlz(Value* value);
@@ -77,8 +77,8 @@ public:
     Value* createTrunc(Value* value, Type type);
 
     // Memory access operations
-	Value* createLoad(Type type, Value* address, MemoryFlags flags = ENDIAN_DEFAULT);
-	void createStore(Type type, Value* address, Value* value, MemoryFlags flags = ENDIAN_DEFAULT);
+	Value* createLoad(Value* address, Type type, MemoryFlags flags = ENDIAN_DEFAULT);
+	void createStore(Value* address, Value* value, MemoryFlags flags = ENDIAN_DEFAULT);
 
     // Comparison operations
 	Value* createCmpEQ(Value* lhs, Value* rhs);
@@ -94,6 +94,7 @@ public:
 
     // Branching and conditionals
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
+    void createRet(Value* value);
 };
 
 }  // namespace hir

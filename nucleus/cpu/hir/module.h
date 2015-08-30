@@ -17,7 +17,7 @@ class Function;
 
 class Module {
 public:
-	std::vector<Function*> functions;
+    std::vector<Function*> functions;
 
 
     // Frontend methods
