@@ -18,8 +18,7 @@ enum CellThreadType {
     CELL_THREAD_RAWSPU,
 };
 
-class CellThread
-{
+class CellThread {
 protected:
     // Thread status and management
     std::mutex m_mutex;
@@ -35,15 +34,15 @@ public:
     U64 id;    // Thread ID (relevant for LV2)
 
     // Open a new thread that will enter the code emulation loop
-    virtual void start()=0;
+    virtual void start() = 0;
 
     // Enter emulation loop
-    virtual void task()=0;
+    virtual void task() = 0;
 
     // Control the thread once it is started
-    virtual void run()=0;
-    virtual void pause()=0;
-    virtual void stop()=0;
+    virtual void run() = 0;
+    virtual void pause() = 0;
+    virtual void stop() = 0;
 
     // Block caller thread until this thread finishes
     void join();

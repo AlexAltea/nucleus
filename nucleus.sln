@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "externals", "externals", "{697C8FFB-2D7C-418D-A387-054747206AC2}"
 EndProject
@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{04EA3EAD-EA25-4335-8AB4-743FD64EA58E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unit", "tests\unit\unit.vcxproj", "{B1FF30F1-16CC-43E9-A896-CE8D54312F62}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D646D01B-1B44-4C1F-8308-4EDA00D55609} = {D646D01B-1B44-4C1F-8308-4EDA00D55609}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wrappers", "wrappers", "{23F66B7C-9BC8-409B-8135-3C3AC7423527}"
 EndProject

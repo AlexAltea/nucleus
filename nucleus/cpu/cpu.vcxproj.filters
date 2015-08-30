@@ -229,4 +229,9 @@
       <Filter>backend\x86</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="hir\opcodes.inl">
+      <Filter>hir</Filter>
+    </None>
+  </ItemGroup>
 </Project>

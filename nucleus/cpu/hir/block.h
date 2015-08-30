@@ -16,13 +16,13 @@ class Function;
 class Instruction;
 
 class Block {
-	Function* parent;
+    Function* parent;
 
 public:
-	std::list<Instruction*> instructions;
+    std::list<Instruction*> instructions;
 
     // Constructor
-	Block(Function* parent);
+    Block(Function* parent);
     ~Block();
 };
 

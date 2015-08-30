@@ -12,20 +12,20 @@
 
 #define ASSERT_TYPE_INTEGER(value) \
     assert_true( \
-	value->type == TYPE_I8  || \
-	value->type == TYPE_I16 || \
-	value->type == TYPE_I32 || \
-	value->type == TYPE_I64)
+    value->type == TYPE_I8  || \
+    value->type == TYPE_I16 || \
+    value->type == TYPE_I32 || \
+    value->type == TYPE_I64)
 
 #define ASSERT_TYPE_FLOAT(value) \
     assert_true( \
-	value->type == TYPE_F32 || \
-	value->type == TYPE_F64)
+    value->type == TYPE_F32 || \
+    value->type == TYPE_F64)
 
 #define ASSERT_TYPE_VECTOR(value) \
     assert_true( \
-	value->type == TYPE_V128 || \
-	value->type == TYPE_V256)
+    value->type == TYPE_V128 || \
+    value->type == TYPE_V256)
 
 namespace cpu {
 namespace hir {

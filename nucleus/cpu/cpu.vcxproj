@@ -82,6 +82,9 @@
     <ClInclude Include="hir\value.h" />
     <ClInclude Include="thread.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="hir\opcodes.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D646D01B-1B44-4C1F-8308-4EDA00D55609}</ProjectGuid>
     <RootNamespace>cpu</RootNamespace>

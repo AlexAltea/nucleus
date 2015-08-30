@@ -50,9 +50,9 @@ public:
     Value* createMulH(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
     Value* createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
     Value* createNeg(Value* value);
-	Value* createSqrt(Value* value);
+    Value* createSqrt(Value* value);
     Value* createCtlz(Value* value);
-	
+
     // Logical operations
     Value* createAnd(Value* lhs, Value* rhs);
     Value* createAnd(Value* lhs, U64 rhs);
@@ -77,20 +77,20 @@ public:
     Value* createTrunc(Value* value, Type type);
 
     // Memory access operations
-	Value* createLoad(Value* address, Type type, MemoryFlags flags = ENDIAN_DEFAULT);
-	void createStore(Value* address, Value* value, MemoryFlags flags = ENDIAN_DEFAULT);
+    Value* createLoad(Value* address, Type type, MemoryFlags flags = ENDIAN_DEFAULT);
+    void createStore(Value* address, Value* value, MemoryFlags flags = ENDIAN_DEFAULT);
 
     // Comparison operations
-	Value* createCmpEQ(Value* lhs, Value* rhs);
-	Value* createCmpNE(Value* lhs, Value* rhs);
-	Value* createCmpULT(Value* lhs, Value* rhs);
-	Value* createCmpULE(Value* lhs, Value* rhs);
-	Value* createCmpUGT(Value* lhs, Value* rhs);
-	Value* createCmpUGE(Value* lhs, Value* rhs);
-	Value* createCmpSLT(Value* lhs, Value* rhs);
-	Value* createCmpSLE(Value* lhs, Value* rhs);
-	Value* createCmpSGT(Value* lhs, Value* rhs);
-	Value* createCmpSGE(Value* lhs, Value* rhs);
+    Value* createCmpEQ(Value* lhs, Value* rhs);
+    Value* createCmpNE(Value* lhs, Value* rhs);
+    Value* createCmpULT(Value* lhs, Value* rhs);
+    Value* createCmpULE(Value* lhs, Value* rhs);
+    Value* createCmpUGT(Value* lhs, Value* rhs);
+    Value* createCmpUGE(Value* lhs, Value* rhs);
+    Value* createCmpSLT(Value* lhs, Value* rhs);
+    Value* createCmpSLE(Value* lhs, Value* rhs);
+    Value* createCmpSGT(Value* lhs, Value* rhs);
+    Value* createCmpSGE(Value* lhs, Value* rhs);
 
     // Branching and conditionals
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);

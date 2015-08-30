@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/backend/sequences.h"
+#include "nucleus/cpu/backend/x86/x86_emitter.h"
 
 #include <unordered_map>
 

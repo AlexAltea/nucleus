@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+// Xbyak dependency
+#define XBYAK_NO_OP_NAMES
 #include "externals/xbyak/xbyak.h"
 
 namespace cpu {

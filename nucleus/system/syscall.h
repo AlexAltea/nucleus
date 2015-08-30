@@ -15,7 +15,7 @@
 class Syscall
 {
 public:
-    virtual void call(cpu::ppu::State& state, void* memoryBase)=0;
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)=0;
     virtual ~Syscall(){};
 };
 
@@ -31,7 +31,7 @@ class SyscallBinder<TR> : public Syscall
 public:
     SyscallBinder(TR(*func)()) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func();
     }
@@ -45,7 +45,7 @@ class SyscallBinder<TR, T1> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0));
     }
@@ -59,7 +59,7 @@ class SyscallBinder<TR, T1, T2> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1));
     }
@@ -76,7 +76,7 @@ class SyscallBinder<TR, T1, T2, T3> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2));
     }
@@ -90,7 +90,7 @@ class SyscallBinder<TR, T1, T2, T3, T4> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3, T4)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3));
     }
@@ -104,7 +104,7 @@ class SyscallBinder<TR, T1, T2, T3, T4, T5> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3, T4, T5)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4));
     }
@@ -118,7 +118,7 @@ class SyscallBinder<TR, T1, T2, T3, T4, T5, T6> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3, T4, T5, T6)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5));
     }
@@ -132,7 +132,7 @@ class SyscallBinder<TR, T1, T2, T3, T4, T5, T6, T7> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3, T4, T5, T6, T7)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5), ARG_GPR(T7,6));
     }
@@ -146,7 +146,7 @@ class SyscallBinder<TR, T1, T2, T3, T4, T5, T6, T7, T8> : public Syscall
 public:
     SyscallBinder(TR(*func)(T1, T2, T3, T4, T5, T6, T7, T8)) : m_func(func) {}
 
-    virtual void call(cpu::ppu::State& state, void* memoryBase)
+    virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
         state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5), ARG_GPR(T7,6), ARG_GPR(T8,7));
     }

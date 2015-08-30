@@ -19,7 +19,7 @@ enum Type {
     TYPE_F32,
     TYPE_F64,
     TYPE_V128,
-	TYPE_V256,
+    TYPE_V256,
 
     TYPE_PTR = TYPE_I64
 };

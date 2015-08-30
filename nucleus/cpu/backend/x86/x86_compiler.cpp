@@ -5,9 +5,7 @@
 
 #include "x86_compiler.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/cpu/hir/block.h"
-#include "nucleus/cpu/hir/function.h"
-#include "nucleus/cpu/hir/module.h"
+#include "nucleus/cpu/backend/x86/x86_emitter.h"
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
 #include <queue>
@@ -34,6 +32,8 @@ bool X86Compiler::compile(Block* block) {
     for (auto it = instructions.begin(); it != instructions.end(); it++) {
         X86Sequences::select(emitter.get(), *it);
     }
+
+    return true;
 }
 
 bool X86Compiler::compile(Function* function) {
@@ -51,7 +51,8 @@ bool X86Compiler::compile(Function* function) {
     return true;
 }
 
-bool X86Compiler::compile(Module* block) {
+bool X86Compiler::compile(Module* module) {
+    return true;
 }
 
 }  // namespace x86
