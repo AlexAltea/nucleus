@@ -10,6 +10,7 @@
 #include "nucleus/cpu/hir/type.h"
 #include "nucleus/cpu/hir/value.h"
 
+#include <list>
 #include <vector>
 
 namespace cpu {

@@ -32,12 +32,12 @@ namespace hir {
 
 void Builder::setInsertPoint(Block* block)
 {
-    builder.SetInsertPoint(block.bb);
+    // TODO
 }
 
-void Builder::setInsertPoint(Block* block, llvm::BasicBlock::iterator ip)
+void Builder::setInsertPoint(Block* block, std::list<Instruction*>::iterator ip)
 {
-    builder.SetInsertPoint(block.bb, ip);
+    // TODO
 }
 
 // Arithmetic operations
@@ -79,7 +79,7 @@ Value* Builder::createSub(Value* lhs, Value* rhs) {
     return i->dest;
 }
 
-Value* Builder::createMul(Value* lhs, Value* rhs) {
+Value* Builder::createMul(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     ASSERT_TYPE_INTEGER(lhs);
     ASSERT_TYPE_EQUAL(lhs, rhs);
 
@@ -95,7 +95,7 @@ Value* Builder::createMul(Value* lhs, Value* rhs) {
     return i->dest;
 }
 
-Value* Builder::createDiv(Value* lhs, Value* rhs) {
+Value* Builder::createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     ASSERT_TYPE_INTEGER(lhs);
     ASSERT_TYPE_EQUAL(lhs, rhs);
 
