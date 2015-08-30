@@ -71,55 +71,55 @@ struct ValueOp : Op {
 };
 
 template <typename RegType>
-struct I8OpBase : ValueOp<TYPE_I8, RegType, S8> {
+struct I8OpBase : ValueOp<hir::TYPE_I8, RegType, S8> {
     const S8 constant() const {
         return value->constant.i8;
     }
 };
 template <typename RegType>
-struct I16OpBase : ValueOp<TYPE_I16, RegType, S16> {
+struct I16OpBase : ValueOp<hir::TYPE_I16, RegType, S16> {
     const S16 constant() const {
         return value->constant.i16;
     }
 };
 template <typename RegType>
-struct I32OpBase : ValueOp<TYPE_I32, RegType, S32> {
+struct I32OpBase : ValueOp<hir::TYPE_I32, RegType, S32> {
     const S32 constant() const {
         return value->constant.i32;
     }
 };
 template <typename RegType>
-struct I64OpBase : ValueOp<TYPE_I64, RegType, S64> {
+struct I64OpBase : ValueOp<hir::TYPE_I64, RegType, S64> {
     const S64 constant() const {
         return value->constant.i64;
     }
 };
 template <typename RegType>
-struct F32OpBase : ValueOp<TYPE_F32, RegType, F32> {
+struct F32OpBase : ValueOp<hir::TYPE_F32, RegType, F32> {
     const F32 constant() const {
         return value->constant.f32;
     }
 };
 template <typename RegType>
-struct F64OpBase : ValueOp<TYPE_F64, RegType, F64> {
+struct F64OpBase : ValueOp<hir::TYPE_F64, RegType, F64> {
     const F64 constant() const {
         return value->constant.f64;
     }
 };
 template <typename RegType>
-struct V128OpBase : ValueOp<TYPE_V128, RegType, V128> {
+struct V128OpBase : ValueOp<hir::TYPE_V128, RegType, V128> {
     const V128 constant() const {
         return value->constant.v128;
     }
 };
 template <typename RegType>
-struct V256OpBase : ValueOp<TYPE_V256, RegType, V256> {
+struct V256OpBase : ValueOp<hir::TYPE_V256, RegType, V256> {
     const V256 constant() const {
         return value->constant.v256;
    } 
 };
 template <typename RegType>
-struct PtrOpBase : ValueOp<TYPE_PTR, RegType, void*> {
+struct PtrOpBase : ValueOp<hir::TYPE_PTR, RegType, void*> {
     const void* constant() const {
         return value->constant.i64; // TODO
     }

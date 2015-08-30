@@ -52,3 +52,38 @@ struct U128 {
         return U128{_lo, _hi};
     }
 };
+
+// Vector types
+
+/**
+ * 128-bit vector
+ * Allows component-wise signed and unsigned 8-bit, 16-bit and 32-bit
+ * integer operations and component-wise 32-bit floating point operations.
+ */
+union V128 {
+    F32 f32[4];
+    U32 u32[4];
+    S32 s32[4];
+    U16 u16[8];
+    S16 s16[8];
+    U8 u8[16];
+    S8 s8[16];
+};
+
+/**
+* 256-bit vector
+* Allows component-wise signed and unsigned 8-bit, 16-bit, 32-bit and 64-bit
+* integer operations and component-wise 32-bit and 64-bit floating point operations.
+*/
+union V256 {
+    F64 f64[4];
+    F32 f32[8];
+    U64 u64[4];
+    S64 s64[4];
+    U32 u32[8];
+    S32 s32[8];
+    U16 u16[16];
+    S16 s16[16];
+    U8 u8[32];
+    S8 s8[32];
+};

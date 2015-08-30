@@ -6,20 +6,18 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/function.h"
+#include "nucleus/cpu/hir/module.h"
 
 namespace cpu {
 namespace backend {
 
-// Class declarations
-class hir::Block;
-class hir::Function;
-class hir::Module;
-
 class Compiler {
 public:
-    virtual bool compile(hir::Block* function) = 0;
+    virtual bool compile(hir::Block* block) = 0;
     virtual bool compile(hir::Function* function) = 0;
-    virtual bool compile(hir::Module* function) = 0;
+    virtual bool compile(hir::Module* module) = 0;
 };
 
 }  // namespace backend
