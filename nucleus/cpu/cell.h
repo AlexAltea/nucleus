@@ -27,17 +27,14 @@ public:
     std::unique_ptr<backend::Compiler> compiler;
 
     // Cell threads
-    std::vector<ppu::Thread*> ppu_threads;
+    std::vector<frontend::ppu::Thread*> ppu_threads;
 
     // Executable memory segments
-    std::vector<ppu::Segment*> ppu_segments;
+    std::vector<frontend::ppu::Segment*> ppu_segments;
 
     Cell();
 
     void init();
-
-    // Recompiler utilities
-    llvm::Module* module;
 
     // Thread management
     CellThread* addThread(CellThreadType type, U32 entry);

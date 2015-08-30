@@ -6,10 +6,14 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/hir/function.h"
 
 namespace cpu {
 namespace backend {
+
+// Class declarations
+class hir::Block;
+class hir::Function;
+class hir::Module;
 
 class Compiler {
 public:

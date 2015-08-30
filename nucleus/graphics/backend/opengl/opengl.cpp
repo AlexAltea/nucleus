@@ -37,7 +37,7 @@
 // Declare extensions
 #define DECLARE_EXTENSION(type, function) type function;
 #define EXTENSION DECLARE_EXTENSION
-#include "opengl.inc"
+#include "opengl.inl"
 #undef EXTENSION
 #undef DECLARE_EXTENSION
 
@@ -46,7 +46,7 @@ namespace graphics {
 bool initializeOpenGL()
 {
 #define EXTENSION LOAD_EXTENSION
-#include "opengl.inc"
+#include "opengl.inl"
 #undef EXTENSION
 
     return true;

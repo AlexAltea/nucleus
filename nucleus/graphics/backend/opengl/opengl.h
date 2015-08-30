@@ -42,7 +42,7 @@
 // Declare extensions
 #define DECLARE_EXTENSION(type, function) extern type function;
 #define EXTENSION DECLARE_EXTENSION
-#include "opengl.inc"
+#include "opengl.inl"
 #undef EXTENSION
 #undef DECLARE_EXTENSION
 

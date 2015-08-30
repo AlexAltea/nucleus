@@ -6,13 +6,10 @@
 #include "cell.h"
 #include "nucleus/config.h"
 #include "nucleus/emulator.h"
+#include "nucleus/cpu/backend/x86/x86_compiler.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 #include "nucleus/logger/logger.h"
-
-#include "llvm/ADT/Triple.h"
-#include "llvm/Support/Host.h"
-#include "llvm/Support/TargetSelect.h"
 
 #include <algorithm>
 
@@ -28,8 +25,13 @@ thread_local CellThread* g_this_thread = nullptr;
 
 Cell::Cell()
 {
-    llvm::InitializeNativeTarget();
-    llvm::InitializeNativeTargetAsmPrinter();
+#if defined(NUCLEUS_ARCH_X86)
+    compiler = std::make_unique<backend::x86::X86Compiler>();
+#elif defined(NUCLEUS_ARCH_ARM)
+    compiler = std::make_unique<backend::arm::ARMCompiler>();
+#else
+    logger.error(LOG_CPU, "No backend available for this architecture.");
+#endif
 }
 
 void Cell::init()
@@ -61,8 +63,8 @@ CellThread* Cell::addThread(CellThreadType type, U32 entry=0)
 
     switch (type) {
     case CELL_THREAD_PPU:
-        thread = new ppu::Thread(entry);
-        ppu_threads.push_back(dynamic_cast<ppu::Thread*>(thread));
+        thread = new frontend::ppu::Thread(entry);
+        ppu_threads.push_back(dynamic_cast<frontend::ppu::Thread*>(thread));
         break;
 
     case CELL_THREAD_SPU:

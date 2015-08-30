@@ -5,12 +5,18 @@
 
 #include "x86_compiler.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/function.h"
+#include "nucleus/cpu/hir/module.h"
+#include "nucleus/cpu/backend/x86/x86_sequences.h"
 
 #include <queue>
 
 namespace cpu {
 namespace backend {
 namespace x86 {
+
+using namespace cpu::hir;
 
 X86Compiler::X86Compiler() {
     emitter = std::make_unique<X86Emitter>();
@@ -23,15 +29,29 @@ X86Compiler::X86Compiler() {
 #endif
 }
 
-bool X86Compiler::compile(hir::Function* function) {
+bool X86Compiler::compile(Block* block) {
+    auto& instructions = block->instructions;
+    for (auto it = instructions.begin(); it != instructions.end(); it++) {
+        X86Sequences::select(emitter.get(), *it);
+    }
+}
+
+bool X86Compiler::compile(Function* function) {
     // Function blocks to compile
-    std::queue<hir::Block*> blocks({ function->entry });
+    std::queue<Block*> blocks({ function->entry });
     while (!blocks.empty()) {
         auto block = blocks.front();
+        if (!compile(block)) {
+            logger.error(LOG_CPU, "Cannot compile block");
+            return false;
+        }
         blocks.pop();
     }
 
     return true;
+}
+
+bool X86Compiler::compile(Module* block) {
 }
 
 }  // namespace x86

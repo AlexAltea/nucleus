@@ -16,18 +16,18 @@ namespace x86 {
 
 class X86Sequences {
     // Sequence selection function type
-    using SelectFunction = void(*)(X86Emitter&, hir::Instruction*);
+    using SelectFunction = void(*)(X86Emitter&, const hir::Instruction*);
 
     // Registered sequences
     static std::unordered_map<InstrKey, SelectFunction> sequences;
 
     // Sequence registration
     template <typename T>
-    void registerSequence() {
+    static void registerSequence() {
         sequences.insert({ T::key, T::emit });
     }
     template <typename T, typename... Ts>
-    void registerSequence() {
+    static void registerSequence() {
         registerSequence<T>();
         registerSequence<Ts...>();
     }
