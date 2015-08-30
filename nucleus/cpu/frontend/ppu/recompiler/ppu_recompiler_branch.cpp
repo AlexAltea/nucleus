@@ -6,6 +6,7 @@
 #include "ppu_recompiler.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 using namespace cpu::hir;
@@ -122,23 +123,23 @@ void Recompiler::bclrx(Instruction code)
 {
     // Unconditional return
     if (code.bo == 20 && code.bi == 0) {
-        builder.CreateBr(epilog);
+        builder.createBr(epilog);
     }
 
     // Conditional return
     else {
         // TODO: This is wrong
-        builder.CreateBr(epilog);
+        builder.createBr(epilog);
     }
 }
 
 void Recompiler::crand(Instruction code)
 {
-    Value<I8> crba = getCR(code.crba);
-    Value<I8> crbb = getCR(code.crbb);
-    Value<I8> crbd;
+    Value* crba = getCR(code.crba);
+    Value* crbb = getCR(code.crbb);
+    Value* crbd;
 
-    crbd = builder.CreateAnd(crba, crbb);
+    crbd = builder.createAnd(crba, crbb);
     setCR(code.crbd, crbd);
 }
 
@@ -186,7 +187,7 @@ void Recompiler::sc(Instruction code)
     }
 
     // Call Nucleus syscall handler
-    builder.CreateCall(static_cast<Segment*>(function->parent)->funcSystemCall); // TODO: Use code.lev fields
+    builder.createCall(static_cast<Segment*>(function->parent)->funcSystemCall); // TODO: Use code.lev fields
 
     // Load return register from the PPU state
     Value<I64*> regPointer = builder.CreateInBoundsGEP(state, {
@@ -213,4 +214,5 @@ void Recompiler::twi(Instruction code)
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

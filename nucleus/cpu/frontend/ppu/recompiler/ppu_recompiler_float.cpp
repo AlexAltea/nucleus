@@ -6,6 +6,7 @@
 #include "ppu_recompiler.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 using namespace cpu::hir;
@@ -17,8 +18,8 @@ using namespace cpu::hir;
 
 void Recompiler::fabsx(Instruction code)
 {
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     frd = builder.CreateIntrinsic_Fabs(frb);
     if (code.rc) {
@@ -30,11 +31,11 @@ void Recompiler::fabsx(Instruction code)
 
 void Recompiler::faddx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFAdd(fra, frb);
+    frd = builder.createFAdd(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -44,11 +45,11 @@ void Recompiler::faddx(Instruction code)
 
 void Recompiler::faddsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
+    Value* fra = getFPR(code.fra);
+    Value* frb = getFPR(code.frb);
 
-    auto result = builder.CreateFAdd(fra, frb);
     auto frd = builder.CreateFPTrunc<F32>(result);
+    auto result = builder.createFAdd(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -86,11 +87,11 @@ void Recompiler::fctiwzx(Instruction code)
 
 void Recompiler::fdivx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFDiv(fra, frb);
+    frd = builder.createFDiv(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -100,26 +101,26 @@ void Recompiler::fdivx(Instruction code)
 
 void Recompiler::fdivsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFDiv(fra, frb);
+    frd = builder.createFDiv(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFPTrunc<F32>(frd));
 }
 
 void Recompiler::fmaddx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
+    frd = builder.createIntrinsic_Fmuladd(fra, frc, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -129,10 +130,10 @@ void Recompiler::fmaddx(Instruction code)
 
 void Recompiler::fmaddsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
     if (code.rc) {
@@ -144,8 +145,8 @@ void Recompiler::fmaddsx(Instruction code)
 
 void Recompiler::fmrx(Instruction code)
 {
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     frd = frb;
     if (code.rc) {
@@ -157,14 +158,14 @@ void Recompiler::fmrx(Instruction code)
 
 void Recompiler::fmsubx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
-    frd = builder.CreateFMul(fra, frc);
-    frd = builder.CreateFSub(frd, frb);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFSub(frd, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -174,28 +175,28 @@ void Recompiler::fmsubx(Instruction code)
 
 void Recompiler::fmsubsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
-    frd = builder.CreateFMul(fra, frc);
-    frd = builder.CreateFSub(frd, frb);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFSub(frd, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFPTrunc<F32>(frd));
 }
 
 void Recompiler::fmulx(Instruction code)
 {
     Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFMul(fra, frb);
+    frd = builder.createFMul(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -205,25 +206,25 @@ void Recompiler::fmulx(Instruction code)
 
 void Recompiler::fmulsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFMul(fra, frb);
+    frd = builder.createFMul(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFPTrunc<F32>(frd));
 }
 
 void Recompiler::fnabsx(Instruction code)
 {
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateIntrinsic_Fabs(frb);
-    frd = builder.CreateFNeg(frd);
+    frd = builder.createIntrinsic_Fabs(frb);
+    frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -233,10 +234,10 @@ void Recompiler::fnabsx(Instruction code)
 
 void Recompiler::fnegx(Instruction code)
 {
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFNeg(frb);
+    frd = builder.createFNeg(frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -246,13 +247,13 @@ void Recompiler::fnegx(Instruction code)
 
 void Recompiler::fnmaddx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
-    frd = builder.CreateFNeg(frd);
+    frd = builder.createIntrinsic_Fmuladd(fra, frc, frb);
+    frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -262,13 +263,13 @@ void Recompiler::fnmaddx(Instruction code)
 
 void Recompiler::fnmaddsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
-    frd = builder.CreateFNeg(frd);
+    frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -278,15 +279,15 @@ void Recompiler::fnmaddsx(Instruction code)
 
 void Recompiler::fnmsubx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
-    frd = builder.CreateFMul(fra, frc);
-    frd = builder.CreateFSub(frd, frb);
-    frd = builder.CreateFNeg(frd);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFSub(frd, frb);
+    frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -296,15 +297,15 @@ void Recompiler::fnmsubx(Instruction code)
 
 void Recompiler::fnmsubsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frc = getFPR(code.frc);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     // TEST: Is negating frb and calling llvm::Intrinsic::fmuladd faster?
-    frd = builder.CreateFMul(fra, frc);
-    frd = builder.CreateFSub(frd, frb);
-    frd = builder.CreateFNeg(frd);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFSub(frd, frb);
+    frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -330,8 +331,8 @@ void Recompiler::fselx(Instruction code)
 
 void Recompiler::fsqrtx(Instruction code)
 {
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     frd = builder.CreateIntrinsic_Sqrt(frb);
     if (code.rc) {
@@ -343,8 +344,8 @@ void Recompiler::fsqrtx(Instruction code)
 
 void Recompiler::fsqrtsx(Instruction code)
 {
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
     frd = builder.CreateIntrinsic_Sqrt(frb);
     if (code.rc) {
@@ -356,11 +357,11 @@ void Recompiler::fsqrtsx(Instruction code)
 
 void Recompiler::fsubx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFSub(fra, frb);
+    frd = builder.createFSub(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -370,11 +371,11 @@ void Recompiler::fsubx(Instruction code)
 
 void Recompiler::fsubsx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
-    Value<F64> frb = getFPR(code.frb);
-    Value<F64> frd;
+    Value* fra = getFPR(code.fra);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
 
-    frd = builder.CreateFSub(fra, frb);
+    frd = builder.createFSub(fra, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -407,4 +408,5 @@ void Recompiler::mtfsfx(Instruction code)
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

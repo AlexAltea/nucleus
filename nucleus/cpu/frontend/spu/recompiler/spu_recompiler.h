@@ -16,14 +16,11 @@ namespace spu {
 
 class Recompiler : public frontend::IRecompiler<U32> {
 public:
-    /**
-     * SPU Register access
-     */
-    template <typename T>
-    hir::Value<T, 128 / T::size> getGPR(int index);
+    // Register read
+    hir::Value* getGPR(int index);
 
-    template <typename T>
-    void setGPR(int index, hir::Value<T, 128 / T::size> value);
+    // Register write
+    void setGPR(int index, hir::Value* value);
 
     /**
      * SPU Instructions:
@@ -64,7 +61,7 @@ public:
     void ah(Instruction code);
     void ahi(Instruction code);
     void ai(Instruction code);
-    void and(Instruction code);
+    void and_(Instruction code);
     void andc(Instruction code);
     void andbi(Instruction code);
     void andhi(Instruction code);
@@ -96,7 +93,7 @@ public:
     void mpyui(Instruction code);
     void nand(Instruction code);
     void nor(Instruction code);
-    void or(Instruction code);
+    void or_(Instruction code);
     void orbi(Instruction code);
     void orc(Instruction code);
     void orhi(Instruction code);
@@ -110,7 +107,7 @@ public:
     void sfx(Instruction code);
     void shufb(Instruction code);
     void sumb(Instruction code);
-    void xor(Instruction code);
+    void xor_(Instruction code);
     void xorbi(Instruction code);
     void xorhi(Instruction code);
     void xori(Instruction code);

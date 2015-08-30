@@ -36,95 +36,32 @@ class Recompiler : public frontend::IRecompiler<U32> {
     }
 
     // Register read
-    hir::Value* getGPR(int index, hir::Type type = TYPE_I64);
-    hir::Value* getFPR(int index, hir::Type type = TYPE_F64);
+    hir::Value* getGPR(int index, hir::Type type = hir::TYPE_I64);
+    hir::Value* getFPR(int index, hir::Type type = hir::TYPE_F64);
     hir::Value* getVR(int index);
     hir::Value* getCR(int index);
     hir::Value* getXER();
     hir::Value* getCTR();
 
     // Register write
-    void setGPR(int index, hir::Value* value, hir::Type type = TYPE_I64);
-    void setFPR(int index, hir::Value* value, hir::Type type = TYPE_F64);
+    void setGPR(int index, hir::Value* value, hir::Type type = hir::TYPE_I64);
+    void setFPR(int index, hir::Value* value, hir::Type type = hir::TYPE_F64);
     void setVR(int index, hir::Value* value);
     void setCR(int index, hir::Value* value);
     void setXER(hir::Value* value);
     void setCTR(hir::Value* value);
 
-    // State pointer allocation
-    hir::Value<StateType*> state;
+    // Memory access
+    hir::Value* readMemory(hir::Value* addr, hir::Type type);
+    void writeMemory(hir::Value* addr, hir::Value* value);
 
     /**
      * Operation flags
      */
-    void updateCR0(hir::Value<hir::I64> value); // Integer instructions with RC bit
-    void updateCR1(llvm::Value* value); // Floating-Point instructions with RC bit
-    void updateCR6(llvm::Value* value); // Vector instructions with RC bit
-
-    void updateCR(int field, hir::Value* lhs, hir::Value* rhs, bool logicalComparison) {
-        hir::Value<hir::I1> isLT;
-        hir::Value<hir::I1> isGT;
-        hir::Value<hir::I8> cr;
-
-        if (logicalComparison) {
-            isLT = builder.createICmpULT(lhs, rhs);
-            isGT = builder.createICmpUGT(lhs, rhs);
-        } else {
-            isLT = builder.createICmpSLT(lhs, rhs);
-            isGT = builder.createICmpSGT(lhs, rhs);
-        }
-
-        cr = builder.createSelect(isGT, builder.getConstantI8(2), builder.getConstantI8(4));
-        cr = builder.createSelect(isLT, builder.getConstantI8(1), cr);
-        setCR(field, cr);
-    }
-
-    /**
-     * Memory access
-     */
-    // Read specified number of bits from memory swapping endianness if necessary
-    template <typename T>
-    hir::Value<T> readMemory(hir::Value<hir::I64> addr) {
-        auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
-
-        addr = builder.createAdd(addr, baseAddr);
-        auto pointer = builder.createIntToPtr<T>(addr);
-        auto value = builder.createLoad(pointer);
-        return builder.createIntrinsic_Bswap(value);
-    }
-
-    template <>
-    hir::Value<hir::I8> readMemory(hir::Value<hir::I64> addr) {
-        auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value<hir::I64> baseAddr = builder.createLoad(ppuSegment->memoryBase);
-
-        addr = builder.createAdd(addr, baseAddr);
-        auto pointer = builder.createIntToPtr<hir::I8>(addr);
-        auto value = builder.createLoad(pointer);
-        return value;
-    }
-
-    // Write value to memory swapping endianness if necessary
-    template <typename T>
-    void writeMemory(hir::Value<hir::I64> addr, hir::Value<T> value) {
-        auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
-
-        value = builder.createIntrinsic_Bswap(value);
-        addr = builder.createAdd(addr, baseAddr);
-        auto pointer = builder.createIntToPtr<T>(addr);
-        builder.createStore(value, pointer);
-    }
-
-    void writeMemory(hir::Value<hir::I64> addr, hir::Value<hir::I8> value) {
-        auto ppuSegment = static_cast<Segment*>(function->parent);
-        hir::Value<hir::I64> baseAddr = builder.createLoad(ppuSegment->memoryBase);
-
-        addr = builder.createAdd(addr, baseAddr);
-        auto pointer = builder.createIntToPtr<hir::I8>(addr);
-        builder.createStore(value, pointer);
-    }
+    void updateCR(int field, hir::Value* lhs, hir::Value* rhs, bool logicalComparison);
+    void updateCR0(hir::Value* value); // Integer instructions with RC bit
+    void updateCR1(hir::Value* value); // Floating-Point instructions with RC bit
+    void updateCR6(hir::Value* value); // Vector instructions with RC bit
 
 public:
     hir::Builder builder;
@@ -562,4 +499,5 @@ public:
 };
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

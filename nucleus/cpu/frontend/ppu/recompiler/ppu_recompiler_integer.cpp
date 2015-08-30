@@ -4,9 +4,11 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/assert.h"
 #include "nucleus/cpu/frontend/ppu/ppu_utils.h"
 
 namespace cpu {
+namespace frontend {
 namespace ppu {
 
 using namespace cpu::hir;
@@ -18,18 +20,14 @@ using namespace cpu::hir;
 
 void Recompiler::addx(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
-    Value<I1> ov;
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
     if (code.oe) {
-        auto result = builder.CreateIntrinsic_SaddWithOverflow(ra, rb);
-        rd = builder.CreateExtractValue<0>(result);
-        ov = builder.CreateExtractValue<1>(result);
-        // TODO: XER OV update
+        assert_always("Unimplemented: OE flag");
     } else {
-        rd = builder.CreateAdd(ra, rb);
+        rd = builder.createAdd(ra, rb);
     }
 
     if (code.rc) {
@@ -41,18 +39,16 @@ void Recompiler::addx(Instruction code)
 
 void Recompiler::addcx(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
-    Value<I1> ca;
-
-    auto result = builder.CreateIntrinsic_UaddWithOverflow(ra, rb);
-    rd = builder.CreateExtractValue<0>(result);
-    ca = builder.CreateExtractValue<1>(result);
-    // TODO: XER CA update
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
+    Value* ca;
 
     if (code.oe) {
         // TODO: XER OV update
+    } else {
+        rd = builder.createAdd(ra, rb);
+        // TODO: XER CA update
     }
     if (code.rc) {
         updateCR0(rd);
@@ -63,12 +59,12 @@ void Recompiler::addcx(Instruction code)
 
 void Recompiler::addex(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
     // TODO: Add XER[CA]
-    rd = builder.CreateAdd(ra, rb);
+    rd = builder.createAdd(ra, rb);
 
     if (code.oe) {
         // TODO: XER OV update
@@ -82,13 +78,13 @@ void Recompiler::addex(Instruction code)
 
 void Recompiler::addi(Instruction code)
 {
-    Value<I64> simm = builder.get<I64>(code.simm);
-    Value<I64> ra;
-    Value<I64> rd;
+    Value* simm = builder.getConstantI64(code.simm);
+    Value* ra;
+    Value* rd;
 
     if (code.ra) {
         ra = getGPR(code.ra);
-        rd = builder.CreateAdd(ra, simm);
+        rd = builder.createAdd(ra, simm);
     } else {
         rd = simm;
     }
@@ -98,11 +94,11 @@ void Recompiler::addi(Instruction code)
 
 void Recompiler::addic(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> simm = builder.get<I64>(code.simm);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* simm = builder.getConstantI64(code.simm);
+    Value* rd;
 
-    rd = builder.CreateAdd(ra, simm);
+    rd = builder.createAdd(ra, simm);
     // TODO: XER CA update
 
     setGPR(code.rd, rd);
@@ -110,11 +106,11 @@ void Recompiler::addic(Instruction code)
 
 void Recompiler::addic_(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> simm = builder.get<I64>(code.simm);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* simm = builder.getConstantI64(code.simm);
+    Value* rd;
 
-    rd = builder.CreateAdd(ra, simm);
+    rd = builder.createAdd(ra, simm);
     // TODO: XER CA update
     updateCR0(rd);
 
@@ -123,12 +119,12 @@ void Recompiler::addic_(Instruction code)
 
 void Recompiler::addis(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> simm = builder.get<I64>(code.simm);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* simm = builder.getConstantI64(code.simm);
+    Value* rd;
 
     if (code.ra) {
-        rd = builder.CreateAdd(ra, simm);
+        rd = builder.createAdd(ra, simm);
     } else {
         rd = simm;
     }
@@ -146,11 +142,11 @@ void Recompiler::addzex(Instruction code)
 
 void Recompiler::andx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    ra = builder.CreateAnd(rs, rb);
+    ra = builder.createAnd(rs, rb);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -164,11 +160,11 @@ void Recompiler::andcx(Instruction code)
 
 void Recompiler::andi_(Instruction code)
 {
-    Value<I64> constant = builder.get<I64>(code.uimm);
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra;
+    Value* constant = builder.getConstantI64(code.uimm);
+    Value* rs = getGPR(code.rs);
+    Value* ra;
 
-    ra = builder.CreateAnd(rs, constant);
+    ra = builder.createAnd(rs, constant);
     updateCR0(ra);
 
     setGPR(code.ra, ra);
@@ -176,11 +172,11 @@ void Recompiler::andi_(Instruction code)
 
 void Recompiler::andis_(Instruction code)
 {
-    Value<I64> constant = builder.get<I64>(code.uimm << 16);
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra;
+    Value* constant = builder.getConstantI64(code.uimm << 16);
+    Value* rs = getGPR(code.rs);
+    Value* ra;
 
-    ra = builder.CreateAnd(rs, constant);
+    ra = builder.createAnd(rs, constant);
     updateCR0(ra);
 
     setGPR(code.ra, ra);
@@ -189,45 +185,45 @@ void Recompiler::andis_(Instruction code)
 void Recompiler::cmp(Instruction code)
 {
     if (code.l10) {
-        updateCR(code.crfd, getGPR(code.ra), getGPR(code.rb), true);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), getGPR(code.rb, TYPE_I64), true);
     } else {
-        updateCR(code.crfd, getGPR<I32>(code.ra), getGPR<I32>(code.rb), true);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), getGPR(code.rb, TYPE_I32), true);
     }
 }
 
 void Recompiler::cmpi(Instruction code)
 {
     if (code.l10) {
-        updateCR(code.crfd, getGPR(code.ra), builder.get<I64>(code.simm), true);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.simm), true);
     } else {
-        updateCR(code.crfd, getGPR<I32>(code.ra), builder.get<I32>(code.simm), true);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), builder.getConstantI32(code.simm), true);
     }
 }
 
 void Recompiler::cmpl(Instruction code)
 {
     if (code.l10) {
-        updateCR(code.crfd, getGPR(code.ra), getGPR(code.rb), false);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), getGPR(code.rb, TYPE_I64), false);
     } else {
-        updateCR(code.crfd, getGPR<I32>(code.ra), getGPR<I32>(code.rb), false);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), getGPR(code.rb, TYPE_I32), false);
     }
 }
 
 void Recompiler::cmpli(Instruction code)
 {
     if (code.l10) {
-        updateCR(code.crfd, getGPR(code.ra), builder.get<I64>(code.uimm), false);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.uimm), false);
     } else {
-        updateCR(code.crfd, getGPR<I32>(code.ra), builder.get<I32>(code.uimm), false);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), builder.getConstantI32(code.uimm), false);
     }
 }
 
 void Recompiler::cntlzdx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* ra;
 
-    ra = builder.CreateIntrinsic_Ctlz(rs, builder.get<I1>(false));
+    ra = builder.createCtlz(rs);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -237,10 +233,10 @@ void Recompiler::cntlzdx(Instruction code)
 
 void Recompiler::cntlzwx(Instruction code)
 {
-    Value<I32> rs = getGPR<I32>(code.rs);
+    Value* rs = getGPR(code.rs);
 
-    Value<I32> ra_i32 = builder.CreateIntrinsic_Ctlz(rs, builder.get<I1>(false));
-    Value<I64> ra_i64 = builder.CreateZExt<I64>(ra_i32);
+    Value* ra_i32 = builder.createCtlz(rs);
+    Value* ra_i64 = builder.createZExt(ra_i32, TYPE_I64);
     if (code.rc) {
         updateCR0(ra_i64);
     }
@@ -250,11 +246,11 @@ void Recompiler::cntlzwx(Instruction code)
 
 void Recompiler::divdx(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
-    rd = builder.CreateSDiv(ra, rb);
+    rd = builder.createDiv(ra, rb, ARITHMETIC_SIGNED);
 
     if (code.oe) {
         // TODO: XER OV update
@@ -268,11 +264,11 @@ void Recompiler::divdx(Instruction code)
 
 void Recompiler::divdux(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
-    rd = builder.CreateUDiv(ra, rb);
+    rd = builder.createDiv(ra, rb, ARITHMETIC_UNSIGNED);
 
     if (code.oe) {
         // TODO: XER OV update
@@ -286,12 +282,12 @@ void Recompiler::divdux(Instruction code)
 
 void Recompiler::divwx(Instruction code)
 {
-    Value<I32> ra = getGPR<I32>(code.ra);
-    Value<I32> rb = getGPR<I32>(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I32);
+    Value* rd;
 
-    auto result = builder.CreateSDiv(ra, rb);
-    rd = builder.CreateZExt<I64>(result);
+    auto result = builder.createDiv(ra, rb, ARITHMETIC_SIGNED);
+    rd = builder.createZExt(result, TYPE_I64);
 
     if (code.oe) {
         // TODO: XER OV update
@@ -305,12 +301,12 @@ void Recompiler::divwx(Instruction code)
 
 void Recompiler::divwux(Instruction code)
 {
-    Value<I32> ra = getGPR<I32>(code.ra);
-    Value<I32> rb = getGPR<I32>(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I32);
+    Value* rd;
 
-    auto result = builder.CreateUDiv(ra, rb);
-    rd = builder.CreateZExt<I64>(result);
+    auto result = builder.createDiv(ra, rb, ARITHMETIC_UNSIGNED);
+    rd = builder.createZExt(result, TYPE_I64);
 
     if (code.oe) {
         // TODO: XER OV update
@@ -324,12 +320,12 @@ void Recompiler::divwux(Instruction code)
 
 void Recompiler::eqvx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    ra = builder.CreateXor(rs, rb);
-    ra = builder.CreateNeg(ra);
+    ra = builder.createXor(rs, rb);
+    ra = builder.createNeg(ra);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -339,10 +335,10 @@ void Recompiler::eqvx(Instruction code)
 
 void Recompiler::extsbx(Instruction code)
 {
-    Value<I8> rs = getGPR<I8>(code.rs);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs, TYPE_I8);
+    Value* ra;
 
-    ra = builder.CreateSExt<I64>(rs);
+    ra = builder.createSExt(rs, TYPE_I64);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -352,10 +348,10 @@ void Recompiler::extsbx(Instruction code)
 
 void Recompiler::extshx(Instruction code)
 {
-    Value<I16> rs = getGPR<I16>(code.rs);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs, TYPE_I16);
+    Value* ra;
 
-    ra = builder.CreateSExt<I64>(rs);
+    ra = builder.createSExt(rs, TYPE_I64);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -365,10 +361,10 @@ void Recompiler::extshx(Instruction code)
 
 void Recompiler::extswx(Instruction code)
 {
-    Value<I32> rs = getGPR<I32>(code.rs);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs, TYPE_I32);
+    Value* ra;
 
-    ra = builder.CreateSExt<I64>(rs);
+    ra = builder.createSExt(rs, TYPE_I64);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -378,15 +374,11 @@ void Recompiler::extswx(Instruction code)
 
 void Recompiler::mulhdx(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
-    auto ra_i128 = builder.CreateSExt<I128>(ra);
-    auto rb_i128 = builder.CreateSExt<I128>(rb);
-    auto result = builder.CreateMul(ra_i128, rb_i128);
-    rd = builder.CreateTrunc<I64>(builder.CreateLShr(result, 64));
-
+    auto rd = builder.createMulH(ra, rb, ARITHMETIC_SIGNED);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -396,15 +388,11 @@ void Recompiler::mulhdx(Instruction code)
 
 void Recompiler::mulhdux(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
-    auto ra_i128 = builder.CreateZExt<I128>(ra);
-    auto rb_i128 = builder.CreateZExt<I128>(rb);
-    auto result = builder.CreateMul(ra_i128, rb_i128);
-    rd = builder.CreateTrunc<I64>(builder.CreateLShr(result, 64));
-
+    auto rd = builder.createMulH(ra, rb, ARITHMETIC_UNSIGNED);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -414,15 +402,11 @@ void Recompiler::mulhdux(Instruction code)
 
 void Recompiler::mulhwx(Instruction code)
 {
-    Value<I32> ra = getGPR<I32>(code.ra);
-    Value<I32> rb = getGPR<I32>(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I32);
+    Value* rd;
 
-    auto ra_i64 = builder.CreateSExt<I64>(ra);
-    auto rb_i64 = builder.CreateSExt<I64>(rb);
-    auto result = builder.CreateMul(ra_i64, rb_i64);
-    rd = builder.CreateAShr(result, 32);
-
+    auto rd = builder.createMulH(ra, rb, ARITHMETIC_SIGNED);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -432,15 +416,11 @@ void Recompiler::mulhwx(Instruction code)
 
 void Recompiler::mulhwux(Instruction code)
 {
-    Value<I32> ra = getGPR<I32>(code.ra);
-    Value<I32> rb = getGPR<I32>(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I32);
+    Value* rd;
 
-    auto ra_i64 = builder.CreateZExt<I64>(ra);
-    auto rb_i64 = builder.CreateZExt<I64>(rb);
-    auto result = builder.CreateMul(ra_i64, rb_i64);
-    rd = builder.CreateLShr(result, 32);
-
+    auto rd = builder.createMulH(ra, rb, ARITHMETIC_UNSIGNED);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -450,12 +430,11 @@ void Recompiler::mulhwux(Instruction code)
 
 void Recompiler::mulldx(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
-    rd = builder.CreateMul(ra, rb);
-
+    rd = builder.createMul(ra, rb, ARITHMETIC_SIGNED);
     if (code.oe) {
         // TODO: XER OV update
     }
@@ -468,23 +447,24 @@ void Recompiler::mulldx(Instruction code)
 
 void Recompiler::mulli(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rd;
+    Value* constant = builder.getConstantI64(code.simm);
+    Value* ra = getGPR(code.ra);
+    Value* rd;
 
-    rd = builder.CreateMul(ra, builder.get<I64>(code.simm));
+    rd = builder.createMul(ra, constant, ARITHMETIC_SIGNED);
 
     setGPR(code.rd, rd);
 }
 
 void Recompiler::mullwx(Instruction code)
 {
-    Value<I32> ra = getGPR<I32>(code.ra);
-    Value<I32> rb = getGPR<I32>(code.rb);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I32);
+    Value* rd;
 
-    auto ra_i64 = builder.CreateSExt<I64>(ra);
-    auto rb_i64 = builder.CreateSExt<I64>(rb);
-    rd = builder.CreateMul(ra_i64, rb_i64);
+    auto ra_i64 = builder.createSExt(ra, TYPE_I64);
+    auto rb_i64 = builder.createSExt(rb, TYPE_I64);
+    rd = builder.createMul(ra_i64, rb_i64, ARITHMETIC_SIGNED);
 
     if (code.oe) {
         // TODO: XER OV update
@@ -498,12 +478,12 @@ void Recompiler::mullwx(Instruction code)
 
 void Recompiler::nandx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    ra = builder.CreateAnd(rs, rb);
-    ra = builder.CreateNeg(ra);
+    ra = builder.createAnd(rs, rb);
+    ra = builder.createNeg(ra);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -513,10 +493,10 @@ void Recompiler::nandx(Instruction code)
 
 void Recompiler::negx(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rd;
+    Value* ra = getGPR(code.ra);
+    Value* rd;
 
-    rd = builder.CreateSub(builder.get<I64>(0), ra);
+    rd = builder.createSub(builder.getConstantI64(0), ra);
     if (code.oe) {
         // TODO: XER OV update
     }
@@ -529,12 +509,12 @@ void Recompiler::negx(Instruction code)
 
 void Recompiler::norx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    ra = builder.CreateOr(rs, rb);
-    ra = builder.CreateNeg(ra);
+    ra = builder.createOr(rs, rb);
+    ra = builder.createNeg(ra);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -544,11 +524,11 @@ void Recompiler::norx(Instruction code)
 
 void Recompiler::orx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    ra = builder.CreateOr(rs, rb);
+    ra = builder.createOr(rs, rb);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -558,12 +538,12 @@ void Recompiler::orx(Instruction code)
 
 void Recompiler::orcx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    rb = builder.CreateNot(rb);
-    ra = builder.CreateOr(rs, rb);
+    rb = builder.createNot(rb);
+    ra = builder.createOr(rs, rb);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -573,22 +553,22 @@ void Recompiler::orcx(Instruction code)
 
 void Recompiler::ori(Instruction code)
 {
-    Value<I64> constant = builder.get<I64>(code.uimm);
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra;
+    Value* constant = builder.getConstantI64(code.uimm);
+    Value* rs = getGPR(code.rs);
+    Value* ra;
 
-    ra = builder.CreateOr(rs, constant);
+    ra = builder.createOr(rs, constant);
 
     setGPR(code.ra, ra);
 }
 
 void Recompiler::oris(Instruction code)
 {
-    Value<I64> constant = builder.get<I64>(code.uimm << 16);
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra;
+    Value* constant = builder.getConstantI64(code.uimm << 16);
+    Value* rs = getGPR(code.rs);
+    Value* ra;
 
-    ra = builder.CreateOr(rs, constant);
+    ra = builder.createOr(rs, constant);
 
     setGPR(code.ra, ra);
 }
@@ -599,18 +579,18 @@ void Recompiler::rldc_lr(Instruction code)
 
 void Recompiler::rldicx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra = rs;
+    Value* rs = getGPR(code.rs);
+    Value* ra = rs;
 
     const U32 sh = code.sh | (code.sh_ << 5);
     const U32 mb = code.mb | (code.mb_ << 5);
     if (sh) {
-        auto resl = builder.CreateLShr(rs, 64 - sh);
-        auto resh = builder.CreateShl(rs, sh);
-        ra = builder.CreateOr(resh, resl);
+        auto resl = builder.createShr(rs, 64 - sh);
+        auto resh = builder.createShl(rs, sh);
+        ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.CreateAnd(ra, rotateMask[mb][63 - sh]);
+    ra = builder.createAnd(ra, rotateMask[mb][63 - sh]);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -620,18 +600,18 @@ void Recompiler::rldicx(Instruction code)
 
 void Recompiler::rldiclx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra = rs;
+    Value* rs = getGPR(code.rs);
+    Value* ra = rs;
 
     const U32 sh = code.sh | (code.sh_ << 5);
     const U32 mb = code.mb | (code.mb_ << 5);
     if (sh) {
-        auto resl = builder.CreateLShr(rs, 64 - sh);
-        auto resh = builder.CreateShl(rs, sh);
-        ra = builder.CreateOr(resh, resl);
+        auto resl = builder.createShr(rs, 64 - sh);
+        auto resh = builder.createShl(rs, sh);
+        ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.CreateAnd(ra, rotateMask[mb][63]);
+    ra = builder.createAnd(ra, rotateMask[mb][63]);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -641,18 +621,18 @@ void Recompiler::rldiclx(Instruction code)
 
 void Recompiler::rldicrx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra = rs;
+    Value* rs = getGPR(code.rs);
+    Value* ra = rs;
 
     const U32 sh = code.sh | (code.sh_ << 5);
     const U32 me = code.me_ | (code.me__ << 5);
     if (sh) {
-        auto resl = builder.CreateLShr(rs, 64 - sh);
-        auto resh = builder.CreateShl(rs, sh);
-        ra = builder.CreateOr(resh, resl);
+        auto resl = builder.createShr(rs, 64 - sh);
+        auto resh = builder.createShl(rs, sh);
+        ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.CreateAnd(ra, rotateMask[0][me]);
+    ra = builder.createAnd(ra, rotateMask[0][me]);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -662,22 +642,22 @@ void Recompiler::rldicrx(Instruction code)
 
 void Recompiler::rldimix(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> temp = rs;
+    Value* rs = getGPR(code.rs);
+    Value* ra = getGPR(code.ra);
+    Value* temp = rs;
 
     const U32 sh = code.sh | (code.sh_ << 5);
     const U32 mb = code.mb | (code.mb_ << 5);
     if (sh) {
-        auto resl = builder.CreateLShr(rs, 64 - sh);
-        auto resh = builder.CreateShl(rs, sh);
-        temp = builder.CreateOr(resh, resl);
+        auto resl = builder.createShr(rs, 64 - sh);
+        auto resh = builder.createShl(rs, sh);
+        temp = builder.createOr(resh, resl);
     }
     
     const U64 mask = rotateMask[mb][63 - sh];
-    temp = builder.CreateAnd(temp, mask);
-    ra = builder.CreateAnd(ra, ~mask);
-    ra = builder.CreateOr(ra, temp);
+    temp = builder.createAnd(temp, mask);
+    ra = builder.createAnd(ra, ~mask);
+    ra = builder.createOr(ra, temp);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -687,23 +667,23 @@ void Recompiler::rldimix(Instruction code)
 
 void Recompiler::rlwimix(Instruction code)
 {
-    Value<I64> rs_trunc = builder.CreateZExt<I64>(getGPR<I32>(code.rs));
-    Value<I64> rs_shift = builder.CreateShl(rs_trunc, 32);
+    Value* rs_trunc = builder.createZExt(getGPR(code.rs, TYPE_I32), TYPE_I64);
+    Value* rs_shift = builder.createShl(rs_trunc, 32);
 
-    Value<I64> rs = builder.CreateOr(rs_trunc, rs_shift);
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> temp = rs;
+    Value* rs = builder.createOr(rs_trunc, rs_shift);
+    Value* ra = getGPR(code.ra);
+    Value* temp = rs;
 
     if (code.sh) {
-        auto resl = builder.CreateLShr(rs, 64 - code.sh);
-        auto resh = builder.CreateShl(rs, code.sh);
-        temp = builder.CreateOr(resh, resl);
+        auto resl = builder.createShr(rs, 64 - code.sh);
+        auto resh = builder.createShl(rs, code.sh);
+        temp = builder.createOr(resh, resl);
     }
 
     const U64 mask = rotateMask[32 + code.mb][32 + code.me];
-    temp = builder.CreateAnd(temp, mask);
-    ra = builder.CreateAnd(ra, ~mask);
-    ra = builder.CreateOr(ra, temp);
+    temp = builder.createAnd(temp, mask);
+    ra = builder.createAnd(ra, ~mask);
+    ra = builder.createOr(ra, temp);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -713,19 +693,19 @@ void Recompiler::rlwimix(Instruction code)
 
 void Recompiler::rlwinmx(Instruction code)
 {
-    Value<I64> rs_trunc = builder.CreateZExt<I64>(getGPR<I32>(code.rs));
-    Value<I64> rs_shift = builder.CreateShl(rs_trunc, 32);
+    Value* rs_trunc = builder.createZExt(getGPR(code.rs, TYPE_I32), TYPE_I64);
+    Value* rs_shift = builder.createShl(rs_trunc, 32);
 
-    Value<I64> rs = builder.CreateOr(rs_trunc, rs_shift);
-    Value<I64> ra = rs;
+    Value* rs = builder.createOr(rs_trunc, rs_shift);
+    Value* ra = rs;
 
     if (code.sh) {
-        auto resl = builder.CreateLShr(rs, 64 - code.sh);
-        auto resh = builder.CreateShl(rs, code.sh);
-        ra = builder.CreateOr(resh, resl);
+        auto resl = builder.createShr(rs, 64 - code.sh);
+        auto resh = builder.createShl(rs, code.sh);
+        ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.CreateAnd(ra, rotateMask[32 + code.mb][32 + code.me]);
+    ra = builder.createAnd(ra, rotateMask[32 + code.mb][32 + code.me]);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -735,19 +715,19 @@ void Recompiler::rlwinmx(Instruction code)
 
 void Recompiler::rlwnmx(Instruction code)
 {
-    Value<I64> rs_trunc = builder.CreateZExt<I64>(getGPR<I32>(code.rs));
-    Value<I64> rs_shift = builder.CreateShl(rs_trunc, 32);
+    Value* rs_trunc = builder.createZExt(getGPR(code.rs, TYPE_I32), TYPE_I64);
+    Value* rs_shift = builder.createShl(rs_trunc, 32);
 
-    Value<I64> rs = builder.CreateOr(rs_trunc, rs_shift);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = builder.createOr(rs_trunc, rs_shift);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    auto shl = builder.CreateAnd(rb, 0x1F);
-    auto shr = builder.CreateSub(builder.get<I64>(32), shl);
-    auto resl = builder.CreateLShr(rs, shr);
-    auto resh = builder.CreateShl(rs, shl);
-    ra = builder.CreateOr(resh, resl);
-    ra = builder.CreateAnd(ra, rotateMask[32 + code.mb][32 + code.me]);
+    auto shl = builder.createAnd(rb, 0x1F);
+    auto shr = builder.createSub(builder.getConstantI64(32), shl);
+    auto resl = builder.createShr(rs, shr);
+    auto resh = builder.createShl(rs, shl);
+    ra = builder.createOr(resh, resl);
+    ra = builder.createAnd(ra, rotateMask[32 + code.mb][32 + code.me]);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -757,167 +737,167 @@ void Recompiler::rlwnmx(Instruction code)
 
 void Recompiler::sldx(Instruction code)
 {
-    Value<I128> rs = builder.CreateZExt<I128>(getGPR(code.rs));
-    Value<I128> rb = builder.CreateZExt<I128>(builder.CreateAnd(getGPR<I8>(code.rb), 0x7F));
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
+    Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
+    Value* ra;
 
-    ra = builder.CreateTrunc<I64>(builder.CreateShl(rs, rb));
+    ra = builder.createTrunc(builder.createShl(rs, rb), TYPE_I64);
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::slwx(Instruction code)
 {
-    Value<I64> rs = builder.CreateZExt<I64>(getGPR<I32>(code.rs));
-    Value<I64> rb = builder.CreateZExt<I64>(builder.CreateAnd(getGPR<I8>(code.rb), 0x3F));
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
+    Value* rb = builder.createZExt<I64>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x3F));
+    Value* ra;
 
-    ra = builder.CreateZExt<I64>(builder.CreateTrunc<I32>(builder.CreateShl(rs, rb)));
+    ra = builder.createZExt(builder.createTrunc(builder.createShl(rs, rb), TYPE_I32), TYPE_I64);
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::sradx(Instruction code)
 {
-    Value<I128> rs = builder.CreateZExt<I128>(getGPR(code.rs));
-    Value<I128> rb = builder.CreateZExt<I128>(builder.CreateAnd(getGPR<I8>(code.rb), 0x7F));
-    Value<I128> temp;
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
+    Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
+    Value* temp;
+    Value* ra;
 
-    rs = builder.CreateShl(rs, 64);
-    temp = builder.CreateAShr(rs, rb);
-    temp = builder.CreateAShr(temp, 64);
-    ra = builder.CreateTrunc<I64>(temp);
+    rs = builder.createShl(rs, 64);
+    temp = builder.createAShr(rs, rb);
+    temp = builder.createAShr(temp, 64);
+    ra = builder.createTrunc<I64>(temp);
     if (code.rc) {
         updateCR0(ra);
     }
 
     // TODO: Update XER CA
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::sradix(Instruction code)
 {
-    Value<I128> rs = builder.CreateZExt<I128>(getGPR(code.rs));
-    Value<I128> temp;
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
+    Value* temp;
+    Value* ra;
 
     const U32 sh = code.sh | (code.sh_ << 5);
-    rs = builder.CreateShl(rs, 64);
-    temp = builder.CreateAShr(rs, sh);
-    temp = builder.CreateAShr(temp, 64);
-    ra = builder.CreateTrunc<I64>(temp);
+    rs = builder.createShl(rs, 64);
+    temp = builder.createAShr(rs, sh);
+    temp = builder.createAShr(temp, 64);
+    ra = builder.createTrunc<I64>(temp);
     if (code.rc) {
         updateCR0(ra);
     }
 
     // TODO: Update XER CA
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::srawx(Instruction code)
 {
-    Value<I64> rs = builder.CreateZExt<I64>(getGPR<I32>(code.rs));
-    Value<I64> rb = builder.CreateZExt<I64>(builder.CreateAnd(getGPR<I8>(code.rb), 0x3F));
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
+    Value* rb = builder.createZExt<I64>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x3F));
+    Value* ra;
 
-    rs = builder.CreateShl(rs, 32);
-    ra = builder.CreateAShr(rs, rb);
-    ra = builder.CreateAShr(ra, 32);
+    rs = builder.createShl(rs, 32);
+    ra = builder.createAShr(rs, rb);
+    ra = builder.createAShr(ra, 32);
     if (code.rc) {
         updateCR0(ra);
     }
 
     // TODO: Update XER CA
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::srawix(Instruction code)
 {
-    Value<I64> rs = builder.CreateZExt<I64>(getGPR<I32>(code.rs));
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
+    Value* ra;
 
-    rs = builder.CreateShl(rs, 32);
-    ra = builder.CreateAShr(rs, code.sh);
-    ra = builder.CreateAShr(ra, 32);
+    rs = builder.createShl(rs, 32);
+    ra = builder.createAShr(rs, code.sh);
+    ra = builder.createAShr(ra, 32);
     if (code.rc) {
         updateCR0(ra);
     }
 
     // TODO: Update XER CA
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::srdx(Instruction code)
 {
-    Value<I128> rs = builder.CreateZExt<I128>(getGPR(code.rs));
-    Value<I128> rb = builder.CreateZExt<I128>(builder.CreateAnd(getGPR<I8>(code.rb), 0x7F));
-    Value<I128> temp;
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
+    Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
+    Value* temp;
+    Value* ra;
 
-    temp = builder.CreateLShr(rs, rb);
-    ra = builder.CreateTrunc<I64>(temp);
+    temp = builder.createLShr(rs, rb);
+    ra = builder.createTrunc<I64>(temp);
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::srwx(Instruction code)
 {
-    Value<I64> rs = builder.CreateZExt<I64>(getGPR<I32>(code.rs));
-    Value<I64> rb = builder.CreateZExt<I64>(builder.CreateAnd(getGPR<I8>(code.rb), 0x3F));
-    Value<I64> ra;
+    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
+    Value* rb = builder.createZExt<I64>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x3F));
+    Value* ra;
 
-    ra = builder.CreateLShr(rs, rb);
+    ra = builder.createLShr(rs, rb);
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);
+    setGPR(code.ra, ra);*/
 }
 
 void Recompiler::subfx(Instruction code)
 {
-    Value<I64> ra = getGPR(code.ra);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    /*Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
     if (code.oe) {
         // TODO
     } else {
-        rd = builder.CreateSub(rb, ra);
+        rd = builder.createSub(rb, ra);
     }
 
     if (code.rc) {
         updateCR0(rd);
     }
 
-    setGPR(code.rd, rd);
+    setGPR(code.rd, rd);*/
 }
 
 void Recompiler::subfcx(Instruction code)
 {
-    Value<I64> ra = builder.CreateNeg(getGPR(code.ra));
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> rd;
+    Value* ra = builder.createNeg(getGPR(code.ra));
+    Value* rb = getGPR(code.rb);
+    Value* rd;
 
     if (code.oe) {
-        // TODO
+        // TODO: XER OV update
     } else {
-        auto result = builder.CreateIntrinsic_UaddWithOverflow(ra, rb);
-        rd = builder.CreateExtractValue<0>(result);
+        auto result = builder.createAdd(ra, rb);
+        // TODO: XER CA update
     }
 
     if (code.rc) {
@@ -945,11 +925,11 @@ void Recompiler::subfzex(Instruction code)
 
 void Recompiler::xorx(Instruction code)
 {
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> rb = getGPR(code.rb);
-    Value<I64> ra;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
+    Value* ra;
 
-    ra = builder.CreateXor(rs, rb);
+    ra = builder.createXor(rs, rb);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -959,25 +939,26 @@ void Recompiler::xorx(Instruction code)
 
 void Recompiler::xori(Instruction code)
 {
-    Value<I64> constant = builder.get<I64>(code.uimm);
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra;
+    Value* constant = builder.getConstantI64(code.uimm);
+    Value* rs = getGPR(code.rs);
+    Value* ra;
 
-    ra = builder.CreateXor(rs, constant);
+    ra = builder.createXor(rs, constant);
 
     setGPR(code.ra, ra);
 }
 
 void Recompiler::xoris(Instruction code)
 {
-    Value<I64> constant = builder.get<I64>(code.uimm << 16);
-    Value<I64> rs = getGPR(code.rs);
-    Value<I64> ra;
+    Value* constant = builder.getConstantI64(code.uimm << 16);
+    Value* rs = getGPR(code.rs);
+    Value* ra;
 
-    ra = builder.CreateXor(rs, constant);
+    ra = builder.createXor(rs, constant);
 
     setGPR(code.ra, ra);
 }
 
 }  // namespace ppu
+}  // namespace frontend
 }  // namespace cpu

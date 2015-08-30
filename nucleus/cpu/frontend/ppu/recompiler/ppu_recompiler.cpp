@@ -12,19 +12,7 @@ namespace ppu {
 
 using namespace cpu::hir;
 
-// Register names
-const char* string_vr[] = {
-    "vr0_",  "vr1_",  "vr2_",  "vr3_",  "vr4_",  "vr5_",  "vr6_",  "vr7_",
-    "vr8_",  "vr9_",  "vr10_", "vr11_", "vr12_", "vr13_", "vr14_", "vr15_",
-    "vr16_", "vr17_", "vr18_", "vr19_", "vr20_", "vr21_", "vr22_", "vr23_",
-    "vr24_", "vr25_", "vr26_", "vr27_", "vr28_", "vr29_", "vr30_", "vr31_",
-};
-
-const char* string_cr = "cr_";
-const char* string_fpscr = "fpscr_";
-const char* string_xer = "xer_";
-
-Recompiler::Recompiler(Function* function) : frontend::IRecompiler<U32>(function)
+Recompiler::Recompiler(ppu::Function* function) : frontend::IRecompiler<U32>(function)
 {
 }
 
@@ -236,10 +224,54 @@ void Recompiler::setCTR(Value* value)
 }
 
 /**
+ * Memory access
+ */
+Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
+    auto ppuSegment = static_cast<Segment*>(function->parent);
+    Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
+
+    addr = builder.createAdd(addr, baseAddr);
+    if (type == TYPE_I8) {
+        return builder.createLoad(addr, type);
+    } else {
+        return builder.createLoad(addr, type, ENDIAN_BIG);
+    }
+}
+
+void Recompiler::writeMemory(Value* addr, Value* value) {
+    auto ppuSegment = static_cast<Segment*>(function->parent);
+    Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
+
+    addr = builder.createAdd(addr, baseAddr);
+    if (value->type == TYPE_I8) {
+        builder.createStore(addr, value);
+    } else {
+        builder.createStore(addr, value, ENDIAN_BIG);
+    }
+}
+
+/**
  * Operation flags
  */
-void Recompiler::updateCR0(Value* value)
-{
+void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalComparison) {
+    Value* isLT;
+    Value* isGT;
+    Value* result;
+
+    if (logicalComparison) {
+        isLT = builder.createICmpULT(lhs, rhs);
+        isGT = builder.createICmpUGT(lhs, rhs);
+    } else {
+        isLT = builder.createICmpSLT(lhs, rhs);
+        isGT = builder.createICmpSGT(lhs, rhs);
+    }
+
+    result = builder.createSelect(isGT, builder.getConstantI8(2), builder.getConstantI8(4));
+    result = builder.createSelect(isLT, builder.getConstantI8(1), result);
+    setCR(field, result);
+}
+
+void Recompiler::updateCR0(Value* value) {
     updateCR(0, value, builder.getConstantI64(0), false);
 }
 
