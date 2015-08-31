@@ -62,9 +62,6 @@ enum FPSCR_EXP {
  * PPU Registers
  */
 
-// General-Purpose Register
-typedef U64 PPU_GPR;
-
 // Condition Register
 union PPU_CR {
     U32 CR;
@@ -244,24 +241,24 @@ union PPU_VSCR {
 
 struct State {
     // UISA Registers
-    PPU_GPR gpr[32] = {};
-    PPU_FPR fpr[32] = {};
-    PPU_CR cr = {};
-    PPU_FPSCR fpscr = {};
-    PPU_XER xer = {};
-    PPU_LR lr = 0;
-    PPU_CTR ctr = 0;
+    U64 r[32];      // General-Purpose Registers
+    F64 f[32];      // Floating-Point Register
+    PPU_CR cr;
+    PPU_FPSCR fpscr;
+    PPU_XER xer;
+    PPU_LR lr;
+    PPU_CTR ctr;
 
     // VEA Registers
-    PPU_TB tb = {};
+    PPU_TB tb;
 
     // Vector/SIMD Registers
-    PPU_VR vr[32] = {};
-    PPU_VSCR vscr = {};
+    V128 v[32];     // Vector Register
+    PPU_VSCR vscr;
 
     // Reservation Registers
-    U64 reserve_addr = 0;
-    U64 reserve_value = 0;
+    U64 reserve_addr;
+    U64 reserve_value;
 
     // Program Counter
     U32 pc;

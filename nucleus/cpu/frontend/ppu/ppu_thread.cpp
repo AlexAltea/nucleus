@@ -6,6 +6,7 @@
 #include "ppu_thread.h"
 #include "nucleus/config.h"
 #include "nucleus/emulator.h"
+#include "nucleus/cpu/frontend/ppu/ppu_state.h"
 
 namespace cpu {
 namespace frontend {
@@ -17,14 +18,7 @@ Thread::Thread(U32 entry)
     m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
     m_stackPointer = m_stackAddr + 0x10000;
 
-    if (config.ppuTranslator == PPU_TRANSLATOR_INTERPRETER) {
-        interpreter = new Interpreter(entry, m_stackPointer);
-        state = &(interpreter->state);
-    }
-
-    if (config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
-        state = new State();
-    }
+    state = std::make_unique<State>();
 
     const U32 entry_pc = nucleus.memory.read32(entry);
     const U32 entry_rtoc = nucleus.memory.read32(entry+4);
@@ -33,38 +27,30 @@ Thread::Thread(U32 entry)
     state->pc = entry_pc;
 
     // Initialize UISA Registers (TODO: All of this might be wrong)
-    state->gpr[0] = entry_pc;
-    state->gpr[1] = m_stackPointer - 0x200;
-    state->gpr[2] = entry_rtoc;
-    state->gpr[3] = 0;
-    state->gpr[4] = m_stackPointer - 0x80;
-    state->gpr[5] = state->gpr[4] + 0x10;
-    state->gpr[11] = entry;
-    state->gpr[12] = nucleus.lv2.proc.param.malloc_pagesize;
-    state->gpr[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
+    state->r[0] = entry_pc;
+    state->r[1] = m_stackPointer - 0x200;
+    state->r[2] = entry_rtoc;
+    state->r[3] = 0;
+    state->r[4] = m_stackPointer - 0x80;
+    state->r[5] = state->r[4] + 0x10;
+    state->r[11] = entry;
+    state->r[12] = nucleus.lv2.proc.param.malloc_pagesize;
+    state->r[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
     state->cr.CR = 0x22000082;
     state->tb.TBL = 1;
     state->tb.TBU = 1;
 
     // Arguments passed to sys_initialize_tls on liblv2.sprx's start function
-    state->gpr[7] = 0x0; // TODO
-    state->gpr[8] = 0x0; // TODO
-    state->gpr[9] = 0x0; // TODO
-    state->gpr[10] = 0x90;
+    state->r[7] = 0x0; // TODO
+    state->r[8] = 0x0; // TODO
+    state->r[9] = 0x0; // TODO
+    state->r[10] = 0x90;
 }
 
 Thread::~Thread()
 {
     // Destroy stack
     nucleus.memory(SEG_STACK).free(m_stackAddr);
-
-    // Delete translators
-    if (config.ppuTranslator == PPU_TRANSLATOR_INTERPRETER) {
-        delete interpreter;
-    }
-    if (config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
-        delete state;
-    }
 }
 
 void Thread::start()
@@ -90,7 +76,7 @@ void Thread::start()
 
 void Thread::task()
 {
-    if (config.ppuTranslator == PPU_TRANSLATOR_INSTRUCTION) {
+    if (config.ppuTranslator & CPU_TRANSLATOR_INSTRUCTION) {
         while (true) {
             // Handle events
             if (m_event) {
@@ -112,7 +98,7 @@ void Thread::task()
             interpreter->step();
         }
     }
-	if (config.ppuTranslator == PPU_TRANSLATOR_BLOCK) {
+    if (config.ppuTranslator & CPU_TRANSLATOR_BLOCK) {
         for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
@@ -120,26 +106,23 @@ void Thread::task()
 
             // TODO: ?
         }
-	}
-	if (config.ppuTranslator == PPU_TRANSLATOR_FUNCTION) {
-		for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
-			if (!ppu_segment->contains(state->pc)) {
-				continue;
-			}
-
-            // TODO: ?
-		}
-	}
-    if (config.ppuTranslator == PPU_TRANSLATOR_MODULE) {
+    }
+    if (config.ppuTranslator & CPU_TRANSLATOR_FUNCTION) {
         for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
 
             // TODO: ?
-            hir::Function functionCaller = ppu_segment->module.getFunction("caller");
-            auto functionCallerPtr = (void(*)(U32))ppu_segment->ee->getPointerToFunction(functionCaller.function);
-            functionCallerPtr(state->pc);
+        }
+    }
+    if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
+        for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
+            if (!ppu_segment->contains(state->pc)) {
+                continue;
+            }
+
+            // TODO: ?
         }
     }
 }

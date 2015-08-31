@@ -23,13 +23,6 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-using StateType = hir::Struct<
-    hir::Array<hir::I64,  32>, // GPRs
-    hir::Array<hir::I64,  32>, // FPRs
-    hir::Array<hir::I128, 32>, // VRs
-    hir::Array<hir::I64,   4>  // Other
->;
-
 // Class declarations
 class Block;
 class Function;
@@ -86,7 +79,7 @@ public:
     void analyze_type(); // Determine function arguments/return types
 
     // Declare function inside the parent segment
-    void declare(hir::Module module);
+    void declare(hir::Module* module);
 
     // Recompile function
     void recompile();
@@ -94,16 +87,6 @@ public:
 
 class Segment : public frontend::ISegment<U32> {
 public:
-    // Globals
-    hir::Value<hir::I64*> memoryBase;
-
-    // Emulator functions
-    hir::Function funcGetState;
-    hir::Function funcLogState;
-    hir::Function funcDebugState;
-    hir::Function funcIntermodularCall;
-    hir::Function funcSystemCall;
-
     // Generate a list of functions and analyze them
     void analyze();
 

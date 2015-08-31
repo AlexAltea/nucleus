@@ -7,7 +7,6 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/thread.h"
-#include "nucleus/cpu/frontend/ppu/interpreter/ppu_interpreter.h"
 
 namespace cpu {
 namespace frontend {

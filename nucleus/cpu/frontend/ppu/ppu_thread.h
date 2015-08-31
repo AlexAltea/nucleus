@@ -12,13 +12,15 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-class Thread : public CellThread
-{
+// Class declarations
+class State;
+
+class Thread : public CellThread {
     U32 m_stackAddr;
     U32 m_stackPointer;
 
 public:
-    State* state;
+    std::unique_ptr<State> state;
 
     Thread(U32 entry);
     ~Thread();

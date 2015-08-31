@@ -22,8 +22,6 @@ class ISegment;
 template <typename TAddr>
 class IFunction {
 public:
-    hir::Function function;
-
     // Starting address of the entry block
     TAddr address = 0;
 

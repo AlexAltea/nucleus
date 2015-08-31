@@ -189,40 +189,40 @@ void Function::declare(hir::Module module)
     hir::Type result;
     switch (type_out) {
     case FUNCTION_OUT_INTEGER:
-        result = hir::I64::getType();
+        result = hir::TYPE_I64;
         break;
     case FUNCTION_OUT_FLOAT:
-        result = hir::F64::getType();
+        result = hir::TYPE_F64;
         break;
     case FUNCTION_OUT_FLOAT_X2:
-        result = hir::F64::getType(); // TODO
+        result = hir::TYPE_F64; // TODO
         break;
     case FUNCTION_OUT_FLOAT_X3:
-        result = hir::F64::getType(); // TODO
+        result = hir::TYPE_F64; // TODO
         break;
     case FUNCTION_OUT_FLOAT_X4:
-        result = hir::F64::getType(); // TODO
+        result = hir::TYPE_F64; // TODO
         break;
     case FUNCTION_OUT_VECTOR:
-        result = hir::I128::getType();
+        result = hir::TYPE_V128;
         break;
     case FUNCTION_OUT_VOID:
-        result = hir::Void::getType();
+        result = hir::TYPE_VOID;
         break;
     }
 
     // Arguments type
-    std::vector<llvm::Type*> params;
+    std::vector<hir::Type> params;
     for (auto& type : type_in) {
         switch (type) {
         case FUNCTION_OUT_INTEGER:
-            params.push_back(hir::I64::getType().type);
+            params.push_back(hir::TYPE_I64);
             break;
         case FUNCTION_OUT_FLOAT:
-            params.push_back(hir::F64::getType().type);
+            params.push_back(hir::TYPE_F64);
             break;
         case FUNCTION_OUT_VECTOR:
-            params.push_back(hir::I128::getType().type);
+            params.push_back(hir::TYPE_V128);
             break;
         }
     }
@@ -256,7 +256,7 @@ void Function::recompile()
         auto& block = static_cast<Block&>(*item.second);
 
         // Recompile block instructions
-        builder.SetInsertPoint(recompiler.blocks[block.address]);
+        builder.setInsertPoint(recompiler.blocks[block.address]);
         for (U32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
             const Instruction code(recompiler.currentAddress);
@@ -378,7 +378,7 @@ void Segment::recompile()
         llvm::Function::ExternalLinkage, "nucleusIntermodularCall", module);
     funcSystemCall = hir::Function::Create(
         llvm::FunctionType::get(hir::Void::getType().type, false),
-        llvm::Function::ExternalLinkage, "nucleusSystemCall", module);
+        llvm::Function::ExternalLinkage, "nucleusSystemCall", module);*/
 
     // Declare all functions
     for (auto& item : functions) {
@@ -403,9 +403,9 @@ void Segment::recompile()
     hir::Block defaultBlock = hir::Block::Create("caller", callerFunction);
 
     hir::Builder builder;
-    builder.SetInsertPoint(entryBlock);
-    hir::Value<StateType*> state = builder.CreateCall(funcGetState);
-    auto switchInst = builder.CreateSwitch(hir::Value<hir::I32>{ callerFunction.function->arg_begin() }, defaultBlock);
+    builder.setInsertPoint(entryBlock);
+    hir::Value* state = builder.createCall(funcGetState);
+    auto switchInst = builder.createSwitch(hir::Value<hir::I32>{ callerFunction.function->arg_begin() }, defaultBlock);
     
     for (auto& item : functions) {
         auto& function = static_cast<Function&>(*item.second);
@@ -418,8 +418,8 @@ void Segment::recompile()
 
         // Proxy
         int index = 0;
-        builder.SetInsertPoint(callerBlock);
-        std::vector<llvm::Value*> args;
+        builder.setInsertPoint(callerBlock);
+        std::vector<hir::Value*> args;
         for (auto& type : function.type_in) {
             switch (type) {
             case FUNCTION_IN_INTEGER:
@@ -451,7 +451,7 @@ void Segment::recompile()
             }
         }
 
-        llvm::Value* value = builder.createCall(function.function, args);
+        hir::Value* value = builder.createCall(function.function, args);
 
         // TODO: ?
 

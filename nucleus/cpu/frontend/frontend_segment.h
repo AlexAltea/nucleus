@@ -20,8 +20,6 @@ class IFunction;
 template <typename TAddr>
 class ISegment {
 public:
-    hir::Module module;
-
     // Starting address of this module
     TAddr address = 0;
 
@@ -33,9 +31,6 @@ public:
 
     // List of functions
     std::map<TAddr, IFunction<TAddr>*> functions;
-
-    // Execution engine and global functions
-    llvm::ExecutionEngine* ee;
 
     // Check whether an address is inside this module
     bool contains(TAddr addr) const {
