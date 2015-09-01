@@ -47,25 +47,21 @@ public:
         return data;
     }
 
-    T ToLE() const
-    {
+    T ToLE() const {
         T res;
         se_t<T>::func(res, data);
         return res;
     }
 
-    void FromBE(const T& value)
-    {
+    void FromBE(const T& value) {
         data = value;
     }
 
-    void FromLE(const T& value)
-    {
+    void FromLE(const T& value) {
         se_t<T>::func(data, value);
     }
 
-    operator const T() const
-    {
+    operator const T() const {
         return ToLE();
     }
 
