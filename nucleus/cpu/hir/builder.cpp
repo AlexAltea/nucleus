@@ -30,18 +30,63 @@
 namespace cpu {
 namespace hir {
 
-void Builder::setInsertPoint(Block* block)
-{
+void Builder::setInsertPoint(Block* block) {
     // TODO
 }
 
-void Builder::setInsertPoint(Block* block, std::list<Instruction*>::iterator ip)
-{
+void Builder::setInsertPoint(Block* block, std::list<Instruction*>::iterator ip) {
     // TODO
+}
+
+// HIR values
+Value* Builder::allocValue(Type type) {
+    return nullptr;
 }
 
 Value* Builder::cloneValue(Value* source) {
     return nullptr;
+}
+
+// HIR constants
+Value* Builder::getConstantI8(U8 c) {
+    Value* value = allocValue(TYPE_I8);
+    value->setConstantI8(c);
+    return value;
+}
+Value* Builder::getConstantI16(U16 c) {
+    Value* value = allocValue(TYPE_I16);
+    value->setConstantI16(c);
+    return value;
+}
+Value* Builder::getConstantI32(U32 c) {
+    Value* value = allocValue(TYPE_I32);
+    value->setConstantI32(c);
+    return value;
+}
+Value* Builder::getConstantI64(U64 c) {
+    Value* value = allocValue(TYPE_I64);
+    value->setConstantI64(c);
+    return value;
+}
+Value* Builder::getConstantF32(F32 c) {
+    Value* value = allocValue(TYPE_F32);
+    value->setConstantF32(c);
+    return value;
+}
+Value* Builder::getConstantF64(F64 c) {
+    Value* value = allocValue(TYPE_F64);
+    value->setConstantF64(c);
+    return value;
+}
+Value* Builder::getConstantV128(V128 c) {
+    Value* value = allocValue(TYPE_V128);
+    value->setConstantV128(c);
+    return value;
+}
+Value* Builder::getConstantV256(V256 c) {
+    Value* value = allocValue(TYPE_V256);
+    value->setConstantV256(c);
+    return value;
 }
 
 // Arithmetic operations
@@ -115,6 +160,11 @@ Value* Builder::createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     return i->dest;
 }
 
+void Builder::createRet(Value* value) {
+}
+
+void Builder::createRet() {
+}
 
 }  // namespace hir
 }  // namespace cpu

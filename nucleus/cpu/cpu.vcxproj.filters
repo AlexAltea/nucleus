@@ -131,17 +131,11 @@
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_channel.cpp">
       <Filter>frontend\spu\recompiler</Filter>
     </ClCompile>
-    <ClCompile Include="backend\compiler.cpp">
-      <Filter>backend</Filter>
-    </ClCompile>
     <ClCompile Include="backend\x86\x86_compiler.cpp">
       <Filter>backend\x86</Filter>
     </ClCompile>
     <ClCompile Include="backend\x86\x86_sequences.cpp">
       <Filter>backend\x86</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\sequences.cpp">
-      <Filter>backend</Filter>
     </ClCompile>
     <ClCompile Include="backend\x86\x86_emitter.cpp">
       <Filter>backend\x86</Filter>

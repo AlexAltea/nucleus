@@ -32,14 +32,14 @@ public:
     Value* cloneValue(Value* source);
 
     // HIR constants
-    Value* getConstantI8(U8 v);
-    Value* getConstantI16(U16 v);
-    Value* getConstantI32(U32 v);
-    Value* getConstantI64(U64 v);
-    Value* getConstantF32(F32 v);
-    Value* getConstantF64(F64 v);
-    Value* getConstantV128(V128 v);
-    Value* getConstantV256(V256 v);
+    Value* getConstantI8(U8 c);
+    Value* getConstantI16(U16 c);
+    Value* getConstantI32(U32 c);
+    Value* getConstantI64(U64 c);
+    Value* getConstantF32(F32 c);
+    Value* getConstantF64(F64 c);
+    Value* getConstantV128(V128 c);
+    Value* getConstantV256(V256 c);
     Value* getConstantString(const std::string& str);
 
     /**
@@ -99,6 +99,7 @@ public:
     Value* createBrCond(Value* cond, Block* blockTrue, Block* blockFalse);
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
     void createRet(Value* value);
+    void createRet();
 
     // Floating-point operations
     Value* createFAdd(Value* lhs, Value* rhs);

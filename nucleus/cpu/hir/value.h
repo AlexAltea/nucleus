@@ -12,6 +12,10 @@
 namespace cpu {
 namespace hir {
 
+enum ValueFlags {
+    VALUE_IS_CONSTANT = (1 << 1),
+};
+
 /**
  * Value
  */
@@ -33,12 +37,23 @@ public:
 
     Type type;
 
+    // Properties
     bool isConstant() const;
     bool isConstantFalse() const;
     bool isConstantTrue() const;
     bool isConstantZero() const;
     bool isConstantNonzero() const;
     bool isConstantEqual(Constant other) const;
+
+    // Constants setters
+    void setConstantI8(U8 c);
+    void setConstantI16(U16 c);
+    void setConstantI32(U32 c);
+    void setConstantI64(U64 c);
+    void setConstantF32(F32 c);
+    void setConstantF64(F64 c);
+    void setConstantV128(V128 c);
+    void setConstantV256(V256 c);
 
     // Constant operations
     void doAdd(Value* rhs);

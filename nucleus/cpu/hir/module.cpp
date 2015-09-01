@@ -8,5 +8,9 @@
 namespace cpu {
 namespace hir {
 
+bool Module::compile() {
+    return true;
+}
+
 }  // namespace hir
 }  // namespace cpu

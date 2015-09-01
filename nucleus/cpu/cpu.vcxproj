@@ -11,8 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="backend\compiler.cpp" />
-    <ClCompile Include="backend\sequences.cpp" />
     <ClCompile Include="backend\x86\x86_compiler.cpp" />
     <ClCompile Include="backend\x86\x86_emitter.cpp" />
     <ClCompile Include="backend\x86\x86_sequences.cpp" />
