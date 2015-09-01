@@ -29,6 +29,7 @@ OPCODE(STORE,  "store",   OPCODE_SIG_X_V_V)   // Store to memory
 OPCODE(SELECT, "select",  OPCODE_SIG_V_V_V_V) // Select
 OPCODE(CMP,    "cmp",     OPCODE_SIG_V_V_V)   // Compare
 OPCODE(BR,     "br",      OPCODE_SIG_X_B)     // Branch
+OPCODE(BRCOND, "brcond",  OPCODE_SIG_X_V_B)   // Conditional branch
 OPCODE(CALL,   "call",    OPCODE_SIG_M_F)     // Call
 OPCODE(RET,    "ret",     OPCODE_SIG_X_M)     // Return
 OPCODE(PHI,    "phi",     OPCODE_SIG_V_V_V)   // Phi node

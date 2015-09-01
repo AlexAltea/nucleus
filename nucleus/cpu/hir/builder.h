@@ -39,6 +39,7 @@ public:
     Value* getConstantF32(F32 v);
     Value* getConstantF64(F64 v);
     Value* getConstantV128(V128 v);
+    Value* getConstantV256(V256 v);
     Value* getConstantString(const std::string& str);
 
     /**
@@ -94,6 +95,8 @@ public:
     Value* createCmpUGE(Value* lhs, Value* rhs);
 
     // Branching and conditional operations
+    Value* createBr(Block* block);
+    Value* createBrCond(Value* cond, Block* blockTrue, Block* blockFalse);
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
     void createRet(Value* value);
 
@@ -111,6 +114,7 @@ public:
     Value* createVSub(Value* lhs, Value* rhs, Type compType);
     Value* createVMul(Value* lhs, Value* rhs, Type compType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
     Value* createVAvg(Value* lhs, Value* rhs, Type compType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
+    Value* createVAbs(Value* value, Type compType);
     Value* createVCmpEQ(Value* lhs, Value* rhs, Type compType);
     Value* createVCmpNE(Value* lhs, Value* rhs, Type compType);
     Value* createVCmpFLT(Value* lhs, Value* rhs, Type compType);

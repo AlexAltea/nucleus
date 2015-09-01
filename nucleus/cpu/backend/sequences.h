@@ -40,6 +40,7 @@ struct Op {
 };
 
 struct VoidOp : Op {
+    static constexpr InstrKey::Value key = hir::TYPE_VOID;
 };
 
 

@@ -24,22 +24,70 @@ void Recompiler::fsmbi(Instruction code)
 
 void Recompiler::il(Instruction code)
 {
+    V128 value;
+    value.s32[0] = code.i16;
+    value.s32[1] = code.i16;
+    value.s32[2] = code.i16;
+    value.s32[3] = code.i16;
+    Value* rt = builder.getConstantV128(value);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::ila(Instruction code)
 {
+    V128 value;
+    value.u32[0] = code.i18 & 0x3FFFF;
+    value.u32[1] = code.i18 & 0x3FFFF;
+    value.u32[2] = code.i18 & 0x3FFFF;
+    value.u32[3] = code.i18 & 0x3FFFF;
+    Value* rt = builder.getConstantV128(value);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::ilh(Instruction code)
 {
+    V128 value;
+    value.u16[0] = code.i16;
+    value.u16[1] = code.i16;
+    value.u16[2] = code.i16;
+    value.u16[3] = code.i16;
+    value.u16[4] = code.i16;
+    value.u16[5] = code.i16;
+    value.u16[6] = code.i16;
+    value.u16[7] = code.i16;
+    Value* rt = builder.getConstantV128(value);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::ilhu(Instruction code)
 {
+    V128 value;
+    value.u32[0] = code.i16 << 16;
+    value.u32[1] = code.i16 << 16;
+    value.u32[2] = code.i16 << 16;
+    value.u32[3] = code.i16 << 16;
+    Value* rt = builder.getConstantV128(value);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::iohl(Instruction code)
 {
+    Value* constant;
+    Value* rt;
+
+    V128 value;
+    value.u32[0] = code.i16 & 0xFFFF;
+    value.u32[1] = code.i16 & 0xFFFF;
+    value.u32[2] = code.i16 & 0xFFFF;
+    value.u32[3] = code.i16 & 0xFFFF;
+    constant = builder.getConstantV128(value);
+    rt = builder.createOr(rt, constant);
+
+    setGPR(code.rt, rt);
 }
 
 
@@ -93,16 +141,38 @@ void Recompiler::ah(Instruction code)
 
 void Recompiler::ahi(Instruction code)
 {
-    Value<I16, 8> ra = getGPR<I16>(code.ra);
-    Value<I16, 8> rt;
+    Value* ra = getGPR(code.ra);
+    Value* rt;
 
-    rt = builder.createAdd(ra, code.i10); // TODO: ADD with (code.i10)^8
+    V128 value;
+    value.u16[0] = code.i10;
+    value.u16[1] = code.i10;
+    value.u16[2] = code.i10;
+    value.u16[3] = code.i10;
+    value.u16[4] = code.i10;
+    value.u16[5] = code.i10;
+    value.u16[6] = code.i10;
+    value.u16[7] = code.i10;
+    rt = builder.getConstantV128(value);
+    rt = builder.createAdd(rt, ra);
 
     setGPR(code.rt, rt);
 }
 
 void Recompiler::ai(Instruction code)
 {
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    value.u32[0] = code.i10;
+    value.u32[1] = code.i10;
+    value.u32[2] = code.i10;
+    value.u32[3] = code.i10;
+    rt = builder.getConstantV128(value);
+    rt = builder.createAdd(rt, ra);
+
+    setGPR(code.rt, rt);
 }
 
 void Recompiler::and_(Instruction code)
@@ -176,7 +246,7 @@ void Recompiler::bg(Instruction code)
     Value* rt;
 
     auto result = builder.createVCmpUGT(ra, rb, TYPE_I32);
-    rt = builder.createZExt<I32>(result);
+    rt = builder.createZExt(result, TYPE_I32);
 
     setGPR(code.rt, rt);
 }

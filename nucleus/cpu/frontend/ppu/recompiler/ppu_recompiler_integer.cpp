@@ -378,7 +378,7 @@ void Recompiler::mulhdx(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rd;
 
-    auto rd = builder.createMulH(ra, rb, ARITHMETIC_SIGNED);
+    rd = builder.createMulH(ra, rb, ARITHMETIC_SIGNED);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -392,7 +392,7 @@ void Recompiler::mulhdux(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rd;
 
-    auto rd = builder.createMulH(ra, rb, ARITHMETIC_UNSIGNED);
+    rd = builder.createMulH(ra, rb, ARITHMETIC_UNSIGNED);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -420,7 +420,7 @@ void Recompiler::mulhwux(Instruction code)
     Value* rb = getGPR(code.rb, TYPE_I32);
     Value* rd;
 
-    auto rd = builder.createMulH(ra, rb, ARITHMETIC_UNSIGNED);
+    rd = builder.createMulH(ra, rb, ARITHMETIC_UNSIGNED);
     if (code.rc) {
         updateCR0(rd);
     }

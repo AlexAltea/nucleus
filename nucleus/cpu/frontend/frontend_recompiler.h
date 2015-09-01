@@ -25,9 +25,9 @@ public:
     hir::Builder builder;
 
     // Control Flow Graph
-    hir::Block prolog;
-    hir::Block epilog;
-    std::map<TAddr, hir::Block> blocks;
+    hir::Block* prolog;
+    hir::Block* epilog;
+    std::map<TAddr, hir::Block*> blocks;
 
     // Constructor
     IRecompiler(IFunction<TAddr>* f) : function(f) {
