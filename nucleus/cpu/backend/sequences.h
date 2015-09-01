@@ -29,7 +29,7 @@ union InstrKey {
 
     InstrKey(const hir::Instruction* instr) {
         opcode = instr->opcode;
-        dest = instr->dest.value->type;
+        dest = instr->dest->type;
         src1 = instr->src1.value->type;
         src2 = instr->src2.value->type;
         src3 = instr->src3.value->type;
