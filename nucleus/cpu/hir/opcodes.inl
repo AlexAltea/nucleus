@@ -9,8 +9,8 @@ OPCODE(MUL,    "mul")    // Multiplication
 OPCODE(MULH,   "mulh")   // Multiplication (high)
 OPCODE(DIV,    "div")    // Division
 OPCODE(CTLZ,   "ctlz")   // Count leading zeros
-OPCODE(UEXT,   "uext")   // Unsigned integer extension
-OPCODE(SEXT,   "sext")   // Signed integer extension
+OPCODE(ZEXT,   "zext")   // Integer zero-extend 
+OPCODE(SEXT,   "sext")   // Integer sign-extend
 OPCODE(TRUNC,  "trunc")  // Integer truncation
 OPCODE(NOT,    "not")    // Bitwise Not
 OPCODE(AND,    "and")    // Bitwise And
@@ -25,7 +25,16 @@ OPCODE(ROR,    "ror")    // Rotate to right
 OPCODE(LOAD,   "load")   // Load from memory
 OPCODE(STORE,  "store")  // Store to memory
 OPCODE(SELECT, "select") // Select
+OPCODE(CMP,    "cmp")    // Compare
 OPCODE(BR,     "br")     // Branch
 OPCODE(CALL,   "call")   // Call
 OPCODE(RET,    "ret")    // Return
 OPCODE(PHI,    "phi")    // Phi node
+OPCODE(FADD,   "fadd")   // Floating-point addition
+OPCODE(FSUB,   "fsub")   // Floating-point subtraction
+OPCODE(FEXT,   "fext")   // Floating-point extend
+OPCODE(FTRUNC, "ftrunc") // Floating-point truncation
+OPCODE(VADD,   "vadd")   // Vector addition
+OPCODE(VSUB,   "vadd")   // Vector subtraction
+OPCODE(VAVG,   "vavg")   // Vector average
+OPCODE(VCMP,   "vcmp")   // Vector compare

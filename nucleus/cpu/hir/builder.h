@@ -27,10 +27,11 @@ public:
     void setInsertPoint(Block* block);
     void setInsertPoint(Block* block, std::list<Instruction*>::iterator ip);
 
-    /**
-     * HIR constants
-     */
-    Value* alloc(Type type);
+    // HIR values
+    Value* allocValue(Type type);
+    Value* cloneValue(Value* source);
+
+    // HIR constants
     Value* getConstantI8(U8 v);
     Value* getConstantI16(U16 v);
     Value* getConstantI32(U32 v);
@@ -52,6 +53,9 @@ public:
     Value* createNeg(Value* value);
     Value* createSqrt(Value* value);
     Value* createCtlz(Value* value);
+    Value* createZExt(Value* value, Type type);
+    Value* createSExt(Value* value, Type type);
+    Value* createTrunc(Value* value, Type type);
 
     // Logical operations
     Value* createAnd(Value* lhs, Value* rhs);
@@ -62,7 +66,7 @@ public:
     Value* createXor(Value* lhs, U64 rhs);
     Value* createNot(Value* value);
 
-    // Shifting
+    // Shifting operations
     Value* createShl(Value* value, Value* amount);
     Value* createShl(Value* value, U64 rhs);
     Value* createShlA(Value* value, Value* amount);
@@ -72,10 +76,6 @@ public:
     Value* createShrA(Value* value, Value* amount);
     Value* createShrA(Value* value, U64 rhs);
 
-    Value* createZExt(Value* value, Type type);
-    Value* createSExt(Value* value, Type type);
-    Value* createTrunc(Value* value, Type type);
-
     // Memory access operations
     Value* createLoad(Value* address, Type type, MemoryFlags flags = ENDIAN_DEFAULT);
     void createStore(Value* address, Value* value, MemoryFlags flags = ENDIAN_DEFAULT);
@@ -83,18 +83,29 @@ public:
     // Comparison operations
     Value* createCmpEQ(Value* lhs, Value* rhs);
     Value* createCmpNE(Value* lhs, Value* rhs);
-    Value* createCmpULT(Value* lhs, Value* rhs);
-    Value* createCmpULE(Value* lhs, Value* rhs);
-    Value* createCmpUGT(Value* lhs, Value* rhs);
-    Value* createCmpUGE(Value* lhs, Value* rhs);
     Value* createCmpSLT(Value* lhs, Value* rhs);
     Value* createCmpSLE(Value* lhs, Value* rhs);
     Value* createCmpSGT(Value* lhs, Value* rhs);
     Value* createCmpSGE(Value* lhs, Value* rhs);
+    Value* createCmpULT(Value* lhs, Value* rhs);
+    Value* createCmpULE(Value* lhs, Value* rhs);
+    Value* createCmpUGT(Value* lhs, Value* rhs);
+    Value* createCmpUGE(Value* lhs, Value* rhs);
 
-    // Branching and conditionals
+    // Branching and conditional operations
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
     void createRet(Value* value);
+
+    // Floating-point operations
+    Value* createFAdd(Value* lhs, Value* rhs);
+    Value* createFSub(Value* lhs, Value* rhs);
+    Value* createFExt(Value* value, Type type);
+    Value* createFTrunc(Value* value, Type type);
+
+    // Vector operations
+    Value* createVAdd(Value* lhs, Value* rhs, Type componentType);
+    Value* createVSub(Value* lhs, Value* rhs, Type componentType);
+    Value* createVAvg(Value* lhs, Value* rhs, Type componentType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
 };
 
 }  // namespace hir

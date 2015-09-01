@@ -40,6 +40,10 @@ void Builder::setInsertPoint(Block* block, std::list<Instruction*>::iterator ip)
     // TODO
 }
 
+Value* Builder::cloneValue(Value* source) {
+    return nullptr;
+}
+
 // Arithmetic operations
 Value* Builder::createAdd(Value* lhs, Value* rhs) {
     ASSERT_TYPE_INTEGER(lhs);
@@ -50,7 +54,7 @@ Value* Builder::createAdd(Value* lhs, Value* rhs) {
     } else if (rhs->isConstantZero()) {
         return lhs;
     } else if (lhs->isConstant() && rhs->isConstant()) {
-        Value* dest = Value::create(lhs);
+        Value* dest = cloneValue(lhs);
         dest->doAdd(rhs);
         return dest;
     }
@@ -68,7 +72,7 @@ Value* Builder::createSub(Value* lhs, Value* rhs) {
     if (rhs->isConstantZero()) {
         return lhs;
     } else if (lhs->isConstant() && rhs->isConstant()) {
-        Value* dest = Value::create(lhs);
+        Value* dest = cloneValue(lhs);
         dest->doSub(rhs);
         return dest;
     }
@@ -84,8 +88,8 @@ Value* Builder::createMul(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     ASSERT_TYPE_EQUAL(lhs, rhs);
 
     if (lhs->isConstant() && rhs->isConstant()) {
-        Value* dest = Value::create(lhs);
-        dest->doMul(rhs);
+        Value* dest = cloneValue(lhs);
+        dest->doMul(rhs, flags);
         return dest;
     }
 
@@ -100,8 +104,8 @@ Value* Builder::createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     ASSERT_TYPE_EQUAL(lhs, rhs);
 
     if (lhs->isConstant() && rhs->isConstant()) {
-        Value* dest = Value::create(lhs);
-        dest->doDiv(rhs);
+        Value* dest = cloneValue(lhs);
+        dest->doDiv(rhs, flags);
         return dest;
     }
 

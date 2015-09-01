@@ -22,7 +22,7 @@ public:
     Opcode opcode;
     OpcodeFlags flags;
 
-    Operand dest;
+    Value* dest;
     Operand src1;
     Operand src2;
     Operand src3;
