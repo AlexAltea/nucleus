@@ -8,15 +8,15 @@
 #include "nucleus/common.h"
 
 #ifdef NUCLEUS_COMPILER_MSVC
-#define RE16(val)  _byteswap_ushort(val)
-#define RE32(val)  _byteswap_ulong(val)
-#define RE64(val)  _byteswap_uint64(val)
-#define RE128(val) U128{RE64((val).hi), RE64((val).lo)}
+#define SE16(val)  _byteswap_ushort(val)
+#define SE32(val)  _byteswap_ulong(val)
+#define SE64(val)  _byteswap_uint64(val)
+#define SE128(val) U128{SE64((val).hi), SE64((val).lo)}
 #else
-#define RE16(val)  __builtin_bswap16(val)
-#define RE32(val)  __builtin_bswap32(val)
-#define RE64(val)  __builtin_bswap64(val)
-#define RE128(val) U128{RE64((val).hi), RE64((val).lo)}
+#define SE16(val)  __builtin_bswap16(val)
+#define SE32(val)  __builtin_bswap32(val)
+#define SE64(val)  __builtin_bswap64(val)
+#define SE128(val) U128{SE64((val).hi), SE64((val).lo)}
 #endif
 
 /**
@@ -28,18 +28,18 @@ using NativeEndian = T;
 /**
  * Swapped endianness
  */
+template <typename T, int size = sizeof(T)> struct se_t;
+template <typename T> struct se_t<T, 1> { static inline void func(T& dst, const T src) { (U8&)dst = (U8&)src; } };
+template <typename T> struct se_t<T, 2> { static inline void func(T& dst, const T src) { (U16&)dst = SE16((U16&)src); } };
+template <typename T> struct se_t<T, 4> { static inline void func(T& dst, const T src) { (U32&)dst = SE32((U32&)src); } };
+template <typename T> struct se_t<T, 8> { static inline void func(T& dst, const T src) { (U64&)dst = SE64((U64&)src); } };
+
 template <typename T>
 class SwappedEndian {
     static_assert(sizeof(T) == 1 || sizeof(T) == 2 || sizeof(T) == 4 || sizeof(T) == 8,
         "SwappedEndian only accepts types of 1, 2, 4 or 8 bytes in size");
 
 private:
-    template <typename T, int size = sizeof(T)> struct se_t;
-    template <typename T> struct se_t<T, 1> { static inline void func(T& dst, const T src) { (U8&)dst = (U8&)src; } };
-    template <typename T> struct se_t<T, 2> { static inline void func(T& dst, const T src) { (U16&)dst = RE16((U16&)src); } };
-    template <typename T> struct se_t<T, 4> { static inline void func(T& dst, const T src) { (U32&)dst = RE32((U32&)src); } };
-    template <typename T> struct se_t<T, 8> { static inline void func(T& dst, const T src) { (U64&)dst = RE64((U64&)src); } };
-
     T data;
 
 public:

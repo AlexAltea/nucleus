@@ -51,6 +51,9 @@ bool X86Compiler::compile(Function* function) {
 }
 
 bool X86Compiler::compile(Module* module) {
+    for (auto function : module->functions) {
+        compile(function);
+    }
     return true;
 }
 

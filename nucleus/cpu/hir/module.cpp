@@ -8,6 +8,11 @@
 namespace cpu {
 namespace hir {
 
+bool Module::addFunction(Function* function) {
+    functions.push_back(function);
+    return true;
+}
+
 bool Module::compile() {
     return true;
 }

@@ -20,6 +20,9 @@ class Block;
 class Value;
 
 class Builder {
+    Block* ib;
+    std::list<Instruction*>::iterator ip;
+
 public:
     /**
      * HIR insertion
@@ -45,6 +48,8 @@ public:
     /**
      * HIR instruction generation
      */
+    Instruction* appendInstr(Opcode opcode, OpcodeFlags flags, Value* dest = nullptr);
+
     // Arithmetic operations
     Value* createAdd(Value* lhs, Value* rhs);
     Value* createSub(Value* lhs, Value* rhs);

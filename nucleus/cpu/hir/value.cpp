@@ -113,6 +113,9 @@ void Value::doMul(Value* rhs, ArithmeticFlags flags) {
     }
 }
 
+void Value::doMulH(Value* rhs, ArithmeticFlags flags) {
+}
+
 void Value::doDiv(Value* rhs, ArithmeticFlags flags) {
     if (flags & ARITHMETIC_SIGNED) {
         switch (type) {

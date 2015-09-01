@@ -35,6 +35,9 @@ public:
     // Chosen x86 mode
     U32 mode;
 
+    // Constructor
+    X86Emitter();
+
     bool isExtensionAvailable(U32 queriedExtensions) const;
 };
 

@@ -4,11 +4,17 @@
  */
 
 #include "block.h"
+#include "nucleus/cpu/hir/function.h"
 
 namespace cpu {
 namespace hir {
 
 Block::Block(Function* parent) : parent(parent) {
+    if (parent->flags & FUNCTION_IS_DECLARED) {
+        parent->flags |= FUNCTION_IS_DEFINING;
+        parent->entry = this;
+    }
+    parent->blocks.push_back(this);
 }
 
 Block::~Block() {

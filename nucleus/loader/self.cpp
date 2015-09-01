@@ -64,8 +64,8 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
 
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
             memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
-            if ((phdr.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
-                auto segment = new cpu::ppu::Segment();
+            if ((phdr.flags & PF_X) && config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
+                auto segment = new cpu::frontend::ppu::Segment();
                 segment->address = phdr.vaddr;
                 segment->size = phdr.filesz;
                 segment->analyze();
@@ -272,8 +272,8 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
 
     // Recompile executable segments
     for (auto& prx_segment : prx.segments) {
-        if ((prx_segment.flags & PF_X) && config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
-            auto segment = new cpu::ppu::Segment();
+        if ((prx_segment.flags & PF_X) && config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
+            auto segment = new cpu::frontend::ppu::Segment();
             segment->address = prx_segment.addr;
             segment->size = prx_segment.size_file;
             segment->analyze();

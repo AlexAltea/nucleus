@@ -12,11 +12,15 @@ namespace cpu {
 namespace hir {
 
 class Value;
+class Block;
+class Function;
 
 class Instruction {
 public:
     union Operand {
         Value* value;
+        Block* block;
+        Function* function;
     };
 
     Opcode opcode;
