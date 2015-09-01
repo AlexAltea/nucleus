@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/backend/compiler.h"
+#include "nucleus/cpu/backend/x86/x86_emitter.h"
 
 #include <memory>
 

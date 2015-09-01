@@ -30,23 +30,22 @@ using PtrOp = PtrOpBase<Xbyak::Reg64>;
 template <typename S, typename I>
 struct Sequence : SequenceBase<S, I> {
     static void select(X86Emitter& emitter, const hir::Instruction* instr) {
-        S::emit(emitter, instr);
+        S::emit(emitter, I(instr));
     }
 
     template <typename FuncType>
     static void emitCommutativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
         // Constant, Constant
         if (i.src1.isConstant && i.src2.isConstant) {
-            func(e, i.dest.reg, i.src2.constant());
         }
         // Constant, Register
-        if (i.src1.isConstant && i.src2.isRegister) {
+        if (i.src1.isConstant && !i.src2.isConstant) {
         }
         // Register, Constant
-        if (i.src1.isRegister && i.src2.isConstant) {
+        if (!i.src1.isConstant && i.src2.isConstant) {
         }
         // Register, Register
-        if (i.src1.isRegister && i.src2.isRegister) {
+        if (!i.src1.isConstant && !i.src2.isConstant) {
         }
     }
     template <typename FuncType>
@@ -479,7 +478,8 @@ void X86Sequences::init() {
 }
 
 bool X86Sequences::select(X86Emitter* emitter, const hir::Instruction* instr) {
-    auto it = sequences.find(instr);
+    auto key = InstrKey(instr).value;
+    auto it = sequences.find(key);
     if (it != sequences.end()) {
         it->second(*emitter, instr);
         return true;

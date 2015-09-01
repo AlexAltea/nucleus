@@ -41,6 +41,8 @@ struct Op {
 
 struct VoidOp : Op {
     static constexpr InstrKey::Value key = hir::TYPE_VOID;
+    void load(const hir::Instruction::Operand op) {
+    }
 };
 
 
@@ -56,16 +58,14 @@ struct ValueOp : Op {
     const hir::Value* value;
 
     bool isConstant;
-    bool isRegister;
     RegType reg;
     operator const RegType&() const {
         return reg;
     }
     void load(const hir::Instruction::Operand op) {
         value = op.value;
-        isConstant = value->isConstant;
-        isRegister = !isConstant;
-        if (isRegister) {
+        isConstant = value->isConstant();
+        if (!isConstant) {
             // TODO
         }
     }
@@ -157,6 +157,7 @@ struct I {
  */
 template <typename S, typename I>
 struct SequenceBase {
+    static constexpr InstrKey::Value key = I::key;
     using InstrType = I;
 };
 

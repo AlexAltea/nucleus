@@ -20,17 +20,17 @@ class X86Sequences {
     using SelectFunction = void(*)(X86Emitter&, const hir::Instruction*);
 
     // Registered sequences
-    static std::unordered_map<InstrKey, SelectFunction> sequences;
+    static std::unordered_map<InstrKey::Value, SelectFunction> sequences;
 
     // Sequence registration
     template <typename T>
     static void registerSequence() {
-        sequences.insert({ T::key, T::emit });
+        sequences.insert({ T::key, T::select });
     }
-    template <typename T, typename... Ts>
+    template <typename T0, typename T1, typename... Ts>
     static void registerSequence() {
-        registerSequence<T>();
-        registerSequence<Ts...>();
+        registerSequence<T0>();
+        registerSequence<T1, Ts...>();
     }
 
 public:

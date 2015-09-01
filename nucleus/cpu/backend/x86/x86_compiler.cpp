@@ -5,7 +5,6 @@
 
 #include "x86_compiler.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/cpu/backend/x86/x86_emitter.h"
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
 #include <queue>
