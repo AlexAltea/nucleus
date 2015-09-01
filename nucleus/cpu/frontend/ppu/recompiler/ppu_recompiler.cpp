@@ -176,7 +176,7 @@ void Recompiler::setGPR(int index, Value* value)
     }
 }
 
-void Recompiler::setFPR(int index, Value* value)
+void Recompiler::setFPR(int index, Value* value, Type type)
 {
     // Return+Parameter registers and nonvolatile registers
     if ((1 <= index && index <= 13) || (index >= 14)) {
@@ -259,11 +259,11 @@ void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalCompari
     Value* result;
 
     if (logicalComparison) {
-        isLT = builder.createICmpULT(lhs, rhs);
-        isGT = builder.createICmpUGT(lhs, rhs);
+        isLT = builder.createCmpULT(lhs, rhs);
+        isGT = builder.createCmpUGT(lhs, rhs);
     } else {
-        isLT = builder.createICmpSLT(lhs, rhs);
-        isGT = builder.createICmpSGT(lhs, rhs);
+        isLT = builder.createCmpSLT(lhs, rhs);
+        isGT = builder.createCmpSGT(lhs, rhs);
     }
 
     result = builder.createSelect(isGT, builder.getConstantI8(2), builder.getConstantI8(4));
@@ -273,6 +273,12 @@ void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalCompari
 
 void Recompiler::updateCR0(Value* value) {
     updateCR(0, value, builder.getConstantI64(0), false);
+}
+
+void Recompiler::updateCR1(Value* value) {
+}
+
+void Recompiler::updateCR6(Value* value) {
 }
 
 }  // namespace ppu

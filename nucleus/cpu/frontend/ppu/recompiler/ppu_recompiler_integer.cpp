@@ -406,7 +406,7 @@ void Recompiler::mulhwx(Instruction code)
     Value* rb = getGPR(code.rb, TYPE_I32);
     Value* rd;
 
-    auto rd = builder.createMulH(ra, rb, ARITHMETIC_SIGNED);
+    rd = builder.createMulH(ra, rb, ARITHMETIC_SIGNED);
     if (code.rc) {
         updateCR0(rd);
     }
