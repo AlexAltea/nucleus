@@ -91,6 +91,7 @@ bool PSFLoader::save(const std::string& path)
     file->seek(0, fs::SeekSet);
     file->write(&header, sizeof(PSFHeader));
     delete file;
+    return true;
 }
 
 std::string PSFLoader::get_string(const std::string& key)

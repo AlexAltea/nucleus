@@ -467,6 +467,11 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
     }
 };
 
+/**
+ * x86 Sequences
+ */
+std::unordered_map<InstrKey::Value, X86Sequences::SelectFunction> X86Sequences::sequences;
+
 void X86Sequences::init() {
     // Initialize sequences if necessary
     if (sequences.empty()) {

@@ -76,19 +76,19 @@ U8 Memory::read8(U32 addr)
 }
 U16 Memory::read16(U32 addr)
 {
-    return RE16(*(U16*)((U64)m_base + addr));
+    return SE16(*(U16*)((U64)m_base + addr));
 }
 U32 Memory::read32(U32 addr)
 {
-    return RE32(*(U32*)((U64)m_base + addr));
+    return SE32(*(U32*)((U64)m_base + addr));
 }
 U64 Memory::read64(U32 addr)
 {
-    return RE64(*(U64*)((U64)m_base + addr));
+    return SE64(*(U64*)((U64)m_base + addr));
 }
 U128 Memory::read128(U32 addr)
 {
-    return RE128(*(U128*)((U64)m_base + addr));
+    return SE128(*(U128*)((U64)m_base + addr));
 }
 void Memory::readLeft(U8* dst, U32 src, U32 size)
 {
@@ -112,19 +112,19 @@ void Memory::write8(U32 addr, U8 value)
 }
 void Memory::write16(U32 addr, U16 value)
 {
-    *(U16*)((U64)m_base + addr) = RE16(value);
+    *(U16*)((U64)m_base + addr) = SE16(value);
 }
 void Memory::write32(U32 addr, U32 value)
 {
-    *(U32*)((U64)m_base + addr) = RE32(value);
+    *(U32*)((U64)m_base + addr) = SE32(value);
 }
 void Memory::write64(U32 addr, U64 value)
 {
-    *(U64*)((U64)m_base + addr) = RE64(value);
+    *(U64*)((U64)m_base + addr) = SE64(value);
 }
 void Memory::write128(U32 addr, U128 value)
 {
-    *(U128*)((U64)m_base + addr) = RE128(value);
+    *(U128*)((U64)m_base + addr) = SE128(value);
 }
 void Memory::writeLeft(U32 dst, U8* src, U32 size)
 {

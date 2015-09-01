@@ -33,19 +33,23 @@ File* VirtualFileSystem::openFile(const Path& path, OpenMode mode)
     }
 
     Path relativePath = path.substr(device->mountPath.length());
-    device->openFile(relativePath, mode);
+    return device->openFile(relativePath, mode);
 }
 
 bool VirtualFileSystem::createFile(const Path& path)
 {
     auto* device = getDevice(path);
     if (!device) {
-        return nullptr;
+        return false;
     }
 
     Path relativePath = path.substr(device->mountPath.length());
     File* file = device->openFile(relativePath, Write);
+    if (!file) {
+        return false;
+    }
     delete file;
+    return true;
 }
 
 bool VirtualFileSystem::existsFile(const Path& path)
@@ -56,7 +60,7 @@ bool VirtualFileSystem::existsFile(const Path& path)
     }
 
     Path relativePath = path.substr(device->mountPath.length());
-    device->existsFile(relativePath);
+    return device->existsFile(relativePath);
 }
 
 bool VirtualFileSystem::removeFile(const Path& path)
@@ -67,7 +71,7 @@ bool VirtualFileSystem::removeFile(const Path& path)
     }
 
     Path relativePath = path.substr(device->mountPath.length());
-    device->removeFile(relativePath);
+    return device->removeFile(relativePath);
 }
 
 File::Attributes VirtualFileSystem::getFileAttributes(const Path& path)

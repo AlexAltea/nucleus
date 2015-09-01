@@ -329,12 +329,11 @@ S32 sys_event_queue_receive(U32 equeue_id, sys_event_t* evt, U64 timeout)
     equeue->queue.pop();
 
     // Event data is returned using registers
-    auto* thread = (cpu::ppu::Thread*)nucleus.cell.getCurrentThread();
-    auto* state = thread->state;
-    state->gpr[4] = evt->source;
-    state->gpr[5] = evt->data1;
-    state->gpr[6] = evt->data2;
-    state->gpr[7] = evt->data3;
+    auto thread = (cpu::frontend::ppu::Thread*)nucleus.cell.getCurrentThread();
+    thread->state->r[4] = evt->source;
+    thread->state->r[5] = evt->data1;
+    thread->state->r[6] = evt->data2;
+    thread->state->r[7] = evt->data3;
     return CELL_OK;
 }
 

@@ -15,10 +15,9 @@ S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 a
     U32 tls_addr = attr->tls_addr;
 
     // Create PPU thread
-    auto* thread = (cpu::ppu::Thread*)nucleus.cell.addThread(CELL_THREAD_PPU, entry);
-    auto* state = thread->state;
+    auto* thread = (cpu::frontend::ppu::Thread*)nucleus.cell.addThread(CELL_THREAD_PPU, entry);
     thread->prio = prio;
-    state->gpr[3] = arg;
+    thread->state->r[3] = arg;
 
     *thread_id = nucleus.lv2.objects.add(thread, SYS_PPU_THREAD_OBJECT);
     return CELL_OK;
@@ -33,7 +32,7 @@ S32 sys_ppu_thread_exit(S32 errorcode)
 
 S32 sys_ppu_thread_get_priority(U64 thread_id, BE<S32>* prio)
 {
-    auto* thread = nucleus.lv2.objects.get<cpu::ppu::Thread>(thread_id);
+    auto* thread = nucleus.lv2.objects.get<cpu::frontend::ppu::Thread>(thread_id);
 
     // Check requisites
     if (prio == nucleus.memory.ptr(0)) {
@@ -59,7 +58,7 @@ S32 sys_ppu_thread_get_stack_information(sys_ppu_thread_stack_t* sp)
 
 S32 sys_ppu_thread_join(U64 thread_id, BE<U64>* vptr)
 {
-    auto* thread = nucleus.lv2.objects.get<cpu::ppu::Thread>(thread_id);
+    auto* thread = nucleus.lv2.objects.get<cpu::frontend::ppu::Thread>(thread_id);
 
     // Check requisites
     if (!thread) {
@@ -72,7 +71,7 @@ S32 sys_ppu_thread_join(U64 thread_id, BE<U64>* vptr)
 
 S32 sys_ppu_thread_start(U64 thread_id)
 {
-    auto* thread = nucleus.lv2.objects.get<cpu::ppu::Thread>(thread_id);
+    auto* thread = nucleus.lv2.objects.get<cpu::frontend::ppu::Thread>(thread_id);
 
     // Check requisites
     if (!thread) {

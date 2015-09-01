@@ -9,7 +9,7 @@
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 
 // Syscall arguments
-#define ARG_GPR(T,n) (T)(std::is_pointer<T>::value ? (U64)memoryBase + state.gpr[3+n] : state.gpr[3+n])
+#define ARG_GPR(T,n) (T)(std::is_pointer<T>::value ? (U64)memoryBase + state.r[3+n] : state.r[3+n])
 
 // Base class for HLE syscalls
 class Syscall
@@ -33,7 +33,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func();
+        state.r[3] = m_func();
     }
 };
 
@@ -47,7 +47,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0));
+        state.r[3] = m_func(ARG_GPR(T1,0));
     }
 };
 
@@ -61,7 +61,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1));
+        state.r[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1));
     }
 };
 
@@ -78,7 +78,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2));
+        state.r[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2));
     }
 };
 
@@ -92,7 +92,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3));
+        state.r[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3));
     }
 };
 
@@ -106,7 +106,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4));
+        state.r[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4));
     }
 };
 
@@ -120,7 +120,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5));
+        state.r[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5));
     }
 };
 
@@ -134,7 +134,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5), ARG_GPR(T7,6));
+        state.r[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5), ARG_GPR(T7,6));
     }
 };
 
@@ -148,7 +148,7 @@ public:
 
     virtual void call(cpu::frontend::ppu::State& state, void* memoryBase)
     {
-        state.gpr[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5), ARG_GPR(T7,6), ARG_GPR(T8,7));
+        state.r[3] = m_func(ARG_GPR(T1,0), ARG_GPR(T2,1), ARG_GPR(T3,2), ARG_GPR(T4,3), ARG_GPR(T5,4), ARG_GPR(T6,5), ARG_GPR(T7,6), ARG_GPR(T8,7));
     }
 };
 
