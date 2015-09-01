@@ -51,11 +51,12 @@ public:
     Value* createMulH(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
     Value* createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
     Value* createNeg(Value* value);
-    Value* createSqrt(Value* value);
     Value* createCtlz(Value* value);
     Value* createZExt(Value* value, Type type);
     Value* createSExt(Value* value, Type type);
     Value* createTrunc(Value* value, Type type);
+    Value* createSqrt(Value* value);
+    Value* createAbs(Value* value);
 
     // Logical operations
     Value* createAnd(Value* lhs, Value* rhs);
@@ -99,13 +100,31 @@ public:
     // Floating-point operations
     Value* createFAdd(Value* lhs, Value* rhs);
     Value* createFSub(Value* lhs, Value* rhs);
+    Value* createFMul(Value* lhs, Value* rhs);
+    Value* createFDiv(Value* lhs, Value* rhs);
+    Value* createFNeg(Value* value);
     Value* createFExt(Value* value, Type type);
     Value* createFTrunc(Value* value, Type type);
 
     // Vector operations
-    Value* createVAdd(Value* lhs, Value* rhs, Type componentType);
-    Value* createVSub(Value* lhs, Value* rhs, Type componentType);
-    Value* createVAvg(Value* lhs, Value* rhs, Type componentType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
+    Value* createVAdd(Value* lhs, Value* rhs, Type compType);
+    Value* createVSub(Value* lhs, Value* rhs, Type compType);
+    Value* createVMul(Value* lhs, Value* rhs, Type compType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
+    Value* createVAvg(Value* lhs, Value* rhs, Type compType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
+    Value* createVCmpEQ(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpNE(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpFLT(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpFLE(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpFGT(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpFGE(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpSLT(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpSLE(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpSGT(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpSGE(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpULT(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpULE(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpUGT(Value* lhs, Value* rhs, Type compType);
+    Value* createVCmpUGE(Value* lhs, Value* rhs, Type compType);
 };
 
 }  // namespace hir
