@@ -344,7 +344,7 @@ void Recompiler::vcmpeqfp(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpEQ(va, vb, TYPE_F32);
-    auto vd = builder.createSExt<I32>(result);
+    auto vd = builder.createSExt(result, TYPE_I32);
 
     setVR(code.vd, vd);
 }
@@ -361,7 +361,7 @@ void Recompiler::vcmpequb(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpEQ(va, vb, TYPE_I8);
-    auto vd = builder.createSExt<I8>(result);
+    auto vd = builder.createSExt(result, TYPE_I8);
 
     setVR(code.vd, vd);
 }
@@ -378,7 +378,7 @@ void Recompiler::vcmpequh(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpEQ(va, vb, TYPE_I16);
-    auto vd = builder.createSExt<I16>(result);
+    auto vd = builder.createSExt(result, TYPE_I16);
 
     setVR(code.vd, vd);
 }
@@ -395,7 +395,7 @@ void Recompiler::vcmpequw(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpEQ(va, vb, TYPE_I32);
-    auto vd = builder.createSExt<I32>(result);
+    auto vd = builder.createSExt(result, TYPE_I32);
 
     setVR(code.vd, vd);
 }
@@ -411,8 +411,8 @@ void Recompiler::vcmpgefp(Instruction code)
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
 
-    auto result = builder.createFCmpOGE(va, vb, TYPE_F32);
-    auto vd = builder.createSExt<I32>(result);
+    auto result = builder.createVCmpFGE(va, vb, TYPE_F32);
+    auto vd = builder.createSExt(result, TYPE_I32);
 
     setVR(code.vd, vd);
 }
@@ -428,8 +428,8 @@ void Recompiler::vcmpgtfp(Instruction code)
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
 
-    auto result = builder.createVCmpGT(va, vb, TYPE_F32);
-    auto vd = builder.createSExt<I32>(result);
+    auto result = builder.createVCmpFGT(va, vb, TYPE_F32);
+    auto vd = builder.createSExt(result, TYPE_I32);
 
     setVR(code.vd, vd);
 }
@@ -446,7 +446,7 @@ void Recompiler::vcmpgtsb(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpSGT(va, vb, TYPE_I8);
-    auto vd = builder.createSExt<I8>(result);
+    auto vd = builder.createSExt(result, TYPE_I8);
 
     setVR(code.vd, vd);
 }
@@ -463,7 +463,7 @@ void Recompiler::vcmpgtsh(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpSGT(va, vb, TYPE_I16);
-    auto vd = builder.createSExt<I16>(result);
+    auto vd = builder.createSExt(result, TYPE_I16);
 
     setVR(code.vd, vd);
 }
@@ -480,7 +480,7 @@ void Recompiler::vcmpgtsw(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpSGT(va, vb, TYPE_I32);
-    auto vd = builder.createSExt<I32>(result);
+    auto vd = builder.createSExt(result, TYPE_I32);
 
     setVR(code.vd, vd);
 }
@@ -497,7 +497,7 @@ void Recompiler::vcmpgtub(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpUGT(va, vb, TYPE_I8);
-    auto vd = builder.createSExt<I8>(result);
+    auto vd = builder.createSExt(result, TYPE_I8);
 
     setVR(code.vd, vd);
 }
@@ -514,7 +514,7 @@ void Recompiler::vcmpgtuh(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpUGT(va, vb, TYPE_I16);
-    auto vd = builder.createSExt<I16>(result);
+    auto vd = builder.createSExt(result, TYPE_I16);
 
     setVR(code.vd, vd);
 }
@@ -531,7 +531,7 @@ void Recompiler::vcmpgtuw(Instruction code)
     Value* vb = getVR(code.vb);
 
     auto result = builder.createVCmpUGT(va, vb, TYPE_I32);
-    auto vd = builder.createSExt<I32>(result);
+    auto vd = builder.createSExt(result, TYPE_I32);
 
     setVR(code.vd, vd);
 }

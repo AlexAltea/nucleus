@@ -21,7 +21,7 @@ void Recompiler::fabsx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.CreateIntrinsic_Fabs(frb);
+    frd = builder.createAbs(frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -48,8 +48,8 @@ void Recompiler::faddsx(Instruction code)
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
 
-    auto frd = builder.CreateFPTrunc<F32>(result);
     auto result = builder.createFAdd(fra, frb);
+    auto frd = builder.createFTrunc(result, TYPE_F32);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -110,7 +110,7 @@ void Recompiler::fdivsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::fmaddx(Instruction code)
@@ -120,7 +120,8 @@ void Recompiler::fmaddx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.createIntrinsic_Fmuladd(fra, frc, frb);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFAdd(frd, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -135,12 +136,13 @@ void Recompiler::fmaddsx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFAdd(frd, frb);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::fmrx(Instruction code)
@@ -187,12 +189,12 @@ void Recompiler::fmsubsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::fmulx(Instruction code)
 {
-    Value<F64> fra = getFPR(code.fra);
+    Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
     Value* frd;
 
@@ -215,7 +217,7 @@ void Recompiler::fmulsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::fnabsx(Instruction code)
@@ -223,7 +225,7 @@ void Recompiler::fnabsx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.createIntrinsic_Fabs(frb);
+    frd = builder.createAbs(frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
@@ -252,7 +254,8 @@ void Recompiler::fnmaddx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.createIntrinsic_Fmuladd(fra, frc, frb);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFAdd(frd, frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
@@ -268,13 +271,14 @@ void Recompiler::fnmaddsx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.CreateIntrinsic_Fmuladd(fra, frc, frb);
+    frd = builder.createFMul(fra, frc);
+    frd = builder.createFAdd(frd, frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::fnmsubx(Instruction code)
@@ -310,7 +314,7 @@ void Recompiler::fnmsubsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::fresx(Instruction code)
@@ -334,7 +338,7 @@ void Recompiler::fsqrtx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.CreateIntrinsic_Sqrt(frb);
+    frd = builder.createSqrt(frb);
     if (code.rc) {
         // TODO: CR1 update
     }
@@ -347,12 +351,12 @@ void Recompiler::fsqrtsx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
-    frd = builder.CreateIntrinsic_Sqrt(frb);
+    frd = builder.createSqrt(frb);
     if (code.rc) {
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::fsubx(Instruction code)
@@ -380,7 +384,7 @@ void Recompiler::fsubsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.CreateFPTrunc<F32>(frd));
+    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
 }
 
 void Recompiler::mcrfs(Instruction code)
