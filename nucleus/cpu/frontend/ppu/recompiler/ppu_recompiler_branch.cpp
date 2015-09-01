@@ -4,6 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/config.h"
 
 namespace cpu {
 namespace frontend {
@@ -22,55 +23,18 @@ void Recompiler::bx(Instruction code)
 
     // Function call
     if (code.lk) {
-        auto& targetFunc = static_cast<Function&>(*function->parent->functions.at(target));
-
-        // Generate array of arguments
-        int index = 0;
-        std::vector<llvm::Value*> arguments;
-        for (const auto& param : targetFunc.type_in) {
-            switch (param) {
-            case FUNCTION_IN_INTEGER:
-                arguments.push_back(getGPR(3 + index).value);
-                break;
-            case FUNCTION_IN_FLOAT:
-                arguments.push_back(getFPR(1 + index).value);
-                break;
-            case FUNCTION_IN_VECTOR:
-                arguments.push_back(getVR<I32>(2 + index).value);
-                break;
-            }
-            index += 1;
+        if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
+            createUnknownFunctionCall(target);
         }
-
-        Value<Any> result = builder.CreateCall(targetFunc.function, arguments);
-
-        // Save return value
-        switch (targetFunc.type_out) {
-        case FUNCTION_OUT_INTEGER:
-            setGPR(3, Value<I64>{ result.value });
-            break;
-        case FUNCTION_OUT_FLOAT:
-            setFPR(1, Value<F64>{ result.value });
-            break;
-        case FUNCTION_OUT_FLOAT_X2:
-            setFPR(1, Value<F64>{ result.value }); // TODO
-            break;
-        case FUNCTION_OUT_FLOAT_X3:
-            setFPR(1, Value<F64>{ result.value }); // TODO
-            break;
-        case FUNCTION_OUT_FLOAT_X4:
-            setFPR(1, Value<F64>{ result.value }); // TODO
-            break;
-        case FUNCTION_OUT_VECTOR:
-            setVR(2, Value<I128>{ result.value });
-            break;
+        if (config.ppuTranslator & CPU_TRANSLATOR_IS_AOT) {
+            createKnownFunctionCall(target);
         }
     }
 
     // Simple unconditional branch
     else {
-        hir::Block& targetBlock = blocks.at(target);
-        builder.CreateBr(targetBlock);
+        hir::Block* targetBlock = blocks.at(target);
+        builder.createBr(targetBlock);
     }
 }
 
@@ -89,18 +53,18 @@ void Recompiler::bcx(Instruction code)
         // TODO: Decrement CTR register by 1
     }
 
-    Value<I1> ctr_ok = builder.CreateOr(
-        builder.get<I1>(bo2),
-        builder.CreateXor(
-            builder.CreateICmpNE(getCTR(), builder.get<I64>(0)),
-            builder.get<I1>(bo2)));
-    Value<I1> cond_ok = builder.CreateOr(
-        builder.get<I1>(bo0),
-        builder.CreateXor(
-            builder.CreateTrunc<I1>(builder.CreateLShr(getCR(code.bi >> 2), builder.get<I8>(code.bi & 0x3))),
-            builder.get<I1>(~bo1 & 0x1)));
+    Value* ctr_ok = builder.createOr(
+        builder.getConstantI8(bo2),
+        builder.createXor(
+            builder.createCmpNE(getCTR(), builder.getConstantI64(0)),
+            builder.getConstantI8(bo2)));
+    Value* cond_ok = builder.createOr(
+        builder.getConstantI8(bo0),
+        builder.createXor(
+            builder.createShr(getCR(code.bi >> 2), builder.getConstantI8(code.bi & 0x3)),
+            builder.getConstantI8(~bo1 & 0x1)));
 
-    Value<I1> cond = builder.CreateAnd(ctr_ok, cond_ok);
+    Value* cond = builder.createAnd(ctr_ok, cond_ok);
 
     // Conditional function call
     if (code.lk) {
@@ -109,9 +73,9 @@ void Recompiler::bcx(Instruction code)
 
     // Simple conditional branch
     else {
-        hir::Block& targetBlock = blocks.at(targetAddr);
-        hir::Block& nextBlock = blocks.at(nextAddr);
-        builder.CreateCondBr(cond, targetBlock, nextBlock);
+        hir::Block* targetBlock = blocks.at(targetAddr);
+        hir::Block* nextBlock = blocks.at(nextAddr);
+        builder.createBrCond(cond, targetBlock, nextBlock);
     }
 }
 
@@ -177,24 +141,24 @@ void Recompiler::mcrf(Instruction code)
 
 void Recompiler::sc(Instruction code)
 {
-    // Store parameter registers in the PPU state
+    /*// Store parameter registers in the PPU state
     for (int index = 3; index <= 10; index++) {
-        Value<I64*> regPointer = builder.CreateInBoundsGEP(state, {
-            builder.get<I32>(0),
-            builder.get<I32>(0),
-            builder.get<I32>(index)});
-        builder.CreateStore(getGPR(index), regPointer);
+        Value* regPointer = builder.createInBoundsGEP(state, {
+            builder.getConstantI32(0),
+            builder.getConstantI32(0),
+            builder.getConstantI32(index)});
+        builder.createStore(getGPR(index), regPointer);
     }
 
     // Call Nucleus syscall handler
     builder.createCall(static_cast<Segment*>(function->parent)->funcSystemCall); // TODO: Use code.lev fields
 
     // Load return register from the PPU state
-    Value<I64*> regPointer = builder.CreateInBoundsGEP(state, {
-        builder.get<I32>(0),
-        builder.get<I32>(0),
-        builder.get<I32>(3)});
-    setGPR(3, builder.CreateLoad(regPointer));
+    Value* regPointer = builder.createInBoundsGEP(state, {
+        builder.getConstantI32(0),
+        builder.getConstantI32(0),
+        builder.getConstantI32(3)});
+    setGPR(3, builder.createLoad(regPointer));*/
 }
 
 void Recompiler::td(Instruction code)

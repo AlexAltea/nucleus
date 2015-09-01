@@ -8,6 +8,9 @@
     <ClCompile Include="cpu\test_spu.cpp">
       <Filter>cpu</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\test_ir.cpp">
+      <Filter>cpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cpu">

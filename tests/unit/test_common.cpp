@@ -14,8 +14,10 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(CommonTests) {
 
 public:
-    TEST_METHOD(Common_U128Tests)
-    {
+    TEST_METHOD(Common_SwappedEndianTests) {
+    }
+
+    TEST_METHOD(Common_U128Tests) {
         // Operator +
         Assert::IsTrue((U128{0,0} + 1) == U128{1,0});
         Assert::IsTrue((U128{0xFFFFFFFFFFFFFFFF,0} + 1) == U128{0,1});
