@@ -468,6 +468,51 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
 };
 
 /**
+ * Opcode: RET
+ */
+struct RET_VOID : Sequence<RET_VOID, I<OPCODE_RET, VoidOp, VoidOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.ret();
+    }
+};
+struct RET_I8 : Sequence<RET_I8, I<OPCODE_RET, VoidOp, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(e.al, i.src1);
+        e.ret();
+    }
+};
+struct RET_I16 : Sequence<RET_I16, I<OPCODE_RET, VoidOp, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(e.ax, i.src1);
+        e.ret();
+    }
+};
+struct RET_I32 : Sequence<RET_I32, I<OPCODE_RET, VoidOp, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(e.eax, i.src1);
+        e.ret();
+    }
+};
+struct RET_I64 : Sequence<RET_I64, I<OPCODE_RET, VoidOp, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(e.rax, i.src1);
+        e.ret();
+    }
+};
+struct RET_F32 : Sequence<RET_F32, I<OPCODE_RET, VoidOp, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(e.xmm0, i.src1);
+        e.ret();
+    }
+};
+struct RET_F64 : Sequence<RET_F64, I<OPCODE_RET, VoidOp, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(e.xmm0, i.src1);
+        e.ret();
+    }
+};
+
+/**
  * x86 Sequences
  */
 std::unordered_map<InstrKey::Value, X86Sequences::SelectFunction> X86Sequences::sequences;
@@ -479,6 +524,7 @@ void X86Sequences::init() {
         registerSequence<SUB_I8, SUB_I16, SUB_I32, SUB_I64>();
         registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
         registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
+        registerSequence<RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
     }
 }
 

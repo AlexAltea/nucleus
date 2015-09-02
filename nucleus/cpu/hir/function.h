@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/logger/logger.h"
 #include "nucleus/cpu/hir/type.h"
 #include "nucleus/cpu/hir/value.h"
 
@@ -31,9 +32,6 @@ class Function {
 
     Module* parent;
 
-    // Pointer to the compiled function
-    void* emittedFunction;
-
 public:
     // Function flags
     U32 flags;
@@ -46,15 +44,27 @@ public:
     Block* entry;
     std::vector<Block*> blocks;
 
+    // Arguments
     std::vector<Value*> args;
+
+    // Pointer to the compiled function
+    const void* nativeAddress;
 
     // Constructor
     Function(Module* parent, TypeOut tOut, TypeIn tIn);
     ~Function();
 
+    /**
+     * Call native function
+     */
     template <typename... Ts>
     U64 call(Ts... args) {
-        return ((U64(*)(Ts...))emittedFunction)(args...);
+        if (flags & FUNCTION_IS_COMPILED) {
+            return ((U64(*)(Ts...))nativeAddress)(args...);
+        } else {
+            logger.error(LOG_CPU, "Function is not ready");
+            return 0;
+        }
     }
     
     // Frontend methods

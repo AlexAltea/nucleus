@@ -40,6 +40,9 @@ bool X86Compiler::compile(Block* block) {
 }
 
 bool X86Compiler::compile(Function* function) {
+    // Set flags
+    function->flags |= FUNCTION_IS_COMPILING;
+
     // Function blocks to compile
     std::queue<Block*> blocks({ function->entry });
     while (!blocks.empty()) {
@@ -51,6 +54,8 @@ bool X86Compiler::compile(Function* function) {
         blocks.pop();
     }
 
+    function->nativeAddress = reinterpret_cast<const void*>(emitter->getCode());
+    function->flags |= FUNCTION_IS_COMPILED;
     return true;
 }
 
