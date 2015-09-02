@@ -46,6 +46,7 @@
     <ClCompile Include="hir\builder.cpp" />
     <ClCompile Include="hir\function.cpp" />
     <ClCompile Include="hir\module.cpp" />
+    <ClCompile Include="hir\opcodes.cpp" />
     <ClCompile Include="hir\type.cpp" />
     <ClCompile Include="hir\value.cpp" />
     <ClCompile Include="thread.cpp" />

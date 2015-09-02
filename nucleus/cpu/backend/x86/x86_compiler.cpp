@@ -16,6 +16,10 @@ namespace x86 {
 using namespace cpu::hir;
 
 X86Compiler::X86Compiler() {
+    // Initialize sequences
+    X86Sequences::init();
+
+    // Initialize emitter
     emitter = std::make_unique<X86Emitter>();
 #if defined(NUCLEUS_ARCH_X86_32BITS)
     emitter->mode = X86_MODE_32BITS;

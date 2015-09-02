@@ -5,5 +5,5 @@
 
 #include "logger.h"
 
-// Global debugger object
+// Global logger object
 Logger logger;

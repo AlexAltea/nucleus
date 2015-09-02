@@ -33,20 +33,20 @@ enum VectorFlags : OpcodeFlags {
 };
 
 enum Opcode {
-#define OPCODE(name, ...) OPCODE_##name,
+#define OPCODE(id, ...) OPCODE_##id,
 #include "opcodes.inl"
 #undef OPCODE
 
-    _OPCODE_COUNT,
+    __OPCODE_COUNT,
 };
 
 
 enum OpcodeSignatureType {
     OPCODE_SIG_TYPE_X = 0, // Void
     OPCODE_SIG_TYPE_V = 1, // Value
-    OPCODE_SIG_TYPE_M = 1, // Maybe
-    OPCODE_SIG_TYPE_B = 2, // Block
-    OPCODE_SIG_TYPE_F = 3, // Function
+    OPCODE_SIG_TYPE_M = 2, // Maybe
+    OPCODE_SIG_TYPE_B = 3, // Block
+    OPCODE_SIG_TYPE_F = 4, // Function
 };
 
 enum OpcodeSignature {
@@ -69,7 +69,22 @@ struct OpcodeInfo {
     const char* name;
     OpcodeFlags flags;
     OpcodeSignature signature;
+
+    U8 getSignatureDst() const {
+        return ((signature >> 0) & 0b111);
+    }
+    U8 getSignatureSrc1() const {
+        return ((signature >> 3) & 0b111);
+    }
+    U8 getSignatureSrc2() const {
+        return ((signature >> 6) & 0b111);
+    }
+    U8 getSignatureSrc3() const {
+        return ((signature >> 9) & 0b111);
+    }
 };
+
+extern OpcodeInfo opcodeInfo[__OPCODE_COUNT + 1];
 
 }  // namespace hir
 }  // namespace cpu

@@ -27,12 +27,21 @@ union InstrKey {
 
     Value value;
 
-    InstrKey(const hir::Instruction* instr) {
+    InstrKey(const hir::Instruction* instr) : value(0) {
+        const auto& opInfo = hir::opcodeInfo[instr->opcode];
         opcode = instr->opcode;
-        dest = instr->dest->type;
-        src1 = instr->src1.value->type;
-        src2 = instr->src2.value->type;
-        src3 = instr->src3.value->type;
+        if (opInfo.getSignatureDst() == hir::OPCODE_SIG_TYPE_V) {
+            dest = instr->dest->type;
+        }
+        if (opInfo.getSignatureSrc1() == hir::OPCODE_SIG_TYPE_V) {
+            src1 = instr->src1.value->type;
+        }
+        if (opInfo.getSignatureSrc2() == hir::OPCODE_SIG_TYPE_V) {
+            src2 = instr->src2.value->type;
+        }
+        if (opInfo.getSignatureSrc3() == hir::OPCODE_SIG_TYPE_V) {
+            src3 = instr->src3.value->type;
+        }
     }
 };
 

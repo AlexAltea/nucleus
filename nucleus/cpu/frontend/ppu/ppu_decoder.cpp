@@ -183,7 +183,7 @@ void Function::analyze_type()
     }
 }
 
-void Function::declare(hir::Module module)
+void Function::declare(hir::Module* module)
 {
     // Return type
     hir::Type result;
@@ -227,10 +227,8 @@ void Function::declare(hir::Module module)
         }
     }
 
-    llvm::FunctionType* ftype = llvm::FunctionType::get(result.type, params, false);
-
     // Declare function in module
-    function = hir::Function::Create(ftype, llvm::Function::ExternalLinkage, name, module);
+    //function = new hir::Function(module, result, params);
 }
 
 void Function::recompile()

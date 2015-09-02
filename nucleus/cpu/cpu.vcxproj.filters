@@ -140,6 +140,9 @@
     <ClCompile Include="backend\x86\x86_emitter.cpp">
       <Filter>backend\x86</Filter>
     </ClCompile>
+    <ClCompile Include="hir\opcodes.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
