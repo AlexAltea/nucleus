@@ -43,9 +43,19 @@ struct Sequence : SequenceBase<S, I> {
         }
         // Register, Constant
         if (!i.src1.isConstant && i.src2.isConstant) {
+            e.mov(i.dest, i.src2.constant());
+            func(e, i.dest, i.src1);
         }
         // Register, Register
         if (!i.src1.isConstant && !i.src2.isConstant) {
+            if (i.dest == i.src1) {
+                func(e, i.dest, i.src2);
+            } else if (i.dest == i.src2) {
+                func(e, i.dest, i.src1);
+            } else {
+                e.mov(i.dest, i.src1);
+                func(e, i.dest, i.src2);
+            }
         }
     }
     template <typename FuncType>
@@ -152,7 +162,13 @@ struct MUL_I64 : Sequence<MUL_I64, I<OPCODE_MUL, I64Op, I64Op, I64Op>> {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
             // TODO
         } else {
-            // TODO
+            if (i.src2.isConstant) {
+                e.imul(i.dest, i.src1, i.src2.constant());
+            } else {
+                emitAssociativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
+                    e.imul(dest, src);
+                });
+            }
         }
     }
 };

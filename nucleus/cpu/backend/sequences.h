@@ -50,18 +50,19 @@ struct Op {
 
 struct VoidOp : Op {
     static constexpr InstrKey::Value key = hir::TYPE_VOID;
-    void load(const hir::Instruction::Operand op) {
+    void load(const hir::Value* v) {
     }
 };
 
 
 /**
  * Generic Value operand
+ * @tparam  OpType     Derived operand type (CRTP)
  * @tparam  KeyValue   Operand key
  * @tparam  RegType    Type of emitter register
  * @tparam  ConstType  Type of constant value
  */
-template <int KeyValue, typename RegType, typename ConstType>
+template <typename OpType, typename RegType, typename ConstType, int KeyValue>
 struct ValueOp : Op {
     static constexpr InstrKey::Value key = KeyValue;
     const hir::Value* value;
@@ -71,8 +72,18 @@ struct ValueOp : Op {
     operator const RegType&() const {
         return reg;
     }
-    void load(const hir::Instruction::Operand op) {
-        value = op.value;
+    bool operator==(const OpType& other) const {
+        // Constant, Constant
+        if (isConstant && other.isConstant) {
+            return reinterpret_cast<const OpType*>(this)->constant() == other.constant();
+        } else if (!isConstant && !other.isConstant) {
+            return reg == other.reg;
+        } else {
+            return false;
+        }
+    }
+    void load(const hir::Value* v) {
+        value = v;
         isConstant = value->isConstant();
         if (!isConstant) {
             // TODO
@@ -81,55 +92,55 @@ struct ValueOp : Op {
 };
 
 template <typename RegType>
-struct I8OpBase : ValueOp<hir::TYPE_I8, RegType, S8> {
+struct I8OpBase : ValueOp<I8OpBase<RegType>, RegType, S8, hir::TYPE_I8> {
     const S8 constant() const {
         return value->constant.i8;
     }
 };
 template <typename RegType>
-struct I16OpBase : ValueOp<hir::TYPE_I16, RegType, S16> {
+struct I16OpBase : ValueOp<I16OpBase<RegType>, RegType, S16, hir::TYPE_I16> {
     const S16 constant() const {
         return value->constant.i16;
     }
 };
 template <typename RegType>
-struct I32OpBase : ValueOp<hir::TYPE_I32, RegType, S32> {
+struct I32OpBase : ValueOp<I32OpBase<RegType>, RegType, S32, hir::TYPE_I32> {
     const S32 constant() const {
         return value->constant.i32;
     }
 };
 template <typename RegType>
-struct I64OpBase : ValueOp<hir::TYPE_I64, RegType, S64> {
+struct I64OpBase : ValueOp<I64OpBase<RegType>, RegType, S64, hir::TYPE_I64> {
     const S64 constant() const {
         return value->constant.i64;
     }
 };
 template <typename RegType>
-struct F32OpBase : ValueOp<hir::TYPE_F32, RegType, F32> {
+struct F32OpBase : ValueOp<F32OpBase<RegType>, RegType, F32, hir::TYPE_F32> {
     const F32 constant() const {
         return value->constant.f32;
     }
 };
 template <typename RegType>
-struct F64OpBase : ValueOp<hir::TYPE_F64, RegType, F64> {
+struct F64OpBase : ValueOp<F64OpBase<RegType>, RegType, F64, hir::TYPE_F64> {
     const F64 constant() const {
         return value->constant.f64;
     }
 };
 template <typename RegType>
-struct V128OpBase : ValueOp<hir::TYPE_V128, RegType, V128> {
+struct V128OpBase : ValueOp<V128OpBase<RegType>, RegType, V128, hir::TYPE_V128> {
     const V128 constant() const {
         return value->constant.v128;
     }
 };
 template <typename RegType>
-struct V256OpBase : ValueOp<hir::TYPE_V256, RegType, V256> {
+struct V256OpBase : ValueOp<V256OpBase<RegType>, RegType, V256, hir::TYPE_V256> {
     const V256 constant() const {
         return value->constant.v256;
    } 
 };
 template <typename RegType>
-struct PtrOpBase : ValueOp<hir::TYPE_PTR, RegType, void*> {
+struct PtrOpBase : ValueOp<PtrOpBase<RegType>, RegType, void*, hir::TYPE_PTR> {
     const void* constant() const {
         return value->constant.i64; // TODO
     }
@@ -147,15 +158,17 @@ template <hir::Opcode O, typename D = VoidOp, typename S1 = VoidOp, typename S2 
 struct I {
     static constexpr InstrKey::Value key = (O) | (D::key << 8) | (S1::key << 13) | (S2::key << 18) | (S3::key << 23);
     const hir::Instruction* instr;
+    D dest;
     S1 src1;
     S2 src2;
     S3 src3;
 
     I(const hir::Instruction* i) {
         instr = i;
-        src1.load(i->src1);
-        src2.load(i->src2);
-        src3.load(i->src3);
+        dest.load(i->dest);
+        src1.load(i->src1.value);
+        src2.load(i->src2.value);
+        src3.load(i->src3.value);
     }
 };
 

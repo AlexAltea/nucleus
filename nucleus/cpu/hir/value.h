@@ -13,7 +13,8 @@ namespace cpu {
 namespace hir {
 
 enum ValueFlags {
-    VALUE_IS_CONSTANT = (1 << 1),
+    VALUE_IS_CONSTANT  = (1 << 0),
+    VALUE_IS_USED      = (1 << 1),
 };
 
 /**
@@ -21,6 +22,7 @@ enum ValueFlags {
  */
 class Value {
 public:
+    // Constant
     union Constant {
         S8 i8;
         S16 i16;
@@ -31,6 +33,9 @@ public:
         V128 v128;
         V256 v256;
     } constant;
+
+    // Register index
+    U32 reg;
 
     // Flags
     U32 flags;
