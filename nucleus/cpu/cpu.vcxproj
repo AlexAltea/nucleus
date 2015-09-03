@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="backend\compiler.cpp" />
     <ClCompile Include="backend\x86\x86_compiler.cpp" />
     <ClCompile Include="backend\x86\x86_emitter.cpp" />
     <ClCompile Include="backend\x86\x86_sequences.cpp" />
@@ -47,6 +48,8 @@
     <ClCompile Include="hir\function.cpp" />
     <ClCompile Include="hir\module.cpp" />
     <ClCompile Include="hir\opcodes.cpp" />
+    <ClCompile Include="hir\passes\dead_code_elimination_pass.cpp" />
+    <ClCompile Include="hir\passes\register_allocation_pass.cpp" />
     <ClCompile Include="hir\type.cpp" />
     <ClCompile Include="hir\value.cpp" />
     <ClCompile Include="thread.cpp" />
@@ -77,6 +80,10 @@
     <ClInclude Include="hir\instruction.h" />
     <ClInclude Include="hir\module.h" />
     <ClInclude Include="hir\opcodes.h" />
+    <ClInclude Include="hir\pass.h" />
+    <ClInclude Include="hir\passes.h" />
+    <ClInclude Include="hir\passes\dead_code_elimination_pass.h" />
+    <ClInclude Include="hir\passes\register_allocation_pass.h" />
     <ClInclude Include="hir\type.h" />
     <ClInclude Include="hir\value.h" />
     <ClInclude Include="thread.h" />

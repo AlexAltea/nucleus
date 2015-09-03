@@ -19,11 +19,13 @@ class Block;
 class Module;
 
 enum FunctionFlags {
-    FUNCTION_IS_DECLARED   = (1 << 0),  // Function is referenced in its parent module
-    FUNCTION_IS_DEFINING   = (1 << 1),  // Function is being analyzed and IR emitted
-    FUNCTION_IS_DEFINED    = (1 << 1),  // Function has been analyzed and IR emitted
-    FUNCTION_IS_COMPILING  = (1 << 2),  // Function is being compiled
-    FUNCTION_IS_COMPILED   = (1 << 2),  // Function has been compiled
+    FUNCTION_IS_DECLARED    = (1 << 0),  // Function is referenced in its parent module
+    FUNCTION_IS_DEFINING    = (1 << 1),  // Function is being analyzed and HIR emitted
+    FUNCTION_IS_DEFINED     = (1 << 2),  // Function has been analyzed and HIR emitted
+    FUNCTION_IS_COMPILABLE  = (1 << 3),  // Function can be compiled
+    FUNCTION_IS_COMPILING   = (1 << 4),  // Function is being compiled
+    FUNCTION_IS_COMPILED    = (1 << 7),  // Function has been compiled
+    FUNCTION_IS_CALLABLE    = (1 << 6),  // Function can be called
 };
 
 class Function {

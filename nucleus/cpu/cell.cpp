@@ -98,6 +98,7 @@ CellThread* Cell::getThread(U64 id)
             return thread;
         }
     }
+    return nullptr;
 }
 
 void Cell::removeThread(U64 id)

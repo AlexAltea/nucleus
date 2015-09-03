@@ -28,6 +28,9 @@
     <Filter Include="backend\x86">
       <UniqueIdentifier>{841491b9-6b50-4f3a-80eb-35890d7f4fda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hir\passes">
+      <UniqueIdentifier>{1a58fea7-0ae9-49a6-8ef4-85717b0736c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="frontend\ppu\ppu_decoder.cpp">
@@ -143,6 +146,15 @@
     <ClCompile Include="hir\opcodes.cpp">
       <Filter>hir</Filter>
     </ClCompile>
+    <ClCompile Include="hir\passes\register_allocation_pass.cpp">
+      <Filter>hir\passes</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\compiler.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="hir\passes\dead_code_elimination_pass.cpp">
+      <Filter>hir\passes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -224,6 +236,18 @@
     </ClInclude>
     <ClInclude Include="backend\x86\x86_emitter.h">
       <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\pass.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\passes\register_allocation_pass.h">
+      <Filter>hir\passes</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\passes.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="hir\passes\dead_code_elimination_pass.h">
+      <Filter>hir\passes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
