@@ -20,12 +20,13 @@ namespace backend {
 class Compiler {
     std::vector<std::unique_ptr<hir::Pass>> passes;
 
+protected:
+    // Optimize HIR
+    virtual bool optimize(hir::Function* function);
+
 public:
     // Add optimization passes
     virtual void addPass(std::unique_ptr<hir::Pass> pass);
-
-    // Optimize HIR
-    virtual bool optimize(hir::Function* function);
 
     // Compile HIR
     virtual bool compile(hir::Block* block) = 0;

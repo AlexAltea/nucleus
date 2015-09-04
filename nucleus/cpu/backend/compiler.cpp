@@ -4,6 +4,7 @@
  */
 
 #include "compiler.h"
+#include "nucleus/logger/logger.h"
 
 namespace cpu {
 namespace backend {
@@ -16,8 +17,12 @@ void Compiler::addPass(std::unique_ptr<Pass> pass) {
 
 bool Compiler::optimize(Function* function) {
     for (auto& pass : passes) {
-        pass->run(function);
+        if (!pass->run(function)) {
+            logger.error(LOG_CPU, "Could not run pass: %s", pass->name());
+            return false;
+        }
     }
+    return true;
 }
 
 }  // namespace backend

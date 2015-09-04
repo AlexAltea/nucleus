@@ -14,6 +14,12 @@ namespace hir {
 class Pass {
 public:
     /**
+     * Get the name of this pass
+     * @return               Name of this pass
+     */
+    virtual const char* name() = 0;
+
+    /**
      * Apply this pass on a function
      * @param[in]  function  Function to be processed
      * @return               True on success

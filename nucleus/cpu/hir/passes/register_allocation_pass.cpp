@@ -9,6 +9,9 @@ namespace cpu {
 namespace hir {
 namespace passes {
 
+RegisterAllocationPass::RegisterAllocationPass() {
+}
+
 bool RegisterAllocationPass::run(Function* function) {
     // Check function flags
     if (!function || !(function->flags & FUNCTION_IS_DEFINED)) {

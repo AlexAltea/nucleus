@@ -14,6 +14,15 @@ namespace passes {
 
 class RegisterAllocationPass : public Pass {
 public:
+    // Constructor
+    RegisterAllocationPass();
+
+    // Get the name of this pass
+    const char* name() override {
+        return "Register Allocation";
+    }
+
+    // Apply this pass on a function
     bool run(Function* function) override;
 };
 

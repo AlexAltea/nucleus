@@ -14,6 +14,15 @@ namespace passes {
 
 class DeadCodeEliminationPass : public Pass {
 public:
+    // Constructor
+    DeadCodeEliminationPass();
+
+    // Get the name of this pass
+    const char* name() override {
+        return "Dead Code Elimination";
+    }
+
+    // Apply this pass on a function
     bool run(Function* function) override;
 };
 
