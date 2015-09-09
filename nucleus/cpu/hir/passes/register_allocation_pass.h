@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/backend/target.h"
 #include "nucleus/cpu/hir/pass.h"
 
 namespace cpu {
@@ -15,7 +16,7 @@ namespace passes {
 class RegisterAllocationPass : public Pass {
 public:
     // Constructor
-    RegisterAllocationPass();
+    RegisterAllocationPass(backend::TargetInfo* targetInfo);
 
     // Get the name of this pass
     const char* name() override {

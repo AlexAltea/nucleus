@@ -15,7 +15,7 @@ namespace x86 {
 
 using namespace cpu::hir;
 
-X86Compiler::X86Compiler() {
+X86Compiler::X86Compiler() : Compiler() {
     // Initialize sequences
     X86Sequences::init();
 
@@ -28,6 +28,12 @@ X86Compiler::X86Compiler() {
 #else
     logger.error(LOG_CPU, "Unsupported variant of the x86 architecture");
 #endif
+
+    // Set target information
+    targetInfo.regSet[0].count = 4;
+    targetInfo.regSet[0].types = RegisterSet::TYPE_INT;
+    targetInfo.regSet[1].count = 10;
+    targetInfo.regSet[1].types = RegisterSet::TYPE_FLOAT | RegisterSet::TYPE_VECTOR;
 }
 
 bool X86Compiler::compile(Block* block) {

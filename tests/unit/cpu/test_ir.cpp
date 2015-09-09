@@ -11,6 +11,7 @@
 #include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/hir/module.h"
+#include "nucleus/cpu/hir/passes.h"
 #include "nucleus/cpu/backend/x86/x86_compiler.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -34,6 +35,7 @@ public:
         builder.createRet(result2);
 
         Compiler* compiler = new x86::X86Compiler();
+        compiler->addPass(std::make_unique<passes::RegisterAllocationPass>(compiler->targetInfo));
         compiler->compile(module);
         auto result = function->call(3,4);
         Assert::IsTrue(result == 28);

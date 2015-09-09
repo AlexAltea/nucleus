@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/backend/target.h"
 #include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/hir/module.h"
@@ -18,6 +19,7 @@ namespace cpu {
 namespace backend {
 
 class Compiler {
+    // Compiler passes
     std::vector<std::unique_ptr<hir::Pass>> passes;
 
 protected:
@@ -25,6 +27,12 @@ protected:
     virtual bool optimize(hir::Function* function);
 
 public:
+    // Generic target information
+    TargetInfo targetInfo;
+
+    // Constructor
+    Compiler();
+
     // Add optimization passes
     virtual void addPass(std::unique_ptr<hir::Pass> pass);
 

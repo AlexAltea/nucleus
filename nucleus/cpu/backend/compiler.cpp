@@ -11,6 +11,10 @@ namespace backend {
 
 using namespace cpu::hir;
 
+Compiler::Compiler() {
+    std::memset(&targetInfo, 0, sizeof(targetInfo));
+}
+
 void Compiler::addPass(std::unique_ptr<Pass> pass) {
     passes.push_back(std::move(pass));
 }
