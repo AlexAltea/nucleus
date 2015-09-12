@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+#include <vector>
+
 namespace cpu {
 namespace backend {
 
@@ -19,6 +21,10 @@ struct RegisterSet {
 
     U32 types;
     U32 count;
+
+    // Calling convention
+    std::vector<int> argIndex;
+    int retIndex;
 };
 
 struct TargetInfo {

@@ -9,7 +9,8 @@ namespace cpu {
 namespace hir {
 namespace passes {
 
-RegisterAllocationPass::RegisterAllocationPass(backend::TargetInfo* targetInfo) {
+RegisterAllocationPass::RegisterAllocationPass(backend::TargetInfo* targetInfo) 
+    : targetInfo(targetInfo) {
 }
 
 bool RegisterAllocationPass::run(Function* function) {

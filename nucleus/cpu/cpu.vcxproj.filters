@@ -243,11 +243,14 @@
     <ClInclude Include="hir\passes\register_allocation_pass.h">
       <Filter>hir\passes</Filter>
     </ClInclude>
+    <ClInclude Include="hir\passes\dead_code_elimination_pass.h">
+      <Filter>hir\passes</Filter>
+    </ClInclude>
     <ClInclude Include="hir\passes.h">
       <Filter>hir</Filter>
     </ClInclude>
-    <ClInclude Include="hir\passes\dead_code_elimination_pass.h">
-      <Filter>hir\passes</Filter>
+    <ClInclude Include="backend\target.h">
+      <Filter>backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

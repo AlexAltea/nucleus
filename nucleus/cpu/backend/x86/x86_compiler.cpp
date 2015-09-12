@@ -30,10 +30,28 @@ X86Compiler::X86Compiler() : Compiler() {
 #endif
 
     // Set target information
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     targetInfo.regSet[0].count = 4;
     targetInfo.regSet[0].types = RegisterSet::TYPE_INT;
+    targetInfo.regSet[0].retIndex = emitter->rax.getIdx();
+    targetInfo.regSet[0].argIndex = {
+        emitter->rcx.getIdx(),
+        emitter->rdx.getIdx(),
+        emitter->r8.getIdx(),
+        emitter->r9.getIdx(),
+    };
     targetInfo.regSet[1].count = 10;
     targetInfo.regSet[1].types = RegisterSet::TYPE_FLOAT | RegisterSet::TYPE_VECTOR;
+    targetInfo.regSet[1].retIndex = emitter->xmm0.getIdx();
+    targetInfo.regSet[1].argIndex = {
+        emitter->xmm0.getIdx(),
+        emitter->xmm1.getIdx(),
+        emitter->xmm2.getIdx(),
+        emitter->xmm3.getIdx(),
+    };
+#elif defined(NUCLEUS_PLATFORM_LINUX)
+#elif defined(NUCLEUS_PLATFORM_OSX)
+#endif
 }
 
 bool X86Compiler::compile(Block* block) {

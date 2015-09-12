@@ -57,6 +57,7 @@
   <ItemGroup>
     <ClInclude Include="backend\compiler.h" />
     <ClInclude Include="backend\sequences.h" />
+    <ClInclude Include="backend\target.h" />
     <ClInclude Include="backend\x86\x86_compiler.h" />
     <ClInclude Include="backend\x86\x86_emitter.h" />
     <ClInclude Include="backend\x86\x86_sequences.h" />

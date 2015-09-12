@@ -14,6 +14,10 @@ namespace hir {
 namespace passes {
 
 class RegisterAllocationPass : public Pass {
+private:
+    // Target information
+    backend::TargetInfo* targetInfo;
+
 public:
     // Constructor
     RegisterAllocationPass(backend::TargetInfo* targetInfo);
