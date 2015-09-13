@@ -31,7 +31,7 @@ X86Compiler::X86Compiler() : Compiler() {
 
     // Set target information
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-    targetInfo.regSet[0].count = 4;
+    targetInfo.regSet[0].count = 5;
     targetInfo.regSet[0].types = RegisterSet::TYPE_INT;
     targetInfo.regSet[0].retIndex = emitter->rax.getIdx();
     targetInfo.regSet[0].argIndex = {

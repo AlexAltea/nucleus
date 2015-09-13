@@ -23,7 +23,7 @@ namespace cpu {
 
 thread_local CellThread* g_this_thread = nullptr;
 
-Cell::Cell()
+void Cell::init()
 {
 #if defined(NUCLEUS_ARCH_X86)
     compiler = std::make_unique<backend::x86::X86Compiler>();
@@ -32,11 +32,8 @@ Cell::Cell()
 #else
     logger.error(LOG_CPU, "No backend available for this architecture.");
 #endif
-}
 
-void Cell::init()
-{
-    if (config.ppuTranslator == PPU_TRANSLATOR_RECOMPILER) {
+    /*if (config.ppuTranslator & CPU_TRANSLATOR_RECOMPILER) {
         // Global target triple
         llvm::Triple triple(llvm::sys::getProcessTriple());
         if (triple.getOS() == llvm::Triple::OSType::Win32) {
@@ -53,7 +50,7 @@ void Cell::init()
         memoryBase->setConstant(true);
         memoryBase->setLinkage(llvm::GlobalValue::ExternalLinkage);
         memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (U64)nucleus.memory.getBaseAddr())));
-    }
+    }*/
 }
 
 CellThread* Cell::addThread(CellThreadType type, U32 entry=0)

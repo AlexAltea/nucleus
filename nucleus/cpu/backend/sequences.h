@@ -76,17 +76,18 @@ struct ValueOp : Op {
         // Constant, Constant
         if (isConstant && other.isConstant) {
             return reinterpret_cast<const OpType*>(this)->constant() == other.constant();
-        } else if (!isConstant && !other.isConstant) {
-            return reg == other.reg;
-        } else {
-            return false;
         }
+        // Register, Register
+        if (!isConstant && !other.isConstant) {
+            return reg == other.reg;
+        }
+        return false;
     }
     void load(const hir::Value* v) {
         value = v;
         isConstant = value->isConstant();
         if (!isConstant) {
-            // TODO
+            reg = RegType(v->reg);
         }
     }
 };

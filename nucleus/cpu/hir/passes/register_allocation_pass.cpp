@@ -4,6 +4,8 @@
  */
 
 #include "register_allocation_pass.h"
+#include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/instruction.h"
 
 namespace cpu {
 namespace hir {

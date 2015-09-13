@@ -14,7 +14,7 @@ namespace hir {
 
 enum ValueFlags {
     VALUE_IS_CONSTANT  = (1 << 0),
-    VALUE_IS_USED      = (1 << 1),
+    VALUE_IS_ARGUMENT  = (1 << 1),
 };
 
 /**
@@ -33,6 +33,9 @@ public:
         V128 v128;
         V256 v256;
     } constant;
+
+    // Counter of instructions using this value as source
+    U32 usage;
 
     // Register index
     U32 reg;

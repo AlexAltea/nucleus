@@ -32,8 +32,6 @@ public:
     // Executable memory segments
     std::vector<frontend::ppu::Segment*> ppu_segments;
 
-    Cell();
-
     void init();
 
     // Thread management
