@@ -81,6 +81,14 @@ File::Attributes HostPathFile::attributes()
     // TODO
     File::Attributes attr;
     attr.timestamp_access = 0;
+    attr.timestamp_create = 0;
+    attr.timestamp_write = 0;
+
+    // Obtain size
+    Position originalPosition = tell();
+    seek(0, fs::SeekEnd);
+    attr.size = tell();
+    seek(originalPosition, fs::SeekSet);
 
     return attr;
 }

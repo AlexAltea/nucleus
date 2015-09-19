@@ -15,10 +15,19 @@
 #include "device/host_path/host_path_device.h"
 #include "device/iso_container/iso_container_device.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace fs {
+
+class HostFileSystem {
+public:
+    static std::unique_ptr<File> openFile(const Path& path, OpenMode mode);
+    static bool createFile(const Path& path);
+    static bool existsFile(const Path& path);
+    static bool removeFile(const Path& path);
+};
 
 class VirtualFileSystem {
     std::vector<IDevice*> devices;

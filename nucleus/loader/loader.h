@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/filesystem/file.h"
+
 #include <string>
 
 enum Filetype {
@@ -29,4 +31,8 @@ enum Filetype {
     FILETYPE_UNKNOWN,
 };
 
+// Detect the format of a file given its host path
 Filetype detectFiletype(const std::string& filename);
+
+// Detect the format of a file given its handler
+Filetype detectFiletype(fs::File* file);

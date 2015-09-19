@@ -9,13 +9,19 @@
 
 Filetype detectFiletype(const std::string& filepath)
 {
-    fs::File* file = nucleus.lv2.vfs.openFile(filepath, fs::Read);
+    auto file = fs::HostFileSystem::openFile(filepath, fs::Read);
+    return detectFiletype(file.get());
+}
+
+Filetype detectFiletype(fs::File* file)
+{
+    // Magic value to check
     BE<U32> magic;
 
-    if (!file || !file->read(&magic, sizeof(magic))) {
+    file->seek(0, fs::SeekSet);
+    if (!file->read(&magic, sizeof(magic))) {
         return FILETYPE_ERROR;
     }
-    delete file;
 
     switch (magic.ToBE()) {
     case 0x464C457F:
@@ -31,5 +37,6 @@ Filetype detectFiletype(const std::string& filepath)
     case 0x08074B50:
         return FILETYPE_ZIP;
     }
+
     return FILETYPE_UNKNOWN;
 }

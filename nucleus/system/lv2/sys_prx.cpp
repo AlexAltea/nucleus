@@ -15,9 +15,11 @@ namespace sys {
 S32 sys_prx_load_module(const S8* path, U64 flags, sys_prx_load_module_option_t* pOpt)
 {
     SELFLoader self;
-    if (!self.open(path)) {
+    auto file = nucleus.lv2.vfs.openFile(path, fs::Read);
+    if (!self.open(file)) {
         return CELL_PRX_ERROR_UNKNOWN_MODULE;
     }
+    delete file;
 
     // Load PRX into memory
     auto* prx = new sys_prx_t();

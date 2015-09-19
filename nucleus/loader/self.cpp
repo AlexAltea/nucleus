@@ -8,7 +8,6 @@
 #include "nucleus/config.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
-#include "nucleus/filesystem/filesystem.h"
 #include "nucleus/loader/keys.h"
 #include "nucleus/loader/loader.h"
 #include "nucleus/logger/logger.h"
@@ -18,6 +17,28 @@
 
 #include <cstring>
 
+bool SELFLoader::open(fs::File* file)
+{
+    const U64 selfSize = file->attributes().size;
+    self.resize(selfSize);
+    file->seek(0, fs::SeekSet);
+    file->read(&self[0], selfSize);
+
+    switch (detectFiletype(file)) {
+    case FILETYPE_SELF:
+        decrypt();
+        return true;
+    
+    case FILETYPE_ELF:
+        elf.resize(selfSize);
+        memcpy(&elf[0], &self[0], selfSize);
+        return true;
+
+    default:
+        return false;
+    }
+}
+
 bool SELFLoader::open(const std::string& path)
 {
     fs::File* file = nucleus.lv2.vfs.openFile(path, fs::Read);
@@ -25,23 +46,9 @@ bool SELFLoader::open(const std::string& path)
         return false;
     }
 
-    const U64 selfSize = file->attributes().size;
-    self.resize(selfSize);
-    file->seek(0, fs::SeekSet);
-    file->read(&self[0], selfSize);
+    auto result = open(file);
     delete file;
-
-    if (detectFiletype(path) == FILETYPE_SELF) {
-        decrypt();
-        return true;
-    }
-    else if (detectFiletype(path) == FILETYPE_ELF) {
-        elf.resize(selfSize);
-        memcpy(&elf[0], &self[0], selfSize);
-        return true;
-    }
-
-    return false;
+    return result;
 }
 
 bool SELFLoader::load_elf(sys::sys_process_t& proc)
@@ -64,12 +71,14 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
 
             nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
             memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
-            if ((phdr.flags & PF_X) && config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
+            if (phdr.flags & PF_X) {
                 auto segment = new cpu::frontend::ppu::Segment();
                 segment->address = phdr.vaddr;
                 segment->size = phdr.filesz;
-                segment->analyze();
-                segment->recompile();
+                if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
+                    segment->analyze();
+                    segment->recompile();
+                }
                 nucleus.cell.ppu_segments.push_back(segment);
             }
             break;

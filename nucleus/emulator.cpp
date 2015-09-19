@@ -25,7 +25,8 @@ bool Emulator::load(const std::string& filepath)
 
     // Load ELF/SELF file
     SELFLoader self;
-    if (!self.open(filepath)) {
+    auto file = fs::HostFileSystem::openFile(filepath, fs::Read);
+    if (!self.open(file.get())) {
         logger.error(LOG_COMMON, "Invalid file given.");
         return false;
     }

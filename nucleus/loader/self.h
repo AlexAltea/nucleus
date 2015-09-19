@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/filesystem/filesystem.h"
 #include "nucleus/system/lv2/sys_process.h"
 #include "nucleus/system/lv2/sys_prx.h"
 
@@ -253,6 +254,7 @@ class SELFLoader
     U32 getDecryptedElfSize();
 
 public:
+    bool open(fs::File* file);
     bool open(const std::string& path);
     bool load_elf(sys::sys_process_t& proc);
     bool load_prx(sys::sys_prx_t& prx);

@@ -7,6 +7,12 @@
 
 namespace fs {
 
+std::unique_ptr<File> HostFileSystem::openFile(const Path& path, OpenMode mode)
+{
+    auto hostDevice = HostPathDevice("", "");
+    return std::unique_ptr<File>(hostDevice.openFile(path, mode));
+}
+
 IDevice* VirtualFileSystem::getDevice(const Path& path)
 {
     for (auto* device : devices) {
@@ -19,9 +25,7 @@ IDevice* VirtualFileSystem::getDevice(const Path& path)
 
 bool VirtualFileSystem::registerDevice(IDevice* device)
 {
-    if (!device) {
-        devices.push_back(device);
-    }
+    devices.push_back(device);
     return true;
 }
 
