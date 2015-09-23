@@ -17,11 +17,14 @@ namespace frontend {
 
 // Class declarations
 template <typename TAddr>
-class ISegment;
+class Module;
 
 template <typename TAddr>
-class IFunction {
+class Function {
 public:
+    // HIR Function
+    hir::Function* hirFunction;
+
     // Starting address of the entry block
     TAddr address = 0;
 
@@ -32,10 +35,10 @@ public:
     std::string name;
 
     // Parent segment
-    ISegment<TAddr>* parent;
+    Module<TAddr>* parent;
 
     // Control Flow Graph
-    std::unordered_map<TAddr, IBlock<TAddr>*> blocks;
+    std::unordered_map<TAddr, Block<TAddr>*> blocks;
 
     // Check whether an address is inside any CFG block
     bool contains(TAddr addr) const {

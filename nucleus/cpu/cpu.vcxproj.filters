@@ -155,6 +155,9 @@
     <ClCompile Include="hir\passes\dead_code_elimination_pass.cpp">
       <Filter>hir\passes</Filter>
     </ClCompile>
+    <ClCompile Include="backend\relocation.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -207,9 +210,6 @@
     <ClInclude Include="frontend\frontend_recompiler.h">
       <Filter>frontend</Filter>
     </ClInclude>
-    <ClInclude Include="frontend\frontend_segment.h">
-      <Filter>frontend</Filter>
-    </ClInclude>
     <ClInclude Include="frontend\ppu\ppu_utils.h">
       <Filter>frontend\ppu</Filter>
     </ClInclude>
@@ -250,6 +250,15 @@
       <Filter>hir</Filter>
     </ClInclude>
     <ClInclude Include="backend\target.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\relocation.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="frontend\frontend_module.h">
+      <Filter>frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\settings.h">
       <Filter>backend</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,7 +9,7 @@ namespace cpu {
 namespace backend {
 namespace x86 {
 
-X86Emitter::X86Emitter() : Xbyak::CodeGenerator() {
+X86Emitter::X86Emitter(const Settings& settings) : CodeGenerator(), settings(settings) {
 }
 
 bool X86Emitter::isExtensionAvailable(U32 queriedExtensions) const {

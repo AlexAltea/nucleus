@@ -15,12 +15,12 @@ namespace x86 {
 
 using namespace cpu::hir;
 
-X86Compiler::X86Compiler() : Compiler() {
+X86Compiler::X86Compiler(const Settings& settings) : Compiler() {
     // Initialize sequences
     X86Sequences::init();
 
     // Initialize emitter
-    emitter = std::make_unique<X86Emitter>();
+    emitter = std::make_unique<X86Emitter>(settings);
 #if defined(NUCLEUS_ARCH_X86_32BITS)
     emitter->mode = X86_MODE_32BITS;
 #elif defined(NUCLEUS_ARCH_X86_64BITS)

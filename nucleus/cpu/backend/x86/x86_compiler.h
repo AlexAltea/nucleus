@@ -16,6 +16,7 @@ namespace backend {
 namespace x86 {
 
 // Class declarations
+class Settings;
 class X86Emitter;
 
 class X86Compiler : public Compiler {
@@ -23,7 +24,7 @@ class X86Compiler : public Compiler {
 
 public:
     // Constructor
-    X86Compiler();
+    X86Compiler(const Settings& settings);
 
     virtual bool compile(hir::Block* block) override;
     virtual bool compile(hir::Function* function) override;

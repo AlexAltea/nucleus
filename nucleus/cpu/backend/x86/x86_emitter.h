@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/backend/settings.h"
 
 // Xbyak dependency
 #define XBYAK_NO_OP_NAMES
@@ -32,11 +33,14 @@ private:
     U32 extensions;
 
 public:
+    // Global code generation settings
+    Settings settings;
+
     // Chosen x86 mode
     U32 mode;
 
     // Constructor
-    X86Emitter();
+    X86Emitter(const Settings& settings);
 
     bool isExtensionAvailable(U32 queriedExtensions) const;
 };

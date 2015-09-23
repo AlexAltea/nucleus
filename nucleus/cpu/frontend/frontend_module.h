@@ -15,11 +15,14 @@ namespace frontend {
 
 // Class declarations
 template <typename TAddr>
-class IFunction;
+class Function;
 
 template <typename TAddr>
-class ISegment {
+class Module {
 public:
+    // HIR Module
+    hir::Module* hirModule;
+
     // Starting address of this module
     TAddr address = 0;
 
@@ -30,7 +33,7 @@ public:
     std::string name;
 
     // List of functions
-    std::map<TAddr, IFunction<TAddr>*> functions;
+    std::map<TAddr, Function<TAddr>*> functions;
 
     // Check whether an address is inside this module
     bool contains(TAddr addr) const {
