@@ -54,6 +54,15 @@ struct VoidOp : Op {
     }
 };
 
+struct FunctionOp : Op {
+    static constexpr InstrKey::Value key = hir::OPCODE_SIG_TYPE_F;
+    const hir::Function* function;
+
+    void load(const hir::Instruction::Operand& operand) {
+        this->function = operand.function;
+    }
+};
+
 
 /**
  * Generic Value operand
@@ -82,6 +91,9 @@ struct ValueOp : Op {
             return reg == other.reg;
         }
         return false;
+    }
+    void load(const hir::Instruction::Operand& operand) {
+        load(operand.value);
     }
     void load(const hir::Value* v) {
         value = v;
@@ -167,9 +179,9 @@ struct I {
     I(const hir::Instruction* i) {
         instr = i;
         dest.load(i->dest);
-        src1.load(i->src1.value);
-        src2.load(i->src2.value);
-        src3.load(i->src3.value);
+        src1.load(i->src1);
+        src2.load(i->src2);
+        src3.load(i->src3);
     }
 };
 

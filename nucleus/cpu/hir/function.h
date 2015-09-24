@@ -24,7 +24,7 @@ enum FunctionFlags {
     FUNCTION_IS_DEFINED     = (1 << 2),  // Function has been analyzed and HIR emitted
     FUNCTION_IS_COMPILABLE  = (1 << 3),  // Function can be compiled
     FUNCTION_IS_COMPILING   = (1 << 4),  // Function is being compiled
-    FUNCTION_IS_COMPILED    = (1 << 7),  // Function has been compiled
+    FUNCTION_IS_COMPILED    = (1 << 5),  // Function has been compiled
     FUNCTION_IS_CALLABLE    = (1 << 6),  // Function can be called
 };
 

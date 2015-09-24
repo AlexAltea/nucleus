@@ -5,8 +5,9 @@
 
 #include "x86_sequences.h"
 #include "nucleus/assert.h"
-#include "nucleus/logger/logger.h"
+#include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/backend/x86/x86_emitter.h"
+#include "nucleus/logger/logger.h"
 
 #include <unordered_map>
 
@@ -480,6 +481,27 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
         } else {
             // TODO
         }
+    }
+};
+
+/**
+ * Opcode: CALL
+ */
+struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_RET, VoidOp, FunctionOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Function* target = i.src1.function;
+        if (target->flags & FUNCTION_IS_COMPILED) {
+            e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+        } else {
+            if (e.settings.isJIT) {
+                // TODO
+                e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+            } else {
+                // TODO
+                e.mov(e.rax, 0);
+            }
+        }
+        e.call(e.rax);
     }
 };
 

@@ -7,7 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/frontend_block.h"
-#include "nucleus/cpu/frontend/frontend_segment.h"
+#include "nucleus/cpu/frontend/frontend_module.h"
 
 #include <string>
 #include <unordered_map>

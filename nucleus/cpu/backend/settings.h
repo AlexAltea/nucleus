@@ -12,7 +12,6 @@ namespace backend {
 
 struct Settings {
     bool isCached;
-    bool isInterpreter;
     bool isJIT;
     bool isAOT;
 };
