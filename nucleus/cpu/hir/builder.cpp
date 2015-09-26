@@ -288,10 +288,30 @@ Value* Builder::createShrA(Value* value, U64 rhs) {
 
 // Memory access operations
 Value* Builder::createLoad(Value* address, Type type, MemoryFlags flags) {
-    return nullptr;
+    Instruction* i = appendInstr(OPCODE_LOAD, flags, allocValue(type));
+    i->src1.value = address;
+    return i->dest;
 }
 
 void Builder::createStore(Value* address, Value* value, MemoryFlags flags) {
+    Instruction* i = appendInstr(OPCODE_STORE, 0);
+    i->src1.value = address;
+    i->src2.value = value;
+}
+
+Value* Builder::createCtxLoad(U32 offset, Type type) {
+    Instruction* i = appendInstr(OPCODE_CTXLOAD, 0, allocValue(type));
+    i->src1.immediate = offset;
+    return i->dest;
+}
+
+void Builder::createCtxStore(U32 offset, Value* value) {
+    Instruction* i = appendInstr(OPCODE_CTXSTORE, 0);
+    i->src1.immediate = offset;
+    i->src2.value = value;
+}
+
+void Builder::createMemFence() {
 }
 
 // Comparison operations

@@ -83,9 +83,12 @@ public:
     Value* createShrA(Value* value, Value* amount);
     Value* createShrA(Value* value, U64 rhs);
 
-    // Memory access operations
+    // Memory access and context operations
     Value* createLoad(Value* address, Type type, MemoryFlags flags = ENDIAN_DEFAULT);
     void createStore(Value* address, Value* value, MemoryFlags flags = ENDIAN_DEFAULT);
+    Value* createCtxLoad(U32 offset, Type type);
+    void createCtxStore(U32 offset, Value* value);
+    void createMemFence();
 
     // Comparison operations
     Value* createCmpEQ(Value* lhs, Value* rhs);
@@ -102,6 +105,8 @@ public:
     // Branching and conditional operations
     Value* createBr(Block* block);
     Value* createBrCond(Value* cond, Block* blockTrue, Block* blockFalse);
+    Value* createCall(Function* function);
+    Value* createCallCond(Value* cond, Function* function);
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
     void createRet(Value* value);
     void createRet();

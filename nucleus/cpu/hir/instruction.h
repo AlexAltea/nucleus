@@ -17,11 +17,18 @@ class Function;
 
 class Instruction {
 public:
+    // Immediate operand type
+    using Immediate = U64;
+
     union Operand {
+        Immediate immediate;
         Value* value;
         Block* block;
         Function* function;
 
+        operator const Immediate() const {
+            return immediate;
+        }
         operator const Value*() const {
             return value;
         }
