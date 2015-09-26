@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/backend/settings.h"
 #include "nucleus/cpu/backend/target.h"
 #include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/hir/function.h"
@@ -27,11 +28,15 @@ protected:
     virtual bool optimize(hir::Function* function);
 
 public:
+    // Generic code generation settings
+    Settings settings;
+
     // Generic target information
     TargetInfo targetInfo;
 
     // Constructor
     Compiler();
+    Compiler(const Settings& settings);
 
     // Add optimization passes
     virtual void addPass(std::unique_ptr<hir::Pass> pass);

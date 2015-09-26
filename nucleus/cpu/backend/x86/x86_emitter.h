@@ -34,7 +34,7 @@ private:
 
 public:
     // Global code generation settings
-    Settings settings;
+    const Settings& settings;
 
     // Chosen x86 mode
     U32 mode;

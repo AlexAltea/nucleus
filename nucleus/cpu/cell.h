@@ -30,7 +30,7 @@ public:
     std::vector<frontend::ppu::Thread*> ppu_threads;
 
     // Executable memory segments
-    std::vector<frontend::ppu::Segment*> ppu_segments;
+    std::vector<frontend::ppu::Module*> ppu_segments;
 
     void init();
 

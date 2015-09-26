@@ -40,6 +40,12 @@ public:
     // Control Flow Graph
     std::unordered_map<TAddr, Block<TAddr>*> blocks;
 
+    // Call translated function
+    template <typename... Ts>
+    void call(Ts... args) {
+        hirFunction->call(args...);
+    }
+
     // Check whether an address is inside any CFG block
     bool contains(TAddr addr) const {
         for (const auto& item : blocks) {

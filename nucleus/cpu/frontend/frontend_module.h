@@ -35,6 +35,16 @@ public:
     // List of functions
     std::map<TAddr, Function<TAddr>*> functions;
 
+    // Constructor
+    Module() {
+        hirModule = new hir::Module();
+    }
+
+    // Destructor
+    ~Module() {
+        delete hirModule;
+    }
+
     // Check whether an address is inside this module
     bool contains(TAddr addr) const {
         const TAddr from = address;

@@ -45,7 +45,7 @@ public:
      * @param[in]  instr    Instruction pointer
      * @return              True on success
      */
-    static bool select(X86Emitter* emitter, const hir::Instruction* instr);
+    static bool select(X86Emitter& emitter, const hir::Instruction* instr);
 };
 
 }  // namespace x86

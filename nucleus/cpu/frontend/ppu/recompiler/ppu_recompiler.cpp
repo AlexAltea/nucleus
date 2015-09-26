@@ -106,7 +106,7 @@ Value* Recompiler::getGPR(int index, Type type)
     }
 }
 
-Value* Recompiler::getFPR(int index)
+Value* Recompiler::getFPR(int index, Type type)
 {
     // Return+Parameter registers and nonvolatile registers
     if ((1 <= index && index <= 13) || (index >= 14)) {
@@ -124,6 +124,11 @@ Value* Recompiler::getFPR(int index)
             builder.get<I32>(index)});
         return builder.CreateLoad(regPointer, format("f%d_", index));
     }
+}
+
+Value* Recompiler::getVR(int index)
+{
+    return nullptr;
 }
 
 Value* Recompiler::getCR(int index)
@@ -156,7 +161,7 @@ Value* Recompiler::getCTR()
 /**
  * Register write
  */
-void Recompiler::setGPR(int index, Value* value)
+void Recompiler::setGPR(int index, Value* value, Type type)
 {
     // Return+Parameter registers and non-volatile registers
     if ((3 <= index && index <= 10) || (index >= 14)) {
@@ -194,6 +199,10 @@ void Recompiler::setFPR(int index, Value* value, Type type)
             builder.get<I32>(index)});
         return builder.CreateStore(value, regPointer);
     }
+}
+
+void Recompiler::setVR(int index, Value* value)
+{
 }
 
 void Recompiler::setCR(int index, Value* value)

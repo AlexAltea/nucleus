@@ -347,7 +347,7 @@ void Segment::analyze()
     }
 }
 
-void Segment::recompile()
+void Module::recompile()
 {
     module = hir::Module::Create(name);
 

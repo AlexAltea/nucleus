@@ -21,6 +21,16 @@ public:
         Value* value;
         Block* block;
         Function* function;
+
+        operator const Value*() const {
+            return value;
+        }
+        operator const Block*() const {
+            return block;
+        }
+        operator const Function*() const {
+            return function;
+        }
     };
 
     Opcode opcode;

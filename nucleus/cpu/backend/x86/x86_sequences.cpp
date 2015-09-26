@@ -566,11 +566,11 @@ void X86Sequences::init() {
     }
 }
 
-bool X86Sequences::select(X86Emitter* emitter, const hir::Instruction* instr) {
+bool X86Sequences::select(X86Emitter& emitter, const hir::Instruction* instr) {
     auto key = InstrKey(instr).value;
     auto it = sequences.find(key);
     if (it != sequences.end()) {
-        it->second(*emitter, instr);
+        it->second(emitter, instr);
         return true;
     }
 

@@ -18,7 +18,7 @@ template <typename TAddr>
 class IRecompiler {
 protected:
     // Function to be generated
-    IFunction<TAddr>* function;
+    Function<TAddr>* function;
 
 public:
     // HIR builder
@@ -30,9 +30,9 @@ public:
     std::map<TAddr, hir::Block*> blocks;
 
     // Constructor
-    IRecompiler(IFunction<TAddr>* f) : function(f) {
-        prolog = hir::Block::Create("prolog", function->function);
-        epilog = hir::Block::Create("epilog", function->function);
+    IRecompiler(Function<TAddr>* f) : function(f) {
+        /*prolog = hir::Block::Create("prolog", function->function);
+        epilog = hir::Block::Create("epilog", function->function);*/
     }
 };
 

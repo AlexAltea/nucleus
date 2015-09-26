@@ -58,8 +58,8 @@ struct FunctionOp : Op {
     static constexpr InstrKey::Value key = hir::OPCODE_SIG_TYPE_F;
     const hir::Function* function;
 
-    void load(const hir::Instruction::Operand& operand) {
-        this->function = operand.function;
+    void load(const hir::Function* f) {
+        this->function = f;
     }
 };
 
@@ -91,9 +91,6 @@ struct ValueOp : Op {
             return reg == other.reg;
         }
         return false;
-    }
-    void load(const hir::Instruction::Operand& operand) {
-        load(operand.value);
     }
     void load(const hir::Value* v) {
         value = v;

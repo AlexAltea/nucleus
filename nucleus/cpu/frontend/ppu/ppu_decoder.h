@@ -12,7 +12,7 @@
 #include "nucleus/cpu/hir/value.h"
 #include "nucleus/cpu/frontend/frontend_block.h"
 #include "nucleus/cpu/frontend/frontend_function.h"
-#include "nucleus/cpu/frontend/frontend_segment.h"
+#include "nucleus/cpu/frontend/frontend_module.h"
 #include "nucleus/cpu/frontend/ppu/analyzer/ppu_analyzer.h"
 
 #include <map>
@@ -26,7 +26,7 @@ namespace ppu {
 // Class declarations
 class Block;
 class Function;
-class Segment;
+class Module;
 
 // Function type
 enum FunctionTypeIn {
@@ -47,7 +47,7 @@ enum FunctionTypeOut {
     FUNCTION_OUT_VOID,        // Nothing is returned
 };
 
-class Block : public frontend::IBlock<U32> {
+class Block : public frontend::Block<U32> {
 public:
     bool initial;                   // Is this a function entry block?
     bool jump_destination = false;  // Is this a target of a bx/bcx instruction?
@@ -55,13 +55,13 @@ public:
 
     // Constructors
     Block() {}
-    Block(frontend::IBlock<U32>& block) : frontend::IBlock<U32>(block) {}
+    Block(frontend::Block<U32>& block) : frontend::Block<U32>(block) {}
 
     // Determines whether an extra branch is required to connect this with the immediate block after
     bool is_split() const;
 };
 
-class Function : public frontend::IFunction<U32> {
+class Function : public frontend::Function<U32> {
     // Analyzer auxiliary method: Determine register read/writes
     void do_register_analysis(Analyzer* status);
 
@@ -70,8 +70,8 @@ public:
     FunctionTypeOut type_out;
     std::vector<FunctionTypeIn> type_in;
 
-    Function(Segment* seg) {
-        parent = reinterpret_cast<frontend::ISegment<U32>*>(seg);
+    Function(Module* seg) {
+        parent = reinterpret_cast<frontend::Module<U32>*>(seg);
     }
 
     // Analysis
@@ -79,14 +79,16 @@ public:
     void analyze_type(); // Determine function arguments/return types
 
     // Declare function inside the parent segment
-    void declare(hir::Module* module);
+    void declare();
 
     // Recompile function
     void recompile();
 };
 
-class Segment : public frontend::ISegment<U32> {
+class Module : public frontend::Module<U32> {
 public:
+    Function* getFunction(U32 addr);
+
     // Generate a list of functions and analyze them
     void analyze();
 

@@ -13,6 +13,15 @@ using namespace cpu::hir;
 
 Compiler::Compiler() {
     std::memset(&targetInfo, 0, sizeof(targetInfo));
+
+    // Default compiler settings
+    settings.isCached = true;
+    settings.isJIT = true;
+    settings.isAOT = false;
+}
+
+Compiler::Compiler(const Settings& settings) : settings(settings) {
+    std::memset(&targetInfo, 0, sizeof(targetInfo));
 }
 
 void Compiler::addPass(std::unique_ptr<Pass> pass) {

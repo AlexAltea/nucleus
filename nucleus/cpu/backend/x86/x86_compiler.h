@@ -16,14 +16,15 @@ namespace backend {
 namespace x86 {
 
 // Class declarations
-class Settings;
 class X86Emitter;
 
 class X86Compiler : public Compiler {
-    std::unique_ptr<X86Emitter> emitter;
+    // Initialize compiler
+    void init();
 
 public:
     // Constructor
+    X86Compiler();
     X86Compiler(const Settings& settings);
 
     virtual bool compile(hir::Block* block) override;
