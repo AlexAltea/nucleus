@@ -69,6 +69,10 @@ public:
     void doMul(Value* rhs, ArithmeticFlags flags);
     void doMulH(Value* rhs, ArithmeticFlags flags);
     void doDiv(Value* rhs, ArithmeticFlags flags);
+    void doAnd(Value* rhs);
+    void doOr(Value* rhs);
+    void doXor(Value* rhs);
+    void doNot();
 };
 
 }  // namespace hir

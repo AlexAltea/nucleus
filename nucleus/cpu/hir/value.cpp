@@ -83,6 +83,8 @@ void Value::doAdd(Value* rhs) {
     case TYPE_I16:  constant.i16 += rhs->constant.i16;  break;
     case TYPE_I32:  constant.i32 += rhs->constant.i32;  break;
     case TYPE_I64:  constant.i64 += rhs->constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
     }
 }
 
@@ -92,6 +94,8 @@ void Value::doSub(Value* rhs) {
     case TYPE_I16:  constant.i16 -= rhs->constant.i16;  break;
     case TYPE_I32:  constant.i32 -= rhs->constant.i32;  break;
     case TYPE_I64:  constant.i64 -= rhs->constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
     }
 }
 
@@ -102,6 +106,8 @@ void Value::doMul(Value* rhs, ArithmeticFlags flags) {
         case TYPE_I16:  constant.i16 *= rhs->constant.i16;  break;
         case TYPE_I32:  constant.i32 *= rhs->constant.i32;  break;
         case TYPE_I64:  constant.i64 *= rhs->constant.i64;  break;
+        default:
+            assert_always("Unimplemented case");
         }
     } else {
         switch (type) {
@@ -109,6 +115,8 @@ void Value::doMul(Value* rhs, ArithmeticFlags flags) {
         case TYPE_I16:  constant.i16 *= U16(rhs->constant.i16);  break;
         case TYPE_I32:  constant.i32 *= U32(rhs->constant.i32);  break;
         case TYPE_I64:  constant.i64 *= U64(rhs->constant.i64);  break;
+        default:
+            assert_always("Unimplemented case");
         }
     }
 }
@@ -123,6 +131,8 @@ void Value::doDiv(Value* rhs, ArithmeticFlags flags) {
         case TYPE_I16:  constant.i16 /= rhs->constant.i16;  break;
         case TYPE_I32:  constant.i32 /= rhs->constant.i32;  break;
         case TYPE_I64:  constant.i64 /= rhs->constant.i64;  break;
+        default:
+            assert_always("Unimplemented case");
         }
     } else {
         switch (type) {
@@ -130,7 +140,53 @@ void Value::doDiv(Value* rhs, ArithmeticFlags flags) {
         case TYPE_I16:  constant.i16 /= U16(rhs->constant.i16);  break;
         case TYPE_I32:  constant.i32 /= U32(rhs->constant.i32);  break;
         case TYPE_I64:  constant.i64 /= U64(rhs->constant.i64);  break;
+        default:
+            assert_always("Unimplemented case");
         }
+    }
+}
+
+void Value::doAnd(Value* rhs) {
+    switch (type) {
+    case TYPE_I8:   constant.i8  &= rhs->constant.i8;   break;
+    case TYPE_I16:  constant.i16 &= rhs->constant.i16;  break;
+    case TYPE_I32:  constant.i32 &= rhs->constant.i32;  break;
+    case TYPE_I64:  constant.i64 &= rhs->constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doOr(Value* rhs) {
+    switch (type) {
+    case TYPE_I8:   constant.i8  |= rhs->constant.i8;   break;
+    case TYPE_I16:  constant.i16 |= rhs->constant.i16;  break;
+    case TYPE_I32:  constant.i32 |= rhs->constant.i32;  break;
+    case TYPE_I64:  constant.i64 |= rhs->constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doXor(Value* rhs) {
+    switch (type) {
+    case TYPE_I8:   constant.i8  ^= rhs->constant.i8;   break;
+    case TYPE_I16:  constant.i16 ^= rhs->constant.i16;  break;
+    case TYPE_I32:  constant.i32 ^= rhs->constant.i32;  break;
+    case TYPE_I64:  constant.i64 ^= rhs->constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doNot() {
+    switch (type) {
+    case TYPE_I8:   constant.i8  = ~constant.i8;   break;
+    case TYPE_I16:  constant.i16 = ~constant.i16;  break;
+    case TYPE_I32:  constant.i32 = ~constant.i32;  break;
+    case TYPE_I64:  constant.i64 = ~constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
     }
 }
 

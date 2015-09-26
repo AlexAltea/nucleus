@@ -6,7 +6,7 @@
 #include "ppu_decoder.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/hir/builder.h"
-#include "nucleus/cpu/backend/engine.h"
+#include <iterator>
 #include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
@@ -140,6 +140,7 @@ bool Function::analyze_cfg()
         blocks[labels.front()] = new Block(current);
         labels.pop();
     }
+    return true;
 }
 
 void Function::analyze_type()
@@ -183,10 +184,12 @@ void Function::analyze_type()
     }
 }
 
-void Function::declare(hir::Module* module)
+void Function::declare()
 {
+    hir::Module* hirModule = parent->hirModule;
+
     // Return type
-    hir::Type result;
+    hir::Type result = hir::TYPE_VOID;
     switch (type_out) {
     case FUNCTION_OUT_INTEGER:
         result = hir::TYPE_I64;
@@ -228,7 +231,7 @@ void Function::declare(hir::Module* module)
     }
 
     // Declare function in module
-    //function = new hir::Function(module, result, params);
+    hirFunction = new hir::Function(hirModule, result, params);
 }
 
 void Function::recompile()
@@ -239,9 +242,7 @@ void Function::recompile()
 
     // Declare CFG blocks
     for (const auto& item : blocks) {
-        U32 address = item.second->address;
-        std::string name = format("block_%X", address);
-        recompiler.blocks[address] = hir::Block::Create(name, function);
+        recompiler.blocks[address] = new hir::Block(hirFunction);
     }
 
     // Generate prolog/epilog blocks
@@ -259,7 +260,7 @@ void Function::recompile()
             recompiler.currentAddress = block.address + offset;
             const Instruction code(recompiler.currentAddress);
             auto method = get_entry(code).recompile;
-            builder.createCall(static_cast<Segment*>(parent)->funcDebugState, {builder.get<hir::I64>(recompiler.currentAddress)});
+            //builder.createCall(static_cast<Module*>(parent)->funcDebugState, {builder.get<hir::I64>(recompiler.currentAddress)});
             (recompiler.*method)(code);
         }
 
@@ -281,7 +282,7 @@ void Function::recompile()
 }
 
 /**
- * PPU Segment methods
+ * PPU Module methods
  */
 void Segment::analyze()
 {

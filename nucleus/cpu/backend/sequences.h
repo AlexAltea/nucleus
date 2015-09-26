@@ -82,15 +82,8 @@ struct FunctionOp : Op {
  */
 template <typename OpType, typename RegType, typename ConstType, int KeyValue>
 struct ValueOp : Op {
-    static constexpr InstrKey::Value key = KeyValue;
-    const hir::Value* value;
-
-    bool isConstant;
-    RegType reg;
-    operator const RegType&() const {
-        return reg;
-    }
-    bool operator==(const OpType& other) const {
+private:
+    bool isEqual(const OpType& other) const {
         // Constant, Constant
         if (isConstant && other.isConstant) {
             return reinterpret_cast<const OpType*>(this)->constant() == other.constant();
@@ -100,6 +93,22 @@ struct ValueOp : Op {
             return reg == other.reg;
         }
         return false;
+    }
+
+public:
+    static constexpr InstrKey::Value key = KeyValue;
+    const hir::Value* value;
+
+    bool isConstant;
+    RegType reg;
+    operator const RegType&() const {
+        return reg;
+    }
+    bool operator==(const OpType& other) const {
+        return isEqual(other);
+    }
+    bool operator!=(const OpType& other) const {
+        return !isEqual(other);
     }
     void load(const hir::Value* v) {
         value = v;

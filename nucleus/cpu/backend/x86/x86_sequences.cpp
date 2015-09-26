@@ -35,20 +35,36 @@ struct Sequence : SequenceBase<S, I> {
     }
 
     template <typename FuncType>
+    static void emitUnaryOp(X86Emitter& e, InstrType& i, FuncType func) {
+        // Constant
+        if (i.src1.isConstant) {
+            e.mov(i.dest, i.src1.constant());
+            func(e, i.dest);
+        }
+        // Register
+        else {
+            if (i.dest != i.src1) {
+                e.mov(i.dest, i.src1);
+            }
+            func(e, i.dest);
+        }
+    }
+
+    template <typename FuncType>
     static void emitCommutativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
         // Constant, Constant
         if (i.src1.isConstant && i.src2.isConstant) {
         }
         // Constant, Register
-        if (i.src1.isConstant && !i.src2.isConstant) {
+        else if (i.src1.isConstant && !i.src2.isConstant) {
         }
         // Register, Constant
-        if (!i.src1.isConstant && i.src2.isConstant) {
+        else if (!i.src1.isConstant && i.src2.isConstant) {
             e.mov(i.dest, i.src2.constant());
             func(e, i.dest, i.src1);
         }
         // Register, Register
-        if (!i.src1.isConstant && !i.src2.isConstant) {
+        else if (!i.src1.isConstant && !i.src2.isConstant) {
             if (i.dest == i.src1) {
                 func(e, i.dest, i.src2);
             } else if (i.dest == i.src2) {
@@ -306,6 +322,38 @@ struct XOR_I64 : Sequence<XOR_I64, I<OPCODE_XOR, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
             e.xor_(dest, src);
+        });
+    }
+};
+
+/**
+ * Opcode: NOT
+ */
+struct NOT_I8 : Sequence<NOT_I8, I<OPCODE_NOT, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
+        });
+    }
+};
+struct NOT_I16 : Sequence<NOT_I16, I<OPCODE_NOT, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
+        });
+    }
+};
+struct NOT_I32 : Sequence<NOT_I32, I<OPCODE_NOT, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
+        });
+    }
+};
+struct NOT_I64 : Sequence<NOT_I64, I<OPCODE_NOT, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
         });
     }
 };

@@ -226,31 +226,90 @@ Value* Builder::createAbs(Value* value) {
 
 // Logical operations
 Value* Builder::createAnd(Value* lhs, Value* rhs) {
-    return nullptr;
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (lhs == rhs) {
+        return lhs;
+    } else if (lhs->isConstantZero()) {
+        return lhs;
+    } else if (rhs->isConstantZero()) {
+        return rhs;
+    } else if (lhs->isConstant() && rhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        dest->doAnd(rhs);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_AND, 0, allocValue(lhs->type));
+    i->src1.value = lhs;
+    i->src1.value = rhs;
+    return i->dest;
 }
 
 Value* Builder::createAnd(Value* lhs, U64 rhs) {
-    return nullptr;
+    return createAnd(lhs, getConstantI64(rhs));
 }
 
 Value* Builder::createOr(Value* lhs, Value* rhs) {
-    return nullptr;
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (lhs == rhs) {
+        return lhs;
+    } else if (lhs->isConstantZero()) {
+        return rhs;
+    } else if (rhs->isConstantZero()) {
+        return lhs;
+    } else if (lhs->isConstant() && rhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        dest->doOr(rhs);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_OR, 0, allocValue(lhs->type));
+    i->src1.value = lhs;
+    i->src1.value = rhs;
+    return i->dest;
 }
 
 Value* Builder::createOr(Value* lhs, U64 rhs) {
-    return nullptr;
+    return createOr(lhs, getConstantI64(rhs));
 }
 
 Value* Builder::createXor(Value* lhs, Value* rhs) {
-    return nullptr;
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (lhs == rhs) {
+        // TODO
+    } else if (lhs->isConstantZero()) {
+        return lhs;
+    } else if (rhs->isConstantZero()) {
+        return rhs;
+    } else if (lhs->isConstant() && rhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        dest->doXor(rhs);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_XOR, 0, allocValue(lhs->type));
+    i->src1.value = lhs;
+    i->src1.value = rhs;
+    return i->dest;
 }
 
 Value* Builder::createXor(Value* lhs, U64 rhs) {
-    return nullptr;
+    return createXor(lhs, getConstantI64(rhs));
 }
 
 Value* Builder::createNot(Value* value) {
-    return nullptr;
+    if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doNot();
+        return dest;
+    }
+    
+    Instruction* i = appendInstr(OPCODE_NOT, 0, allocValue(value->type));
+    i->src1.value = value;
+    return i->dest;
 }
 
 // Shifting operations
