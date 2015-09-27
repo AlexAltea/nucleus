@@ -45,6 +45,10 @@ public:
     virtual bool compile(hir::Block* block) = 0;
     virtual bool compile(hir::Function* function) = 0;
     virtual bool compile(hir::Module* module) = 0;
+
+    // Manage RWX memory
+    void* allocRWXMemory(size_t size);
+    void freeRWXMemory(void* addr);
 };
 
 }  // namespace backend

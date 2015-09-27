@@ -95,11 +95,11 @@ void Thread::task()
             if (state->pc == 0) {
                 break;
             }
-            interpreter->step();
+            //interpreter->step();
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_BLOCK) {
-        for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
+        for (auto* ppu_segment : nucleus.cell.ppu_segments) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
@@ -108,16 +108,17 @@ void Thread::task()
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_FUNCTION) {
-        for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
+        for (auto* ppu_segment : nucleus.cell.ppu_segments) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
 
-            // TODO: ?
+            auto* function = ppu_segment->addFunction(state->pc);
+            function->call();
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
-        for (Segment* ppu_segment : nucleus.cell.ppu_segments) {
+        for (auto* ppu_segment : nucleus.cell.ppu_segments) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }

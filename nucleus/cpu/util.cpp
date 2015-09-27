@@ -12,12 +12,11 @@ namespace cpu {
 void nucleusTranslate(void* guestFunc, U64 guestAddr) {
     auto* function = static_cast<frontend::ppu::Function*>(guestFunc);
 
-    // Frontend tasks
     function->analyze_cfg();
     function->recompile();
 
-    // Backend tasks
     nucleus.cell.compiler->compile(function->hirFunction);
+    function->call();
 }
 
 }  // namespace cpu

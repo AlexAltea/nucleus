@@ -279,15 +279,16 @@ void Function::recompile()
     }
 
     // Validate the generated code, checking for consistency (TODO: Remove this once the recompiler is stable)
-    llvm::verifyFunction(*function.function, &llvm::outs());
+    //llvm::verifyFunction(*function.function, &llvm::outs());
 }
 
 void Function::createPlaceholder()
 {
     // Allocate space for compiling the function
     if (hirFunction->nativeAddress == nullptr) {
-        hirFunction->nativeAddress = new char[4096];
-        hirFunction->nativeSize = 4096;
+        const size_t size = 4096;
+        hirFunction->nativeAddress = nucleus.cell.compiler->allocRWXMemory(size);
+        hirFunction->nativeSize = size;
     }
 
     hir::Builder builder;
@@ -391,19 +392,19 @@ void Module::analyze()
 
 void Module::recompile()
 {
-    module = hir::Module::Create(name);
+    //module = hir::Module::Create(name);
 
     // Optimization passes
-    auto fpm = new llvm::legacy::FunctionPassManager(module.module);
+    /*auto fpm = new llvm::legacy::FunctionPassManager(module.module);
     fpm->add(llvm::createPromoteMemoryToRegisterPass());  // Promote allocas to registers
     fpm->add(llvm::createInstructionCombiningPass());     // Simple peephole and bit-twiddling optimizations
     fpm->add(llvm::createReassociatePass());              // Reassociate expressions
     fpm->add(llvm::createGVNPass());                      // Eliminate Common SubExpressions
     fpm->add(llvm::createCFGSimplificationPass());        // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
-    fpm->doInitialization();
+    fpm->doInitialization();*/
 
     // Global variables
-    memoryBase = module.getOrInsertGlobal<hir::I64>("memoryBase");
+    /*memoryBase = module.getOrInsertGlobal<hir::I64>("memoryBase");
     funcGetState = hir::Function::Create(
         llvm::FunctionType::get(hir::Pointer<StateType>::getType().type, false),
         llvm::Function::ExternalLinkage, "nucleusGetState", module);
@@ -419,7 +420,7 @@ void Module::recompile()
     funcSystemCall = hir::Function::Create(
         llvm::FunctionType::get(hir::Void::getType().type, false),
         llvm::Function::ExternalLinkage, "nucleusSystemCall", module);*/
-
+    /*
     // Declare all functions
     for (auto& item : functions) {
         auto& function = static_cast<Function&>(*item.second);
@@ -463,8 +464,8 @@ void Module::recompile()
         for (auto& type : function.type_in) {
             switch (type) {
             case FUNCTION_IN_INTEGER:
-                args.push_back(builder.CreateLoad<hir::I64>(
-                    builder.CreateInBoundsGEP(state, {
+                args.push_back(builder.createLoad<hir::I64>(
+                    builder.createInBoundsGEP(state, {
                         builder.get<hir::I32>(0),
                         builder.get<hir::I32>(0),
                         builder.get<hir::I32>(3 + index++)
@@ -473,8 +474,8 @@ void Module::recompile()
                 break;
 
             case FUNCTION_IN_FLOAT: {
-                args.push_back(builder.CreateLoad<hir::I64>(
-                    builder.CreateInBoundsGEP(state, {
+                args.push_back(builder.createLoad<hir::I64>(
+                    builder.createInBoundsGEP(state, {
                         builder.get<hir::I32>(0),
                         builder.get<hir::I32>(1),
                         builder.get<hir::I32>(1 + index++)
@@ -505,7 +506,7 @@ void Module::recompile()
     module.dump();
 
     // Compile
-    backend::Generate(static_cast<frontend::ISegment<U32>*>(this));
+    backend::Generate(static_cast<frontend::Module<U32>*>(this));*/
 }
 
 }  // namespace ppu
