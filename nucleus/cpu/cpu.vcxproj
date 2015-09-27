@@ -54,6 +54,7 @@
     <ClCompile Include="hir\type.cpp" />
     <ClCompile Include="hir\value.cpp" />
     <ClCompile Include="thread.cpp" />
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backend\compiler.h" />
@@ -91,6 +92,7 @@
     <ClInclude Include="hir\type.h" />
     <ClInclude Include="hir\value.h" />
     <ClInclude Include="thread.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="hir\opcodes.inl" />

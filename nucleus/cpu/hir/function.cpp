@@ -10,7 +10,7 @@ namespace cpu {
 namespace hir {
 
 Function::Function(Module* parent, TypeOut tOut, TypeIn tIn)
-    : parent(parent), typeOut(tOut), typeIn(tIn), flags(0) {
+    : parent(parent), typeOut(tOut), typeIn(tIn), flags(0), nativeAddress(nullptr) {
     // Set flags
     flags |= FUNCTION_IS_DECLARED;
 
@@ -29,15 +29,6 @@ Function::~Function() {
     for (auto block : blocks) {
         delete block;
     }
-}
-
-bool Function::compile() {
-    if (flags & FUNCTION_IS_COMPILED) {
-        return false;
-    }
-
-    flags |= FUNCTION_IS_COMPILED;
-    return true;
 }
 
 }  // namespace hir

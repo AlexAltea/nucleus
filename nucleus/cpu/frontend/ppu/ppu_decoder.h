@@ -78,6 +78,9 @@ public:
     bool analyze_cfg();  // Generate CFG (and return if branching addresses stay inside the parent segment)
     void analyze_type(); // Determine function arguments/return types
 
+    // Create placeholder
+    void createPlaceholder();
+
     // Declare function inside the parent segment
     void declare();
 
@@ -87,7 +90,7 @@ public:
 
 class Module : public frontend::Module<U32> {
 public:
-    Function* getFunction(U32 addr);
+    Function* addFunction(U32 addr);
 
     // Generate a list of functions and analyze them
     void analyze();

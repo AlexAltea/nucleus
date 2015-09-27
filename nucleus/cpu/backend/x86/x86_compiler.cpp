@@ -28,26 +28,15 @@ void X86Compiler::init() {
     X86Sequences::init();
 
     // Set target information
-    X86Emitter emitter(settings);
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     targetInfo.regSet[0].count = 5;
     targetInfo.regSet[0].types = RegisterSet::TYPE_INT;
-    targetInfo.regSet[0].retIndex = emitter.rax.getIdx();
-    targetInfo.regSet[0].argIndex = {
-        emitter.rcx.getIdx(),
-        emitter.rdx.getIdx(),
-        emitter.r8.getIdx(),
-        emitter.r9.getIdx(),
-    };
+    targetInfo.regSet[0].retIndex = 0; // rax
+    targetInfo.regSet[0].argIndex = {1, 2, 8, 9}; // {rcx, rdx, r8, r9};
     targetInfo.regSet[1].count = 10;
     targetInfo.regSet[1].types = RegisterSet::TYPE_FLOAT | RegisterSet::TYPE_VECTOR;
-    targetInfo.regSet[1].retIndex = emitter.xmm0.getIdx();
-    targetInfo.regSet[1].argIndex = {
-        emitter.xmm0.getIdx(),
-        emitter.xmm1.getIdx(),
-        emitter.xmm2.getIdx(),
-        emitter.xmm3.getIdx(),
-    };
+    targetInfo.regSet[1].retIndex = 0; // xmm0
+    targetInfo.regSet[1].argIndex = {0, 1, 2, 3}; // {xmm0, xmm1, xmm2, xmm3};
 #elif defined(NUCLEUS_PLATFORM_LINUX)
 #elif defined(NUCLEUS_PLATFORM_OSX)
 #endif
@@ -64,7 +53,7 @@ bool X86Compiler::compile(Function* function) {
     function->flags |= FUNCTION_IS_COMPILING;
 
     // Initialize emitter
-    X86Emitter emitter(settings);
+    X86Emitter emitter(settings, function->nativeAddress, function->nativeSize);
 #if defined(NUCLEUS_ARCH_X86_32BITS)
     emitter.mode = X86_MODE_32BITS;
 #elif defined(NUCLEUS_ARCH_X86_64BITS)
@@ -89,7 +78,6 @@ bool X86Compiler::compile(Function* function) {
         blocks.pop();
     }
 
-    function->nativeAddress = reinterpret_cast<const void*>(emitter.getCode());
     function->flags |= FUNCTION_IS_COMPILED;
     return true;
 }

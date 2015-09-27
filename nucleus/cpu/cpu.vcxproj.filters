@@ -158,6 +158,7 @@
     <ClCompile Include="backend\relocation.cpp">
       <Filter>backend</Filter>
     </ClCompile>
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -261,6 +262,7 @@
     <ClInclude Include="backend\settings.h">
       <Filter>backend</Filter>
     </ClInclude>
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="hir\opcodes.inl">

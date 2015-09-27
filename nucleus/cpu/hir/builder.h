@@ -43,7 +43,11 @@ public:
     Value* getConstantF64(F64 c);
     Value* getConstantV128(V128 c);
     Value* getConstantV256(V256 c);
+    Value* getConstantPointer(void* c);
     Value* getConstantString(const std::string& str);
+
+    // HIR functions
+    Function* getExternFunction(void* hostAddr);
 
     /**
      * HIR instruction generation
@@ -105,8 +109,9 @@ public:
     // Branching and conditional operations
     Value* createBr(Block* block);
     Value* createBrCond(Value* cond, Block* blockTrue, Block* blockFalse);
-    Value* createCall(Function* function);
-    Value* createCallCond(Value* cond, Function* function);
+    Value* createCall(Function* function, std::vector<Value*> args = {});
+    Value* createCallCond(Value* cond, Function* function, std::vector<Value*> args = {});
+    Value* createCallExt(Function* function, std::vector<Value*> args = {});
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
     void createRet(Value* value);
     void createRet();

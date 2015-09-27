@@ -4,7 +4,9 @@
  */
 
 #include "builder.h"
+#include "nucleus/cpu/util.h"
 #include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/hir/instruction.h"
 #include "nucleus/assert.h"
 
@@ -93,6 +95,27 @@ Value* Builder::getConstantV256(V256 c) {
     Value* value = allocValue(TYPE_V256);
     value->setConstantV256(c);
     return value;
+}
+Value* Builder::getConstantPointer(void* c) {
+    Value* value = allocValue(TYPE_PTR);
+    value->setConstantI64(reinterpret_cast<U64>(c));
+    return value;
+}
+
+// HIR functions
+Function* Builder::getExternFunction(void* hostAddr) {
+    hir::Function* parFunction = ib->parent;
+    hir::Module* parModule = parFunction->parent;
+
+    // Check builtin functions
+    Function* externFunc;
+    if (hostAddr == nucleusTranslate) {
+        externFunc = new Function(parModule, TYPE_VOID, {TYPE_PTR, TYPE_I64});
+    }
+
+    externFunc->flags |= FUNCTION_IS_EXTERN;
+    externFunc->nativeAddress = hostAddr;
+    return externFunc;
 }
 
 // Instruction generation
@@ -420,6 +443,38 @@ Value* Builder::createBr(Block* block) {
 
 Value* Builder::createBrCond(Value* cond, Block* blockTrue, Block* blockFalse) {
     return nullptr;
+}
+
+Value* Builder::createCall(Function* function, std::vector<Value*> args) {
+    if (function->typeOut == TYPE_VOID) {
+        Instruction* i = appendInstr(OPCODE_CALL, 0);
+        i->src1.function = function;
+        i->src2.parameters = new ParametersCall(args);
+        return nullptr;
+    } else {
+        Instruction* i = appendInstr(OPCODE_CALL, 0, allocValue(function->typeOut));
+        i->src1.function = function;
+        i->src2.parameters = new ParametersCall(args);
+        return i->dest;
+    }
+}
+
+Value* Builder::createCallCond(Value* cond, Function* function, std::vector<Value*> args) {
+    return nullptr;
+}
+
+Value* Builder::createCallExt(Function* function, std::vector<Value*> args) {
+    if (function->typeOut == TYPE_VOID) {
+        Instruction* i = appendInstr(OPCODE_CALLEXT, 0);
+        i->src1.function = function;
+        i->src2.parameters = new ParametersCall(args);
+        return nullptr;
+    } else {
+        Instruction* i = appendInstr(OPCODE_CALLEXT, 0, allocValue(function->typeOut));
+        i->src1.function = function;
+        i->src2.parameters = new ParametersCall(args);
+        return i->dest;
+    }
 }
 
 Value* Builder::createSelect(Value* cond, Value* valueTrue, Value* valueFalse) {

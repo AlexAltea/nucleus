@@ -19,22 +19,23 @@ class Block;
 class Module;
 
 enum FunctionFlags {
-    FUNCTION_IS_DECLARED    = (1 << 0),  // Function is referenced in its parent module
-    FUNCTION_IS_DEFINING    = (1 << 1),  // Function is being analyzed and HIR emitted
-    FUNCTION_IS_DEFINED     = (1 << 2),  // Function has been analyzed and HIR emitted
-    FUNCTION_IS_COMPILABLE  = (1 << 3),  // Function can be compiled
-    FUNCTION_IS_COMPILING   = (1 << 4),  // Function is being compiled
-    FUNCTION_IS_COMPILED    = (1 << 5),  // Function has been compiled
-    FUNCTION_IS_CALLABLE    = (1 << 6),  // Function can be called
+    FUNCTION_IS_EXTERN      = (1 << 0),  // Function is defined outside its parent module
+    FUNCTION_IS_DECLARED    = (1 << 1),  // Function is referenced in its parent module
+    FUNCTION_IS_DEFINING    = (1 << 2),  // Function is being analyzed and HIR emitted
+    FUNCTION_IS_DEFINED     = (1 << 3),  // Function has been analyzed and HIR emitted
+    FUNCTION_IS_COMPILABLE  = (1 << 4),  // Function can be compiled
+    FUNCTION_IS_COMPILING   = (1 << 5),  // Function is being compiled
+    FUNCTION_IS_COMPILED    = (1 << 6),  // Function has been compiled
+    FUNCTION_IS_CALLABLE    = (1 << 7),  // Function can be called
 };
 
 class Function {
     using TypeOut = Type;
     using TypeIn = std::vector<Type>;
 
+public:
     Module* parent;
 
-public:
     // Function flags
     U32 flags;
 
@@ -50,7 +51,8 @@ public:
     std::vector<Value*> args;
 
     // Pointer to the compiled function
-    const void* nativeAddress;
+    void* nativeAddress;
+    U64 nativeSize;
 
     // Constructor
     Function(Module* parent, TypeOut tOut, TypeIn tIn);
@@ -68,23 +70,6 @@ public:
             return 0;
         }
     }
-    
-    // Frontend methods
-
-    /**
-     * Analyze this function emitting the IR
-     * @return           True on success
-     */
-    bool analyze();
-
-
-    // Backend methods
-
-    /**
-     * Compile this function
-     * @return           True on success
-     */
-    bool compile();
 };
 
 }  // namespace hir

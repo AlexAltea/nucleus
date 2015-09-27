@@ -40,7 +40,7 @@ public:
     U32 mode;
 
     // Constructor
-    X86Emitter(const Settings& settings);
+    X86Emitter(const Settings& settings, void* address, U64 size);
 
     bool isExtensionAvailable(U32 queriedExtensions) const;
 };

@@ -37,15 +37,6 @@ public:
     bool addVariable();
 
 
-    // Backend methods
-
-    /**
-     * Compile all defined functions in the module
-     * @return           True on success
-     */
-    bool compile();
-
-
     // Load-Saving methods
 
     /**

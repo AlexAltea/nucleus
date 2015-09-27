@@ -24,11 +24,10 @@ void Recompiler::bx(Instruction code)
     // Function call
     if (code.lk) {
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
-            createUnknownFunctionCall(target);
+            auto* module = static_cast<Module*>(function->parent);
+            module->addFunction(target);
         }
-        if (config.ppuTranslator & CPU_TRANSLATOR_IS_AOT) {
-            createKnownFunctionCall(target);
-        }
+        createFunctionCall(target);
     }
 
     // Simple unconditional branch

@@ -13,9 +13,5 @@ bool Module::addFunction(Function* function) {
     return true;
 }
 
-bool Module::compile() {
-    return true;
-}
-
 }  // namespace hir
 }  // namespace cpu

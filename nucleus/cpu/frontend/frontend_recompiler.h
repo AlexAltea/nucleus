@@ -31,8 +31,8 @@ public:
 
     // Constructor
     IRecompiler(Function<TAddr>* f) : function(f) {
-        /*prolog = hir::Block::Create("prolog", function->function);
-        epilog = hir::Block::Create("epilog", function->function);*/
+        //prolog = hir::Block::Create("prolog", function->function);
+        //epilog = hir::Block::Create("epilog", function->function);
     }
 };
 

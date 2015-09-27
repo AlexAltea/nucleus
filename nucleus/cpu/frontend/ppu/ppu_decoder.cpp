@@ -5,13 +5,14 @@
 
 #include "ppu_decoder.h"
 #include "nucleus/emulator.h"
+#include "nucleus/cpu/util.h"
 #include "nucleus/cpu/hir/builder.h"
-#include <iterator>
 #include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
 #include <algorithm>
+#include <iterator>
 #include <queue>
 
 namespace cpu {
@@ -281,10 +282,50 @@ void Function::recompile()
     llvm::verifyFunction(*function.function, &llvm::outs());
 }
 
+void Function::createPlaceholder()
+{
+    // Allocate space for compiling the function
+    if (hirFunction->nativeAddress == nullptr) {
+        hirFunction->nativeAddress = new char[4096];
+        hirFunction->nativeSize = 4096;
+    }
+
+    hir::Builder builder;
+    hir::Block* block = new hir::Block(hirFunction);
+    builder.setInsertPoint(block);
+
+    hir::Function* translateFunc = builder.getExternFunction(nucleusTranslate);
+    hir::Value* guestFuncValue = builder.getConstantPointer(this);
+    hir::Value* guestAddrValue = builder.getConstantI64(address);
+    builder.createCallExt(translateFunc, {guestFuncValue, guestAddrValue});
+    builder.createRet();
+
+    nucleus.cell.compiler->compile(hirFunction);
+}
+
 /**
  * PPU Module methods
  */
-void Segment::analyze()
+Function* Module::addFunction(U32 addr)
+{
+    // Return function if already present
+    if (functions.find(addr) != functions.end()) {
+        return static_cast<Function*>(functions[addr]);
+    }
+
+    // Create the function otherwise
+    Function* function = new Function(this);
+    function->name = format("func_%08X", addr);
+    function->address = addr;
+    function->declare();
+    function->createPlaceholder();
+    
+    // Save and return the function
+    functions[addr] = function;
+    return function;
+}
+
+void Module::analyze()
 {
     // Lists of labels
     std::set<U32> labelBlocks;  // Detected immediately

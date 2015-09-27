@@ -16,9 +16,9 @@ class Function;
 class Instruction;
 
 class Block {
+public:
     Function* parent;
 
-public:
     std::list<Instruction*> instructions;
 
     // Constructor
