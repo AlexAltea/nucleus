@@ -45,7 +45,12 @@ public:
 
     Type type;
 
-    // Properties
+    // Type properties
+    bool isTypeInteger() const;
+    bool isTypeFloat() const;
+    bool isTypeVector() const;
+
+    // Constant properties
     bool isConstant() const;
     bool isConstantFalse() const;
     bool isConstantTrue() const;

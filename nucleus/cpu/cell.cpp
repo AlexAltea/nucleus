@@ -9,13 +9,12 @@
 #include "nucleus/cpu/backend/x86/x86_compiler.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
+#include "nucleus/cpu/hir/passes.h"
 #include "nucleus/logger/logger.h"
 
 #include <algorithm>
 
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-#define thread_local __declspec(thread)
-#elif NUCLEUS_PLATFORM_OSX
+#if NUCLEUS_PLATFORM_OSX
 #define thread_local __thread
 #endif
 
@@ -33,24 +32,8 @@ void Cell::init()
     logger.error(LOG_CPU, "No backend available for this architecture.");
 #endif
 
-    /*if (config.ppuTranslator & CPU_TRANSLATOR_RECOMPILER) {
-        // Global target triple
-        llvm::Triple triple(llvm::sys::getProcessTriple());
-        if (triple.getOS() == llvm::Triple::OSType::Win32) {
-            triple.setObjectFormat(llvm::Triple::ObjectFormatType::ELF);
-        }
-
-        // Global Nucleus module
-        module = new llvm::Module("Nucleus", llvm::getGlobalContext());
-        module->setTargetTriple(triple.str());
-
-        // Global variables
-        module->getOrInsertGlobal("memoryBase", llvm::Type::getInt64Ty(llvm::getGlobalContext()));
-        llvm::GlobalVariable* memoryBase = module->getNamedGlobal("memoryBase");
-        memoryBase->setConstant(true);
-        memoryBase->setLinkage(llvm::GlobalValue::ExternalLinkage);
-        memoryBase->setInitializer(llvm::ConstantInt::get(module->getContext(), llvm::APInt(64, (U64)nucleus.memory.getBaseAddr())));
-    }*/
+    // Compiler passes
+    compiler->addPass(std::make_unique<hir::passes::RegisterAllocationPass>(compiler->targetInfo));
 }
 
 CellThread* Cell::addThread(CellThreadType type, U32 entry=0)

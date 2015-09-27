@@ -16,11 +16,14 @@ namespace passes {
 class RegisterAllocationPass : public Pass {
 private:
     // Target information
-    backend::TargetInfo* targetInfo;
+    const backend::TargetInfo& targetInfo;
+
+    // Handle call arguments
+    void allocateArgument(int index, Value* value);
 
 public:
     // Constructor
-    RegisterAllocationPass(backend::TargetInfo* targetInfo);
+    RegisterAllocationPass(const backend::TargetInfo& targetInfo);
 
     // Get the name of this pass
     const char* name() override {

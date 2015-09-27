@@ -18,24 +18,6 @@ class Value;
 class Block;
 class Function;
 
-struct Parameters {
-    virtual ~Parameters() {};
-};
-
-struct ParametersCall : Parameters {
-    std::vector<Value*> args;
-
-    ParametersCall(const std::vector<Value*>& args) : args(args) {}
-    ~ParametersCall() {};
-};
-
-struct ParametersSwitch {
-    std::map<U64, Block*> cases;
-
-    ParametersSwitch(const std::map<U64, Block*>& cases) : cases(cases) {}
-    ~ParametersSwitch() {};
-};
-
 class Instruction {
 public:
     // Immediate operand type
@@ -46,7 +28,6 @@ public:
         Value* value;
         Block* block;
         Function* function;
-        Parameters* parameters;
 
         operator const Immediate() const {
             return immediate;
@@ -59,9 +40,6 @@ public:
         }
         operator const Function*() const {
             return function;
-        }
-        operator const Parameters*() const {
-            return parameters;
         }
     };
 

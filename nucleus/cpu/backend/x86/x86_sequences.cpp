@@ -605,6 +605,46 @@ struct CTXSTORE_I64 : Sequence<CTXSTORE_I64, I<OPCODE_CTXSTORE, VoidOp, Immediat
 };
 
 /**
+ * Opcode: ARG
+ */
+struct ARG_I8 : Sequence<ARG_I8, I<OPCODE_ARG, I8Op, ImmediateOp, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.src2.isConstant) {
+            e.mov(i.dest, i.src2.constant());
+        } else {
+            e.mov(i.dest, i.src2);
+        }
+    }
+};
+struct ARG_I16 : Sequence<ARG_I16, I<OPCODE_ARG, I16Op, ImmediateOp, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.src2.isConstant) {
+            e.mov(i.dest, i.src2.constant());
+        } else {
+            e.mov(i.dest, i.src2);
+        }
+    }
+};
+struct ARG_I32 : Sequence<ARG_I32, I<OPCODE_ARG, I32Op, ImmediateOp, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.src2.isConstant) {
+            e.mov(i.dest, i.src2.constant());
+        } else {
+            e.mov(i.dest, i.src2);
+        }
+    }
+};
+struct ARG_I64 : Sequence<ARG_I64, I<OPCODE_ARG, I64Op, ImmediateOp, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.src2.isConstant) {
+            e.mov(i.dest, i.src2.constant());
+        } else {
+            e.mov(i.dest, i.src2);
+        }
+    }
+};
+
+/**
  * Opcode: CALL
  */
 struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_RET, VoidOp, FunctionOp>> {
@@ -614,8 +654,28 @@ struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_RET, VoidOp, FunctionOp>> {
             e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
         } else {
             if (e.settings.isJIT) {
-                // TODO
                 e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+            } else {
+                // TODO
+                e.mov(e.rax, 0);
+            }
+        }
+        e.call(e.rax);
+    }
+};
+
+/**
+ * Opcode: CALLEXT
+ */
+struct CALLEXT_VOID : Sequence<CALLEXT_VOID, I<OPCODE_CALLEXT, VoidOp, FunctionOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const auto* function = i.src1.function;
+        if (function->flags & FUNCTION_IS_COMPILED) {
+            e.mov(e.rax, reinterpret_cast<size_t>(function->nativeAddress));
+        } else {
+            if (e.settings.isJIT) {
+                // TODO
+                e.mov(e.rax, reinterpret_cast<size_t>(function->nativeAddress));
             } else {
                 // TODO
                 e.mov(e.rax, 0);
@@ -682,7 +742,14 @@ void X86Sequences::init() {
         registerSequence<SUB_I8, SUB_I16, SUB_I32, SUB_I64>();
         registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
         registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
-        registerSequence<RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
+        registerSequence<AND_I8, AND_I16, AND_I32, AND_I64>();
+        registerSequence<OR_I8, OR_I16, OR_I32, OR_I64>();
+        registerSequence<XOR_I8, XOR_I16, XOR_I32, XOR_I64>();
+        registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64>();
+        registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
+        registerSequence<CALL_VOID>();
+        registerSequence<CALLEXT_VOID>();
+        registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
     }
 }
 

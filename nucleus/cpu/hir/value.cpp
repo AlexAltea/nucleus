@@ -9,7 +9,20 @@
 namespace cpu {
 namespace hir {
 
-// Properties
+// Type properties
+bool Value::isTypeInteger() const {
+    return type == TYPE_I8 || type == TYPE_I16 || type == TYPE_I32 || type == TYPE_I64;
+}
+
+bool Value::isTypeFloat() const {
+    return type == TYPE_F32 || type == TYPE_F64;
+}
+
+bool Value::isTypeVector() const {
+    return type == TYPE_V128 || type == TYPE_V256;
+}
+
+// Constant properties
 bool Value::isConstant() const {
     return (flags & VALUE_IS_CONSTANT);
 }

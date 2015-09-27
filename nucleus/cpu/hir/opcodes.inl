@@ -32,11 +32,12 @@ OPCODE(MEMFENCE,  "memfence",  OPCODE_SIG_X_V_V)   // Memory fence
 OPCODE(SELECT,    "select",    OPCODE_SIG_V_V_V_V) // Select
 OPCODE(CMP,       "cmp",       OPCODE_SIG_V_V_V)   // Compare
 OPCODE(BR,        "br",        OPCODE_SIG_X_B)     // Branch
-OPCODE(CALL,      "call",      OPCODE_SIG_M_F_P)   // Call
+OPCODE(ARG,       "arg",       OPCODE_SIG_V_I_V)   // Argument
+OPCODE(CALL,      "call",      OPCODE_SIG_M_F)     // Call
 OPCODE(BRCOND,    "brcond",    OPCODE_SIG_X_V_B)   // Conditional branch
-OPCODE(CALLCOND,  "callcond",  OPCODE_SIG_M_V_F_P) // Conditional call
-OPCODE(CALLEXT,   "callext",   OPCODE_SIG_M_F_P)   // Call external
-OPCODE(RET,       "ret",       OPCODE_SIG_X_V)     // Return
+OPCODE(CALLCOND,  "callcond",  OPCODE_SIG_M_V_F)   // Conditional call
+OPCODE(CALLEXT,   "callext",   OPCODE_SIG_M_F)     // Call external
+OPCODE(RET,       "ret",       OPCODE_SIG_X_M)     // Return
 OPCODE(PHI,       "phi",       OPCODE_SIG_V_V_V)   // Phi node
 OPCODE(FADD,      "fadd",      OPCODE_SIG_V_V_V)   // Floating-point addition
 OPCODE(FSUB,      "fsub",      OPCODE_SIG_V_V_V)   // Floating-point subtraction

@@ -33,6 +33,7 @@ public:
         auto result1 = builder.createAdd(function->args[0], function->args[1]);
         auto result2 = builder.createMul(result1, builder.getConstantI64(4));
         builder.createRet(result2);
+        function->flags |= FUNCTION_IS_DEFINED;
 
         Compiler* compiler = new x86::X86Compiler();
         compiler->addPass(std::make_unique<passes::RegisterAllocationPass>(compiler->targetInfo));

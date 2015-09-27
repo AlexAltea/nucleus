@@ -52,6 +52,9 @@ bool X86Compiler::compile(Function* function) {
     // Set flags
     function->flags |= FUNCTION_IS_COMPILING;
 
+    // Run compiler passes
+    optimize(function);
+
     // Initialize emitter
     X86Emitter emitter(settings, function->nativeAddress, function->nativeSize);
 #if defined(NUCLEUS_ARCH_X86_32BITS)
@@ -84,7 +87,6 @@ bool X86Compiler::compile(Function* function) {
 
 bool X86Compiler::compile(Module* module) {
     for (auto function : module->functions) {
-        optimize(function);
         if (!compile(function)) {
             logger.error(LOG_CPU, "Cannot compile function");
             return false;

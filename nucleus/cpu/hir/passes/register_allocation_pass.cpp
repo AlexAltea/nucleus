@@ -11,17 +11,46 @@ namespace cpu {
 namespace hir {
 namespace passes {
 
-RegisterAllocationPass::RegisterAllocationPass(backend::TargetInfo* targetInfo) 
+RegisterAllocationPass::RegisterAllocationPass(const backend::TargetInfo& targetInfo) 
     : targetInfo(targetInfo) {
 }
 
+void RegisterAllocationPass::allocateArgument(int index, Value* arg) {
+    for (auto& regSet : targetInfo.regSet) {
+        if (regSet.types & backend::RegisterSet::TYPE_INT && arg->isTypeInteger()) {
+            if (index < regSet.argIndex.size()) {
+                arg->reg = regSet.argIndex[index];
+                break;
+            }
+        }
+        // TODO: Float, vector
+    }
+}
+
 bool RegisterAllocationPass::run(Function* function) {
-    // Check function flags
-    if (!function || !(function->flags & FUNCTION_IS_DEFINED)) {
-        return false;
+    // Arguments
+    for (int i = 0; i < function->args.size(); i++) {
+        auto& arg = function->args[i];
+        switch (arg->type) {
+        case TYPE_I8:
+        case TYPE_I16:
+        case TYPE_I32:
+        case TYPE_I64:
+            arg->reg = targetInfo.regSet[0].argIndex[i];
+            break;
+        }
     }
 
-    function->flags |= FUNCTION_IS_CALLABLE;
+    // CFG values
+    for (auto& block : function->blocks) {
+        for (auto& instruction : block->instructions) {
+            if (instruction->opcode == OPCODE_ARG) {
+                allocateArgument(instruction->src1.immediate, instruction->dest);
+            }
+        }
+    }
+
+    function->flags |= FUNCTION_IS_COMPILABLE;
     return true;
 }
 

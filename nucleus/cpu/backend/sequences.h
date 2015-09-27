@@ -29,18 +29,37 @@ union InstrKey {
 
     InstrKey(const hir::Instruction* instr) : value(0) {
         const auto& opInfo = hir::opcodeInfo[instr->opcode];
+        // Fill opcode field
         opcode = instr->opcode;
-        if (opInfo.getSignatureDst() == hir::OPCODE_SIG_TYPE_V) {
-            dest = instr->dest->type;
+
+        // Fill destination field
+        dest = opInfo.getSignatureDst();
+        if (dest == hir::OPCODE_SIG_TYPE_V || (dest == hir::OPCODE_SIG_TYPE_M && instr->dest)) {
+            dest = (hir::OPCODE_SIG_TYPE_V + instr->dest->type);
         }
-        if (opInfo.getSignatureSrc1() == hir::OPCODE_SIG_TYPE_V) {
-            src1 = instr->src1.value->type;
+        if (dest == hir::OPCODE_SIG_TYPE_M && !instr->dest) {
+            dest = (hir::OPCODE_SIG_TYPE_X);
         }
-        if (opInfo.getSignatureSrc2() == hir::OPCODE_SIG_TYPE_V) {
-            src2 = instr->src2.value->type;
+
+        // Fill source 1 field
+        src1 = opInfo.getSignatureSrc1();
+        if (src1 == hir::OPCODE_SIG_TYPE_V || (src1 == hir::OPCODE_SIG_TYPE_M && instr->src1.value)) {
+            src1 = (hir::OPCODE_SIG_TYPE_V + instr->src1.value->type);
         }
-        if (opInfo.getSignatureSrc3() == hir::OPCODE_SIG_TYPE_V) {
-            src3 = instr->src3.value->type;
+        if (src1 == hir::OPCODE_SIG_TYPE_M && !instr->src1.value) {
+            src1 = (hir::OPCODE_SIG_TYPE_X);
+        }
+
+        // Fill source 2 field
+        src2 = opInfo.getSignatureSrc2();
+        if (src2 == hir::OPCODE_SIG_TYPE_V) {
+            src2 += instr->src2.value->type;
+        }
+
+        // Fill source 3 field
+        src3 = opInfo.getSignatureSrc3();
+        if (src3 == hir::OPCODE_SIG_TYPE_V) {
+            src3 += instr->src3.value->type;
         }
     }
 };
@@ -58,8 +77,8 @@ struct ImmediateOp : Op {
     static constexpr InstrKey::Value key = hir::OPCODE_SIG_TYPE_I;
     hir::Instruction::Immediate immediate;
 
-    void load(hir::Instruction::Immediate imm) {
-        this->immediate = imm;
+    void load(hir::Instruction::Immediate i) {
+        this->immediate = i;
     }
 };
 
@@ -71,7 +90,6 @@ struct FunctionOp : Op {
         this->function = f;
     }
 };
-
 
 /**
  * Generic Value operand
@@ -96,7 +114,7 @@ private:
     }
 
 public:
-    static constexpr InstrKey::Value key = KeyValue;
+    static constexpr InstrKey::Value key = hir::OPCODE_SIG_TYPE_V + KeyValue;
     const hir::Value* value;
 
     bool isConstant;

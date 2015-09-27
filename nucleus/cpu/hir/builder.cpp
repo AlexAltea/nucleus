@@ -14,21 +14,11 @@
     assert_true(value1->type == value2->type)
 
 #define ASSERT_TYPE_INTEGER(value) \
-    assert_true( \
-    value->type == TYPE_I8  || \
-    value->type == TYPE_I16 || \
-    value->type == TYPE_I32 || \
-    value->type == TYPE_I64)
-
+    assert_true(value->isTypeInteger())
 #define ASSERT_TYPE_FLOAT(value) \
-    assert_true( \
-    value->type == TYPE_F32 || \
-    value->type == TYPE_F64)
-
+    assert_true(value->isTypeFloat())
 #define ASSERT_TYPE_VECTOR(value) \
-    assert_true( \
-    value->type == TYPE_V128 || \
-    value->type == TYPE_V256)
+    assert_true(value->isTypeVector())
 
 namespace cpu {
 namespace hir {
@@ -446,17 +436,25 @@ Value* Builder::createBrCond(Value* cond, Block* blockTrue, Block* blockFalse) {
 }
 
 Value* Builder::createCall(Function* function, std::vector<Value*> args) {
-    if (function->typeOut == TYPE_VOID) {
-        Instruction* i = appendInstr(OPCODE_CALL, 0);
-        i->src1.function = function;
-        i->src2.parameters = new ParametersCall(args);
-        return nullptr;
-    } else {
-        Instruction* i = appendInstr(OPCODE_CALL, 0, allocValue(function->typeOut));
-        i->src1.function = function;
-        i->src2.parameters = new ParametersCall(args);
-        return i->dest;
+    // Checks
+    assert_true(args.size() == function->typeIn.size());
+
+    // Place arguments
+    for (int index = 0; index < args.size(); index++) {
+        assert_true(args[index]->type == function->typeIn[index]);
+        Instruction* i = appendInstr(OPCODE_ARG, 0, allocValue(function->typeIn[index]));
+        i->src1.immediate = index;
+        i->src2.value = args[index];
     }
+    // Call function
+    Instruction* i;
+    if (function->typeOut == TYPE_VOID) {
+        i = appendInstr(OPCODE_CALLEXT, 0);
+    } else {
+        i = appendInstr(OPCODE_CALLEXT, 0, allocValue(function->typeOut));
+    }
+    i->src1.function = function;
+    return i->dest;
 }
 
 Value* Builder::createCallCond(Value* cond, Function* function, std::vector<Value*> args) {
@@ -464,17 +462,25 @@ Value* Builder::createCallCond(Value* cond, Function* function, std::vector<Valu
 }
 
 Value* Builder::createCallExt(Function* function, std::vector<Value*> args) {
-    if (function->typeOut == TYPE_VOID) {
-        Instruction* i = appendInstr(OPCODE_CALLEXT, 0);
-        i->src1.function = function;
-        i->src2.parameters = new ParametersCall(args);
-        return nullptr;
-    } else {
-        Instruction* i = appendInstr(OPCODE_CALLEXT, 0, allocValue(function->typeOut));
-        i->src1.function = function;
-        i->src2.parameters = new ParametersCall(args);
-        return i->dest;
+    // Checks
+    assert_true(args.size() == function->typeIn.size());
+
+    // Place arguments
+    for (int index = 0; index < args.size(); index++) {
+        assert_true(args[index]->type == function->typeIn[index]);
+        Instruction* i = appendInstr(OPCODE_ARG, 0, allocValue(function->typeIn[index]));
+        i->src1.immediate = index;
+        i->src2.value = args[index];
     }
+    // Call function
+    Instruction* i;
+    if (function->typeOut == TYPE_VOID) {
+        i = appendInstr(OPCODE_CALLEXT, 0);
+    } else {
+        i = appendInstr(OPCODE_CALLEXT, 0, allocValue(function->typeOut));
+    }
+    i->src1.function = function;
+    return i->dest;
 }
 
 Value* Builder::createSelect(Value* cond, Value* valueTrue, Value* valueFalse) {
