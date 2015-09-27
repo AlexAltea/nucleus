@@ -4,6 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/logger/logger.h"
 
 namespace cpu {
@@ -12,13 +13,13 @@ namespace ppu {
 
 using namespace cpu::hir;
 
-Recompiler::Recompiler(ppu::Function* function) : frontend::IRecompiler<U32>(function)
+Recompiler::Recompiler(ppu::Function* function) : IRecompiler<U32>(function)
 {
 }
 
 void Recompiler::createProlog()
 {
-    builder.SetInsertPoint(prolog);
+    /*builder.SetInsertPoint(prolog);
 
     // Place arguments in local variables
     auto argValue = function->function.function->arg_begin();
@@ -27,12 +28,12 @@ void Recompiler::createProlog()
     for (int i = 0; i < ppuFunc->type_in.size(); i++, argValue++) {
         switch (ppuFunc->type_in[i]) {
         case FUNCTION_IN_INTEGER:
-            gpr[3 + i] = builder.CreateAlloca<I64>(format("r%d_", 3 + i));
-            builder.CreateStore(Value<I64>{argValue}, gpr[3 + i]);
+            gpr[3 + i] = builder.createAlloca<I64>(format("r%d_", 3 + i));
+            builder.createStore(Value*{argValue}, gpr[3 + i]);
             break;
         case FUNCTION_IN_FLOAT:
-            fpr[1 + i] = builder.CreateAlloca<F64>(format("r%d_", 1 + i));
-            builder.CreateStore(Value<F64>{argValue}, fpr[1 + i]);
+            fpr[1 + i] = builder.createAlloca<F64>(format("r%d_", 1 + i));
+            builder.createStore(Value*{argValue}, fpr[1 + i]);
             break;
         case FUNCTION_IN_VECTOR:
             // TODO
@@ -40,17 +41,17 @@ void Recompiler::createProlog()
         }
     }
 
-    state = builder.CreateCall(static_cast<Segment*>(function->parent)->funcGetState);
-    builder.CreateCall(static_cast<Segment*>(function->parent)->funcLogState, {builder.get<I64>(function->address)});
+    state = builder.createCall(static_cast<Segment*>(function->parent)->funcGetState);
+    builder.createCall(static_cast<Segment*>(function->parent)->funcLogState, {builder.getConstantI64(function->address)});
 
     // Branch to the real entry block
     hir::Block entryBlock = blocks.at(function->address);
-    builder.createBr(entryBlock);
+    builder.createBr(entryBlock);*/
 }
 
 void Recompiler::createEpilog()
 {
-    builder.SetInsertPoint(epilog);
+    /*builder.SetInsertPoint(epilog);
 
     auto ppuFunc = static_cast<Function*>(function);
     switch (ppuFunc->type_out) {
@@ -80,7 +81,7 @@ void Recompiler::createEpilog()
         logger.error(LOG_CPU, "Recompiler::createReturn: Invalid returnType");
         builder.createRetVoid();
         break;
-    }
+    }*/
 }
 
 /**
@@ -88,42 +89,30 @@ void Recompiler::createEpilog()
  */
 Value* Recompiler::getGPR(int index, Type type)
 {
-    // Return+Parameter registers and nonvolatile registers
-    if ((3 <= index && index <= 10) || (index >= 14)) {
-        if (!gpr[index]) {
-            gpr[index] = allocaVariable<hir::I64>(format("r%d_", index));
-        }
-        return builder.createLoad(gpr[index], format("r%d_", index));
-    }
+    const U32 offset = offsetof(State, r[index]);
 
-    // Other volatile registers
-    else {
-        Value<I64*> regPointer = builder.CreateInBoundsGEP(state, {
-            builder.get<I32>(0),
-            builder.get<I32>(0),
-            builder.get<I32>(index)});
-        return builder.CreateLoad(regPointer, format("r%d_", index));
+    // TODO: Use volatility information?
+    // Return+Parameter registers and nonvolatile registers are 3 to 10 and 14 onwards respectively
+
+    Value* value = builder.createCtxLoad(offset, TYPE_I64);
+    if (type != TYPE_I64) {
+        return builder.createTrunc(value, type);
     }
+    return value;
 }
 
 Value* Recompiler::getFPR(int index, Type type)
 {
-    // Return+Parameter registers and nonvolatile registers
-    if ((1 <= index && index <= 13) || (index >= 14)) {
-        if (!fpr[index].value) {
-            fpr[index] = allocaVariable<F64>(format("f%d_", index));
-        }
-        return builder.CreateLoad(fpr[index]);
-    }
+    const U32 offset = offsetof(State, f[index]);
 
-    // Other volatile registers
-    else {
-        Value<F64*> regPointer = builder.CreateInBoundsGEP(state, {
-            builder.get<I32>(0),
-            builder.get<I32>(1),
-            builder.get<I32>(index)});
-        return builder.CreateLoad(regPointer, format("f%d_", index));
+    // TODO: Use volatility information?
+    // Return+Parameter registers and nonvolatile registers are 1 to 13 and 14 onwards respectively
+
+    Value* value = builder.createCtxLoad(offset, TYPE_F64);
+    if (type != TYPE_F64) {
+        return builder.createFTrunc(value, type);
     }
+    return value;
 }
 
 Value* Recompiler::getVR(int index)
@@ -133,72 +122,69 @@ Value* Recompiler::getVR(int index)
 
 Value* Recompiler::getCR(int index)
 {
-    // TODO: We are considering all CR fields nonvolatile
+    /*// TODO: We are considering all CR fields nonvolatile
     if (!cr[index].value) {
         cr[index] = allocaVariable<I8>(format("cr%d_", index));
     }
-    return builder.createLoad(cr[index]);
+    return builder.createLoad(cr[index]);*/
+    return nullptr;
 }
 
 Value* Recompiler::getXER()
 {
-    // TODO: We are considering the XER field nonvolatile
+    /*// TODO: We are considering the XER field nonvolatile
     if (!ctr.value) {
         ctr = allocaVariable<I64>("xer_");
     }
-    return builder.createLoad(ctr);
+    return builder.createLoad(ctr);*/
+    return nullptr;
 }
 
 Value* Recompiler::getCTR()
 {
-    // TODO: We are considering the CTR field nonvolatile
+    /*// TODO: We are considering the CTR field nonvolatile
     if (!ctr.value) {
         ctr = allocaVariable<I64>("ctr_");
     }
-    return builder.createLoad(ctr);
+    return builder.createLoad(ctr);*/
+    return nullptr;
 }
 
 /**
  * Register write
  */
-void Recompiler::setGPR(int index, Value* value, Type type)
+void Recompiler::setGPR(int index, Value* value)
 {
-    // Return+Parameter registers and non-volatile registers
-    if ((3 <= index && index <= 10) || (index >= 14)) {
-        if (!gpr[index].value) {
-            gpr[index] = allocaVariable<I64>(format("r%d_", index));
-        }
-        builder.createStore(value, gpr[index]);
+    const U32 offset = offsetof(State, r[index]);
+
+    // TODO: Use volatility information?
+    // Return+Parameter registers and nonvolatile registers are 3 to 10 and 14 onwards respectively
+
+    Value* value_i64;
+    if (value->type != TYPE_I64) {
+        value_i64 = builder.createZExt(value, TYPE_I64);
+    } else {
+        value_i64 = value;
     }
 
-    // Other volatile registers
-    else {
-        hir::Value<hir::I64*> regPointer = builder.CreateInBoundsGEP(state, {
-            builder.get<I32>(0),
-            builder.get<I32>(0),
-            builder.get<I32>(index)});
-        return builder.CreateStore(value, regPointer);
-    }
+    builder.createCtxStore(offset, value_i64);
 }
 
-void Recompiler::setFPR(int index, Value* value, Type type)
+void Recompiler::setFPR(int index, Value* value)
 {
-    // Return+Parameter registers and nonvolatile registers
-    if ((1 <= index && index <= 13) || (index >= 14)) {
-        if (!fpr[index].value) {
-            fpr[index] = allocaVariable<F64>(format("f%d_", index));
-        }
-        builder.createStore(value, fpr[index]);
+    const U32 offset = offsetof(State, r[index]);
+
+    // TODO: Use volatility information?
+    // Return+Parameter registers and nonvolatile registers are 1 to 13 and 14 onwards respectively
+
+    Value* value_i64;
+    if (value->type != TYPE_I64) {
+        value_i64 = builder.createZExt(value, TYPE_I64);
+    } else {
+        value_i64 = value;
     }
 
-    // Other volatile registers
-    else {
-        Value<F64*> regPointer = builder.CreateInBoundsGEP(state, {
-            builder.get<I32>(0),
-            builder.get<I32>(0),
-            builder.get<I32>(index)});
-        return builder.CreateStore(value, regPointer);
-    }
+    builder.createCtxStore(offset, value_i64);
 }
 
 void Recompiler::setVR(int index, Value* value)
@@ -207,39 +193,39 @@ void Recompiler::setVR(int index, Value* value)
 
 void Recompiler::setCR(int index, Value* value)
 {
-    // TODO: We are considering all CR fields nonvolatile
+    /*// TODO: We are considering all CR fields nonvolatile
     if (!cr[index].value) {
         cr[index] = allocaVariable<I8>(format("cr%d_", index));
     }
-    builder.createStore(value, cr[index]);
+    builder.createStore(value, cr[index]);*/
 }
 
 void Recompiler::setXER(Value* value)
 {
-    // TODO: We are considering the XER field nonvolatile
+    /*// TODO: We are considering the XER field nonvolatile
     if (!xer.value) {
         xer = allocaVariable<I64>("xer_");
     }
-    builder.createStore(value, xer);
+    builder.createStore(value, xer);*/
 }
 
 void Recompiler::setCTR(Value* value)
 {
-    // TODO: We are considering the CTR field nonvolatile
+    /*// TODO: We are considering the CTR field nonvolatile
     if (!ctr.value) {
         ctr = allocaVariable<I64>("ctr_");
     }
-    builder.createStore(value, ctr);
+    builder.createStore(value, ctr);*/
 }
 
 /**
  * Memory access
  */
 Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
-    auto ppuSegment = static_cast<Segment*>(function->parent);
+    /*auto ppuSegment = static_cast<Segment*>(function->parent);
     Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
 
-    addr = builder.createAdd(addr, baseAddr);
+    addr = builder.createAdd(addr, baseAddr);*/
     if (type == TYPE_I8) {
         return builder.createLoad(addr, type);
     } else {
@@ -248,10 +234,10 @@ Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
 }
 
 void Recompiler::writeMemory(Value* addr, Value* value) {
-    auto ppuSegment = static_cast<Segment*>(function->parent);
+    /*auto ppuSegment = static_cast<Segment*>(function->parent);
     Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
 
-    addr = builder.createAdd(addr, baseAddr);
+    addr = builder.createAdd(addr, baseAddr);*/
     if (value->type == TYPE_I8) {
         builder.createStore(addr, value);
     } else {
@@ -288,6 +274,56 @@ void Recompiler::updateCR1(Value* value) {
 }
 
 void Recompiler::updateCR6(Value* value) {
+}
+
+/**
+ * Branching 
+ */
+void Recompiler::createFunctionCall(U32 nia) {
+    auto* module = function->parent;
+    auto& targetFunc = static_cast<Function&>(*module->functions.at(nia));
+
+    // Generate array of arguments
+    int index = 0;
+    std::vector<Value*> arguments;
+    for (const auto& param : targetFunc.type_in) {
+        switch (param) {
+        case FUNCTION_IN_INTEGER:
+            arguments.push_back(getGPR(3 + index));
+            break;
+        case FUNCTION_IN_FLOAT:
+            arguments.push_back(getFPR(1 + index));
+            break;
+        case FUNCTION_IN_VECTOR:
+            arguments.push_back(getVR(2 + index));
+            break;
+        }
+        index += 1;
+    }
+
+    Value* result = builder.createCall(targetFunc.hirFunction, arguments);
+
+    // Save return value
+    switch (targetFunc.type_out) {
+    case FUNCTION_OUT_INTEGER:
+        setGPR(3, result);
+        break;
+    case FUNCTION_OUT_FLOAT:
+        setFPR(1, result);
+        break;
+    case FUNCTION_OUT_FLOAT_X2:
+        setFPR(1, result); // TODO
+        break;
+    case FUNCTION_OUT_FLOAT_X3:
+        setFPR(1, result); // TODO
+        break;
+    case FUNCTION_OUT_FLOAT_X4:
+        setFPR(1, result); // TODO
+        break;
+    case FUNCTION_OUT_VECTOR:
+        setVR(2, result);
+        break;
+    }
 }
 
 }  // namespace ppu

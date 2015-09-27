@@ -17,7 +17,7 @@ namespace frontend {
 namespace ppu {
 
 class Recompiler : public frontend::IRecompiler<U32> {
-
+private:
     // Register allocation
     hir::Value* gpr[32];
     hir::Value* fpr[32];
@@ -26,14 +26,6 @@ class Recompiler : public frontend::IRecompiler<U32> {
     hir::Value* fpscr;
     hir::Value* xer;
     hir::Value* ctr;
-
-    template <typename T>
-    hir::Value<T*> allocaVariable(const std::string& name) {
-        hir::Block entryBlock = function->function.getEntryBlock();
-        hir::Builder allocaBuilder;
-        allocaBuilder.SetInsertPoint(entryBlock, entryBlock.begin());
-        return allocabuilder.createAlloca<T>(name);
-    }
 
     // Register read
     hir::Value* getGPR(int index, hir::Type type = hir::TYPE_I64);
@@ -44,8 +36,8 @@ class Recompiler : public frontend::IRecompiler<U32> {
     hir::Value* getCTR();
 
     // Register write
-    void setGPR(int index, hir::Value* value, hir::Type type = hir::TYPE_I64);
-    void setFPR(int index, hir::Value* value, hir::Type type = hir::TYPE_F64);
+    void setGPR(int index, hir::Value* value);
+    void setFPR(int index, hir::Value* value);
     void setVR(int index, hir::Value* value);
     void setCR(int index, hir::Value* value);
     void setXER(hir::Value* value);
@@ -55,13 +47,14 @@ class Recompiler : public frontend::IRecompiler<U32> {
     hir::Value* readMemory(hir::Value* addr, hir::Type type);
     void writeMemory(hir::Value* addr, hir::Value* value);
 
-    /**
-     * Operation flags
-     */
+    // Operation flags
     void updateCR(int field, hir::Value* lhs, hir::Value* rhs, bool logicalComparison);
     void updateCR0(hir::Value* value); // Integer instructions with RC bit
     void updateCR1(hir::Value* value); // Floating-Point instructions with RC bit
     void updateCR6(hir::Value* value); // Vector instructions with RC bit
+
+    // Branching
+    void createFunctionCall(U32 nia);
 
 public:
     hir::Builder builder;
