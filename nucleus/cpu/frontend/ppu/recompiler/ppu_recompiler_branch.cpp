@@ -5,6 +5,7 @@
 
 #include "ppu_recompiler.h"
 #include "nucleus/config.h"
+#include "nucleus/cpu/util.h"
 
 namespace cpu {
 namespace frontend {
@@ -19,20 +20,20 @@ using namespace cpu::hir;
 
 void Recompiler::bx(Instruction code)
 {
-    const U32 target = code.aa ? (code.li << 2) : (currentAddress + (code.li << 2)) & ~0x3;
+    const U32 targetAddr = code.aa ? (code.li << 2) : (currentAddress + (code.li << 2)) & ~0x3;
 
     // Function call
     if (code.lk) {
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
             auto* module = static_cast<Module*>(function->parent);
-            module->addFunction(target);
+            module->addFunction(targetAddr);
         }
-        createFunctionCall(target);
+        createFunctionCall(targetAddr);
     }
 
     // Simple unconditional branch
     else {
-        hir::Block* targetBlock = blocks.at(target);
+        hir::Block* targetBlock = blocks.at(targetAddr);
         builder.createBr(targetBlock);
     }
 }
@@ -67,7 +68,11 @@ void Recompiler::bcx(Instruction code)
 
     // Conditional function call
     if (code.lk) {
-        // TODO
+        if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
+            auto* module = static_cast<Module*>(function->parent);
+            module->addFunction(targetAddr);
+        }
+        createFunctionCall(targetAddr, cond);
     }
 
     // Simple conditional branch
@@ -80,6 +85,42 @@ void Recompiler::bcx(Instruction code)
 
 void Recompiler::bcctrx(Instruction code)
 {
+    Value* targetAddr = getCTR();
+    const U32 nextAddr = (currentAddress + 4) & ~0x3;
+
+    // Check condition
+    Value* cond_ok = nullptr;
+    const auto bo0 = code.bo & 0x10;
+    const auto bo1 = code.bo & 0x08;
+    if (!bo0) {
+        // TODO: Set cond_ok
+    }
+
+    // Conditional function call
+    if (code.lk) {
+        if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
+            hir::Function* proxyFunc = builder.getExternFunction(nucleusCall);
+            if (cond_ok) {
+                builder.createCallCond(cond_ok, proxyFunc, {targetAddr});
+            } else {
+                builder.createCall(proxyFunc, {targetAddr});
+            }
+            
+        }
+    }
+
+    // Simple conditional branch
+    else {
+        if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
+            hir::Function* proxyFunc = builder.getExternFunction(nucleusCall);
+            if (cond_ok) {
+                builder.createCallCond(cond_ok, proxyFunc, {targetAddr});
+            } else {
+                builder.createCall(proxyFunc, {targetAddr});
+            }
+            builder.createRet();
+        }
+    }
 }
 
 void Recompiler::bclrx(Instruction code)

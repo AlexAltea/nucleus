@@ -142,12 +142,8 @@ Value* Recompiler::getXER()
 
 Value* Recompiler::getCTR()
 {
-    /*// TODO: We are considering the CTR field nonvolatile
-    if (!ctr.value) {
-        ctr = allocaVariable<I64>("ctr_");
-    }
-    return builder.createLoad(ctr);*/
-    return nullptr;
+    constexpr U32 offset = offsetof(State, ctr);
+    return builder.createCtxLoad(offset, TYPE_I64);
 }
 
 /**
@@ -211,11 +207,13 @@ void Recompiler::setXER(Value* value)
 
 void Recompiler::setCTR(Value* value)
 {
-    /*// TODO: We are considering the CTR field nonvolatile
-    if (!ctr.value) {
-        ctr = allocaVariable<I64>("ctr_");
+    constexpr U32 offset = offsetof(State, ctr);
+    
+    if (value->type != TYPE_I64) {
+        logger.error(LOG_CPU, "Wrong value type");
+        return;
     }
-    builder.createStore(value, ctr);*/
+    builder.createCtxStore(offset, value);
 }
 
 /**
@@ -279,7 +277,7 @@ void Recompiler::updateCR6(Value* value) {
 /**
  * Branching 
  */
-void Recompiler::createFunctionCall(U32 nia) {
+void Recompiler::createFunctionCall(U32 nia, Value* condition) {
     auto* module = function->parent;
     auto& targetFunc = static_cast<Function&>(*module->functions.at(nia));
 
@@ -301,7 +299,12 @@ void Recompiler::createFunctionCall(U32 nia) {
         index += 1;
     }
 
-    Value* result = builder.createCall(targetFunc.hirFunction, arguments);
+    Value* result;
+    if (condition) {
+        result = builder.createCallCond(condition, targetFunc.hirFunction, arguments);
+    } else {
+        result = builder.createCall(targetFunc.hirFunction, arguments);
+    }
 
     // Save return value
     switch (targetFunc.type_out) {

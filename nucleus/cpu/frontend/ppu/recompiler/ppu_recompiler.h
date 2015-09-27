@@ -54,7 +54,7 @@ private:
     void updateCR6(hir::Value* value); // Vector instructions with RC bit
 
     // Branching
-    void createFunctionCall(U32 nia);
+    void createFunctionCall(U32 nia, hir::Value* condition = nullptr);
 
 public:
     hir::Builder builder;

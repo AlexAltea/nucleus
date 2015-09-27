@@ -19,4 +19,8 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr) {
     function->call();
 }
 
+void nucleusCall(U64 guestAddr) {
+    logger.warning(LOG_CPU, "Unimplemented");
+}
+
 }  // namespace cpu

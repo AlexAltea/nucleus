@@ -18,4 +18,14 @@ namespace cpu {
  */
 void nucleusTranslate(void* guestFunc, U64 guestAddr);
 
+/**
+ * Guest code may contain jumps/calls to addresses hold in register which might not be
+ * guessed at translation time. Such jumps/calls are handled through this proxy function.
+ * Executing AOT-translated code, it is assumed the target function exists.
+ * Executing JIT-translated code, if the function doesn't exist, it will be generated.
+ * Note that switch/cases via jump tables are handled through this function as well.
+ * @param[in]  guestAddr  Guest address where the function to be executed begins
+ */
+void nucleusCall(U64 guestAddr);
+
 }  // namespace cpu
