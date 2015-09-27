@@ -749,7 +749,7 @@ struct ARG_I64 : Sequence<ARG_I64, I<OPCODE_ARG, I64Op, ImmediateOp, I64Op>> {
 /**
  * Opcode: CALL
  */
-struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_RET, VoidOp, FunctionOp>> {
+struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_CALL, VoidOp, FunctionOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
         const Function* target = i.src1.function;
         if (target->flags & FUNCTION_IS_COMPILED) {
@@ -757,27 +757,6 @@ struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_RET, VoidOp, FunctionOp>> {
         } else {
             if (e.settings.isJIT) {
                 e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
-            } else {
-                // TODO
-                e.mov(e.rax, 0);
-            }
-        }
-        e.call(e.rax);
-    }
-};
-
-/**
- * Opcode: CALLEXT
- */
-struct CALLEXT_VOID : Sequence<CALLEXT_VOID, I<OPCODE_CALLEXT, VoidOp, FunctionOp>> {
-    static void emit(X86Emitter& e, InstrType& i) {
-        const auto* function = i.src1.function;
-        if (function->flags & FUNCTION_IS_COMPILED) {
-            e.mov(e.rax, reinterpret_cast<size_t>(function->nativeAddress));
-        } else {
-            if (e.settings.isJIT) {
-                // TODO
-                e.mov(e.rax, reinterpret_cast<size_t>(function->nativeAddress));
             } else {
                 // TODO
                 e.mov(e.rax, 0);
@@ -853,7 +832,6 @@ void X86Sequences::init() {
         registerSequence<TRUNC_I8_I16, TRUNC_I8_I32, TRUNC_I8_I64, TRUNC_I16_I32, TRUNC_I16_I64, TRUNC_I32_I64>();
         registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
         registerSequence<CALL_VOID>();
-        registerSequence<CALLEXT_VOID>();
         registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
     }
 }

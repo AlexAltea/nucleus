@@ -101,6 +101,8 @@ Function* Builder::getExternFunction(void* hostAddr) {
     Function* externFunc;
     if (hostAddr == nucleusTranslate) {
         externFunc = new Function(parModule, TYPE_VOID, {TYPE_PTR, TYPE_I64});
+    } else if (hostAddr == nucleusCall) {
+        externFunc = new Function(parModule, TYPE_VOID, {TYPE_I64});
     }
 
     externFunc->flags |= FUNCTION_IS_EXTERN;
@@ -489,28 +491,6 @@ Value* Builder::createCall(Function* function, std::vector<Value*> args) {
 
 Value* Builder::createCallCond(Value* cond, Function* function, std::vector<Value*> args) {
     return nullptr;
-}
-
-Value* Builder::createCallExt(Function* function, std::vector<Value*> args) {
-    // Checks
-    assert_true(args.size() == function->typeIn.size());
-
-    // Place arguments
-    for (int index = 0; index < args.size(); index++) {
-        assert_true(args[index]->type == function->typeIn[index]);
-        Instruction* i = appendInstr(OPCODE_ARG, 0, allocValue(function->typeIn[index]));
-        i->src1.immediate = index;
-        i->src2.value = args[index];
-    }
-    // Call function
-    Instruction* i;
-    if (function->typeOut == TYPE_VOID) {
-        i = appendInstr(OPCODE_CALLEXT, 0);
-    } else {
-        i = appendInstr(OPCODE_CALLEXT, 0, allocValue(function->typeOut));
-    }
-    i->src1.function = function;
-    return i->dest;
 }
 
 Value* Builder::createSelect(Value* cond, Value* valueTrue, Value* valueFalse) {

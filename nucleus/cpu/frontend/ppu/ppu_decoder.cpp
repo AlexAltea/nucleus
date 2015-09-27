@@ -271,10 +271,6 @@ void Function::recompile()
             if (blocks.find(target) != blocks.end()) {
                 builder.createBr(recompiler.blocks[target]);
             }
-            // Required for .sceStub.text (single-block functions ending on bctr)
-            else {
-                builder.createBr(recompiler.epilog);
-            }
         }
     }
 
@@ -298,7 +294,7 @@ void Function::createPlaceholder()
     hir::Function* translateFunc = builder.getExternFunction(nucleusTranslate);
     hir::Value* guestFuncValue = builder.getConstantPointer(this);
     hir::Value* guestAddrValue = builder.getConstantI64(address);
-    builder.createCallExt(translateFunc, {guestFuncValue, guestAddrValue});
+    builder.createCall(translateFunc, {guestFuncValue, guestAddrValue});
     builder.createRet();
 
     nucleus.cell.compiler->compile(hirFunction);

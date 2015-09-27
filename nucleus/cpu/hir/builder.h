@@ -111,7 +111,6 @@ public:
     Value* createBrCond(Value* cond, Block* blockTrue, Block* blockFalse);
     Value* createCall(Function* function, std::vector<Value*> args = {});
     Value* createCallCond(Value* cond, Function* function, std::vector<Value*> args = {});
-    Value* createCallExt(Function* function, std::vector<Value*> args = {});
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
     void createRet(Value* value);
     void createRet();

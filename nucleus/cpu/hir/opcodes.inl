@@ -36,7 +36,6 @@ OPCODE(ARG,       "arg",       OPCODE_SIG_V_I_V)   // Argument
 OPCODE(CALL,      "call",      OPCODE_SIG_M_F)     // Call
 OPCODE(BRCOND,    "brcond",    OPCODE_SIG_X_V_B)   // Conditional branch
 OPCODE(CALLCOND,  "callcond",  OPCODE_SIG_M_V_F)   // Conditional call
-OPCODE(CALLEXT,   "callext",   OPCODE_SIG_M_F)     // Call external
 OPCODE(RET,       "ret",       OPCODE_SIG_X_M)     // Return
 OPCODE(PHI,       "phi",       OPCODE_SIG_V_V_V)   // Phi node
 OPCODE(FADD,      "fadd",      OPCODE_SIG_V_V_V)   // Floating-point addition
