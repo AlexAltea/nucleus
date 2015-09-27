@@ -203,5 +203,83 @@ void Value::doNot() {
     }
 }
 
+void Value::doZExt(Type newType) {
+    switch (type) {
+    case TYPE_I8:   type = newType; constant.i64 &= 0xFF;        break;
+    case TYPE_I16:  type = newType; constant.i64 &= 0xFFFF;      break;
+    case TYPE_I32:  type = newType; constant.i64 &= 0xFFFFFFFF;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doSExt(Type newType) {
+    switch (type) {
+    case TYPE_I8:
+        type = newType;
+        switch (newType) {
+        case TYPE_I16:  constant.i16 = constant.i8;  return;
+        case TYPE_I32:  constant.i32 = constant.i8;  return;
+        case TYPE_I64:  constant.i64 = constant.i8;  return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    case TYPE_I16:
+        type = newType;
+        switch (newType) {
+        case TYPE_I32:  constant.i32 = constant.i16;  return;
+        case TYPE_I64:  constant.i64 = constant.i16;  return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    case TYPE_I32:
+        type = newType;
+        switch (newType) {
+        case TYPE_I64:  constant.i64 = constant.i32;  return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doTrunc(Type newType) {
+    switch (type) {
+    case TYPE_I16:
+        type = newType;
+        switch (newType) {
+        case TYPE_I8:  constant.i64 &= 0xFF;  return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    case TYPE_I32:
+        type = newType;
+        switch (newType) {
+        case TYPE_I8:   constant.i64 &= 0xFF;    return;
+        case TYPE_I16:  constant.i64 &= 0xFFFF;  return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    case TYPE_I64:
+        type = newType;
+        switch (newType) {
+        case TYPE_I16:  constant.i64 &= 0xFF;        return;
+        case TYPE_I32:  constant.i64 &= 0xFFFF;      return;
+        case TYPE_I64:  constant.i64 &= 0xFFFFFFFF;  return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
 }  // namespace hir
 }  // namespace cpu

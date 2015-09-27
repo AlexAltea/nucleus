@@ -78,6 +78,9 @@ public:
     void doOr(Value* rhs);
     void doXor(Value* rhs);
     void doNot();
+    void doZExt(Type newType);
+    void doSExt(Type newType);
+    void doTrunc(Type newType);
 };
 
 }  // namespace hir

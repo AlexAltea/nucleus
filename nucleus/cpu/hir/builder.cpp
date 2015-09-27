@@ -218,15 +218,45 @@ Value* Builder::createCtlz(Value* value) {
 }
 
 Value* Builder::createZExt(Value* value, Type type) {
-    return nullptr;
+    if (value->type == type) {
+        return value;
+    } else if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doZExt(type);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_ZEXT, 0, allocValue(type));
+    i->src1.value = value;
+    return i->dest;
 }
 
 Value* Builder::createSExt(Value* value, Type type) {
-    return nullptr;
+    if (value->type == type) {
+        return value;
+    } else if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doSExt(type);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_SEXT, 0, allocValue(type));
+    i->src1.value = value;
+    return i->dest;
 }
 
 Value* Builder::createTrunc(Value* value, Type type) {
-    return nullptr;
+    if (value->type == type) {
+        return value;
+    } else if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doTrunc(type);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_TRUNC, 0, allocValue(type));
+    i->src1.value = value;
+    return i->dest;
 }
 
 Value* Builder::createSqrt(Value* value) {
@@ -449,9 +479,9 @@ Value* Builder::createCall(Function* function, std::vector<Value*> args) {
     // Call function
     Instruction* i;
     if (function->typeOut == TYPE_VOID) {
-        i = appendInstr(OPCODE_CALLEXT, 0);
+        i = appendInstr(OPCODE_CALL, 0);
     } else {
-        i = appendInstr(OPCODE_CALLEXT, 0, allocValue(function->typeOut));
+        i = appendInstr(OPCODE_CALL, 0, allocValue(function->typeOut));
     }
     i->src1.function = function;
     return i->dest;

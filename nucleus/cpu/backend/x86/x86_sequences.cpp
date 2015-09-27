@@ -359,6 +359,108 @@ struct NOT_I64 : Sequence<NOT_I64, I<OPCODE_NOT, I64Op, I64Op>> {
 };
 
 /**
+ * Opcode: ZEXT
+ */
+struct ZEXT_I16_I8 : Sequence<ZEXT_I16_I8, I<OPCODE_ZEXT, I16Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest, i.src1);
+    }
+};
+struct ZEXT_I32_I8 : Sequence<ZEXT_I32_I8, I<OPCODE_ZEXT, I32Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest, i.src1);
+    }
+};
+struct ZEXT_I64_I8 : Sequence<ZEXT_I64_I8, I<OPCODE_ZEXT, I64Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest, i.src1);
+    }
+};
+struct ZEXT_I32_I16 : Sequence<ZEXT_I32_I16, I<OPCODE_ZEXT, I32Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest, i.src1);
+    }
+};
+struct ZEXT_I64_I16 : Sequence<ZEXT_I64_I16, I<OPCODE_ZEXT, I64Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest, i.src1);
+    }
+};
+struct ZEXT_I64_I32 : Sequence<ZEXT_I64_I32, I<OPCODE_ZEXT, I64Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(i.dest.reg.cvt32(), i.src1);
+    }
+};
+
+/**
+ * Opcode: SEXT
+ */
+struct SEXT_I16_I8 : Sequence<SEXT_I16_I8, I<OPCODE_SEXT, I16Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movsx(i.dest, i.src1);
+    }
+};
+struct SEXT_I32_I8 : Sequence<SEXT_I32_I8, I<OPCODE_SEXT, I32Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movsx(i.dest, i.src1);
+    }
+};
+struct SEXT_I64_I8 : Sequence<SEXT_I64_I8, I<OPCODE_SEXT, I64Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movsx(i.dest, i.src1);
+    }
+};
+struct SEXT_I32_I16 : Sequence<SEXT_I32_I16, I<OPCODE_SEXT, I32Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movsx(i.dest, i.src1);
+    }
+};
+struct SEXT_I64_I16 : Sequence<SEXT_I64_I16, I<OPCODE_SEXT, I64Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movsx(i.dest, i.src1);
+    }
+};
+struct SEXT_I64_I32 : Sequence<SEXT_I64_I32, I<OPCODE_SEXT, I64Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movsxd(i.dest, i.src1);
+    }
+};
+
+/**
+ * Opcode: TRUNC
+ */
+struct TRUNC_I8_I16 : Sequence<TRUNC_I8_I16, I<OPCODE_TRUNC, I8Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest.reg.cvt32(), i.src1.reg.cvt8());
+    }
+};
+struct TRUNC_I8_I32 : Sequence<TRUNC_I8_I32, I<OPCODE_TRUNC, I8Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest.reg.cvt32(), i.src1.reg.cvt8());
+    }
+};
+struct TRUNC_I8_I64 : Sequence<TRUNC_I8_I64, I<OPCODE_TRUNC, I8Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest.reg.cvt32(), i.src1.reg.cvt8());
+    }
+};
+struct TRUNC_I16_I32 : Sequence<TRUNC_I16_I32, I<OPCODE_TRUNC, I16Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest.reg.cvt32(), i.src1.reg.cvt16());
+    }
+};
+struct TRUNC_I16_I64 : Sequence<TRUNC_I16_I64, I<OPCODE_TRUNC, I16Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(i.dest.reg.cvt32(), i.src1.reg.cvt16());
+    }
+};
+struct TRUNC_I32_I64 : Sequence<TRUNC_I32_I64, I<OPCODE_TRUNC, I32Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mov(i.dest, i.src1.reg.cvt32());
+    }
+};
+
+/**
  * Opcode: LOAD
  */
 struct LOAD_I8 : Sequence<LOAD_I8, I<OPCODE_LOAD, I8Op, PtrOp>> {
@@ -746,6 +848,9 @@ void X86Sequences::init() {
         registerSequence<OR_I8, OR_I16, OR_I32, OR_I64>();
         registerSequence<XOR_I8, XOR_I16, XOR_I32, XOR_I64>();
         registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64>();
+        registerSequence<ZEXT_I16_I8, ZEXT_I32_I8, ZEXT_I64_I8, ZEXT_I32_I16, ZEXT_I64_I16, ZEXT_I64_I32>();
+        registerSequence<SEXT_I16_I8, SEXT_I32_I8, SEXT_I64_I8, SEXT_I32_I16, SEXT_I64_I16, SEXT_I64_I32>();
+        registerSequence<TRUNC_I8_I16, TRUNC_I8_I32, TRUNC_I8_I64, TRUNC_I16_I32, TRUNC_I16_I64, TRUNC_I32_I64>();
         registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
         registerSequence<CALL_VOID>();
         registerSequence<CALLEXT_VOID>();
