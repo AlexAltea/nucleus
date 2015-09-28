@@ -109,8 +109,8 @@ public:
     // Branching and conditional operations
     Value* createBr(Block* block);
     Value* createBrCond(Value* cond, Block* blockTrue, Block* blockFalse);
-    Value* createCall(Function* function, std::vector<Value*> args = {});
-    Value* createCallCond(Value* cond, Function* function, std::vector<Value*> args = {});
+    Value* createCall(Function* function, const std::vector<Value*>& args = {}, CallFlags flags = CALL_INTERN);
+    Value* createCallCond(Value* cond, Function* function, const std::vector<Value*>& args = {}, CallFlags flags = CALL_INTERN);
     Value* createSelect(Value* cond, Value* valueTrue, Value* valueFalse);
     void createRet(Value* value);
     void createRet();

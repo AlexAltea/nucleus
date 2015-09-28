@@ -830,6 +830,10 @@ void X86Sequences::init() {
         registerSequence<ZEXT_I16_I8, ZEXT_I32_I8, ZEXT_I64_I8, ZEXT_I32_I16, ZEXT_I64_I16, ZEXT_I64_I32>();
         registerSequence<SEXT_I16_I8, SEXT_I32_I8, SEXT_I64_I8, SEXT_I32_I16, SEXT_I64_I16, SEXT_I64_I32>();
         registerSequence<TRUNC_I8_I16, TRUNC_I8_I32, TRUNC_I8_I64, TRUNC_I16_I32, TRUNC_I16_I64, TRUNC_I32_I64>();
+        registerSequence<LOAD_I8, LOAD_I16, LOAD_I32, LOAD_I64, LOAD_F32, LOAD_F64, LOAD_V128>();
+        registerSequence<STORE_I8, STORE_I16, STORE_I32, STORE_I64, STORE_F32, STORE_F64, STORE_V128>();
+        registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64>();
+        registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64>();
         registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
         registerSequence<CALL_VOID>();
         registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();

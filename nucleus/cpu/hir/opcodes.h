@@ -17,10 +17,15 @@ enum ArithmeticFlags : OpcodeFlags {
     ARITHMETIC_UNSIGNED  = 1 << 0,
 };
 
+enum CallFlags : OpcodeFlags {
+    CALL_INTERN  = 0 << 0,
+    CALL_EXTERN  = 1 << 0,
+};
+
 enum MemoryFlags : OpcodeFlags {
-    ENDIAN_DEFAULT   = 0,
-    ENDIAN_BIG       = 1 << 0,  // Big Endian memory access
-    ENDIAN_LITTLE    = 1 << 1,  // Little Endian memory access
+    ENDIAN_DEFAULT  = 0,
+    ENDIAN_BIG      = 1 << 0,  // Big Endian memory access
+    ENDIAN_LITTLE   = 1 << 1,  // Little Endian memory access
 };
 
 enum VectorFlags : OpcodeFlags {
@@ -62,11 +67,12 @@ enum OpcodeSignature {
     OPCODE_SIG_V_I     = (OPCODE_SIG_TYPE_V) | (OPCODE_SIG_TYPE_I << 3),
     OPCODE_SIG_V_V     = (OPCODE_SIG_TYPE_V) | (OPCODE_SIG_TYPE_V << 3),
     OPCODE_SIG_M_F     = (OPCODE_SIG_TYPE_M) | (OPCODE_SIG_TYPE_F << 3),
+    OPCODE_SIG_X_I_V   = (OPCODE_SIG_TYPE_X) | (OPCODE_SIG_TYPE_I << 3) | (OPCODE_SIG_TYPE_V << 6),
     OPCODE_SIG_X_V_V   = (OPCODE_SIG_TYPE_X) | (OPCODE_SIG_TYPE_V << 3) | (OPCODE_SIG_TYPE_V << 6),
+    OPCODE_SIG_X_V_B   = (OPCODE_SIG_TYPE_X) | (OPCODE_SIG_TYPE_V << 3) | (OPCODE_SIG_TYPE_B << 6),
     OPCODE_SIG_M_V_F   = (OPCODE_SIG_TYPE_M) | (OPCODE_SIG_TYPE_V << 3) | (OPCODE_SIG_TYPE_F << 6),
     OPCODE_SIG_V_I_V   = (OPCODE_SIG_TYPE_V) | (OPCODE_SIG_TYPE_I << 3) | (OPCODE_SIG_TYPE_V << 6),
     OPCODE_SIG_V_V_V   = (OPCODE_SIG_TYPE_V) | (OPCODE_SIG_TYPE_V << 3) | (OPCODE_SIG_TYPE_V << 6),
-    OPCODE_SIG_X_V_B   = (OPCODE_SIG_TYPE_X) | (OPCODE_SIG_TYPE_V << 3) | (OPCODE_SIG_TYPE_B << 6),
     OPCODE_SIG_X_V_V_V = (OPCODE_SIG_TYPE_X) | (OPCODE_SIG_TYPE_V << 3) | (OPCODE_SIG_TYPE_V << 6) | (OPCODE_SIG_TYPE_V << 9),
     OPCODE_SIG_V_V_V_V = (OPCODE_SIG_TYPE_V) | (OPCODE_SIG_TYPE_V << 3) | (OPCODE_SIG_TYPE_V << 6) | (OPCODE_SIG_TYPE_V << 9),
 };

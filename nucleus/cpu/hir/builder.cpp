@@ -467,7 +467,7 @@ Value* Builder::createBrCond(Value* cond, Block* blockTrue, Block* blockFalse) {
     return nullptr;
 }
 
-Value* Builder::createCall(Function* function, std::vector<Value*> args) {
+Value* Builder::createCall(Function* function, const std::vector<Value*>& args, CallFlags flags) {
     // Checks
     assert_true(args.size() == function->typeIn.size());
 
@@ -481,16 +481,35 @@ Value* Builder::createCall(Function* function, std::vector<Value*> args) {
     // Call function
     Instruction* i;
     if (function->typeOut == TYPE_VOID) {
-        i = appendInstr(OPCODE_CALL, 0);
+        i = appendInstr(OPCODE_CALL, flags);
     } else {
-        i = appendInstr(OPCODE_CALL, 0, allocValue(function->typeOut));
+        i = appendInstr(OPCODE_CALL, flags, allocValue(function->typeOut));
     }
     i->src1.function = function;
     return i->dest;
 }
 
-Value* Builder::createCallCond(Value* cond, Function* function, std::vector<Value*> args) {
-    return nullptr;
+Value* Builder::createCallCond(Value* cond, Function* function, const std::vector<Value*>& args, CallFlags flags) {
+    // Checks
+    assert_true(args.size() == function->typeIn.size());
+
+    // Place arguments
+    for (int index = 0; index < args.size(); index++) {
+        assert_true(args[index]->type == function->typeIn[index]);
+        Instruction* i = appendInstr(OPCODE_ARG, 0, allocValue(function->typeIn[index]));
+        i->src1.immediate = index;
+        i->src2.value = args[index];
+    }
+    // Call function
+    Instruction* i;
+    if (function->typeOut == TYPE_VOID) {
+        i = appendInstr(OPCODE_CALL, flags);
+    } else {
+        i = appendInstr(OPCODE_CALL, flags, allocValue(function->typeOut));
+    }
+    i->src1.value = cond;
+    i->src2.function = function;
+    return i->dest;
 }
 
 Value* Builder::createSelect(Value* cond, Value* valueTrue, Value* valueFalse) {

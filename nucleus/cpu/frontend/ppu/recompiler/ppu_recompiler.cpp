@@ -4,6 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/emulator.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/logger/logger.h"
 
@@ -220,10 +221,10 @@ void Recompiler::setCTR(Value* value)
  * Memory access
  */
 Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
-    /*auto ppuSegment = static_cast<Segment*>(function->parent);
-    Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
+    // Get host address
+    void* baseAddress = nucleus.memory.getBaseAddr();
+    addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
-    addr = builder.createAdd(addr, baseAddr);*/
     if (type == TYPE_I8) {
         return builder.createLoad(addr, type);
     } else {
@@ -232,10 +233,10 @@ Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
 }
 
 void Recompiler::writeMemory(Value* addr, Value* value) {
-    /*auto ppuSegment = static_cast<Segment*>(function->parent);
-    Value* baseAddr = builder.createLoad(ppuSegment->memoryBase);
+    // Get host address
+    void* baseAddress = nucleus.memory.getBaseAddr();
+    addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
-    addr = builder.createAdd(addr, baseAddr);*/
     if (value->type == TYPE_I8) {
         builder.createStore(addr, value);
     } else {
