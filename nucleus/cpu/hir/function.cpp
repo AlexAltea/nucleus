@@ -4,6 +4,7 @@
  */
 
 #include "function.h"
+#include "nucleus/emulator.h"
 #include "nucleus/cpu/hir/module.h"
 
 namespace cpu {
@@ -28,6 +29,18 @@ Function::Function(Module* parent, TypeOut tOut, TypeIn tIn)
 Function::~Function() {
     for (auto block : blocks) {
         delete block;
+    }
+}
+
+Value* Function::call(const std::vector<Value*>& args) {
+    if (flags & FUNCTION_IS_COMPILED) {
+        nucleus.cell.compiler->translationEnter();
+        auto function = reinterpret_cast<void(*)()>(nativeAddress);
+        function();
+        nucleus.cell.compiler->translationExit();
+    } else {
+        logger.error(LOG_CPU, "Function is not ready");
+        return 0;
     }
 }
 

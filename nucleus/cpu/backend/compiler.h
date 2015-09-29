@@ -46,6 +46,10 @@ public:
     virtual bool compile(hir::Function* function) = 0;
     virtual bool compile(hir::Module* module) = 0;
 
+    // Manage code execution
+    virtual void translationEnter() = 0;
+    virtual void translationExit() = 0;
+
     // Manage RWX memory
     void* allocRWXMemory(size_t size);
     void freeRWXMemory(void* addr);

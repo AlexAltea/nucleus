@@ -30,6 +30,9 @@ public:
     virtual bool compile(hir::Block* block) override;
     virtual bool compile(hir::Function* function) override;
     virtual bool compile(hir::Module* module) override;
+
+    virtual void translationEnter() override;
+    virtual void translationExit() override;
 };
 
 }  // namespace x86

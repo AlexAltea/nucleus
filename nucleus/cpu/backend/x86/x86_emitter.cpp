@@ -9,6 +9,11 @@ namespace cpu {
 namespace backend {
 namespace x86 {
 
+X86Emitter::X86Emitter(const Settings& settings) :
+    CodeGenerator(),
+    settings(settings) {
+}
+
 X86Emitter::X86Emitter(const Settings& settings, void* address, U64 size) :
     CodeGenerator(size, address),
     settings(settings) {

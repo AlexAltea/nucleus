@@ -60,16 +60,10 @@ public:
 
     /**
      * Call native function
+     * @param[in]  args  Arguments as an array of constant values
+     * @return           Return as a constant value
      */
-    template <typename... Ts>
-    U64 call(Ts... args) {
-        if (flags & FUNCTION_IS_COMPILED) {
-            return ((U64(*)(Ts...))nativeAddress)(args...);
-        } else {
-            logger.error(LOG_CPU, "Function is not ready");
-            return 0;
-        }
-    }
+    Value* call(const std::vector<Value*>& args = {});
 };
 
 }  // namespace hir

@@ -287,7 +287,7 @@ Value* Builder::createAnd(Value* lhs, Value* rhs) {
 
     Instruction* i = appendInstr(OPCODE_AND, 0, allocValue(lhs->type));
     i->src1.value = lhs;
-    i->src1.value = rhs;
+    i->src2.value = rhs;
     return i->dest;
 }
 
@@ -312,7 +312,7 @@ Value* Builder::createOr(Value* lhs, Value* rhs) {
 
     Instruction* i = appendInstr(OPCODE_OR, 0, allocValue(lhs->type));
     i->src1.value = lhs;
-    i->src1.value = rhs;
+    i->src2.value = rhs;
     return i->dest;
 }
 
@@ -337,7 +337,7 @@ Value* Builder::createXor(Value* lhs, Value* rhs) {
 
     Instruction* i = appendInstr(OPCODE_XOR, 0, allocValue(lhs->type));
     i->src1.value = lhs;
-    i->src1.value = rhs;
+    i->src2.value = rhs;
     return i->dest;
 }
 

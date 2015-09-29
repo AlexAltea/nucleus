@@ -4,6 +4,7 @@
  */
 
 #include "x86_compiler.h"
+#include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
@@ -93,6 +94,23 @@ bool X86Compiler::compile(Module* module) {
         }
     }
     return true;
+}
+
+void X86Compiler::translationEnter() {
+    // Get current state address
+    void* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
+
+    // Generate code
+    X86Emitter e(settings);
+    e.mov(e.rbx, reinterpret_cast<size_t>(state));
+    e.ret();
+   
+    // Execute real translation-enter function
+    auto function = reinterpret_cast<void(*)()>(e.getCode());
+    function();
+}
+
+void X86Compiler::translationExit() {
 }
 
 }  // namespace x86

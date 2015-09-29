@@ -41,9 +41,8 @@ public:
     std::unordered_map<TAddr, Block<TAddr>*> blocks;
 
     // Call translated function
-    template <typename... Ts>
-    void call(Ts... args) {
-        hirFunction->call(args...);
+    hir::Value* call(const std::vector<hir::Value*>& args = {}) {
+        return hirFunction->call(args);
     }
 
     // Check whether an address is inside any CFG block
