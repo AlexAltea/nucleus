@@ -11,7 +11,7 @@ A PlayStation 3 emulator for Windows / Linux / OS X / Android / iOS released und
 You need to provide the PlayStation 3 firmware keys by placing a file named `keys.xml` next to the Nucleus executable. This file has to meet the requirements stated [here](docs/user/keys.md). Instructions about how to extract the keys and generate the file will be provided as well.
 
 ### Building
-* __Windows__: Install [CMake](http://www.cmake.org/download/), [Python](https://www.python.org/downloads/) and [Visual Studio 2013](http://www.visualstudio.com/). Run `tools/nucleus-init.py` and build LLVM manually with the generated solution file. Then open `nucleus.sln` and press *Build* > *Rebuild solution*.
+* __Windows__: Install [Visual Studio 2015](http://www.visualstudio.com/). Open `nucleus.sln` and press *Build* > *Rebuild solution*.
 * __Linux__: Follow the `.travis.yml` file.
 * __OS X__: Unknown status. Use the `.travis.yml` file as reference.
 * __Android__: Install the [Android SDK](http://developer.android.com/sdk/index.html) and [Android NDK](https://developer.android.com/tools/sdk/ndk/index.html#download). *TBA*.
