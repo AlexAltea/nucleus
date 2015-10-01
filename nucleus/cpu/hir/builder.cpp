@@ -104,6 +104,8 @@ Function* Builder::getExternFunction(void* hostAddr) {
         externFunc = new Function(parModule, TYPE_VOID, {TYPE_PTR, TYPE_I64});
     } else if (hostAddr == nucleusCall) {
         externFunc = new Function(parModule, TYPE_VOID, {TYPE_I64});
+    } else if (hostAddr == nucleusLog) {
+        externFunc = new Function(parModule, TYPE_VOID, {TYPE_I64});
     }
 
     externFunc->flags |= FUNCTION_IS_EXTERN;

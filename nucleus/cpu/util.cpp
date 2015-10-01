@@ -6,6 +6,7 @@
 #include "util.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
+#include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
 namespace cpu {
 
@@ -21,6 +22,13 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr) {
 
 void nucleusCall(U64 guestAddr) {
     logger.warning(LOG_CPU, "Unimplemented");
+}
+
+void nucleusLog(U64 guestAddr) {
+    auto* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
+    printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(guestAddr).name);
+    int a = 0;
+    a += 1;
 }
 
 }  // namespace cpu

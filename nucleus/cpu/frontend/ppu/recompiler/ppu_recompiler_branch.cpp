@@ -101,11 +101,10 @@ void Recompiler::bcctrx(Instruction code)
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
             hir::Function* proxyFunc = builder.getExternFunction(nucleusCall);
             if (cond_ok) {
-                builder.createCallCond(cond_ok, proxyFunc, {targetAddr});
+                builder.createCallCond(cond_ok, proxyFunc, {targetAddr}, hir::CALL_EXTERN);
             } else {
-                builder.createCall(proxyFunc, {targetAddr});
+                builder.createCall(proxyFunc, {targetAddr}, hir::CALL_EXTERN);
             }
-            
         }
     }
 
@@ -114,9 +113,9 @@ void Recompiler::bcctrx(Instruction code)
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
             hir::Function* proxyFunc = builder.getExternFunction(nucleusCall);
             if (cond_ok) {
-                builder.createCallCond(cond_ok, proxyFunc, {targetAddr});
+                builder.createCallCond(cond_ok, proxyFunc, {targetAddr}, hir::CALL_EXTERN);
             } else {
-                builder.createCall(proxyFunc, {targetAddr});
+                builder.createCall(proxyFunc, {targetAddr}, hir::CALL_EXTERN);
             }
             builder.createRet();
         }

@@ -28,4 +28,11 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr);
  */
 void nucleusCall(U64 guestAddr);
 
+/**
+ * This is just an utility function that can be placed between guest instructions to
+ * obtain information in real-time about the thread state.
+ * @param[in]  guestAddr  Guest address where the instruction to be executed is
+ */
+void nucleusLog(U64 guestAddr);
+
 }  // namespace cpu

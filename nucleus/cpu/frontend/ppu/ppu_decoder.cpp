@@ -257,11 +257,15 @@ void Function::recompile()
 
         // Recompile block instructions
         builder.setInsertPoint(recompiler.blocks[block.address]);
+
+        // Get function (TODO: This gets loaded multiple times into the module)
+        hir::Function* logFunc = builder.getExternFunction(nucleusLog);
+
         for (U32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
             const Instruction code(recompiler.currentAddress);
             auto method = get_entry(code).recompile;
-            //builder.createCall(static_cast<Module*>(parent)->funcDebugState, {builder.get<hir::I64>(recompiler.currentAddress)});
+            builder.createCall(logFunc, {builder.getConstantI64(recompiler.currentAddress)}, hir::CALL_EXTERN);
             (recompiler.*method)(code);
         }
 
@@ -294,7 +298,7 @@ void Function::createPlaceholder()
     hir::Function* translateFunc = builder.getExternFunction(nucleusTranslate);
     hir::Value* guestFuncValue = builder.getConstantPointer(this);
     hir::Value* guestAddrValue = builder.getConstantI64(address);
-    builder.createCall(translateFunc, {guestFuncValue, guestAddrValue});
+    builder.createCall(translateFunc, {guestFuncValue, guestAddrValue}, hir::CALL_EXTERN);
     builder.createRet();
 
     nucleus.cell.compiler->compile(hirFunction);
