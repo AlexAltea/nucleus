@@ -41,6 +41,11 @@ public:
         operator const Function*() const {
             return function;
         }
+
+        void setValue(Value* v) {
+            v->usage += 1;
+            value = v;
+        }
     };
 
     Opcode opcode;

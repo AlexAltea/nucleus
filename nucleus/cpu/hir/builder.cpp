@@ -38,6 +38,7 @@ Value* Builder::allocValue(Type type) {
     Value* value = new Value();
     value->type = type;
     value->flags = 0;
+    value->usage = 0;
     return value;
 }
 
@@ -140,8 +141,8 @@ Value* Builder::createAdd(Value* lhs, Value* rhs) {
     }
 
     Instruction* i = appendInstr(OPCODE_ADD, 0, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -158,8 +159,8 @@ Value* Builder::createSub(Value* lhs, Value* rhs) {
     }
 
     Instruction* i = appendInstr(OPCODE_SUB, 0, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -174,8 +175,8 @@ Value* Builder::createMul(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     }
 
     Instruction* i = appendInstr(OPCODE_MUL, flags, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -190,8 +191,8 @@ Value* Builder::createMulH(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     }
 
     Instruction* i = appendInstr(OPCODE_MULH, flags, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -206,8 +207,8 @@ Value* Builder::createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags) {
     }
 
     Instruction* i = appendInstr(OPCODE_MULH, flags, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -229,7 +230,7 @@ Value* Builder::createZExt(Value* value, Type type) {
     }
 
     Instruction* i = appendInstr(OPCODE_ZEXT, 0, allocValue(type));
-    i->src1.value = value;
+    i->src1.setValue(value);
     return i->dest;
 }
 
@@ -243,7 +244,7 @@ Value* Builder::createSExt(Value* value, Type type) {
     }
 
     Instruction* i = appendInstr(OPCODE_SEXT, 0, allocValue(type));
-    i->src1.value = value;
+    i->src1.setValue(value);
     return i->dest;
 }
 
@@ -257,7 +258,7 @@ Value* Builder::createTrunc(Value* value, Type type) {
     }
 
     Instruction* i = appendInstr(OPCODE_TRUNC, 0, allocValue(type));
-    i->src1.value = value;
+    i->src1.setValue(value);
     return i->dest;
 }
 
@@ -286,8 +287,8 @@ Value* Builder::createAnd(Value* lhs, Value* rhs) {
     }
 
     Instruction* i = appendInstr(OPCODE_AND, 0, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -311,8 +312,8 @@ Value* Builder::createOr(Value* lhs, Value* rhs) {
     }
 
     Instruction* i = appendInstr(OPCODE_OR, 0, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -336,8 +337,8 @@ Value* Builder::createXor(Value* lhs, Value* rhs) {
     }
 
     Instruction* i = appendInstr(OPCODE_XOR, 0, allocValue(lhs->type));
-    i->src1.value = lhs;
-    i->src2.value = rhs;
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
     return i->dest;
 }
 
@@ -353,7 +354,7 @@ Value* Builder::createNot(Value* value) {
     }
     
     Instruction* i = appendInstr(OPCODE_NOT, 0, allocValue(value->type));
-    i->src1.value = value;
+    i->src1.setValue(value);
     return i->dest;
 }
 
@@ -393,14 +394,14 @@ Value* Builder::createShrA(Value* value, U64 rhs) {
 // Memory access operations
 Value* Builder::createLoad(Value* address, Type type, MemoryFlags flags) {
     Instruction* i = appendInstr(OPCODE_LOAD, flags, allocValue(type));
-    i->src1.value = address;
+    i->src1.setValue(address);
     return i->dest;
 }
 
 void Builder::createStore(Value* address, Value* value, MemoryFlags flags) {
     Instruction* i = appendInstr(OPCODE_STORE, 0);
-    i->src1.value = address;
-    i->src2.value = value;
+    i->src1.setValue(address);
+    i->src2.setValue(value);
 }
 
 Value* Builder::createCtxLoad(U32 offset, Type type) {
@@ -412,7 +413,7 @@ Value* Builder::createCtxLoad(U32 offset, Type type) {
 void Builder::createCtxStore(U32 offset, Value* value) {
     Instruction* i = appendInstr(OPCODE_CTXSTORE, 0);
     i->src1.immediate = offset;
-    i->src2.value = value;
+    i->src2.setValue(value);
 }
 
 void Builder::createMemFence() {
@@ -476,7 +477,7 @@ Value* Builder::createCall(Function* function, const std::vector<Value*>& args, 
         assert_true(args[index]->type == function->typeIn[index]);
         Instruction* i = appendInstr(OPCODE_ARG, 0, allocValue(function->typeIn[index]));
         i->src1.immediate = index;
-        i->src2.value = args[index];
+        i->src2.setValue(args[index]);
     }
     // Call function
     Instruction* i;
@@ -498,7 +499,7 @@ Value* Builder::createCallCond(Value* cond, Function* function, const std::vecto
         assert_true(args[index]->type == function->typeIn[index]);
         Instruction* i = appendInstr(OPCODE_ARG, 0, allocValue(function->typeIn[index]));
         i->src1.immediate = index;
-        i->src2.value = args[index];
+        i->src2.setValue(args[index]);
     }
     // Call function
     Instruction* i;
@@ -507,7 +508,7 @@ Value* Builder::createCallCond(Value* cond, Function* function, const std::vecto
     } else {
         i = appendInstr(OPCODE_CALL, flags, allocValue(function->typeOut));
     }
-    i->src1.value = cond;
+    i->src1.setValue(cond);
     i->src2.function = function;
     return i->dest;
 }
@@ -518,7 +519,7 @@ Value* Builder::createSelect(Value* cond, Value* valueTrue, Value* valueFalse) {
 
 void Builder::createRet(Value* value) {
     Instruction* i = appendInstr(OPCODE_RET, 0);
-    i->src1.value = value;
+    i->src1.setValue(value);
 }
 
 void Builder::createRet() {
