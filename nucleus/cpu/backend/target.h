@@ -28,7 +28,7 @@ struct RegisterSet {
 };
 
 struct TargetInfo {
-    RegisterSet regSet[4];
+    RegisterSet regSets[4];
 };
 
 }  // namespace backend

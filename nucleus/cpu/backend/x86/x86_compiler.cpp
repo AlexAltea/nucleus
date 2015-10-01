@@ -30,14 +30,14 @@ void X86Compiler::init() {
 
     // Set target information
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-    targetInfo.regSet[0].count = 5;
-    targetInfo.regSet[0].types = RegisterSet::TYPE_INT;
-    targetInfo.regSet[0].retIndex = 0; // rax
-    targetInfo.regSet[0].argIndex = {1, 2, 8, 9}; // {rcx, rdx, r8, r9};
-    targetInfo.regSet[1].count = 10;
-    targetInfo.regSet[1].types = RegisterSet::TYPE_FLOAT | RegisterSet::TYPE_VECTOR;
-    targetInfo.regSet[1].retIndex = 0; // xmm0
-    targetInfo.regSet[1].argIndex = {0, 1, 2, 3}; // {xmm0, xmm1, xmm2, xmm3};
+    targetInfo.regSets[0].count = 5;
+    targetInfo.regSets[0].types = RegisterSet::TYPE_INT;
+    targetInfo.regSets[0].retIndex = 0; // rax
+    targetInfo.regSets[0].argIndex = {1, 2, 8, 9}; // {rcx, rdx, r8, r9};
+    targetInfo.regSets[1].count = 10;
+    targetInfo.regSets[1].types = RegisterSet::TYPE_FLOAT | RegisterSet::TYPE_VECTOR;
+    targetInfo.regSets[1].retIndex = 0; // xmm0
+    targetInfo.regSets[1].argIndex = {0, 1, 2, 3}; // {xmm0, xmm1, xmm2, xmm3};
 #elif defined(NUCLEUS_PLATFORM_LINUX)
 #elif defined(NUCLEUS_PLATFORM_OSX)
 #endif
