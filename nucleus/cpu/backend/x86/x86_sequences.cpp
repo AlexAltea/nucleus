@@ -465,50 +465,58 @@ struct TRUNC_I32_I64 : Sequence<TRUNC_I32_I64, I<OPCODE_TRUNC, I32Op, I64Op>> {
  */
 struct LOAD_I8 : Sequence<LOAD_I8, I<OPCODE_LOAD, I8Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        auto addr = i.src1.reg;
+        e.mov(i.dest, e.byte[addr]);
     }
 };
 struct LOAD_I16 : Sequence<LOAD_I16, I<OPCODE_LOAD, I16Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                e.movbe(i.dest, e.word[addr]);
             } else {
-                // TODO
+                e.mov(i.dest, e.word[addr]);
+                e.ror(i.dest, 8);
             }
         } else {
-            // TODO
+            e.mov(i.dest, e.word[addr]);
         }
     }
 };
 struct LOAD_I32 : Sequence<LOAD_I32, I<OPCODE_LOAD, I32Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                e.movbe(i.dest, e.dword[addr]);
             } else {
-                // TODO
+                e.mov(i.dest, e.dword[addr]);
+                e.bswap(i.dest);
             }
         } else {
-            // TODO
+            e.mov(i.dest, e.dword[addr]);
         }
     }
 };
 struct LOAD_I64 : Sequence<LOAD_I64, I<OPCODE_LOAD, I64Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                e.movbe(i.dest, e.qword[addr]);
             } else {
-                // TODO
+                e.mov(i.dest, e.qword[addr]);
+                e.bswap(i.dest);
             }
         } else {
-            // TODO
+            e.mov(i.dest, e.qword[addr]);
         }
     }
 };
 struct LOAD_F32 : Sequence<LOAD_F32, I<OPCODE_LOAD, F32Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 // TODO
@@ -522,6 +530,7 @@ struct LOAD_F32 : Sequence<LOAD_F32, I<OPCODE_LOAD, F32Op, PtrOp>> {
 };
 struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 // TODO
@@ -535,6 +544,7 @@ struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
 };
 struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 // TODO
@@ -552,50 +562,77 @@ struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
  */
 struct STORE_I8 : Sequence<STORE_I8, I<OPCODE_STORE, VoidOp, PtrOp, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        // TODO
+        auto addr = i.src1.reg;
+        if (i.src2.isConstant) {
+            e.mov(e.byte[addr], i.src2.constant());
+        } else {
+            e.mov(e.byte[addr], i.src2);
+        }
     }
 };
 struct STORE_I16 : Sequence<STORE_I16, I<OPCODE_STORE, VoidOp, PtrOp, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                e.movbe(e.word[addr], i.src2);
             } else {
-                // TODO
+                e.mov(e.eax, i.src2);
+                e.xchg(e.ah, e.al);
+                e.mov(e.word[addr], e.eax);
             }
         } else {
-            // TODO
+            if (i.src2.isConstant) {
+                e.mov(e.word[addr], i.src2.constant());
+            } else {
+                e.mov(e.word[addr], i.src2);
+            }
         }
     }
 };
 struct STORE_I32 : Sequence<STORE_I32, I<OPCODE_STORE, VoidOp, PtrOp, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                e.movbe(e.dword[addr], i.src2);
             } else {
-                // TODO
+                e.mov(e.eax, i.src2);
+                e.bswap(e.eax);
+                e.mov(e.dword[addr], e.eax);
             }
         } else {
-            // TODO
+            if (i.src2.isConstant) {
+                e.mov(e.dword[addr], i.src2.constant());
+            } else {
+                e.mov(e.dword[addr], i.src2);
+            }
         }
     }
 };
 struct STORE_I64 : Sequence<STORE_I64, I<OPCODE_STORE, VoidOp, PtrOp, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                e.movbe(e.qword[addr], i.src2);
             } else {
-                // TODO
+                e.mov(e.rax, i.src2);
+                e.bswap(e.rax);
+                e.mov(e.qword[addr], e.rax);
             }
         } else {
-            // TODO
+            if (i.src2.isConstant) {
+                e.mov(e.qword[addr], i.src2.constant());
+            } else {
+                e.mov(e.qword[addr], i.src2);
+            }
         }
     }
 };
 struct STORE_F32 : Sequence<STORE_F32, I<OPCODE_STORE, VoidOp, PtrOp, F32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 // TODO
@@ -609,6 +646,7 @@ struct STORE_F32 : Sequence<STORE_F32, I<OPCODE_STORE, VoidOp, PtrOp, F32Op>> {
 };
 struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, VoidOp, PtrOp, F64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 // TODO
@@ -622,6 +660,7 @@ struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, VoidOp, PtrOp, F64Op>> {
 };
 struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 // TODO
