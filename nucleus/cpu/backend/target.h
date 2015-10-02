@@ -20,15 +20,14 @@ struct RegisterSet {
     };
 
     U32 types;
-    U32 count;
 
-    // Calling convention
+    std::vector<int> valueIndex;
     std::vector<int> argIndex;
     int retIndex;
 };
 
 struct TargetInfo {
-    RegisterSet regSets[4];
+    std::vector<RegisterSet> regSets;
 };
 
 }  // namespace backend

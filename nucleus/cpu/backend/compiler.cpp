@@ -23,8 +23,6 @@ namespace backend {
 using namespace cpu::hir;
 
 Compiler::Compiler() {
-    std::memset(&targetInfo, 0, sizeof(targetInfo));
-
     // Default compiler settings
     settings.isCached = true;
     settings.isJIT = true;
@@ -32,7 +30,6 @@ Compiler::Compiler() {
 }
 
 Compiler::Compiler(const Settings& settings) : settings(settings) {
-    std::memset(&targetInfo, 0, sizeof(targetInfo));
 }
 
 bool Compiler::optimize(Function* function) {

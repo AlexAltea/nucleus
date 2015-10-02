@@ -17,7 +17,7 @@ RegisterAllocationPass::RegisterAllocationPass(const backend::TargetInfo& target
     for (const auto& regSet : targetInfo.regSets) {
         RegSetUsage regUsage;
         regUsage.regs.reset();
-        regUsage.count = regSet.count;
+        regUsage.count = regSet.valueIndex.size();
         regUsage.types = regSet.types;
         regUsages.push_back(regUsage);
     }
@@ -104,6 +104,22 @@ bool RegisterAllocationPass::run(Function* function) {
             }
             if (opInfo.getSignatureSrc3() == OPCODE_SIG_TYPE_V) {
                 tryFreeValueReg(i->src3.value);
+            }
+        }
+    }
+
+    // Register remapping
+    for (auto& block : function->blocks) {
+        for (auto& i : block->instructions) {
+            auto opInfo = opcodeInfo[i->opcode];
+            if (i->opcode == OPCODE_ARG || opInfo.getSignatureDst() != OPCODE_SIG_TYPE_V) {
+                continue;
+            }
+            Value* value = i->dest;
+            for (const auto& regSet : targetInfo.regSets) {
+                if (regSet.types & backend::RegisterSet::TYPE_INT && value->isTypeInteger()) {
+                    value->reg = regSet.valueIndex[value->reg];
+                }
             }
         }
     }
