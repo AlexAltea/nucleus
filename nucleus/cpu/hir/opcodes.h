@@ -53,7 +53,6 @@ enum OpcodeSignatureType {
     OPCODE_SIG_TYPE_V = 3, // Value
     OPCODE_SIG_TYPE_B = 4, // Block
     OPCODE_SIG_TYPE_F = 5, // Function
-    OPCODE_SIG_TYPE_P = 6, // Parameters
 };
 
 enum OpcodeSignature {

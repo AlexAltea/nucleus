@@ -159,6 +159,9 @@
       <Filter>backend</Filter>
     </ClCompile>
     <ClCompile Include="util.cpp" />
+    <ClCompile Include="hir\instruction.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">

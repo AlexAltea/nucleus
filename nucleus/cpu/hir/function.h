@@ -33,6 +33,9 @@ class Function {
     using TypeOut = Type;
     using TypeIn = std::vector<Type>;
 
+    // Value ID used in human-readable HIR representations
+    S32 id = -1;
+
 public:
     Module* parent;
 
@@ -58,12 +61,25 @@ public:
     Function(Module* parent, TypeOut tOut, TypeIn tIn);
     ~Function();
 
+    // Get ID of this function (dumping related)
+    S32 getId();
+
+    // Generate IDs for child blocks and values
+    S32 blockIdCounter = 0;
+    S32 valueIdCounter = 0;
+
     /**
      * Call native function
      * @param[in]  args  Arguments as an array of constant values
      * @return           Return as a constant value
      */
     Value* call(const std::vector<Value*>& args = {});
+
+    /**
+     * Save a human-readable version of this HIR function
+     * @return           String containing the readable version of this HIR function
+     */
+    std::string dump();
 };
 
 }  // namespace hir

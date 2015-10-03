@@ -4,10 +4,26 @@
  */
 
 #include "value.h"
+#include "nucleus/cpu/hir/block.h"
+#include "nucleus/cpu/hir/function.h"
+#include "nucleus/cpu/hir/instruction.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
 namespace hir {
+
+S32 Value::getId() {
+    if (id < 0) {
+        Function* parFunction;
+        if (flags & VALUE_IS_ARGUMENT) {
+            parFunction = parent.function;
+        } else {
+            parFunction = parent.instruction->parent->parent;
+        }
+        id = parFunction->valueIdCounter++;
+    }
+    return id;
+}
 
 // Type properties
 bool Value::isTypeInteger() const {

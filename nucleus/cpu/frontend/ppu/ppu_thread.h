@@ -12,7 +12,7 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-// Class declarations
+// Forward declarations
 class State;
 
 class Thread : public CellThread {

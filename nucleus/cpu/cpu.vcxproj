@@ -47,6 +47,7 @@
     <ClCompile Include="hir\block.cpp" />
     <ClCompile Include="hir\builder.cpp" />
     <ClCompile Include="hir\function.cpp" />
+    <ClCompile Include="hir\instruction.cpp" />
     <ClCompile Include="hir\module.cpp" />
     <ClCompile Include="hir\opcodes.cpp" />
     <ClCompile Include="hir\passes\dead_code_elimination_pass.cpp" />

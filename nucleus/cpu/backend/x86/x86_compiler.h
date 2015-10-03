@@ -15,7 +15,7 @@ namespace cpu {
 namespace backend {
 namespace x86 {
 
-// Class declarations
+// Forward declarations
 class X86Emitter;
 
 class X86Compiler : public Compiler {

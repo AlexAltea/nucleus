@@ -39,6 +39,7 @@ Value* Builder::allocValue(Type type) {
     value->type = type;
     value->flags = 0;
     value->usage = 0;
+    value->reg = 0;
     return value;
 }
 
@@ -116,12 +117,17 @@ Function* Builder::getExternFunction(void* hostAddr) {
 // Instruction generation
 Instruction* Builder::appendInstr(Opcode opcode, OpcodeFlags flags, Value* dest) {
     Instruction* instr = new Instruction();
+    instr->parent = ib;
     instr->opcode = opcode;
     instr->flags = flags;
     instr->dest = dest;
     instr->src1.value = nullptr;
     instr->src2.value = nullptr;
     instr->src3.value = nullptr;
+
+    if (dest && dest->parent.instruction == nullptr) {
+        dest->parent.instruction = instr;
+    }
 
     ib->instructions.insert(ip, instr);
     return instr;

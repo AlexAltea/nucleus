@@ -23,7 +23,7 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-// Class declarations
+// Forward declarations
 class Block;
 class Function;
 class Module;

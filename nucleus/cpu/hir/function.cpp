@@ -32,6 +32,13 @@ Function::~Function() {
     }
 }
 
+S32 Function::getId() {
+    if (id < 0) {
+        id = parent->functionIdCounter++;
+    }
+    return id;
+}
+
 Value* Function::call(const std::vector<Value*>& args) {
     if (flags & FUNCTION_IS_COMPILED) {
         nucleus.cell.compiler->translationEnter();
@@ -42,6 +49,16 @@ Value* Function::call(const std::vector<Value*>& args) {
         logger.error(LOG_CPU, "Function is not ready");
         return 0;
     }
+}
+
+std::string Function::dump() {
+    std::string output;
+    output += "f" + std::to_string(getId()) + "() {\n";
+    for (const auto& block : blocks) {
+        output += block->dump();
+    }
+    output += "}\n\n";
+    return output;
 }
 
 }  // namespace hir

@@ -12,6 +12,10 @@
 namespace cpu {
 namespace hir {
 
+// Forward declarations
+class Function;
+class Instruction;
+
 enum ValueFlags {
     VALUE_IS_CONSTANT  = (1 << 0),
     VALUE_IS_ARGUMENT  = (1 << 1),
@@ -21,8 +25,15 @@ enum ValueFlags {
  * Value
  */
 class Value {
+    // Value ID used in human-readable HIR representations
+    S32 id = -1;
+
 public:
-    // Constant
+    union Parent {
+        Function* function;
+        Instruction* instruction;
+    } parent;
+
     union Constant {
         S8 i8;
         S16 i16;
@@ -44,6 +55,9 @@ public:
     U32 flags;
 
     Type type;
+
+    // Get ID of this value
+    S32 getId();
 
     // Type properties
     bool isTypeInteger() const;

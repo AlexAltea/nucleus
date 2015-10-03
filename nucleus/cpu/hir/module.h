@@ -13,12 +13,15 @@
 namespace cpu {
 namespace hir {
 
+// Forward declarations
 class Function;
 
 class Module {
 public:
     std::vector<Function*> functions;
 
+    // Generate IDs for child blocks and values
+    S32 functionIdCounter = 0;
 
     // Frontend methods
 
@@ -40,11 +43,10 @@ public:
     // Load-Saving methods
 
     /**
-     * Save a readable version of the IR
-     * @param[im]  path  Path where the dump file is to be saved
-     * @return           True on success
+     * Save a human-readable version of this HIR module
+     * @return           String containing the readable version of this HIR module
      */
-    bool dump(const std::string& path);
+    std::string dump() const;
 
     /**
      * Load module from file

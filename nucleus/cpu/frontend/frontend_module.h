@@ -13,7 +13,7 @@
 namespace cpu {
 namespace frontend {
 
-// Class declarations
+// Forward declarations
 template <typename TAddr>
 class Function;
 

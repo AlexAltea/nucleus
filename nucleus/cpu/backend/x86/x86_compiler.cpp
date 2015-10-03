@@ -58,14 +58,18 @@ bool X86Compiler::compile(Function* function) {
     optimize(function);
 
     // Initialize emitter
-    X86Emitter emitter(settings, function->nativeAddress, function->nativeSize);
+    X86Emitter e(settings, function->nativeAddress, function->nativeSize);
 #if defined(NUCLEUS_ARCH_X86_32BITS)
-    emitter.mode = X86_MODE_32BITS;
+    e.mode = X86_MODE_32BITS;
 #elif defined(NUCLEUS_ARCH_X86_64BITS)
-    emitter.mode = X86_MODE_64BITS;
+    e.mode = X86_MODE_64BITS;
 #else
     logger.error(LOG_CPU, "Unsupported variant of the x86 architecture");
 #endif
+
+    // Prolog block
+    e.push(e.rbp);
+    e.mov(e.rsp, e.rbp);
 
     // Iterate over blocks
     std::queue<Block*> blocks({ function->entry });
@@ -75,13 +79,17 @@ bool X86Compiler::compile(Function* function) {
         // Compile block
         auto& instructions = block->instructions;
         for (auto it = instructions.begin(); it != instructions.end(); it++) {
-            if (!X86Sequences::select(emitter, *it)) {
+            if (!X86Sequences::select(e, *it)) {
                 logger.error(LOG_CPU, "Cannot compile block");
                 return false;
             }
         }
         blocks.pop();
     }
+
+    // Epilog block
+    e.pop(e.rbp);
+    e.ret();
 
     function->flags |= FUNCTION_IS_COMPILED;
     return true;
