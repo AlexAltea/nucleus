@@ -27,6 +27,14 @@ using V128Op = V128OpBase<Xbyak::Xmm>;
 using V256Op = V256OpBase<Xbyak::Ymm>;
 using PtrOp = PtrOpBase<Xbyak::Reg64>;
 
+// Temporary register
+template <typename T>
+const T getTempReg(X86Emitter& e);
+template <> const Xbyak::Reg8  getTempReg<Xbyak::Reg8>(X86Emitter& e)  { return e.al; }
+template <> const Xbyak::Reg16 getTempReg<Xbyak::Reg16>(X86Emitter& e) { return e.ax; }
+template <> const Xbyak::Reg32 getTempReg<Xbyak::Reg32>(X86Emitter& e) { return e.eax; }
+template <> const Xbyak::Reg64 getTempReg<Xbyak::Reg64>(X86Emitter& e) { return e.rax; }
+
 // Sequences
 template <typename S, typename I>
 struct Sequence : SequenceBase<S, I> {
@@ -54,14 +62,48 @@ struct Sequence : SequenceBase<S, I> {
     static void emitCommutativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
         // Constant, Constant
         if (i.src1.isConstant && i.src2.isConstant) {
+            if (i.src1.isConstant32b()) {
+                e.mov(i.dest, i.src2.constant());
+                func(e, i.dest, i.src1);
+            } else if (i.src2.isConstant32b()) {
+                e.mov(i.dest, i.src1.constant());
+                func(e, i.dest, i.src2);
+            } else {
+                auto temp = getTempReg<decltype(i.src2.reg)>(e);
+                e.mov(i.dest, i.src1.constant());
+                e.mov(temp, i.src2.constant());
+                func(e, i.dest, temp);
+            }
         }
         // Constant, Register
         else if (i.src1.isConstant && !i.src2.isConstant) {
+            if (i.dest == i.src2) {
+                if (i.src1.isConstant32b()) {
+                    func(e, i.dest, i.src1.constant());
+                } else {
+                    auto temp = getTempReg<decltype(i.src1.reg)>(e);
+                    e.mov(temp, i.src1.constant());
+                    func(e, i.dest, temp);
+                }
+            } else {
+                e.mov(i.dest, i.src1.constant());
+                func(e, i.dest, i.src2);
+            }
         }
         // Register, Constant
         else if (!i.src1.isConstant && i.src2.isConstant) {
-            e.mov(i.dest, i.src2.constant());
-            func(e, i.dest, i.src1);
+            if (i.dest == i.src1) {
+                if (i.src2.isConstant32b()) {
+                    func(e, i.dest, static_cast<int32_t>(i.src2.constant()));
+                } else {
+                    auto temp = getTempReg<decltype(i.src2.reg)>(e);
+                    e.mov(temp, i.src2.constant());
+                    func(e, i.dest, temp);
+                }
+            } else {
+                e.mov(i.dest, i.src2.constant());
+                func(e, i.dest, i.src1);
+            }
         }
         // Register, Register
         else if (!i.src1.isConstant && !i.src2.isConstant) {
@@ -75,6 +117,7 @@ struct Sequence : SequenceBase<S, I> {
             }
         }
     }
+
     template <typename FuncType>
     static void emitAssociativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
     }

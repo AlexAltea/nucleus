@@ -122,12 +122,15 @@ public:
     operator const RegType&() const {
         return reg;
     }
-    bool operator==(const OpType& other) const {
-        return isEqual(other);
-    }
-    bool operator!=(const OpType& other) const {
-        return !isEqual(other);
-    }
+    // Comparison operators
+    bool operator==(const OpType& other) const { return isEqual(other); }
+    bool operator!=(const OpType& other) const { return !isEqual(other); }
+
+    // Constant properties
+    virtual bool isConstant16b() const { return true; }
+    virtual bool isConstant32b() const { return true; }
+    virtual bool isConstant64b() const { return true; }
+
     void load(const hir::Value* v) {
         value = v;
         isConstant = value->isConstant();
@@ -154,11 +157,20 @@ struct I32OpBase : ValueOp<I32OpBase<RegType>, RegType, S32, hir::TYPE_I32> {
     const S32 constant() const {
         return value->constant.i32;
     }
+    bool isConstant16b() const override {
+        return ((constant() & 0xFFFF) == 0);
+    }
 };
 template <typename RegType>
 struct I64OpBase : ValueOp<I64OpBase<RegType>, RegType, S64, hir::TYPE_I64> {
     const S64 constant() const {
         return value->constant.i64;
+    }
+    bool isConstant16b() const override {
+        return ((constant() & 0xFFFF) == 0);
+    }
+    bool isConstant32b() const override {
+        return ((constant() & 0xFFFFFFFF) == 0);
     }
 };
 template <typename RegType>
