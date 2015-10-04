@@ -123,12 +123,14 @@ Value* Recompiler::getVR(int index)
 
 Value* Recompiler::getCR(int index)
 {
-    /*// TODO: We are considering all CR fields nonvolatile
-    if (!cr[index].value) {
-        cr[index] = allocaVariable<I8>(format("cr%d_", index));
-    }
-    return builder.createLoad(cr[index]);*/
-    return nullptr;
+    const U32 offset = offsetof(State, cr);
+
+    // TODO: Use volatility information?
+
+    Value* value = builder.createCtxLoad(offset, TYPE_I32);
+    value = builder.createShr(value, index * 4);
+    value = builder.createTrunc(value, TYPE_I8);
+    return value;
 }
 
 Value* Recompiler::getXER()
@@ -190,11 +192,15 @@ void Recompiler::setVR(int index, Value* value)
 
 void Recompiler::setCR(int index, Value* value)
 {
-    /*// TODO: We are considering all CR fields nonvolatile
-    if (!cr[index].value) {
-        cr[index] = allocaVariable<I8>(format("cr%d_", index));
-    }
-    builder.createStore(value, cr[index]);*/
+    const U32 offset = offsetof(State, cr);
+
+    // TODO: Use volatility information?
+
+    Value* cr = builder.createCtxLoad(offset, TYPE_I32);
+    Value* mask = builder.getConstantI32(~(0xFULL << index * 4));
+    cr = builder.createAnd(cr, mask);
+    cr = builder.createOr(cr, builder.createShl(value, index * 4));
+    builder.createCtxStore(offset, cr);
 }
 
 void Recompiler::setXER(Value* value)

@@ -22,7 +22,7 @@ void Recompiler::bx(Instruction code)
 {
     const U32 targetAddr = code.aa ? (code.li << 2) : (currentAddress + (code.li << 2)) & ~0x3;
 
-    // Function call
+    // Unconditional call
     if (code.lk) {
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
             auto* module = static_cast<Module*>(function->parent);
@@ -31,7 +31,7 @@ void Recompiler::bx(Instruction code)
         createFunctionCall(targetAddr);
     }
 
-    // Simple unconditional branch
+    // Unconditional branch
     else {
         hir::Block* targetBlock = blocks.at(targetAddr);
         builder.createBr(targetBlock);
@@ -53,20 +53,37 @@ void Recompiler::bcx(Instruction code)
         // TODO: Decrement CTR register by 1
     }
 
-    Value* ctr_ok = builder.createOr(
-        builder.getConstantI8(bo2),
-        builder.createXor(
-            builder.createCmpNE(getCTR(), builder.getConstantI64(0)),
-            builder.getConstantI8(bo2)));
-    Value* cond_ok = builder.createOr(
-        builder.getConstantI8(bo0),
-        builder.createXor(
-            builder.createShr(getCR(code.bi >> 2), builder.getConstantI8(code.bi & 0x3)),
-            builder.getConstantI8(~bo1 & 0x1)));
+    Value* ctr_ok = nullptr;
+    if (!bo2) {
+        Value* ctr = getCTR();
+        if (!bo3) {
+            ctr_ok = builder.createCmpNE(ctr, builder.getConstantI64(0));
+        } else {
+            ctr_ok = builder.createCmpEQ(ctr, builder.getConstantI64(0));
+        }
+        // Decrement counter
+        setCTR(builder.createSub(ctr, builder.getConstantI64(1)));
+    }
 
-    Value* cond = builder.createAnd(ctr_ok, cond_ok);
+    Value* cond_ok = nullptr;
+    if (!bo0) {
+        if (!bo1) {
+            cond_ok = builder.createCmpEQ(builder.createShr(getCR(code.bi >> 2), builder.getConstantI8(code.bi & 0x3)), builder.getConstantI64(0));
+        } else {
+            cond_ok = builder.createShr(getCR(code.bi >> 2), builder.getConstantI8(code.bi & 0x3));
+        }
+    }
 
-    // Conditional function call
+    Value* cond = nullptr;
+    if (ctr_ok && cond_ok) {
+        builder.createAnd(ctr_ok, cond_ok);
+    } else if (ctr_ok) {
+        cond = ctr_ok;
+    }  else if (cond_ok) {
+        cond = cond_ok;
+    }
+
+    // Unconditional/conditional call
     if (code.lk) {
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
             auto* module = static_cast<Module*>(function->parent);
@@ -75,11 +92,13 @@ void Recompiler::bcx(Instruction code)
         createFunctionCall(targetAddr, cond);
     }
 
-    // Simple conditional branch
+    // Unconditional/conditional branch
     else {
-        hir::Block* targetBlock = blocks.at(targetAddr);
-        hir::Block* nextBlock = blocks.at(nextAddr);
-        builder.createBrCond(cond, targetBlock, nextBlock);
+        if (cond) {
+            builder.createBrCond(cond, blocks.at(targetAddr), blocks.at(nextAddr));
+        } else {
+            builder.createBr(blocks.at(targetAddr));
+        }
     }
 }
 

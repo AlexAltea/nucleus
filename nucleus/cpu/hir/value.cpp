@@ -43,6 +43,46 @@ bool Value::isConstant() const {
     return (flags & VALUE_IS_CONSTANT);
 }
 
+bool Value::isConstantFalse() const {
+    if (!isConstant()) {
+        return false;
+    }
+    switch (type) {
+    case TYPE_I8:   return !constant.i8;
+    case TYPE_I16:  return !constant.i16;
+    case TYPE_I32:  return !constant.i32;
+    case TYPE_I64:  return !constant.i64;
+    case TYPE_F32:  return !constant.f32;
+    case TYPE_F64:  return !constant.f64;
+    case TYPE_V128: assert_always("Unimplemented Value::isConstantFalse for TYPE_V128"); return false;
+    case TYPE_V256: assert_always("Unimplemented Value::isConstantFalse for TYPE_V256"); return false;
+
+    default:
+        assert_always("Wrong type");
+        return false;
+    }
+}
+
+bool Value::isConstantTrue() const {
+    if (!isConstant()) {
+        return false;
+    }
+    switch (type) {
+    case TYPE_I8:   return !!constant.i8;
+    case TYPE_I16:  return !!constant.i16;
+    case TYPE_I32:  return !!constant.i32;
+    case TYPE_I64:  return !!constant.i64;
+    case TYPE_F32:  return !!constant.f32;
+    case TYPE_F64:  return !!constant.f64;
+    case TYPE_V128: assert_always("Unimplemented Value::isConstantTrue for TYPE_V128"); return false;
+    case TYPE_V256: assert_always("Unimplemented Value::isConstantTrue for TYPE_V256"); return false;
+
+    default:
+        assert_always("Wrong type");
+        return false;
+    }
+}
+
 bool Value::isConstantZero() const {
     if (!isConstant()) {
         return false;

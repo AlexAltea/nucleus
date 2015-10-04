@@ -51,6 +51,9 @@ bool RegisterAllocationPass::tryAllocValueReg(Value* value) {
 }
 
 bool RegisterAllocationPass::tryFreeValueReg(Value* value) {
+    if (value->isConstant()) {
+        return true;
+    }
     value->usage -= 1;
     if (value->usage == 0) {
         for (auto& regUsage : regUsages) {

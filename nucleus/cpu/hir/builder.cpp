@@ -522,7 +522,17 @@ Value* Builder::createCallCond(Value* cond, Function* function, const std::vecto
 }
 
 Value* Builder::createSelect(Value* cond, Value* valueTrue, Value* valueFalse) {
-    return nullptr;
+    ASSERT_TYPE_EQUAL(valueTrue, valueFalse);
+
+    if (cond->isConstant()) {
+        return cond->isConstantTrue() ? valueTrue : valueFalse;
+    }
+
+    Instruction* i = appendInstr(OPCODE_SELECT, 0, allocValue(valueTrue->type));
+    i->src1.setValue(cond);
+    i->src2.setValue(valueTrue);
+    i->src3.setValue(valueFalse);
+    return i->dest;
 }
 
 void Builder::createRet(Value* value) {
