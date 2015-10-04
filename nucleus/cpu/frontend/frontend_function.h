@@ -9,8 +9,8 @@
 #include "nucleus/cpu/frontend/frontend_block.h"
 #include "nucleus/cpu/frontend/frontend_module.h"
 
+#include <map>
 #include <string>
-#include <unordered_map>
 
 namespace cpu {
 namespace frontend {
@@ -38,7 +38,7 @@ public:
     Module<TAddr>* parent;
 
     // Control Flow Graph
-    std::unordered_map<TAddr, Block<TAddr>*> blocks;
+    std::map<TAddr, Block<TAddr>*> blocks;
 
     // Call translated function
     hir::Value* call(const std::vector<hir::Value*>& args = {}) {

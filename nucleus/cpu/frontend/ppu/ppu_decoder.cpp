@@ -241,9 +241,12 @@ void Function::recompile()
 
     hir::Builder& builder = recompiler.builder;
 
+    hirFunction->reset();
+
     // Declare CFG blocks
     for (const auto& item : blocks) {
-        recompiler.blocks[address] = new hir::Block(hirFunction);
+        const U32 labelAddr = item.first;
+        recompiler.blocks[labelAddr] = new hir::Block(hirFunction);
     }
 
     // Generate prolog/epilog blocks

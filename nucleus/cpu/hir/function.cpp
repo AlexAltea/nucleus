@@ -51,6 +51,11 @@ Value* Function::call(const std::vector<Value*>& args) {
     }
 }
 
+void Function::reset() {
+    flags = FUNCTION_IS_DECLARED;
+    blocks.clear();
+}
+
 std::string Function::dump() {
     std::string output;
     output += "f" + std::to_string(getId()) + "() {\n";

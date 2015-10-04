@@ -72,19 +72,13 @@ bool X86Compiler::compile(Function* function) {
     e.mov(e.rsp, e.rbp);
 
     // Iterate over blocks
-    std::queue<Block*> blocks({ function->entry });
-    while (!blocks.empty()) {
-        auto& block = blocks.front();
-
-        // Compile block
-        auto& instructions = block->instructions;
-        for (auto it = instructions.begin(); it != instructions.end(); it++) {
-            if (!X86Sequences::select(e, *it)) {
+    for (const auto& block : function->blocks) {
+        for (const auto& instr : block->instructions) {
+            if (!X86Sequences::select(e, instr)) {
                 logger.error(LOG_CPU, "Cannot compile block");
                 return false;
             }
         }
-        blocks.pop();
     }
 
     // Epilog block

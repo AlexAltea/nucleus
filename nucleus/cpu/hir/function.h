@@ -46,8 +46,7 @@ public:
     TypeOut typeOut;
     TypeIn typeIn;
 
-    // Entry point
-    Block* entry;
+    // Blocks
     std::vector<Block*> blocks;
 
     // Arguments
@@ -74,6 +73,11 @@ public:
      * @return           Return as a constant value
      */
     Value* call(const std::vector<Value*>& args = {});
+
+    /**
+     * Reset the function to its original declared state, removing its definition and compiled result
+     */
+    void reset();
 
     /**
      * Save a human-readable version of this HIR function

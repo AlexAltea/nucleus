@@ -7,6 +7,7 @@
 #include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/assert.h"
+#include "nucleus/format.h"
 
 #include <string>
 
@@ -18,17 +19,28 @@ std::string Instruction::Operand::dump(U8 sigType) const {
     if (sigType == OPCODE_SIG_TYPE_V || (sigType == OPCODE_SIG_TYPE_M && value != nullptr)) {
         if (value->isConstant()) {
             switch (value->type) {
-            case TYPE_I8:   output = std::to_string(value->constant.i8);   break;
-            case TYPE_I16:  output = std::to_string(value->constant.i16);  break;
-            case TYPE_I32:  output = std::to_string(value->constant.i32);  break;
-            case TYPE_I64:  output = std::to_string(value->constant.i64);  break;
-            case TYPE_F32:  output = std::to_string(value->constant.f32);  break;
-            case TYPE_F64:  output = std::to_string(value->constant.f64);  break;
+            case TYPE_I8:   output = format("0x%X", value->constant.i8);   break;
+            case TYPE_I16:  output = format("0x%X", value->constant.i16);  break;
+            case TYPE_I32:  output = format("0x%X", value->constant.i32);  break;
+            case TYPE_I64:  output = format("0x%X", value->constant.i64);  break;
+            case TYPE_F32:  output = format("0x%X", value->constant.f32);  break;
+            case TYPE_F64:  output = format("0x%X", value->constant.f64);  break;
             default:
                 assert_always("Unimplemented case");
             }
         } else {
-            output = "v" + std::to_string(value->getId());
+            switch (value->type) {
+            case TYPE_I8:   output = "v" + std::to_string(value->getId()) + ".i8";   break;
+            case TYPE_I16:  output = "v" + std::to_string(value->getId()) + ".i16";  break;
+            case TYPE_I32:  output = "v" + std::to_string(value->getId()) + ".i32";  break;
+            case TYPE_I64:  output = "v" + std::to_string(value->getId()) + ".i64";  break;
+            case TYPE_F32:  output = "v" + std::to_string(value->getId()) + ".f32";  break;
+            case TYPE_F64:  output = "v" + std::to_string(value->getId()) + ".f64";  break;
+            case TYPE_V128: output = "v" + std::to_string(value->getId()) + ".v128"; break;
+            case TYPE_V256: output = "v" + std::to_string(value->getId()) + ".v256"; break;
+            default:
+                assert_always("Unimplemented case");
+            }
         }
     }
     if (sigType == OPCODE_SIG_TYPE_I) {
