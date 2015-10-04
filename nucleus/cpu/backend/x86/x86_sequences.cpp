@@ -94,7 +94,7 @@ struct Sequence : SequenceBase<S, I> {
         else if (!i.src1.isConstant && i.src2.isConstant) {
             if (i.dest == i.src1) {
                 if (i.src2.isConstant32b()) {
-                    func(e, i.dest, static_cast<int32_t>(i.src2.constant()));
+                    func(e, i.dest, i.src2.constant());
                 } else {
                     auto temp = getTempReg<decltype(i.src2.reg)>(e);
                     e.mov(temp, i.src2.constant());
@@ -120,6 +120,38 @@ struct Sequence : SequenceBase<S, I> {
 
     template <typename FuncType>
     static void emitAssociativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
+    }
+
+    template <typename FuncType>
+    static void emitCompareOp(X86Emitter& e, InstrType& i, FuncType func) {
+        // Constant, Constant
+        if (i.src1.isConstant && i.src2.isConstant) {
+            assert_always("Invalid comparison operands");
+        }
+        // Constant, Register
+        else if (i.src1.isConstant && !i.src2.isConstant) {
+            if (i.src1.isConstant32b()) {
+                func(e, i.dest, i.src2, i.src1.constant(), true);
+            } else {
+                auto temp = getTempReg<decltype(i.src1.reg)>(e);
+                e.mov(temp, i.src1.constant());
+                func(e, i.dest, i.src2, temp, true);
+            }
+        }
+        // Register, Constant
+        else if (!i.src1.isConstant && i.src2.isConstant) {
+            if (i.src2.isConstant32b()) {
+                func(e, i.dest, i.src1, i.src2.constant(), false);
+            } else {
+                auto temp = getTempReg<decltype(i.src2.reg)>(e);
+                e.mov(temp, i.src2.constant());
+                func(e, i.dest, i.src1, temp, false);
+            }
+        }
+        // Register, Register
+        else if (!i.src1.isConstant && !i.src2.isConstant) {
+            func(e, i.dest, i.src1, i.src2, false);
+        }
     }
 };
 
@@ -787,6 +819,111 @@ struct CTXSTORE_I64 : Sequence<CTXSTORE_I64, I<OPCODE_CTXSTORE, VoidOp, Immediat
         }
     }
 };
+
+/**
+ * Opcode: SELECT
+ */
+
+/**
+ * Opcode: CMP
+ */
+#define EMIT_COMMUTATIVE_COMPARE(set) \
+    emitCompareOp(e, i, [](X86Emitter& e, auto dest, auto lhs, auto rhs, bool inverse) { \
+        e.cmp(lhs, rhs); \
+        e.##set##(dest); \
+    });
+
+#define EMIT_ASSOCIATIVE_COMPARE(set, setInv) \
+    emitCompareOp(e, i, [](X86Emitter& e, auto dest, auto lhs, auto rhs, bool inverse) { \
+        e.cmp(lhs, rhs); \
+        if (!inverse) { \
+            e.##set##(dest); \
+        } else { \
+            e.##setInv##(dest); \
+        } \
+    });
+
+struct CMP_I8 : Sequence<CMP_I8, I<OPCODE_CMP, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        switch (i.instr->flags) {
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        default:
+            assert_always("Unimplemented case");
+        }
+    }
+};
+struct CMP_I16 : Sequence<CMP_I16, I<OPCODE_CMP, I8Op, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        switch (i.instr->flags) {
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        default:
+            assert_always("Unimplemented case");
+        }
+    }
+};
+
+struct CMP_I32 : Sequence<CMP_I32, I<OPCODE_CMP, I8Op, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        switch (i.instr->flags) {
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        default:
+            assert_always("Unimplemented case");
+        }
+    }
+};
+
+struct CMP_I64 : Sequence<CMP_I64, I<OPCODE_CMP, I8Op, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        switch (i.instr->flags) {
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        default:
+            assert_always("Unimplemented case");
+        }
+    }
+};
+
+#undef EMIT_COMMUTATIVE_COMPARE
+#undef EMIT_ASSOCIATIVE_COMPARE
+
+/**
+ * Opcode: BR
+ */
 
 /**
  * Opcode: ARG
