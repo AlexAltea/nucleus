@@ -61,13 +61,6 @@ std::string Instruction::dump() const {
     if (flags != 0) {
         output += " ";
         switch (opcode) {
-        // Memory flags
-        case OPCODE_LOAD:
-        case OPCODE_STORE:
-            if (flags == ENDIAN_BIG) { output += "be"; }
-            if (flags == ENDIAN_LITTLE) { output += "le"; }
-            break;
-
         // Arithmetic flags
         case OPCODE_ADD:
         case OPCODE_SUB:
@@ -80,6 +73,29 @@ std::string Instruction::dump() const {
         case OPCODE_CALL:
         case OPCODE_CALLCOND:
             if (flags == CallFlags::CALL_EXTERN) { output += "ext"; }
+            break;
+
+        // Compare flags
+        case OPCODE_CMP:
+            switch (flags) {
+            case COMPARE_EQ:  output += "eq";  break;
+            case COMPARE_NE:  output += "ne";  break;
+            case COMPARE_SLT: output += "slt"; break;
+            case COMPARE_SLE: output += "sle"; break;
+            case COMPARE_SGE: output += "sge"; break;
+            case COMPARE_SGT: output += "sgt"; break;
+            case COMPARE_ULT: output += "ult"; break;
+            case COMPARE_ULE: output += "ule"; break;
+            case COMPARE_UGE: output += "uge"; break;
+            case COMPARE_UGT: output += "ugt"; break;
+            }
+            break;
+
+        // Memory flags
+        case OPCODE_LOAD:
+        case OPCODE_STORE:
+            if (flags == ENDIAN_BIG) { output += "be"; }
+            if (flags == ENDIAN_LITTLE) { output += "le"; }
             break;
 
         // Vector flags

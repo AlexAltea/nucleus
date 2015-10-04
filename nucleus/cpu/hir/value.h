@@ -95,6 +95,7 @@ public:
     void doZExt(Type newType);
     void doSExt(Type newType);
     void doTrunc(Type newType);
+    void doCompare(Value* rhs, CompareFlags flags);
 };
 
 }  // namespace hir

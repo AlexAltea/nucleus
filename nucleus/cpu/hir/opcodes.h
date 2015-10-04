@@ -22,6 +22,19 @@ enum CallFlags : OpcodeFlags {
     CALL_EXTERN  = 1 << 0,
 };
 
+enum CompareFlags : OpcodeFlags {
+    COMPARE_EQ   = 1 << 0,
+    COMPARE_NE   = 1 << 1,
+    COMPARE_SLT  = 1 << 2,
+    COMPARE_SLE  = 1 << 3,
+    COMPARE_SGE  = 1 << 4,
+    COMPARE_SGT  = 1 << 5,
+    COMPARE_ULT  = COMPARE_SLT | (1 << 6),
+    COMPARE_ULE  = COMPARE_SLE | (1 << 6),
+    COMPARE_UGE  = COMPARE_SGE | (1 << 6),
+    COMPARE_UGT  = COMPARE_SGT | (1 << 6),
+};
+
 enum MemoryFlags : OpcodeFlags {
     ENDIAN_DEFAULT  = 0,
     ENDIAN_BIG      = 1 << 0,  // Big Endian memory access

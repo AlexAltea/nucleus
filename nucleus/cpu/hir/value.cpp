@@ -337,5 +337,73 @@ void Value::doTrunc(Type newType) {
     }
 }
 
+void Value::doCompare(Value* rhs, CompareFlags flags) {
+    switch (type) {
+    case TYPE_I8:
+        switch (flags) {
+        case COMPARE_EQ:  constant.i8 = (constant.i8 == rhs->constant.i8) ? 1 : 0;  break;
+        case COMPARE_NE:  constant.i8 = (constant.i8 != rhs->constant.i8) ? 1 : 0;  break;
+        case COMPARE_SLT: constant.i8 = (constant.i8 <  rhs->constant.i8) ? 1 : 0;  break;
+        case COMPARE_SLE: constant.i8 = (constant.i8 <= rhs->constant.i8) ? 1 : 0;  break;
+        case COMPARE_SGE: constant.i8 = (constant.i8 >= rhs->constant.i8) ? 1 : 0;  break;
+        case COMPARE_SGT: constant.i8 = (constant.i8 >  rhs->constant.i8) ? 1 : 0;  break;
+        case COMPARE_ULT: constant.i8 = (U8(constant.i8) <  U8(rhs->constant.i8)) ? 1 : 0;  break;
+        case COMPARE_ULE: constant.i8 = (U8(constant.i8) <= U8(rhs->constant.i8)) ? 1 : 0;  break;
+        case COMPARE_UGE: constant.i8 = (U8(constant.i8) >= U8(rhs->constant.i8)) ? 1 : 0;  break;
+        case COMPARE_UGT: constant.i8 = (U8(constant.i8) >  U8(rhs->constant.i8)) ? 1 : 0;  break;
+        }
+        break;
+
+    case TYPE_I16:
+        switch (flags) {
+        case COMPARE_EQ:  constant.i8 = (constant.i16 == rhs->constant.i16) ? 1 : 0;  break;
+        case COMPARE_NE:  constant.i8 = (constant.i16 != rhs->constant.i16) ? 1 : 0;  break;
+        case COMPARE_SLT: constant.i8 = (constant.i16 <  rhs->constant.i16) ? 1 : 0;  break;
+        case COMPARE_SLE: constant.i8 = (constant.i16 <= rhs->constant.i16) ? 1 : 0;  break;
+        case COMPARE_SGE: constant.i8 = (constant.i16 >= rhs->constant.i16) ? 1 : 0;  break;
+        case COMPARE_SGT: constant.i8 = (constant.i16 >  rhs->constant.i16) ? 1 : 0;  break;
+        case COMPARE_ULT: constant.i8 = (U16(constant.i16) <  U16(rhs->constant.i16)) ? 1 : 0;  break;
+        case COMPARE_ULE: constant.i8 = (U16(constant.i16) <= U16(rhs->constant.i16)) ? 1 : 0;  break;
+        case COMPARE_UGE: constant.i8 = (U16(constant.i16) >= U16(rhs->constant.i16)) ? 1 : 0;  break;
+        case COMPARE_UGT: constant.i8 = (U16(constant.i16) >  U16(rhs->constant.i16)) ? 1 : 0;  break;
+        }
+        break;
+
+    case TYPE_I32:
+        switch (flags) {
+        case COMPARE_EQ:  constant.i8 = (constant.i32 == rhs->constant.i32) ? 1 : 0;  break;
+        case COMPARE_NE:  constant.i8 = (constant.i32 != rhs->constant.i32) ? 1 : 0;  break;
+        case COMPARE_SLT: constant.i8 = (constant.i32 <  rhs->constant.i32) ? 1 : 0;  break;
+        case COMPARE_SLE: constant.i8 = (constant.i32 <= rhs->constant.i32) ? 1 : 0;  break;
+        case COMPARE_SGE: constant.i8 = (constant.i32 >= rhs->constant.i32) ? 1 : 0;  break;
+        case COMPARE_SGT: constant.i8 = (constant.i32 >  rhs->constant.i32) ? 1 : 0;  break;
+        case COMPARE_ULT: constant.i8 = (U32(constant.i32) <  U32(rhs->constant.i32)) ? 1 : 0;  break;
+        case COMPARE_ULE: constant.i8 = (U32(constant.i32) <= U32(rhs->constant.i32)) ? 1 : 0;  break;
+        case COMPARE_UGE: constant.i8 = (U32(constant.i32) >= U32(rhs->constant.i32)) ? 1 : 0;  break;
+        case COMPARE_UGT: constant.i8 = (U32(constant.i32) >  U32(rhs->constant.i32)) ? 1 : 0;  break;
+        }
+        break;
+
+    case TYPE_I64:
+        switch (flags) {
+        case COMPARE_EQ:  constant.i8 = (constant.i64 == rhs->constant.i64) ? 1 : 0;  break;
+        case COMPARE_NE:  constant.i8 = (constant.i64 != rhs->constant.i64) ? 1 : 0;  break;
+        case COMPARE_SLT: constant.i8 = (constant.i64 <  rhs->constant.i64) ? 1 : 0;  break;
+        case COMPARE_SLE: constant.i8 = (constant.i64 <= rhs->constant.i64) ? 1 : 0;  break;
+        case COMPARE_SGE: constant.i8 = (constant.i64 >= rhs->constant.i64) ? 1 : 0;  break;
+        case COMPARE_SGT: constant.i8 = (constant.i64 >  rhs->constant.i64) ? 1 : 0;  break;
+        case COMPARE_ULT: constant.i8 = (U64(constant.i64) <  U64(rhs->constant.i64)) ? 1 : 0;  break;
+        case COMPARE_ULE: constant.i8 = (U64(constant.i64) <= U64(rhs->constant.i64)) ? 1 : 0;  break;
+        case COMPARE_UGE: constant.i8 = (U64(constant.i64) >= U64(rhs->constant.i64)) ? 1 : 0;  break;
+        case COMPARE_UGT: constant.i8 = (U64(constant.i64) >  U64(rhs->constant.i64)) ? 1 : 0;  break;
+        }
+        break;
+
+    default:
+        assert_always("Unimplemented case");
+    }
+    type = TYPE_I8;
+}
+
 }  // namespace hir
 }  // namespace cpu

@@ -199,7 +199,7 @@ void Recompiler::setCR(int index, Value* value)
     Value* cr = builder.createCtxLoad(offset, TYPE_I32);
     Value* mask = builder.getConstantI32(~(0xFULL << index * 4));
     cr = builder.createAnd(cr, mask);
-    cr = builder.createOr(cr, builder.createShl(value, index * 4));
+    cr = builder.createOr(cr, builder.createShl(builder.createZExt(value, TYPE_I32), index * 4));
     builder.createCtxStore(offset, cr);
 }
 

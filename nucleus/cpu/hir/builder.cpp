@@ -428,44 +428,59 @@ void Builder::createMemFence() {
 }
 
 // Comparison operations
+Value* Builder::createCmp(Value* lhs, Value* rhs, CompareFlags flags) {
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (lhs->isConstant() && lhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        dest->doCompare(rhs, flags);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_STORE, flags, allocValue(lhs->type));
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
+    return i->dest;
+}
+
 Value* Builder::createCmpEQ(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_EQ);
 }
 
 Value* Builder::createCmpNE(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_NE);
 }
 
 Value* Builder::createCmpSLT(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_SLT);
 }
 
 Value* Builder::createCmpSLE(Value* lhs, Value* rhs) {
-    return nullptr;
-}
-
-Value* Builder::createCmpSGT(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_SLE);
 }
 
 Value* Builder::createCmpSGE(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_SGE);
+}
+
+Value* Builder::createCmpSGT(Value* lhs, Value* rhs) {
+    return createCmp(lhs, rhs, COMPARE_SGT);
 }
 
 Value* Builder::createCmpULT(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_ULT);
 }
 
 Value* Builder::createCmpULE(Value* lhs, Value* rhs) {
-    return nullptr;
-}
-
-Value* Builder::createCmpUGT(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_ULE);
 }
 
 Value* Builder::createCmpUGE(Value* lhs, Value* rhs) {
-    return nullptr;
+    return createCmp(lhs, rhs, COMPARE_UGE);
+}
+
+Value* Builder::createCmpUGT(Value* lhs, Value* rhs) {
+    return createCmp(lhs, rhs, COMPARE_UGT);
 }
 
 Value* Builder::createBr(Block* block) {

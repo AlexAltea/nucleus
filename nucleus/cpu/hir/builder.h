@@ -95,16 +95,17 @@ public:
     void createMemFence();
 
     // Comparison operations
+    Value* createCmp(Value* lhs, Value* rhs, CompareFlags flags);
     Value* createCmpEQ(Value* lhs, Value* rhs);
     Value* createCmpNE(Value* lhs, Value* rhs);
     Value* createCmpSLT(Value* lhs, Value* rhs);
     Value* createCmpSLE(Value* lhs, Value* rhs);
-    Value* createCmpSGT(Value* lhs, Value* rhs);
     Value* createCmpSGE(Value* lhs, Value* rhs);
+    Value* createCmpSGT(Value* lhs, Value* rhs);
     Value* createCmpULT(Value* lhs, Value* rhs);
     Value* createCmpULE(Value* lhs, Value* rhs);
-    Value* createCmpUGT(Value* lhs, Value* rhs);
     Value* createCmpUGE(Value* lhs, Value* rhs);
+    Value* createCmpUGT(Value* lhs, Value* rhs);
 
     // Branching and conditional operations
     Value* createBr(Block* block);
