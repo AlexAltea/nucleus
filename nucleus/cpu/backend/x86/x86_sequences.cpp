@@ -126,7 +126,7 @@ struct Sequence : SequenceBase<S, I> {
     static void emitCompareOp(X86Emitter& e, InstrType& i, FuncType func) {
         // Constant, Constant
         if (i.src1.isConstant && i.src2.isConstant) {
-            assert_always("Invalid comparison operands");
+            assert_always("Invalid comparison instruction operands");
         }
         // Constant, Register
         else if (i.src1.isConstant && !i.src2.isConstant) {
@@ -823,6 +823,90 @@ struct CTXSTORE_I64 : Sequence<CTXSTORE_I64, I<OPCODE_CTXSTORE, VoidOp, Immediat
 /**
  * Opcode: SELECT
  */
+struct SELECT_I8 : Sequence<SELECT_I8, I<OPCODE_SELECT, I8Op, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.test(i.src1, i.src1);
+
+        if (i.src2.isConstant) {
+            auto temp = getTempReg<decltype(i.src2.reg)>(e);
+            e.mov(temp, i.src2.constant());
+            e.cmovnz(i.dest.reg.cvt32(), temp.cvt32());
+        } else {
+            e.cmovnz(i.dest.reg.cvt32(), i.src2.reg.cvt32());
+        }
+
+        if (i.src3.isConstant) {
+            auto temp = getTempReg<decltype(i.src3.reg)>(e);
+            e.mov(temp, i.src3.constant());
+            e.cmovz(i.dest.reg.cvt32(), temp.cvt32());
+        } else {
+            e.cmovz(i.dest.reg.cvt32(), i.src3.reg.cvt32());
+        }
+    }
+};
+struct SELECT_I16 : Sequence<SELECT_I16, I<OPCODE_SELECT, I16Op, I8Op, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.test(i.src1, i.src1);
+
+        if (i.src2.isConstant) {
+            auto temp = getTempReg<decltype(i.src2.reg)>(e);
+            e.mov(temp, i.src2.constant());
+            e.cmovnz(i.dest.reg.cvt32(), temp.cvt32());
+        } else {
+            e.cmovnz(i.dest.reg.cvt32(), i.src2.reg.cvt32());
+        }
+
+        if (i.src3.isConstant) {
+            auto temp = getTempReg<decltype(i.src3.reg)>(e);
+            e.mov(temp, i.src3.constant());
+            e.cmovz(i.dest.reg.cvt32(), temp.cvt32());
+        } else {
+            e.cmovz(i.dest.reg.cvt32(), i.src3.reg.cvt32());
+        }
+    }
+};
+struct SELECT_I32 : Sequence<SELECT_I32, I<OPCODE_SELECT, I32Op, I8Op, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.test(i.src1, i.src1);
+
+        if (i.src2.isConstant) {
+            auto temp = getTempReg<decltype(i.src2.reg)>(e);
+            e.mov(temp, i.src2.constant());
+            e.cmovnz(i.dest, temp);
+        } else {
+            e.cmovnz(i.dest, i.src2);
+        }
+
+        if (i.src3.isConstant) {
+            auto temp = getTempReg<decltype(i.src3.reg)>(e);
+            e.mov(temp, i.src3.constant());
+            e.cmovz(i.dest, temp);
+        } else {
+            e.cmovz(i.dest, i.src3);
+        }
+    }
+};
+struct SELECT_I64 : Sequence<SELECT_I64, I<OPCODE_SELECT, I64Op, I8Op, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.test(i.src1, i.src1);
+
+        if (i.src2.isConstant) {
+            auto temp = getTempReg<decltype(i.src2.reg)>(e);
+            e.mov(temp, i.src2.constant());
+            e.cmovnz(i.dest, temp);
+        } else {
+            e.cmovnz(i.dest, i.src2);
+        }
+
+        if (i.src3.isConstant) {
+            auto temp = getTempReg<decltype(i.src3.reg)>(e);
+            e.mov(temp, i.src3.constant());
+            e.cmovz(i.dest, temp);
+        } else {
+            e.cmovz(i.dest, i.src3);
+        }
+    }
+};
 
 /**
  * Opcode: CMP
@@ -1053,6 +1137,8 @@ void X86Sequences::init() {
         registerSequence<STORE_I8, STORE_I16, STORE_I32, STORE_I64, STORE_F32, STORE_F64, STORE_V128>();
         registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64>();
         registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64>();
+        registerSequence<SELECT_I8, SELECT_I16, SELECT_I32, SELECT_I64>();
+        registerSequence<CMP_I8, CMP_I16, CMP_I32, CMP_I64>();
         registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
         registerSequence<CALL_VOID>();
         registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();

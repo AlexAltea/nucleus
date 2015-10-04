@@ -477,7 +477,7 @@ Value* Builder::createCmp(Value* lhs, Value* rhs, CompareFlags flags) {
         return dest;
     }
 
-    Instruction* i = appendInstr(OPCODE_CMP, flags, allocValue(lhs->type));
+    Instruction* i = appendInstr(OPCODE_CMP, flags, allocValue(TYPE_I8));
     i->src1.setValue(lhs);
     i->src2.setValue(rhs);
     return i->dest;

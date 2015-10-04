@@ -36,6 +36,10 @@ void RegisterAllocationPass::allocArgumentReg(int index, Value* arg) {
 }
 
 bool RegisterAllocationPass::tryAllocValueReg(Value* value) {
+    // Nothing to alloc if value is unused
+    if (value->usage == 0) {
+        return true;
+    }
     for (auto& regUsage : regUsages) {
         if (regUsage.types & backend::RegisterSet::TYPE_INT && value->isTypeInteger()) {
             for (size_t i = 0; i < regUsage.count; i++) {
@@ -51,6 +55,7 @@ bool RegisterAllocationPass::tryAllocValueReg(Value* value) {
 }
 
 bool RegisterAllocationPass::tryFreeValueReg(Value* value) {
+    // Nothing to free if value is constant
     if (value->isConstant()) {
         return true;
     }
