@@ -68,7 +68,7 @@ void Recompiler::bcx(Instruction code)
     Value* cond_ok = nullptr;
     if (!bo0) {
         if (!bo1) {
-            cond_ok = builder.createCmpEQ(builder.createShr(getCR(code.bi >> 2), builder.getConstantI8(code.bi & 0x3)), builder.getConstantI64(0));
+            cond_ok = builder.createCmpEQ(builder.createShr(getCR(code.bi >> 2), builder.getConstantI8(code.bi & 0x3)), builder.getConstantI8(0));
         } else {
             cond_ok = builder.createShr(getCR(code.bi >> 2), builder.getConstantI8(code.bi & 0x3));
         }

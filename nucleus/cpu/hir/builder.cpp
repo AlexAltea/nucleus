@@ -368,35 +368,75 @@ Value* Builder::createNot(Value* value) {
 
 // Shifting operations
 Value* Builder::createShl(Value* value, Value* amount) {
-    return nullptr;
+    ASSERT_TYPE_INTEGER(value);
+    ASSERT_TYPE_INTEGER(amount);
+
+    if (amount->isConstantZero()) {
+        return value;
+    }
+
+    Instruction* i = appendInstr(OPCODE_SHL, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    i->src2.setValue(amount);
+    return i->dest;
 }
 
 Value* Builder::createShl(Value* value, U64 rhs) {
-    return nullptr;
+    return createShl(value, getConstantI64(rhs));
 }
 
 Value* Builder::createShlA(Value* value, Value* amount) {
-    return nullptr;
+    ASSERT_TYPE_INTEGER(value);
+    ASSERT_TYPE_INTEGER(amount);
+
+    if (amount->isConstantZero()) {
+        return value;
+    }
+
+    Instruction* i = appendInstr(OPCODE_SHLA, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    i->src2.setValue(amount);
+    return i->dest;
 }
 
 Value* Builder::createShlA(Value* value, U64 rhs) {
-    return nullptr;
+    return createShlA(value, getConstantI64(rhs));
 }
 
 Value* Builder::createShr(Value* value, Value* amount) {
-    return nullptr;
+    ASSERT_TYPE_INTEGER(value);
+    ASSERT_TYPE_INTEGER(amount);
+
+    if (amount->isConstantZero()) {
+        return value;
+    }
+
+    Instruction* i = appendInstr(OPCODE_SHR, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    i->src2.setValue(amount);
+    return i->dest;
 }
 
 Value* Builder::createShr(Value* value, U64 rhs) {
-    return nullptr;
+    return createShr(value, getConstantI64(rhs));
 }
 
 Value* Builder::createShrA(Value* value, Value* amount) {
-    return nullptr;
+    ASSERT_TYPE_INTEGER(value);
+    ASSERT_TYPE_INTEGER(amount);
+
+    if (amount->isConstantZero()) {
+        return value;
+    }
+
+    Instruction* i = appendInstr(OPCODE_SHRA, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    i->src2.setValue(amount);
+    return i->dest;
 }
 
 Value* Builder::createShrA(Value* value, U64 rhs) {
-    return nullptr;
+    return createShrA(value, getConstantI64(rhs));
 }
 
 // Memory access operations
