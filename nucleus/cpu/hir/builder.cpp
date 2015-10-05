@@ -385,24 +385,6 @@ Value* Builder::createShl(Value* value, U64 rhs) {
     return createShl(value, getConstantI64(rhs));
 }
 
-Value* Builder::createShlA(Value* value, Value* amount) {
-    ASSERT_TYPE_INTEGER(value);
-    ASSERT_TYPE_INTEGER(amount);
-
-    if (amount->isConstantZero()) {
-        return value;
-    }
-
-    Instruction* i = appendInstr(OPCODE_SHLA, 0, allocValue(value->type));
-    i->src1.setValue(value);
-    i->src2.setValue(amount);
-    return i->dest;
-}
-
-Value* Builder::createShlA(Value* value, U64 rhs) {
-    return createShlA(value, getConstantI64(rhs));
-}
-
 Value* Builder::createShr(Value* value, Value* amount) {
     ASSERT_TYPE_INTEGER(value);
     ASSERT_TYPE_INTEGER(amount);

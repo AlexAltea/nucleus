@@ -80,8 +80,6 @@ public:
     // Shifting operations
     Value* createShl(Value* value, Value* amount);
     Value* createShl(Value* value, U64 rhs);
-    Value* createShlA(Value* value, Value* amount);
-    Value* createShlA(Value* value, U64 rhs);
     Value* createShr(Value* value, Value* amount);
     Value* createShr(Value* value, U64 rhs);
     Value* createShrA(Value* value, Value* amount);

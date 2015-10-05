@@ -19,7 +19,8 @@ namespace x86 {
 enum X86Extension {
     AVX   = (1 << 0),  // Advanced Vector Extensions
     AVX2  = (1 << 1),  // Advanced Vector Extensions 2
-    MOVBE = (1 << 2),  // Move Data After Swapping Bytes
+    BMI2  = (1 << 2),  // Bit Manipulation Instructions 2
+    MOVBE = (1 << 3),  // Move Data After Swapping Bytes
 };
 
 enum X86Mode {

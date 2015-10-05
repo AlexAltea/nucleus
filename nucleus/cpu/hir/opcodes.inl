@@ -17,7 +17,6 @@ OPCODE(AND,       "and",       OPCODE_SIG_V_V_V)   // Bitwise And
 OPCODE(OR,        "or",        OPCODE_SIG_V_V_V)   // Bitwise Or
 OPCODE(XOR,       "xor",       OPCODE_SIG_V_V_V)   // Bitwise Xor
 OPCODE(SHL,       "shl",       OPCODE_SIG_V_V_V)   // Shift to left
-OPCODE(SHLA,      "shla",      OPCODE_SIG_V_V_V)   // Shift to left (algebraic)
 OPCODE(SHR,       "shr",       OPCODE_SIG_V_V_V)   // Shift to right
 OPCODE(SHRA,      "shra",      OPCODE_SIG_V_V_V)   // Shift to right (algebraic)
 OPCODE(ROL,       "rol",       OPCODE_SIG_V_V_V)   // Rotate to left

@@ -118,8 +118,64 @@ struct Sequence : SequenceBase<S, I> {
         }
     }
 
+    template <typename FuncRegType, typename FuncConstType>
+    static void emitAssociativeBinaryOp(X86Emitter& e, InstrType& i, FuncRegType funcReg, FuncConstType funcConst) {
+        // Constant, Constant
+        if (i.src1.isConstant && i.src2.isConstant) {
+            assert_always("Invalid associative binary instruction operands");
+        }
+        // Constant, Register
+        else if (i.src1.isConstant && !i.src2.isConstant) {
+            if (i.dest.reg == i.src2.reg) {
+                auto temp = getTempReg<decltype(i.src2.reg)>(e);
+                e.mov(temp, i.src2);
+                e.mov(i.dest, i.src1.constant());
+                funcReg(e, i.dest.reg, temp);
+            } else {
+                e.mov(i.dest, i.src1.constant());
+                funcReg(e, i.dest.reg, i.src2.reg);
+            }
+        }
+        // Register, Constant
+        else if (!i.src1.isConstant && i.src2.isConstant) {
+            if (i.dest == i.src1) {
+                if (i.src2.isConstant32b()) {
+                    funcConst(e, i.dest.reg, i.src2.constant());
+                } else {
+                    auto temp = getTempReg<decltype(i.src2.reg)>(e);
+                    e.mov(temp, i.src2.constant());
+                    funcReg(e, i.dest.reg, temp);
+                }
+            } else {
+                e.mov(i.dest, i.src1);
+                if (i.src2.isConstant32b()) {
+                    funcConst(e, i.dest.reg, i.src2.constant());
+                } else {
+                    auto temp = getTempReg<decltype(i.src2.reg)>(e);
+                    e.mov(temp, i.src2.constant());
+                    funcReg(e, i.dest.reg, temp);
+                }
+            }
+        }
+        // Register, Register
+        else if (!i.src1.isConstant && !i.src2.isConstant) {
+            if (i.dest == i.src1) {
+                funcReg(e, i.dest.reg, i.src2.reg);
+            } else if (i.dest.reg == i.src2.reg) {
+                auto temp = getTempReg<decltype(i.src2.reg)>(e);
+                e.mov(temp, i.src2);
+                e.mov(i.dest, i.src1);
+                funcReg(e, i.dest.reg, temp);
+            } else {
+                e.mov(i.dest, i.src1);
+                funcReg(e, i.dest.reg, i.src2.reg);
+            }
+        }
+    }
+
     template <typename FuncType>
     static void emitAssociativeBinaryOp(X86Emitter& e, InstrType& i, FuncType func) {
+        emitAssociativeBinaryOp(e, i, func, func);
     }
 
     template <typename FuncType>
@@ -255,11 +311,17 @@ struct MUL_I64 : Sequence<MUL_I64, I<OPCODE_MUL, I64Op, I64Op, I64Op>> {
             // TODO
         } else {
             if (i.src2.isConstant) {
-                e.imul(i.dest, i.src1, i.src2.constant());
+                if (i.src2.isConstant32b()) {
+                    e.imul(i.dest, i.src1, i.src2.constant());
+                } else {
+                    e.mov(i.dest, i.src1);
+                    e.mov(e.rax, i.src2.constant());
+                    e.imul(i.dest, e.rax);
+                }
             } else {
-                emitAssociativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
-                    e.imul(dest, src);
-                });
+                e.mov(i.dest, i.src1);
+                e.mov(e.rax, i.src2);
+                e.imul(i.dest, e.rax);
             }
         }
     }
@@ -398,6 +460,210 @@ struct XOR_I64 : Sequence<XOR_I64, I<OPCODE_XOR, I64Op, I64Op, I64Op>> {
         emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
             e.xor_(dest, src);
         });
+    }
+};
+
+/**
+ * Opcode: SHL
+ */
+struct SHL_I8 : Sequence<SHL_I8, I<OPCODE_SHL, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                    e.shlx(dest.cvt32(), dest.cvt32(), srcReg.cvt32());
+                } else {
+                    e.mov(e.cl, srcReg);
+                    e.shl(dest, e.cl);
+                    // TODO: Restore cl
+                }
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shl(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHL_I16 : Sequence<SHL_I16, I<OPCODE_SHL, I16Op, I16Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                    e.shlx(dest.cvt32(), dest.cvt32(), srcReg.cvt32());
+                } else {
+                    e.mov(e.cl, srcReg);
+                    e.shl(dest, e.cl);
+                    // TODO: Restore cl
+                }
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shl(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHL_I32 : Sequence<SHL_I32, I<OPCODE_SHL, I32Op, I32Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                    e.shlx(dest.cvt32(), dest.cvt32(), srcReg.cvt32());
+                } else {
+                    e.mov(e.cl, srcReg);
+                    e.shl(dest, e.cl);
+                    // TODO: Restore cl
+                }
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shl(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHL_I64 : Sequence<SHL_I64, I<OPCODE_SHL, I64Op, I64Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                    e.shlx(dest.cvt64(), dest.cvt64(), srcReg.cvt64());
+                } else {
+                    e.mov(e.cl, srcReg);
+                    e.shl(dest, e.cl);
+                    // TODO: Restore cl
+                }
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shl(dest, srcConst);
+            }
+        );
+    }
+};
+
+/**
+ * Opcode: SHR
+ */
+struct SHR_I8 : Sequence<SHR_I8, I<OPCODE_SHR, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's shrx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.shr(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shr(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHR_I16 : Sequence<SHR_I16, I<OPCODE_SHR, I16Op, I16Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's shrx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.shr(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shr(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHR_I32 : Sequence<SHR_I32, I<OPCODE_SHR, I32Op, I32Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's shrx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.shr(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shr(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHR_I64 : Sequence<SHR_I64, I<OPCODE_SHR, I64Op, I64Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's shrx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.shr(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.shr(dest, srcConst);
+            }
+        );
+    }
+};
+
+/**
+ * Opcode: SHRA
+ */
+struct SHRA_I8 : Sequence<SHRA_I8, I<OPCODE_SHRA, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's sarx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.sar(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.sar(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHRA_I16 : Sequence<SHRA_I16, I<OPCODE_SHRA, I16Op, I16Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's sarx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.sar(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.sar(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHRA_I32 : Sequence<SHRA_I32, I<OPCODE_SHRA, I32Op, I32Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's sarx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.sar(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.sar(dest, srcConst);
+            }
+        );
+    }
+};
+struct SHRA_I64 : Sequence<SHRA_I64, I<OPCODE_SHRA, I64Op, I64Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitAssociativeBinaryOp(e, i,
+            [](X86Emitter& e, auto dest, auto srcReg) {
+                // TODO: Use BMI2's sarx to avoid the mov
+                e.mov(e.cl, srcReg);
+                e.sar(dest, e.cl);
+                // TODO: Restore cl
+            },
+            [](X86Emitter& e, auto dest, auto srcConst) {
+                e.sar(dest, srcConst);
+            }
+        );
     }
 };
 
@@ -1126,10 +1392,13 @@ void X86Sequences::init() {
         registerSequence<SUB_I8, SUB_I16, SUB_I32, SUB_I64>();
         registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
         registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
+        registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64>();
         registerSequence<AND_I8, AND_I16, AND_I32, AND_I64>();
         registerSequence<OR_I8, OR_I16, OR_I32, OR_I64>();
         registerSequence<XOR_I8, XOR_I16, XOR_I32, XOR_I64>();
-        registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64>();
+        registerSequence<SHL_I8, SHL_I16, SHL_I32, SHL_I64>();
+        registerSequence<SHR_I8, SHR_I16, SHR_I32, SHR_I64>();
+        registerSequence<SHRA_I8, SHRA_I16, SHRA_I32, SHRA_I64>();
         registerSequence<ZEXT_I16_I8, ZEXT_I32_I8, ZEXT_I64_I8, ZEXT_I32_I16, ZEXT_I64_I16, ZEXT_I64_I32>();
         registerSequence<SEXT_I16_I8, SEXT_I32_I8, SEXT_I64_I8, SEXT_I32_I16, SEXT_I64_I16, SEXT_I64_I32>();
         registerSequence<TRUNC_I8_I16, TRUNC_I8_I32, TRUNC_I8_I64, TRUNC_I16_I32, TRUNC_I16_I64, TRUNC_I32_I64>();
