@@ -100,7 +100,7 @@ namespace Xbyak {
 
 enum {
 	DEFAULT_MAX_CODE_SIZE = 4096,
-	VERSION = 0x4860 /* 0xABCD = A.BC(D) */
+	VERSION = 0x4870 /* 0xABCD = A.BC(D) */
 };
 
 #ifndef MIE_INTEGER_TYPE_DEFINED
@@ -525,6 +525,26 @@ inline Reg64 Reg::cvt64() const
 	if (isBit(8) && (4 <= idx && idx < 8) && !isExt8bit()) throw Error(ERR_CANT_CONVERT);
 	return Reg64(idx);
 }
+#endif
+
+#ifndef XBYAK_DISABLE_SEGMENT
+// not derived from Reg
+class Segment {
+	int idx_;
+public:
+	enum {
+		es, cs, ss, ds, fs, gs
+	};
+	Segment(int idx) : idx_(idx) { assert(0 <= idx_ && idx_ < 6); }
+	int getIdx() const { return idx_; }
+	const char *toString() const
+	{
+		static const char tbl[][3] = {
+			"es", "cs", "ss", "ds", "fs", "gs"
+		};
+		return tbl[idx_];
+	}
+};
 #endif
 
 class RegExp {
@@ -1445,9 +1465,9 @@ private:
 		opR_ModM(op, 0, ext, (B11000000 | ((imm == 1 ? 1 : 0) << 4)), NONE, NONE, false, (imm != 1) ? 1 : 0);
 		if (imm != 1) db(imm);
 	}
-	void opShift(const Operand& op, const Reg8& cl, int ext)
+	void opShift(const Operand& op, const Reg8& _cl, int ext)
 	{
-		if (cl.getIdx() != Operand::CL) throw Error(ERR_BAD_COMBINATION);
+		if (_cl.getIdx() != Operand::CL) throw Error(ERR_BAD_COMBINATION);
 		opR_ModM(op, 0, ext, B11010010);
 	}
 	void opModRM(const Operand& op1, const Operand& op2, bool condR, bool condM, int code0, int code1 = NONE, int code2 = NONE, int immSize = 0)
@@ -1460,11 +1480,11 @@ private:
 			throw Error(ERR_BAD_COMBINATION);
 		}
 	}
-	void opShxd(const Operand& op, const Reg& reg, uint8 imm, int code, const Reg8 *cl = 0)
+	void opShxd(const Operand& op, const Reg& reg, uint8 imm, int code, const Reg8 *_cl = 0)
 	{
-		if (cl && cl->getIdx() != Operand::CL) throw Error(ERR_BAD_COMBINATION);
-		opModRM(reg, op, (op.isREG(16 | i32e) && op.getBit() == reg.getBit()), op.isMEM() && (reg.isREG(16 | i32e)), 0x0F, code | (cl ? 1 : 0), NONE, cl ? 0 : 1);
-		if (!cl) db(imm);
+		if (_cl && _cl->getIdx() != Operand::CL) throw Error(ERR_BAD_COMBINATION);
+		opModRM(reg, op, (op.isREG(16 | i32e) && op.getBit() == reg.getBit()), op.isMEM() && (reg.isREG(16 | i32e)), 0x0F, code | (_cl ? 1 : 0), NONE, _cl ? 0 : 1);
+		if (!_cl) db(imm);
 	}
 	// (REG, REG|MEM), (MEM, REG)
 	void opRM_RM(const Operand& op1, const Operand& op2, int code)
@@ -1680,6 +1700,9 @@ public:
 	const Ymm &ym8, &ym9, &ym10, &ym11, &ym12, &ym13, &ym14, &ym15;
 	const RegRip rip;
 #endif
+#ifndef XBYAK_DISABLE_SEGMENT
+	const Segment es, cs, ss, ds, fs, gs;
+#endif
 	void L(const std::string& label) { labelMgr_.defineSlabel(label); }
 	void L(const Label& label) { labelMgr_.defineClabel(label); }
 	/*
@@ -1777,6 +1800,34 @@ public:
 			push(dword, imm);
 		}
 	}
+#ifndef XBYAK_DISABLE_SEGMENT
+	void push(const Segment& seg)
+	{
+		switch (seg.getIdx()) {
+		case Segment::es: db(0x06); break;
+		case Segment::cs: db(0x0e); break;
+		case Segment::ss: db(0x16); break;
+		case Segment::ds: db(0x1e); break;
+		case Segment::fs: db(0x0f); db(0xa0); break;
+		case Segment::gs: db(0x0f); db(0xa8); break;
+		default:
+			assert(0);
+		}
+	}
+	void pop(const Segment& seg)
+	{
+		switch (seg.getIdx()) {
+		case Segment::es: db(0x07); break;
+		case Segment::cs: throw Error(ERR_BAD_COMBINATION);
+		case Segment::ss: db(0x17); break;
+		case Segment::ds: db(0x1f); break;
+		case Segment::fs: db(0x0f); db(0xa1); break;
+		case Segment::gs: db(0x0f); db(0xa9); break;
+		default:
+			assert(0);
+		}
+	}
+#endif
 	void bswap(const Reg32e& reg)
 	{
 		opModR(Reg32(1), reg, 0x0F);
@@ -1897,6 +1948,29 @@ public:
 		mov_imm(reg, dummyAddr);
 		putL(label);
 	}
+#ifndef XBYAK_DISABLE_SEGMENT
+	void putSeg(const Segment& seg)
+	{
+		switch (seg.getIdx()) {
+		case Segment::es: db(0x2e); break;
+		case Segment::cs: db(0x36); break;
+		case Segment::ss: db(0x3e); break;
+		case Segment::ds: db(0x26); break;
+		case Segment::fs: db(0x64); break;
+		case Segment::gs: db(0x65); break;
+		default:
+			assert(0);
+		}
+	}
+	void mov(const Operand& op, const Segment& seg)
+	{
+		opModRM(Reg8(seg.getIdx()), op, op.isREG(16|i32e), op.isMEM(), 0x8C);
+	}
+	void mov(const Segment& seg, const Operand& op)
+	{
+		opModRM(Reg8(seg.getIdx()), op.isREG(16|i32e) ? static_cast<const Operand&>(static_cast<const Reg&>(op).cvt32()) : op, op.isREG(16|i32e), op.isMEM(), 0x8E);
+	}
+#endif
 	void movbe(const Reg& reg, const Address& addr) { opModM(addr, reg, 0x0F, 0x38, 0xF0); }
 	void movbe(const Address& addr, const Reg& reg) { opModM(addr, reg, 0x0F, 0x38, 0xF1); }
 	/*
@@ -2084,6 +2158,9 @@ public:
 		, ym8(ymm8), ym9(ymm9), ym10(ymm10), ym11(ymm11), ym12(ymm12), ym13(ymm13), ym14(ymm14), ym15(ymm15) // for my convenience
 		, rip()
 #endif
+#ifndef XBYAK_DISABLE_SEGMENT
+		, es(Segment::es), cs(Segment::cs), ss(Segment::ss), ds(Segment::ds), fs(Segment::fs), gs(Segment::gs)
+#endif
 	{
 		labelMgr_.set(this);
 	}
@@ -2141,6 +2218,9 @@ static const Reg8 r8b(Operand::R8B), r9b(Operand::R9B), r10b(Operand::R10B), r11
 static const Xmm xmm8(8), xmm9(9), xmm10(10), xmm11(11), xmm12(12), xmm13(13), xmm14(14), xmm15(15);
 static const Ymm ymm8(8), ymm9(9), ymm10(10), ymm11(11), ymm12(12), ymm13(13), ymm14(14), ymm15(15);
 static const RegRip rip;
+#endif
+#ifndef XBYAK_DISABLE_SEGMENT
+static const Segment es(Segment::es), cs(Segment::cs), ss(Segment::ss), ds(Segment::ds), fs(Segment::fs), gs(Segment::gs);
 #endif
 } // util
 
