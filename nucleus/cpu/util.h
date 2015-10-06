@@ -29,6 +29,13 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr);
 void nucleusCall(U64 guestAddr);
 
 /**
+ * Guest code may contain syscall to run. Nota that all potential argument values that
+ * may have been modified and are allocated in registers should be copied back to the
+ * thread state object before this function is called.
+ */
+void nucleusSysCall();
+
+/**
  * This is just an utility function that can be placed between guest instructions to
  * obtain information in real-time about the thread state.
  * @param[in]  guestAddr  Guest address where the instruction to be executed is

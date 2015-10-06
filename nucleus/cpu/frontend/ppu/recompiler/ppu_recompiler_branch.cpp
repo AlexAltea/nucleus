@@ -199,24 +199,10 @@ void Recompiler::mcrf(Instruction code)
 
 void Recompiler::sc(Instruction code)
 {
-    /*// Store parameter registers in the PPU state
-    for (int index = 3; index <= 10; index++) {
-        Value* regPointer = builder.createInBoundsGEP(state, {
-            builder.getConstantI32(0),
-            builder.getConstantI32(0),
-            builder.getConstantI32(index)});
-        builder.createStore(getGPR(index), regPointer);
-    }
+    hir::Function* syscallFunc = builder.getExternFunction(nucleusSysCall);
 
-    // Call Nucleus syscall handler
-    builder.createCall(static_cast<Segment*>(function->parent)->funcSystemCall); // TODO: Use code.lev fields
-
-    // Load return register from the PPU state
-    Value* regPointer = builder.createInBoundsGEP(state, {
-        builder.getConstantI32(0),
-        builder.getConstantI32(0),
-        builder.getConstantI32(3)});
-    setGPR(3, builder.createLoad(regPointer));*/
+    // TODO: Use code.lev fields
+    builder.createCall(syscallFunc, {}, CALL_EXTERN);
 }
 
 void Recompiler::td(Instruction code)
