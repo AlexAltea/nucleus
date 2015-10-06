@@ -325,9 +325,9 @@ void Value::doTrunc(Type newType) {
     case TYPE_I64:
         type = newType;
         switch (newType) {
-        case TYPE_I16:  constant.i64 &= 0xFF;        return;
-        case TYPE_I32:  constant.i64 &= 0xFFFF;      return;
-        case TYPE_I64:  constant.i64 &= 0xFFFFFFFF;  return;
+        case TYPE_I8:   constant.i64 &= 0xFF;        return;
+        case TYPE_I16:  constant.i64 &= 0xFFFF;      return;
+        case TYPE_I32:  constant.i64 &= 0xFFFFFFFF;  return;
         default:
             assert_always("Unimplemented case");
             return;

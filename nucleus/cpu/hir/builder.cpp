@@ -44,7 +44,23 @@ Value* Builder::allocValue(Type type) {
 }
 
 Value* Builder::cloneValue(Value* source) {
-    return nullptr;
+    assert_true(source->isConstant(), "Builder only supports cloning constants");
+
+    Value* value = new Value();
+    value->type = source->type;
+    value->flags = source->flags;
+    
+    if (source->isConstant()) {
+        switch (source->type) {
+        case TYPE_I8:  value->constant.i8  = source->constant.i8;  break;
+        case TYPE_I16: value->constant.i16 = source->constant.i16; break;
+        case TYPE_I32: value->constant.i32 = source->constant.i32; break;
+        case TYPE_I64: value->constant.i64 = source->constant.i64; break;
+        case TYPE_F32: value->constant.f32 = source->constant.f32; break;
+        case TYPE_F64: value->constant.f64 = source->constant.f64; break;
+        }
+    }
+    return value;
 }
 
 // HIR constants
@@ -374,6 +390,9 @@ Value* Builder::createShl(Value* value, Value* amount) {
     if (amount->isConstantZero()) {
         return value;
     }
+    if (amount->type != TYPE_I8) {
+        amount = createTrunc(amount, TYPE_I8);
+    }
 
     Instruction* i = appendInstr(OPCODE_SHL, 0, allocValue(value->type));
     i->src1.setValue(value);
@@ -382,7 +401,7 @@ Value* Builder::createShl(Value* value, Value* amount) {
 }
 
 Value* Builder::createShl(Value* value, U64 rhs) {
-    return createShl(value, getConstantI64(rhs));
+    return createShl(value, getConstantI8(rhs));
 }
 
 Value* Builder::createShr(Value* value, Value* amount) {
@@ -392,6 +411,9 @@ Value* Builder::createShr(Value* value, Value* amount) {
     if (amount->isConstantZero()) {
         return value;
     }
+    if (amount->type != TYPE_I8) {
+        amount = createTrunc(amount, TYPE_I8);
+    }
 
     Instruction* i = appendInstr(OPCODE_SHR, 0, allocValue(value->type));
     i->src1.setValue(value);
@@ -400,7 +422,7 @@ Value* Builder::createShr(Value* value, Value* amount) {
 }
 
 Value* Builder::createShr(Value* value, U64 rhs) {
-    return createShr(value, getConstantI64(rhs));
+    return createShr(value, getConstantI8(rhs));
 }
 
 Value* Builder::createShrA(Value* value, Value* amount) {
@@ -410,6 +432,9 @@ Value* Builder::createShrA(Value* value, Value* amount) {
     if (amount->isConstantZero()) {
         return value;
     }
+    if (amount->type != TYPE_I8) {
+        amount = createTrunc(amount, TYPE_I8);
+    }
 
     Instruction* i = appendInstr(OPCODE_SHRA, 0, allocValue(value->type));
     i->src1.setValue(value);
@@ -418,7 +443,7 @@ Value* Builder::createShrA(Value* value, Value* amount) {
 }
 
 Value* Builder::createShrA(Value* value, U64 rhs) {
-    return createShrA(value, getConstantI64(rhs));
+    return createShrA(value, getConstantI8(rhs));
 }
 
 // Memory access operations
