@@ -6,11 +6,14 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/backend/settings.h"
 
 // Xbyak dependency
 #define XBYAK_NO_OP_NAMES
 #include "externals/xbyak/xbyak.h"
+
+#include <unordered_map>
 
 namespace cpu {
 namespace backend {
@@ -32,6 +35,9 @@ private:
 public:
     // Chosen x86 mode
     U32 mode;
+
+    // List of labels
+    std::unordered_map<const hir::Block*, Xbyak::Label> labels;
 
     // Constructor
     X86Emitter(const X86Compiler* compiler);

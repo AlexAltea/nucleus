@@ -81,6 +81,11 @@ bool X86Compiler::compile(Function* function) {
     e.push(e.rbp);
     e.mov(e.rsp, e.rbp);
 
+    // Prepare labels
+    for (const auto& block : function->blocks) {
+        e.labels[block] = Xbyak::Label();
+    }
+
     // Iterate over blocks
     for (const auto& block : function->blocks) {
         for (const auto& instr : block->instructions) {

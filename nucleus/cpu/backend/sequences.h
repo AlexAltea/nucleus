@@ -82,6 +82,15 @@ struct ImmediateOp : Op {
     }
 };
 
+struct BlockOp : Op {
+    static constexpr InstrKey::Value key = hir::OPCODE_SIG_TYPE_B;
+    const hir::Block* block;
+
+    void load(const hir::Block* f) {
+        this->block = f;
+    }
+};
+
 struct FunctionOp : Op {
     static constexpr InstrKey::Value key = hir::OPCODE_SIG_TYPE_F;
     const hir::Function* function;

@@ -532,12 +532,16 @@ Value* Builder::createCmpUGT(Value* lhs, Value* rhs) {
     return createCmp(lhs, rhs, COMPARE_UGT);
 }
 
-Value* Builder::createBr(Block* block) {
-    return nullptr;
+void Builder::createBr(Block* block) {
+    Instruction* i = appendInstr(OPCODE_BR, 0);
+    i->src1.block = block;
 }
 
-Value* Builder::createBrCond(Value* cond, Block* blockTrue, Block* blockFalse) {
-    return nullptr;
+void Builder::createBrCond(Value* cond, Block* blockTrue, Block* blockFalse) {
+    Instruction* i = appendInstr(OPCODE_BRCOND, 0);
+    i->src1.setValue(cond);
+    i->src2.block = blockTrue;
+    i->src3.block = blockFalse;
 }
 
 Value* Builder::createCall(Function* function, const std::vector<Value*>& args, CallFlags flags) {

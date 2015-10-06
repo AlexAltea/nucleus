@@ -25,7 +25,7 @@ Block::~Block() {
 
 S32 Block::getId() {
     if (id < 0) {
-        id = parent->valueIdCounter++;
+        id = parent->blockIdCounter++;
     }
     return id;
 }

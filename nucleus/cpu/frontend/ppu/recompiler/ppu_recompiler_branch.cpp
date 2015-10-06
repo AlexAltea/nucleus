@@ -145,13 +145,13 @@ void Recompiler::bclrx(Instruction code)
 {
     // Unconditional return
     if (code.bo == 20 && code.bi == 0) {
-        builder.createBr(epilog);
+        builder.createRet();
     }
 
     // Conditional return
     else {
         // TODO: This is wrong
-        builder.createBr(epilog);
+        builder.createRet();
     }
 }
 

@@ -1275,6 +1275,12 @@ struct CMP_I64 : Sequence<CMP_I64, I<OPCODE_CMP, I8Op, I64Op, I64Op>> {
 /**
  * Opcode: BR
  */
+struct BR : Sequence<BR, I<OPCODE_BR, VoidOp, BlockOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Xbyak::Label& label = e.labels[i.src1.block];
+        e.jmp(label, e.T_NEAR);
+    }
+};
 
 /**
  * Opcode: ARG
@@ -1335,6 +1341,42 @@ struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_CALL, VoidOp, FunctionOp>> {
         e.call(e.rax);
     }
 };
+
+/**
+ * Opcode: BRCOND
+ */
+struct BRCOND_I8 : Sequence<BRCOND_I8, I<OPCODE_BRCOND, VoidOp, I8Op, BlockOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Xbyak::Label& label = e.labels[i.src2.block];
+        e.test(i.src1, i.src1);
+        e.jnz(label, e.T_NEAR);
+    }
+};
+struct BRCOND_I16 : Sequence<BRCOND_I16, I<OPCODE_BRCOND, VoidOp, I16Op, BlockOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Xbyak::Label& label = e.labels[i.src2.block];
+        e.test(i.src1, i.src1);
+        e.jnz(label, e.T_NEAR);
+    }
+};
+struct BRCOND_I32 : Sequence<BRCOND_I32, I<OPCODE_BRCOND, VoidOp, I32Op, BlockOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Xbyak::Label& label = e.labels[i.src2.block];
+        e.test(i.src1, i.src1);
+        e.jnz(label, e.T_NEAR);
+    }
+};
+struct BRCOND_I64 : Sequence<BRCOND_I64, I<OPCODE_BRCOND, VoidOp, I64Op, BlockOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Xbyak::Label& label = e.labels[i.src2.block];
+        e.test(i.src1, i.src1);
+        e.jnz(label, e.T_NEAR);
+    }
+};
+
+/**
+ * Opcode: CALLCOND
+ */
 
 /**
  * Opcode: RET
@@ -1410,7 +1452,9 @@ void X86Sequences::init() {
         registerSequence<SELECT_I8, SELECT_I16, SELECT_I32, SELECT_I64>();
         registerSequence<CMP_I8, CMP_I16, CMP_I32, CMP_I64>();
         registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
+        registerSequence<BR>();
         registerSequence<CALL_VOID>();
+        registerSequence<BRCOND_I8, BRCOND_I16, BRCOND_I32, BRCOND_I64>();
         registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
     }
 }
