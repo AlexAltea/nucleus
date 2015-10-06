@@ -6,6 +6,7 @@
 #include "x86_sequences.h"
 #include "nucleus/assert.h"
 #include "nucleus/cpu/hir/function.h"
+#include "nucleus/cpu/backend/x86/x86_compiler.h"
 #include "nucleus/cpu/backend/x86/x86_emitter.h"
 #include "nucleus/logger/logger.h"
 
@@ -1324,7 +1325,7 @@ struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_CALL, VoidOp, FunctionOp>> {
         if (target->flags & FUNCTION_IS_COMPILED) {
             e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
         } else {
-            if (e.settings.isJIT) {
+            if (e.settings().isJIT) {
                 e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
             } else {
                 // TODO

@@ -16,12 +16,8 @@ namespace cpu {
 namespace backend {
 namespace x86 {
 
-enum X86Extension {
-    AVX   = (1 << 0),  // Advanced Vector Extensions
-    AVX2  = (1 << 1),  // Advanced Vector Extensions 2
-    BMI2  = (1 << 2),  // Bit Manipulation Instructions 2
-    MOVBE = (1 << 3),  // Move Data After Swapping Bytes
-};
+// Forward declarations
+class X86Compiler;
 
 enum X86Mode {
     X86_MODE_32BITS = (1 << 0),
@@ -31,20 +27,27 @@ enum X86Mode {
 class X86Emitter : public Xbyak::CodeGenerator {
 private:
     // Available x86 extensions
-    U32 extensions;
+    const X86Compiler* compiler;
 
 public:
-    // Global code generation settings
-    const Settings& settings;
-
     // Chosen x86 mode
     U32 mode;
 
     // Constructor
-    X86Emitter(const Settings& settings);
-    X86Emitter(const Settings& settings, void* address, U64 size);
+    X86Emitter(const X86Compiler* compiler);
+    X86Emitter(const X86Compiler* compiler, void* address, U64 size);
 
-    bool isExtensionAvailable(U32 queriedExtensions) const;
+    /**
+     * Check whether a specific x86 extension is available
+     * @return True if the extension exists 
+     */
+    bool isExtensionAvailable(U32 queriedExtension) const;
+
+    /**
+     * Return global generic compiler settings
+     * @return Compiler settings member
+     */
+    const Settings& settings() const;
 };
 
 }  // namespace x86

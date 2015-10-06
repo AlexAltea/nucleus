@@ -4,23 +4,28 @@
  */
 
 #include "x86_emitter.h"
+#include "nucleus/cpu/backend/x86/x86_compiler.h"
 
 namespace cpu {
 namespace backend {
 namespace x86 {
 
-X86Emitter::X86Emitter(const Settings& settings) :
+X86Emitter::X86Emitter(const X86Compiler* compiler) :
     CodeGenerator(),
-    settings(settings) {
+    compiler(compiler) {
 }
 
-X86Emitter::X86Emitter(const Settings& settings, void* address, U64 size) :
+X86Emitter::X86Emitter(const X86Compiler* compiler, void* address, U64 size) :
     CodeGenerator(size, address),
-    settings(settings) {
+    compiler(compiler) {
 }
 
-bool X86Emitter::isExtensionAvailable(U32 queriedExtensions) const {
-    return (extensions & queriedExtensions);
+bool X86Emitter::isExtensionAvailable(U32 queriedExtension) const {
+    return (compiler->extensions & queriedExtension);
+}
+
+const Settings& X86Emitter::settings() const {
+    return compiler->settings;
 }
 
 }  // namespace x86

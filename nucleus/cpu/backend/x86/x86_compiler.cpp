@@ -8,6 +8,8 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
+#include "externals/xbyak/xbyak_util.h"
+
 #include <queue>
 
 namespace cpu {
@@ -27,6 +29,14 @@ X86Compiler::X86Compiler(const Settings& settings) : Compiler(settings) {
 void X86Compiler::init() {
     // Initialize sequences
     X86Sequences::init();
+
+    // Set extensions information
+    Xbyak::util::Cpu cpu;
+    extensions = 0;
+    extensions |= cpu.has(Xbyak::util::Cpu::tAVX)   ? X86Extension::AVX : 0;
+    extensions |= cpu.has(Xbyak::util::Cpu::tAVX2)  ? X86Extension::AVX2 : 0;
+    extensions |= cpu.has(Xbyak::util::Cpu::tBMI2)  ? X86Extension::BMI2 : 0;
+    extensions |= cpu.has(Xbyak::util::Cpu::tMOVBE) ? X86Extension::MOVBE : 0;
 
     // Set target information
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
@@ -58,7 +68,7 @@ bool X86Compiler::compile(Function* function) {
     optimize(function);
 
     // Initialize emitter
-    X86Emitter e(settings, function->nativeAddress, function->nativeSize);
+    X86Emitter e(this, function->nativeAddress, function->nativeSize);
 #if defined(NUCLEUS_ARCH_X86_32BITS)
     e.mode = X86_MODE_32BITS;
 #elif defined(NUCLEUS_ARCH_X86_64BITS)
@@ -104,7 +114,7 @@ void X86Compiler::translationEnter() {
     void* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
 
     // Generate code
-    X86Emitter e(settings);
+    X86Emitter e(this);
     e.mov(e.rbx, reinterpret_cast<size_t>(state));
     e.ret();
    
