@@ -24,6 +24,7 @@ void nucleusCall(U64 guestAddr) {
     logger.warning(LOG_CPU, "Unimplemented");
 }
 
+void nucleusSysCall() {
     auto* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
     nucleus.lv2.call(*state);
 }

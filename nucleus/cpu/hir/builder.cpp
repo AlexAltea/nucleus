@@ -456,7 +456,7 @@ Value* Builder::createLoad(Value* address, Type type, MemoryFlags flags) {
 }
 
 void Builder::createStore(Value* address, Value* value, MemoryFlags flags) {
-    Instruction* i = appendInstr(OPCODE_STORE, 0);
+    Instruction* i = appendInstr(OPCODE_STORE, flags);
     i->src1.setValue(address);
     i->src2.setValue(value);
 }

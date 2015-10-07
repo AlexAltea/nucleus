@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backend\compiler.cpp" />
-    <ClCompile Include="backend\relocation.cpp" />
     <ClCompile Include="backend\x86\x86_compiler.cpp" />
     <ClCompile Include="backend\x86\x86_emitter.cpp" />
     <ClCompile Include="backend\x86\x86_sequences.cpp" />
@@ -44,6 +43,7 @@
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_float.cpp" />
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_integer.cpp" />
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_memory.cpp" />
+    <ClCompile Include="frontend\spu\spu_state.cpp" />
     <ClCompile Include="hir\block.cpp" />
     <ClCompile Include="hir\builder.cpp" />
     <ClCompile Include="hir\function.cpp" />
@@ -59,7 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backend\compiler.h" />
-    <ClInclude Include="backend\relocation.h" />
     <ClInclude Include="backend\sequences.h" />
     <ClInclude Include="backend\settings.h" />
     <ClInclude Include="backend\target.h" />
@@ -80,6 +79,7 @@
     <ClInclude Include="frontend\ppu\ppu_utils.h" />
     <ClInclude Include="frontend\ppu\recompiler\ppu_recompiler.h" />
     <ClInclude Include="frontend\spu\recompiler\spu_recompiler.h" />
+    <ClInclude Include="frontend\spu\spu_state.h" />
     <ClInclude Include="hir\block.h" />
     <ClInclude Include="hir\builder.h" />
     <ClInclude Include="hir\function.h" />

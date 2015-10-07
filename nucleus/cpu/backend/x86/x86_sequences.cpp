@@ -1383,30 +1383,35 @@ struct BRCOND_I64 : Sequence<BRCOND_I64, I<OPCODE_BRCOND, VoidOp, I64Op, BlockOp
  */
 struct RET_VOID : Sequence<RET_VOID, I<OPCODE_RET, VoidOp, VoidOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
+        e.pop(e.rbp);
         e.ret();
     }
 };
 struct RET_I8 : Sequence<RET_I8, I<OPCODE_RET, VoidOp, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         e.mov(e.al, i.src1);
+        e.pop(e.rbp);
         e.ret();
     }
 };
 struct RET_I16 : Sequence<RET_I16, I<OPCODE_RET, VoidOp, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         e.mov(e.ax, i.src1);
+        e.pop(e.rbp);
         e.ret();
     }
 };
 struct RET_I32 : Sequence<RET_I32, I<OPCODE_RET, VoidOp, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         e.mov(e.eax, i.src1);
+        e.pop(e.rbp);
         e.ret();
     }
 };
 struct RET_I64 : Sequence<RET_I64, I<OPCODE_RET, VoidOp, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         e.mov(e.rax, i.src1);
+        e.pop(e.rbp);
         e.ret();
     }
 };

@@ -88,6 +88,7 @@ bool X86Compiler::compile(Function* function) {
 
     // Iterate over blocks
     for (const auto& block : function->blocks) {
+        e.L(e.labels[block]);
         for (const auto& instr : block->instructions) {
             if (!X86Sequences::select(e, instr)) {
                 logger.error(LOG_CPU, "Cannot compile block");
