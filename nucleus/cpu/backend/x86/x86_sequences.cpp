@@ -282,34 +282,34 @@ struct SUB_I64 : Sequence<SUB_I64, I<OPCODE_SUB, I64Op, I64Op, I64Op>> {
 struct MUL_I8 : Sequence<MUL_I8, I<OPCODE_MUL, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
 struct MUL_I16 : Sequence<MUL_I16, I<OPCODE_MUL, I16Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
 struct MUL_I32 : Sequence<MUL_I32, I<OPCODE_MUL, I32Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
 struct MUL_I64 : Sequence<MUL_I64, I<OPCODE_MUL, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
             if (i.src2.isConstant) {
                 if (i.src2.isConstant32b()) {
@@ -329,41 +329,113 @@ struct MUL_I64 : Sequence<MUL_I64, I<OPCODE_MUL, I64Op, I64Op, I64Op>> {
 };
 
 /**
+ * Opcode: MULH
+ */
+#define EMIT_MULH(mulFunc, regA, regD) \
+    if (i.src1.isConstant) { \
+        e.mov(regA, i.src1.constant()); \
+    } else { \
+        e.mov(regA, i.src1); \
+    } \
+    if (i.src2.isConstant) { \
+        e.mov(regD, i.src2.constant()); \
+        mulFunc(regD); \
+    } else { \
+        mulFunc(i.src2); \
+    } \
+    e.mov(i.dest, regD);
+
+struct MULH_I8 : Sequence<MULH_I8, I<OPCODE_MULH, I8Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.instr->flags & ARITHMETIC_UNSIGNED) {
+            if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                assert_always("Unimplemented");
+            } else {
+                EMIT_MULH(e.mul, e.al, e.dl);
+            }
+        } else {
+            EMIT_MULH(e.imul, e.al, e.dl);
+        }
+    }
+};
+struct MULH_I16 : Sequence<MULH_I16, I<OPCODE_MULH, I16Op, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.instr->flags & ARITHMETIC_UNSIGNED) {
+            if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                assert_always("Unimplemented");
+            } else {
+                EMIT_MULH(e.mul, e.ax, e.dx);
+            }
+        } else {
+            EMIT_MULH(e.imul, e.ax, e.dx);
+        }
+    }
+};
+struct MULH_I32 : Sequence<MULH_I32, I<OPCODE_MULH, I32Op, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.instr->flags & ARITHMETIC_UNSIGNED) {
+            if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                assert_always("Unimplemented");
+            } else {
+                EMIT_MULH(e.mul, e.eax, e.edx);
+            }
+        } else {
+            EMIT_MULH(e.imul, e.eax, e.edx);
+        }
+    }
+};
+struct MULH_I64 : Sequence<MULH_I64, I<OPCODE_MULH, I64Op, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (i.instr->flags & ARITHMETIC_UNSIGNED) {
+            if (e.isExtensionAvailable(X86Extension::BMI2)) {
+                assert_always("Unimplemented");
+            } else {
+                EMIT_MULH(e.mul, e.rax, e.rdx);
+            }
+        } else {
+            EMIT_MULH(e.imul, e.rax, e.rdx);
+        }
+    }
+};
+
+#undef EMIT_MULH
+
+/**
  * Opcode: DIV
  */
 struct DIV_I8 : Sequence<DIV_I8, I<OPCODE_DIV, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
 struct DIV_I16 : Sequence<DIV_I16, I<OPCODE_DIV, I16Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
 struct DIV_I32 : Sequence<DIV_I32, I<OPCODE_DIV, I32Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
 struct DIV_I64 : Sequence<DIV_I64, I<OPCODE_DIV, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            // TODO
+            assert_always("Unimplemented");
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
@@ -861,12 +933,12 @@ struct LOAD_F32 : Sequence<LOAD_F32, I<OPCODE_LOAD, F32Op, PtrOp>> {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                assert_always("Unimplemented");
             } else {
-                // TODO
+                assert_always("Unimplemented");
             }
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
@@ -875,12 +947,12 @@ struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                assert_always("Unimplemented");
             } else {
-                // TODO
+                assert_always("Unimplemented");
             }
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
@@ -889,12 +961,12 @@ struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                assert_always("Unimplemented");
             } else {
-                // TODO
+                assert_always("Unimplemented");
             }
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
@@ -977,12 +1049,12 @@ struct STORE_F32 : Sequence<STORE_F32, I<OPCODE_STORE, VoidOp, PtrOp, F32Op>> {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                assert_always("Unimplemented");
             } else {
-                // TODO
+                assert_always("Unimplemented");
             }
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
@@ -991,12 +1063,12 @@ struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, VoidOp, PtrOp, F64Op>> {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                assert_always("Unimplemented");
             } else {
-                // TODO
+                assert_always("Unimplemented");
             }
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
@@ -1005,12 +1077,12 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                // TODO
+                assert_always("Unimplemented");
             } else {
-                // TODO
+                assert_always("Unimplemented");
             }
         } else {
-            // TODO
+            assert_always("Unimplemented");
         }
     }
 };
@@ -1439,6 +1511,7 @@ void X86Sequences::init() {
         registerSequence<ADD_I8, ADD_I16, ADD_I32, ADD_I64>();
         registerSequence<SUB_I8, SUB_I16, SUB_I32, SUB_I64>();
         registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
+        registerSequence<MULH_I8, MULH_I16, MULH_I32, MULH_I64>();
         registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
         registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64>();
         registerSequence<AND_I8, AND_I16, AND_I32, AND_I64>();
