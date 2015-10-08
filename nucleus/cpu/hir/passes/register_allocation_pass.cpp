@@ -99,7 +99,7 @@ bool RegisterAllocationPass::run(Function* function) {
             }
             // Handle everything else
             auto opInfo = opcodeInfo[i->opcode];
-            if (opInfo.getSignatureDst() == OPCODE_SIG_TYPE_V) {
+            if (opInfo.getSignatureDest() == OPCODE_SIG_TYPE_V) {
                 if (!tryAllocValueReg(i->dest)) {
                     assert_always("This pass does not support placing values in the stack yet");
                 }
@@ -120,7 +120,7 @@ bool RegisterAllocationPass::run(Function* function) {
     for (auto& block : function->blocks) {
         for (auto& i : block->instructions) {
             auto opInfo = opcodeInfo[i->opcode];
-            if (i->opcode == OPCODE_ARG || opInfo.getSignatureDst() != OPCODE_SIG_TYPE_V) {
+            if (i->opcode == OPCODE_ARG || opInfo.getSignatureDest() != OPCODE_SIG_TYPE_V) {
                 continue;
             }
             Value* value = i->dest;

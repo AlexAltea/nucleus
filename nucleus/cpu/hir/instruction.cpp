@@ -60,7 +60,8 @@ std::string Instruction::dump() const {
     const auto& opInfo = opcodeInfo[opcode];
 
     // Destination
-    if (opInfo.getSignatureDst() == OPCODE_SIG_TYPE_V) {
+    auto sigTypeDest = opInfo.getSignatureDest();
+    if (opInfo.getSignatureDest() == OPCODE_SIG_TYPE_V || (opInfo.getSignatureDest() == OPCODE_SIG_TYPE_M && dest != nullptr)) {
         output += "    v" + std::to_string(dest->getId()) + " = ";
     } else {
         output += "    ";

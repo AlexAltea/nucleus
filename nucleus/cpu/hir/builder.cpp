@@ -234,7 +234,7 @@ Value* Builder::createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags) {
         return dest;
     }
 
-    Instruction* i = appendInstr(OPCODE_MULH, flags, allocValue(lhs->type));
+    Instruction* i = appendInstr(OPCODE_DIV, flags, allocValue(lhs->type));
     i->src1.setValue(lhs);
     i->src2.setValue(rhs);
     return i->dest;
@@ -561,7 +561,6 @@ void Builder::createBrCond(Value* cond, Block* blockTrue, Block* blockFalse) {
     Instruction* i = appendInstr(OPCODE_BRCOND, 0);
     i->src1.setValue(cond);
     i->src2.block = blockTrue;
-    i->src3.block = blockFalse;
 }
 
 Value* Builder::createCall(Function* function, const std::vector<Value*>& args, CallFlags flags) {

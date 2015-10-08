@@ -815,7 +815,7 @@ void Recompiler::sync(Instruction code)
 
 void Recompiler::isync(Instruction code)
 {
-    // Nothing to translate
+    // TODO
 }
 
 }  // namespace ppu

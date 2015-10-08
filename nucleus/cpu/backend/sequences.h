@@ -33,7 +33,7 @@ union InstrKey {
         opcode = instr->opcode;
 
         // Fill destination field
-        dest = opInfo.getSignatureDst();
+        dest = opInfo.getSignatureDest();
         if (dest == hir::OPCODE_SIG_TYPE_V || (dest == hir::OPCODE_SIG_TYPE_M && instr->dest)) {
             dest = (hir::OPCODE_SIG_TYPE_V + instr->dest->type);
         }

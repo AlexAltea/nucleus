@@ -120,7 +120,7 @@ void Recompiler::addic_(Instruction code)
 void Recompiler::addis(Instruction code)
 {
     Value* ra = getGPR(code.ra);
-    Value* simm = builder.getConstantI64(code.simm);
+    Value* simm = builder.getConstantI64(code.simm << 16);
     Value* rd;
 
     if (code.ra) {
@@ -156,6 +156,16 @@ void Recompiler::andx(Instruction code)
 
 void Recompiler::andcx(Instruction code)
 {
+    Value* rb = getGPR(code.rb);
+    Value* rs = getGPR(code.rs);
+    Value* ra;
+
+    ra = builder.createAnd(rs, builder.createNot(rb));
+    if (code.rc) {
+        updateCR0(ra);
+    }
+
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::andi_(Instruction code)
@@ -185,36 +195,36 @@ void Recompiler::andis_(Instruction code)
 void Recompiler::cmp(Instruction code)
 {
     if (code.l10) {
-        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), getGPR(code.rb, TYPE_I64), true);
-    } else {
-        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), getGPR(code.rb, TYPE_I32), true);
-    }
-}
-
-void Recompiler::cmpi(Instruction code)
-{
-    if (code.l10) {
-        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.simm), true);
-    } else {
-        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), builder.getConstantI32(code.simm), true);
-    }
-}
-
-void Recompiler::cmpl(Instruction code)
-{
-    if (code.l10) {
         updateCR(code.crfd, getGPR(code.ra, TYPE_I64), getGPR(code.rb, TYPE_I64), false);
     } else {
         updateCR(code.crfd, getGPR(code.ra, TYPE_I32), getGPR(code.rb, TYPE_I32), false);
     }
 }
 
+void Recompiler::cmpi(Instruction code)
+{
+    if (code.l10) {
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.simm), false);
+    } else {
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), builder.getConstantI32(code.simm), false);
+    }
+}
+
+void Recompiler::cmpl(Instruction code)
+{
+    if (code.l10) {
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), getGPR(code.rb, TYPE_I64), true);
+    } else {
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), getGPR(code.rb, TYPE_I32), true);
+    }
+}
+
 void Recompiler::cmpli(Instruction code)
 {
     if (code.l10) {
-        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.uimm), false);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.uimm), true);
     } else {
-        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), builder.getConstantI32(code.uimm), false);
+        updateCR(code.crfd, getGPR(code.ra, TYPE_I32), builder.getConstantI32(code.uimm), true);
     }
 }
 
@@ -751,16 +761,18 @@ void Recompiler::sldx(Instruction code)
 
 void Recompiler::slwx(Instruction code)
 {
-    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
-    Value* rb = builder.createZExt<I64>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x3F));
+    Value* rs = getGPR(code.rs, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I8);
     Value* ra;
 
+    rs = builder.createZExt(rs, TYPE_I64);
+    rb = builder.createZExt(builder.createAnd(rb, builder.getConstantI8(0x3F)), TYPE_I64);
     ra = builder.createZExt(builder.createTrunc(builder.createShl(rs, rb), TYPE_I32), TYPE_I64);
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);*/
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::sradx(Instruction code)
@@ -823,19 +835,19 @@ void Recompiler::srawx(Instruction code)
 
 void Recompiler::srawix(Instruction code)
 {
-    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
+    Value* rs = getGPR(code.rs, TYPE_I32);
     Value* ra;
 
-    rs = builder.createShl(rs, 32);
-    ra = builder.createAShr(rs, code.sh);
-    ra = builder.createAShr(ra, 32);
+    rs = builder.createShl(builder.createZExt(rs, TYPE_I64), 32);
+    ra = builder.createShrA(rs, code.sh);
+    ra = builder.createShrA(ra, 32);
     if (code.rc) {
         updateCR0(ra);
     }
 
     // TODO: Update XER CA
 
-    setGPR(code.ra, ra);*/
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::srdx(Instruction code)
@@ -856,16 +868,18 @@ void Recompiler::srdx(Instruction code)
 
 void Recompiler::srwx(Instruction code)
 {
-    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
-    Value* rb = builder.createZExt<I64>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x3F));
+    Value* rs = getGPR(code.rs, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I8);
     Value* ra;
 
-    ra = builder.createLShr(rs, rb);
+    rs = builder.createZExt(rs, TYPE_I64);
+    rb = builder.createZExt(builder.createAnd(rb, builder.getConstantI8(0x3F)), TYPE_I64);
+    ra = builder.createShr(rs, rb);
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);*/
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::subfx(Instruction code)
@@ -913,6 +927,13 @@ void Recompiler::subfex(Instruction code)
 
 void Recompiler::subfic(Instruction code)
 {
+    Value* ra = getGPR(code.ra);
+    Value* rd;
+
+    rd = builder.createSub(builder.getConstantI64(code.simm), ra);
+    // TODO: CA update
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::subfmex(Instruction code)

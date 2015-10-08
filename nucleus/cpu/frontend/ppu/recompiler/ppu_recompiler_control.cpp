@@ -4,6 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/cpu/util.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
 
@@ -119,18 +120,22 @@ void Recompiler::mftb(Instruction code)
 
 void Recompiler::dcbf(Instruction code)
 {
+    // TODO
 }
 
 void Recompiler::dcbst(Instruction code)
 {
+    // TODO
 }
 
 void Recompiler::dcbt(Instruction code)
 {
+    // TODO
 }
 
 void Recompiler::dcbtst(Instruction code)
 {
+    // TODO
 }
 
 void Recompiler::dcbz(Instruction code)

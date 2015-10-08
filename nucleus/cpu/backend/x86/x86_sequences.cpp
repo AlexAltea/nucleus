@@ -356,6 +356,7 @@ struct MULH_I8 : Sequence<MULH_I8, I<OPCODE_MULH, I8Op, I8Op, I8Op>> {
         } else {
             EMIT_MULH(e.imul, e.al, e.dl);
         }
+        // TODO: Restore rdx
     }
 };
 struct MULH_I16 : Sequence<MULH_I16, I<OPCODE_MULH, I16Op, I16Op, I16Op>> {
@@ -369,6 +370,7 @@ struct MULH_I16 : Sequence<MULH_I16, I<OPCODE_MULH, I16Op, I16Op, I16Op>> {
         } else {
             EMIT_MULH(e.imul, e.ax, e.dx);
         }
+        // TODO: Restore rdx
     }
 };
 struct MULH_I32 : Sequence<MULH_I32, I<OPCODE_MULH, I32Op, I32Op, I32Op>> {
@@ -382,6 +384,7 @@ struct MULH_I32 : Sequence<MULH_I32, I<OPCODE_MULH, I32Op, I32Op, I32Op>> {
         } else {
             EMIT_MULH(e.imul, e.eax, e.edx);
         }
+        // TODO: Restore rdx
     }
 };
 struct MULH_I64 : Sequence<MULH_I64, I<OPCODE_MULH, I64Op, I64Op, I64Op>> {
@@ -395,6 +398,7 @@ struct MULH_I64 : Sequence<MULH_I64, I<OPCODE_MULH, I64Op, I64Op, I64Op>> {
         } else {
             EMIT_MULH(e.imul, e.rax, e.rdx);
         }
+        // TODO: Restore rdx
     }
 };
 
@@ -403,40 +407,90 @@ struct MULH_I64 : Sequence<MULH_I64, I<OPCODE_MULH, I64Op, I64Op, I64Op>> {
 /**
  * Opcode: DIV
  */
+#define EMIT_DIV(divFunc, regA, regD) \
+    e.xor_(regD, regD); \
+    if (i.src1.isConstant) { \
+        e.mov(regA, i.src1.constant()); \
+    } else { \
+        e.mov(regA, i.src1); \
+    } \
+    if (i.src2.isConstant) { \
+        e.mov(regD, i.src2.constant()); \
+        divFunc(regD); \
+    } else { \
+        divFunc(i.src2); \
+    } \
+    e.mov(i.dest, regA);
+
 struct DIV_I8 : Sequence<DIV_I8, I<OPCODE_DIV, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.div, e.al, e.dl);
         } else {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.idiv, e.al, e.dl);
         }
     }
 };
 struct DIV_I16 : Sequence<DIV_I16, I<OPCODE_DIV, I16Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.div, e.ax, e.dx);
         } else {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.idiv, e.ax, e.dx);
         }
     }
 };
 struct DIV_I32 : Sequence<DIV_I32, I<OPCODE_DIV, I32Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.div, e.eax, e.edx);
         } else {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.idiv, e.eax, e.edx);
         }
     }
 };
 struct DIV_I64 : Sequence<DIV_I64, I<OPCODE_DIV, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.div, e.rax, e.rdx);
         } else {
-            assert_always("Unimplemented");
+            EMIT_DIV(e.idiv, e.rax, e.rdx);
         }
+        // TODO: Restore rdx
+    }
+};
+
+#undef EMIT_DIV
+
+/**
+ * Opcode: NEG
+ */
+struct NEG_I8 : Sequence<NEG_I8, I<OPCODE_NEG, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest){
+            e.neg(dest);
+        });
+    }
+};
+struct NEG_I16 : Sequence<NEG_I16, I<OPCODE_NEG, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest){
+            e.neg(dest);
+        });
+    }
+};
+struct NEG_I32 : Sequence<NEG_I32, I<OPCODE_NEG, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest){
+            e.neg(dest);
+        });
+    }
+};
+struct NEG_I64 : Sequence<NEG_I64, I<OPCODE_NEG, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest){
+            e.neg(dest);
+        });
     }
 };
 
@@ -1279,7 +1333,7 @@ struct CMP_I8 : Sequence<CMP_I8, I<OPCODE_CMP, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
         case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
         case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
         case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
         case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
@@ -1297,7 +1351,7 @@ struct CMP_I16 : Sequence<CMP_I16, I<OPCODE_CMP, I8Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
         case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
         case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
         case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
         case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
@@ -1316,7 +1370,7 @@ struct CMP_I32 : Sequence<CMP_I32, I<OPCODE_CMP, I8Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
         case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
         case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
         case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
         case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
@@ -1335,7 +1389,7 @@ struct CMP_I64 : Sequence<CMP_I64, I<OPCODE_CMP, I8Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
         case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
         case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
         case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
         case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
@@ -1599,6 +1653,7 @@ void X86Sequences::init() {
         registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
         registerSequence<MULH_I8, MULH_I16, MULH_I32, MULH_I64>();
         registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
+        registerSequence<NEG_I8, NEG_I16, NEG_I32, NEG_I64>();
         registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64>();
         registerSequence<AND_I8, AND_I16, AND_I32, AND_I64>();
         registerSequence<OR_I8, OR_I16, OR_I32, OR_I64>();

@@ -94,7 +94,7 @@ struct OpcodeInfo {
     OpcodeFlags flags;
     OpcodeSignature signature;
 
-    U8 getSignatureDst() const {
+    U8 getSignatureDest() const {
         return ((signature >> 0) & 0b111);
     }
     U8 getSignatureSrc1() const {

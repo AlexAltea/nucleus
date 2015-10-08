@@ -52,22 +52,23 @@ void Recompiler::bcx(Instruction code)
     Value* ctr_ok = nullptr;
     if (!bo2) {
         Value* ctr = getCTR();
+        ctr = builder.createSub(ctr, builder.getConstantI64(1));
         if (!bo3) {
             ctr_ok = builder.createCmpNE(ctr, builder.getConstantI64(0));
         } else {
             ctr_ok = builder.createCmpEQ(ctr, builder.getConstantI64(0));
         }
-        // Decrement counter
-        setCTR(builder.createSub(ctr, builder.getConstantI64(1)));
+        setCTR(ctr);
     }
 
     Value* cond_ok = nullptr;
     if (!bo0) {
         Value* shift = builder.getConstantI8(3 - (code.bi & 0x3));
+        Value* bit = builder.createAnd(builder.createShr(getCR(code.bi >> 2), shift), builder.getConstantI8(1));
         if (!bo1) {
-            cond_ok = builder.createCmpEQ(builder.createShr(getCR(code.bi >> 2), shift), builder.getConstantI8(0));
+            cond_ok = builder.createXor(bit, builder.getConstantI8(1));
         } else {
-            cond_ok = builder.createShr(getCR(code.bi >> 2), shift);
+            cond_ok = bit;
         }
     }
 
