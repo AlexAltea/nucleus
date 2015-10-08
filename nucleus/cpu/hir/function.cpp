@@ -41,8 +41,8 @@ S32 Function::getId() {
 
 Value* Function::call(const std::vector<Value*>& args) {
     if (flags & FUNCTION_IS_COMPILED) {
-        nucleus.cell.compiler->translationEnter();
         auto function = reinterpret_cast<void(*)()>(nativeAddress);
+        nucleus.cell.compiler->translationEnter();
         function();
         nucleus.cell.compiler->translationExit();
     } else {

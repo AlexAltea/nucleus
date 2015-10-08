@@ -78,8 +78,8 @@ bool X86Compiler::compile(Function* function) {
 #endif
 
     // Prolog block
-    e.push(e.rbp);
-    e.mov(e.rsp, e.rbp);
+    e.L(e.labelProlog);
+    e.sub(e.rsp, 0x28);
 
     // Prepare labels
     for (const auto& block : function->blocks) {
@@ -98,7 +98,8 @@ bool X86Compiler::compile(Function* function) {
     }
 
     // Epilog block
-    e.pop(e.rbp);
+    e.L(e.labelEpilog);
+    e.add(e.rsp, 0x28);
     e.ret();
 
     function->flags |= FUNCTION_IS_COMPILED;

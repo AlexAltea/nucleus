@@ -36,8 +36,10 @@ public:
     // Chosen x86 mode
     U32 mode;
 
-    // List of labels
+    // Labels
     std::unordered_map<const hir::Block*, Xbyak::Label> labels;
+    Xbyak::Label labelProlog;
+    Xbyak::Label labelEpilog;
 
     // Constructor
     X86Emitter(const X86Compiler* compiler);
