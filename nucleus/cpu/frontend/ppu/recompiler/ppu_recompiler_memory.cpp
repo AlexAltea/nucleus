@@ -89,6 +89,19 @@ void Recompiler::ld(Instruction code)
 
 void Recompiler::ldarx(Instruction code)
 {
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
+
+    Value* addr = rb;
+    if (code.ra) {
+        addr = builder.createAdd(addr, ra);
+    }
+
+    // TODO: Reservation
+
+    rd = readMemory(addr, TYPE_I64);
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::ldbrx(Instruction code)
@@ -370,6 +383,19 @@ void Recompiler::lwa(Instruction code)
 
 void Recompiler::lwarx(Instruction code)
 {
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
+
+    Value* addr = rb;
+    if (code.ra) {
+        addr = builder.createAdd(addr, ra);
+    }
+
+    // TODO: Reservation
+
+    rd = readMemory(addr, TYPE_I32);
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::lwaux(Instruction code)
@@ -510,6 +536,21 @@ void Recompiler::std(Instruction code)
 
 void Recompiler::stdcx_(Instruction code)
 {
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rs = getGPR(code.rs);
+
+    Value* addr = rb;
+    if (code.ra) {
+        addr = builder.createAdd(addr, ra);
+    }
+
+    // TODO: Reservation
+
+    // TODO: Is this correct?
+    setCR(0, builder.getConstantI8(2));
+
+    writeMemory(addr, rs);
 }
 
 void Recompiler::stdu(Instruction code)
@@ -749,14 +790,17 @@ void Recompiler::stwx(Instruction code)
 
 void Recompiler::eieio(Instruction code)
 {
+    builder.createMemFence();
 }
 
 void Recompiler::sync(Instruction code)
 {
+    builder.createMemFence();
 }
 
 void Recompiler::isync(Instruction code)
 {
+    // Nothing to translate
 }
 
 }  // namespace ppu

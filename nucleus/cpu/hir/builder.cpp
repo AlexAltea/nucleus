@@ -462,6 +462,7 @@ void Builder::createCtxStore(U32 offset, Value* value) {
 }
 
 void Builder::createMemFence() {
+    Instruction* i = appendInstr(OPCODE_MEMFENCE, 0);
 }
 
 // Comparison operations

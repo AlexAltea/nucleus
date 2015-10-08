@@ -1160,6 +1160,15 @@ struct CTXSTORE_I64 : Sequence<CTXSTORE_I64, I<OPCODE_CTXSTORE, VoidOp, Immediat
 };
 
 /**
+ * Opcode: MEMFENCE
+ */
+struct MEMFENCE : Sequence<MEMFENCE, I<OPCODE_MEMFENCE>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.mfence();
+    }
+};
+
+/**
  * Opcode: SELECT
  */
 struct SELECT_I8 : Sequence<SELECT_I8, I<OPCODE_SELECT, I8Op, I8Op, I8Op, I8Op>> {

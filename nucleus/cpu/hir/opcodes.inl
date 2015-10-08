@@ -27,7 +27,7 @@ OPCODE(LOAD,      "load",      OPCODE_SIG_V_V)     // Load from memory
 OPCODE(STORE,     "store",     OPCODE_SIG_X_V_V)   // Store to memory
 OPCODE(CTXLOAD,   "ctxload",   OPCODE_SIG_V_I)     // Context load
 OPCODE(CTXSTORE,  "ctxstore",  OPCODE_SIG_X_I_V)   // Context store
-OPCODE(MEMFENCE,  "memfence",  OPCODE_SIG_X_V_V)   // Memory fence
+OPCODE(MEMFENCE,  "memfence",  OPCODE_SIG_X)       // Memory fence
 OPCODE(SELECT,    "select",    OPCODE_SIG_V_V_V_V) // Select
 OPCODE(CMP,       "cmp",       OPCODE_SIG_V_V_V)   // Compare
 OPCODE(BR,        "br",        OPCODE_SIG_X_B)     // Branch
