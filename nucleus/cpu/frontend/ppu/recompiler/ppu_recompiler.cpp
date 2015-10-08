@@ -135,12 +135,8 @@ Value* Recompiler::getCR(int index)
 
 Value* Recompiler::getXER()
 {
-    /*// TODO: We are considering the XER field nonvolatile
-    if (!ctr.value) {
-        ctr = allocaVariable<I64>("xer_");
-    }
-    return builder.createLoad(ctr);*/
-    return nullptr;
+    constexpr U32 offset = offsetof(State, xer);
+    return builder.createCtxLoad(offset, TYPE_I64);
 }
 
 Value* Recompiler::getCTR()
@@ -205,11 +201,13 @@ void Recompiler::setCR(int index, Value* value)
 
 void Recompiler::setXER(Value* value)
 {
-    /*// TODO: We are considering the XER field nonvolatile
-    if (!xer.value) {
-        xer = allocaVariable<I64>("xer_");
+    constexpr U32 offset = offsetof(State, xer);
+    
+    if (value->type != TYPE_I64) {
+        logger.error(LOG_CPU, "Wrong value type for XER register");
+        return;
     }
-    builder.createStore(value, xer);*/
+    builder.createCtxStore(offset, value);
 }
 
 void Recompiler::setCTR(Value* value)
@@ -217,7 +215,7 @@ void Recompiler::setCTR(Value* value)
     constexpr U32 offset = offsetof(State, ctr);
     
     if (value->type != TYPE_I64) {
-        logger.error(LOG_CPU, "Wrong value type");
+        logger.error(LOG_CPU, "Wrong value type for CTR register");
         return;
     }
     builder.createCtxStore(offset, value);

@@ -870,12 +870,12 @@ void Recompiler::srwx(Instruction code)
 
 void Recompiler::subfx(Instruction code)
 {
-    /*Value* ra = getGPR(code.ra);
+    Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
     Value* rd;
 
     if (code.oe) {
-        // TODO
+        // TODO: XER SO, OV update
     } else {
         rd = builder.createSub(rb, ra);
     }
@@ -884,7 +884,7 @@ void Recompiler::subfx(Instruction code)
         updateCR0(rd);
     }
 
-    setGPR(code.rd, rd);*/
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::subfcx(Instruction code)

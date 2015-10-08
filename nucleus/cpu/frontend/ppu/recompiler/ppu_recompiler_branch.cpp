@@ -49,10 +49,6 @@ void Recompiler::bcx(Instruction code)
     const U8 bo2 = (code.bo & 0x04) ? 1 : 0;
     const U8 bo3 = (code.bo & 0x02) ? 1 : 0;
 
-    if (!bo2) {
-        // TODO: Decrement CTR register by 1
-    }
-
     Value* ctr_ok = nullptr;
     if (!bo2) {
         Value* ctr = getCTR();
