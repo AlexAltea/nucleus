@@ -250,6 +250,7 @@ void Function::recompile()
     }
 
     // Generate prolog/epilog blocks
+    recompiler.blocks[address]->flags |= hir::BLOCK_IS_ENTRY;
     recompiler.createProlog();
     recompiler.createEpilog();
 

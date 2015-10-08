@@ -38,6 +38,7 @@ public:
 
     // Labels
     std::unordered_map<const hir::Block*, Xbyak::Label> labels;
+    Xbyak::Label labelEntry;
     Xbyak::Label labelProlog;
     Xbyak::Label labelEpilog;
 

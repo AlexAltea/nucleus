@@ -80,6 +80,9 @@ bool X86Compiler::compile(Function* function) {
     // Prolog block
     e.L(e.labelProlog);
     e.sub(e.rsp, 0x28);
+    if (!(function->blocks[0]->flags & BLOCK_IS_ENTRY)) {
+        e.jmp(e.labelEntry, e.T_NEAR);
+    }
 
     // Prepare labels
     for (const auto& block : function->blocks) {
@@ -89,6 +92,9 @@ bool X86Compiler::compile(Function* function) {
     // Iterate over blocks
     for (const auto& block : function->blocks) {
         e.L(e.labels[block]);
+        if (block->flags & BLOCK_IS_ENTRY) {
+            e.L(e.labelEntry);
+        }
         for (const auto& instr : block->instructions) {
             if (!X86Sequences::select(e, instr)) {
                 logger.error(LOG_CPU, "Cannot compile block");

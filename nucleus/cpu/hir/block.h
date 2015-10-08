@@ -12,8 +12,13 @@
 namespace cpu {
 namespace hir {
 
+// Forward declarations
 class Function;
 class Instruction;
+
+enum BlockFlags {
+    BLOCK_IS_ENTRY = (1 << 0),  // Block is the entry point of its parent function
+};
 
 class Block {
     // Value ID used in human-readable HIR representations
@@ -23,6 +28,8 @@ public:
     Function* parent;
 
     std::list<Instruction*> instructions;
+
+    U32 flags;
 
     // Constructor
     Block(Function* parent);

@@ -10,7 +10,7 @@
 namespace cpu {
 namespace hir {
 
-Block::Block(Function* parent) : parent(parent) {
+Block::Block(Function* parent) : parent(parent), flags(0) {
     if (parent->flags & FUNCTION_IS_DECLARED) {
         parent->flags |= FUNCTION_IS_DEFINING;
     }
@@ -32,7 +32,8 @@ S32 Block::getId() {
 
 std::string Block::dump() {
     std::string output;
-    output += "  b" + std::to_string(getId()) + ":\n";
+    output += "  b" + std::to_string(getId());
+    output += (flags & BLOCK_IS_ENTRY) ? " (entry):\n" : ":\n";
     for (const auto& instruction : instructions) {
         output += instruction->dump();
     }
