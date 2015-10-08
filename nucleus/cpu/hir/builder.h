@@ -69,13 +69,10 @@ public:
     Value* createAbs(Value* value);
 
     // Logical operations
-    Value* createAnd(Value* lhs, Value* rhs);
-    Value* createAnd(Value* lhs, U64 rhs);
-    Value* createOr(Value* lhs, Value* rhs);
-    Value* createOr(Value* lhs, U64 rhs);
-    Value* createXor(Value* lhs, Value* rhs);
-    Value* createXor(Value* lhs, U64 rhs);
     Value* createNot(Value* value);
+    Value* createAnd(Value* lhs, Value* rhs);
+    Value* createOr(Value* lhs, Value* rhs);
+    Value* createXor(Value* lhs, Value* rhs);
 
     // Shifting operations
     Value* createShl(Value* value, Value* amount);

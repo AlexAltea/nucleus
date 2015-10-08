@@ -127,10 +127,18 @@ Value* Recompiler::getCR(int index)
 
     // TODO: Use volatility information?
 
-    Value* value = builder.createCtxLoad(offset, TYPE_I32);
-    value = builder.createShr(value, index * 4);
-    value = builder.createTrunc(value, TYPE_I8);
-    return value;
+    Value* cr = builder.createCtxLoad(offset, TYPE_I32);
+    Value* mask = builder.getConstantI32(0xFULL << (7 - index) * 4);
+    cr = builder.createAnd(cr, mask);
+    cr = builder.createShr(cr, (7 - index) * 4);
+    cr = builder.createTrunc(cr, TYPE_I8);
+    return cr;
+}
+
+Value* Recompiler::getCR()
+{
+    const U32 offset = offsetof(State, cr);
+    return builder.createCtxLoad(offset, TYPE_I32);
 }
 
 Value* Recompiler::getXER()
@@ -193,10 +201,21 @@ void Recompiler::setCR(int index, Value* value)
     // TODO: Use volatility information?
 
     Value* cr = builder.createCtxLoad(offset, TYPE_I32);
-    Value* mask = builder.getConstantI32(~(0xFULL << index * 4));
+    Value* mask = builder.getConstantI32(~(0xFULL << (7 - index) * 4));
     cr = builder.createAnd(cr, mask);
-    cr = builder.createOr(cr, builder.createShl(builder.createZExt(value, TYPE_I32), index * 4));
+    cr = builder.createOr(cr, builder.createShl(builder.createZExt(value, TYPE_I32), (7 - index) * 4));
     builder.createCtxStore(offset, cr);
+}
+
+void Recompiler::setCR(Value* value)
+{
+    constexpr U32 offset = offsetof(State, cr);
+    
+    if (value->type != TYPE_I32) {
+        logger.error(LOG_CPU, "Wrong value type for CR register");
+        return;
+    }
+    builder.createCtxStore(offset, value);
 }
 
 void Recompiler::setXER(Value* value)
@@ -264,8 +283,8 @@ void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalCompari
         isGT = builder.createCmpSGT(lhs, rhs);
     }
 
-    result = builder.createSelect(isGT, builder.getConstantI8(2), builder.getConstantI8(4));
-    result = builder.createSelect(isLT, builder.getConstantI8(1), result);
+    result = builder.createSelect(isGT, builder.getConstantI8(4), builder.getConstantI8(2));
+    result = builder.createSelect(isLT, builder.getConstantI8(8), result);
     setCR(field, result);
 }
 

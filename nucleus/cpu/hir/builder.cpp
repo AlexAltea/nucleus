@@ -318,10 +318,6 @@ Value* Builder::createAnd(Value* lhs, Value* rhs) {
     return i->dest;
 }
 
-Value* Builder::createAnd(Value* lhs, U64 rhs) {
-    return createAnd(lhs, getConstantI64(rhs));
-}
-
 Value* Builder::createOr(Value* lhs, Value* rhs) {
     ASSERT_TYPE_EQUAL(lhs, rhs);
 
@@ -343,10 +339,6 @@ Value* Builder::createOr(Value* lhs, Value* rhs) {
     return i->dest;
 }
 
-Value* Builder::createOr(Value* lhs, U64 rhs) {
-    return createOr(lhs, getConstantI64(rhs));
-}
-
 Value* Builder::createXor(Value* lhs, Value* rhs) {
     ASSERT_TYPE_EQUAL(lhs, rhs);
 
@@ -366,10 +358,6 @@ Value* Builder::createXor(Value* lhs, Value* rhs) {
     i->src1.setValue(lhs);
     i->src2.setValue(rhs);
     return i->dest;
-}
-
-Value* Builder::createXor(Value* lhs, U64 rhs) {
-    return createXor(lhs, getConstantI64(rhs));
 }
 
 Value* Builder::createNot(Value* value) {

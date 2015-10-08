@@ -23,6 +23,8 @@ using namespace cpu::hir;
 
 void Recompiler::mfocrf(Instruction code)
 {
+    Value* cr = getCR();
+    setGPR(code.rd, cr);
 }
 
 void Recompiler::mfspr(Instruction code)
@@ -52,6 +54,25 @@ void Recompiler::mfspr(Instruction code)
 
 void Recompiler::mtocrf(Instruction code)
 {
+    Value* rs = getGPR(code.rs, TYPE_I32);
+
+	if (code.l11) {
+        int field = 0;
+        int count = 0;
+        for (int i = 0; i < 8; i++) {
+            if (code.crm & (1 << i)) {
+                field = i;
+                count += 1;
+            }
+        }
+        if (count == 1) {
+            Value* value = builder.createShr(rs, (7 - field) * 4);
+            value = builder.createAnd(value, builder.getConstantI32(0xF));
+            setCR(field, value);
+        }
+    } else {
+        setCR(rs);
+    }
 }
 
 void Recompiler::mtspr(Instruction code)

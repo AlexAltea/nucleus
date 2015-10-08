@@ -590,7 +590,7 @@ void Recompiler::rldicx(Instruction code)
         ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.createAnd(ra, rotateMask[mb][63 - sh]);
+    ra = builder.createAnd(ra, builder.getConstantI64(rotateMask[mb][63 - sh]));
     if (code.rc) {
         updateCR0(ra);
     }
@@ -611,7 +611,7 @@ void Recompiler::rldiclx(Instruction code)
         ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.createAnd(ra, rotateMask[mb][63]);
+    ra = builder.createAnd(ra, builder.getConstantI64(rotateMask[mb][63]));
     if (code.rc) {
         updateCR0(ra);
     }
@@ -632,7 +632,7 @@ void Recompiler::rldicrx(Instruction code)
         ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.createAnd(ra, rotateMask[0][me]);
+    ra = builder.createAnd(ra, builder.getConstantI64(rotateMask[0][me]));
     if (code.rc) {
         updateCR0(ra);
     }
@@ -655,8 +655,8 @@ void Recompiler::rldimix(Instruction code)
     }
     
     const U64 mask = rotateMask[mb][63 - sh];
-    temp = builder.createAnd(temp, mask);
-    ra = builder.createAnd(ra, ~mask);
+    temp = builder.createAnd(temp, builder.getConstantI64(mask));
+    ra = builder.createAnd(ra, builder.getConstantI64(~mask));
     ra = builder.createOr(ra, temp);
     if (code.rc) {
         updateCR0(ra);
@@ -681,8 +681,8 @@ void Recompiler::rlwimix(Instruction code)
     }
 
     const U64 mask = rotateMask[32 + code.mb][32 + code.me];
-    temp = builder.createAnd(temp, mask);
-    ra = builder.createAnd(ra, ~mask);
+    temp = builder.createAnd(temp, builder.getConstantI64(mask));
+    ra = builder.createAnd(ra, builder.getConstantI64(~mask));
     ra = builder.createOr(ra, temp);
     if (code.rc) {
         updateCR0(ra);
@@ -705,7 +705,7 @@ void Recompiler::rlwinmx(Instruction code)
         ra = builder.createOr(resh, resl);
     }
 
-    ra = builder.createAnd(ra, rotateMask[32 + code.mb][32 + code.me]);
+    ra = builder.createAnd(ra, builder.getConstantI64(rotateMask[32 + code.mb][32 + code.me]));
     if (code.rc) {
         updateCR0(ra);
     }
@@ -722,12 +722,12 @@ void Recompiler::rlwnmx(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* ra;
 
-    auto shl = builder.createAnd(rb, 0x1F);
+    auto shl = builder.createAnd(rb, builder.getConstantI64(0x1F));
     auto shr = builder.createSub(builder.getConstantI64(32), shl);
     auto resl = builder.createShr(rs, shr);
     auto resh = builder.createShl(rs, shl);
     ra = builder.createOr(resh, resl);
-    ra = builder.createAnd(ra, rotateMask[32 + code.mb][32 + code.me]);
+    ra = builder.createAnd(ra, builder.getConstantI64(rotateMask[32 + code.mb][32 + code.me]));
     if (code.rc) {
         updateCR0(ra);
     }

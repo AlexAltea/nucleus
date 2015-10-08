@@ -23,6 +23,7 @@ private:
     hir::Value* getFPR(int index, hir::Type type = hir::TYPE_F64);
     hir::Value* getVR(int index);
     hir::Value* getCR(int index);
+    hir::Value* getCR();
     hir::Value* getXER();
     hir::Value* getCTR();
 
@@ -31,6 +32,7 @@ private:
     void setFPR(int index, hir::Value* value);
     void setVR(int index, hir::Value* value);
     void setCR(int index, hir::Value* value);
+    void setCR(hir::Value* value);
     void setXER(hir::Value* value);
     void setCTR(hir::Value* value);
 
