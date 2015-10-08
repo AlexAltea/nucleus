@@ -1400,17 +1400,19 @@ struct ARG_I64 : Sequence<ARG_I64, I<OPCODE_ARG, I64Op, ImmediateOp, I64Op>> {
 struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_CALL, VoidOp, FunctionOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
         const Function* target = i.src1.function;
-        if (target->flags & FUNCTION_IS_COMPILED) {
+        if (i.instr->flags & CALL_EXTERN) {
             e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+            e.call(e.rax);
         } else {
             if (e.settings().isJIT) {
-                e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+                e.mov(e.rax, reinterpret_cast<size_t>(target));
+                e.mov(e.rax, e.qword[e.rax + offsetof(hir::Function, nativeAddress)]);
+                e.call(e.rax);
             } else {
-                // TODO
-                e.mov(e.rax, 0);
+                e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+                e.call(e.rax);
             }
         }
-        e.call(e.rax);
     }
 };
 

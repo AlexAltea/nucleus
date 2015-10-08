@@ -289,7 +289,7 @@ void Function::createPlaceholder()
 {
     // Allocate space for compiling the function
     if (hirFunction->nativeAddress == nullptr) {
-        const size_t size = 8192;
+        const size_t size = 256;
         hirFunction->nativeAddress = nucleus.cell.compiler->allocRWXMemory(size);
         hirFunction->nativeSize = size;
     }

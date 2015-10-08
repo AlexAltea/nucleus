@@ -18,15 +18,6 @@ namespace ppu {
 
 class Recompiler : public frontend::IRecompiler<U32> {
 private:
-    // Register allocation
-    hir::Value* gpr[32];
-    hir::Value* fpr[32];
-    hir::Value* vr[32];
-    hir::Value* cr[8];
-    hir::Value* fpscr;
-    hir::Value* xer;
-    hir::Value* ctr;
-
     // Register read
     hir::Value* getGPR(int index, hir::Type type = hir::TYPE_I64);
     hir::Value* getFPR(int index, hir::Type type = hir::TYPE_F64);

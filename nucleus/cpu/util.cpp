@@ -16,7 +16,13 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr) {
     function->analyze_cfg();
     function->recompile();
 
-    nucleus.cell.compiler->compile(function->hirFunction);
+    // Allocate space for compiling the function
+    const size_t size = 65536;
+    hir::Function* hirFunction = function->hirFunction;
+    hirFunction->nativeAddress = nucleus.cell.compiler->allocRWXMemory(size);
+    hirFunction->nativeSize = size;
+
+    nucleus.cell.compiler->compile(hirFunction);
     function->call();
 }
 
