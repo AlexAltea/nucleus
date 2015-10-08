@@ -88,10 +88,14 @@ public:
     void doMul(Value* rhs, ArithmeticFlags flags);
     void doMulH(Value* rhs, ArithmeticFlags flags);
     void doDiv(Value* rhs, ArithmeticFlags flags);
+    void doNeg();
     void doAnd(Value* rhs);
     void doOr(Value* rhs);
     void doXor(Value* rhs);
     void doNot();
+    void doShl(Value* amount);
+    void doShr(Value* amount);
+    void doShrA(Value* amount);
     void doZExt(Type newType);
     void doSExt(Type newType);
     void doTrunc(Type newType);

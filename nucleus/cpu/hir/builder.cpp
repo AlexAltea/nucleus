@@ -125,6 +125,8 @@ Function* Builder::getExternFunction(void* hostAddr) {
         externFunc = new Function(parModule, TYPE_VOID, {});
     } else if (hostAddr == nucleusLog) {
         externFunc = new Function(parModule, TYPE_VOID, {TYPE_I64});
+    } else if (hostAddr == nucleusTime) {
+        externFunc = new Function(parModule, TYPE_I64, {});
     }
 
     externFunc->flags |= FUNCTION_IS_EXTERN;
@@ -239,11 +241,25 @@ Value* Builder::createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags) {
 }
 
 Value* Builder::createNeg(Value* value) {
-    return nullptr;
+    ASSERT_TYPE_INTEGER(value);
+
+    if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doNeg();
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_NEG, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    return i->dest;
 }
 
 Value* Builder::createCtlz(Value* value) {
-    return nullptr;
+    ASSERT_TYPE_INTEGER(value);
+
+    Instruction* i = appendInstr(OPCODE_CTLZ, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    return i->dest;
 }
 
 Value* Builder::createZExt(Value* value, Type type) {
@@ -380,6 +396,11 @@ Value* Builder::createShl(Value* value, Value* amount) {
     if (amount->isConstantZero()) {
         return value;
     }
+    if (value->isConstant() && amount->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doShl(amount);
+        return dest;
+    }
     if (amount->type != TYPE_I8) {
         amount = createTrunc(amount, TYPE_I8);
     }
@@ -401,6 +422,11 @@ Value* Builder::createShr(Value* value, Value* amount) {
     if (amount->isConstantZero()) {
         return value;
     }
+    if (value->isConstant() && amount->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doShr(amount);
+        return dest;
+    }
     if (amount->type != TYPE_I8) {
         amount = createTrunc(amount, TYPE_I8);
     }
@@ -421,6 +447,11 @@ Value* Builder::createShrA(Value* value, Value* amount) {
 
     if (amount->isConstantZero()) {
         return value;
+    }
+    if (value->isConstant() && amount->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doShrA(amount);
+        return dest;
     }
     if (amount->type != TYPE_I8) {
         amount = createTrunc(amount, TYPE_I8);

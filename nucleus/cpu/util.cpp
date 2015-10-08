@@ -8,6 +8,10 @@
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
+#ifdef NUCLEUS_PLATFORM_WINDOWS
+#include <Windows.h>
+#endif
+
 namespace cpu {
 
 void nucleusTranslate(void* guestFunc, U64 guestAddr) {
@@ -41,6 +45,27 @@ void nucleusLog(U64 guestAddr) {
     printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(guestAddr).name);
     int a = 0;
     a += 1;
+}
+
+U64 nucleusTime() {
+#ifdef NUCLEUS_PLATFORM_WINDOWS
+    static struct PerformanceFreqHolder {
+        U64 value;
+        PerformanceFreqHolder() {
+            LARGE_INTEGER freq;
+            QueryPerformanceFrequency(&freq);
+            value = freq.QuadPart;
+        }
+    } freq;
+
+    LARGE_INTEGER cycle;
+    QueryPerformanceCounter(&cycle);
+    const U64 sec = cycle.QuadPart / freq.value;
+    return sec * 79800000 + (cycle.QuadPart % freq.value) * 79800000 / freq.value;
+#else
+    nucleus.log.error(LOG_CPU, "Could not get the Timebase value");
+    return 0;
+#endif
 }
 
 }  // namespace cpu

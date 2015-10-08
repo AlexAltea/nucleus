@@ -99,6 +99,22 @@ void Recompiler::mtspr(Instruction code)
 
 void Recompiler::mftb(Instruction code)
 {
+    hir::Function* timeFunc = builder.getExternFunction(nucleusTime);
+    hir::Value* timestamp = builder.createCall(timeFunc, {}, CALL_EXTERN);
+
+    const U32 tbr = (code.spr >> 5) | ((code.spr & 0x1f) << 5);
+    switch (tbr) {
+    case 0x10C:
+        setGPR(code.rd, timestamp);
+        break;
+
+    case 0x10D:
+        setGPR(code.rd, builder.createShl(timestamp, 32));
+        break;
+
+    default:
+        assert_always("Invalid timebase register");
+    }
 }
 
 void Recompiler::dcbf(Instruction code)

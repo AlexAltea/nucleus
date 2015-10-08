@@ -215,6 +215,17 @@ void Value::doDiv(Value* rhs, ArithmeticFlags flags) {
     }
 }
 
+void Value::doNeg() {
+    switch (type) {
+    case TYPE_I8:   constant.i8  = -constant.i8;   break;
+    case TYPE_I16:  constant.i16 = -constant.i16;  break;
+    case TYPE_I32:  constant.i32 = -constant.i32;  break;
+    case TYPE_I64:  constant.i64 = -constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
 void Value::doAnd(Value* rhs) {
     switch (type) {
     case TYPE_I8:   constant.i8  &= rhs->constant.i8;   break;
@@ -254,6 +265,39 @@ void Value::doNot() {
     case TYPE_I16:  constant.i16 = ~constant.i16;  break;
     case TYPE_I32:  constant.i32 = ~constant.i32;  break;
     case TYPE_I64:  constant.i64 = ~constant.i64;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doShl(Value* amount) {
+    switch (type) {
+    case TYPE_I8:   constant.i8  <<= amount->constant.i8;  break;
+    case TYPE_I16:  constant.i16 <<= amount->constant.i8;  break;
+    case TYPE_I32:  constant.i32 <<= amount->constant.i8;  break;
+    case TYPE_I64:  constant.i64 <<= amount->constant.i8;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doShr(Value* amount) {
+    switch (type) {
+    case TYPE_I8:   constant.i8  = U8(constant.i8)   >> amount->constant.i8;  break;
+    case TYPE_I16:  constant.i16 = U16(constant.i16) >> amount->constant.i8;  break;
+    case TYPE_I32:  constant.i32 = U32(constant.i32) >> amount->constant.i8;  break;
+    case TYPE_I64:  constant.i64 = U64(constant.i64) >> amount->constant.i8;  break;
+    default:
+        assert_always("Unimplemented case");
+    }
+}
+
+void Value::doShrA(Value* amount) {
+    switch (type) {
+    case TYPE_I8:   constant.i8  = S8(constant.i8)   >> amount->constant.i8;  break;
+    case TYPE_I16:  constant.i16 = S16(constant.i16) >> amount->constant.i8;  break;
+    case TYPE_I32:  constant.i32 = S32(constant.i32) >> amount->constant.i8;  break;
+    case TYPE_I64:  constant.i64 = S64(constant.i64) >> amount->constant.i8;  break;
     default:
         assert_always("Unimplemented case");
     }

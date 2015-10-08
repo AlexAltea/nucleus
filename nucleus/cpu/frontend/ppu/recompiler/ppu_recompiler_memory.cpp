@@ -755,6 +755,21 @@ void Recompiler::stwbrx(Instruction code)
 
 void Recompiler::stwcx_(Instruction code)
 {
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rs = getGPR(code.rs, TYPE_I32);
+
+    Value* addr = rb;
+    if (code.ra) {
+        addr = builder.createAdd(addr, ra);
+    }
+
+    // TODO: Reservation
+
+    // TODO: Is this correct?
+    setCR(0, builder.getConstantI8(2));
+
+    writeMemory(addr, rs);
 }
 
 void Recompiler::stwu(Instruction code)

@@ -29,7 +29,7 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr);
 void nucleusCall(U64 guestAddr);
 
 /**
- * Guest code may contain syscall to run. Nota that all potential argument values that
+ * Guest code may contain syscalls. Note that all potential argument values that
  * may have been modified and are allocated in registers should be copied back to the
  * thread state object before this function is called.
  */
@@ -41,5 +41,12 @@ void nucleusSysCall();
  * @param[in]  guestAddr  Guest address where the instruction to be executed is
  */
 void nucleusLog(U64 guestAddr);
+
+/**
+ * Guest code might contain instructions to obtain time-related information.
+ * The frontends should translate these using calls to this function.
+ * @return                Timestamp in nanoseconds
+ */
+U64 nucleusTime();
 
 }  // namespace cpu

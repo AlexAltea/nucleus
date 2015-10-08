@@ -1424,6 +1424,86 @@ struct CALL_VOID : Sequence<CALL_VOID, I<OPCODE_CALL, VoidOp, FunctionOp>> {
         }
     }
 };
+struct CALL_I8 : Sequence<CALL_I8, I<OPCODE_CALL, I8Op, FunctionOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Function* target = i.src1.function;
+        if (i.instr->flags & CALL_EXTERN) {
+            e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+            e.call(e.rax);
+        } else {
+            if (e.settings().isJIT) {
+                e.mov(e.rax, reinterpret_cast<size_t>(target));
+                e.mov(e.rax, e.qword[e.rax + offsetof(hir::Function, nativeAddress)]);
+                e.call(e.rax);
+            } else {
+                e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+                e.call(e.rax);
+            }
+        }
+        // Save return value
+        e.mov(i.dest, e.al);
+    }
+};
+struct CALL_I16 : Sequence<CALL_I16, I<OPCODE_CALL, I16Op, FunctionOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Function* target = i.src1.function;
+        if (i.instr->flags & CALL_EXTERN) {
+            e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+            e.call(e.rax);
+        } else {
+            if (e.settings().isJIT) {
+                e.mov(e.rax, reinterpret_cast<size_t>(target));
+                e.mov(e.rax, e.qword[e.rax + offsetof(hir::Function, nativeAddress)]);
+                e.call(e.rax);
+            } else {
+                e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+                e.call(e.rax);
+            }
+        }
+        // Save return value
+        e.mov(i.dest, e.ax);
+    }
+};
+struct CALL_I32 : Sequence<CALL_I32, I<OPCODE_CALL, I32Op, FunctionOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Function* target = i.src1.function;
+        if (i.instr->flags & CALL_EXTERN) {
+            e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+            e.call(e.rax);
+        } else {
+            if (e.settings().isJIT) {
+                e.mov(e.rax, reinterpret_cast<size_t>(target));
+                e.mov(e.rax, e.qword[e.rax + offsetof(hir::Function, nativeAddress)]);
+                e.call(e.rax);
+            } else {
+                e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+                e.call(e.rax);
+            }
+        }
+        // Save return value
+        e.mov(i.dest, e.eax);
+    }
+};
+struct CALL_I64 : Sequence<CALL_I64, I<OPCODE_CALL, I64Op, FunctionOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        const Function* target = i.src1.function;
+        if (i.instr->flags & CALL_EXTERN) {
+            e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+            e.call(e.rax);
+        } else {
+            if (e.settings().isJIT) {
+                e.mov(e.rax, reinterpret_cast<size_t>(target));
+                e.mov(e.rax, e.qword[e.rax + offsetof(hir::Function, nativeAddress)]);
+                e.call(e.rax);
+            } else {
+                e.mov(e.rax, reinterpret_cast<size_t>(target->nativeAddress));
+                e.call(e.rax);
+            }
+        }
+        // Save return value
+        e.mov(i.dest, e.rax);
+    }
+};
 
 /**
  * Opcode: BRCOND
@@ -1533,11 +1613,12 @@ void X86Sequences::init() {
         registerSequence<STORE_I8, STORE_I16, STORE_I32, STORE_I64, STORE_F32, STORE_F64, STORE_V128>();
         registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64>();
         registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64>();
+        registerSequence<MEMFENCE>();
         registerSequence<SELECT_I8, SELECT_I16, SELECT_I32, SELECT_I64>();
         registerSequence<CMP_I8, CMP_I16, CMP_I32, CMP_I64>();
         registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
         registerSequence<BR>();
-        registerSequence<CALL_VOID>();
+        registerSequence<CALL_VOID, CALL_I8, CALL_I16, CALL_I32, CALL_I64>();
         registerSequence<BRCOND_I8, BRCOND_I16, BRCOND_I32, BRCOND_I64>();
         registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
     }

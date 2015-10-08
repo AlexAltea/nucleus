@@ -8,6 +8,7 @@ OPCODE(SUB,       "sub",       OPCODE_SIG_V_V_V)   // Subtraction
 OPCODE(MUL,       "mul",       OPCODE_SIG_V_V_V)   // Multiplication
 OPCODE(MULH,      "mulh",      OPCODE_SIG_V_V_V)   // Multiplication (high)
 OPCODE(DIV,       "div",       OPCODE_SIG_V_V_V)   // Division
+OPCODE(NEG,       "neg",       OPCODE_SIG_V_V)     // Negation
 OPCODE(ZEXT,      "zext",      OPCODE_SIG_V_V)     // Integer zero-extend 
 OPCODE(SEXT,      "sext",      OPCODE_SIG_V_V)     // Integer sign-extend
 OPCODE(TRUNC,     "trunc",     OPCODE_SIG_V_V)     // Integer truncation
