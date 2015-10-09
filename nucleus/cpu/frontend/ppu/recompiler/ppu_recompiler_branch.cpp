@@ -6,6 +6,7 @@
 #include "ppu_recompiler.h"
 #include "nucleus/config.h"
 #include "nucleus/cpu/util.h"
+#include "nucleus/assert.h"
 
 namespace cpu {
 namespace frontend {
@@ -141,15 +142,56 @@ void Recompiler::bcctrx(Instruction code)
 
 void Recompiler::bclrx(Instruction code)
 {
-    // Unconditional return
-    if (code.bo == 20 && code.bi == 0) {
-        builder.createRet();
+    // Check condition
+    const U8 bo0 = (code.bo & 0x10) ? 1 : 0;
+    const U8 bo1 = (code.bo & 0x08) ? 1 : 0;
+    const U8 bo2 = (code.bo & 0x04) ? 1 : 0;
+    const U8 bo3 = (code.bo & 0x02) ? 1 : 0;
+
+    Value* ctr_ok = nullptr;
+    if (!bo2) {
+        Value* ctr = getCTR();
+        ctr = builder.createSub(ctr, builder.getConstantI64(1));
+        if (!bo3) {
+            ctr_ok = builder.createCmpNE(ctr, builder.getConstantI64(0));
+        } else {
+            ctr_ok = builder.createCmpEQ(ctr, builder.getConstantI64(0));
+        }
+        setCTR(ctr);
     }
 
-    // Conditional return
+    Value* cond_ok = nullptr;
+    if (!bo0) {
+        Value* shift = builder.getConstantI8(3 - (code.bi & 0x3));
+        Value* bit = builder.createAnd(builder.createShr(getCR(code.bi >> 2), shift), builder.getConstantI8(1));
+        if (!bo1) {
+            cond_ok = builder.createXor(bit, builder.getConstantI8(1));
+        } else {
+            cond_ok = bit;
+        }
+    }
+
+    Value* cond = nullptr;
+    if (ctr_ok && cond_ok) {
+        builder.createAnd(ctr_ok, cond_ok);
+    } else if (ctr_ok) {
+        cond = ctr_ok;
+    }  else if (cond_ok) {
+        cond = cond_ok;
+    }
+
+    // Call the return
+    if (code.lk) {
+        assert_always("Unimplemented");
+    }
+
+    // Just return
     else {
-        // TODO: This is wrong
-        builder.createRet();
+        if (cond_ok) {
+            builder.createBrCond(cond_ok, epilog, blocks[currentAddress + 4]);
+        } else {
+            builder.createBr(epilog);
+        }
     }
 }
 

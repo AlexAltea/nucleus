@@ -25,8 +25,8 @@ public:
     hir::Builder builder;
 
     // Control Flow Graph
-    hir::Block* prolog;
-    hir::Block* epilog;
+    hir::Block* prolog = nullptr;
+    hir::Block* epilog = nullptr;
     std::map<TAddr, hir::Block*> blocks;
 
     // Constructor

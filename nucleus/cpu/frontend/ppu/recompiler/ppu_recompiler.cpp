@@ -4,9 +4,11 @@
  */
 
 #include "ppu_recompiler.h"
-#include "nucleus/emulator.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/assert.h"
+#include "nucleus/config.h"
+#include "nucleus/emulator.h"
 
 namespace cpu {
 namespace frontend {
@@ -52,37 +54,44 @@ void Recompiler::createProlog()
 
 void Recompiler::createEpilog()
 {
-    /*builder.SetInsertPoint(epilog);
+    assert_true(epilog == nullptr, "The frontend epilog block was already declared");
 
-    auto ppuFunc = static_cast<Function*>(function);
-    switch (ppuFunc->type_out) {
-    case FUNCTION_OUT_INTEGER:
-        builder.createRet(getGPR(3));
-        break;
-    case FUNCTION_OUT_FLOAT:
-        builder.createRet(getFPR(1));
-        break;
-    case FUNCTION_OUT_FLOAT_X2:
-        builder.createRet(getFPR(1)); // TODO
-        break;
-    case FUNCTION_OUT_FLOAT_X3:
-        builder.createRet(getFPR(1)); // TODO
-        break;
-    case FUNCTION_OUT_FLOAT_X4:
-        builder.createRet(getFPR(1)); // TODO
-        break;
-    case FUNCTION_OUT_VECTOR:
-        builder.createRet(getVR<I32>(2));
-        break;
-    case FUNCTION_OUT_VOID:
-        builder.createRetVoid();
-        break;
+    epilog = new hir::Block(function->hirFunction);
+    builder.setInsertPoint(epilog);
 
-    default:
-        logger.error(LOG_CPU, "Recompiler::createReturn: Invalid returnType");
-        builder.createRetVoid();
-        break;
-    }*/
+    if (config.ppuTranslator != CPU_TRANSLATOR_MODULE) {
+        builder.createRet();
+    } else {
+        auto ppuFunc = static_cast<Function*>(function);
+        switch (ppuFunc->type_out) {
+        case FUNCTION_OUT_INTEGER:
+            builder.createRet(getGPR(3));
+            break;
+        case FUNCTION_OUT_FLOAT:
+            builder.createRet(getFPR(1));
+            break;
+        case FUNCTION_OUT_FLOAT_X2:
+            builder.createRet(getFPR(1)); // TODO
+            break;
+        case FUNCTION_OUT_FLOAT_X3:
+            builder.createRet(getFPR(1)); // TODO
+            break;
+        case FUNCTION_OUT_FLOAT_X4:
+            builder.createRet(getFPR(1)); // TODO
+            break;
+        case FUNCTION_OUT_VECTOR:
+            builder.createRet(getVR(2));
+            break;
+        case FUNCTION_OUT_VOID:
+            builder.createRet();
+            break;
+
+        default:
+            logger.error(LOG_CPU, "Recompiler::createReturn: Invalid returnType");
+            builder.createRet();
+            break;
+        }
+    }
 }
 
 /**

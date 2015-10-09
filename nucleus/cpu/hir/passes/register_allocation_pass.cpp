@@ -72,6 +72,11 @@ bool RegisterAllocationPass::tryFreeValueReg(Value* value) {
 }
 
 bool RegisterAllocationPass::run(Function* function) {
+    // Reset register usage
+    for (auto& regUsage : regUsages) {
+        regUsage.regs.reset();
+    }
+
     // Arguments
     for (int i = 0; i < function->args.size(); i++) {
         auto& arg = function->args[i];
@@ -91,6 +96,7 @@ bool RegisterAllocationPass::run(Function* function) {
             // Handle call arguments
             if (i->opcode == OPCODE_ARG) {
                 allocArgumentReg(i->src1.immediate, i->dest);
+                tryFreeValueReg(i->src2.value);
                 continue;
             }
             // Handle call returns
