@@ -4,6 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/assert.h"
 
 namespace cpu {
 namespace frontend {
@@ -106,6 +107,7 @@ void Recompiler::ldarx(Instruction code)
 
 void Recompiler::ldbrx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::ldu(Instruction code)
@@ -297,6 +299,7 @@ void Recompiler::lhax(Instruction code)
 
 void Recompiler::lhbrx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::lhz(Instruction code)
@@ -357,14 +360,17 @@ void Recompiler::lhzx(Instruction code)
 
 void Recompiler::lmw(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::lswi(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::lswx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::lwa(Instruction code)
@@ -425,6 +431,7 @@ void Recompiler::lwax(Instruction code)
 
 void Recompiler::lwbrx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::lwz(Instruction code)
@@ -629,6 +636,7 @@ void Recompiler::stfdx(Instruction code)
 
 void Recompiler::stfiwx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::stfs(Instruction code)
@@ -692,6 +700,7 @@ void Recompiler::sth(Instruction code)
 
 void Recompiler::sthbrx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sthu(Instruction code)
@@ -727,14 +736,17 @@ void Recompiler::sthx(Instruction code)
 
 void Recompiler::stmw(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::stswi(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::stswx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::stw(Instruction code)
@@ -751,6 +763,7 @@ void Recompiler::stw(Instruction code)
 
 void Recompiler::stwbrx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::stwcx_(Instruction code)

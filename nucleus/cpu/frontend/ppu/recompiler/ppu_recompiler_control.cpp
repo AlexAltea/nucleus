@@ -7,6 +7,7 @@
 #include "nucleus/cpu/util.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/assert.h"
 
 namespace cpu {
 namespace frontend {
@@ -62,7 +63,7 @@ void Recompiler::mtocrf(Instruction code)
         int count = 0;
         for (int i = 0; i < 8; i++) {
             if (code.crm & (1 << i)) {
-                field = i;
+                field = (7 - i);
                 count += 1;
             }
         }
@@ -140,18 +141,22 @@ void Recompiler::dcbtst(Instruction code)
 
 void Recompiler::dcbz(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::icbi(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::eciwx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::ecowx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 }  // namespace ppu

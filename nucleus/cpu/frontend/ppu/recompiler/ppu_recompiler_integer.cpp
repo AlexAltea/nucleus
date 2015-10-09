@@ -45,9 +45,11 @@ void Recompiler::addcx(Instruction code)
     Value* ca;
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, rb);
+        assert_always("Unimplemented");
         // TODO: XER CA update
     }
     if (code.rc) {
@@ -63,10 +65,12 @@ void Recompiler::addex(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rd;
 
+    assert_always("Unimplemented");
     // TODO: Add XER[CA]
     rd = builder.createAdd(ra, rb);
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -99,6 +103,7 @@ void Recompiler::addic(Instruction code)
     Value* rd;
 
     rd = builder.createAdd(ra, simm);
+    assert_always("Unimplemented");
     // TODO: XER CA update
 
     setGPR(code.rd, rd);
@@ -111,6 +116,7 @@ void Recompiler::addic_(Instruction code)
     Value* rd;
 
     rd = builder.createAdd(ra, simm);
+    assert_always("Unimplemented");
     // TODO: XER CA update
     updateCR0(rd);
 
@@ -134,10 +140,12 @@ void Recompiler::addis(Instruction code)
 
 void Recompiler::addmex(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::addzex(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::andx(Instruction code)
@@ -263,6 +271,7 @@ void Recompiler::divdx(Instruction code)
     rd = builder.createDiv(ra, rb, ARITHMETIC_SIGNED);
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -281,6 +290,7 @@ void Recompiler::divdux(Instruction code)
     rd = builder.createDiv(ra, rb, ARITHMETIC_UNSIGNED);
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -300,6 +310,7 @@ void Recompiler::divwx(Instruction code)
     rd = builder.createZExt(result, TYPE_I64);
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -319,6 +330,7 @@ void Recompiler::divwux(Instruction code)
     rd = builder.createZExt(result, TYPE_I64);
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -446,6 +458,7 @@ void Recompiler::mulldx(Instruction code)
 
     rd = builder.createMul(ra, rb, ARITHMETIC_SIGNED);
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -477,6 +490,7 @@ void Recompiler::mullwx(Instruction code)
     rd = builder.createMul(ra_i64, rb_i64, ARITHMETIC_SIGNED);
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -508,6 +522,7 @@ void Recompiler::negx(Instruction code)
 
     rd = builder.createSub(builder.getConstantI64(0), ra);
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     }
     if (code.rc) {
@@ -585,6 +600,7 @@ void Recompiler::oris(Instruction code)
 
 void Recompiler::rldc_lr(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rldicx(Instruction code)
@@ -747,6 +763,7 @@ void Recompiler::rlwnmx(Instruction code)
 
 void Recompiler::sldx(Instruction code)
 {
+    assert_always("Unimplemented");
     /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
     Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
     Value* ra;
@@ -777,6 +794,7 @@ void Recompiler::slwx(Instruction code)
 
 void Recompiler::sradx(Instruction code)
 {
+    assert_always("Unimplemented");
     /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
     Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
     Value* temp;
@@ -797,6 +815,7 @@ void Recompiler::sradx(Instruction code)
 
 void Recompiler::sradix(Instruction code)
 {
+    assert_always("Unimplemented");
     /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
     Value* temp;
     Value* ra;
@@ -817,6 +836,7 @@ void Recompiler::sradix(Instruction code)
 
 void Recompiler::srawx(Instruction code)
 {
+    assert_always("Unimplemented");
     /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
     Value* rb = builder.createZExt<I64>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x3F));
     Value* ra;
@@ -852,6 +872,7 @@ void Recompiler::srawix(Instruction code)
 
 void Recompiler::srdx(Instruction code)
 {
+    assert_always("Unimplemented");
     /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
     Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
     Value* temp;
@@ -889,6 +910,7 @@ void Recompiler::subfx(Instruction code)
     Value* rd;
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER SO, OV update
     } else {
         rd = builder.createSub(rb, ra);
@@ -908,9 +930,11 @@ void Recompiler::subfcx(Instruction code)
     Value* rd;
 
     if (code.oe) {
+        assert_always("Unimplemented");
         // TODO: XER OV update
     } else {
         auto result = builder.createAdd(ra, rb);
+        assert_always("Unimplemented");
         // TODO: XER CA update
     }
 
@@ -923,6 +947,7 @@ void Recompiler::subfcx(Instruction code)
 
 void Recompiler::subfex(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::subfic(Instruction code)
@@ -938,10 +963,12 @@ void Recompiler::subfic(Instruction code)
 
 void Recompiler::subfmex(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::subfzex(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xorx(Instruction code)

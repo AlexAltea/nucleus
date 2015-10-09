@@ -111,6 +111,7 @@ void Recompiler::bcctrx(Instruction code)
     const auto bo0 = code.bo & 0x10;
     const auto bo1 = code.bo & 0x08;
     if (!bo0) {
+        assert_always("Unimplemented");
         // TODO: Set cond_ok
     }
 
@@ -207,34 +208,42 @@ void Recompiler::crand(Instruction code)
 
 void Recompiler::crandc(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::creqv(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::crnand(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::crnor(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::cror(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::crorc(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::crxor(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mcrf(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sc(Instruction code)
@@ -247,18 +256,22 @@ void Recompiler::sc(Instruction code)
 
 void Recompiler::td(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::tdi(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::tw(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::twi(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 }  // namespace ppu

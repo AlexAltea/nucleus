@@ -4,6 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
+#include "nucleus/assert.h"
 
 namespace cpu {
 namespace frontend {
@@ -37,6 +38,7 @@ void Recompiler::faddx(Instruction code)
 
     frd = builder.createFAdd(fra, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -51,6 +53,7 @@ void Recompiler::faddsx(Instruction code)
     auto result = builder.createFAdd(fra, frb);
     auto frd = builder.createFTrunc(result, TYPE_F32);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -59,30 +62,37 @@ void Recompiler::faddsx(Instruction code)
 
 void Recompiler::fcfidx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fcmpo(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fcmpu(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fctidx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fctidzx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fctiwx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fctiwzx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fdivx(Instruction code)
@@ -93,6 +103,7 @@ void Recompiler::fdivx(Instruction code)
 
     frd = builder.createFDiv(fra, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -107,6 +118,7 @@ void Recompiler::fdivsx(Instruction code)
 
     frd = builder.createFDiv(fra, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -123,6 +135,7 @@ void Recompiler::fmaddx(Instruction code)
     frd = builder.createFMul(fra, frc);
     frd = builder.createFAdd(frd, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -139,6 +152,7 @@ void Recompiler::fmaddsx(Instruction code)
     frd = builder.createFMul(fra, frc);
     frd = builder.createFAdd(frd, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -152,6 +166,7 @@ void Recompiler::fmrx(Instruction code)
 
     frd = frb;
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -186,6 +201,7 @@ void Recompiler::fmsubsx(Instruction code)
     frd = builder.createFMul(fra, frc);
     frd = builder.createFSub(frd, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -200,6 +216,7 @@ void Recompiler::fmulx(Instruction code)
 
     frd = builder.createFMul(fra, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -214,6 +231,7 @@ void Recompiler::fmulsx(Instruction code)
 
     frd = builder.createFMul(fra, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -228,6 +246,7 @@ void Recompiler::fnabsx(Instruction code)
     frd = builder.createAbs(frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -241,6 +260,7 @@ void Recompiler::fnegx(Instruction code)
 
     frd = builder.createFNeg(frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -258,6 +278,7 @@ void Recompiler::fnmaddx(Instruction code)
     frd = builder.createFAdd(frd, frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -275,6 +296,7 @@ void Recompiler::fnmaddsx(Instruction code)
     frd = builder.createFAdd(frd, frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -293,6 +315,7 @@ void Recompiler::fnmsubx(Instruction code)
     frd = builder.createFSub(frd, frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -311,6 +334,7 @@ void Recompiler::fnmsubsx(Instruction code)
     frd = builder.createFSub(frd, frb);
     frd = builder.createFNeg(frd);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -319,18 +343,22 @@ void Recompiler::fnmsubsx(Instruction code)
 
 void Recompiler::fresx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::frspx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::frsqrtex(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fselx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fsqrtx(Instruction code)
@@ -340,6 +368,7 @@ void Recompiler::fsqrtx(Instruction code)
 
     frd = builder.createSqrt(frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -353,6 +382,7 @@ void Recompiler::fsqrtsx(Instruction code)
 
     frd = builder.createSqrt(frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -367,6 +397,7 @@ void Recompiler::fsubx(Instruction code)
 
     frd = builder.createFSub(fra, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -381,6 +412,7 @@ void Recompiler::fsubsx(Instruction code)
 
     frd = builder.createFSub(fra, frb);
     if (code.rc) {
+        assert_always("Unimplemented");
         // TODO: CR1 update
     }
 
@@ -389,26 +421,32 @@ void Recompiler::fsubsx(Instruction code)
 
 void Recompiler::mcrfs(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mffsx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mtfsb0x(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mtfsb1x(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mtfsfix(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mtfsfx(Instruction code)
 {
+    assert_always("Unimplemented");
 }
 
 }  // namespace ppu

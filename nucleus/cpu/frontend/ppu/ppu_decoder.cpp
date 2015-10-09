@@ -84,6 +84,12 @@ bool Function::analyze_cfg()
         U32 addr = labels.front();
         code.instruction = nucleus.memory.read32(addr);
 
+        // Check if block was already processed
+        if (blocks.find(addr) != blocks.end()) {
+            labels.pop();
+            continue;
+        }
+
         // Initial Block properties
         current.address = addr;
         current.size = 4;
