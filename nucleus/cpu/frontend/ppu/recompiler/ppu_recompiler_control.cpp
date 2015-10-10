@@ -38,13 +38,11 @@ void Recompiler::mfspr(Instruction code)
     case 0x001: // XER register
         rd = getXER();
         break;
+    case 0x008: // LR register
+        rd = getLR();
+        break;
     case 0x009: // CTR register
         rd = getCTR();
-        break;
-
-    // Registers ignored by the recompiler
-    case 0x008: // LR register
-        rd = builder.getConstantI64(0);
         break;
 
     default:
@@ -86,12 +84,11 @@ void Recompiler::mtspr(Instruction code)
     case 0x001: // XER register
         setXER(rs);
         break;
+    case 0x008: // LR register
+        setLR(rs);
+        break;
     case 0x009: // CTR register
         setCTR(rs);
-        break;
-
-    // Registers ignored by the recompiler
-    case 0x008: // LR register
         break;
 
     default:

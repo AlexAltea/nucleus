@@ -539,7 +539,7 @@ void Recompiler::norx(Instruction code)
     Value* ra;
 
     ra = builder.createOr(rs, rb);
-    ra = builder.createNeg(ra);
+    ra = builder.createNot(ra);
     if (code.rc) {
         updateCR0(ra);
     }

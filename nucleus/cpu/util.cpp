@@ -19,7 +19,6 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr) {
     function->analyze_cfg();
     function->recompile();
 
-
     nucleus.cell.compiler->compile(function->hirFunction);
     function->call();
 }
@@ -39,8 +38,8 @@ void nucleusSysCall() {
 
 
 void nucleusLog(U64 guestAddr) {
-    auto* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
-    printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(guestAddr).name);
+    //auto* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
+    //printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(guestAddr).name);
     int a = 0;
     a += 1;
 }

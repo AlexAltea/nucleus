@@ -150,6 +150,12 @@ Value* Recompiler::getCR()
     return builder.createCtxLoad(offset, TYPE_I32);
 }
 
+Value* Recompiler::getLR()
+{
+    constexpr U32 offset = offsetof(State, lr);
+    return builder.createCtxLoad(offset, TYPE_I64);
+}
+
 Value* Recompiler::getXER()
 {
     constexpr U32 offset = offsetof(State, xer);
@@ -222,6 +228,17 @@ void Recompiler::setCR(Value* value)
     
     if (value->type != TYPE_I32) {
         logger.error(LOG_CPU, "Wrong value type for CR register");
+        return;
+    }
+    builder.createCtxStore(offset, value);
+}
+
+void Recompiler::setLR(Value* value)
+{
+    constexpr U32 offset = offsetof(State, lr);
+    
+    if (value->type != TYPE_I64) {
+        logger.error(LOG_CPU, "Wrong value type for LR register");
         return;
     }
     builder.createCtxStore(offset, value);

@@ -24,6 +24,7 @@ private:
     hir::Value* getVR(int index);
     hir::Value* getCR(int index);
     hir::Value* getCR();
+    hir::Value* getLR();
     hir::Value* getXER();
     hir::Value* getCTR();
 
@@ -33,6 +34,7 @@ private:
     void setVR(int index, hir::Value* value);
     void setCR(int index, hir::Value* value);
     void setCR(hir::Value* value);
+    void setLR(hir::Value* value);
     void setXER(hir::Value* value);
     void setCTR(hir::Value* value);
 
