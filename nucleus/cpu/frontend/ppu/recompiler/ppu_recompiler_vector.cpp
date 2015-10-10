@@ -80,7 +80,17 @@ void Recompiler::lvsr(Instruction code)
 
 void Recompiler::lvx(Instruction code)
 {
-	assert_always("Unimplemented");
+	Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* vd;
+
+    Value* addr = rb;
+    if (code.ra) {
+        addr = builder.createAdd(addr, ra);
+    }
+
+    vd = readMemory(addr, TYPE_V128);
+    setVR(code.vd, vd);
 }
 
 void Recompiler::lvxl(Instruction code)
@@ -135,7 +145,16 @@ void Recompiler::stvrxl(Instruction code)
 
 void Recompiler::stvx(Instruction code)
 {
-	assert_always("Unimplemented");
+	Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* vs = getGPR(code.vs);
+
+    Value* addr = rb;
+    if (code.ra) {
+        addr = builder.createAdd(addr, ra);
+    }
+
+    writeMemory(addr, vs);
 }
 
 void Recompiler::stvxl(Instruction code)

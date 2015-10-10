@@ -61,7 +61,10 @@ struct U128 {
  * integer operations and component-wise 32-bit floating point operations.
  */
 union V128 {
+    F64 f64[2];
     F32 f32[4];
+    U64 u64[2];
+    S64 s64[2];
     U32 u32[4];
     S32 s32[4];
     U16 u16[8];

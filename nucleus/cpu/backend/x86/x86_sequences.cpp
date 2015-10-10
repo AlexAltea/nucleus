@@ -210,6 +210,32 @@ struct Sequence : SequenceBase<S, I> {
             func(e, i.dest, i.src1, i.src2, false);
         }
     }
+
+    template <typename FuncType>
+    static void emitBinaryXmmOp(X86Emitter& e, InstrType& i, FuncType func) {
+        // Constant, Constant
+        if (i.src1.isConstant && i.src2.isConstant) {
+            assert_always("Invalid comparison instruction operands");
+        }
+        // Constant, Register
+        else if (i.src1.isConstant && !i.src2.isConstant) {
+            e.mov(e.qword[e.rsp + 0], i.src1.constant().u64[0]);
+            e.mov(e.qword[e.rsp + 8], i.src1.constant().u64[1]);
+            e.vmovdqa(e.xmm0, e.ptr[e.rsp]);
+            func(e, i.dest, e.xmm0, i.src2);
+        }
+        // Register, Constant
+        else if (!i.src1.isConstant && i.src2.isConstant) {
+            e.mov(e.qword[e.rsp + 0], i.src2.constant().u64[0]);
+            e.mov(e.qword[e.rsp + 8], i.src2.constant().u64[1]);
+            e.vmovdqa(e.xmm0, e.ptr[e.rsp]);
+            func(e, i.dest, i.src1, e.xmm0);
+        }
+        // Register, Register
+        else {
+            func(e, i.dest, i.src1, i.src2);
+        }
+    }
 };
 
 /**
@@ -495,6 +521,45 @@ struct NEG_I64 : Sequence<NEG_I64, I<OPCODE_NEG, I64Op, I64Op>> {
 };
 
 /**
+ * Opcode: NOT
+ */
+struct NOT_I8 : Sequence<NOT_I8, I<OPCODE_NOT, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
+        });
+    }
+};
+struct NOT_I16 : Sequence<NOT_I16, I<OPCODE_NOT, I16Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
+        });
+    }
+};
+struct NOT_I32 : Sequence<NOT_I32, I<OPCODE_NOT, I32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
+        });
+    }
+};
+struct NOT_I64 : Sequence<NOT_I64, I<OPCODE_NOT, I64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
+            e.not_(dest);
+        });
+    }
+};
+struct NOT_V128 : Sequence<NOT_V128, I<OPCODE_NOT, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_false(i.src1.isConstant);
+        e.vpcmpeqw(e.xmm0, e.xmm0);
+        e.vpxor(i.dest, i.src1, e.xmm0);
+    }
+};
+
+/**
  * Opcode: AND
  */
 struct AND_I8 : Sequence<AND_I8, I<OPCODE_AND, I8Op, I8Op, I8Op>> {
@@ -522,6 +587,13 @@ struct AND_I64 : Sequence<AND_I64, I<OPCODE_AND, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
             e.and_(dest, src);
+        });
+    }
+};
+struct AND_V128 : Sequence<AND_V128, I<OPCODE_AND, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vpand(dest, src1, src2);
         });
     }
 };
@@ -557,6 +629,13 @@ struct OR_I64 : Sequence<OR_I64, I<OPCODE_OR, I64Op, I64Op, I64Op>> {
         });
     }
 };
+struct OR_V128 : Sequence<OR_V128, I<OPCODE_OR, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vpor(dest, src1, src2);
+        });
+    }
+};
 
 /**
  * Opcode: XOR
@@ -586,6 +665,13 @@ struct XOR_I64 : Sequence<XOR_I64, I<OPCODE_XOR, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         emitCommutativeBinaryOp(e, i, [](X86Emitter& e, auto dest, auto src) {
             e.xor_(dest, src);
+        });
+    }
+};
+struct XOR_V128 : Sequence<XOR_V128, I<OPCODE_XOR, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vpxor(dest, src1, src2);
         });
     }
 };
@@ -791,38 +877,6 @@ struct SHRA_I64 : Sequence<SHRA_I64, I<OPCODE_SHRA, I64Op, I64Op, I8Op>> {
                 e.sar(dest, srcConst);
             }
         );
-    }
-};
-
-/**
- * Opcode: NOT
- */
-struct NOT_I8 : Sequence<NOT_I8, I<OPCODE_NOT, I8Op, I8Op>> {
-    static void emit(X86Emitter& e, InstrType& i) {
-        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
-            e.not_(dest);
-        });
-    }
-};
-struct NOT_I16 : Sequence<NOT_I16, I<OPCODE_NOT, I16Op, I16Op>> {
-    static void emit(X86Emitter& e, InstrType& i) {
-        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
-            e.not_(dest);
-        });
-    }
-};
-struct NOT_I32 : Sequence<NOT_I32, I<OPCODE_NOT, I32Op, I32Op>> {
-    static void emit(X86Emitter& e, InstrType& i) {
-        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
-            e.not_(dest);
-        });
-    }
-};
-struct NOT_I64 : Sequence<NOT_I64, I<OPCODE_NOT, I64Op, I64Op>> {
-    static void emit(X86Emitter& e, InstrType& i) {
-        emitUnaryOp(e, i, [](X86Emitter& e, auto dest) {
-            e.not_(dest);
-        });
     }
 };
 
@@ -1117,14 +1171,11 @@ struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
 struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = i.src1.reg;
+        e.vmovups(i.dest, e.ptr[addr]);
         if (i.instr->flags & ENDIAN_BIG) {
-            if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                assert_always("Unimplemented");
-            } else {
-                assert_always("Unimplemented");
-            }
-        } else {
-            assert_always("Unimplemented");
+            e.mov(e.qword[e.rsp + 0], 0x08090A0B0C0D0E0FULL);
+            e.mov(e.qword[e.rsp + 8], 0x0001020304050607ULL);
+            e.vpshufb(i.dest, i.dest, e.ptr[e.rsp]);
         }
     }
 };
@@ -1251,13 +1302,18 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
-            if (e.isExtensionAvailable(X86Extension::MOVBE)) {
-                assert_always("Unimplemented");
-            } else {
-                assert_always("Unimplemented");
-            }
+            assert_false(i.src2.isConstant);
+            e.mov(e.qword[e.rsp + 0], 0x08090A0B0C0D0E0FULL);
+            e.mov(e.qword[e.rsp + 8], 0x0001020304050607ULL);
+            e.vpshufb(e.xmm0, i.src2, e.ptr[e.rsp]);
+            e.vmovaps(e.ptr[addr], e.xmm0);
         } else {
-            assert_always("Unimplemented");
+            if (i.src2.isConstant) {
+                e.mov(e.qword[addr + 0], i.src2.constant().u64[0]);
+                e.mov(e.qword[addr + 8], i.src2.constant().u64[1]);
+            } else {
+                e.vmovaps(e.ptr[addr], i.src2);
+            }
         }
     }
 };
@@ -1299,6 +1355,12 @@ struct CTXLOAD_F64 : Sequence<CTXLOAD_F64, I<OPCODE_CTXLOAD, F64Op, ImmediateOp>
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = e.rbx + i.src1.immediate;
         e.vmovsd(i.dest, e.qword[addr]);
+    }
+};
+struct CTXLOAD_V128 : Sequence<CTXLOAD_V128, I<OPCODE_CTXLOAD, V128Op, ImmediateOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = e.rbx + i.src1.immediate;
+        e.vmovaps(i.dest, e.ptr[addr]);
     }
 };
 
@@ -1362,6 +1424,17 @@ struct CTXSTORE_F64 : Sequence<CTXSTORE_F64, I<OPCODE_CTXSTORE, VoidOp, Immediat
             e.mov(e.qword[addr], i.src2.value->constant.i64);
         } else {
             e.vmovsd(e.qword[addr], i.src2);
+        }
+    }
+};
+struct CTXSTORE_V128 : Sequence<CTXSTORE_V128, I<OPCODE_CTXSTORE, VoidOp, ImmediateOp, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = e.rbx + i.src1.immediate;
+        if (i.src2.isConstant) {
+            e.mov(e.qword[addr + 0], i.src2.constant().u64[0]);
+            e.mov(e.qword[addr + 8], i.src2.constant().u64[1]);
+        } else {
+            e.vmovaps(e.ptr[addr], i.src2);
         }
     }
 };
@@ -1807,10 +1880,10 @@ void X86Sequences::init() {
         registerSequence<MULH_I8, MULH_I16, MULH_I32, MULH_I64>();
         registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
         registerSequence<NEG_I8, NEG_I16, NEG_I32, NEG_I64>();
-        registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64>();
-        registerSequence<AND_I8, AND_I16, AND_I32, AND_I64>();
-        registerSequence<OR_I8, OR_I16, OR_I32, OR_I64>();
-        registerSequence<XOR_I8, XOR_I16, XOR_I32, XOR_I64>();
+        registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64, NOT_V128>();
+        registerSequence<AND_I8, AND_I16, AND_I32, AND_I64, AND_V128>();
+        registerSequence<OR_I8, OR_I16, OR_I32, OR_I64, OR_V128>();
+        registerSequence<XOR_I8, XOR_I16, XOR_I32, XOR_I64, XOR_V128>();
         registerSequence<SHL_I8, SHL_I16, SHL_I32, SHL_I64>();
         registerSequence<SHR_I8, SHR_I16, SHR_I32, SHR_I64>();
         registerSequence<SHRA_I8, SHRA_I16, SHRA_I32, SHRA_I64>();
@@ -1822,8 +1895,8 @@ void X86Sequences::init() {
         registerSequence<CTLZ_I8, CTLZ_I16, CTLZ_I32, CTLZ_I64>();
         registerSequence<LOAD_I8, LOAD_I16, LOAD_I32, LOAD_I64, LOAD_F32, LOAD_F64, LOAD_V128>();
         registerSequence<STORE_I8, STORE_I16, STORE_I32, STORE_I64, STORE_F32, STORE_F64, STORE_V128>();
-        registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64, CTXLOAD_F32, CTXLOAD_F64>();
-        registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64, CTXSTORE_F32, CTXSTORE_F64>();
+        registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64, CTXLOAD_F32, CTXLOAD_F64, CTXLOAD_V128>();
+        registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64, CTXSTORE_F32, CTXSTORE_F64, CTXSTORE_V128>();
         registerSequence<MEMFENCE>();
         registerSequence<SELECT_I8, SELECT_I16, SELECT_I32, SELECT_I64>();
         registerSequence<CMP_I8, CMP_I16, CMP_I32, CMP_I64>();

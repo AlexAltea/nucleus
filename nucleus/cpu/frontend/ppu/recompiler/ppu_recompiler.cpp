@@ -127,7 +127,11 @@ Value* Recompiler::getFPR(int index, Type type)
 
 Value* Recompiler::getVR(int index)
 {
-    return nullptr;
+    const U32 offset = offsetof(State, v[index]);
+
+    // TODO: Use volatility information?
+
+    return builder.createCtxLoad(offset, TYPE_V128);
 }
 
 Value* Recompiler::getCR(int index)
@@ -207,6 +211,11 @@ void Recompiler::setFPR(int index, Value* value)
 
 void Recompiler::setVR(int index, Value* value)
 {
+    const U32 offset = offsetof(State, v[index]);
+
+    // TODO: Use volatility information?
+
+    builder.createCtxStore(offset, value);
 }
 
 void Recompiler::setCR(int index, Value* value)
