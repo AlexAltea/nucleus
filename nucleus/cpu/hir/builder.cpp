@@ -257,7 +257,7 @@ Value* Builder::createNeg(Value* value) {
 Value* Builder::createCtlz(Value* value) {
     ASSERT_TYPE_INTEGER(value);
 
-    Instruction* i = appendInstr(OPCODE_CTLZ, 0, allocValue(value->type));
+    Instruction* i = appendInstr(OPCODE_CTLZ, 0, allocValue(TYPE_I8));
     i->src1.setValue(value);
     return i->dest;
 }

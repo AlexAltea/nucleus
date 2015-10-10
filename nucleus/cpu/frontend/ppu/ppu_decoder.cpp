@@ -294,13 +294,6 @@ void Function::recompile()
 
 void Function::createPlaceholder()
 {
-    // Allocate space for compiling the function
-    if (hirFunction->nativeAddress == nullptr) {
-        const size_t size = 256;
-        hirFunction->nativeAddress = nucleus.cell.compiler->allocRWXMemory(size);
-        hirFunction->nativeSize = size;
-    }
-
     hir::Builder builder;
     hir::Block* block = new hir::Block(hirFunction);
     builder.setInsertPoint(block);

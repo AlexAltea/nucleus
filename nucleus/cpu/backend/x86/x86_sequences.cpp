@@ -929,6 +929,68 @@ struct TRUNC_I32_I64 : Sequence<TRUNC_I32_I64, I<OPCODE_TRUNC, I32Op, I64Op>> {
 };
 
 /**
+ * Opcode: CTLZ
+ */
+#define EMIT_CTLZ(bitSize) \
+    Xbyak::Label jz, jend; \
+    e.bsr(i.dest, i.src1); \
+    e.jz(jz); \
+    e.mov(e.rax, bitSize-1); \
+    e.sub(e.rax, i.dest); \
+    e.mov(i.dest, e.rax); \
+    e.jmp(jend); \
+    e.L(jz); \
+    e.mov(i.dest, bitSize); \
+    e.L(jend);
+
+struct CTLZ_I8 : Sequence<CTLZ_I8, I<OPCODE_CTLZ, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (e.isExtensionAvailable(X86Extension::LZCNT)) {
+            e.xor_(e.ax, e.ax);
+            e.mov(e.al, i.src1);
+            e.lzcnt(i.dest.reg.cvt16(), e.ax);
+        } else {
+            e.inLocalLabel();
+            EMIT_CTLZ(8);
+            e.outLocalLabel();
+        }
+    }
+};
+struct CTLZ_I16 : Sequence<CTLZ_I16, I<OPCODE_CTLZ, I8Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (e.isExtensionAvailable(X86Extension::LZCNT)) {
+            e.lzcnt(i.dest.reg.cvt16(), i.src1);
+        } else {
+            e.inLocalLabel();
+            EMIT_CTLZ(16);
+            e.outLocalLabel();
+        }
+    }
+};
+struct CTLZ_I32 : Sequence<CTLZ_I32, I<OPCODE_CTLZ, I8Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (e.isExtensionAvailable(X86Extension::LZCNT)) {
+            e.lzcnt(i.dest.reg.cvt32(), i.src1);
+        } else {
+            e.inLocalLabel();
+            EMIT_CTLZ(32);
+            e.outLocalLabel();
+        }
+    }
+};
+struct CTLZ_I64 : Sequence<CTLZ_I64, I<OPCODE_CTLZ, I8Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        if (e.isExtensionAvailable(X86Extension::LZCNT)) {
+            e.lzcnt(i.dest.reg.cvt64(), i.src1);
+        } else {
+            e.inLocalLabel();
+            EMIT_CTLZ(64);
+            e.outLocalLabel();
+        }
+    }
+};
+
+/**
  * Opcode: LOAD
  */
 struct LOAD_I8 : Sequence<LOAD_I8, I<OPCODE_LOAD, I8Op, PtrOp>> {
@@ -1664,6 +1726,7 @@ void X86Sequences::init() {
         registerSequence<ZEXT_I16_I8, ZEXT_I32_I8, ZEXT_I64_I8, ZEXT_I32_I16, ZEXT_I64_I16, ZEXT_I64_I32>();
         registerSequence<SEXT_I16_I8, SEXT_I32_I8, SEXT_I64_I8, SEXT_I32_I16, SEXT_I64_I16, SEXT_I64_I32>();
         registerSequence<TRUNC_I8_I16, TRUNC_I8_I32, TRUNC_I8_I64, TRUNC_I16_I32, TRUNC_I16_I64, TRUNC_I32_I64>();
+        registerSequence<CTLZ_I8, CTLZ_I16, CTLZ_I32, CTLZ_I64>();
         registerSequence<LOAD_I8, LOAD_I16, LOAD_I32, LOAD_I64, LOAD_F32, LOAD_F64, LOAD_V128>();
         registerSequence<STORE_I8, STORE_I16, STORE_I32, STORE_I64, STORE_F32, STORE_F64, STORE_V128>();
         registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64>();

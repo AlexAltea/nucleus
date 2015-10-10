@@ -16,22 +16,20 @@ namespace cpu {
 
 void nucleusTranslate(void* guestFunc, U64 guestAddr) {
     auto* function = static_cast<frontend::ppu::Function*>(guestFunc);
-
     function->analyze_cfg();
     function->recompile();
 
-    // Allocate space for compiling the function
-    const size_t size = 65536;
-    hir::Function* hirFunction = function->hirFunction;
-    hirFunction->nativeAddress = nucleus.cell.compiler->allocRWXMemory(size);
-    hirFunction->nativeSize = size;
 
-    nucleus.cell.compiler->compile(hirFunction);
+    nucleus.cell.compiler->compile(function->hirFunction);
     function->call();
 }
 
 void nucleusCall(U64 guestAddr) {
-    logger.warning(LOG_CPU, "Unimplemented");
+    auto* thread = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread());
+    auto* state = thread->state.get();
+
+    state->pc = guestAddr;
+    thread->task();
 }
 
 void nucleusSysCall() {

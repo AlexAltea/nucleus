@@ -36,6 +36,7 @@ void X86Compiler::init() {
     extensions |= cpu.has(Xbyak::util::Cpu::tAVX)   ? X86Extension::AVX : 0;
     extensions |= cpu.has(Xbyak::util::Cpu::tAVX2)  ? X86Extension::AVX2 : 0;
     extensions |= cpu.has(Xbyak::util::Cpu::tBMI2)  ? X86Extension::BMI2 : 0;
+    extensions |= cpu.has(Xbyak::util::Cpu::tLZCNT) ? X86Extension::LZCNT : 0;
     extensions |= cpu.has(Xbyak::util::Cpu::tMOVBE) ? X86Extension::MOVBE : 0;
 
     // Set target information
@@ -68,7 +69,7 @@ bool X86Compiler::compile(Function* function) {
     optimize(function);
 
     // Initialize emitter
-    X86Emitter e(this, function->nativeAddress, function->nativeSize);
+    X86Emitter e(this);
 #if defined(NUCLEUS_ARCH_X86_32BITS)
     e.mode = X86_MODE_32BITS;
 #elif defined(NUCLEUS_ARCH_X86_64BITS)
@@ -107,6 +108,12 @@ bool X86Compiler::compile(Function* function) {
     e.L(e.labelEpilog);
     e.add(e.rsp, 0x28);
     e.ret();
+
+    // Copy emitted code
+    const auto codeSize = e.getSize();
+    function->nativeSize = codeSize;
+    function->nativeAddress = allocRWXMemory(codeSize);
+    memcpy(function->nativeAddress, e.getCode(), codeSize);
 
     function->flags |= FUNCTION_IS_COMPILED;
     return true;

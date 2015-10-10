@@ -115,6 +115,7 @@ void Thread::task()
 
             auto* function = ppu_segment->addFunction(state->pc);
             function->call();
+            return;
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {

@@ -18,7 +18,8 @@ enum X86Extension {
     AVX   = (1 << 0),  // Advanced Vector Extensions
     AVX2  = (1 << 1),  // Advanced Vector Extensions 2
     BMI2  = (1 << 2),  // Bit Manipulation Instructions 2
-    MOVBE = (1 << 3),  // Move Data After Swapping Bytes
+    LZCNT = (1 << 3),  // Leading Zeros Count
+    MOVBE = (1 << 4),  // Move Data After Swapping Bytes
 };
 
 class X86Compiler : public Compiler {
