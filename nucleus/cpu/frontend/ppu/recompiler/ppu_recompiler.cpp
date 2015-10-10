@@ -190,19 +190,19 @@ void Recompiler::setGPR(int index, Value* value)
 
 void Recompiler::setFPR(int index, Value* value)
 {
-    const U32 offset = offsetof(State, r[index]);
+    const U32 offset = offsetof(State, f[index]);
 
     // TODO: Use volatility information?
     // Return+Parameter registers and nonvolatile registers are 1 to 13 and 14 onwards respectively
 
-    Value* value_i64;
-    if (value->type != TYPE_I64) {
-        value_i64 = builder.createZExt(value, TYPE_I64);
+    Value* value_f64;
+    if (value->type != TYPE_F64) {
+        value_f64 = builder.createConvert(value, TYPE_F64);
     } else {
-        value_i64 = value;
+        value_f64 = value;
     }
 
-    builder.createCtxStore(offset, value_i64);
+    builder.createCtxStore(offset, value_f64);
 }
 
 void Recompiler::setVR(int index, Value* value)

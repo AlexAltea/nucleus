@@ -29,7 +29,7 @@
 // Trigger an exception if expression is true
 #define assert_false(...) \
     __NUCLEUS_MACRO_DISPATCH(assert_false, __VA_ARGS__)(__VA_ARGS__)
-#define assert_false1(expr) assert(expr)
+#define assert_false1(expr) assert(!(expr))
 #define assert_false2(expr, message) assert(!(expr) && message)
 
 // Trigger an exception if expression is zero

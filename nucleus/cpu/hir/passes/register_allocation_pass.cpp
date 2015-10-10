@@ -41,7 +41,9 @@ bool RegisterAllocationPass::tryAllocValueReg(Value* value) {
         return true;
     }
     for (auto& regUsage : regUsages) {
-        if (regUsage.types & backend::RegisterSet::TYPE_INT && value->isTypeInteger()) {
+        if (regUsage.types & backend::RegisterSet::TYPE_INT && value->isTypeInteger() ||
+            regUsage.types & backend::RegisterSet::TYPE_FLOAT && value->isTypeFloat() ||
+            regUsage.types & backend::RegisterSet::TYPE_VECTOR && value->isTypeVector()) {
             for (size_t i = 0; i < regUsage.count; i++) {
                 if (!regUsage.regs[i]) {
                     regUsage.regs[i] = 1;
@@ -62,7 +64,9 @@ bool RegisterAllocationPass::tryFreeValueReg(Value* value) {
     value->usage -= 1;
     if (value->usage == 0) {
         for (auto& regUsage : regUsages) {
-            if (regUsage.types & backend::RegisterSet::TYPE_INT && value->isTypeInteger()) {
+            if (regUsage.types & backend::RegisterSet::TYPE_INT && value->isTypeInteger() ||
+                regUsage.types & backend::RegisterSet::TYPE_FLOAT && value->isTypeFloat() ||
+                regUsage.types & backend::RegisterSet::TYPE_VECTOR && value->isTypeVector()) {
                 regUsage.regs[value->reg] = 0;
                 return true;
             }

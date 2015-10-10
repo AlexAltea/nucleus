@@ -22,8 +22,8 @@ using I8Op = I8OpBase<Xbyak::Reg8>;
 using I16Op = I16OpBase<Xbyak::Reg16>;
 using I32Op = I32OpBase<Xbyak::Reg32>;
 using I64Op = I64OpBase<Xbyak::Reg64>;
-using F32Op = F32OpBase<Xbyak::Fpu>;
-using F64Op = F64OpBase<Xbyak::Fpu>;
+using F32Op = F32OpBase<Xbyak::Xmm>;
+using F64Op = F64OpBase<Xbyak::Xmm>;
 using V128Op = V128OpBase<Xbyak::Xmm>;
 using V256Op = V256OpBase<Xbyak::Ymm>;
 using PtrOp = PtrOpBase<Xbyak::Reg64>;
@@ -929,6 +929,44 @@ struct TRUNC_I32_I64 : Sequence<TRUNC_I32_I64, I<OPCODE_TRUNC, I32Op, I64Op>> {
 };
 
 /**
+ * Opcode: CAST
+ */
+struct CAST_I32_F32 : Sequence<CAST_I32_F32, I<OPCODE_CAST, I32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vmovd(i.dest, i.src1);
+    }
+};
+struct CAST_F32_I32 : Sequence<CAST_F32_I32, I<OPCODE_CAST, F32Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vmovd(i.dest, i.src1);
+    }
+};
+struct CAST_I64_F64 : Sequence<CAST_I64_F64, I<OPCODE_CAST, I64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vmovq(i.dest, i.src1);
+    }
+};
+struct CAST_F64_I64 : Sequence<CAST_F64_I64, I<OPCODE_CAST, F64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vmovq(i.dest, i.src1);
+    }
+};
+
+/**
+ * Opcode: CONVERT
+ */
+struct CONVERT_F32_F64 : Sequence<CONVERT_F32_F64, I<OPCODE_CONVERT, F32Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vcvtsd2ss(i.dest, i.src1);
+    }
+};
+struct CONVERT_F64_F32 : Sequence<CONVERT_F64_F32, I<OPCODE_CONVERT, F64Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vcvtss2sd(i.dest, i.src1);
+    }
+};
+
+/**
  * Opcode: CTLZ
  */
 #define EMIT_CTLZ(bitSize) \
@@ -1051,10 +1089,12 @@ struct LOAD_F32 : Sequence<LOAD_F32, I<OPCODE_LOAD, F32Op, PtrOp>> {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 assert_always("Unimplemented");
             } else {
-                assert_always("Unimplemented");
+                e.mov(e.eax, e.dword[addr]);
+                e.bswap(e.eax);
+                e.vmovd(i.dest, e.eax);
             }
         } else {
-            assert_always("Unimplemented");
+            e.vmovss(i.dest, e.dword[addr]);
         }
     }
 };
@@ -1065,10 +1105,12 @@ struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 assert_always("Unimplemented");
             } else {
-                assert_always("Unimplemented");
+                e.mov(e.rax, e.dword[addr]);
+                e.bswap(e.rax);
+                e.vmovq(i.dest, e.rax);
             }
         } else {
-            assert_always("Unimplemented");
+            e.vmovsd(i.dest, e.qword[addr]);
         }
     }
 };
@@ -1104,6 +1146,7 @@ struct STORE_I16 : Sequence<STORE_I16, I<OPCODE_STORE, VoidOp, PtrOp, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
+            assert_false(i.src2.isConstant);
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 e.movbe(e.word[addr], i.src2);
             } else {
@@ -1124,6 +1167,7 @@ struct STORE_I32 : Sequence<STORE_I32, I<OPCODE_STORE, VoidOp, PtrOp, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
+            assert_false(i.src2.isConstant);
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 e.movbe(e.dword[addr], i.src2);
             } else {
@@ -1144,6 +1188,7 @@ struct STORE_I64 : Sequence<STORE_I64, I<OPCODE_STORE, VoidOp, PtrOp, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
+            assert_false(i.src2.isConstant);
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 e.movbe(e.qword[addr], i.src2);
             } else {
@@ -1164,13 +1209,20 @@ struct STORE_F32 : Sequence<STORE_F32, I<OPCODE_STORE, VoidOp, PtrOp, F32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
+            assert_false(i.src2.isConstant);
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 assert_always("Unimplemented");
             } else {
-                assert_always("Unimplemented");
+                e.vmovd(e.eax, i.src2);
+                e.bswap(e.eax);
+                e.mov(e.dword[addr], e.eax);
             }
         } else {
-            assert_always("Unimplemented");
+            if (i.src2.isConstant) {
+                e.mov(e.dword[addr], i.src2.value->constant.i32);
+            } else {
+                e.vmovss(e.dword[addr], i.src2);
+            }
         }
     }
 };
@@ -1178,13 +1230,20 @@ struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, VoidOp, PtrOp, F64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
+            assert_false(i.src2.isConstant);
             if (e.isExtensionAvailable(X86Extension::MOVBE)) {
                 assert_always("Unimplemented");
             } else {
-                assert_always("Unimplemented");
+                e.vmovq(e.rax, i.src2);
+                e.bswap(e.rax);
+                e.mov(e.qword[addr], e.rax);
             }
         } else {
-            assert_always("Unimplemented");
+            if (i.src2.isConstant) {
+                e.mov(e.qword[addr], i.src2.value->constant.i64);
+            } else {
+                e.vmovsd(e.qword[addr], i.src2);
+            }
         }
     }
 };
@@ -1230,6 +1289,18 @@ struct CTXLOAD_I64 : Sequence<CTXLOAD_I64, I<OPCODE_CTXLOAD, I64Op, ImmediateOp>
         e.mov(i.dest, e.qword[addr]);
     }
 };
+struct CTXLOAD_F32 : Sequence<CTXLOAD_F32, I<OPCODE_CTXLOAD, F32Op, ImmediateOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = e.rbx + i.src1.immediate;
+        e.vmovss(i.dest, e.dword[addr]);
+    }
+};
+struct CTXLOAD_F64 : Sequence<CTXLOAD_F64, I<OPCODE_CTXLOAD, F64Op, ImmediateOp>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = e.rbx + i.src1.immediate;
+        e.vmovsd(i.dest, e.qword[addr]);
+    }
+};
 
 /**
  * Opcode: CTXSTORE
@@ -1271,6 +1342,26 @@ struct CTXSTORE_I64 : Sequence<CTXSTORE_I64, I<OPCODE_CTXSTORE, VoidOp, Immediat
             e.mov(e.qword[addr], i.src2.constant());
         } else {
             e.mov(e.qword[addr], i.src2);
+        }
+    }
+};
+struct CTXSTORE_F32 : Sequence<CTXSTORE_F32, I<OPCODE_CTXSTORE, VoidOp, ImmediateOp, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = e.rbx + i.src1.immediate;
+        if (i.src2.isConstant) {
+            e.mov(e.dword[addr], i.src2.value->constant.i32);
+        } else {
+            e.vmovss(e.dword[addr], i.src2);
+        }
+    }
+};
+struct CTXSTORE_F64 : Sequence<CTXSTORE_F64, I<OPCODE_CTXSTORE, VoidOp, ImmediateOp, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        auto addr = e.rbx + i.src1.immediate;
+        if (i.src2.isConstant) {
+            e.mov(e.qword[addr], i.src2.value->constant.i64);
+        } else {
+            e.vmovsd(e.qword[addr], i.src2);
         }
     }
 };
@@ -1726,11 +1817,13 @@ void X86Sequences::init() {
         registerSequence<ZEXT_I16_I8, ZEXT_I32_I8, ZEXT_I64_I8, ZEXT_I32_I16, ZEXT_I64_I16, ZEXT_I64_I32>();
         registerSequence<SEXT_I16_I8, SEXT_I32_I8, SEXT_I64_I8, SEXT_I32_I16, SEXT_I64_I16, SEXT_I64_I32>();
         registerSequence<TRUNC_I8_I16, TRUNC_I8_I32, TRUNC_I8_I64, TRUNC_I16_I32, TRUNC_I16_I64, TRUNC_I32_I64>();
+        registerSequence<CAST_I32_F32, CAST_F32_I32, CAST_I64_F64, CAST_F64_I64>();
+        registerSequence<CONVERT_F32_F64, CONVERT_F64_F32>();
         registerSequence<CTLZ_I8, CTLZ_I16, CTLZ_I32, CTLZ_I64>();
         registerSequence<LOAD_I8, LOAD_I16, LOAD_I32, LOAD_I64, LOAD_F32, LOAD_F64, LOAD_V128>();
         registerSequence<STORE_I8, STORE_I16, STORE_I32, STORE_I64, STORE_F32, STORE_F64, STORE_V128>();
-        registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64>();
-        registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64>();
+        registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64, CTXLOAD_F32, CTXLOAD_F64>();
+        registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64, CTXSTORE_F32, CTXSTORE_F64>();
         registerSequence<MEMFENCE>();
         registerSequence<SELECT_I8, SELECT_I16, SELECT_I32, SELECT_I64>();
         registerSequence<CMP_I8, CMP_I16, CMP_I32, CMP_I64>();
