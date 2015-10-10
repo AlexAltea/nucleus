@@ -43,6 +43,8 @@ void getReg64Constant(X86Emitter& e, Xbyak::Reg64 dest, const S64 constant);
  * @param[in]  dest      Destination XMM register
  * @param[in]  constant  Entire 128-bit vector or value for each component
  */
+void getXmmConstant(X86Emitter& e, Xbyak::Xmm dest, const F32 constant);
+void getXmmConstant(X86Emitter& e, Xbyak::Xmm dest, const F64 constant);
 void getXmmConstant(X86Emitter& e, Xbyak::Xmm dest, const V128& constant);
 void getXmmConstantCompI32(X86Emitter& e, Xbyak::Xmm dest, const S32 constant);
 void getXmmConstantCompI64(X86Emitter& e, Xbyak::Xmm dest, const S64 constant);

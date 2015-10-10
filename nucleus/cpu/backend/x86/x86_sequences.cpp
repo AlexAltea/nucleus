@@ -220,16 +220,12 @@ struct Sequence : SequenceBase<S, I> {
         }
         // Constant, Register
         else if (i.src1.isConstant && !i.src2.isConstant) {
-            e.mov(e.qword[e.rsp + 0], i.src1.constant().u64[0]);
-            e.mov(e.qword[e.rsp + 8], i.src1.constant().u64[1]);
-            e.vmovdqa(e.xmm0, e.ptr[e.rsp]);
+            getXmmConstant(e, e.xmm0, i.src1.constant());
             func(e, i.dest, e.xmm0, i.src2);
         }
         // Register, Constant
         else if (!i.src1.isConstant && i.src2.isConstant) {
-            e.mov(e.qword[e.rsp + 0], i.src2.constant().u64[0]);
-            e.mov(e.qword[e.rsp + 8], i.src2.constant().u64[1]);
-            e.vmovdqa(e.xmm0, e.ptr[e.rsp]);
+            getXmmConstant(e, e.xmm0, i.src2.constant());
             func(e, i.dest, i.src1, e.xmm0);
         }
         // Register, Register
@@ -1874,6 +1870,94 @@ struct RET_F64 : Sequence<RET_F64, I<OPCODE_RET, VoidOp, F64Op>> {
 };
 
 /**
+ * Opcode: FADD
+ */
+struct FADD_F32 : Sequence<FADD_F32, I<OPCODE_FADD, F32Op, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vaddss(dest, src1, src2);
+        });
+    }
+};
+struct FADD_F64 : Sequence<FADD_F64, I<OPCODE_FADD, F64Op, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vaddsd(dest, src1, src2);
+        });
+    }
+};
+
+/**
+ * Opcode: FSUB
+ */
+struct FSUB_F32 : Sequence<FSUB_F32, I<OPCODE_FSUB, F32Op, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vsubss(dest, src1, src2);
+        });
+    }
+};
+struct FSUB_F64 : Sequence<FSUB_F64, I<OPCODE_FSUB, F64Op, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vsubsd(dest, src1, src2);
+        });
+    }
+};
+
+/**
+ * Opcode: FMUL
+ */
+struct FMUL_F32 : Sequence<FMUL_F32, I<OPCODE_FMUL, F32Op, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vmulss(dest, src1, src2);
+        });
+    }
+};
+struct FMUL_F64 : Sequence<FMUL_F64, I<OPCODE_FMUL, F64Op, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vmulsd(dest, src1, src2);
+        });
+    }
+};
+
+/**
+ * Opcode: FDIV
+ */
+struct FDIV_F32 : Sequence<FDIV_F32, I<OPCODE_FDIV, F32Op, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vdivss(dest, src1, src2);
+        });
+    }
+};
+struct FDIV_F64 : Sequence<FDIV_F64, I<OPCODE_FDIV, F64Op, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [](X86Emitter& e, auto dest, auto src1, auto src2) {
+            e.vdivsd(dest, src1, src2);
+        });
+    }
+};
+
+/**
+ * Opcode: FNEG
+ */
+struct FNEG_F32 : Sequence<FNEG_F32, I<OPCODE_FNEG, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        getXmmConstantCompI64(e, e.xmm0, 0x80000000'00000000ULL);
+        e.vxorps(i.dest, i.src1, e.xmm0);
+    }
+};
+struct FNEG_F64 : Sequence<FNEG_F64, I<OPCODE_FNEG, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        getXmmConstantCompI32(e, e.xmm0, 0x80000000UL);
+        e.vxorps(i.dest, i.src1, e.xmm0);
+    }
+};
+
+/**
  * x86 Sequences
  */
 std::unordered_map<InstrKey::Value, X86Sequences::SelectFunction> X86Sequences::sequences;
@@ -1912,6 +1996,11 @@ void X86Sequences::init() {
         registerSequence<CALL_VOID, CALL_I8, CALL_I16, CALL_I32, CALL_I64>();
         registerSequence<BRCOND_I8, BRCOND_I16, BRCOND_I32, BRCOND_I64>();
         registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
+        registerSequence<FADD_F32, FADD_F64>();
+        registerSequence<FSUB_F32, FSUB_F64>();
+        registerSequence<FMUL_F32, FMUL_F64>();
+        registerSequence<FDIV_F32, FDIV_F64>();
+        registerSequence<FNEG_F32, FNEG_F64>();
     }
 }
 

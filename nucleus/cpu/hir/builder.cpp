@@ -658,23 +658,92 @@ void Builder::createRet() {
 
 // Floating-point operations
 Value* Builder::createFAdd(Value* lhs, Value* rhs) {
-    return nullptr;
+    ASSERT_TYPE_FLOAT(lhs);
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (lhs->isConstantZero()) {
+        return rhs;
+    } else if (rhs->isConstantZero()) {
+        return lhs;
+    } else if (lhs->isConstant() && rhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        assert_always("Unimplemented");
+        //dest->doFAdd(rhs);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_FADD, 0, allocValue(lhs->type));
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
+    return i->dest;
 }
 
 Value* Builder::createFSub(Value* lhs, Value* rhs) {
-    return nullptr;
+    ASSERT_TYPE_FLOAT(lhs);
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (rhs->isConstantZero()) {
+        return lhs;
+    } else if (lhs->isConstant() && rhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        assert_always("Unimplemented");
+        //dest->doFSub(rhs);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_FSUB, 0, allocValue(lhs->type));
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
+    return i->dest;
 }
 
 Value* Builder::createFMul(Value* lhs, Value* rhs) {
-    return nullptr;
+    ASSERT_TYPE_FLOAT(lhs);
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (lhs->isConstant() && rhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        assert_always("Unimplemented");
+        //dest->doFMul(rhs);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_FMUL, 0, allocValue(lhs->type));
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
+    return i->dest;
 }
 
 Value* Builder::createFDiv(Value* lhs, Value* rhs) {
-    return nullptr;
+    ASSERT_TYPE_FLOAT(lhs);
+    ASSERT_TYPE_EQUAL(lhs, rhs);
+
+    if (lhs->isConstant() && rhs->isConstant()) {
+        Value* dest = cloneValue(lhs);
+        assert_always("Unimplemented");
+        //dest->doDiv(rhs);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_FDIV, 0, allocValue(lhs->type));
+    i->src1.setValue(lhs);
+    i->src2.setValue(rhs);
+    return i->dest;
 }
 
 Value* Builder::createFNeg(Value* value) {
-    return nullptr;
+    ASSERT_TYPE_FLOAT(value);
+
+    if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        assert_always("Unimplemented");
+        //dest->doFNeg();
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_FNEG, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    return i->dest;
 }
 
 // Vector operations

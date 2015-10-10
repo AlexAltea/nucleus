@@ -836,21 +836,20 @@ void Recompiler::sradix(Instruction code)
 
 void Recompiler::srawx(Instruction code)
 {
-    assert_always("Unimplemented");
-    /*Value* rs = builder.createZExt<I64>(getGPR(code.rs, TYPE_I32));
-    Value* rb = builder.createZExt<I64>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x3F));
+    Value* rs = getGPR(code.rs, TYPE_I32);
+    Value* rb = getGPR(code.rb, TYPE_I8);
     Value* ra;
 
-    rs = builder.createShl(rs, 32);
-    ra = builder.createAShr(rs, rb);
-    ra = builder.createAShr(ra, 32);
+    rs = builder.createShl(builder.createZExt(rs, TYPE_I64), 32);
+    ra = builder.createShrA(rs, builder.createAnd(rb, builder.getConstantI8(0x3F)));
+    ra = builder.createShrA(ra, 32);
     if (code.rc) {
         updateCR0(ra);
     }
 
     // TODO: Update XER CA
 
-    setGPR(code.ra, ra);*/
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::srawix(Instruction code)

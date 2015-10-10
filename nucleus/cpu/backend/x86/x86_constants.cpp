@@ -28,6 +28,24 @@ int getLog2OfPowerOfTwo(S64 value) {
 // TODO
 
 // XMM constants
+void getXmmConstant(X86Emitter& e, Xbyak::Xmm dest, const F32 constant) {
+    if (!constant) {
+        e.vpxor(dest, dest);
+    } else {
+        e.mov(e.eax, (U32&)constant);
+        e.vmovd(dest, e.eax);
+    }
+}
+
+void getXmmConstant(X86Emitter& e, Xbyak::Xmm dest, const F64 constant) {
+    if (!constant) {
+        e.vpxor(dest, dest);
+    } else {
+        e.mov(e.rax, (U64&)constant);
+        e.vmovq(dest, e.rax);
+    }
+}
+
 void getXmmConstant(X86Emitter& e, Xbyak::Xmm dest, const V128& constant) {
     if (constant.u64[0] == 0ULL && constant.u64[1] == 0ULL) {
         e.vpxor(dest, dest);
