@@ -262,6 +262,15 @@ Value* Builder::createCtlz(Value* value) {
     return i->dest;
 }
 
+Value* Builder::createSqrt(Value* value) {
+    return nullptr;
+}
+
+Value* Builder::createAbs(Value* value) {
+    return nullptr;
+}
+
+// Conversion operations
 Value* Builder::createZExt(Value* value, Type type) {
     if (value->type == type) {
         return value;
@@ -304,12 +313,28 @@ Value* Builder::createTrunc(Value* value, Type type) {
     return i->dest;
 }
 
-Value* Builder::createSqrt(Value* value) {
-    return nullptr;
+Value* Builder::createCast(Value* value, Type type) {
+    if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doCast(type);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_CAST, 0, allocValue(type));
+    i->src1.setValue(value);
+    return i->dest;
 }
 
-Value* Builder::createAbs(Value* value) {
-    return nullptr;
+Value* Builder::createConvert(Value* value, Type type) {
+    if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        dest->doConvert(type);
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_CONVERT, 0, allocValue(type));
+    i->src1.setValue(value);
+    return i->dest;
 }
 
 // Logical operations
@@ -649,14 +674,6 @@ Value* Builder::createFDiv(Value* lhs, Value* rhs) {
 }
 
 Value* Builder::createFNeg(Value* value) {
-    return nullptr;
-}
-
-Value* Builder::createFExt(Value* value, Type type) {
-    return nullptr;
-}
-
-Value* Builder::createFTrunc(Value* value, Type type) {
     return nullptr;
 }
 

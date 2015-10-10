@@ -381,6 +381,70 @@ void Value::doTrunc(Type newType) {
     }
 }
 
+void Value::doCast(Type newType) {
+    type = newType;
+}
+
+void Value::doConvert(Type newType) {
+    switch (type) {
+    case TYPE_I32:
+        type = newType;
+        switch (newType) {
+        case TYPE_I8:  constant.i8  =  S8(constant.i32); return;
+        case TYPE_I16: constant.i16 = S16(constant.i32); return;
+        case TYPE_I32: constant.i32 = S32(constant.i32); return;
+        case TYPE_I64: constant.i64 = S64(constant.i32); return;
+        case TYPE_F32: constant.f32 = F32(constant.i32); return;
+        case TYPE_F64: constant.f64 = F64(constant.i32); return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    case TYPE_I64:
+        type = newType;
+        switch (newType) {
+        case TYPE_I8:  constant.i8  =  S8(constant.i64); return;
+        case TYPE_I16: constant.i16 = S16(constant.i64); return;
+        case TYPE_I32: constant.i32 = S32(constant.i64); return;
+        case TYPE_I64: constant.i64 = S64(constant.i64); return;
+        case TYPE_F32: constant.f32 = F32(constant.i64); return;
+        case TYPE_F64: constant.f64 = F64(constant.i64); return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    case TYPE_F32:
+        type = newType;
+        switch (newType) {
+        case TYPE_I8:  constant.i8  =  S8(constant.f32); return;
+        case TYPE_I16: constant.i16 = S16(constant.f32); return;
+        case TYPE_I32: constant.i32 = S32(constant.f32); return;
+        case TYPE_I64: constant.i64 = S64(constant.f32); return;
+        case TYPE_F32: constant.f32 = F32(constant.f32); return;
+        case TYPE_F64: constant.f64 = F64(constant.f32); return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    case TYPE_F64:
+        type = newType;
+        switch (newType) {
+        case TYPE_I8:  constant.i8  =  S8(constant.f64); return;
+        case TYPE_I16: constant.i16 = S16(constant.f64); return;
+        case TYPE_I32: constant.i32 = S32(constant.f64); return;
+        case TYPE_I64: constant.i64 = S64(constant.f64); return;
+        case TYPE_F32: constant.f32 = F32(constant.f64); return;
+        case TYPE_F64: constant.f64 = F64(constant.f64); return;
+        default:
+            assert_always("Unimplemented case");
+            return;
+        }
+    default:
+        assert_always("Unimplemented case");
+        return;
+    }
+}
+
 void Value::doCompare(Value* rhs, CompareFlags flags) {
     switch (type) {
     case TYPE_I8:

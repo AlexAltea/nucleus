@@ -120,7 +120,7 @@ Value* Recompiler::getFPR(int index, Type type)
 
     Value* value = builder.createCtxLoad(offset, TYPE_F64);
     if (type != TYPE_F64) {
-        return builder.createFTrunc(value, type);
+        return builder.createConvert(value, type);
     }
     return value;
 }

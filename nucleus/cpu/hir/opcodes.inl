@@ -12,6 +12,8 @@ OPCODE(NEG,       "neg",       OPCODE_SIG_V_V)     // Negation
 OPCODE(ZEXT,      "zext",      OPCODE_SIG_V_V)     // Integer zero-extend 
 OPCODE(SEXT,      "sext",      OPCODE_SIG_V_V)     // Integer sign-extend
 OPCODE(TRUNC,     "trunc",     OPCODE_SIG_V_V)     // Integer truncation
+OPCODE(CAST,      "cast",      OPCODE_SIG_V_V)     // Cast
+OPCODE(CONVERT,   "convert",   OPCODE_SIG_V_V)     // Convert
 OPCODE(CTLZ,      "ctlz",      OPCODE_SIG_V_V)     // Count leading zeros
 OPCODE(NOT,       "not",       OPCODE_SIG_V_V)     // Bitwise Not
 OPCODE(AND,       "and",       OPCODE_SIG_V_V_V)   // Bitwise And
@@ -43,8 +45,6 @@ OPCODE(FSUB,      "fsub",      OPCODE_SIG_V_V_V)   // Floating-point subtraction
 OPCODE(FMUL,      "fmul",      OPCODE_SIG_V_V_V)   // Floating-point multiplication
 OPCODE(FDIV,      "fdiv",      OPCODE_SIG_V_V_V)   // Floating-point division
 OPCODE(FNEG,      "fneg",      OPCODE_SIG_V_V)     // Floating-point negation
-OPCODE(FEXT,      "fext",      OPCODE_SIG_V_V)     // Floating-point extend
-OPCODE(FTRUNC,    "ftrunc",    OPCODE_SIG_V_V)     // Floating-point truncation
 OPCODE(VADD,      "vadd",      OPCODE_SIG_V_V_V)   // Vector addition
 OPCODE(VSUB,      "vadd",      OPCODE_SIG_V_V_V)   // Vector subtraction
 OPCODE(VAVG,      "vavg",      OPCODE_SIG_V_V_V)   // Vector average

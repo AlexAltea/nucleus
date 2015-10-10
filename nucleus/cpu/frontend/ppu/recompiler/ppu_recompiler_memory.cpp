@@ -648,7 +648,7 @@ void Recompiler::stfs(Instruction code)
         addr = builder.createAdd(addr, getGPR(code.ra));
     }
 
-    auto frs_f32 = builder.createFTrunc(frs, TYPE_F32);
+    auto frs_f32 = builder.createConvert(frs, TYPE_F32);
     writeMemory(addr, frs_f32);
 }
 
@@ -658,7 +658,7 @@ void Recompiler::stfsu(Instruction code)
     Value* frs = getFPR(code.frs);
 
     addr = builder.createAdd(addr, getGPR(code.ra));
-    auto frs_f32 = builder.createFTrunc(frs, TYPE_F32);
+    auto frs_f32 = builder.createConvert(frs, TYPE_F32);
     writeMemory(addr, frs_f32);
 
     setGPR(code.ra, addr);
@@ -670,7 +670,7 @@ void Recompiler::stfsux(Instruction code)
     Value* frs = getFPR(code.frs);
 
     addr = builder.createAdd(getGPR(code.ra), getGPR(code.rb));
-    auto frs_f32 = builder.createFTrunc(frs, TYPE_F32);
+    auto frs_f32 = builder.createConvert(frs, TYPE_F32);
     writeMemory(addr, frs_f32);
 
     setGPR(code.ra, addr);
@@ -682,7 +682,7 @@ void Recompiler::stfsx(Instruction code)
     Value* frs = getFPR(code.frs);
 
     addr = builder.createAdd(getGPR(code.ra), getGPR(code.rb));
-    auto frs_f32 = builder.createFTrunc(frs, TYPE_F32);
+    auto frs_f32 = builder.createConvert(frs, TYPE_F32);
     writeMemory(addr, frs_f32);
 }
 

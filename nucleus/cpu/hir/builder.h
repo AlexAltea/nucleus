@@ -62,11 +62,15 @@ public:
     Value* createDiv(Value* lhs, Value* rhs, ArithmeticFlags flags = ARITHMETIC_SIGNED);
     Value* createNeg(Value* value);
     Value* createCtlz(Value* value);
+    Value* createSqrt(Value* value);
+    Value* createAbs(Value* value);
+
+    // Conversion operations
     Value* createZExt(Value* value, Type type);
     Value* createSExt(Value* value, Type type);
     Value* createTrunc(Value* value, Type type);
-    Value* createSqrt(Value* value);
-    Value* createAbs(Value* value);
+    Value* createCast(Value* value, Type type);
+    Value* createConvert(Value* value, Type type);
 
     // Logical operations
     Value* createNot(Value* value);
@@ -117,8 +121,6 @@ public:
     Value* createFMul(Value* lhs, Value* rhs);
     Value* createFDiv(Value* lhs, Value* rhs);
     Value* createFNeg(Value* value);
-    Value* createFExt(Value* value, Type type);
-    Value* createFTrunc(Value* value, Type type);
 
     // Vector operations
     Value* createVAdd(Value* lhs, Value* rhs, Type compType);

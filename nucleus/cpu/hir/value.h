@@ -99,6 +99,8 @@ public:
     void doZExt(Type newType);
     void doSExt(Type newType);
     void doTrunc(Type newType);
+    void doCast(Type newType);
+    void doConvert(Type newType);
     void doCompare(Value* rhs, CompareFlags flags);
 };
 

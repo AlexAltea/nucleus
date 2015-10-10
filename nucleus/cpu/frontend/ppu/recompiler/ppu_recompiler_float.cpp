@@ -51,7 +51,7 @@ void Recompiler::faddsx(Instruction code)
     Value* frb = getFPR(code.frb);
 
     auto result = builder.createFAdd(fra, frb);
-    auto frd = builder.createFTrunc(result, TYPE_F32);
+    auto frd = builder.createConvert(result, TYPE_F32);
     if (code.rc) {
         assert_always("Unimplemented");
         // TODO: CR1 update
@@ -122,7 +122,7 @@ void Recompiler::fdivsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::fmaddx(Instruction code)
@@ -156,7 +156,7 @@ void Recompiler::fmaddsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::fmrx(Instruction code)
@@ -205,7 +205,7 @@ void Recompiler::fmsubsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::fmulx(Instruction code)
@@ -235,7 +235,7 @@ void Recompiler::fmulsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::fnabsx(Instruction code)
@@ -300,7 +300,7 @@ void Recompiler::fnmaddsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::fnmsubx(Instruction code)
@@ -338,7 +338,7 @@ void Recompiler::fnmsubsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::fresx(Instruction code)
@@ -386,7 +386,7 @@ void Recompiler::fsqrtsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::fsubx(Instruction code)
@@ -416,7 +416,7 @@ void Recompiler::fsubsx(Instruction code)
         // TODO: CR1 update
     }
 
-    setFPR(code.frd, builder.createFTrunc(frd, TYPE_F32));
+    setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
 void Recompiler::mcrfs(Instruction code)
