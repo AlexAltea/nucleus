@@ -162,6 +162,9 @@
     <ClCompile Include="frontend\spu\spu_state.cpp">
       <Filter>frontend\spu</Filter>
     </ClCompile>
+    <ClCompile Include="backend\x86\x86_constants.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -265,6 +268,9 @@
     <ClInclude Include="util.h" />
     <ClInclude Include="frontend\spu\spu_state.h">
       <Filter>frontend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\x86\x86_constants.h">
+      <Filter>backend\x86</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

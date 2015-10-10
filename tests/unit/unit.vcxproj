@@ -20,6 +20,7 @@
     <ProjectGuid>{B1FF30F1-16CC-43E9-A896-CE8D54312F62}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>unit</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -49,7 +50,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\libs\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)libs\$(Platform)\$(Configuration)\</OutDir>
     <LibraryPath>$(SolutionDir)\libs\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
     <IncludePath>$(SolutionDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>

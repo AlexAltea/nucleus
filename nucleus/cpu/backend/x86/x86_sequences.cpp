@@ -7,6 +7,7 @@
 #include "nucleus/assert.h"
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/backend/x86/x86_compiler.h"
+#include "nucleus/cpu/backend/x86/x86_constants.h"
 #include "nucleus/cpu/backend/x86/x86_emitter.h"
 #include "nucleus/logger/logger.h"
 
@@ -215,7 +216,7 @@ struct Sequence : SequenceBase<S, I> {
     static void emitBinaryXmmOp(X86Emitter& e, InstrType& i, FuncType func) {
         // Constant, Constant
         if (i.src1.isConstant && i.src2.isConstant) {
-            assert_always("Invalid comparison instruction operands");
+            assert_always("Invalid binary XMM instruction operands");
         }
         // Constant, Register
         else if (i.src1.isConstant && !i.src2.isConstant) {
@@ -1173,9 +1174,11 @@ struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
         auto addr = i.src1.reg;
         e.vmovups(i.dest, e.ptr[addr]);
         if (i.instr->flags & ENDIAN_BIG) {
-            e.mov(e.qword[e.rsp + 0], 0x08090A0B0C0D0E0FULL);
-            e.mov(e.qword[e.rsp + 8], 0x0001020304050607ULL);
-            e.vpshufb(i.dest, i.dest, e.ptr[e.rsp]);
+            V128 byteSwapMask;
+            byteSwapMask.u64[0] = 0x08090A0B0C0D0E0FULL;
+            byteSwapMask.u64[1] = 0x0001020304050607ULL;
+            getXmmConstant(e, e.xmm0, byteSwapMask);
+            e.vpshufb(i.dest, i.dest, e.xmm0);
         }
     }
 };
@@ -1303,14 +1306,18 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
         auto addr = i.src1.reg;
         if (i.instr->flags & ENDIAN_BIG) {
             assert_false(i.src2.isConstant);
-            e.mov(e.qword[e.rsp + 0], 0x08090A0B0C0D0E0FULL);
-            e.mov(e.qword[e.rsp + 8], 0x0001020304050607ULL);
-            e.vpshufb(e.xmm0, i.src2, e.ptr[e.rsp]);
+            V128 byteSwapMask;
+            byteSwapMask.u64[0] = 0x08090A0B0C0D0E0FULL;
+            byteSwapMask.u64[1] = 0x0001020304050607ULL;
+            getXmmConstant(e, e.xmm0, byteSwapMask);
+            e.vpshufb(e.xmm0, i.src2, e.xmm0);
             e.vmovaps(e.ptr[addr], e.xmm0);
         } else {
             if (i.src2.isConstant) {
-                e.mov(e.qword[addr + 0], i.src2.constant().u64[0]);
-                e.mov(e.qword[addr + 8], i.src2.constant().u64[1]);
+                e.mov(e.rax, i.src2.constant().u64[0]);
+                e.mov(e.qword[addr + 0], e.rax);
+                e.mov(e.rax, i.src2.constant().u64[1]);
+                e.mov(e.qword[addr + 8], e.rax);
             } else {
                 e.vmovaps(e.ptr[addr], i.src2);
             }

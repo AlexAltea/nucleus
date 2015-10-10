@@ -248,12 +248,12 @@ struct State {
     PPU_LR lr;
     PPU_CTR ctr;
 
-    // VEA Registers
-    PPU_TB tb;
-
     // Vector/SIMD Registers
     V128 v[32];     // Vector Register
     PPU_VSCR vscr;
+
+    // VEA Registers
+    PPU_TB tb;
 
     // Reservation Registers
     U64 reserve_addr;
