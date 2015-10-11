@@ -486,6 +486,36 @@ struct DIV_I64 : Sequence<DIV_I64, I<OPCODE_DIV, I64Op, I64Op, I64Op>> {
 #undef EMIT_DIV
 
 /**
+ * Opcode: SQRT
+ */
+struct SQRT_F32 : Sequence<SQRT_F32, I<OPCODE_SQRT, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vsqrtss(i.dest, i.src1);
+    }
+};
+struct SQRT_F64 : Sequence<SQRT_F64, I<OPCODE_SQRT, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vsqrtsd(i.dest, i.src1);
+    }
+};
+
+/**
+ * Opcode: ABS
+ */
+struct ABS_F32 : Sequence<ABS_F32, I<OPCODE_ABS, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        getXmmConstantCompI32(e, e.xmm0, 0x7FFFFFFFUL);
+        e.vpand(i.dest, i.src1, e.xmm0);
+    }
+};
+struct ABS_F64 : Sequence<ABS_F64, I<OPCODE_ABS, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        getXmmConstantCompI64(e, e.xmm0, 0x7FFFFFFF'FFFFFFFFULL);
+        e.vpand(i.dest, i.src1, e.xmm0);
+    }
+};
+
+/**
  * Opcode: NEG
  */
 struct NEG_I8 : Sequence<NEG_I8, I<OPCODE_NEG, I8Op, I8Op>> {
@@ -1538,17 +1568,39 @@ struct SELECT_I64 : Sequence<SELECT_I64, I<OPCODE_SELECT, I64Op, I8Op, I64Op, I6
         }
     }
 };
+struct SELECT_F32 : Sequence<SELECT_F32, I<OPCODE_SELECT, F32Op, I8Op, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(e.eax, i.src1);
+        e.vmovd(e.xmm1, e.eax);
+        e.vxorps(e.xmm0, e.xmm0);
+        e.vcmpneqss(e.xmm0, e.xmm1);
+        e.vpand(e.xmm1, e.xmm0, i.src2);
+        e.vpandn(i.dest, e.xmm0, i.src3);
+        e.vpor(i.dest, e.xmm1);
+    }
+};
+struct SELECT_F64 : Sequence<SELECT_F64, I<OPCODE_SELECT, F64Op, I8Op, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.movzx(e.eax, i.src1);
+        e.vmovd(e.xmm1, e.eax);
+        e.vxorpd(e.xmm0, e.xmm0);
+        e.vcmpneqsd(e.xmm0, e.xmm1);
+        e.vpand(e.xmm1, e.xmm0, i.src2);
+        e.vpandn(i.dest, e.xmm0, i.src3);
+        e.vpor(i.dest, e.xmm1);
+    }
+};
 
 /**
  * Opcode: CMP
  */
-#define EMIT_COMMUTATIVE_COMPARE(set) \
+#define EMIT_COMMUTATIVE_INTEGER_COMPARE(set) \
     emitCompareOp(e, i, [](X86Emitter& e, auto dest, auto lhs, auto rhs, bool inverse) { \
         e.cmp(lhs, rhs); \
         e.##set##(dest); \
     });
 
-#define EMIT_ASSOCIATIVE_COMPARE(set, setInv) \
+#define EMIT_ASSOCIATIVE_INTEGER_COMPARE(set, setInv) \
     emitCompareOp(e, i, [](X86Emitter& e, auto dest, auto lhs, auto rhs, bool inverse) { \
         e.cmp(lhs, rhs); \
         if (!inverse) { \
@@ -1558,19 +1610,32 @@ struct SELECT_I64 : Sequence<SELECT_I64, I<OPCODE_SELECT, I64Op, I8Op, I64Op, I6
         } \
     });
 
+#define EMIT_FLOAT_COMPARE(cmp, set) \
+    if (i.src1.isConstant) { \
+        getXmmConstant(e, e.xmm0, i.src1.constant()); \
+        e.##cmp##(e.xmm0, i.src2); \
+    } else if (i.src2.isConstant) {  \
+        getXmmConstant(e, e.xmm0, i.src2.constant()); \
+        e.##cmp##(i.src1, e.xmm0); \
+    } else { \
+        e.##cmp##(i.src1, i.src2); \
+    } \
+    e.##set##(i.dest); 
+
+
 struct CMP_I8 : Sequence<CMP_I8, I<OPCODE_CMP, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
-        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
-        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
-        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
-        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
-        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
-        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
-        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
-        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
-        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_INTEGER_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_INTEGER_COMPARE(setne);         break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(seta,  setb);   break;
         default:
             assert_always("Unimplemented case");
         }
@@ -1579,16 +1644,16 @@ struct CMP_I8 : Sequence<CMP_I8, I<OPCODE_CMP, I8Op, I8Op, I8Op>> {
 struct CMP_I16 : Sequence<CMP_I16, I<OPCODE_CMP, I8Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
-        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
-        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
-        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
-        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
-        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
-        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
-        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
-        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
-        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_INTEGER_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_INTEGER_COMPARE(setne);         break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(seta,  setb);   break;
         default:
             assert_always("Unimplemented case");
         }
@@ -1598,16 +1663,16 @@ struct CMP_I16 : Sequence<CMP_I16, I<OPCODE_CMP, I8Op, I16Op, I16Op>> {
 struct CMP_I32 : Sequence<CMP_I32, I<OPCODE_CMP, I8Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
-        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
-        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
-        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
-        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
-        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
-        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
-        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
-        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
-        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_INTEGER_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_INTEGER_COMPARE(setne);         break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(seta,  setb);   break;
         default:
             assert_always("Unimplemented case");
         }
@@ -1617,24 +1682,63 @@ struct CMP_I32 : Sequence<CMP_I32, I<OPCODE_CMP, I8Op, I32Op, I32Op>> {
 struct CMP_I64 : Sequence<CMP_I64, I<OPCODE_CMP, I8Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (i.instr->flags) {
-        case COMPARE_EQ:  EMIT_COMMUTATIVE_COMPARE(sete);          break;
-        case COMPARE_NE:  EMIT_COMMUTATIVE_COMPARE(setne);         break;
-        case COMPARE_SLT: EMIT_ASSOCIATIVE_COMPARE(setl,  setg);   break;
-        case COMPARE_SLE: EMIT_ASSOCIATIVE_COMPARE(setle, setge);  break;
-        case COMPARE_SGE: EMIT_ASSOCIATIVE_COMPARE(setge, setle);  break;
-        case COMPARE_SGT: EMIT_ASSOCIATIVE_COMPARE(setg,  setl);   break;
-        case COMPARE_ULT: EMIT_ASSOCIATIVE_COMPARE(setb,  seta);   break;
-        case COMPARE_ULE: EMIT_ASSOCIATIVE_COMPARE(setbe, setae);  break;
-        case COMPARE_UGE: EMIT_ASSOCIATIVE_COMPARE(setae, setbe);  break;
-        case COMPARE_UGT: EMIT_ASSOCIATIVE_COMPARE(seta,  setb);   break;
+        case COMPARE_EQ:  EMIT_COMMUTATIVE_INTEGER_COMPARE(sete);          break;
+        case COMPARE_NE:  EMIT_COMMUTATIVE_INTEGER_COMPARE(setne);         break;
+        case COMPARE_SLT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setl,  setg);   break;
+        case COMPARE_SLE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setle, setge);  break;
+        case COMPARE_SGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setge, setle);  break;
+        case COMPARE_SGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setg,  setl);   break;
+        case COMPARE_ULT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setb,  seta);   break;
+        case COMPARE_ULE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setbe, setae);  break;
+        case COMPARE_UGE: EMIT_ASSOCIATIVE_INTEGER_COMPARE(setae, setbe);  break;
+        case COMPARE_UGT: EMIT_ASSOCIATIVE_INTEGER_COMPARE(seta,  setb);   break;
         default:
             assert_always("Unimplemented case");
         }
     }
 };
 
-#undef EMIT_COMMUTATIVE_COMPARE
-#undef EMIT_ASSOCIATIVE_COMPARE
+struct CMP_F32 : Sequence<CMP_F32, I<OPCODE_CMP, I8Op, F32Op, F32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        switch (i.instr->flags) {
+        case COMPARE_EQ:  EMIT_FLOAT_COMPARE(vcomiss, sete);   break;
+        case COMPARE_NE:  EMIT_FLOAT_COMPARE(vcomiss, setne);  break;
+        case COMPARE_SLT: EMIT_FLOAT_COMPARE(vcomiss, setb);   break;
+        case COMPARE_SLE: EMIT_FLOAT_COMPARE(vcomiss, setbe);  break;
+        case COMPARE_SGE: EMIT_FLOAT_COMPARE(vcomiss, setae);  break;
+        case COMPARE_SGT: EMIT_FLOAT_COMPARE(vcomiss, seta);   break;
+        case COMPARE_ULT: EMIT_FLOAT_COMPARE(vcomiss, seta);   break;
+        case COMPARE_ULE: EMIT_FLOAT_COMPARE(vcomiss, setbe);  break;
+        case COMPARE_UGE: EMIT_FLOAT_COMPARE(vcomiss, setae);  break;
+        case COMPARE_UGT: EMIT_FLOAT_COMPARE(vcomiss, seta);   break;
+        default:
+            assert_always("Unimplemented case");
+        }
+    }
+};
+
+struct CMP_F64 : Sequence<CMP_F64, I<OPCODE_CMP, I8Op, F64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        switch (i.instr->flags) {
+        case COMPARE_EQ:  EMIT_FLOAT_COMPARE(vcomisd, sete);   break;
+        case COMPARE_NE:  EMIT_FLOAT_COMPARE(vcomisd, setne);  break;
+        case COMPARE_SLT: EMIT_FLOAT_COMPARE(vcomisd, setb);   break;
+        case COMPARE_SLE: EMIT_FLOAT_COMPARE(vcomisd, setbe);  break;
+        case COMPARE_SGE: EMIT_FLOAT_COMPARE(vcomisd, setae);  break;
+        case COMPARE_SGT: EMIT_FLOAT_COMPARE(vcomisd, seta);   break;
+        case COMPARE_ULT: EMIT_FLOAT_COMPARE(vcomisd, seta);   break;
+        case COMPARE_ULE: EMIT_FLOAT_COMPARE(vcomisd, setbe);  break;
+        case COMPARE_UGE: EMIT_FLOAT_COMPARE(vcomisd, setae);  break;
+        case COMPARE_UGT: EMIT_FLOAT_COMPARE(vcomisd, seta);   break;
+        default:
+            assert_always("Unimplemented case");
+        }
+    }
+};
+
+#undef EMIT_COMMUTATIVE_INTEGER_COMPARE
+#undef EMIT_ASSOCIATIVE_INTEGER_COMPARE
+#undef EMIT_FLOAT_COMPARE
 
 /**
  * Opcode: BR
@@ -1946,13 +2050,13 @@ struct FDIV_F64 : Sequence<FDIV_F64, I<OPCODE_FDIV, F64Op, F64Op, F64Op>> {
  */
 struct FNEG_F32 : Sequence<FNEG_F32, I<OPCODE_FNEG, F32Op, F32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        getXmmConstantCompI64(e, e.xmm0, 0x80000000'00000000ULL);
+        getXmmConstantCompI32(e, e.xmm0, 0x80000000UL);
         e.vxorps(i.dest, i.src1, e.xmm0);
     }
 };
 struct FNEG_F64 : Sequence<FNEG_F64, I<OPCODE_FNEG, F64Op, F64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        getXmmConstantCompI32(e, e.xmm0, 0x80000000UL);
+        getXmmConstantCompI64(e, e.xmm0, 0x80000000'00000000ULL);
         e.vxorps(i.dest, i.src1, e.xmm0);
     }
 };
@@ -1970,6 +2074,8 @@ void X86Sequences::init() {
         registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
         registerSequence<MULH_I8, MULH_I16, MULH_I32, MULH_I64>();
         registerSequence<DIV_I8, DIV_I16, DIV_I32, DIV_I64>();
+        registerSequence<SQRT_F32, SQRT_F64>();
+        registerSequence<ABS_F32, ABS_F64>();
         registerSequence<NEG_I8, NEG_I16, NEG_I32, NEG_I64>();
         registerSequence<NOT_I8, NOT_I16, NOT_I32, NOT_I64, NOT_V128>();
         registerSequence<AND_I8, AND_I16, AND_I32, AND_I64, AND_V128>();
@@ -1989,8 +2095,8 @@ void X86Sequences::init() {
         registerSequence<CTXLOAD_I8, CTXLOAD_I16, CTXLOAD_I32, CTXLOAD_I64, CTXLOAD_F32, CTXLOAD_F64, CTXLOAD_V128>();
         registerSequence<CTXSTORE_I8, CTXSTORE_I16, CTXSTORE_I32, CTXSTORE_I64, CTXSTORE_F32, CTXSTORE_F64, CTXSTORE_V128>();
         registerSequence<MEMFENCE>();
-        registerSequence<SELECT_I8, SELECT_I16, SELECT_I32, SELECT_I64>();
-        registerSequence<CMP_I8, CMP_I16, CMP_I32, CMP_I64>();
+        registerSequence<SELECT_I8, SELECT_I16, SELECT_I32, SELECT_I64, SELECT_F32, SELECT_F64>();
+        registerSequence<CMP_I8, CMP_I16, CMP_I32, CMP_I64, CMP_F32, CMP_F64>();
         registerSequence<ARG_I8, ARG_I16, ARG_I32, ARG_I64>();
         registerSequence<BR>();
         registerSequence<CALL_VOID, CALL_I8, CALL_I16, CALL_I32, CALL_I64>();

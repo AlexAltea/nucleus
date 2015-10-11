@@ -343,22 +343,66 @@ void Recompiler::fnmsubsx(Instruction code)
 
 void Recompiler::fresx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* frb = getFPR(code.frb, TYPE_F32);
+    Value* frd;
+
+    frd = builder.createFDiv(builder.getConstantF32(1.0f), frb);
+    frd = builder.createConvert(frd, TYPE_F64);
+    if (code.rc) {
+        //assert_always("Unimplemented");
+        // TODO: CR1 update
+    }
+
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::frspx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* frb = getFPR(code.frb);
+    Value* frd;
+
+    frd = builder.createConvert(frb, TYPE_F32);
+    frd = builder.createConvert(frb, TYPE_F64);
+    if (code.rc) {
+        //assert_always("Unimplemented");
+        // TODO: CR1 update
+    }
+
+    // TODO: ?
+
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::frsqrtex(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* frb = getFPR(code.frb);
+    Value* frd;
+
+    frd = builder.createSqrt(frb);
+    frd = builder.createFDiv(builder.getConstantF64(1.0), frd);
+    if (code.rc) {
+        //assert_always("Unimplemented");
+        // TODO: CR1 update
+    }
+
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::fselx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* fra = getFPR(code.fra);
+    Value* frc = getFPR(code.frc);
+    Value* frb = getFPR(code.frb);
+    Value* frd;
+
+    frd = builder.createCmpSGE(fra, builder.getConstantF64(0.0));
+    frd = builder.createSelect(frd, fra, frb);
+    if (code.rc) {
+        //assert_always("Unimplemented");
+        // TODO: CR1 update
+    }
+
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::fsqrtx(Instruction code)

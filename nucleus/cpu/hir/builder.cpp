@@ -263,11 +263,33 @@ Value* Builder::createCtlz(Value* value) {
 }
 
 Value* Builder::createSqrt(Value* value) {
-    return nullptr;
+    ASSERT_TYPE_FLOAT(value);
+
+    if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        assert_always("Unimplemented");
+        //dest->doSqrt();
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_SQRT, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    return i->dest;
 }
 
 Value* Builder::createAbs(Value* value) {
-    return nullptr;
+    ASSERT_TYPE_FLOAT(value);
+
+    if (value->isConstant()) {
+        Value* dest = cloneValue(value);
+        assert_always("Unimplemented");
+        //dest->doAbs();
+        return dest;
+    }
+
+    Instruction* i = appendInstr(OPCODE_ABS, 0, allocValue(value->type));
+    i->src1.setValue(value);
+    return i->dest;
 }
 
 // Conversion operations
