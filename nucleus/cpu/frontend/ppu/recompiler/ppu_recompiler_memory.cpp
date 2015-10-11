@@ -22,7 +22,7 @@ using namespace cpu::hir;
 void Recompiler::lbz(Instruction code)
 {
     Value* result;
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     if (code.ra) {
@@ -37,7 +37,7 @@ void Recompiler::lbz(Instruction code)
 void Recompiler::lbzu(Instruction code)
 {
     Value* result;
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     addr = builder.createAdd(addr, getGPR(code.ra));
@@ -244,7 +244,7 @@ void Recompiler::lfsx(Instruction code)
 void Recompiler::lha(Instruction code)
 {
     Value* result;
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     if (code.ra) {
@@ -259,7 +259,7 @@ void Recompiler::lha(Instruction code)
 void Recompiler::lhau(Instruction code)
 {
     Value* result;
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     addr = builder.createAdd(addr, getGPR(code.ra));
@@ -305,7 +305,7 @@ void Recompiler::lhbrx(Instruction code)
 void Recompiler::lhz(Instruction code)
 {
     Value* result;
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     if (code.ra) {
@@ -320,7 +320,7 @@ void Recompiler::lhz(Instruction code)
 void Recompiler::lhzu(Instruction code)
 {
     Value* result;
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     addr = builder.createAdd(addr, getGPR(code.ra));
@@ -436,7 +436,7 @@ void Recompiler::lwbrx(Instruction code)
 
 void Recompiler::lwz(Instruction code)
 {
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     if (code.ra) {
@@ -450,7 +450,7 @@ void Recompiler::lwz(Instruction code)
 
 void Recompiler::lwzu(Instruction code)
 {
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rd;
 
     addr = builder.createAdd(addr, getGPR(code.ra));
@@ -500,7 +500,7 @@ void Recompiler::stb(Instruction code)
 
 void Recompiler::stbu(Instruction code)
 {
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I8);
 
     addr = builder.createAdd(addr, getGPR(code.ra));
@@ -705,7 +705,7 @@ void Recompiler::sthbrx(Instruction code)
 
 void Recompiler::sthu(Instruction code)
 {
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I16);
 
     addr = builder.createAdd(addr, getGPR(code.ra));
@@ -787,7 +787,7 @@ void Recompiler::stwcx_(Instruction code)
 
 void Recompiler::stwu(Instruction code)
 {
-    Value* addr = builder.getConstantI64(code.ds << 2);
+    Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I32);
 
     addr = builder.createAdd(addr, getGPR(code.ra));

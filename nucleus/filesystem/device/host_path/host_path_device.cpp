@@ -27,7 +27,8 @@ File* HostPathDevice::openFile(const Path& path, OpenMode mode)
 bool HostPathDevice::existsFile(const Path& path)
 {
     std::FILE* handle;
-    fopen_s(&handle, (localPath + path).c_str(), "r");
+    std::string realPath = localPath + path;
+    fopen_s(&handle, realPath.c_str(), "r");
     if (!handle) {
         return false;
     }

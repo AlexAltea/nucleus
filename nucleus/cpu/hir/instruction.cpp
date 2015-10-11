@@ -19,12 +19,12 @@ std::string Instruction::Operand::dump(U8 sigType) const {
     if (sigType == OPCODE_SIG_TYPE_V || (sigType == OPCODE_SIG_TYPE_M && value != nullptr)) {
         if (value->isConstant()) {
             switch (value->type) {
-            case TYPE_I8:   output = format("0x%X", value->constant.i8);   break;
-            case TYPE_I16:  output = format("0x%X", value->constant.i16);  break;
-            case TYPE_I32:  output = format("0x%X", value->constant.i32);  break;
-            case TYPE_I64:  output = format("0x%X", value->constant.i64);  break;
-            case TYPE_F32:  output = format("0x%X", value->constant.f32);  break;
-            case TYPE_F64:  output = format("0x%X", value->constant.f64);  break;
+            case TYPE_I8:   output = format("0x%X", value->constant.i8);    break;
+            case TYPE_I16:  output = format("0x%X", value->constant.i16);   break;
+            case TYPE_I32:  output = format("0x%X", value->constant.i32);   break;
+            case TYPE_I64:  output = format("0x%llX", value->constant.i64); break;
+            case TYPE_F32:  output = format("%f", value->constant.f32);     break;
+            case TYPE_F64:  output = format("%f", value->constant.f64);     break;
             default:
                 assert_always("Unimplemented case");
             }

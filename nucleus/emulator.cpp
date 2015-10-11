@@ -21,7 +21,7 @@ bool Emulator::load(const std::string& filepath)
 
     // Initialize application filesystem devices
     const fs::Path& processPath = fs::getProcessPath(filepath);
-    lv2.vfs.registerDevice(new fs::HostPathDevice("/app_home", processPath));
+    lv2.vfs.registerDevice(new fs::HostPathDevice("/app_home/", processPath));
 
     // Load ELF/SELF file
     SELFLoader self;

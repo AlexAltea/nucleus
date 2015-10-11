@@ -143,7 +143,6 @@ LV2::LV2(U32 fw_type)
     vfs.registerDevice(new fs::HostPathDevice("/dev_hdd0", nucleusPath + "dev_hdd0"));
     vfs.registerDevice(new fs::HostPathDevice("/dev_hdd1", nucleusPath + "dev_hdd1"));
     vfs.registerDevice(new fs::HostPathDevice("/host_root/", ""));
-    vfs.registerDevice(new fs::HostPathDevice("", ""));
 }
 
 bool LV2::init()

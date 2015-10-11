@@ -36,6 +36,8 @@ public:
         U32 blocksize;
     };
 
+    virtual ~File() = default;
+
     /**
      * Read from the file
      * @param[out]  dst   Buffer where the read contents will be stored
