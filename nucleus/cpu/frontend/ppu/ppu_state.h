@@ -177,20 +177,6 @@ union PPU_FPSCR {
     }
 };
 
-// XER Register (SPR 1)
-union PPU_XER {
-    U64 value;
-
-    struct {
-        U32 BC : 7;  // Byte count
-        U32    : 22; // Reserved
-        U32 CA : 1;  // Carry
-        U32 OV : 1;  // Overflow
-        U32 SO : 1;  // Summary overflow
-        U32    : 32; // Reserved
-    };
-};
-
 // LR Register (SPR 8)
 typedef U64 PPU_LR;
 
@@ -244,7 +230,25 @@ struct State {
     F64 f[32];      // Floating-Point Register
     PPU_CR cr;
     PPU_FPSCR fpscr;
-    PPU_XER xer;
+
+    /**
+     * XER register
+     * ============
+     * The fixed-point exception register (XER, SPR1) is 64-bit, user-level
+     * register consisting of following fields, ordered from MSb to LSb:
+     *
+     *  +----------------+--+--+--+----------------+------------+
+     *  |   (reserved)   |SO|OV|CA|   (reserved)   | Byte count |
+     *  +----------------+--+--+--+----------------+------------+
+     *   0             31 32 33 34 35            56 57        63
+     */
+    struct XER {
+        U8 so;  // Summary overflow (1-bit)
+        U8 ov;  // Overflow (1-bit)
+        U8 ca;  // Carry (1-bit)
+        U8 bc;  // Byte count (7-bits)
+    } xer;
+
     PPU_LR lr;
     PPU_CTR ctr;
 
@@ -262,6 +266,10 @@ struct State {
     // Program Counter
     U32 pc;
 };
+
+#ifdef NUCLEUS_ARCH_X86
+static_assert(offsetof(State, v) % 16 == 0, "PPU vector registers have to be 16-bit aligned in x86 hosts");
+#endif
 
 }  // namespace ppu
 }  // namespace frontend

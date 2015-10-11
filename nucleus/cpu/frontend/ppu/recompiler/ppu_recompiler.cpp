@@ -16,12 +16,10 @@ namespace ppu {
 
 using namespace cpu::hir;
 
-Recompiler::Recompiler(ppu::Function* function) : IRecompiler<U32>(function)
-{
+Recompiler::Recompiler(ppu::Function* function) : IRecompiler<U32>(function) {
 }
 
-void Recompiler::createProlog()
-{
+void Recompiler::createProlog() {
     /*builder.SetInsertPoint(prolog);
 
     // Place arguments in local variables
@@ -52,8 +50,7 @@ void Recompiler::createProlog()
     builder.createBr(entryBlock);*/
 }
 
-void Recompiler::createEpilog()
-{
+void Recompiler::createEpilog() {
     assert_true(epilog == nullptr, "The frontend epilog block was already declared");
 
     epilog = new hir::Block(function->hirFunction);
@@ -97,8 +94,7 @@ void Recompiler::createEpilog()
 /**
  * Register read
  */
-Value* Recompiler::getGPR(int index, Type type)
-{
+Value* Recompiler::getGPR(int index, Type type) {
     const U32 offset = offsetof(State, r[index]);
 
     // TODO: Use volatility information?
@@ -111,8 +107,7 @@ Value* Recompiler::getGPR(int index, Type type)
     return value;
 }
 
-Value* Recompiler::getFPR(int index, Type type)
-{
+Value* Recompiler::getFPR(int index, Type type) {
     const U32 offset = offsetof(State, f[index]);
 
     // TODO: Use volatility information?
@@ -125,8 +120,7 @@ Value* Recompiler::getFPR(int index, Type type)
     return value;
 }
 
-Value* Recompiler::getVR(int index)
-{
+Value* Recompiler::getVR(int index) {
     const U32 offset = offsetof(State, v[index]);
 
     // TODO: Use volatility information?
@@ -134,8 +128,7 @@ Value* Recompiler::getVR(int index)
     return builder.createCtxLoad(offset, TYPE_V128);
 }
 
-Value* Recompiler::getCR(int index)
-{
+Value* Recompiler::getCR(int index) {
     const U32 offset = offsetof(State, cr);
 
     // TODO: Use volatility information?
@@ -148,35 +141,53 @@ Value* Recompiler::getCR(int index)
     return cr;
 }
 
-Value* Recompiler::getCR()
-{
+Value* Recompiler::getCR() {
     const U32 offset = offsetof(State, cr);
     return builder.createCtxLoad(offset, TYPE_I32);
 }
 
-Value* Recompiler::getLR()
-{
+Value* Recompiler::getLR() {
     constexpr U32 offset = offsetof(State, lr);
     return builder.createCtxLoad(offset, TYPE_I64);
 }
 
-Value* Recompiler::getXER()
-{
-    constexpr U32 offset = offsetof(State, xer);
+Value* Recompiler::getXER() {
+    Value* xer = builder.getConstantI64(0);
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_SO(), TYPE_I64), 31));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_OV(), TYPE_I64), 30));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_CA(), TYPE_I64), 29));
+    return xer;
+}
+
+Value* Recompiler::getXER_SO() {
+    constexpr U32 offset = offsetof(State, xer.so);
+    return builder.createCtxLoad(offset, TYPE_I8);
+}
+
+Value* Recompiler::getXER_OV() {
+    constexpr U32 offset = offsetof(State, xer.ov);
+    return builder.createCtxLoad(offset, TYPE_I8);
+}
+
+Value* Recompiler::getXER_CA() {
+    constexpr U32 offset = offsetof(State, xer.ca);
+    return builder.createCtxLoad(offset, TYPE_I8);
+}
+
+Value* Recompiler::getCTR() {
+    constexpr U32 offset = offsetof(State, ctr);
     return builder.createCtxLoad(offset, TYPE_I64);
 }
 
-Value* Recompiler::getCTR()
-{
-    constexpr U32 offset = offsetof(State, ctr);
-    return builder.createCtxLoad(offset, TYPE_I64);
+Value* Recompiler::getFPSCR() {
+    constexpr U32 offset = offsetof(State, fpscr);
+    return builder.createCtxLoad(offset, TYPE_I32);
 }
 
 /**
  * Register write
  */
-void Recompiler::setGPR(int index, Value* value)
-{
+void Recompiler::setGPR(int index, Value* value) {
     const U32 offset = offsetof(State, r[index]);
 
     // TODO: Use volatility information?
@@ -192,8 +203,7 @@ void Recompiler::setGPR(int index, Value* value)
     builder.createCtxStore(offset, value_i64);
 }
 
-void Recompiler::setFPR(int index, Value* value)
-{
+void Recompiler::setFPR(int index, Value* value) {
     const U32 offset = offsetof(State, f[index]);
 
     // TODO: Use volatility information?
@@ -209,8 +219,7 @@ void Recompiler::setFPR(int index, Value* value)
     builder.createCtxStore(offset, value_f64);
 }
 
-void Recompiler::setVR(int index, Value* value)
-{
+void Recompiler::setVR(int index, Value* value) {
     const U32 offset = offsetof(State, v[index]);
 
     // TODO: Use volatility information?
@@ -218,8 +227,7 @@ void Recompiler::setVR(int index, Value* value)
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setCR(int index, Value* value)
-{
+void Recompiler::setCR(int index, Value* value) {
     const U32 offset = offsetof(State, cr);
 
     // TODO: Use volatility information?
@@ -231,8 +239,7 @@ void Recompiler::setCR(int index, Value* value)
     builder.createCtxStore(offset, cr);
 }
 
-void Recompiler::setCR(Value* value)
-{
+void Recompiler::setCR(Value* value) {
     constexpr U32 offset = offsetof(State, cr);
     
     if (value->type != TYPE_I32) {
@@ -242,8 +249,7 @@ void Recompiler::setCR(Value* value)
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setLR(Value* value)
-{
+void Recompiler::setLR(Value* value) {
     constexpr U32 offset = offsetof(State, lr);
     
     if (value->type != TYPE_I64) {
@@ -253,23 +259,59 @@ void Recompiler::setLR(Value* value)
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setXER(Value* value)
-{
-    constexpr U32 offset = offsetof(State, xer);
+void Recompiler::setXER(Value* value) {
+    assert_true(value->type == TYPE_I64, "Wrong value type for XER register");
+    constexpr U32 offset_so = offsetof(State, xer.so);
+    constexpr U32 offset_ov = offsetof(State, xer.ov);
+    constexpr U32 offset_ca = offsetof(State, xer.ca);
+    constexpr U32 offset_bc = offsetof(State, xer.bc);
+    
+    Value* bc_i64 = builder.createAnd(value, builder.getConstantI64(0x7F));
+    builder.createCtxStore(offset_bc, builder.createTrunc(bc_i64, TYPE_I8));
+
+    Value* ca_i64 = builder.createAnd(builder.createShl(value, 29), builder.getConstantI64(1));
+    builder.createCtxStore(offset_ca, builder.createTrunc(ca_i64, TYPE_I8));
+
+    Value* ov_i64 = builder.createAnd(builder.createShl(value, 30), builder.getConstantI64(1));
+    builder.createCtxStore(offset_ov, builder.createTrunc(ov_i64, TYPE_I8));
+
+    Value* so_i64 = builder.createAnd(builder.createShl(value, 31), builder.getConstantI64(1));
+    builder.createCtxStore(offset_so, builder.createTrunc(so_i64, TYPE_I8));
+}
+
+void Recompiler::setXER_SO(Value* value) {
+    assert_true(value->type == TYPE_I8, "Wrong value type for XER::SO field");
+    constexpr U32 offset = offsetof(State, xer.so);
+    builder.createCtxStore(offset, value);
+}
+
+void Recompiler::setXER_OV(Value* value) {
+    assert_true(value->type == TYPE_I8, "Wrong value type for XER::OV field");
+    constexpr U32 offset = offsetof(State, xer.ov);
+    builder.createCtxStore(offset, value);
+}
+
+void Recompiler::setXER_CA(Value* value) {
+    assert_true(value->type == TYPE_I8, "Wrong value type for XER::CA field");
+    constexpr U32 offset = offsetof(State, xer.ca);
+    builder.createCtxStore(offset, value);
+}
+
+void Recompiler::setCTR(Value* value) {
+    constexpr U32 offset = offsetof(State, ctr);
     
     if (value->type != TYPE_I64) {
-        logger.error(LOG_CPU, "Wrong value type for XER register");
+        logger.error(LOG_CPU, "Wrong value type for CTR register");
         return;
     }
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setCTR(Value* value)
-{
-    constexpr U32 offset = offsetof(State, ctr);
+void Recompiler::setFPSCR(Value* value) {
+    constexpr U32 offset = offsetof(State, fpscr);
     
-    if (value->type != TYPE_I64) {
-        logger.error(LOG_CPU, "Wrong value type for CTR register");
+    if (value->type != TYPE_I32) {
+        logger.error(LOG_CPU, "Wrong value type for FPSCR register");
         return;
     }
     builder.createCtxStore(offset, value);

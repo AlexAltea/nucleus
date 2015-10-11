@@ -470,7 +470,16 @@ void Recompiler::mcrfs(Instruction code)
 
 void Recompiler::mffsx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* frd;
+
+    frd = builder.createZExt(getFPSCR(), TYPE_I64);
+    frd = builder.createCast(frd, TYPE_F64);
+    if (code.rc) {
+        //assert_always("Unimplemented");
+        // TODO: CR1 update
+    }
+
+    setFPR(code.frd, frd);
 }
 
 void Recompiler::mtfsb0x(Instruction code)

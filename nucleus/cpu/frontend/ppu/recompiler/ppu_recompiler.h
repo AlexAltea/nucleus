@@ -26,7 +26,11 @@ private:
     hir::Value* getCR();
     hir::Value* getLR();
     hir::Value* getXER();
+    hir::Value* getXER_SO();
+    hir::Value* getXER_OV();
+    hir::Value* getXER_CA();
     hir::Value* getCTR();
+    hir::Value* getFPSCR();
 
     // Register write
     void setGPR(int index, hir::Value* value);
@@ -36,7 +40,11 @@ private:
     void setCR(hir::Value* value);
     void setLR(hir::Value* value);
     void setXER(hir::Value* value);
+    void setXER_SO(hir::Value* value);
+    void setXER_OV(hir::Value* value);
+    void setXER_CA(hir::Value* value);
     void setCTR(hir::Value* value);
+    void setFPSCR(hir::Value* value);
 
     // Memory access
     hir::Value* readMemory(hir::Value* addr, hir::Type type);

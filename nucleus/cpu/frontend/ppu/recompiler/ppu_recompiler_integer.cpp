@@ -49,7 +49,10 @@ void Recompiler::addcx(Instruction code)
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, rb);
-        assert_always("Unimplemented");
+        ca = builder.createCmpUGT(
+            builder.createTrunc(rb, TYPE_I32),
+            builder.createNot(builder.createTrunc(ra, TYPE_I32))
+        );
         // TODO: XER CA update
     }
     if (code.rc) {
@@ -99,27 +102,36 @@ void Recompiler::addi(Instruction code)
 void Recompiler::addic(Instruction code)
 {
     Value* ra = getGPR(code.ra);
-    Value* simm = builder.getConstantI64(code.simm);
     Value* rd;
+    Value* ca;
 
+    Value* simm = builder.getConstantI64(code.simm);
     rd = builder.createAdd(ra, simm);
-    assert_always("Unimplemented");
-    // TODO: XER CA update
+    ca = builder.createCmpUGT(
+        builder.createTrunc(simm, TYPE_I32),
+        builder.createNot(builder.createTrunc(ra, TYPE_I32))
+    );
 
+    setXER_CA(ca);
     setGPR(code.rd, rd);
 }
 
 void Recompiler::addic_(Instruction code)
 {
     Value* ra = getGPR(code.ra);
-    Value* simm = builder.getConstantI64(code.simm);
     Value* rd;
+    Value* ca;
 
+    Value* simm = builder.getConstantI64(code.simm);
     rd = builder.createAdd(ra, simm);
-    assert_always("Unimplemented");
-    // TODO: XER CA update
+    ca = builder.createCmpUGT(
+        builder.createTrunc(simm, TYPE_I32),
+        builder.createNot(builder.createTrunc(ra, TYPE_I32))
+    );
+
     updateCR0(rd);
 
+    setXER_CA(ca);
     setGPR(code.rd, rd);
 }
 
@@ -927,14 +939,20 @@ void Recompiler::subfcx(Instruction code)
     Value* ra = builder.createNeg(getGPR(code.ra));
     Value* rb = getGPR(code.rb);
     Value* rd;
+    Value* ca;
 
     if (code.oe) {
         assert_always("Unimplemented");
         // TODO: XER OV update
     } else {
-        auto result = builder.createAdd(ra, rb);
-        assert_always("Unimplemented");
-        // TODO: XER CA update
+        rd = builder.createAdd(ra, rb);
+        ca = builder.createOr(
+            builder.createCmpUGT(
+                builder.createTrunc(rb, TYPE_I32),
+                builder.createNot(builder.createNeg(builder.createTrunc(ra, TYPE_I32)))),
+            builder.createCmpEQ(builder.createTrunc(ra, TYPE_I32), builder.getConstantI32(0)));
+
+        setXER_CA(ca);
     }
 
     if (code.rc) {
