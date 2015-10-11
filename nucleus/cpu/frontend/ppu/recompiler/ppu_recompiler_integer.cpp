@@ -68,10 +68,10 @@ void Recompiler::addex(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rd;
 
-    assert_always("Unimplemented");
-    // TODO: Add XER[CA]
     rd = builder.createAdd(ra, rb);
-
+    rd = builder.createAdd(ra, builder.createZExt(getXER_CA(), TYPE_I64));
+    //assert_always("Unimplemented");
+    // TODO: Update XER[CA]
     if (code.oe) {
         assert_always("Unimplemented");
         // TODO: XER OV update
@@ -152,12 +152,45 @@ void Recompiler::addis(Instruction code)
 
 void Recompiler::addmex(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rd;
+
+    if (code.oe) {
+        assert_always("Unimplemented");
+        // TODO: XER OV update
+    } else {
+        rd = builder.createSub(ra, builder.getConstantI64(1));
+        rd = builder.createAdd(rd, builder.createZExt(getXER_CA(), TYPE_I64));
+        //assert_always("Unimplemented");
+        // TODO: Update XER[CA]
+    }
+
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::addzex(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rd;
+
+    if (code.oe) {
+        assert_always("Unimplemented");
+        // TODO: XER OV update
+    } else {
+        rd = builder.createAdd(ra, builder.createZExt(getXER_CA(), TYPE_I64));
+        //assert_always("Unimplemented");
+        // TODO: Update XER[CA]
+    }
+
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::andx(Instruction code)
@@ -964,7 +997,23 @@ void Recompiler::subfcx(Instruction code)
 
 void Recompiler::subfex(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rd;
+
+    rd = builder.createAdd(builder.createNot(ra), rb);
+    rd = builder.createAdd(ra, builder.createZExt(getXER_CA(), TYPE_I64));
+    //assert_always("Unimplemented");
+    // TODO: Update XER[CA]
+    if (code.oe) {
+        assert_always("Unimplemented");
+        // TODO: XER OV update
+    }
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::subfic(Instruction code)
@@ -980,12 +1029,46 @@ void Recompiler::subfic(Instruction code)
 
 void Recompiler::subfmex(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rd;
+
+    if (code.oe) {
+        assert_always("Unimplemented");
+        // TODO: XER OV update
+    } else {
+        rd = builder.createSub(builder.createNot(ra), builder.getConstantI64(1));
+        rd = builder.createAdd(rd, builder.createZExt(getXER_CA(), TYPE_I64));
+        //assert_always("Unimplemented");
+        // TODO: Update XER[CA]
+    }
+
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::subfzex(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rd;
+
+    if (code.oe) {
+        assert_always("Unimplemented");
+        // TODO: XER OV update
+    } else {
+        rd = builder.createNot(ra);
+        rd = builder.createAdd(rd, builder.createZExt(getXER_CA(), TYPE_I64));
+        //assert_always("Unimplemented");
+        // TODO: Update XER[CA]
+    }
+
+    if (code.rc) {
+        updateCR0(rd);
+    }
+
+    setGPR(code.rd, rd);
 }
 
 void Recompiler::xorx(Instruction code)
