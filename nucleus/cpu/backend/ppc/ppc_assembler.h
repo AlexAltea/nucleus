@@ -61,7 +61,7 @@ private:
     void emitFormXFX(Operand opcd, Operand d, Operand spr, Operand xo);
     void emitFormXFL(Operand opcd, Operand fm, Operand b, Operand xo, bool rc);
     void emitFormXS(Operand opcd, Operand s, Operand a, Operand sh, Operand xo, bool rc);
-    void emitFormXO(U32 instruction, Operand d, Operand a, Operand b, bool oe, bool rc);
+    void emitFormXO(U32 instruction, Operand d, Operand a, Operand b);
     void emitFormA(Operand opcd, Operand d, Operand a, Operand b, Operand c, Operand xo, bool rc);
 
 public:

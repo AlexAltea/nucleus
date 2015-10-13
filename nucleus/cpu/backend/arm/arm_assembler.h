@@ -6,12 +6,13 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/backend/assembler.h"
 
 namespace cpu {
 namespace backend {
 namespace arm {
 
-class ARMAssembler {
+class ARMAssembler : public Assembler {
     
 };
 
