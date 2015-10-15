@@ -6,28 +6,33 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/cpu.h"
 
 #include <mutex>
 #include <condition_variable>
 #include <string>
 #include <thread>
 
-enum CellThreadType {
-    CELL_THREAD_PPU,
-    CELL_THREAD_SPU,
-    CELL_THREAD_RAWSPU,
+namespace cpu {
+
+enum ThreadType {
+    CPU_THREAD_PPU,
+    CPU_THREAD_SPU,
+    CPU_THREAD_RAWSPU,
 };
 
-class CellThread {
+class Thread {
 protected:
     // Thread status and management
     std::mutex m_mutex;
     std::condition_variable m_cv;
     std::string m_name;
-    std::thread* m_thread = nullptr;
+    std::thread m_thread;
 
     EmulatorEvent m_event = NUCLEUS_EVENT_NONE;
     EmulatorStatus m_status = NUCLEUS_STATUS_UNKNOWN;
+
+    CPU* parent;
 
 public:
     S32 prio;  // Thread priority
@@ -47,3 +52,5 @@ public:
     // Block caller thread until this thread finishes
     void join();
 };
+
+}  // namespace cpu

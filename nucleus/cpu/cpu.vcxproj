@@ -11,12 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="backend\arm\arm_assembler.cpp" />
     <ClCompile Include="backend\compiler.cpp" />
+    <ClCompile Include="backend\ppc\ppc_assembler.cpp" />
     <ClCompile Include="backend\x86\x86_compiler.cpp" />
     <ClCompile Include="backend\x86\x86_constants.cpp" />
     <ClCompile Include="backend\x86\x86_emitter.cpp" />
     <ClCompile Include="backend\x86\x86_sequences.cpp" />
     <ClCompile Include="cell.cpp" />
+    <ClCompile Include="cpu.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_branch.cpp" />
     <ClCompile Include="frontend\ppu\analyzer\ppu_analyzer_control.cpp" />
@@ -59,7 +62,10 @@
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="backend\arm\arm_assembler.h" />
+    <ClInclude Include="backend\assembler.h" />
     <ClInclude Include="backend\compiler.h" />
+    <ClInclude Include="backend\ppc\ppc_assembler.h" />
     <ClInclude Include="backend\sequences.h" />
     <ClInclude Include="backend\settings.h" />
     <ClInclude Include="backend\target.h" />
@@ -68,6 +74,7 @@
     <ClInclude Include="backend\x86\x86_emitter.h" />
     <ClInclude Include="backend\x86\x86_sequences.h" />
     <ClInclude Include="cell.h" />
+    <ClInclude Include="cpu.h" />
     <ClInclude Include="frontend\frontend_block.h" />
     <ClInclude Include="frontend\frontend_function.h" />
     <ClInclude Include="frontend\frontend_module.h" />

@@ -12,7 +12,7 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-Thread::Thread(U32 entry)
+PPUThread::PPUThread(U32 entry)
 {
     // Initialize stack of size 0x10000
     m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
@@ -37,6 +37,7 @@ Thread::Thread(U32 entry)
     state->r[12] = nucleus.lv2.proc.param.malloc_pagesize;
     state->r[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
     state->cr.CR = 0x22000082;
+    state->fpscr.FPSCR = 0x00002000; // TODO
     state->tb.TBL = 1;
     state->tb.TBU = 1;
 
@@ -47,19 +48,14 @@ Thread::Thread(U32 entry)
     state->r[10] = 0x90;
 }
 
-Thread::~Thread()
+PPUThread::~Thread()
 {
     // Destroy stack
     nucleus.memory(SEG_STACK).free(m_stackAddr);
 }
 
-void Thread::start()
-{
-    if (m_thread) {
-        stop();
-    }
-
-    m_thread = new std::thread([&](){
+void PPUThread::start() {
+    m_thread = std::thread([&](){
         nucleus.cell.setCurrentThread(this);
         m_status = NUCLEUS_STATUS_RUNNING;
 
@@ -74,7 +70,7 @@ void Thread::start()
     });
 }
 
-void Thread::task()
+void PPUThread::task()
 {
     if (config.ppuTranslator & CPU_TRANSLATOR_INSTRUCTION) {
         while (true) {
@@ -108,7 +104,7 @@ void Thread::task()
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_FUNCTION) {
-        for (auto* ppu_segment : nucleus.cell.ppu_segments) {
+        for (auto* ppu_segment : parent->ppu_segments) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
@@ -129,20 +125,20 @@ void Thread::task()
     }
 }
 
-void Thread::run()
+void PPUThread::run()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_event = NUCLEUS_EVENT_RUN;
     m_cv.notify_one();
 }
 
-void Thread::pause()
+void PPUThread::pause()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_event = NUCLEUS_EVENT_PAUSE;
 }
 
-void Thread::stop()
+void PPUThread::stop()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_event = NUCLEUS_EVENT_STOP;

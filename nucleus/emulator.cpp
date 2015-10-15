@@ -4,6 +4,7 @@
  */
 
 #include "emulator.h"
+#include "nucleus/cpu/cell.h"
 #include "nucleus/filesystem/utils.h"
 #include "nucleus/loader/self.h"
 #include "nucleus/logger/logger.h"

@@ -36,22 +36,22 @@ void Cell::init()
     compiler->addPass(std::make_unique<hir::passes::RegisterAllocationPass>(compiler->targetInfo));
 }
 
-CellThread* Cell::addThread(CellThreadType type, U32 entry=0)
+Thread* Cell::addThread(ThreadType type, U32 entry=0)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-    CellThread* thread;
+    Thread* thread;
 
     switch (type) {
-    case CELL_THREAD_PPU:
-        thread = new frontend::ppu::Thread(entry);
-        ppu_threads.push_back(dynamic_cast<frontend::ppu::Thread*>(thread));
+    case CPU_THREAD_PPU:
+        thread = new frontend::ppu::PPUThread(entry);
+        ppu_threads.push_back(dynamic_cast<frontend::ppu::PPUThread*>(thread));
         break;
 
-    case CELL_THREAD_SPU:
+    case CPU_THREAD_SPU:
         logger.error(LOG_CPU, "Unimplemented Cell thread type");
         return nullptr;
 
-    case CELL_THREAD_RAWSPU:
+    case CPU_THREAD_RAWSPU:
         logger.error(LOG_CPU, "Unimplemented Cell thread type");
         return nullptr;
 

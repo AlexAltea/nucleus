@@ -3,12 +3,13 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "thread.h"
+#pragma once
 
-namespace cpu {
+#include "nucleus/common.h"
 
-void Thread::join() {
-    m_thread.join();
-}
+namespace gpu {
 
-}  // namespace cpu
+class GPU {
+};
+
+}  // namespace gpu

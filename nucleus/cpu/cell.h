@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/backend/compiler.h"
+#include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 
@@ -16,7 +16,7 @@
 
 namespace cpu {
 
-class Cell {
+class Cell : public CPU {
     std::mutex m_mutex;
 
     // Thread ID information
@@ -24,8 +24,6 @@ class Cell {
     U64 m_current_id = 1;
 
 public:
-    std::unique_ptr<backend::Compiler> compiler;
-
     // Cell threads
     std::vector<frontend::ppu::Thread*> ppu_threads;
 
@@ -35,13 +33,13 @@ public:
     void init();
 
     // Thread management
-    CellThread* addThread(CellThreadType type, U32 entry);
-    CellThread* getThread(U64 id);
+    Thread* addThread(ThreadType type, U32 entry);
+    Thread* getThread(U64 id);
     void removeThread(U64 id);
 
     // Current thread ID
-    CellThread* getCurrentThread();
-    void setCurrentThread(CellThread* thread);
+    Thread* getCurrentThread();
+    void setCurrentThread(Thread* thread);
 
     // Control CPU state
     void run();

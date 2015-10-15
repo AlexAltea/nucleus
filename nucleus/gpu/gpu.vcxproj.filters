@@ -1,20 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="rsx_fp.cpp" />
-    <ClCompile Include="rsx_pgraph.cpp" />
-    <ClCompile Include="rsx_vp.cpp" />
-    <ClCompile Include="rsx.cpp" />
-    <ClCompile Include="rsx_dma.cpp" />
+    <ClCompile Include="gpu.cpp" />
+    <ClCompile Include="rsx\rsx_vp.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="rsx\rsx.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="rsx\rsx_dma.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="rsx\rsx_fp.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="rsx\rsx_pgraph.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rsx_fp.h" />
-    <ClInclude Include="rsx_methods.h" />
-    <ClInclude Include="rsx_pgraph.h" />
-    <ClInclude Include="rsx_texture.h" />
-    <ClInclude Include="rsx_vp.h" />
-    <ClInclude Include="rsx.h" />
-    <ClInclude Include="rsx_dma.h" />
-    <ClInclude Include="rsx_enum.h" />
+    <ClInclude Include="gpu.h" />
+    <ClInclude Include="rsx\rsx_pgraph.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="rsx\rsx_texture.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="rsx\rsx_vp.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="rsx\rsx.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="rsx\rsx_dma.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="rsx\rsx_enum.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="rsx\rsx_fp.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="rsx\rsx_methods.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="rsx">
+      <UniqueIdentifier>{16cfc79b-01e9-45b1-86ea-34939f3fa448}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

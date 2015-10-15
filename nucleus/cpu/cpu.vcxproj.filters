@@ -31,6 +31,12 @@
     <Filter Include="hir\passes">
       <UniqueIdentifier>{1a58fea7-0ae9-49a6-8ef4-85717b0736c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backend\ppc">
+      <UniqueIdentifier>{714a594b-19de-4969-862f-f19a58f37cb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backend\arm">
+      <UniqueIdentifier>{02eb8b61-f17d-4c2d-a648-6befb066fc7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="frontend\ppu\ppu_decoder.cpp">
@@ -165,6 +171,13 @@
     <ClCompile Include="backend\x86\x86_constants.cpp">
       <Filter>backend\x86</Filter>
     </ClCompile>
+    <ClCompile Include="backend\ppc\ppc_assembler.cpp">
+      <Filter>backend\ppc</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\arm\arm_assembler.cpp">
+      <Filter>backend\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -272,6 +285,16 @@
     <ClInclude Include="backend\x86\x86_constants.h">
       <Filter>backend\x86</Filter>
     </ClInclude>
+    <ClInclude Include="backend\ppc\ppc_assembler.h">
+      <Filter>backend\ppc</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\arm\arm_assembler.h">
+      <Filter>backend\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\assembler.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="hir\opcodes.inl">

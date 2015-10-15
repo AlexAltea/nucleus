@@ -3,12 +3,10 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "thread.h"
+#include "cpu.h"
 
 namespace cpu {
 
-void Thread::join() {
-    m_thread.join();
-}
+
 
 }  // namespace cpu

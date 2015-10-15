@@ -15,15 +15,15 @@ namespace ppu {
 // Forward declarations
 class State;
 
-class Thread : public CellThread {
+class PPUThread : public Thread {
     U32 m_stackAddr;
     U32 m_stackPointer;
 
 public:
     std::unique_ptr<State> state;
 
-    Thread(U32 entry);
-    ~Thread();
+    PPUThread(U32 entry);
+    ~PPUThread();
 
     virtual void start() override;
     virtual void task() override;

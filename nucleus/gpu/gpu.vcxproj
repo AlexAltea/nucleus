@@ -11,21 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rsx.cpp" />
-    <ClCompile Include="rsx_dma.cpp" />
-    <ClCompile Include="rsx_fp.cpp" />
-    <ClCompile Include="rsx_pgraph.cpp" />
-    <ClCompile Include="rsx_vp.cpp" />
+    <ClCompile Include="gpu.cpp" />
+    <ClCompile Include="rsx\rsx.cpp" />
+    <ClCompile Include="rsx\rsx_dma.cpp" />
+    <ClCompile Include="rsx\rsx_fp.cpp" />
+    <ClCompile Include="rsx\rsx_pgraph.cpp" />
+    <ClCompile Include="rsx\rsx_vp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rsx.h" />
-    <ClInclude Include="rsx_dma.h" />
-    <ClInclude Include="rsx_enum.h" />
-    <ClInclude Include="rsx_fp.h" />
-    <ClInclude Include="rsx_methods.h" />
-    <ClInclude Include="rsx_pgraph.h" />
-    <ClInclude Include="rsx_texture.h" />
-    <ClInclude Include="rsx_vp.h" />
+    <ClInclude Include="gpu.h" />
+    <ClInclude Include="rsx\rsx.h" />
+    <ClInclude Include="rsx\rsx_dma.h" />
+    <ClInclude Include="rsx\rsx_enum.h" />
+    <ClInclude Include="rsx\rsx_fp.h" />
+    <ClInclude Include="rsx\rsx_methods.h" />
+    <ClInclude Include="rsx\rsx_pgraph.h" />
+    <ClInclude Include="rsx\rsx_texture.h" />
+    <ClInclude Include="rsx\rsx_vp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2D971DF1-BCBD-43CD-9949-38272E977931}</ProjectGuid>
