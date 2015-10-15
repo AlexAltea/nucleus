@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+#include <string>
+
 namespace gpu {
 
 // RSX Fragment Program opcodes
@@ -142,6 +144,42 @@ union rsx_fp_instruction_source_t
         U32 swizzle_w : 2; // Swizzling mask on the component w
         U32 neg       : 1; // Negated value
     };
+};
+
+class RSXFragmentProgram {
+    // Input/Output/Sampler registers used in the program
+    U32 usedInputs;
+    U64 usedOutputs;
+    U32 usedSamplers;
+
+    // Current instruction being processed and pointer to the next instruction
+    rsx_fp_instruction_t instr;
+    rsx_fp_instruction_t* instr_ptr;
+
+    // Generate the GLSL header and register declarations based on the decompilation
+    std::string get_header();
+
+    // Get the source, destination and sampler registers of the current instruction
+    std::string get_src(U32 n);
+    std::string get_dst();
+    std::string get_tex();
+
+    // Get 32-bit of data reversing its byte and half-word endianness
+    template <typename T>
+    T get_word(U32 word) {
+        U32 result = (SE32(word) >> 16) | (SE32(word) << 16);
+        return (T&)result;
+    }
+
+public:
+    // OpenGL shader ID
+    U32 id = 0;
+
+    // Generate a GLSL fragment shader equivalent to the given buffer
+    void decompile(rsx_fp_instruction_t* buffer);
+
+    // Compile the generated GLSL code for the host GPU
+    bool compile();
 };
 
 }  // namespace gpu

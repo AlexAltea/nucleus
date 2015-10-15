@@ -60,6 +60,21 @@ struct rsx_viewport_t {
 
 // RSX's PGRAPH engine (Curie)
 class PGRAPH {
+    graphics::IBackend* graphics;
+
+    // Cache
+    std::unordered_map<U64, RSXVertexProgram> cache_vp;
+    std::unordered_map<U64, RSXFragmentProgram> cache_fp;
+
+    // Surface
+    /*GLuint framebuffer;
+    std::unordered_map<U32, GLuint> colorTargets;
+    std::unordered_map<U32, GLuint> depthTargets;*/
+
+    // Auxiliary methods
+    void SetColorTarget(U32 address, U8 attachment);
+    void SetDepthTarget(U32 address);
+
 public:
     // Registers
     U32 alpha_func;
@@ -105,8 +120,8 @@ public:
     U64 HashFragmentProgram(rsx_fp_instruction_t* program);
 
     // Auxiliary methods
-    virtual GLuint GetColorTarget(u32 address)=0;
     void LoadVertexAttributes(U32 first, U32 count);
+    //virtual GLuint GetColorTarget(U32 address);
 
     // Rendering methods
     void AlphaFunc(U32 func, F32 ref);

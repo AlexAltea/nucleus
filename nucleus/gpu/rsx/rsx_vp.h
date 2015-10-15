@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+#include <string>
+
 namespace gpu {
 
 // RSX Vertex Program opcodes
@@ -125,6 +127,32 @@ union rsx_vp_instruction_source_t
         U32 swizzling : 8;
         U32 neg       : 1;
     };
+};
+
+class RSXVertexProgram {
+    // Input/Output registers used in the program
+    U32 usedInputs;
+    U32 usedOutputs;
+
+    // Current instruction being processed
+    rsx_vp_instruction_t instr;
+
+    // Generate the GLSL header and register declarations based on the decompilation
+    std::string get_header();
+
+    // Get the source and destination registers of the current instruction
+    std::string get_src(U32 n);
+    std::string get_dst();
+
+public:
+    // OpenGL shader ID
+    U32 id = 0;
+
+    // Generate a GLSL vertex shader equivalent to the VPE instruction buffer at the given start offset
+    void decompile(rsx_vp_instruction_t* buffer);
+
+    // Compile the generated GLSL code for the host GPU
+    bool compile();
 };
 
 }  // namespace gpu

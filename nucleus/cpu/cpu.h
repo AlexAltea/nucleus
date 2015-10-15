@@ -15,7 +15,7 @@ class CPU {
 protected:
     std::unique_ptr<backend::Compiler> compiler;
 
-    std::vector<Thread>
+    std::vector<Thread> threads;
 };
 
 }  // namespace cpu

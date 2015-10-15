@@ -6,7 +6,8 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/gpu/rsx_pgraph.h"
+#include "nucleus/gpu/gpu.h"
+#include "nucleus/gpu/rsx/rsx_pgraph.h"
 
 #include <stack>
 #include <thread>
@@ -106,7 +107,7 @@ union rsx_method_t
 #undef FIELD
 };
 
-class RSX {
+class RSX : public GPU {
     // Execution engines
     PGRAPH pgraph;
 
