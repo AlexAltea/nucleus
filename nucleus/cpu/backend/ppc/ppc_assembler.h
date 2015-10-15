@@ -54,9 +54,9 @@ private:
     void emitFormI(Operand opcd, Operand li, bool aa, bool lk);
     void emitFormB(Operand opcd, Operand bo, Operand bi, Operand bd, bool aa, bool lk);
     void emitFormSC(Operand opcd);
-    void emitFormD(Operand opcd, Operand d, Operand a, U16 imm);
-    void emitFormDS(Operand opcd, Operand d, Operand a, Operand ds, Operand xo);
-    void emitFormX(Operand opcd);
+    void emitFormD(U32 instruction, Operand d, Operand a, U16 imm);
+    void emitFormDS(U32 instruction, Operand d, Operand a, U16 imm);
+    void emitFormX(U32 instruction, Operand d, Operand a, Operand b);
     void emitFormXL(Operand opcd, Operand d, Operand a, Operand b, Operand xo, bool lk);
     void emitFormXFX(Operand opcd, Operand d, Operand spr, Operand xo);
     void emitFormXFL(Operand opcd, Operand fm, Operand b, Operand xo, bool rc);
