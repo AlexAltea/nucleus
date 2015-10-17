@@ -229,8 +229,34 @@ public:
     // UISA Registers
     U64 r[32];      // General-Purpose Registers
     F64 f[32];      // Floating-Point Register
-    PPU_CR cr;
     PPU_FPSCR fpscr;
+
+    /**
+     * CR registers
+     * ============
+     * The condition register (CR) is a 32-bit register that reflects the result of 
+     * certain operations and provides a mechanism for testing and branching.
+     * and consists of following 8 fields, ordered from MSb to LSb:
+     *
+     *  +-----+-----+-----+-----+-----+-----+-----+-----+
+     *  | CR0 | CR1 | CR2 | CR3 | CR4 | CR5 | CR6 | CR7 |
+     *  +-----+-----+-----+-----+-----+-----+-----+-----+
+     */
+    union CR {
+        struct {
+            U8 lt;   // Negative (Bit 0)
+            U8 gt;   // Positive (Bit 1)
+            U8 eq;   // Zero (Bit 2)
+            U8 so;   // Summary overflow (Bit 3)
+        };
+        struct {
+            U8 fx;   // Floating-point exception summary (Bit 0)
+            U8 fex;  // Floating-point enabled exception summary (Bit 1)
+            U8 vx;   // Floating-point invalid operation exception summary (Bit 2)
+            U8 ox;   // Floating-point overflow exception (Bit 3)
+        };
+        U8 bit[4];
+    } cr[8];
 
     /**
      * XER register
@@ -252,6 +278,8 @@ public:
 
     PPU_LR lr;
     PPU_CTR ctr;
+
+    U32 padding_;
 
     // Vector/SIMD Registers
     V128 v[32];     // Vector Register
