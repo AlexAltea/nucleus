@@ -103,6 +103,7 @@
     <ClInclude Include="hir\passes\register_allocation_pass.h" />
     <ClInclude Include="hir\type.h" />
     <ClInclude Include="hir\value.h" />
+    <ClInclude Include="state.h" />
     <ClInclude Include="thread.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>

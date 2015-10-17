@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/state.h"
 
 #include <cmath>
 #include <string>
@@ -224,7 +225,7 @@ union PPU_VSCR {
     };
 };
 
-struct State {
+struct State : public cpu::State {
     // UISA Registers
     U64 r[32];      // General-Purpose Registers
     F64 f[32];      // Floating-Point Register

@@ -6,15 +6,10 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/state.h"
 
 namespace cpu {
-namespace frontend {
 
-struct SPUState : public State {
-    V128 gpr[128];  // General-Purpose Registers
-    V128 spr[128];  // Special-Purpose Registers
+class State {
 };
 
-}  // namespace frontend
 }  // namespace cpu

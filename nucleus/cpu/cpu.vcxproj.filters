@@ -301,6 +301,7 @@
     <ClInclude Include="frontend\spu\spu_thread.h">
       <Filter>frontend\spu</Filter>
     </ClInclude>
+    <ClInclude Include="state.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="hir\opcodes.inl">
