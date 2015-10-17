@@ -4,16 +4,16 @@
  */
 
 #include "spu_thread.h"
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "nucleus/emulator.h"
-#include "nucleus/cpu/frontend/ppu/ppu_state.h"
+#include "nucleus/cpu/frontend/spu/spu_state.h"
 
 namespace cpu {
 namespace frontend {
 namespace spu {
 
 SPUThread::SPUThread() {
-    state = std::make_unique<State>();
+    state = std::make_unique<SPUState>();
 }
 
 void SPUThread::start() {

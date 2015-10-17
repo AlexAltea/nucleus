@@ -3,23 +3,16 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#pragma once
-
-#include "nucleus/common.h"
+#include "assembler.h"
+#include "nucleus/assert.h"
 
 namespace cpu {
 namespace backend {
 
-class Assembler {
-protected:
-    void* curAddr;
-
-public:
-    void* codeAddr;
-    size_t codeSize;
-
-    Assembler(size_t codeSize = 4096, void* codeAddr = nullptr);
-};
+Assembler::Assembler(size_t codeSize, void* codeAddr) :
+    codeSize(codeSize), codeAddr(codeAddr) {
+    curAddr = codeAddr;
+}
 
 }  // namespace backend
 }  // namespace cpu

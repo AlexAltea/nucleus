@@ -304,8 +304,6 @@ void Function::createPlaceholder()
     hir::Value* guestAddrValue = builder.getConstantI64(address);
     builder.createCall(translateFunc, {guestFuncValue, guestAddrValue}, hir::CALL_EXTERN);
     builder.createRet();
-
-    nucleus.cell.compiler->compile(hirFunction);
 }
 
 /**

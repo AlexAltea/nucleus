@@ -57,7 +57,7 @@ public:
     U64 nativeSize;
 
     // Constructor
-    Function(Module* parent, TypeOut tOut, TypeIn tIn);
+    Function(Module* parent, TypeOut tOut, TypeIn tIn = {});
     ~Function();
 
     // Get ID of this function (dumping related)
@@ -66,13 +66,6 @@ public:
     // Generate IDs for child blocks and values
     S32 blockIdCounter = 0;
     S32 valueIdCounter = 0;
-
-    /**
-     * Call native function
-     * @param[in]  args  Arguments as an array of constant values
-     * @return           Return as a constant value
-     */
-    Value* call(const std::vector<Value*>& args = {});
 
     /**
      * Reset the function to its original declared state, removing its definition and compiled result

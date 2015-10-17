@@ -65,6 +65,8 @@ private:
     void emitFormA(Operand opcd, Operand d, Operand a, Operand b, Operand c, Operand xo, bool rc);
 
 public:
+    PPCAssembler(size_t codeSize = 4096, void* codeAddr = nullptr);
+
     // PPC instructions
     void add(RegGPR rd, RegGPR ra, RegGPR rb);
     void add_(RegGPR rd, RegGPR ra, RegGPR rb);

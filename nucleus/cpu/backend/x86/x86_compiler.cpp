@@ -129,21 +129,37 @@ bool X86Compiler::compile(Module* module) {
     return true;
 }
 
-void X86Compiler::translationEnter() {
-    // Get current state address
-    void* state = static_cast<frontend::ppu::PPUThread*>(nucleus.cell.getCurrentThread())->state.get();
+bool X86Compiler::call(hir::Function* function, void* state, const std::vector<hir::Value*>& args) {
+    if (!(function->flags & FUNCTION_IS_COMPILED)) {
+        logger.error(LOG_CPU, "Function is not ready");
+        return false;
+    }
 
-    // Generate code
+    // Generate code for caller
     X86Emitter e(this);
+    e.push(e.rbx);
+    e.push(e.r10);
+    e.push(e.r11);
+    e.push(e.r12);
+    e.push(e.r13);
+    e.push(e.r14);
+    e.push(e.r15);
     e.mov(e.rbx, reinterpret_cast<size_t>(state));
+    e.mov(e.rax, reinterpret_cast<size_t>(function->nativeAddress));
+    e.call(e.rax);
+    e.pop(e.r15);
+    e.pop(e.r14);
+    e.pop(e.r13);
+    e.pop(e.r12);
+    e.pop(e.r11);
+    e.pop(e.r10);
+    e.pop(e.rbx);
     e.ret();
    
-    // Execute real translation-enter function
-    auto function = reinterpret_cast<void(*)()>(e.getCode());
-    function();
-}
-
-void X86Compiler::translationExit() {
+    // Execute caller
+    auto callerFunc = reinterpret_cast<void(*)()>(e.getCode());
+    callerFunc();
+    return true;
 }
 
 }  // namespace x86

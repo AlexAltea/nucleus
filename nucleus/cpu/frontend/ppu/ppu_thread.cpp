@@ -4,8 +4,8 @@
  */
 
 #include "ppu_thread.h"
-#include "nucleus/config.h"
-#include "nucleus/emulator.h"
+#include "nucleus/core/config.h"
+#include "nucleus/cpu/cell.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 
 namespace cpu {
@@ -13,39 +13,18 @@ namespace frontend {
 namespace ppu {
 
 PPUThread::PPUThread() {
-    state = std::make_unique<State>();
-
-    // Initialize UISA Registers
-    state->cr.CR = 0x22000082;
-    state->fpscr.FPSCR = 0x00002000; // TODO
-    state->tb.TBL = 1;
-    state->tb.TBU = 1;
-
-    // Arguments passed to sys_initialize_tls on liblv2.sprx's start function
-    state->r[7] = 0x0; // TODO
-    state->r[8] = 0x0; // TODO
-    state->r[9] = 0x0; // TODO
-    state->r[10] = 0x90;
+    state = std::make_unique<PPUState>();
 }
 
 void PPUThread::start() {
     m_thread = std::thread([&](){
-        nucleus.cell.setCurrentThread(this);
+        parent->setCurrentThread(this);
         m_status = NUCLEUS_STATUS_RUNNING;
-
-        // Initialize LV2 if necessary
-        if (!nucleus.lv2.initialized) {
-            nucleus.lv2.init();
-        }
-        // Otherwise start emulation directly
-        else {
-            task();
-        }
+        task();
     });
 }
 
-void PPUThread::task()
-{
+void PPUThread::task() {
     if (config.ppuTranslator & CPU_TRANSLATOR_INSTRUCTION) {
         while (true) {
             // Handle events
@@ -69,7 +48,7 @@ void PPUThread::task()
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_BLOCK) {
-        for (auto* ppu_segment : nucleus.cell.ppu_segments) {
+        for (auto* ppu_segment : static_cast<Cell*>(parent)->ppu_modules) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
@@ -78,18 +57,22 @@ void PPUThread::task()
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_FUNCTION) {
-        for (auto* ppu_segment : parent->ppu_segments) {
+        for (auto* ppu_segment : static_cast<Cell*>(parent)->ppu_modules) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
 
             auto* function = ppu_segment->addFunction(state->pc);
-            function->call();
+            auto* hirFunction = function->hirFunction;
+            if (!(hirFunction->flags & hir::FUNCTION_IS_COMPILED)) {
+                parent->compiler->compile(hirFunction);
+            }
+            parent->compiler->call(hirFunction, state.get());
             return;
         }
     }
     if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
-        for (auto* ppu_segment : nucleus.cell.ppu_segments) {
+        for (auto* ppu_segment : static_cast<Cell*>(parent)->ppu_modules) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }

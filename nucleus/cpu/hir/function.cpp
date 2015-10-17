@@ -5,6 +5,7 @@
 
 #include "function.h"
 #include "nucleus/emulator.h"
+#include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/hir/module.h"
 
 namespace cpu {
@@ -37,18 +38,6 @@ S32 Function::getId() {
         id = parent->functionIdCounter++;
     }
     return id;
-}
-
-Value* Function::call(const std::vector<Value*>& args) {
-    if (flags & FUNCTION_IS_COMPILED) {
-        auto function = reinterpret_cast<void(*)()>(nativeAddress);
-        nucleus.cell.compiler->translationEnter();
-        function();
-        nucleus.cell.compiler->translationExit();
-    } else {
-        logger.error(LOG_CPU, "Function is not ready");
-        return 0;
-    }
 }
 
 void Function::reset() {

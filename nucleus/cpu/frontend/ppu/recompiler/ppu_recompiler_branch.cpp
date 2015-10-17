@@ -4,7 +4,7 @@
  */
 
 #include "ppu_recompiler.h"
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "nucleus/cpu/util.h"
 #include "nucleus/assert.h"
 

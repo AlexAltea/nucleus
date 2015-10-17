@@ -224,7 +224,8 @@ union PPU_VSCR {
     };
 };
 
-struct State : public cpu::State {
+class PPUState {
+public:
     // UISA Registers
     U64 r[32];      // General-Purpose Registers
     F64 f[32];      // Floating-Point Register
@@ -268,7 +269,7 @@ struct State : public cpu::State {
 };
 
 #ifdef NUCLEUS_ARCH_X86
-static_assert(offsetof(State, v) % 16 == 0, "PPU vector registers have to be 16-bit aligned in x86 hosts");
+static_assert(offsetof(PPUState, v) % 16 == 0, "PPU vector registers have to be 16-bit aligned in x86 hosts");
 #endif
 
 }  // namespace ppu

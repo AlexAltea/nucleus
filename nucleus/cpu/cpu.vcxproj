@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backend\arm\arm_assembler.cpp" />
+    <ClCompile Include="backend\assembler.cpp" />
     <ClCompile Include="backend\compiler.cpp" />
     <ClCompile Include="backend\ppc\ppc_assembler.cpp" />
     <ClCompile Include="backend\x86\x86_compiler.cpp" />
@@ -103,7 +104,6 @@
     <ClInclude Include="hir\passes\register_allocation_pass.h" />
     <ClInclude Include="hir\type.h" />
     <ClInclude Include="hir\value.h" />
-    <ClInclude Include="state.h" />
     <ClInclude Include="thread.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>

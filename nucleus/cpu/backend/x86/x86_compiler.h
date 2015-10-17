@@ -39,8 +39,7 @@ public:
     virtual bool compile(hir::Function* function) override;
     virtual bool compile(hir::Module* module) override;
 
-    virtual void translationEnter() override;
-    virtual void translationExit() override;
+    virtual bool call(hir::Function* function, void* state, const std::vector<hir::Value*>& args = {}) override;
 };
 
 }  // namespace x86

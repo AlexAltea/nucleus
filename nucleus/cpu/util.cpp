@@ -18,13 +18,16 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr) {
     auto* function = static_cast<frontend::ppu::Function*>(guestFunc);
     function->analyze_cfg();
     function->recompile();
-
-    nucleus.cell.compiler->compile(function->hirFunction);
-    function->call();
+    
+    auto* hirFunction = function->hirFunction;
+    auto* cpu = CPU::getCurrentThread()->parent;
+    auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
+    cpu->compiler->compile(hirFunction);
+    cpu->compiler->call(hirFunction, state);
 }
 
 void nucleusCall(U64 guestAddr) {
-    auto* thread = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread());
+    auto* thread = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread());
     auto* state = thread->state.get();
 
     state->pc = guestAddr;
@@ -32,8 +35,8 @@ void nucleusCall(U64 guestAddr) {
 }
 
 void nucleusSysCall() {
-    auto* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
-    nucleus.lv2.call(*state);
+    auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
+    //nucleus.lv2.call(*state);
 }
 
 

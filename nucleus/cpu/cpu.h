@@ -16,10 +16,9 @@ namespace cpu {
 class CPU {
     std::mutex mutex;
 
-protected:
+public:
     std::unique_ptr<backend::Compiler> compiler;
 
-public:
     std::vector<Thread*> threads;
 
     // Constructor
@@ -30,8 +29,8 @@ public:
     void removeThread(Thread* thread);
 
     // Manage current thread
-    Thread* getCurrentThread();
-    void setCurrentThread(Thread* thread);
+    static Thread* getCurrentThread();
+    static void setCurrentThread(Thread* thread);
 
     // Manage execution state of all threads
     void run();

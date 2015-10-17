@@ -34,8 +34,7 @@
 
 namespace sys {
 
-LV2::LV2(U32 fw_type)
-{
+LV2::LV2(U32 fw_type) {
     // Initialize syscall table
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
         syscalls[0x001] = SYSCALL(sys_process_getpid, LV2_NONE);
@@ -145,10 +144,7 @@ LV2::LV2(U32 fw_type)
     vfs.registerDevice(new fs::HostPathDevice("/host_root/", ""));
 }
 
-bool LV2::init()
-{
-    initialized = true;
-
+bool LV2::init(U32 entry) {
     // Load and start liblv2.sprx module
     S32 moduleId = sys_prx_load_module("/dev_flash/sys/external/liblv2.sprx", 0, 0);
     if (moduleId <= CELL_OK) {
@@ -157,21 +153,34 @@ bool LV2::init()
     }
     sys_prx_start_module_option_t startFunc;
     sys_prx_start_module(moduleId, 0, &startFunc);
-    Callback{(U32)startFunc.entry}.call();
+
+    BE<U64> thread_id;
+    sys_ppu_thread_attr_t attr;
+    attr.entry = entry;
+    attr.tls_addr = 0;
+    sys_ppu_thread_create(&thread_id, &attr, 0, 0, 500/*TODO*/, 0x10000, 0, "main"/*TODO*/);
+
+    // Set sys_initialize_tls arguments for liblv2.sprx's start function
+    auto* state = objects.get<cpu::frontend::ppu::PPUThread>(thread_id)->state.get();
+    state->r[7] = 0x0; // TODO
+    state->r[8] = 0x0; // TODO
+    state->r[9] = 0x0; // TODO
+    state->r[10] = 0x90;
+
+    sys_ppu_thread_start(thread_id);
     return true;
 }
 
-void LV2::call(cpu::frontend::ppu::State& state)
-{
+void LV2::call(cpu::frontend::ppu::PPUState& state) {
     const U32 id = state.r[11];
 
     if (!syscalls[id].func) {
         logger.warning(LOG_HLE, "LV2 Syscall %d (0x%x) called", id, id);
         return;
     }
-    printf("LV2 Syscall %d (0x%x: %s) called\n", id, id, syscalls[id].name);
+    //printf("LV2 Syscall %d (0x%x: %s) called\n", id, id, syscalls[id].name);
     //logger.notice(LOG_HLE, "LV2 Syscall %d (0x%x: %s) called", id, id, syscalls[id].name);
-    syscalls[id].func->call(state, nucleus.memory.getBaseAddr());
+    syscalls[id].func->call(state, memory->getBaseAddr());
 }
 
 }  // namespace sys

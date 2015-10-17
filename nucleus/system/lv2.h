@@ -114,11 +114,11 @@ public:
 
     LV2(U32 fw_type);
 
-    bool initialized = false;
-    bool init();
+    // Start the process at the given entry point
+    bool init(U32 entry);
 
     // Get LV2 SysCall ID from the current thread and call it
-    void call(cpu::frontend::ppu::State& state);
+    void call(cpu::frontend::ppu::PPUState& state);
 };
 
 }  // namespace sys

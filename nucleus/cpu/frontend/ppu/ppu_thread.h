@@ -13,11 +13,11 @@ namespace frontend {
 namespace ppu {
 
 // Forward declarations
-class State;
+class PPUState;
 
 class PPUThread : public Thread {
 public:
-    std::unique_ptr<State> state;
+    std::unique_ptr<PPUState> state;
 
     PPUThread();
     ~PPUThread();

@@ -12,6 +12,7 @@
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/hir/module.h"
 #include "nucleus/cpu/hir/pass.h"
+#include "nucleus/cpu/hir/value.h"
 
 #include <memory>
 #include <vector>
@@ -46,9 +47,13 @@ public:
     virtual bool compile(hir::Function* function) = 0;
     virtual bool compile(hir::Module* module) = 0;
 
-    // Manage code execution
-    virtual void translationEnter() = 0;
-    virtual void translationExit() = 0;
+    /**
+     * Runs a compiled function
+     * @param[in]  function   Function to be called
+     * @param[in]  state      Pointer to the guest thread state
+     * @param[in]  arguments  Arguments as an array of constant values
+     */
+    virtual bool call(hir::Function* function, void* state, const std::vector<hir::Value*>& args = {}) = 0;
 
     // Manage RWX memory
     void* allocRWXMemory(size_t size);

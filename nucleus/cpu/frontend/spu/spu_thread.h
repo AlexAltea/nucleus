@@ -13,11 +13,11 @@ namespace frontend {
 namespace spu {
 
 // Forward declarations
-class State;
+class SPUState;
 
 class SPUThread : public Thread {
 public:
-    std::unique_ptr<State> state;
+    std::unique_ptr<SPUState> state;
 
     SPUThread();
     ~SPUThread();

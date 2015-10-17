@@ -181,6 +181,9 @@
     <ClCompile Include="frontend\spu\spu_thread.cpp">
       <Filter>frontend\spu</Filter>
     </ClCompile>
+    <ClCompile Include="backend\assembler.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -301,7 +304,6 @@
     <ClInclude Include="frontend\spu\spu_thread.h">
       <Filter>frontend\spu</Filter>
     </ClInclude>
-    <ClInclude Include="state.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="hir\opcodes.inl">

@@ -10,9 +10,14 @@ namespace cpu {
 namespace backend {
 namespace ppc {
 
+PPCAssembler::PPCAssembler(size_t codeSize, void* codeAddr) : Assembler(codeSize, codeAddr) {
+}
+
 void PPCAssembler::emit(U32 instruction) {
-    auto* addr = static_cast<BE<U32>*>(curAddr);
-    *addr++ = instruction;
+    auto* addr = static_cast<U32*>(curAddr);
+    *addr = instruction;
+    codeSize = 4;
+    addr++;
 }
 
 // Emit instruction form

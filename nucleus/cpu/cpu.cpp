@@ -4,6 +4,7 @@
  */
 
 #include "cpu.h"
+#include "nucleus/cpu/thread.h"
 #include "nucleus/cpu/hir/passes.h"
 #include "nucleus/logger/logger.h"
 

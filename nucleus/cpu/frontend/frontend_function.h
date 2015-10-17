@@ -40,11 +40,6 @@ public:
     // Control Flow Graph
     std::map<TAddr, Block<TAddr>*> blocks;
 
-    // Call translated function
-    hir::Value* call(const std::vector<hir::Value*>& args = {}) {
-        return hirFunction->call(args);
-    }
-
     // Check whether an address is inside any CFG block
     bool contains(TAddr addr) const {
         for (const auto& item : blocks) {

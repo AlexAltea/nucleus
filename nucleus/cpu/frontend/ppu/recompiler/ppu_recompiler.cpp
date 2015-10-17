@@ -7,7 +7,7 @@
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/assert.h"
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "nucleus/emulator.h"
 
 namespace cpu {
@@ -95,7 +95,7 @@ void Recompiler::createEpilog() {
  * Register read
  */
 Value* Recompiler::getGPR(int index, Type type) {
-    const U32 offset = offsetof(State, r[index]);
+    const U32 offset = offsetof(PPUState, r[index]);
 
     // TODO: Use volatility information?
     // Return+Parameter registers and nonvolatile registers are 3 to 10 and 14 onwards respectively
@@ -108,7 +108,7 @@ Value* Recompiler::getGPR(int index, Type type) {
 }
 
 Value* Recompiler::getFPR(int index, Type type) {
-    const U32 offset = offsetof(State, f[index]);
+    const U32 offset = offsetof(PPUState, f[index]);
 
     // TODO: Use volatility information?
     // Return+Parameter registers and nonvolatile registers are 1 to 13 and 14 onwards respectively
@@ -121,7 +121,7 @@ Value* Recompiler::getFPR(int index, Type type) {
 }
 
 Value* Recompiler::getVR(int index) {
-    const U32 offset = offsetof(State, v[index]);
+    const U32 offset = offsetof(PPUState, v[index]);
 
     // TODO: Use volatility information?
 
@@ -129,7 +129,7 @@ Value* Recompiler::getVR(int index) {
 }
 
 Value* Recompiler::getCR(int index) {
-    const U32 offset = offsetof(State, cr);
+    const U32 offset = offsetof(PPUState, cr);
 
     // TODO: Use volatility information?
 
@@ -142,12 +142,12 @@ Value* Recompiler::getCR(int index) {
 }
 
 Value* Recompiler::getCR() {
-    const U32 offset = offsetof(State, cr);
+    const U32 offset = offsetof(PPUState, cr);
     return builder.createCtxLoad(offset, TYPE_I32);
 }
 
 Value* Recompiler::getLR() {
-    constexpr U32 offset = offsetof(State, lr);
+    constexpr U32 offset = offsetof(PPUState, lr);
     return builder.createCtxLoad(offset, TYPE_I64);
 }
 
@@ -160,27 +160,27 @@ Value* Recompiler::getXER() {
 }
 
 Value* Recompiler::getXER_SO() {
-    constexpr U32 offset = offsetof(State, xer.so);
+    constexpr U32 offset = offsetof(PPUState, xer.so);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
 Value* Recompiler::getXER_OV() {
-    constexpr U32 offset = offsetof(State, xer.ov);
+    constexpr U32 offset = offsetof(PPUState, xer.ov);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
 Value* Recompiler::getXER_CA() {
-    constexpr U32 offset = offsetof(State, xer.ca);
+    constexpr U32 offset = offsetof(PPUState, xer.ca);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
 Value* Recompiler::getCTR() {
-    constexpr U32 offset = offsetof(State, ctr);
+    constexpr U32 offset = offsetof(PPUState, ctr);
     return builder.createCtxLoad(offset, TYPE_I64);
 }
 
 Value* Recompiler::getFPSCR() {
-    constexpr U32 offset = offsetof(State, fpscr);
+    constexpr U32 offset = offsetof(PPUState, fpscr);
     return builder.createCtxLoad(offset, TYPE_I32);
 }
 
@@ -188,7 +188,7 @@ Value* Recompiler::getFPSCR() {
  * Register write
  */
 void Recompiler::setGPR(int index, Value* value) {
-    const U32 offset = offsetof(State, r[index]);
+    const U32 offset = offsetof(PPUState, r[index]);
 
     // TODO: Use volatility information?
     // Return+Parameter registers and nonvolatile registers are 3 to 10 and 14 onwards respectively
@@ -204,7 +204,7 @@ void Recompiler::setGPR(int index, Value* value) {
 }
 
 void Recompiler::setFPR(int index, Value* value) {
-    const U32 offset = offsetof(State, f[index]);
+    const U32 offset = offsetof(PPUState, f[index]);
 
     // TODO: Use volatility information?
     // Return+Parameter registers and nonvolatile registers are 1 to 13 and 14 onwards respectively
@@ -220,7 +220,7 @@ void Recompiler::setFPR(int index, Value* value) {
 }
 
 void Recompiler::setVR(int index, Value* value) {
-    const U32 offset = offsetof(State, v[index]);
+    const U32 offset = offsetof(PPUState, v[index]);
 
     // TODO: Use volatility information?
 
@@ -228,7 +228,7 @@ void Recompiler::setVR(int index, Value* value) {
 }
 
 void Recompiler::setCR(int index, Value* value) {
-    const U32 offset = offsetof(State, cr);
+    const U32 offset = offsetof(PPUState, cr);
 
     // TODO: Use volatility information?
 
@@ -240,7 +240,7 @@ void Recompiler::setCR(int index, Value* value) {
 }
 
 void Recompiler::setCR(Value* value) {
-    constexpr U32 offset = offsetof(State, cr);
+    constexpr U32 offset = offsetof(PPUState, cr);
     
     if (value->type != TYPE_I32) {
         logger.error(LOG_CPU, "Wrong value type for CR register");
@@ -250,7 +250,7 @@ void Recompiler::setCR(Value* value) {
 }
 
 void Recompiler::setLR(Value* value) {
-    constexpr U32 offset = offsetof(State, lr);
+    constexpr U32 offset = offsetof(PPUState, lr);
     
     if (value->type != TYPE_I64) {
         logger.error(LOG_CPU, "Wrong value type for LR register");
@@ -261,10 +261,10 @@ void Recompiler::setLR(Value* value) {
 
 void Recompiler::setXER(Value* value) {
     assert_true(value->type == TYPE_I64, "Wrong value type for XER register");
-    constexpr U32 offset_so = offsetof(State, xer.so);
-    constexpr U32 offset_ov = offsetof(State, xer.ov);
-    constexpr U32 offset_ca = offsetof(State, xer.ca);
-    constexpr U32 offset_bc = offsetof(State, xer.bc);
+    constexpr U32 offset_so = offsetof(PPUState, xer.so);
+    constexpr U32 offset_ov = offsetof(PPUState, xer.ov);
+    constexpr U32 offset_ca = offsetof(PPUState, xer.ca);
+    constexpr U32 offset_bc = offsetof(PPUState, xer.bc);
     
     Value* bc_i64 = builder.createAnd(value, builder.getConstantI64(0x7F));
     builder.createCtxStore(offset_bc, builder.createTrunc(bc_i64, TYPE_I8));
@@ -281,24 +281,24 @@ void Recompiler::setXER(Value* value) {
 
 void Recompiler::setXER_SO(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::SO field");
-    constexpr U32 offset = offsetof(State, xer.so);
+    constexpr U32 offset = offsetof(PPUState, xer.so);
     builder.createCtxStore(offset, value);
 }
 
 void Recompiler::setXER_OV(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::OV field");
-    constexpr U32 offset = offsetof(State, xer.ov);
+    constexpr U32 offset = offsetof(PPUState, xer.ov);
     builder.createCtxStore(offset, value);
 }
 
 void Recompiler::setXER_CA(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::CA field");
-    constexpr U32 offset = offsetof(State, xer.ca);
+    constexpr U32 offset = offsetof(PPUState, xer.ca);
     builder.createCtxStore(offset, value);
 }
 
 void Recompiler::setCTR(Value* value) {
-    constexpr U32 offset = offsetof(State, ctr);
+    constexpr U32 offset = offsetof(PPUState, ctr);
     
     if (value->type != TYPE_I64) {
         logger.error(LOG_CPU, "Wrong value type for CTR register");
@@ -308,7 +308,7 @@ void Recompiler::setCTR(Value* value) {
 }
 
 void Recompiler::setFPSCR(Value* value) {
-    constexpr U32 offset = offsetof(State, fpscr);
+    constexpr U32 offset = offsetof(PPUState, fpscr);
     
     if (value->type != TYPE_I32) {
         logger.error(LOG_CPU, "Wrong value type for FPSCR register");
@@ -322,7 +322,7 @@ void Recompiler::setFPSCR(Value* value) {
  */
 Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
     // Get host address
-    void* baseAddress = nucleus.memory.getBaseAddr();
+    void* baseAddress = memory->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
     if (type == TYPE_I8) {
@@ -334,7 +334,7 @@ Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
 
 void Recompiler::writeMemory(Value* addr, Value* value) {
     // Get host address
-    void* baseAddress = nucleus.memory.getBaseAddr();
+    void* baseAddress = memory->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
     if (value->type == TYPE_I8) {
