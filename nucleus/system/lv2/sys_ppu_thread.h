@@ -10,16 +10,20 @@
 namespace sys {
 
 // Classes
-struct sys_ppu_thread_attr_t
-{
+struct sys_ppu_thread_attr_t {
     BE<U32> entry;
     BE<U32> tls_addr;
 };
 
-struct sys_ppu_thread_stack_t
-{
+struct sys_ppu_thread_stack_t {
     BE<U32> addr;
     BE<U32> size;
+};
+
+// Auxiliary classes
+struct sys_ppu_thread_t {
+    cpu::frontend::ppu::PPUThread* thread;
+    sys_ppu_thread_stack_t stack;
 };
 
 // SysCalls

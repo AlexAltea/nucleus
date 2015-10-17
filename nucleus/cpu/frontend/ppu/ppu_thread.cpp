@@ -12,30 +12,10 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-PPUThread::PPUThread(U32 entry)
-{
-    // Initialize stack of size 0x10000
-    m_stackAddr = nucleus.memory(SEG_STACK).alloc(0x10000, 0x100);
-    m_stackPointer = m_stackAddr + 0x10000;
-
+PPUThread::PPUThread() {
     state = std::make_unique<State>();
 
-    const U32 entry_pc = nucleus.memory.read32(entry);
-    const U32 entry_rtoc = nucleus.memory.read32(entry+4);
-
-    // Initialize Program Counter
-    state->pc = entry_pc;
-
-    // Initialize UISA Registers (TODO: All of this might be wrong)
-    state->r[0] = entry_pc;
-    state->r[1] = m_stackPointer - 0x200;
-    state->r[2] = entry_rtoc;
-    state->r[3] = 0;
-    state->r[4] = m_stackPointer - 0x80;
-    state->r[5] = state->r[4] + 0x10;
-    state->r[11] = entry;
-    state->r[12] = nucleus.lv2.proc.param.malloc_pagesize;
-    state->r[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
+    // Initialize UISA Registers
     state->cr.CR = 0x22000082;
     state->fpscr.FPSCR = 0x00002000; // TODO
     state->tb.TBL = 1;
@@ -46,12 +26,6 @@ PPUThread::PPUThread(U32 entry)
     state->r[8] = 0x0; // TODO
     state->r[9] = 0x0; // TODO
     state->r[10] = 0x90;
-}
-
-PPUThread::~Thread()
-{
-    // Destroy stack
-    nucleus.memory(SEG_STACK).free(m_stackAddr);
 }
 
 void PPUThread::start() {

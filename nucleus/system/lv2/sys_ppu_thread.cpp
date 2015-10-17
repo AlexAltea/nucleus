@@ -9,30 +9,49 @@
 
 namespace sys {
 
-S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 arg, U64 unk0, S32 prio, U32 stacksize, U64 flags, S8* threadname)
-{
-    U32 entry = attr->entry;
-    U32 tls_addr = attr->tls_addr;
+S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 arg, U64 unk0, S32 prio, U32 stacksize, U64 flags, S8* threadname) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
+    const U32 entry_pc = nucleus.memory.read32(attr->entry);
+    const U32 entry_rtoc = nucleus.memory.read32(attr->entry + 4);
+    
     // Create PPU thread
-    auto* thread = (cpu::frontend::ppu::Thread*)nucleus.cell.addThread(CELL_THREAD_PPU, entry);
-    thread->prio = prio;
-    thread->state->r[3] = arg;
+    auto* ppu_thread = new sys_ppu_thread_t();
+    ppu_thread->stack.size = 0x10000;
+    ppu_thread->stack.addr = nucleus.memory(SEG_STACK).alloc(ppu_thread->stack.size, 0x100);
+    ppu_thread->thread = static_cast<cpu::frontend::ppu::PPUThread*>(nucleus.cpu->addThread(cpu::THREAD_TYPE_PPU));
 
-    *thread_id = nucleus.lv2.objects.add(thread, SYS_PPU_THREAD_OBJECT);
+    // Set PPU thread initial state
+    auto& state = ppu_thread->thread->state;
+    state->pc = entry_pc;
+    state->r[0] = entry_pc;
+    state->r[1] = ppu_thread->stack.size + ppu_thread->stack.addr - 0x200;
+    state->r[2] = entry_rtoc;
+    state->r[3] = arg;
+    state->r[4] = state->r[1] - 0x80;
+    state->r[5] = state->r[4] - 0x70;
+    state->r[11] = attr->entry;
+    state->r[12] = lv2.proc.param.malloc_pagesize;
+    state->r[13] = nucleus.memory(SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
+
+    *thread_id = lv2.objects.add(ppu_thread, SYS_PPU_THREAD_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_ppu_thread_exit(S32 errorcode)
-{
+S32 sys_ppu_thread_exit(S32 errorcode) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    // TODO: Delete stack
+
     auto* thread = nucleus.cell.getCurrentThread();
     thread->stop();
     return CELL_OK;
 }
 
-S32 sys_ppu_thread_get_priority(U64 thread_id, BE<S32>* prio)
-{
-    auto* thread = nucleus.lv2.objects.get<cpu::frontend::ppu::Thread>(thread_id);
+S32 sys_ppu_thread_get_priority(U64 thread_id, BE<S32>* prio) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* thread = lv2.objects.get<cpu::frontend::ppu::PPUThread>(thread_id);
 
     // Check requisites
     if (prio == nucleus.memory.ptr(0)) {
@@ -46,8 +65,9 @@ S32 sys_ppu_thread_get_priority(U64 thread_id, BE<S32>* prio)
     return CELL_OK;
 }
 
-S32 sys_ppu_thread_get_stack_information(sys_ppu_thread_stack_t* sp)
-{
+S32 sys_ppu_thread_get_stack_information(sys_ppu_thread_stack_t* sp) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     auto* thread = nucleus.cell.getCurrentThread();
 
     // TODO: ?
@@ -56,9 +76,10 @@ S32 sys_ppu_thread_get_stack_information(sys_ppu_thread_stack_t* sp)
     return CELL_OK;
 }
 
-S32 sys_ppu_thread_join(U64 thread_id, BE<U64>* vptr)
-{
-    auto* thread = nucleus.lv2.objects.get<cpu::frontend::ppu::Thread>(thread_id);
+S32 sys_ppu_thread_join(U64 thread_id, BE<U64>* vptr) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* thread = lv2.objects.get<cpu::frontend::ppu::PPUThread>(thread_id);
 
     // Check requisites
     if (!thread) {
@@ -69,9 +90,10 @@ S32 sys_ppu_thread_join(U64 thread_id, BE<U64>* vptr)
     return CELL_OK;
 }
 
-S32 sys_ppu_thread_start(U64 thread_id)
-{
-    auto* thread = nucleus.lv2.objects.get<cpu::frontend::ppu::Thread>(thread_id);
+S32 sys_ppu_thread_start(U64 thread_id) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* thread = lv2.objects.get<cpu::frontend::ppu::PPUThread>(thread_id);
 
     // Check requisites
     if (!thread) {

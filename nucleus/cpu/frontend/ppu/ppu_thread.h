@@ -16,13 +16,10 @@ namespace ppu {
 class State;
 
 class PPUThread : public Thread {
-    U32 m_stackAddr;
-    U32 m_stackPointer;
-
 public:
     std::unique_ptr<State> state;
 
-    PPUThread(U32 entry);
+    PPUThread();
     ~PPUThread();
 
     virtual void start() override;
