@@ -8,8 +8,7 @@
 
 namespace sys {
 
-S32 sys_gamepad_ycon_if()
-{
+S32 sys_gamepad_ycon_if() {
     // TODO: ?
     return CELL_OK;
 }

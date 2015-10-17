@@ -9,8 +9,9 @@
 
 namespace sys {
 
-S32 sys_lwmutex_create(BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr)
-{
+S32 sys_lwmutex_create(BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     // Check requisites
     if (lwmutex_id == nucleus.memory.ptr(0) || attr == nucleus.memory.ptr(0)) {
         return CELL_EFAULT;
@@ -20,21 +21,23 @@ S32 sys_lwmutex_create(BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr)
     auto* lwmutex = new sys_lwmutex_t();
     //lwmutex->attr = *attr; It causes a segfault upon startup
 
-    *lwmutex_id = nucleus.lv2.objects.add(lwmutex, SYS_LWMUTEX_OBJECT);
+    *lwmutex_id = lv2.objects.add(lwmutex, SYS_LWMUTEX_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_lwmutex_destroy(U32 lwmutex_id)
-{
-    if (!nucleus.lv2.objects.remove(lwmutex_id)) {
+S32 sys_lwmutex_destroy(U32 lwmutex_id) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    if (!lv2.objects.remove(lwmutex_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-S32 sys_lwmutex_lock(U32 lwmutex_id, U64 timeout)
-{
-    auto* lwmutex = nucleus.lv2.objects.get<sys_lwmutex_t>(lwmutex_id);
+S32 sys_lwmutex_lock(U32 lwmutex_id, U64 timeout) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* lwmutex = lv2.objects.get<sys_lwmutex_t>(lwmutex_id);
 
     // Check requisites
     if (!lwmutex) {
@@ -56,9 +59,10 @@ S32 sys_lwmutex_lock(U32 lwmutex_id, U64 timeout)
     return CELL_OK;
 }
 
-S32 sys_lwmutex_trylock(U32 lwmutex_id)
-{
-    auto* lwmutex = nucleus.lv2.objects.get<sys_lwmutex_t>(lwmutex_id);
+S32 sys_lwmutex_trylock(U32 lwmutex_id) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* lwmutex = lv2.objects.get<sys_lwmutex_t>(lwmutex_id);
 
     // Check requisites
     if (!lwmutex) {
@@ -69,9 +73,10 @@ S32 sys_lwmutex_trylock(U32 lwmutex_id)
     return CELL_OK;
 }
 
-S32 sys_lwmutex_unlock(U32 lwmutex_id)
-{
-    auto* lwmutex = nucleus.lv2.objects.get<sys_lwmutex_t>(lwmutex_id);
+S32 sys_lwmutex_unlock(U32 lwmutex_id) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* lwmutex = lv2.objects.get<sys_lwmutex_t>(lwmutex_id);
 
     // Check requisites
     if (!lwmutex) {

@@ -8,20 +8,17 @@
 
 namespace sys {
 
-S32 sys_config_add_service_listener()
-{
+S32 sys_config_add_service_listener() {
     // TODO: ?
     return CELL_OK;
 }
 
-S32 sys_config_close()
-{
+S32 sys_config_close() {
     // TODO: ?
     return CELL_OK;
 }
 
-S32 sys_config_open()
-{
+S32 sys_config_open() {
     // TODO: ?
     return CELL_OK;
 }

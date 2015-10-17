@@ -14,11 +14,12 @@
 namespace sys {
 
 // SysCalls
-S32 sys_fs_open(const S8* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size)
-{
+S32 sys_fs_open(const S8* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     // Create file
     if (flags & CELL_FS_O_CREAT) {
-        nucleus.lv2.vfs.createFile(path);
+        lv2.vfs.createFile(path);
     }
 
     // Access mode
@@ -45,58 +46,62 @@ S32 sys_fs_open(const S8* path, S32 flags, BE<S32>* fd, U64 mode, const void* ar
 
     case CELL_FS_O_RDWR:
         if (flags & CELL_FS_O_TRUNC) {
-            nucleus.lv2.vfs.createFile(path);
+            lv2.vfs.createFile(path);
         }
         openMode = fs::ReadWrite;
     }
 
-    if (!nucleus.lv2.vfs.existsFile(path)) {
+    if (!lv2.vfs.existsFile(path)) {
         return CELL_ENOENT;
     }
 
     auto* file = new sys_fs_t();
     file->type = CELL_FS_S_IFREG;
     file->path = path;
-    file->file = nucleus.lv2.vfs.openFile(path, openMode);
+    file->file = lv2.vfs.openFile(path, openMode);
 
-    *fd = nucleus.lv2.objects.add(file, SYS_FS_FD_OBJECT);
+    *fd = lv2.objects.add(file, SYS_FS_FD_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_fs_read(S32 fd, void* buf, U64 nbytes, BE<U64>* nread)
-{
-    auto* descriptor = nucleus.lv2.objects.get<sys_fs_t>(fd);
+S32 sys_fs_read(S32 fd, void* buf, U64 nbytes, BE<U64>* nread) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     *nread = file->read(buf, nbytes);
     return CELL_OK;
 }
 
-S32 sys_fs_write(S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite)
-{
-    auto* descriptor = nucleus.lv2.objects.get<sys_fs_t>(fd);
+S32 sys_fs_write(S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     *nwrite = file->write(buf, nbytes);
     return CELL_OK;
 }
 
-S32 sys_fs_close(S32 fd)
-{
-    auto* descriptor = nucleus.lv2.objects.get<sys_fs_t>(fd);
+S32 sys_fs_close(S32 fd) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
     delete descriptor->file;
 
     return CELL_OK;
 }
 
-S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb)
-{
+S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     // Check requisites
     if (sb == nucleus.memory.ptr(0)) {
         return CELL_EFAULT;
     }
 
-    auto* descriptor = nucleus.lv2.objects.get<sys_fs_t>(fd);
+    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     auto attributes = file->attributes();
@@ -112,14 +117,13 @@ S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb)
     return CELL_OK;
 }
 
-S32 sys_fs_stat(const S8* path, sys_fs_stat_t* sb)
-{
+S32 sys_fs_stat(const S8* path, sys_fs_stat_t* sb) {
     // Check requisites
     if (path == nucleus.memory.ptr(0) || sb == nucleus.memory.ptr(0)) {
         return CELL_EFAULT;
     }
 
-    auto attributes = nucleus.lv2.vfs.getFileAttributes(path);
+    auto attributes = nucleus.sys->vfs.getFileAttributes(path);
     sb->st_atime = attributes.timestamp_access;
     sb->st_ctime = attributes.timestamp_create;
     sb->st_mtime = attributes.timestamp_write;
@@ -132,15 +136,17 @@ S32 sys_fs_stat(const S8* path, sys_fs_stat_t* sb)
     return CELL_OK;
 }
 
-S32 sys_fs_fcntl()
-{
+S32 sys_fs_fcntl() {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     logger.warning(LOG_HLE, "LV2 Syscall (0x331) called: sys_fs_fcntl");
     return CELL_OK;
 }
 
-S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, U64 *pos)
-{
-    auto* descriptor = nucleus.lv2.objects.get<sys_fs_t>(fd);
+S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, U64 *pos) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     *pos = file->seek(offset, fs::SeekSet);

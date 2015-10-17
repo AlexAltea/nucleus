@@ -6,8 +6,8 @@
 #include "rsx_pgraph.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/gpu/rsx_enum.h"
-#include "nucleus/gpu/rsx_methods.h"
+#include "nucleus/gpu/rsx/rsx_enum.h"
+#include "nucleus/gpu/rsx/rsx_methods.h"
 
 namespace gpu {
 

@@ -9,10 +9,10 @@
 #include "nucleus/config.h"
 #include "nucleus/system/lv1/lv1_gpu.h"
 
-#include "nucleus/gpu/rsx_dma.h"
-#include "nucleus/gpu/rsx_enum.h"
-#include "nucleus/gpu/rsx_methods.h"
-#include "nucleus/gpu/rsx_vp.h"
+#include "nucleus/gpu/rsx/rsx_dma.h"
+#include "nucleus/gpu/rsx/rsx_enum.h"
+#include "nucleus/gpu/rsx/rsx_methods.h"
+#include "nucleus/gpu/rsx/rsx_vp.h"
 
 // Platform specific drawing contexts
 #ifdef NUCLEUS_PLATFORM_WINDOWS

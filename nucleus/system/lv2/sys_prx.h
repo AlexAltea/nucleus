@@ -16,19 +16,19 @@ namespace sys {
 // Return codes
 enum {
     CELL_PRX_ERROR_ERROR                       = 0x80011001,  // Error state
-    CELL_PRX_ERROR_ILLEGAL_PERM                = 0x800110d1,  // No permission to execute API
-    CELL_PRX_ERROR_UNKNOWN_MODULE              = 0x8001112e,  // Specified PRX could not be found
+    CELL_PRX_ERROR_ILLEGAL_PERM                = 0x800110D1,  // No permission to execute API
+    CELL_PRX_ERROR_UNKNOWN_MODULE              = 0x8001112E,  // Specified PRX could not be found
     CELL_PRX_ERROR_ALREADY_STARTED             = 0x80011133,  // Specified PRX is already started
     CELL_PRX_ERROR_NOT_STARTED                 = 0x80011134,  // Specified PRX is not started
     CELL_PRX_ERROR_ALREADY_STOPPED             = 0x80011135,  // Specified PRX is already stopped
     CELL_PRX_ERROR_CAN_NOT_STOP                = 0x80011136,  // Specified PRX must not be stopped
     CELL_PRX_ERROR_NOT_REMOVABLE               = 0x80011138,  // Specified PRX must not be deleted
-    CELL_PRX_ERROR_LIBRARY_NOT_YET_LINKED      = 0x8001113a,  // Called unlinked function
-    CELL_PRX_ERROR_LIBRARY_FOUND               = 0x8001113b,  // Specified library is already registered
-    CELL_PRX_ERROR_LIBRARY_NOTFOUND            = 0x8001113c,  // Specified library is not registered
-    CELL_PRX_ERROR_ILLEGAL_LIBRARY             = 0x8001113d,  // Library structure is invalid
-    CELL_PRX_ERROR_LIBRARY_INUSE               = 0x8001113e,  // Library cannot be deleted because it is linked
-    CELL_PRX_ERROR_ALREADY_STOPPING            = 0x8001113f,  // Specified PRX is in the process of stopping
+    CELL_PRX_ERROR_LIBRARY_NOT_YET_LINKED      = 0x8001113A,  // Called unlinked function
+    CELL_PRX_ERROR_LIBRARY_FOUND               = 0x8001113B,  // Specified library is already registered
+    CELL_PRX_ERROR_LIBRARY_NOTFOUND            = 0x8001113C,  // Specified library is not registered
+    CELL_PRX_ERROR_ILLEGAL_LIBRARY             = 0x8001113D,  // Library structure is invalid
+    CELL_PRX_ERROR_LIBRARY_INUSE               = 0x8001113E,  // Library cannot be deleted because it is linked
+    CELL_PRX_ERROR_ALREADY_STOPPING            = 0x8001113F,  // Specified PRX is in the process of stopping
     CELL_PRX_ERROR_UNSUPPORTED_PRX_TYPE        = 0x80011148,  // Specified PRX format is invalid and cannot be loaded
     CELL_PRX_ERROR_INVAL                       = 0x80011324,  // Argument value is invalid
     CELL_PRX_ERROR_ILLEGAL_PROCESS             = 0x80011801,  // Specified process does not exist

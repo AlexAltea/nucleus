@@ -9,8 +9,9 @@
 
 namespace sys {
 
-S32 sys_memory_allocate(U32 size, U64 flags, BE<U32>* alloc_addr)
-{
+S32 sys_memory_allocate(U32 size, U64 flags, BE<U32>* alloc_addr) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     // Check requisites
     if (alloc_addr == nucleus.memory.ptr(0)) {
         return CELL_EFAULT;
@@ -44,51 +45,60 @@ S32 sys_memory_allocate(U32 size, U64 flags, BE<U32>* alloc_addr)
     return CELL_OK;
 }
 
-S32 sys_memory_allocate_from_container(U32 size, U32 cid, U64 flags, BE<U32>* alloc_addr)
-{
+S32 sys_memory_allocate_from_container(U32 size, U32 cid, U64 flags, BE<U32>* alloc_addr) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 
-S32 sys_memory_container_create2()
-{
+S32 sys_memory_container_create2() {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 
-S32 sys_memory_free(U32 start_addr)
-{
+S32 sys_memory_free(U32 start_addr) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 
-S32 sys_memory_get_page_attribute(U32 addr, sys_page_attr_t* attr)
-{
+S32 sys_memory_get_page_attribute(U32 addr, sys_page_attr_t* attr) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 
-S32 sys_memory_get_user_memory_size(sys_memory_info_t* mem_info)
-{
+S32 sys_memory_get_user_memory_size(sys_memory_info_t* mem_info) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     const MemorySegment& userMemory = nucleus.memory(SEG_USER_MEMORY);
     mem_info->total_user_memory = userMemory.getTotalMemory();
     mem_info->available_user_memory = userMemory.getTotalMemory() - userMemory.getUsedMemory();
     return CELL_OK;
 }
 
-S32 sys_memory_container_create(BE<U32>* cid, U32 yield_size)
-{
+S32 sys_memory_container_create(BE<U32>* cid, U32 yield_size) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 
-S32 sys_memory_container_destroy(U32 cid)
-{
+S32 sys_memory_container_destroy(U32 cid) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 
-S32 sys_memory_container_get_size(sys_memory_info_t* mem_info, U32 cid)
-{
+S32 sys_memory_container_get_size(sys_memory_info_t* mem_info, U32 cid) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 
-S32 sys_memory_get_user_memory_stat()
-{
+S32 sys_memory_get_user_memory_stat() {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     return CELL_OK;
 }
 

@@ -8,20 +8,17 @@
 
 namespace sys {
 
-S32 sys_hid_0x1FE()
-{
+S32 sys_hid_0x1FE() {
     // TODO: ?
     return CELL_OK;
 }
 
-S32 sys_hid_0x200()
-{
+S32 sys_hid_0x200() {
     // TODO: ?
     return CELL_OK;
 }
 
-S32 sys_hid_0x202()
-{
+S32 sys_hid_0x202() {
     // TODO: ?
     return CELL_OK;
 }

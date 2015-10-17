@@ -7,10 +7,10 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
-#include "nucleus/gpu/rsx_enum.h"
-#include "nucleus/gpu/rsx_vp.h"
-#include "nucleus/gpu/rsx_fp.h"
-#include "nucleus/gpu/rsx_texture.h"
+#include "nucleus/gpu/rsx/rsx_enum.h"
+#include "nucleus/gpu/rsx/rsx_vp.h"
+#include "nucleus/gpu/rsx/rsx_fp.h"
+#include "nucleus/gpu/rsx/rsx_texture.h"
 
 #include <unordered_map>
 #include <vector>

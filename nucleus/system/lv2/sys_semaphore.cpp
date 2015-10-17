@@ -11,8 +11,9 @@
 
 namespace sys {
 
-S32 sys_semaphore_create(BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 initial_count, S32 max_count)
-{
+S32 sys_semaphore_create(BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 initial_count, S32 max_count) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
     // Check requisites
     if (sem_id == nucleus.memory.ptr(0) || attr == nucleus.memory.ptr(0)) {
         return CELL_EFAULT;
@@ -35,21 +36,23 @@ S32 sys_semaphore_create(BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 i
     semaphore->count = initial_count;
     semaphore->attr = *attr;
 
-    *sem_id = nucleus.lv2.objects.add(semaphore, SYS_SEMAPHORE_OBJECT);
+    *sem_id = lv2.objects.add(semaphore, SYS_SEMAPHORE_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_semaphore_destroy(U32 sem_id)
-{
-    if (!nucleus.lv2.objects.remove(sem_id)) {
+S32 sys_semaphore_destroy(U32 sem_id) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    if (!lv2.objects.remove(sem_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-S32 sys_semaphore_get_value(U32 sem_id, BE<S32>* val)
-{
-    auto* semaphore = nucleus.lv2.objects.get<sys_semaphore_t>(sem_id);
+S32 sys_semaphore_get_value(U32 sem_id, BE<S32>* val) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* semaphore = lv2.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites
     if (!semaphore) {
@@ -63,9 +66,10 @@ S32 sys_semaphore_get_value(U32 sem_id, BE<S32>* val)
     return CELL_OK;
 }
 
-S32 sys_semaphore_post(U32 sem_id, S32 val)
-{
-    auto* semaphore = nucleus.lv2.objects.get<sys_semaphore_t>(sem_id);
+S32 sys_semaphore_post(U32 sem_id, S32 val) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* semaphore = lv2.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites
     if (!semaphore) {
@@ -88,9 +92,10 @@ S32 sys_semaphore_post(U32 sem_id, S32 val)
     return CELL_OK;
 }
 
-S32 sys_semaphore_trywait(U32 sem_id)
-{
-    auto* semaphore = nucleus.lv2.objects.get<sys_semaphore_t>(sem_id);
+S32 sys_semaphore_trywait(U32 sem_id) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* semaphore = lv2.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites
     if (!semaphore) {
@@ -106,9 +111,10 @@ S32 sys_semaphore_trywait(U32 sem_id)
     return CELL_EBUSY;
 }
 
-S32 sys_semaphore_wait(U32 sem_id, U64 timeout)
-{
-    auto* semaphore = nucleus.lv2.objects.get<sys_semaphore_t>(sem_id);
+S32 sys_semaphore_wait(U32 sem_id, U64 timeout) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* semaphore = lv2.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites
     if (!semaphore) {
