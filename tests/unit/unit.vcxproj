@@ -16,6 +16,9 @@
     <ClCompile Include="cpu\test_spu.cpp" />
     <ClCompile Include="test_common.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cpu\common.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B1FF30F1-16CC-43E9-A896-CE8D54312F62}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

@@ -4,10 +4,13 @@
  */
 
 #include "util.h"
-#include "nucleus/emulator.h"
+#include "nucleus/cpu/cpu.h"
+#include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
+#include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
-
+#include "nucleus/cpu/frontend/ppu/ppu_thread.h"
+#include <fstream>//
 #ifdef NUCLEUS_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif

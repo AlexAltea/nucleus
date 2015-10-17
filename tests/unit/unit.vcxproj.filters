@@ -17,4 +17,9 @@
       <UniqueIdentifier>{91fce7c8-19c8-4cdf-b9e6-3c5d1b246427}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cpu\common.h">
+      <Filter>cpu</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

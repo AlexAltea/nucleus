@@ -67,6 +67,7 @@
     <ClInclude Include="endianness.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="assert.h" />
+    <ClInclude Include="macro.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="loader">
