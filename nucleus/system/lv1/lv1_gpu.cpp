@@ -5,6 +5,7 @@
 
 #include "lv1_gpu.h"
 #include "nucleus/emulator.h"
+#include "nucleus/gpu/rsx/rsx.h"
 #include "nucleus/system/lv2/sys_event.h"
 
 namespace sys {
@@ -13,8 +14,9 @@ namespace sys {
 BE<U32> eport_handlers;
 
 // LV1 Syscall 217 (0xD9)
-S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode)
-{
+S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode) {
+    gpu::RSX& rsx = static_cast<gpu::RSX&>(*nucleus.gpu.get());
+
     // HACK: We already store data in the memory on RSX initialization, mapping is not necessary
     *lpar_dma_control = 0x40100000;
     *lpar_driver_info = 0x40200000;
@@ -27,22 +29,23 @@ S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<
     sys_event_queue_attr_t equeue_attr{};
     equeue_attr.protocol = SYS_SYNC_PRIORITY;
     equeue_attr.type = SYS_PPU_QUEUE;
-    sys_event_queue_create(&nucleus.rsx.driver_info->handler_queue, &equeue_attr, 0, 0x20);
+    sys_event_queue_create(&rsx.driver_info->handler_queue, &equeue_attr, 0, 0x20);
 
     // TEST/HACK: I'm not sure if the event port is created/connected here
     sys_event_port_create(&eport_handlers, SYS_EVENT_PORT_LOCAL, 0); // TODO: This might not be SYS_EVENT_PORT_LOCAL.
-    sys_event_port_connect_local(eport_handlers, nucleus.rsx.driver_info->handler_queue);
+    sys_event_port_connect_local(eport_handlers, rsx.driver_info->handler_queue);
 
     return LV1_SUCCESS;
 }
 
 // LV1 Syscall 225 (0xE1)
-S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2, U64 p3, U64 p4)
-{
+S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2, U64 p3, U64 p4) {
+    gpu::RSX& rsx = static_cast<gpu::RSX&>(*nucleus.gpu.get());
+
     switch (operation_code) {
     case L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP:
-        nucleus.rsx.dma_control->get = p1;
-        nucleus.rsx.dma_control->put = p2;
+        rsx.dma_control->get = p1;
+        rsx.dma_control->put = p2;
         break;
 
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_MODE_SET:
@@ -50,7 +53,7 @@ S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2
         break;
 
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_FLIP:
-        nucleus.rsx.driver_info->head[p1].flip |= 0x80000000;
+        rsx.driver_info->head[p1].flip |= 0x80000000;
         if (p1 == 0)
             sys_event_port_send(eport_handlers, 0, (1 << 3), 0);
         if (p1 == 1)
@@ -58,7 +61,7 @@ S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2
         break;
 
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_QUEUE:
-        nucleus.rsx.driver_info->head[p1].flip |= 0x40000000 | (1 << p2);
+        rsx.driver_info->head[p1].flip |= 0x40000000 | (1 << p2);
         if (p1 == 0)
             sys_event_port_send(eport_handlers, 0, (1 << 5), 0);
         if (p1 == 1)
@@ -76,10 +79,10 @@ S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2
             return LV1_ILLEGAL_PARAMETER_VALUE;
         }
 
-        nucleus.rsx.display[id].width = width;
-        nucleus.rsx.display[id].height = height;
-        nucleus.rsx.display[id].pitch = pitch;
-        nucleus.rsx.display[id].offset = offset;
+        rsx.display[id].width = width;
+        rsx.display[id].height = height;
+        rsx.display[id].pitch = pitch;
+        rsx.display[id].offset = offset;
         break;
     }
 
@@ -90,7 +93,7 @@ S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2
         if (p1 > 7) {
             return LV1_ILLEGAL_PARAMETER_VALUE;
         }
-        auto& flipStatus = nucleus.rsx.driver_info->head[p1].flip;
+        auto& flipStatus = rsx.driver_info->head[p1].flip;
         flipStatus = (flipStatus & p2) | p3;
         break;
     }

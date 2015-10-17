@@ -13,7 +13,7 @@ S32 sys_lwmutex_create(BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (lwmutex_id == nucleus.memory.ptr(0) || attr == nucleus.memory.ptr(0)) {
+    if (lwmutex_id == memory->ptr(0) || attr == memory->ptr(0)) {
         return CELL_EFAULT;
     }
 

@@ -8,8 +8,9 @@
 #include "nucleus/common.h"
 #include "segment.h"
 
-enum
-{
+namespace mem {
+
+enum {
     // Memory segments
     SEG_MAIN_MEMORY = 0,   // 0x00010000 to 0x2FFFFFFF
     SEG_USER_MEMORY,       // 0x10000000 to 0x1FFFFFFF
@@ -22,8 +23,7 @@ enum
     SEG_COUNT,
 };
 
-class Memory
-{
+class Memory {
     void* m_base;
     MemorySegment m_segments[SEG_COUNT];
 
@@ -53,7 +53,7 @@ public:
 
     void* getBaseAddr() { return m_base; }
 
-    MemorySegment& operator()(size_t id) { return m_segments[id]; }
+    MemorySegment& getSegment(size_t id) { return m_segments[id]; }
 
     template <typename T>
     T& ref(U32 addr) { return *(T*)((U64)m_base + addr); }
@@ -61,3 +61,7 @@ public:
     template <typename T=void>
     T* ptr(U32 addr) { return (T*)((U64)m_base + addr); }
 };
+
+}  // namespace mem
+
+extern std::unique_ptr<mem::Memory> memory;

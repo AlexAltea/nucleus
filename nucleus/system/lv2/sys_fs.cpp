@@ -97,7 +97,7 @@ S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (sb == nucleus.memory.ptr(0)) {
+    if (sb == memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
@@ -119,7 +119,7 @@ S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb) {
 
 S32 sys_fs_stat(const S8* path, sys_fs_stat_t* sb) {
     // Check requisites
-    if (path == nucleus.memory.ptr(0) || sb == nucleus.memory.ptr(0)) {
+    if (path == memory->ptr(0) || sb == memory->ptr(0)) {
         return CELL_EFAULT;
     }
 

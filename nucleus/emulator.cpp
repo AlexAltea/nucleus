@@ -5,6 +5,7 @@
 
 #include "emulator.h"
 #include "nucleus/cpu/cell.h"
+#include "nucleus/gpu/rsx/rsx.h"
 #include "nucleus/filesystem/utils.h"
 #include "nucleus/loader/self.h"
 #include "nucleus/logger/logger.h"
@@ -13,16 +14,16 @@
 // Global emulator object
 Emulator nucleus;
 
-bool Emulator::load(const std::string& filepath)
-{
+bool Emulator::load(const std::string& filepath) {
     // Initialize hardware
-    memory.init();
-    cell.init();
-    rsx.init();
+    memory = std::make_unique<mem::Memory>();
+    cpu = std::make_unique<cpu::Cell>();
+    gpu = std::make_unique<gpu::RSX>();
+    sys = std::make_unique<sys::LV2>(sys::LV2_DEX);
 
     // Initialize application filesystem devices
     const fs::Path& processPath = fs::getProcessPath(filepath);
-    lv2.vfs.registerDevice(new fs::HostPathDevice("/app_home/", processPath));
+    sys->vfs.registerDevice(new fs::HostPathDevice("/app_home/", processPath));
 
     // Load ELF/SELF file
     SELFLoader self;
@@ -32,36 +33,30 @@ bool Emulator::load(const std::string& filepath)
         return false;
     }
 
-    self.load_elf(lv2.proc);
+    self.load_elf(static_cast<sys::LV2*>(sys.get())->proc);
     if (self.getMachine() != EM_PPC64) {
         logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;
     }
 
-    // Prepare Thread (this will initialize LV2)
-    auto* thread = cell.addThread(CELL_THREAD_PPU, self.getEntry());
-    thread->start();
-
+    auto entry = self.getEntry();
+    static_cast<sys::LV2*>(sys.get())->init(entry);
     return true;
 }
 
-void Emulator::run()
-{
-    cell.run();
+void Emulator::run() {
+    cpu->run();
 }
 
-void Emulator::pause()
-{
-    cell.pause();
+void Emulator::pause() {
+    cpu->pause();
 }
 
-void Emulator::stop()
-{
-    cell.stop();
+void Emulator::stop() {
+    cpu->stop();
 }
 
-void Emulator::idle()
-{
+void Emulator::idle() {
     while (true) {
         std::unique_lock<std::mutex> lock(m_mutex);
         m_cv.wait(lock, [&]{ return m_event; });
@@ -69,13 +64,13 @@ void Emulator::idle()
         // Process event
         switch (m_event) {
         case NUCLEUS_EVENT_RUN:
-            cell.run();
+            cpu->run();
             break;
         case NUCLEUS_EVENT_PAUSE:
-            cell.pause();
+            cpu->pause();
             break;
         case NUCLEUS_EVENT_STOP:
-            cell.stop();
+            cpu->stop();
             return;
         case NUCLEUS_EVENT_CLOSE:
             return;
@@ -88,8 +83,7 @@ void Emulator::idle()
     }
 }
 
-void Emulator::task(EmulatorEvent evt)
-{
+void Emulator::task(EmulatorEvent evt) {
     m_event = evt;
     m_cv.notify_one();
 }

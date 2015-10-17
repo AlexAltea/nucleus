@@ -5,8 +5,10 @@
 
 #include "self.h"
 #include "nucleus/common.h"
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "nucleus/emulator.h"
+#include "nucleus/cpu/cell.h"
+#include "nucleus/system/lv2.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 #include "nucleus/loader/keys.h"
 #include "nucleus/loader/loader.h"
@@ -41,7 +43,7 @@ bool SELFLoader::open(fs::File* file)
 
 bool SELFLoader::open(const std::string& path)
 {
-    fs::File* file = nucleus.lv2.vfs.openFile(path, fs::Read);
+    fs::File* file = nucleus.sys->vfs.openFile(path, fs::Read);
     if (!file) {
         return false;
     }
@@ -69,8 +71,8 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
                 break;
             }
 
-            nucleus.memory(SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
-            memcpy(nucleus.memory.ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
+            memory->getSegment(mem::SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
+            memcpy(memory->ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
             if (phdr.flags & PF_X) {
                 auto segment = new cpu::frontend::ppu::Module();
                 segment->address = phdr.vaddr;
@@ -79,7 +81,7 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
                     segment->analyze();
                     segment->recompile();
                 }
-                nucleus.cell.ppu_segments.push_back(segment);
+                static_cast<cpu::Cell*>(nucleus.cpu.get())->ppu_modules.push_back(segment);
             }
             break;
 
@@ -123,8 +125,8 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
 
         if (phdr.type == PT_LOAD) {
             // Allocate memory and copy segment contents
-            const U32 addr = nucleus.memory(SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
-            memcpy(nucleus.memory.ptr(addr), &elf[phdr.offset], phdr.filesz);
+            const U32 addr = memory->getSegment(mem::SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
+            memcpy(memory->ptr(addr), &elf[phdr.offset], phdr.filesz);
 
             // Add information for PRX Object
             sys::sys_prx_segment_t segment;
@@ -221,22 +223,22 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
                 switch (rel.type.ToLE()) {
                 case R_PPC64_ADDR32:
                     value = (U32)prx.segments[rel.index_value].addr + rel.ptr;
-                    nucleus.memory.write32(addr, value);
+                    memory->write32(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_LO:
                     value = (U16)rel.ptr;
-                    nucleus.memory.write16(addr, value);
+                    memory->write16(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_HI:
                     value = (U16)(prx.segments[rel.index_value].addr >> 16);
-                    nucleus.memory.write16(addr, value);
+                    memory->write16(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_HA:
                     value = (U16)(prx.segments[1].addr >> 16);
-                    nucleus.memory.write16(addr, value);
+                    memory->write16(addr, value);
                     break;
 
                 default:
@@ -257,7 +259,7 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
         const sys::sys_prx_library_t* targetLibrary = nullptr;
 
         // Find library (TODO: This is very inefficient)
-        for (const auto& object : nucleus.lv2.objects) {
+        for (const auto& object : static_cast<sys::LV2*>(nucleus.sys.get())->objects) {
             if (object.second->getType() == sys::SYS_PRX_OBJECT) {
                 const auto* imported_prx = (sys::sys_prx_t*)object.second->getData();
                 for (const auto& exportedLib : imported_prx->exported_libs) {
@@ -275,7 +277,7 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
 
         for (const auto& import : importedLib.exports) {
             const U32 fnid = import.first;
-            nucleus.memory.write32(import.second, targetLibrary->exports.at(fnid));
+            memory->write32(import.second, targetLibrary->exports.at(fnid));
         }
     }
 
@@ -289,7 +291,7 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
                 segment->analyze();
                 segment->recompile();
             }
-            nucleus.cell.ppu_segments.push_back(segment);
+            static_cast<cpu::Cell*>(nucleus.cpu.get())->ppu_modules.push_back(segment);
         }
     }
     return true;

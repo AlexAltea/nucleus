@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "externals/rapidxml/rapidxml.hpp"
 
 #include <string>

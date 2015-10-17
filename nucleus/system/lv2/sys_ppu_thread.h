@@ -7,6 +7,9 @@
 
 #include "nucleus/common.h"
 
+// Forward-declarations
+namespace cpu { namespace frontend { namespace ppu { class PPUThread; }}}
+
 namespace sys {
 
 // Classes
@@ -27,7 +30,7 @@ struct sys_ppu_thread_t {
 };
 
 // SysCalls
-S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* entry, U64 arg, U64 unk0, S32 prio, U32 stacksize, U64 flags, S8* threadname);
+S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 arg, U64 unk0, S32 prio, U32 stacksize, U64 flags, S8* threadname);
 S32 sys_ppu_thread_detach(U64 thread_id);
 S32 sys_ppu_thread_exit(S32 errorcode);
 void sys_ppu_thread_get_join_state(BE<S32>* isjoinable);

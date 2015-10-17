@@ -4,9 +4,9 @@
  */
 
 #include "rsx.h"
-#include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/config.h"
+#include "nucleus/memory/memory.h"
+#include "nucleus/core/config.h"
 #include "nucleus/system/lv1/lv1_gpu.h"
 
 #include "nucleus/gpu/rsx/rsx_dma.h"
@@ -43,21 +43,20 @@ extern Window* window;
 
 namespace gpu {
 
-void RSX::init()
-{
+void RSX::init() {
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
-    nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x40000000, 0x1000);
-    nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x40100000, 0x1000);
-    nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x40200000, 0x4000);
-    nucleus.memory(SEG_RSX_MAP_MEMORY).allocFixed(0x40300000, 0x10000);
+    memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40000000, 0x1000);
+    memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40100000, 0x1000);
+    memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40200000, 0x4000);
+    memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40300000, 0x10000);
 
     // Device
-    device = nucleus.memory.ptr<rsx_device_t>(0x40000000);
+    device = memory->ptr<rsx_device_t>(0x40000000);
 
     // Context
-    dma_control = nucleus.memory.ptr<rsx_dma_control_t>(0x40100000);
-    driver_info = nucleus.memory.ptr<rsx_driver_info_t>(0x40200000);
-    reports = nucleus.memory.ptr<rsx_reports_t>(0x40300000);
+    dma_control = memory->ptr<rsx_dma_control_t>(0x40100000);
+    driver_info = memory->ptr<rsx_driver_info_t>(0x40200000);
+    reports = memory->ptr<rsx_reports_t>(0x40300000);
 
     // Write driver information
     driver_info->version_driver = 0x211;
@@ -475,7 +474,7 @@ U32 RSX::io_read32(U32 offset)
 {
     for (const auto& map : iomaps) {
         if (map.io <= offset && (offset & ~0x3) < map.io + map.size) {
-            return nucleus.memory.read32(map.ea + (offset - map.io));
+            return memory->read32(map.ea + (offset - map.io));
         }
     }
     logger.error(LOG_GPU, "Illegal IO 32-bit read");
@@ -486,7 +485,7 @@ void RSX::io_write32(U32 offset, U32 value)
 {
     for (const auto& map : iomaps) {
         if (map.io <= offset && (offset & ~0x3) <= map.io + map.size) {
-            nucleus.memory.write32(map.ea + (offset - map.io), value);
+            memory->write32(map.ea + (offset - map.io), value);
         }
     }
     logger.error(LOG_GPU, "Illegal IO 32-bit write");

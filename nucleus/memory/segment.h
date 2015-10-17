@@ -9,6 +9,8 @@
 #include <mutex>
 #include <vector>
 
+namespace mem {
+
 struct MemoryBlock
 {
     U32 addr;
@@ -42,3 +44,5 @@ public:
     U32 getUsedMemory() const;
     U32 getBaseAddr() const;
 };
+
+}  // namespace mem

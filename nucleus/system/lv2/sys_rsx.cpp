@@ -6,7 +6,7 @@
 #include "sys_rsx.h"
 #include "nucleus/system/lv2.h"
 #include "nucleus/system/lv1/lv1_gpu.h"
-//#include "nucleus/system/gpu/rsx/rsx.h"
+#include "nucleus/gpu/rsx/rsx.h"
 #include "nucleus/emulator.h"
 
 namespace sys {
@@ -38,7 +38,7 @@ S32 sys_rsx_memory_allocate(BE<U32>* mem_handle, BE<U64>* mem_addr, U32 size, U6
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // LV1 Syscall: lv1_gpu_memory_allocate (0xD6)
-    const U32 addr = nucleus.memory(SEG_RSX_LOCAL_MEMORY).alloc(size);
+    const U32 addr = memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).alloc(size);
     if (!addr) {
         return CELL_EINVAL;
     }
@@ -56,7 +56,7 @@ S32 sys_rsx_memory_free(U32 mem_handle) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // LV1 Syscall: lv1_gpu_memory_free (0xD8)
-    nucleus.memory(SEG_RSX_LOCAL_MEMORY).free(mem_handle);
+    memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).free(mem_handle);
 
     return CELL_OK;
 }
@@ -108,7 +108,7 @@ S32 sys_rsx_context_iomap(U32 context_id, U32 io, U32 ea, U32 size, U64 flags) {
     iomap.size = size;
 
     // TODO: Implement flags
-    nucleus.rsx.iomaps.push_back(iomap);
+    static_cast<gpu::RSX*>(nucleus.gpu.get())->iomaps.push_back(iomap);
     return CELL_OK;
 }
 

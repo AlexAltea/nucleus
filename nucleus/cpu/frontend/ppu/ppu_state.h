@@ -6,7 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/state.h"
 
 #include <cmath>
 #include <string>

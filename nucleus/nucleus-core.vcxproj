@@ -79,15 +79,12 @@
     <ClCompile Include="..\externals\sha1.cpp" />
     <ClCompile Include="..\externals\stb\stb_image.c" />
     <ClCompile Include="..\externals\stb\stb_truetype.c" />
-    <ClCompile Include="config.cpp" />
     <ClCompile Include="emulator.cpp" />
     <ClCompile Include="format.cpp" />
     <ClCompile Include="loader\keys.cpp" />
     <ClCompile Include="loader\loader.cpp" />
     <ClCompile Include="loader\psf.cpp" />
     <ClCompile Include="loader\self.cpp" />
-    <ClCompile Include="memory\memory.cpp" />
-    <ClCompile Include="memory\segment.cpp" />
     <ClCompile Include="nucleus.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -98,7 +95,6 @@
     <ClInclude Include="..\externals\stb\stb_truetype.h" />
     <ClInclude Include="assert.h" />
     <ClInclude Include="common.h" />
-    <ClInclude Include="config.h" />
     <ClInclude Include="emulator.h" />
     <ClInclude Include="endianness.h" />
     <ClInclude Include="format.h" />
@@ -106,8 +102,6 @@
     <ClInclude Include="loader\loader.h" />
     <ClInclude Include="loader\psf.h" />
     <ClInclude Include="loader\self.h" />
-    <ClInclude Include="memory\memory.h" />
-    <ClInclude Include="memory\segment.h" />
     <ClInclude Include="nucleus.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>

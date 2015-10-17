@@ -25,9 +25,9 @@ void Config::parseArguments(int argc, char** argv)
 
     // Check if booting an executable was requested
     std::string lastArgument = argv[argc - 1];
-    switch (detectFiletype(lastArgument)) {
+    /*switch (detectFiletype(lastArgument)) {
     case FILETYPE_ELF:
-    case FILETYPE_SELF:
+    case FILETYPE_SELF:*/
         boot = lastArgument;
-    }
+    //}
 }

@@ -4,11 +4,8 @@
  */
 
 #include "ui.h"
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "nucleus/ui/screens/screen_logo.h"
-
-// OpenGL dependencies
-#include "nucleus/opengl.h"
 
 // Platform specific drawing contexts
 #ifdef NUCLEUS_PLATFORM_WINDOWS

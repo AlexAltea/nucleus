@@ -34,7 +34,7 @@ U8 dma_read8(U32 dma_object, U8 offset)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::READ) {
-        return nucleus.memory.read8(dma.addr + offset);
+        return memory->read8(dma.addr + offset);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 8-bit read");
@@ -46,7 +46,7 @@ U16 dma_read16(U32 dma_object, U16 offset)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::READ) {
-        return nucleus.memory.read16(dma.addr + offset);
+        return memory->read16(dma.addr + offset);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 16-bit read");
@@ -58,7 +58,7 @@ U32 dma_read32(U32 dma_object, U32 offset)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::READ) {
-        return nucleus.memory.read32(dma.addr + offset);
+        return memory->read32(dma.addr + offset);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 32-bit read");
@@ -70,7 +70,7 @@ U64 dma_read64(U32 dma_object, U64 offset)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::READ) {
-        return nucleus.memory.read64(dma.addr + offset);
+        return memory->read64(dma.addr + offset);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 64-bit read");
@@ -82,7 +82,7 @@ void dma_write8(U32 dma_object, U32 offset, U8 value)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::WRITE) {
-        return nucleus.memory.write8(dma.addr + offset, value);
+        return memory->write8(dma.addr + offset, value);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 32-bit write");
@@ -93,7 +93,7 @@ void dma_write16(U32 dma_object, U32 offset, U16 value)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::WRITE) {
-        return nucleus.memory.write16(dma.addr + offset, value);
+        return memory->write16(dma.addr + offset, value);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 32-bit write");
@@ -104,7 +104,7 @@ void dma_write32(U32 dma_object, U32 offset, U32 value)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::WRITE) {
-        return nucleus.memory.write32(dma.addr + offset, value);
+        return memory->write32(dma.addr + offset, value);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 32-bit write");
@@ -115,7 +115,7 @@ void dma_write64(U32 dma_object, U32 offset, U64 value)
     const DMAObject& dma = dma_address(dma_object);
 
     if (dma.addr && dma.flags & DMAObject::WRITE) {
-        return nucleus.memory.write64(dma.addr + offset, value);
+        return memory->write64(dma.addr + offset, value);
     }
 
     logger.warning(LOG_GPU, "Illegal DMA 64-bit write");

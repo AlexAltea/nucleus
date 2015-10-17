@@ -5,7 +5,7 @@
 
 #include "widget_image.h"
 #include "nucleus/common.h"
-#include "nucleus/emulator.h"
+#include "nucleus/logger/logger.h"
 
 #include "externals/stb/stb_image.h"
 
@@ -19,7 +19,7 @@ void WidgetImage::init(const std::string& pngfile)
     // Get file contents
     FILE* file = fopen(pngfile.c_str(), "rb");
     if (!file) {
-        nucleus.log.error(LOG_UI, "Image not found: %s", pngfile.c_str());
+        logger.error(LOG_UI, "Image not found: %s", pngfile.c_str());
         return;
     }
 

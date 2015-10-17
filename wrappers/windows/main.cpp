@@ -6,7 +6,7 @@
 #include "window.h"
 #include "window_opengl.h"
 
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "nucleus/nucleus.h"
 
 #include <thread>

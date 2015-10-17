@@ -32,7 +32,7 @@ public:
     bool find(const std::string& libraryName, U32 functionId);
 
     // Get function ID from the current thread and call it
-    void call(cpu::frontend::ppu::State& state);
+    void call(cpu::frontend::ppu::PPUState& state);
 };
 
 }  // namespace sys

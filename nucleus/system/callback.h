@@ -16,8 +16,8 @@ public:
 
     template <typename... T>
     void call(T... args) {
-        const U32 pc = nucleus.memory.read32(m_addr);
-        const U32 rtoc = nucleus.memory.read32(m_addr + 4);
+        const U32 pc = memory->read32(m_addr);
+        const U32 rtoc = memory->read32(m_addr + 4);
 
         auto* thread = (cpu::frontend::ppu::Thread*)nucleus.cell.getCurrentThread();
         auto& state = thread->state;

@@ -4,7 +4,7 @@
  */
 
 #include "nucleus.h"
-#include "nucleus/config.h"
+#include "nucleus/core/config.h"
 #include "nucleus/debugger/debugger.h"
 #include "nucleus/emulator.h"
 #include "nucleus/ui/ui.h"

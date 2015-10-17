@@ -20,7 +20,7 @@ S32 sys_cond_create(BE<U32>* cond_id, U32 mutex_id, sys_cond_attribute_t* attr) 
     if (!mutex) {
         return CELL_ESRCH;
     }
-    if (cond_id == nucleus.memory.ptr(0) || attr == nucleus.memory.ptr(0)) {
+    if (cond_id == memory->ptr(0) || attr == memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {

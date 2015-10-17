@@ -41,14 +41,14 @@ bool ModuleManager::find(const std::string& libraryName, U32 functionId)
     return false;
 }
 
-void ModuleManager::call(cpu::frontend::ppu::State& state)
+void ModuleManager::call(cpu::frontend::ppu::PPUState& state)
 {
     const U32 fnid = state.r[11];
 
     for (const auto& module : m_modules) {
         for (const auto& function : module.functions) {
             if (function.first == fnid) {
-                function.second->call(state, nucleus.memory.getBaseAddr());
+                function.second->call(state, memory->getBaseAddr());
                 return;
             }
         }

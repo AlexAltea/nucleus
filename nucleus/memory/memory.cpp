@@ -18,6 +18,11 @@
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
+// Global memory object
+std::unique_ptr<mem::Memory> memory;
+
+namespace mem {
+
 void Memory::init()
 {
     // Reserve 4 GB of memory for any 32-bit pointer in the PS3 memory
@@ -138,3 +143,5 @@ void Memory::writeRight(U32 dst, U8* src, U32 size)
         write8(dst + (size - 1 - i), src[i]);
     }
 }
+
+}  // namespace mem

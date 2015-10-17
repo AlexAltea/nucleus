@@ -26,7 +26,6 @@ class Emulator {
 
 public:
     // Hardware & OS
-    Memory memory;
     std::unique_ptr<cpu::CPU> cpu;
     std::unique_ptr<gpu::GPU> gpu;
     std::unique_ptr<sys::System> sys;

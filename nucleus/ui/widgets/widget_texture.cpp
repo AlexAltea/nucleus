@@ -5,8 +5,9 @@
 
 #include "widget_texture.h"
 
-// OpenGL dependencies
-#include "nucleus/opengl.h"
+void WidgetTexture::init()
+{
+}
 
 void WidgetTexture::render()
 {

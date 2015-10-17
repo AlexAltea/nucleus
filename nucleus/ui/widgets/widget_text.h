@@ -7,9 +7,6 @@
 
 #include "nucleus/ui/widget.h"
 
-// OpenGL dependencies
-#include "nucleus/opengl.h"
-
 #include <string>
 
 class WidgetText : public Widget

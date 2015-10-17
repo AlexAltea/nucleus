@@ -6,6 +6,7 @@
 #include "sys_event.h"
 #include "sys_mutex.h"
 #include "nucleus/system/lv2.h"
+#include "nucleus/cpu/cpu.h"
 #include "nucleus/emulator.h"
 
 #include <algorithm>
@@ -19,7 +20,7 @@ S32 sys_event_flag_create(BE<U32>* eflag_id, sys_event_flag_attr_t* attr, U64 in
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (eflag_id == nucleus.memory.ptr(0) || attr == nucleus.memory.ptr(0)) {
+    if (eflag_id == memory->ptr(0) || attr == memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {
@@ -83,7 +84,7 @@ S32 sys_event_flag_wait(U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result, U64
     }
 
     // Save value if required and exit if timeout occurred
-    if (result !=  nucleus.memory.ptr(0)) {
+    if (result !=  memory->ptr(0)) {
         *result = eflag->value;
     }
     if (!validCondition) {
@@ -116,7 +117,7 @@ S32 sys_event_flag_trywait(U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result) 
     std::unique_lock<std::mutex> lock(eflag->mutex);
 
     // Save value if required
-    if (result ==  nucleus.memory.ptr(0)) {
+    if (result ==  memory->ptr(0)) {
         *result = eflag->value;
     }
 
@@ -173,7 +174,7 @@ S32 sys_event_flag_cancel(U32 eflag_id, BE<U32>* num) {
 
     // Check requisites
     if (!eflag) {
-        if (num == nucleus.memory.ptr(0)) {
+        if (num == memory->ptr(0)) {
             num = 0;
         }
         return CELL_ESRCH;
@@ -188,7 +189,7 @@ S32 sys_event_flag_get(U32 eflag_id, BE<U64>* flags) {
     auto* eflag = lv2.objects.get<sys_event_flag_t>(eflag_id);
 
     // Check requisites
-    if (flags == nucleus.memory.ptr(0)) {
+    if (flags == memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (!eflag) {
@@ -206,7 +207,7 @@ S32 sys_event_port_create(BE<U32>* eport_id, S32 port_type, U64 name) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (eport_id == nucleus.memory.ptr(0)) {
+    if (eport_id == memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
@@ -291,7 +292,7 @@ S32 sys_event_queue_create(BE<U32>* equeue_id, sys_event_queue_attr_t* attr, U64
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (equeue_id == nucleus.memory.ptr(0) || attr == nucleus.memory.ptr(0)) {
+    if (equeue_id == memory->ptr(0) || attr == memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (size < 1 || size > 127) {
@@ -345,7 +346,7 @@ S32 sys_event_queue_receive(U32 equeue_id, sys_event_t* evt, U64 timeout) {
     equeue->queue.pop();
 
     // Event data is returned using registers
-    auto thread = (cpu::frontend::ppu::PPUThread*)nucleus.cell.getCurrentThread();
+    auto thread = (cpu::frontend::ppu::PPUThread*)nucleus.cpu->getCurrentThread();
     thread->state->r[4] = evt->source;
     thread->state->r[5] = evt->data1;
     thread->state->r[6] = evt->data2;

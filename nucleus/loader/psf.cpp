@@ -5,6 +5,7 @@
 
 #include "psf.h"
 #include "nucleus/emulator.h"
+#include "nucleus/system/system.h"
 #include "nucleus/format.h"
 #include "nucleus/filesystem/filesystem.h"
 #include "nucleus/loader/loader.h"
@@ -17,7 +18,7 @@ bool PSFLoader::open(const std::string& path)
     }
 
     // Load file
-    fs::File* file = nucleus.lv2.vfs.openFile(path, fs::Read);
+    fs::File* file = nucleus.sys->vfs.openFile(path, fs::Read);
     if (!file) {
         return false;
     }
@@ -48,7 +49,7 @@ bool PSFLoader::open(const std::string& path)
 
 bool PSFLoader::save(const std::string& path)
 {
-    fs::File* file = nucleus.lv2.vfs.openFile(path, fs::Write);
+    fs::File* file = nucleus.sys->vfs.openFile(path, fs::Write);
     if (!file) {
         return false;
     }

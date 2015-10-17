@@ -6,7 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/cpu.h"
 
 #include <mutex>
 #include <condition_variable>
@@ -14,6 +13,9 @@
 #include <thread>
 
 namespace cpu {
+
+// Forward declarations
+class CPU;
 
 enum ThreadType {
     THREAD_TYPE_PPU,
@@ -32,9 +34,9 @@ protected:
     EmulatorEvent m_event = NUCLEUS_EVENT_NONE;
     EmulatorStatus m_status = NUCLEUS_STATUS_UNKNOWN;
 
+public:
     CPU* parent;
 
-public:
     // Open a new thread that will enter the code emulation loop
     virtual void start() = 0;
 

@@ -17,13 +17,15 @@
 // Get real size for 4K pages
 #define PAGE_4K(x) (((x) + 4095) & ~(4095))
 
+namespace mem {
+
 // Memory blocks
 MemoryBlock::MemoryBlock(U32 block_addr, U32 block_size)
 {
     // Initialize members
     addr = block_addr;
     size = PAGE_4K(block_size);
-    realaddr = (void*)((U64)nucleus.memory.getBaseAddr() + block_addr);
+    realaddr = (void*)((U64)memory->getBaseAddr() + block_addr);
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
@@ -162,3 +164,5 @@ U32 MemorySegment::getBaseAddr() const
 {
     return m_start;
 }
+
+}  // namespace mem

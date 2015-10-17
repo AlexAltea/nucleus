@@ -4,9 +4,10 @@
  */
 
 #include "ppu_decoder.h"
-#include "nucleus/emulator.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/cpu/util.h"
 #include "nucleus/cpu/hir/builder.h"
+#include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
@@ -82,7 +83,7 @@ bool Function::analyze_cfg()
     // Control Flow Graph generation
     while (!labels.empty()) {
         U32 addr = labels.front();
-        code.instruction = nucleus.memory.read32(addr);
+        code.instruction = memory->read32(addr);
 
         // Check if block was already processed
         if (blocks.find(addr) != blocks.end()) {
@@ -120,7 +121,7 @@ bool Function::analyze_cfg()
         while ((!code.is_branch() || code.is_call()) && (current.size < maxSize)) {
             addr += 4;
             current.size += 4;
-            code.instruction = nucleus.memory.read32(addr);
+            code.instruction = memory->read32(addr);
         }
 
         // Push new labels

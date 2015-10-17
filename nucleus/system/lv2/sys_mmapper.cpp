@@ -15,11 +15,11 @@ S32 sys_mmapper_allocate_address(U32 size, U64 flags, U32 alignment, U32* alloc_
 
     switch (flags & (SYS_MEMORY_PAGE_SIZE_1M | SYS_MEMORY_PAGE_SIZE_64K)) {
     /*case SYS_MEMORY_PAGE_SIZE_1M:
-        *alloc_addr = nucleus.memory.alloc(size, 0x100000);
+        *alloc_addr = memory->alloc(size, 0x100000);
         break;
 
     case SYS_MEMORY_PAGE_SIZE_64K:
-        *alloc_addr = nucleus.memory.alloc(size, 0x10000);
+        *alloc_addr = memory->alloc(size, 0x10000);
         break;*/
 
     default:
@@ -33,7 +33,7 @@ S32 sys_mmapper_allocate_address(U32 size, U64 flags, U32 alignment, U32* alloc_
 S32 sys_mmapper_allocate_shared_memory(U32 size, U64 flags, U32 alignment, U32* alloc_addr) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
-    *alloc_addr = nucleus.memory.alloc(size, alignment);
+    *alloc_addr = memory->alloc(size, alignment);
     return CELL_OK;
 }
 

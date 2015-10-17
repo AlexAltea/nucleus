@@ -4,7 +4,7 @@
  */
 
 #include "ppu_instruction.h"
-#include "nucleus/emulator.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 
 namespace cpu {
@@ -15,7 +15,7 @@ Instruction::Instruction() : instruction(0)
 {
 }
 
-Instruction::Instruction(U32 addr) : instruction(nucleus.memory.read32(addr))
+Instruction::Instruction(U32 addr) : instruction(memory->read32(addr))
 {
 }
 

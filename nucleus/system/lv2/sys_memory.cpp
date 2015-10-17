@@ -13,7 +13,7 @@ S32 sys_memory_allocate(U32 size, U64 flags, BE<U32>* alloc_addr) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (alloc_addr == nucleus.memory.ptr(0)) {
+    if (alloc_addr == memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
@@ -24,14 +24,14 @@ S32 sys_memory_allocate(U32 size, U64 flags, BE<U32>* alloc_addr) {
         if (size & 0xFFFFF) {
             return CELL_EALIGN;
         }
-        addr = nucleus.memory.alloc(size, 0x100000);
+        addr = memory->alloc(size, 0x100000);
         break;
 
     case SYS_MEMORY_PAGE_SIZE_64K:
         if (size & 0xFFFF) {
             return CELL_EALIGN;
         }
-        addr = nucleus.memory.alloc(size, 0x10000);
+        addr = memory->alloc(size, 0x10000);
         break;
 
     default:
@@ -72,7 +72,7 @@ S32 sys_memory_get_page_attribute(U32 addr, sys_page_attr_t* attr) {
 S32 sys_memory_get_user_memory_size(sys_memory_info_t* mem_info) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
-    const MemorySegment& userMemory = nucleus.memory(SEG_USER_MEMORY);
+    const auto& userMemory = memory->getSegment(mem::SEG_USER_MEMORY);
     mem_info->total_user_memory = userMemory.getTotalMemory();
     mem_info->available_user_memory = userMemory.getTotalMemory() - userMemory.getUsedMemory();
     return CELL_OK;

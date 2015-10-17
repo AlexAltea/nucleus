@@ -7,13 +7,9 @@
 
 #include "nucleus/ui/widget.h"
 
-// OpenGL dependencies
-#include "nucleus/opengl.h"
-
 #include <string>
 
-class WidgetImage : public Widget
-{
+class WidgetImage : public Widget {
     struct Image {
         unsigned char* buffer = nullptr;
         int width;
