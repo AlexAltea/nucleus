@@ -131,7 +131,7 @@ bool X86Compiler::compile(Module* module) {
 
 void X86Compiler::translationEnter() {
     // Get current state address
-    void* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
+    void* state = static_cast<frontend::ppu::PPUThread*>(nucleus.cell.getCurrentThread())->state.get();
 
     // Generate code
     X86Emitter e(this);

@@ -178,6 +178,9 @@
       <Filter>backend\arm</Filter>
     </ClCompile>
     <ClCompile Include="cpu.cpp" />
+    <ClCompile Include="frontend\spu\spu_thread.cpp">
+      <Filter>frontend\spu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="frontend\ppu\ppu_decoder.h">
@@ -295,6 +298,9 @@
       <Filter>backend</Filter>
     </ClInclude>
     <ClInclude Include="cpu.h" />
+    <ClInclude Include="frontend\spu\spu_thread.h">
+      <Filter>frontend\spu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="hir\opcodes.inl">

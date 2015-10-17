@@ -16,9 +16,9 @@
 namespace cpu {
 
 enum ThreadType {
-    CPU_THREAD_PPU,
-    CPU_THREAD_SPU,
-    CPU_THREAD_RAWSPU,
+    THREAD_TYPE_PPU,
+    THREAD_TYPE_SPU,
+    THREAD_TYPE_RAWSPU,
 };
 
 class Thread {
@@ -35,9 +35,6 @@ protected:
     CPU* parent;
 
 public:
-    S32 prio;  // Thread priority
-    U64 id;    // Thread ID (relevant for LV2)
-
     // Open a new thread that will enter the code emulation loop
     virtual void start() = 0;
 

@@ -48,6 +48,7 @@
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_integer.cpp" />
     <ClCompile Include="frontend\spu\recompiler\spu_recompiler_memory.cpp" />
     <ClCompile Include="frontend\spu\spu_state.cpp" />
+    <ClCompile Include="frontend\spu\spu_thread.cpp" />
     <ClCompile Include="hir\block.cpp" />
     <ClCompile Include="hir\builder.cpp" />
     <ClCompile Include="hir\function.cpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="frontend\ppu\recompiler\ppu_recompiler.h" />
     <ClInclude Include="frontend\spu\recompiler\spu_recompiler.h" />
     <ClInclude Include="frontend\spu\spu_state.h" />
+    <ClInclude Include="frontend\spu\spu_thread.h" />
     <ClInclude Include="hir\block.h" />
     <ClInclude Include="hir\builder.h" />
     <ClInclude Include="hir\function.h" />
