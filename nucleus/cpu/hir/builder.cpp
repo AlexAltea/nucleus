@@ -547,7 +547,7 @@ void Builder::createMemFence() {
 Value* Builder::createCmp(Value* lhs, Value* rhs, CompareFlags flags) {
     ASSERT_TYPE_EQUAL(lhs, rhs);
 
-    if (lhs->isConstant() && lhs->isConstant()) {
+    if (lhs->isConstant() && rhs->isConstant()) {
         Value* dest = cloneValue(lhs);
         dest->doCompare(rhs, flags);
         return dest;

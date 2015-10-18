@@ -51,3 +51,11 @@
     auto name = [&](auto a0, auto a1, auto a2, auto a3, auto a4, auto a5, auto a6, auto a7) { \
         TEST_INSTRUCTION_INIT(); func \
     }
+#define TEST_INSTRUCTION11(name, a0, a1, a2, a3, a4, a5, a6, a7, a8, func) \
+    auto name = [&](auto a0, auto a1, auto a2, auto a3, auto a4, auto a5, auto a6, auto a7, auto a8) { \
+        TEST_INSTRUCTION_INIT(); func \
+    }
+#define TEST_INSTRUCTION12(name, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, func) \
+    auto name = [&](auto a0, auto a1, auto a2, auto a3, auto a4, auto a5, auto a6, auto a7, auto a8, auto a9) { \
+        TEST_INSTRUCTION_INIT(); func \
+    }
