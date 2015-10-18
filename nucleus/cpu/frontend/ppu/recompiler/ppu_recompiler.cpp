@@ -5,10 +5,10 @@
 
 #include "ppu_recompiler.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
+#include "nucleus/memory/memory.h"
+#include "nucleus/core/config.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/assert.h"
-#include "nucleus/core/config.h"
-#include "nucleus/emulator.h"
 
 namespace cpu {
 namespace frontend {
@@ -228,15 +228,25 @@ void Recompiler::setVR(int index, Value* value) {
 }
 
 void Recompiler::setCR(int index, Value* value) {
-    const U32 offset = offsetof(PPUState, cr);
+    const U32 offset = offsetof(PPUState, cr[index]);
+
+    if (value->type != TYPE_I32 && value->type != TYPE_I8) {
+        logger.error(LOG_CPU, "Wrong value type for CR register");
+        return;
+    }
 
     // TODO: Use volatility information?
 
-    Value* cr = builder.createCtxLoad(offset, TYPE_I32);
-    Value* mask = builder.getConstantI32(~(0xFULL << (7 - index) * 4));
-    cr = builder.createAnd(cr, mask);
-    cr = builder.createOr(cr, builder.createShl(builder.createZExt(value, TYPE_I32), (7 - index) * 4));
-    builder.createCtxStore(offset, cr);
+    // Requires unpacking to I32
+    if (value->type == TYPE_I8) {
+        assert_always("Unimplemented");
+        //Value* cr = builder.createCtxLoad(offset, TYPE_I32);
+        //Value* mask = builder.getConstantI32(~(0xFULL << (7 - index) * 4));
+        //cr = builder.createAnd(cr, mask);
+        //cr = builder.createOr(cr, builder.createShl(builder.createZExt(value, TYPE_I32), (7 - index) * 4));
+    }
+    
+    builder.createCtxStore(offset, value);
 }
 
 void Recompiler::setCR(Value* value) {
@@ -360,8 +370,8 @@ void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalCompari
         isGT = builder.createCmpSGT(lhs, rhs);
     }
 
-    result = builder.createSelect(isGT, builder.getConstantI8(4), builder.getConstantI8(2));
-    result = builder.createSelect(isLT, builder.getConstantI8(8), result);
+    result = builder.createSelect(isGT, builder.getConstantI32(0x00000100), builder.getConstantI32(0x00010000));
+    result = builder.createSelect(isLT, builder.getConstantI32(0x00000001), result);
     setCR(field, result);
 }
 

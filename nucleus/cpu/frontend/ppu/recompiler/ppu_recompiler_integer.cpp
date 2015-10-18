@@ -89,16 +89,16 @@ void Recompiler::addex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
+    Value* ca = getXER_CA();
     Value* rd;
-    Value* ca;
 
     if (code.oe) {
         assert_always("Unimplemented");
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, rb);
-        rd = builder.createAdd(ra, builder.createZExt(getXER_CA(), TYPE_I64));
-        ca = addWithCarryDidCarry(builder, ra, rb, getXER_CA());
+        rd = builder.createAdd(rd, builder.createZExt(ca, TYPE_I64));
+        ca = addWithCarryDidCarry(builder, ra, rb, ca);
     }
     if (code.rc) {
         updateCR0(rd);
@@ -1017,16 +1017,16 @@ void Recompiler::subfex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
+    Value* ca = getXER_CA();
     Value* rd;
-    Value* ca;
 
     if (code.oe) {
         assert_always("Unimplemented");
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(builder.createNot(ra), rb);
-        rd = builder.createAdd(ra, builder.createZExt(getXER_CA(), TYPE_I64));
-        ca = addWithCarryDidCarry(builder, builder.createNot(ra), rb, getXER_CA());
+        rd = builder.createAdd(rd, builder.createZExt(ca, TYPE_I64));
+        ca = addWithCarryDidCarry(builder, builder.createNot(ra), rb, ca);
     }
 
     if (code.rc) {
