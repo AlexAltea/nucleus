@@ -21,5 +21,14 @@
     <ClInclude Include="cpu\common.h">
       <Filter>cpu</Filter>
     </ClInclude>
+    <ClInclude Include="cpu\test_ppu.h">
+      <Filter>cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpu\test_ppu.inl">
+      <Filter>cpu</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -17,7 +17,12 @@
     <ClCompile Include="test_common.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common.h" />
     <ClInclude Include="cpu\common.h" />
+    <ClInclude Include="cpu\test_ppu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpu\test_ppu.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B1FF30F1-16CC-43E9-A896-CE8D54312F62}</ProjectGuid>
