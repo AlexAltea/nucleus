@@ -11,10 +11,31 @@
     <ClCompile Include="cpu\test_ir.cpp">
       <Filter>cpu</Filter>
     </ClCompile>
+    <ClCompile Include="cpu\ppc\ppc_integer.cpp">
+      <Filter>cpu\ppc</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppc\ppc_control.cpp">
+      <Filter>cpu\ppc</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppc\ppc_float.cpp">
+      <Filter>cpu\ppc</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppc\ppc_memory.cpp">
+      <Filter>cpu\ppc</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppc\ppc_vector.cpp">
+      <Filter>cpu\ppc</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu\ppc\ppc_branch.cpp">
+      <Filter>cpu\ppc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cpu">
       <UniqueIdentifier>{91fce7c8-19c8-4cdf-b9e6-3c5d1b246427}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cpu\ppc">
+      <UniqueIdentifier>{4cca3aae-2e37-43a3-8a99-2ae016e700f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

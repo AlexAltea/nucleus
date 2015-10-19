@@ -11,6 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cpu\ppc\ppc_branch.cpp" />
+    <ClCompile Include="cpu\ppc\ppc_control.cpp" />
+    <ClCompile Include="cpu\ppc\ppc_float.cpp" />
+    <ClCompile Include="cpu\ppc\ppc_integer.cpp" />
+    <ClCompile Include="cpu\ppc\ppc_memory.cpp" />
+    <ClCompile Include="cpu\ppc\ppc_vector.cpp" />
     <ClCompile Include="cpu\test_ir.cpp" />
     <ClCompile Include="cpu\test_ppu.cpp" />
     <ClCompile Include="cpu\test_spu.cpp" />
