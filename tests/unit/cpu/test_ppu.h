@@ -32,12 +32,17 @@ using namespace cpu;
 using namespace cpu::backend::ppc;
 using namespace cpu::frontend::ppu;
 
-#define TEST_INSTRUCTION_GIVEN() \
+// Initialize guest thread state
+#define TEST_INSTRUCTION_INIT() \
     memset(&state, 0, sizeof(state))
-#define TEST_INSTRUCTION_WHEN(asm) \
-    execute([&](PPCAssembler& a) { asm })
-#define TEST_INSTRUCTION_THEN(exp) \
-    Assert::IsTrue(exp)
+
+// Execute assembler generated PowerPC code
+#define run(expr) \
+    execute([&](PPCAssembler& a) { a.##expr##; })
+
+// Check if expected condition holds
+#define expect(expr) \
+    Assert::IsTrue(expr)
 
 class PPCTestRunner {
 public:
