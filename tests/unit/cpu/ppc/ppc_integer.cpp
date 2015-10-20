@@ -195,7 +195,7 @@ void PPCTestRunner::addzex() {
 }
 
 void PPCTestRunner::andx() {
-    // And
+    // AND
     TEST_INSTRUCTION(test_and_, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
@@ -213,7 +213,7 @@ void PPCTestRunner::andx() {
     test_and_(0x0000111100001111ULL, 0x1111111100000000ULL, 0x0000111100000000ULL);
     test_and_(0x00000000000000FFULL, 0x000000000000F0F0ULL, 0x00000000000000F0ULL);
 
-    // And (with condition)
+    // AND (with condition)
     TEST_INSTRUCTION(test_and__, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
@@ -231,11 +231,10 @@ void PPCTestRunner::andx() {
     test_and__(0x00000000FFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
     test_and__(0xFFFFFFFF00000000ULL, 0x800000000000FFFFULL, 0x8000000000000000ULL, 1,0,0,0);
     test_and__(0xFFFFFFFF00000000ULL, 0x00000000FFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
-
 }
 
 void PPCTestRunner::andcx() {
-    // And with complement
+    // And with Complement
     TEST_INSTRUCTION(test_andc, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
@@ -253,7 +252,7 @@ void PPCTestRunner::andcx() {
     test_andc(0x0000111100001111ULL, 0x1111111100000000ULL, 0x0000000000001111ULL);
     test_andc(0x00000000000000FFULL, 0x000000000000F0F0ULL, 0x000000000000000FULL);
 
-    // And with complement (with condition)
+    // And with Complement (with condition)
     TEST_INSTRUCTION(test_andc_, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
@@ -274,7 +273,7 @@ void PPCTestRunner::andcx() {
 }
 
 void PPCTestRunner::andi_() {
-    // Add Immediate
+    // AND Immediate
     TEST_INSTRUCTION(test_andi_, R1, UIMM, R2, LT, GT, EQ, SO, {
         state.r[1] = R1;
         run(andi_(r2, r1, UIMM));
@@ -293,7 +292,7 @@ void PPCTestRunner::andi_() {
 }
 
 void PPCTestRunner::andis_() {
-    // Add Immediate
+    // AND Immediate Shifted
     TEST_INSTRUCTION(test_andis_, R1, UIMM, R2, LT, GT, EQ, SO, {
         state.r[1] = R1;
         run(andis_(r2, r1, UIMM));
@@ -384,15 +383,119 @@ void PPCTestRunner::norx() {
 }
 
 void PPCTestRunner::orx() {
+    // OR
+    TEST_INSTRUCTION(test_or_, R1, R2, R3, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run(or_(r3, r1, r2));
+        expect(state.r[3] == R3);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_or_(0x0000111100001111ULL, 0x1111111100000000ULL, 0x1111111100001111ULL);
+    test_or_(0x00000000000000FFULL, 0x000000000000F0F0ULL, 0x000000000000F0FFULL);
+
+    // OR (with condition)
+    TEST_INSTRUCTION(test_or__, R1, R2, R3, LT, GT, EQ, SO, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run(or__(r3, r1, r2));
+        expect(state.r[3] == R3);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_or__(0x0000FF00FF00FFFFULL, 0x000000FF00FFFFFFULL, 0x0000FFFFFFFFFFFFULL, 0,1,0,0);
+    test_or__(0x000000000000FFFFULL, 0x80000000000000FFULL, 0x800000000000FFFFULL, 1,0,0,0);
+    test_or__(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::orcx() {
+    // OR with Complement
+    TEST_INSTRUCTION(test_orc, R1, R2, R3, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run(orc(r3, r1, r2));
+        expect(state.r[3] == R3);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_orc(0x0000FFFF0000FFFFULL, 0x00000000FFFFFFFFULL, 0xFFFFFFFF0000FFFFULL);
+    test_orc(0x00000000000000FFULL, 0xFFFFFFFFFFFF0F0FULL, 0x000000000000F0FFULL);
+
+    // OR with Complement (with condition)
+    TEST_INSTRUCTION(test_orc_, R1, R2, R3, LT, GT, EQ, SO, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run(orc_(r3, r1, r2));
+        expect(state.r[3] == R3);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_orc_(0x0000FF00FF00FFFFULL, 0xFFFFFF00FF000000ULL, 0x0000FFFFFFFFFFFFULL, 0,1,0,0);
+    test_orc_(0x000000000000FFFFULL, 0x0FFFFFFFFFFFFF00ULL, 0xF00000000000FFFFULL, 1,0,0,0);
+    test_orc_(0x0000000000000000ULL, 0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::ori() {
+    // OR Immediate
+    TEST_INSTRUCTION(test_ori, R1, UIMM, R2,{
+        state.r[1] = R1;
+        run(ori(r2, r1, UIMM));
+        expect(state.r[2] == R2);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_ori(0x000000000000FF00ULL, 0x0F0F, 0x000000000000FF0FULL);
+    test_ori(0x0000FFFFFFFFFFFFULL, 0xFFFF, 0x0000FFFFFFFFFFFFULL);
 }
 
 void PPCTestRunner::oris() {
+    // OR Immediate Shifted
+    TEST_INSTRUCTION(test_oris, R1, UIMM, R2, {
+        state.r[1] = R1;
+        run(oris(r2, r1, UIMM));
+        expect(state.r[2] == R2);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_oris(0x00000000FF0000FFULL, 0x0F0F, 0x00000000FF0F00FFULL);
+    test_oris(0x0000FFFFFFFFFF00ULL, 0xFFFF, 0x0000FFFFFFFFFF00ULL);
 }
 
 void PPCTestRunner::rldc_lr() {
@@ -462,10 +565,78 @@ void PPCTestRunner::subfzex() {
 }
 
 void PPCTestRunner::xorx() {
+    // XOR
+    TEST_INSTRUCTION(test_xor_, R1, R2, R3, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run(xor_(r3, r1, r2));
+        expect(state.r[3] == R3);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_xor_(0x0000111100001111ULL, 0x1111111100000000ULL, 0x1111000000001111ULL);
+    test_xor_(0x00000000000000FFULL, 0x000000000000F0F0ULL, 0x000000000000F00FULL);
+
+    // XOR (with condition)
+    TEST_INSTRUCTION(test_xor__, R1, R2, R3, LT, GT, EQ, SO, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run(xor__(r3, r1, r2));
+        expect(state.r[3] == R3);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_xor__(0x0000FF00FF00FFFFULL, 0x000000FF00FFFFFFULL, 0x0000FFFFFFFF0000ULL, 0,1,0,0);
+    test_xor__(0x000000000000FFFFULL, 0x80000000000000FFULL, 0x800000000000FF00ULL, 1,0,0,0);
+    test_xor__(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::xori() {
+    // XOR Immediate
+    TEST_INSTRUCTION(test_xori, R1, UIMM, R2,{
+        state.r[1] = R1;
+        run(xori(r2, r1, UIMM));
+        expect(state.r[2] == R2);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_xori(0x000000000000FF00ULL, 0x0F0F, 0x000000000000F00FULL);
+    test_xori(0x0000FFFFFFFFFFFFULL, 0xFFFF, 0x0000FFFFFFFF0000ULL);
 }
 
 void PPCTestRunner::xoris() {
+    // XOR Immediate Shifted
+    TEST_INSTRUCTION(test_xoris, R1, UIMM, R2, {
+        state.r[1] = R1;
+        run(xoris(r2, r1, UIMM));
+        expect(state.r[2] == R2);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_xoris(0x00000000FF0000FFULL, 0x0F0F, 0x00000000F00F00FFULL);
+    test_xoris(0x0000FFFFFFFFFF00ULL, 0xFFFF, 0x0000FFFF0000FF00ULL);
 }
