@@ -139,10 +139,10 @@ void PPCTestRunner::addex() {
 
 void PPCTestRunner::addi() {
     // Add Immediate
-    TEST_INSTRUCTION(test_addi, RAIndex, RA, SIMM, R2, {
+    TEST_INSTRUCTION(test_addi, RAIndex, RA, SIMM, RD, {
         state.r[RAIndex] = RA;
         run(addi(r2, RAIndex, SIMM));
-        expect(state.r[2] == R2);
+        expect(state.r[2] == RD);
         expect(!state.cr[0].lt);
         expect(!state.cr[0].gt);
         expect(!state.cr[0].eq);
@@ -162,7 +162,7 @@ void PPCTestRunner::addi() {
 }
 
 void PPCTestRunner::addic() {
-    // Add Immediate
+    // Add Immediate Carrying
     TEST_INSTRUCTION(test_addic, R1, SIMM, R2, CA, {
         state.r[1] = R1;
         run(addic(r2, r1, SIMM));
@@ -177,21 +177,104 @@ void PPCTestRunner::addic() {
     });
 
     test_addic(0x000000010000FFFFULL, 0x0001, 0x0000000100010000ULL, false);
-    // TODO: test_addic(0x00000000FFFFFFFFULL, 0x0001, 0x0000000100000000ULL, true);
-    // TODO: test_addic(0x00000000FFFF0001ULL, 0xFFFF, 0x00000000FFFF0000ULL, false);
+    test_addic(0x00000000FFFFFFFFULL, 0x0001, 0x0000000100000000ULL, false);
+    test_addic(0x00000000FFFF0001ULL, 0xFFFF, 0x00000000FFFF0000ULL, false);
     test_addic(0xFFFFFFFFFFFFFFFFULL, 0x0001, 0x0000000000000000ULL, true);
 }
 
 void PPCTestRunner::addic_() {
+    // Add Immediate Carrying and Record
+    TEST_INSTRUCTION(test_addic_, R1, SIMM, R2, CA, LT, GT, EQ, SO, {
+        state.r[1] = R1;
+        run(addic_(r2, r1, SIMM));
+        expect(state.r[2] == R2);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(state.xer.ca == CA);
+    });
+
+    test_addic_(0x000000010000FFFFULL, 0x0001, 0x0000000100010000ULL, false, 0,1,0,0);
+    test_addic_(0x00000000FFFFFFFFULL, 0x0001, 0x0000000100000000ULL, false, 0,1,0,0);
+    test_addic_(0x00000000FFFF0001ULL, 0xFFFF, 0x00000000FFFF0000ULL, false, 0,1,0,0);
+    test_addic_(0xFFFFFFFFFFFFFFFFULL, 0xFFFF, 0xFFFFFFFFFFFFFFFEULL, false, 1,0,0,0);
+    test_addic_(0xFFFFFFFFFFFFFFFFULL, 0x0001, 0x0000000000000000ULL, true,  0,0,1,0);
 }
 
 void PPCTestRunner::addis() {
+    // Add Immediate Shifted
+    TEST_INSTRUCTION(test_addis, RAIndex, RA, SIMM, RD, {
+        state.r[RAIndex] = RA;
+        run(addis(r2, RAIndex, SIMM));
+        expect(state.r[2] == RD);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_addis(r1, 0x00010000FFFF0000ULL, 0x0001, 0x0001000100000000ULL);
+    test_addis(r1, 0x0000FFFFFFFF0000ULL, 0x0001, 0x0001000000000000ULL);
+    test_addis(r1, 0x0000FFFF00010000ULL, 0xFFFF, 0x0000FFFF00000000ULL);
+    test_addis(r1, 0xFFFFFFFFFFFF0000ULL, 0x0001, 0x0000000000000000ULL);
+    test_addis(r0, 0x00010000FFFF0000ULL, 0x0001, 0x0000000000010000ULL);
+    test_addis(r0, 0x0000FFFFFFFF0000ULL, 0xFFFF, 0xFFFFFFFFFFFF0000ULL);
+    test_addis(r0, 0x0000FFFF00010000ULL, 0x0000, 0x0000000000000000ULL);
 }
 
 void PPCTestRunner::addmex() {
 }
 
 void PPCTestRunner::addzex() {
+    // Add to Zero Extended
+    TEST_INSTRUCTION(test_addze, RA, oldCA, RD, newCA, {
+        state.r[1] = RA;
+        state.xer.ca = oldCA;
+        run(addze(r2, r1));
+        expect(state.r[2] == RD);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(state.xer.ca == newCA);
+    });
+
+    test_addze(0x1111111111111111, false, 0x1111111111111111, false);
+    test_addze(0x1111111111111111, true,  0x1111111111111112, false);
+    test_addze(0x7fffffffffffffff, false, 0x7fffffffffffffff, false);
+    test_addze(0x7fffffffffffffff, true,  0x8000000000000000, false);
+    test_addze(0xffffffffffffffff, false, 0xffffffffffffffff, false);
+    test_addze(0xffffffffffffffff, true,  0x0000000000000000, true);
+
+    // Add to Zero Extended (with condition) 
+    TEST_INSTRUCTION(test_addze_, RA, oldCA, RD, newCA, LT, GT, EQ, SO, {
+        state.r[1] = RA;
+        state.xer.ca = oldCA;
+        run(addze_(r2, r1));
+        expect(state.r[2] == RD);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(state.xer.ca == newCA);
+    });
+
+    test_addze_(0x1111111111111111, false, 0x1111111111111111, false, 0,1,0,0);
+    test_addze_(0x1111111111111111, true,  0x1111111111111112, false, 0,1,0,0);
+    test_addze_(0x7fffffffffffffff, false, 0x7fffffffffffffff, false, 0,1,0,0);
+    test_addze_(0x7fffffffffffffff, true,  0x8000000000000000, false, 1,0,0,0);
+    test_addze_(0xffffffffffffffff, false, 0xffffffffffffffff, false, 1,0,0,0);
+    test_addze_(0xffffffffffffffff, true,  0x0000000000000000, true,  0,0,1,0);
 }
 
 void PPCTestRunner::andx() {
@@ -344,12 +427,114 @@ void PPCTestRunner::eqvx() {
 }
 
 void PPCTestRunner::extsbx() {
+    // Extend Sign Byte
+    TEST_INSTRUCTION(test_extsb, RS, RA, {
+        state.r[1] = RS;
+        run(extsb(r2, r1));
+        expect(state.r[2] == RA);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_extsb(0x00FF00FF00FF0020ULL, 0x0000000000000020ULL);
+    test_extsb(0xFF00FF00000000FFULL, 0xFFFFFFFFFFFFFFFFULL);
+
+    // Extend Sign Byte (with condition)
+    TEST_INSTRUCTION(test_extsb_, RS, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        run(extsb_(r2, r1));
+        expect(state.r[2] == RA);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_extsb_(0x00FF00FF00FF0000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_extsb_(0x0000000000000080ULL, 0xFFFFFFFFFFFFFF80ULL, 1,0,0,0);
+    test_extsb_(0xFFFFFFFFFFFFFF7FULL, 0x000000000000007FULL, 0,1,0,0);
 }
 
 void PPCTestRunner::extshx() {
+    // Extend Sign Halfword
+    TEST_INSTRUCTION(test_extsh, RS, RA, {
+        state.r[1] = RS;
+        run(extsh(r2, r1));
+        expect(state.r[2] == RA);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_extsh(0x00FF00FF00FF2000ULL, 0x0000000000002000ULL);
+    test_extsh(0xFF00FF000000FFFFULL, 0xFFFFFFFFFFFFFFFFULL);
+
+    // Extend Sign Halfword (with condition)
+    TEST_INSTRUCTION(test_extsh_, RS, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        run(extsh_(r2, r1));
+        expect(state.r[2] == RA);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_extsh_(0x00FF00FF00FF0000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_extsh_(0x0000000000008000ULL, 0xFFFFFFFFFFFF8000ULL, 1,0,0,0);
+    test_extsh_(0xFFFFFFFFFFFF7FFFULL, 0x0000000000007FFFULL, 0,1,0,0);
 }
 
 void PPCTestRunner::extswx() {
+    // Extend Sign Word
+    TEST_INSTRUCTION(test_extsw, RS, RA, {
+        state.r[1] = RS;
+        run(extsw(r2, r1));
+        expect(state.r[2] == RA);
+        expect(!state.cr[0].lt);
+        expect(!state.cr[0].gt);
+        expect(!state.cr[0].eq);
+        expect(!state.cr[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_extsw(0x00FF00FF20000000ULL, 0x0000000020000000ULL);
+    test_extsw(0xFF00FF00FFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL);
+
+    // Extend Sign Word (with condition)
+    TEST_INSTRUCTION(test_extsw_, RS, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        run(extsw_(r2, r1));
+        expect(state.r[2] == RA);
+        expect(state.cr[0].lt == LT);
+        expect(state.cr[0].gt == GT);
+        expect(state.cr[0].eq == EQ);
+        expect(state.cr[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_extsw_(0x00FF00FF00000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_extsw_(0x0000000080000000ULL, 0xFFFFFFFF80000000ULL, 1,0,0,0);
+    test_extsw_(0xFFFFFFFF7FFFFFFFULL, 0x000000007FFFFFFFULL, 0,1,0,0);
 }
 
 void PPCTestRunner::mulhdx() {
