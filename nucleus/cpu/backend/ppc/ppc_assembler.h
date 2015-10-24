@@ -58,7 +58,7 @@ private:
     void emitFormDS(U32 instruction, Operand d, Operand a, U16 imm);
     void emitFormX(U32 instruction, Operand d, Operand a, Operand b);
     void emitFormXL(Operand opcd, Operand d, Operand a, Operand b, Operand xo, bool lk);
-    void emitFormXFX(Operand opcd, Operand d, Operand spr, Operand xo);
+    void emitFormXFX(U32 instruction, Operand d, Operand spr);
     void emitFormXFL(Operand opcd, Operand fm, Operand b, Operand xo, bool rc);
     void emitFormXS(Operand opcd, Operand s, Operand a, Operand sh, Operand xo, bool rc);
     void emitFormXO(U32 instruction, Operand d, Operand a, Operand b);
@@ -281,16 +281,25 @@ public:
     void mcrfs(RegCR crfd, RegCR crfs);
     void mffs(); // TODO
     void mffs_(); // TODO
-    void mfocrf(); // TODO
-    void mfspr(); // TODO
-    void mftb(); // TODO
+    void mfocrf(RegGPR rd, U8 crm);
+    void mfcr(RegGPR rd);
+    void mfspr(RegGPR rd, U16 spr);
+    void mfxer(RegGPR rd);
+    void mflr(RegGPR rd);
+    void mfctr(RegGPR rd);
+    void mftb(RegGPR rd, U16 tbr);
     void mr(RegGPR ra, RegGPR rs);
     void mtfsb0x(); // TODO
     void mtfsb1x(); // TODO
     void mtfsfix(); // TODO
     void mtfsfx(); // TODO
-    void mtocrf(); // TODO
-    void mtspr(); // TODO
+    void mtocrf(U8 crm, RegGPR rs);
+    void mtcrf(U8 crm, RegGPR rs);
+    void mtcr(RegGPR rs);
+    void mtspr(U16 spr, RegGPR rs);
+    void mtxer(RegGPR rs);
+    void mtlr(RegGPR rs);
+    void mtctr(RegGPR rs);
     void mulhd(RegGPR rd, RegGPR ra, RegGPR rb);
     void mulhd_(RegGPR rd, RegGPR ra, RegGPR rb);
     void mulhdu(RegGPR rd, RegGPR ra, RegGPR rb);

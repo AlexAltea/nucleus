@@ -74,10 +74,10 @@ union V128 {
 };
 
 /**
-* 256-bit vector
-* Allows component-wise signed and unsigned 8-bit, 16-bit, 32-bit and 64-bit
-* integer operations and component-wise 32-bit and 64-bit floating point operations.
-*/
+ * 256-bit vector
+ * Allows component-wise signed and unsigned 8-bit, 16-bit, 32-bit and 64-bit
+ * integer operations and component-wise 32-bit and 64-bit floating point operations.
+ */
 union V256 {
     F64 f64[4];
     F32 f32[8];

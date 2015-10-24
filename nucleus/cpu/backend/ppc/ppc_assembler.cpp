@@ -22,27 +22,32 @@ void PPCAssembler::emit(U32 instruction) {
 
 // Emit instruction form
 void PPCAssembler::emitFormD(U32 instruction, Operand d, Operand a, U16 imm) {
-    const U32 rd = (d & 0x1F) << 21;
-    const U32 ra = (a & 0x1F) << 16;
-    emit(instruction | rd | ra | imm);
+    const U32 rdMask = (d & 0x1F) << 21;
+    const U32 raMask = (a & 0x1F) << 16;
+    emit(instruction | rdMask | raMask | imm);
 }
 void PPCAssembler::emitFormDS(U32 instruction, Operand d, Operand a, U16 imm) {
     assert_true(imm % 4 == 0, "The immediate cannot overwrite the 2 LSb of a DS-form instruction");
-    const U32 rd = (d & 0x1F) << 21;
-    const U32 ra = (a & 0x1F) << 16;
-    emit(instruction | rd | ra | imm);
+    const U32 rdMask = (d & 0x1F) << 21;
+    const U32 raMask = (a & 0x1F) << 16;
+    emit(instruction | rdMask | raMask | imm);
 }
 void PPCAssembler::emitFormX(U32 instruction, Operand d, Operand a, Operand b) {
-    const U32 rd = (d & 0x1F) << 21;
-    const U32 ra = (a & 0x1F) << 16;
-    const U32 rb = (b & 0x1F) << 11;
-    emit(instruction | rd | ra | rb);
+    const U32 rdMask = (d & 0x1F) << 21;
+    const U32 raMask = (a & 0x1F) << 16;
+    const U32 rbMask = (b & 0x1F) << 11;
+    emit(instruction | rdMask | raMask | rbMask);
+}
+void PPCAssembler::emitFormXFX(U32 instruction, Operand d, Operand spr) {
+    const U32 rdMask = (d & 0x1F) << 21;
+    const U32 sprMask = (spr & 0x3FF) << 11;
+    emit(instruction | rdMask | sprMask);
 }
 void PPCAssembler::emitFormXO(U32 instruction, Operand d, Operand a, Operand b) {
-    const U32 rd = (d & 0x1F) << 21;
-    const U32 ra = (a & 0x1F) << 16;
-    const U32 rb = (b & 0x1F) << 11;
-    emit(instruction | rd | ra | rb);
+    const U32 rdMask = (d & 0x1F) << 21;
+    const U32 raMask = (a & 0x1F) << 16;
+    const U32 rbMask = (b & 0x1F) << 11;
+    emit(instruction | rdMask | raMask | rbMask);
 }
 
 // PPC instructions
@@ -259,16 +264,25 @@ void PPCAssembler::mcrf(RegCR crfd, RegCR crfs) {  }
 void PPCAssembler::mcrfs(RegCR crfd, RegCR crfs) {  }
 void PPCAssembler::mffs() {  }
 void PPCAssembler::mffs_() {  }
-void PPCAssembler::mfocrf() {  }
-void PPCAssembler::mfspr() {  }
-void PPCAssembler::mftb() {  }
+void PPCAssembler::mfocrf(RegGPR rd, U8 crm) { emitFormXFX(0x7C000026, rd, (0x200 | (crm << 1))); }
+void PPCAssembler::mfcr(RegGPR rd) { emitFormXFX(0x7C000026, rd, 0); }
+void PPCAssembler::mfspr(RegGPR rd, U16 spr) { emitFormXFX(0x7C0002A6, rd, spr); }
+void PPCAssembler::mfxer(RegGPR rd) { mfspr(rd, 1); }
+void PPCAssembler::mflr(RegGPR rd) { mfspr(rd, 8); }
+void PPCAssembler::mfctr(RegGPR rd) { mfspr(rd, 9); }
+void PPCAssembler::mftb(RegGPR rd, U16 tbr) { emitFormXFX(0x7C0002E6, rd, tbr); }
 void PPCAssembler::mr(RegGPR ra, RegGPR rs) {  }
 void PPCAssembler::mtfsb0x() {  }
 void PPCAssembler::mtfsb1x() {  }
 void PPCAssembler::mtfsfix() {  }
 void PPCAssembler::mtfsfx() {  }
-void PPCAssembler::mtocrf() {  }
-void PPCAssembler::mtspr() {  }
+void PPCAssembler::mtocrf(U8 crm, RegGPR rs) { emitFormXFX(0x7C000120, rs, (0x200 | (crm << 1))); }
+void PPCAssembler::mtcrf(U8 crm, RegGPR rs) { emitFormXFX(0x7C000120, rs, (crm << 1)); }
+void PPCAssembler::mtcr(RegGPR rs) { mtcrf(0xFF, rs); }
+void PPCAssembler::mtspr(U16 spr, RegGPR rs) { emitFormXFX(0x7C0003A6, rs, spr); }
+void PPCAssembler::mtxer(RegGPR rs) { mtspr(1, rs); }
+void PPCAssembler::mtlr(RegGPR rs) { mtspr(8, rs); }
+void PPCAssembler::mtctr(RegGPR rs) { mtspr(9, rs); }
 void PPCAssembler::mulhd(RegGPR rd, RegGPR ra, RegGPR rb) { emitFormXO(0x7C000092, rd, ra, rb); }
 void PPCAssembler::mulhd_(RegGPR rd, RegGPR ra, RegGPR rb) { emitFormXO(0x7C000093, rd, ra, rb); }
 void PPCAssembler::mulhdu(RegGPR rd, RegGPR ra, RegGPR rb) { emitFormXO(0x7C000012, rd, ra, rb); }
