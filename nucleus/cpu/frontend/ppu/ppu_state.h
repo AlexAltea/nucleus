@@ -242,21 +242,23 @@ public:
      *  | CR0 | CR1 | CR2 | CR3 | CR4 | CR5 | CR6 | CR7 |
      *  +-----+-----+-----+-----+-----+-----+-----+-----+
      */
-    union CR {
-        struct {
-            U8 lt;   // Negative (Bit 0)
-            U8 gt;   // Positive (Bit 1)
-            U8 eq;   // Zero (Bit 2)
-            U8 so;   // Summary overflow (Bit 3)
-        };
-        struct {
-            U8 fx;   // Floating-point exception summary (Bit 0)
-            U8 fex;  // Floating-point enabled exception summary (Bit 1)
-            U8 vx;   // Floating-point invalid operation exception summary (Bit 2)
-            U8 ox;   // Floating-point overflow exception (Bit 3)
-        };
-        U8 bit[4];
-    } cr[8];
+    struct CR {
+        union Field {
+            struct {
+                U8 lt;   // Negative (Bit 0)
+                U8 gt;   // Positive (Bit 1)
+                U8 eq;   // Zero (Bit 2)
+                U8 so;   // Summary overflow (Bit 3)
+            };
+            struct {
+                U8 fx;   // Floating-point exception summary (Bit 0)
+                U8 fex;  // Floating-point enabled exception summary (Bit 1)
+                U8 vx;   // Floating-point invalid operation exception summary (Bit 2)
+                U8 ox;   // Floating-point overflow exception (Bit 3)
+            };
+            U8 bit[4];
+        } field[8];
+    } cr;
 
     /**
      * XER register
@@ -294,6 +296,13 @@ public:
 
     // Program Counter
     U32 pc;
+
+public:
+    // Register read
+    U32 getCR();
+
+    // Register write
+    void setCR(U32 value);
 };
 
 #ifdef NUCLEUS_ARCH_X86
