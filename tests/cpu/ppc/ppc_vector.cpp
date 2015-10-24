@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "tests/unit/cpu/test_ppu.h"
+#include "tests/cpu/test_ppc.h"
 
 /**
  * PPC64 Vector/SIMD Instructions (aka AltiVec):

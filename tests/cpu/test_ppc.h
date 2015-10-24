@@ -7,7 +7,7 @@
 #include "CppUnitTest.h"
 
 // Nucleus testing dependencies
-#include "tests/unit/cpu/common.h"
+#include "tests/cpu/common.h"
 
 // Target
 #include "nucleus/cpu/backend/x86/x86_compiler.h"
@@ -88,6 +88,6 @@ protected:
 
 public:
 #define INSTRUCTION(name) void name()
-#include "test_ppu.inl"
+#include "test_ppc.inl"
 #undef INSTRUCTION
 };

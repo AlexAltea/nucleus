@@ -129,7 +129,7 @@ Value* Recompiler::getVR(int index) {
 }
 
 Value* Recompiler::getCR(int index) {
-    const U32 offset = offsetof(PPUState, cr);
+    const U32 offset = offsetof(PPUState, cr.field[index]);
 
     // TODO: Use volatility information?
 
@@ -228,7 +228,7 @@ void Recompiler::setVR(int index, Value* value) {
 }
 
 void Recompiler::setCR(int index, Value* value) {
-    const U32 offset = offsetof(PPUState, cr[index]);
+    const U32 offset = offsetof(PPUState, cr.field[index]);
 
     if (value->type != TYPE_I32 && value->type != TYPE_I8) {
         logger.error(LOG_CPU, "Wrong value type for CR register");

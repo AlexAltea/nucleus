@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/macro.h"
-#include "tests/unit/common.h"
+#include "tests/common.h"
 
 // Set a lambda with auto arguments
 #define TEST_INSTRUCTION(...) \

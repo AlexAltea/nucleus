@@ -7,7 +7,7 @@
 #include "CppUnitTest.h"
 
 // Testing dependencies
-#include "test_ppu.h"
+#include "test_ppc.h"
 
 #define TEST_METHOD_INSTRUCTION(method) \
     TEST_METHOD_CATEGORY(method, L"PowerPC Tests") { test.##method##(); }
@@ -17,6 +17,6 @@ TEST_CLASS(PPCTests) {
 
 public:
 #define INSTRUCTION(name) TEST_METHOD_INSTRUCTION(name)
-#include "test_ppu.inl"
+#include "test_ppc.inl"
 #undef INSTRUCTION
 };
