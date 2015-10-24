@@ -1,8 +1,0 @@
-[submodule "tests"]
-	path = tests/integration
-	url = https://github.com/AlexAltea/ps3autotests.git
-[submodule "llvm"]
-	path = externals/llvm
-	url = http://llvm.org/git/llvm.git
-	branch = master
-	ignore = dirty
