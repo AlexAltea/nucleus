@@ -16,7 +16,7 @@ U32 PPUState::getCR() {
     int shift = 31;
     for (const auto& field : cr.field) {
         for (const auto& bit : field.bit) {
-            value |= (bit << shift--);
+            value |= ((bit & 0x1) << shift--);
         }
     }
     return value;

@@ -132,18 +132,25 @@ Value* Recompiler::getCR(int index) {
     const U32 offset = offsetof(PPUState, cr.field[index]);
 
     // TODO: Use volatility information?
+    Value* field = builder.createShl(builder.createCtxLoad(
+        offsetof(PPUState, cr.field[index].bit[0]), TYPE_I8), U64(3));
+    field = builder.createOr(field, builder.createShl(builder.createCtxLoad(
+        offsetof(PPUState, cr.field[index].bit[1]), TYPE_I8), U64(2)));
+    field = builder.createOr(field, builder.createShl(builder.createCtxLoad(
+        offsetof(PPUState, cr.field[index].bit[2]), TYPE_I8), U64(1)));
+    field = builder.createOr(field, builder.createShl(builder.createCtxLoad(
+        offsetof(PPUState, cr.field[index].bit[3]), TYPE_I8), U64(0)));
 
-    Value* cr = builder.createCtxLoad(offset, TYPE_I32);
-    Value* mask = builder.getConstantI32(0xFULL << (7 - index) * 4);
-    cr = builder.createAnd(cr, mask);
-    cr = builder.createShr(cr, (7 - index) * 4);
-    cr = builder.createTrunc(cr, TYPE_I8);
-    return cr;
+    return field;
 }
 
 Value* Recompiler::getCR() {
-    const U32 offset = offsetof(PPUState, cr);
-    return builder.createCtxLoad(offset, TYPE_I32);
+    Value* cr = builder.getConstantI32(0);
+    for (int field = 0; field < 8; field++) {
+        cr = builder.createOr(cr, builder.createShl(
+            builder.createZExt(getCR(field), TYPE_I32), 4 * (7 - field)));
+    }
+    return cr;
 }
 
 Value* Recompiler::getLR() {
@@ -228,35 +235,40 @@ void Recompiler::setVR(int index, Value* value) {
 }
 
 void Recompiler::setCR(int index, Value* value) {
-    const U32 offset = offsetof(PPUState, cr.field[index]);
-
-    if (value->type != TYPE_I32 && value->type != TYPE_I8) {
-        logger.error(LOG_CPU, "Wrong value type for CR register");
-        return;
-    }
-
     // TODO: Use volatility information?
 
-    // Requires unpacking to I32
-    if (value->type == TYPE_I8) {
-        assert_always("Unimplemented");
-        //Value* cr = builder.createCtxLoad(offset, TYPE_I32);
-        //Value* mask = builder.getConstantI32(~(0xFULL << (7 - index) * 4));
-        //cr = builder.createAnd(cr, mask);
-        //cr = builder.createOr(cr, builder.createShl(builder.createZExt(value, TYPE_I32), (7 - index) * 4));
-    }
+    switch (value->type) {
+    // Unpack and store the value bits
+    case TYPE_I8:
+        builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[0]),
+            builder.createAnd(builder.createShr(value, U64(3)), builder.getConstantI8(1)));
+        builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[1]),
+            builder.createAnd(builder.createShr(value, U64(2)), builder.getConstantI8(1)));
+        builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[2]),
+            builder.createAnd(builder.createShr(value, U64(1)), builder.getConstantI8(1)));
+        builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[3]),
+            builder.createAnd(builder.createShr(value, U64(0)), builder.getConstantI8(1)));
+        break;
     
-    builder.createCtxStore(offset, value);
+    // Store the unpacked value directly
+    case TYPE_I32:
+        builder.createCtxStore(offsetof(PPUState, cr.field[index]), value);
+        break;
+
+    default:
+        logger.error(LOG_CPU, "Wrong value type for CR register");
+    }
 }
 
 void Recompiler::setCR(Value* value) {
-    constexpr U32 offset = offsetof(PPUState, cr);
-    
     if (value->type != TYPE_I32) {
         logger.error(LOG_CPU, "Wrong value type for CR register");
         return;
     }
-    builder.createCtxStore(offset, value);
+
+    for (int field = 0; field < 8; field++) {
+        setCR(field, builder.createTrunc(builder.createShr(value, (4 * (7 - field))), TYPE_I8));
+    }
 }
 
 void Recompiler::setLR(Value* value) {

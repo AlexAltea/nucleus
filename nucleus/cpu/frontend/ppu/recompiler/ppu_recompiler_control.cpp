@@ -66,12 +66,18 @@ void Recompiler::mtocrf(Instruction code)
             }
         }
         if (count == 1) {
-            Value* value = builder.createShr(rs, (7 - field) * 4);
-            value = builder.createAnd(value, builder.getConstantI32(0xF));
+            Value* value = builder.createTrunc(builder.createShr(rs, 4 * (7 - field)), TYPE_I8);
+            value = builder.createAnd(value, builder.getConstantI8(0xF));
             setCR(field, value);
         }
     } else {
-        setCR(rs);
+        for (int field = 0; field < 8; field++) {
+            if (code.crm & (1 << (7 - field))) {
+                Value* value = builder.createTrunc(builder.createShr(rs, 4 * (7 - field)), TYPE_I8);
+                value = builder.createAnd(value, builder.getConstantI8(0xF));
+                setCR(field, value);
+            }
+        }
     }
 }
 
