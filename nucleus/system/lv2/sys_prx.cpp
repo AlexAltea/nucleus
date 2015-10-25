@@ -44,8 +44,8 @@ S32 sys_prx_load_module_list(S32 count, BE<U64>* pathList, U64 flags, void* pOpt
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     for (S32 i = 0; i < count; i++) {
-        auto* path = (S8*)((U64)memory->getBaseAddr() + pathList[i]);
-        auto* pOpt = memory->ptr<sys_prx_load_module_option_t>(0);
+        auto* path = (S8*)((U64)nucleus.memory->getBaseAddr() + pathList[i]);
+        auto* pOpt = nucleus.memory->ptr<sys_prx_load_module_option_t>(0);
 
         const S32 ret = sys_prx_load_module(path, flags, pOpt);
         if (ret <= 0) {
@@ -67,31 +67,31 @@ S32 sys_prx_start_module(S32 id, U64 flags, sys_prx_start_module_option_t* pOpt)
     // Update ELF import table
     U32 offset = param.libstubstart;
     while (offset < param.libstubend) {
-        const auto& importedLibrary = memory->ref<sys_prx_library_info_t>(offset);
+        const auto& importedLibrary = nucleus.memory->ref<sys_prx_library_info_t>(offset);
         offset += importedLibrary.size;
 
         for (const auto& lib : prx->exported_libs) {
-            if (lib.name != memory->ptr<S8>(importedLibrary.name_addr)) {
+            if (lib.name != nucleus.memory->ptr<S8>(importedLibrary.name_addr)) {
                 continue;
             }
             for (U32 i = 0; i < importedLibrary.num_func; i++) {
-                const U32 fnid = memory->read32(importedLibrary.fnid_addr + 4*i);
+                const U32 fnid = nucleus.memory->read32(importedLibrary.fnid_addr + 4*i);
 
                 // Try to link to a native implementation (HLE)
                 if (lv2.modules.find(lib.name, fnid)) {
-                    U32 hookAddr = memory->alloc(20, 8);
-                    memory->write32(hookAddr + 0, 0x3D600000 | ((fnid >> 16) & 0xFFFF));  // lis  r11, fnid:hi
-                    memory->write32(hookAddr + 4, 0x616B0000 | (fnid & 0xFFFF));          // ori  r11, r11, fnid:lo
-                    memory->write32(hookAddr + 8, 0x44000042);                            // sc   2
-                    memory->write32(hookAddr + 12, 0x4E800020);                           // blr
-                    memory->write32(hookAddr + 16, hookAddr);                             // OPD: Function address
-                    memory->write32(hookAddr + 20, 0);                                    // OPD: Function RTOC
-                    memory->write32(importedLibrary.fstub_addr + 4*i, hookAddr + 16);
+                    U32 hookAddr = nucleus.memory->alloc(20, 8);
+                    nucleus.memory->write32(hookAddr + 0, 0x3D600000 | ((fnid >> 16) & 0xFFFF));  // lis  r11, fnid:hi
+                    nucleus.memory->write32(hookAddr + 4, 0x616B0000 | (fnid & 0xFFFF));          // ori  r11, r11, fnid:lo
+                    nucleus.memory->write32(hookAddr + 8, 0x44000042);                            // sc   2
+                    nucleus.memory->write32(hookAddr + 12, 0x4E800020);                           // blr
+                    nucleus.memory->write32(hookAddr + 16, hookAddr);                             // OPD: Function address
+                    nucleus.memory->write32(hookAddr + 20, 0);                                    // OPD: Function RTOC
+                    nucleus.memory->write32(importedLibrary.fstub_addr + 4*i, hookAddr + 16);
                 }
 
                 // Otherwise, link to original function (LLE)
                 else {
-                    memory->write32(importedLibrary.fstub_addr + 4*i, lib.exports.at(fnid));
+                    nucleus.memory->write32(importedLibrary.fstub_addr + 4*i, lib.exports.at(fnid));
                 }
             }
         }

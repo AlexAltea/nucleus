@@ -103,16 +103,16 @@ public:
         rsx_vp_attribute_t attr[16];     // 16 Vertex Program attributes
         rsx_vp_instruction_t data[512];  // 512 VPE instructions
         rsx_vp_constant_t constant[468]; // 468 vector constant registers
-        U32 constant_load;              // Set through NV4097_SET_TRANSFORM_CONSTANT_LOAD
-        U32 load;                       // Set through NV4097_SET_TRANSFORM_PROGRAM_LOAD
-        U32 start;                      // Set through NV4097_SET_TRANSFORM_PROGRAM_START
+        U32 constant_load;               // Set through NV4097_SET_TRANSFORM_CONSTANT_LOAD
+        U32 load;                        // Set through NV4097_SET_TRANSFORM_PROGRAM_LOAD
+        U32 start;                       // Set through NV4097_SET_TRANSFORM_PROGRAM_START
     } vpe;
 
     // Fragment Program
     bool fp_dirty;                       // Flag: Needs to be recompiled
-    U32 fp_location;                    // Location: Local Memory (0) or Main Memory (1)
-    U32 fp_offset;                      // Offset at the specified location
-    U32 fp_control;                     // Control the performance of the program
+    U32 fp_location;                     // Location: Local Memory (0) or Main Memory (1)
+    U32 fp_offset;                       // Offset at the specified location
+    U32 fp_control;                      // Control the performance of the program
 
     // Hashing methods
     U64 HashTexture();

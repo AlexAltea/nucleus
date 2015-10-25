@@ -26,9 +26,10 @@ class Emulator {
 
 public:
     // Hardware & OS
-    std::unique_ptr<cpu::CPU> cpu;
-    std::unique_ptr<gpu::GPU> gpu;
-    std::unique_ptr<sys::System> sys;
+    std::shared_ptr<mem::Memory> memory;
+    std::shared_ptr<cpu::CPU> cpu;
+    std::shared_ptr<gpu::GPU> gpu;
+    std::shared_ptr<sys::System> sys;
 
     // Control the emulated process
     bool load(const std::string& filepath);

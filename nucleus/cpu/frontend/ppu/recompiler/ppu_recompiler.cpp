@@ -16,7 +16,7 @@ namespace ppu {
 
 using namespace cpu::hir;
 
-Recompiler::Recompiler(ppu::Function* function) : IRecompiler<U32>(function) {
+Recompiler::Recompiler(CPU* parent, ppu::Function* function) : parent(parent), IRecompiler<U32>(function) {
 }
 
 void Recompiler::createProlog() {
@@ -356,7 +356,7 @@ void Recompiler::setFPSCR(Value* value) {
  */
 Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
     // Get host address
-    void* baseAddress = memory->getBaseAddr();
+    void* baseAddress = parent->memory->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
     if (type == TYPE_I8) {
@@ -368,7 +368,7 @@ Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
 
 void Recompiler::writeMemory(Value* addr, Value* value) {
     // Get host address
-    void* baseAddress = memory->getBaseAddr();
+    void* baseAddress = parent->memory->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
     if (value->type == TYPE_I8) {

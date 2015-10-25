@@ -33,7 +33,7 @@ S32 sys_mmapper_allocate_address(U32 size, U64 flags, U32 alignment, U32* alloc_
 S32 sys_mmapper_allocate_shared_memory(U32 size, U64 flags, U32 alignment, U32* alloc_addr) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
-    *alloc_addr = memory->alloc(size, alignment);
+    *alloc_addr = nucleus.memory->alloc(size, alignment);
     return CELL_OK;
 }
 

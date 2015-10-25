@@ -4,51 +4,47 @@
  */
 
 #include "module.h"
-#include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/system/lv2.h"
 
 #include "modules/libsysmodule.h"
 #include "modules/libsysutil_avconf_ext.h"
 
 namespace sys {
 
-ModuleManager::ModuleManager()
-{
-    m_modules.emplace_back(Module("cellSysutil", {
+ModuleManager::ModuleManager(LV2* parent) : parent(parent) {
+    modules.emplace_back(Module("cellSysutil", {
         {0x0BAE8772, wrap(cellVideoOutConfigure)},
         {0x1E930EEF, wrap(cellVideoOutGetDeviceInfo)},
         {0xE558748D, wrap(cellVideoOutGetResolution)},
         {0x887572D5, wrap(cellVideoOutGetState)}
     }));
-    m_modules.emplace_back(Module("cellSysutilAvconfExt", {
+    modules.emplace_back(Module("cellSysutilAvconfExt", {
         {0x655A0364, wrap(cellVideoOutGetGamma)},
     }));
 }
 
-bool ModuleManager::find(const std::string& libraryName, U32 functionId)
-{
-    for (const auto& module : m_modules) {
+bool ModuleManager::find(const std::string& libraryName, U32 functionId) {
+    for (const auto& module : modules) {
         if (module.name != libraryName) {
             continue;
         }
         for (const auto& function : module.functions) {
-            if (function.first != functionId) {
-                continue;
+            if (function.first == functionId) {
+                return true;
             }
-            return true;
         }
     }
     return false;
 }
 
-void ModuleManager::call(cpu::frontend::ppu::PPUState& state)
-{
+void ModuleManager::call(cpu::frontend::ppu::PPUState& state) {
     const U32 fnid = static_cast<U32>(state.r[11]);
 
-    for (const auto& module : m_modules) {
+    for (const auto& module : modules) {
         for (const auto& function : module.functions) {
             if (function.first == fnid) {
-                function.second->call(state, memory->getBaseAddr());
+                function.second->call(state, parent->memory->getBaseAddr());
                 return;
             }
         }

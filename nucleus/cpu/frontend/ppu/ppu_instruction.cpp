@@ -11,14 +11,6 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-Instruction::Instruction() : instruction(0)
-{
-}
-
-Instruction::Instruction(U32 addr) : instruction(memory->read32(addr))
-{
-}
-
 bool Instruction::is_valid() const
 {
     // If instruction is not defined in the PPU architecture

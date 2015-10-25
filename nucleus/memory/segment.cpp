@@ -4,7 +4,7 @@
  */
 
 #include "segment.h"
-#include "nucleus/emulator.h"
+#include "nucleus/memory/memory.h"
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
@@ -20,12 +20,11 @@
 namespace mem {
 
 // Memory blocks
-MemoryBlock::MemoryBlock(U32 block_addr, U32 block_size)
-{
+Block::Block(void* baseAddr, U32 blockAddr, U32 blockSize) {
     // Initialize members
-    addr = block_addr;
-    size = PAGE_4K(block_size);
-    realaddr = (void*)((U64)memory->getBaseAddr() + block_addr);
+    addr = blockAddr;
+    size = PAGE_4K(blockSize);
+    realaddr = reinterpret_cast<void*>((reinterpret_cast<intptr_t>(baseAddr) + blockAddr));
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
@@ -42,41 +41,35 @@ MemoryBlock::MemoryBlock(U32 block_addr, U32 block_size)
 }
 
 // Memory segments
-MemorySegment::MemorySegment()
-{
+Segment::Segment() {
 }
 
-MemorySegment::MemorySegment(U32 start, U32 size)
-{
-    init(start, size);
+Segment::Segment(Memory* parent, U32 start, U32 size) {
+    init(parent, start, size);
 }
 
-MemorySegment::~MemorySegment()
-{
+Segment::~Segment() {
     close();
 }
 
-void MemorySegment::init(U32 start, U32 size)
-{
+void Segment::init(Memory* parent, U32 start, U32 size) {
     close();
+    m_parent = parent;
     m_start = start;
     m_size = size;
 }
 
-void MemorySegment::close()
-{
+void Segment::close() {
 }
 
-U32 MemorySegment::alloc(U32 size, U32 align)
-{
+U32 Segment::alloc(U32 size, U32 align) {
     size = PAGE_4K(size);
     U32 exsize;
 
     if (align <= 4096) {
         align = 0;
         exsize = size;
-    }
-    else {
+    } else {
         align &= ~4095;
         exsize = size + align - 1;
     }
@@ -96,15 +89,14 @@ U32 MemorySegment::alloc(U32 size, U32 align)
             addr = (addr + (align - 1)) & ~(align - 1);
         }
 
-        m_allocated.emplace_back(addr, size);
+        m_allocated.emplace_back(m_parent->getBaseAddr(), addr, size);
         return addr;
     }
 
     return 0;
 }
 
-U32 MemorySegment::allocFixed(U32 addr, U32 size)
-{
+U32 Segment::allocFixed(U32 addr, U32 size) {
     size = PAGE_4K(size + (addr & 4095)); // Align size
     addr &= ~4095; // Align start address
 
@@ -120,12 +112,11 @@ U32 MemorySegment::allocFixed(U32 addr, U32 size)
         }
     }
 
-    m_allocated.emplace_back(addr, size);
+    m_allocated.emplace_back(m_parent->getBaseAddr(), addr, size);
     return addr;
 }
 
-bool MemorySegment::free(U32 addr)
-{
+bool Segment::free(U32 addr) {
     std::lock_guard<std::mutex> lock(m_mutex);
 
     for (auto it = m_allocated.begin(); it != m_allocated.end(); it++) {
@@ -138,21 +129,18 @@ bool MemorySegment::free(U32 addr)
     return false;
 }
 
-bool MemorySegment::isValid(U32 addr)
-{
+bool Segment::isValid(U32 addr) {
     if (addr < m_start || addr >= m_start + m_size) {
         return false;
     }
     return true;
 }
 
-U32 MemorySegment::getTotalMemory() const
-{
+U32 Segment::getTotalMemory() const {
     return m_size;
 }
 
-U32 MemorySegment::getUsedMemory() const
-{
+U32 Segment::getUsedMemory() const {
     U32 usedMemory = 0;
     for (const auto& block : m_allocated) {
         usedMemory += block.size;
@@ -160,8 +148,7 @@ U32 MemorySegment::getUsedMemory() const
     return usedMemory;
 }
 
-U32 MemorySegment::getBaseAddr() const
-{
+U32 Segment::getBaseAddr() const {
     return m_start;
 }
 

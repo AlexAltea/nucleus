@@ -7,4 +7,7 @@
 
 namespace cpu {
 
+Cell::Cell(std::shared_ptr<mem::Memory> memory) : CPU(std::move(memory)) {
+}
+
 }  // namespace cpu

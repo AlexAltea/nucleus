@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/cpu/thread.h"
 #include "nucleus/cpu/backend/compiler.h"
 
@@ -17,12 +18,14 @@ class CPU {
     std::mutex mutex;
 
 public:
+    std::shared_ptr<mem::Memory> memory;
+
     std::unique_ptr<backend::Compiler> compiler;
 
     std::vector<Thread*> threads;
 
     // Constructor
-    CPU();
+    CPU(std::shared_ptr<mem::Memory> memory);
 
     // Manage threads
     Thread* addThread(ThreadType type);

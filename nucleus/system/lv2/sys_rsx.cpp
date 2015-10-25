@@ -38,7 +38,7 @@ S32 sys_rsx_memory_allocate(BE<U32>* mem_handle, BE<U64>* mem_addr, U32 size, U6
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // LV1 Syscall: lv1_gpu_memory_allocate (0xD6)
-    const U32 addr = memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).alloc(size);
+    const U32 addr = nucleus.memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).alloc(size);
     if (!addr) {
         return CELL_EINVAL;
     }
@@ -56,7 +56,7 @@ S32 sys_rsx_memory_free(U32 mem_handle) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // LV1 Syscall: lv1_gpu_memory_free (0xD8)
-    memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).free(mem_handle);
+    nucleus.memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).free(mem_handle);
 
     return CELL_OK;
 }

@@ -15,7 +15,7 @@ S32 sys_semaphore_create(BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 i
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (sem_id == memory->ptr(0) || attr == memory->ptr(0)) {
+    if (sem_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {
@@ -58,7 +58,7 @@ S32 sys_semaphore_get_value(U32 sem_id, BE<S32>* val) {
     if (!semaphore) {
         return CELL_ESRCH;
     }
-    if (val == memory->ptr(0)) {
+    if (val == nucleus.memory->ptr(0)) {
         return CELL_EFAULT;
     }
 

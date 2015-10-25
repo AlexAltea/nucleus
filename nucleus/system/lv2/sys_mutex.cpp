@@ -13,7 +13,7 @@ S32 sys_mutex_create(BE<U32>* mutex_id, sys_mutex_attribute_t* attr) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Check requisites
-    if (mutex_id == memory->ptr(0) || attr == memory->ptr(0)) {
+    if (mutex_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {

@@ -16,10 +16,10 @@ Emulator nucleus;
 
 bool Emulator::load(const std::string& filepath) {
     // Initialize hardware
-    memory = std::make_unique<mem::Memory>();
-    cpu = std::make_unique<cpu::Cell>();
-    gpu = std::make_unique<gpu::RSX>();
-    sys = std::make_unique<sys::LV2>(sys::LV2_DEX);
+    memory = std::make_shared<mem::Memory>();
+    cpu = std::make_shared<cpu::Cell>(memory);
+    gpu = std::make_shared<gpu::RSX>(memory);
+    sys = std::make_shared<sys::LV2>(memory, sys::LV2_DEX);
 
     // Initialize application filesystem devices
     const fs::Path& processPath = fs::getProcessPath(filepath);

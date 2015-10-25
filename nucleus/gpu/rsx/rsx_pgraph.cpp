@@ -60,7 +60,7 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count)
         // Get vertex buffer address
         U32 addr;
         if (attr.location == RSX_LOCATION_LOCAL) {
-            addr = memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).getBaseAddr() + attr.offset;
+            addr = nucleus.memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).getBaseAddr() + attr.offset;
         } else {
             addr = static_cast<RSX*>(nucleus.gpu.get())->get_ea(attr.offset);
         }
@@ -76,17 +76,17 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count)
             switch (typeSize) {
             case 1:
                 for (U8 j = 0; j < attr.size; j++) {
-                    ((U8*)dst)[j] = memory->read8(src + 1*j);
+                    ((U8*)dst)[j] = nucleus.memory->read8(src + 1*j);
                 }
                 break;
             case 2:
                 for (U8 j = 0; j < attr.size; j++) {
-                    ((U16*)dst)[j] = memory->read16(src + 2*j);
+                    ((U16*)dst)[j] = nucleus.memory->read16(src + 2*j);
                 }
                 break;
             case 4:
                 for (U8 j = 0; j < attr.size; j++) {
-                    ((U32*)dst)[j] = memory->read32(src + 4*j);
+                    ((U32*)dst)[j] = nucleus.memory->read32(src + 4*j);
                 }
                 break;
             }

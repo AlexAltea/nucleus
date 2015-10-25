@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/gpu/gpu.h"
 #include "nucleus/gpu/rsx/rsx_pgraph.h"
 
@@ -135,8 +136,13 @@ public:
     rsx_display_info_t display[8];
     U8 queued_display = 0;
 
+    std::shared_ptr<mem::Memory> memory;
+
     // IO Memory Access (mapped into GPU memory through FlexIO)
     std::vector<rsx_iomap_t> iomaps;
+
+    // Constructor
+    RSX(std::shared_ptr<mem::Memory> memory);
 
     U32 io_read8(U32 offset);
     U32 io_read16(U32 offset);
@@ -153,9 +159,6 @@ public:
 
     // Get current time in nanoseconds from PTIMER
     U64 ptimer_gettime();
-
-    // Initialization and method processing
-    void init();
 
     void task();
 

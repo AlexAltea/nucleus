@@ -21,7 +21,7 @@ union Instruction
      * Represents the bit fields contained in 32-bit PPU instructions.
      */
 
-    U32 instruction;
+    U32 value;
 
     // Opcode fields
     FIELD( 0,  5, U32 opcode);  // Primary opcode
@@ -95,14 +95,6 @@ union Instruction
     FIELD(22, 25, U32 vshb);    // Vector/SIMD: Specifies a shift amount in bytes
     FIELD(11, 15, S32 vsimm);   // Vector/SIMD: Immediate 5-bit signed integer
     FIELD(11, 15, U32 vuimm);   // Vector/SIMD: Immediate 5-bit unsigned integer
-
-    /**
-     * PPU Instruction methods:
-     */
-
-    // Constructors
-    Instruction();
-    Instruction(U32 addr);
 
     /**
      * PPU Instruction properties:

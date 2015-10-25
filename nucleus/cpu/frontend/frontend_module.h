@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/frontend/frontend_function.h"
+#include "nucleus/cpu/cpu.h"
 
 #include <map>
 
@@ -20,6 +20,8 @@ class Function;
 template <typename TAddr>
 class Module {
 public:
+    CPU* parent;
+
     // HIR Module
     hir::Module* hirModule;
 
@@ -36,7 +38,7 @@ public:
     std::map<TAddr, Function<TAddr>*> functions;
 
     // Constructor
-    Module() {
+    Module(CPU* parent) : parent(parent) {
         hirModule = new hir::Module();
     }
 

@@ -34,7 +34,7 @@
 
 namespace sys {
 
-LV2::LV2(U32 fw_type) {
+LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(memory)), modules(this) {
     // Initialize syscall table
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
         syscalls[0x001] = SYSCALL(sys_process_getpid, LV2_NONE);

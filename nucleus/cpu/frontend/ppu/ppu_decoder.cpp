@@ -25,7 +25,8 @@ namespace ppu {
  */
 bool Block::is_split() const
 {
-    const Instruction lastInstr(address + size - 4);
+    Instruction lastInstr;
+    lastInstr.value = parent->parent->parent->memory->read32(address + size - 4);
     if (!lastInstr.is_branch() || lastInstr.is_call() || (lastInstr.opcode == 0x13 && lastInstr.op19 == 0x210) /*bcctr*/) {
         return true;
     }
@@ -46,7 +47,8 @@ void Function::do_register_analysis(Analyzer* status)
     // Analyze read/written registers
     Block currentBlock = static_cast<Block&>(*blocks[address]);
     for (U32 i = currentBlock.address; i < (currentBlock.address + currentBlock.size); i += 4) {
-        Instruction code(i);
+        Instruction code;
+        code.value = parent->parent->memory->read32(i);
 
         // Check if called functions use any other registers
         if (code.is_call_known()) {
@@ -78,12 +80,13 @@ bool Function::analyze_cfg()
 
     Instruction code;  // Current instruction
     Block current;     // Current block
+    current.parent = this;
     current.initial = false;
 
     // Control Flow Graph generation
     while (!labels.empty()) {
         U32 addr = labels.front();
-        code.instruction = memory->read32(addr);
+        code.value = parent->parent->memory->read32(addr);
 
         // Check if block was already processed
         if (blocks.find(addr) != blocks.end()) {
@@ -121,7 +124,7 @@ bool Function::analyze_cfg()
         while ((!code.is_branch() || code.is_call()) && (current.size < maxSize)) {
             addr += 4;
             current.size += 4;
-            code.instruction = memory->read32(addr);
+            code.value = parent->parent->memory->read32(addr);
         }
 
         // Push new labels
@@ -244,7 +247,7 @@ void Function::declare()
 
 void Function::recompile()
 {
-    Recompiler recompiler(this);
+    Recompiler recompiler(parent->parent, this);
 
     hir::Builder& builder = recompiler.builder;
 
@@ -270,14 +273,15 @@ void Function::recompile()
         builder.setInsertPoint(recompiler.blocks[block.address]);
 
         // Get function (TODO: This gets loaded multiple times into the module)
-        hir::Function* logFunc = builder.getExternFunction(nucleusLog);
+        //hir::Function* logFunc = builder.getExternFunction(nucleusLog);
 
         for (U32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
-            const Instruction code(recompiler.currentAddress);
-            auto method = get_entry(code).recompile;
-            builder.createCall(logFunc, {builder.getConstantI64(recompiler.currentAddress)}, hir::CALL_EXTERN);
-            (recompiler.*method)(code);
+            Instruction instr;
+            instr.value = parent->parent->memory->read32(recompiler.currentAddress);
+            auto method = get_entry(instr).recompile;
+            //builder.createCall(logFunc, {builder.getConstantI64(recompiler.currentAddress)}, hir::CALL_EXTERN);
+            (recompiler.*method)(instr);
         }
 
         // Block was splitted
@@ -309,6 +313,9 @@ void Function::createPlaceholder()
 /**
  * PPU Module methods
  */
+Module::Module(CPU* parent) : frontend::Module<U32>(parent) {
+}
+
 Function* Module::addFunction(U32 addr)
 {
     // Return function if already present
@@ -338,7 +345,8 @@ void Module::analyze()
     // Basic Block Slicing
     U32 currentBlock = 0;
     for (U32 i = address; i < (address + size); i += 4) {
-        const Instruction instr(i);
+        Instruction instr;
+        instr.value = parent->memory->read32(i);
 
         // New block appeared
         if (currentBlock == 0 && instr.is_valid()) {

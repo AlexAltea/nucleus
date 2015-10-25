@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "segment.h"
+#include "nucleus/memory/segment.h"
 
 namespace mem {
 
@@ -20,12 +20,12 @@ enum {
     SEG_STACK,             // 0xD0000000 to 0xDFFFFFFF
 
     // Count of memory segments
-    SEG_COUNT,
+    _SEG_COUNT,
 };
 
 class Memory {
     void* m_base;
-    MemorySegment m_segments[SEG_COUNT];
+    Segment m_segments[_SEG_COUNT];
 
 public:
     Memory();
@@ -53,7 +53,7 @@ public:
 
     void* getBaseAddr() { return m_base; }
 
-    MemorySegment& getSegment(size_t id) { return m_segments[id]; }
+    Segment& getSegment(size_t id) { return m_segments[id]; }
 
     template <typename T>
     T& ref(U32 addr) { return *(T*)((U64)m_base + addr); }
@@ -63,5 +63,3 @@ public:
 };
 
 }  // namespace mem
-
-extern std::unique_ptr<mem::Memory> memory;

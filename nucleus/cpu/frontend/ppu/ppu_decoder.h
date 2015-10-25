@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/format.h"
+#include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/hir/module.h"
 #include "nucleus/cpu/hir/type.h"
 #include "nucleus/cpu/hir/value.h"
@@ -91,6 +92,9 @@ public:
 class Module : public frontend::Module<U32> {
 public:
     Function* addFunction(U32 addr);
+
+    // Constructor
+    Module(CPU* parent);
 
     // Generate a list of functions and analyze them
     void analyze();

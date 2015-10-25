@@ -15,6 +15,9 @@
 
 namespace sys {
 
+// Forward declarations
+class LV2;
+
 struct Module {
     std::string name;
     std::unordered_map<U32, Syscall*> functions;
@@ -23,10 +26,12 @@ struct Module {
 };
 
 class ModuleManager {
-    std::vector<Module> m_modules;
+    LV2* parent;
+
+    std::vector<Module> modules;
 
 public:
-    ModuleManager();
+    ModuleManager(LV2* parent);
 
     // Check if a certain library function is available for HLE
     bool find(const std::string& libraryName, U32 functionId);

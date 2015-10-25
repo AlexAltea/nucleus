@@ -10,9 +10,15 @@
 namespace cpu {
 namespace frontend {
 
+// Forward declarations
+template <typename TAddr>
+class Function;
+
 template <typename TAddr>
 class Block {
 public:
+    Function<TAddr>* parent;
+
     // Starting address
     TAddr address = 0;
 
@@ -34,6 +40,7 @@ public:
     Block<TAddr> split(TAddr cut) {
         // Configure new block
         Block<TAddr> new_block{};
+        new_block.parent = parent;
         new_block.address = cut;
         new_block.size = size - (cut - address);
         new_block.branch_a = branch_a;

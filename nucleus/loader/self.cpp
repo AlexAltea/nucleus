@@ -71,17 +71,18 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
                 break;
             }
 
-            memory->getSegment(mem::SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
-            memcpy(memory->ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
+            nucleus.memory->getSegment(mem::SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
+            memcpy(nucleus.memory->ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
             if (phdr.flags & PF_X) {
-                auto segment = new cpu::frontend::ppu::Module();
-                segment->address = phdr.vaddr;
-                segment->size = phdr.filesz;
+                auto module = new cpu::frontend::ppu::Module(nucleus.cpu.get());
+                module->parent = nucleus.cpu.get();
+                module->address = phdr.vaddr;
+                module->size = phdr.filesz;
                 if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
-                    segment->analyze();
-                    segment->recompile();
+                    module->analyze();
+                    module->recompile();
                 }
-                static_cast<cpu::Cell*>(nucleus.cpu.get())->ppu_modules.push_back(segment);
+                static_cast<cpu::Cell*>(nucleus.cpu.get())->ppu_modules.push_back(module);
             }
             break;
 
@@ -125,8 +126,8 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
 
         if (phdr.type == PT_LOAD) {
             // Allocate memory and copy segment contents
-            const U32 addr = memory->getSegment(mem::SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
-            memcpy(memory->ptr(addr), &elf[phdr.offset], phdr.filesz);
+            const U32 addr = nucleus.memory->getSegment(mem::SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
+            memcpy(nucleus.memory->ptr(addr), &elf[phdr.offset], phdr.filesz);
 
             // Add information for PRX Object
             sys::sys_prx_segment_t segment;
@@ -223,22 +224,22 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
                 switch (rel.type.ToLE()) {
                 case R_PPC64_ADDR32:
                     value = (U32)prx.segments[rel.index_value].addr + rel.ptr;
-                    memory->write32(addr, value);
+                    nucleus.memory->write32(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_LO:
                     value = (U16)rel.ptr;
-                    memory->write16(addr, value);
+                    nucleus.memory->write16(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_HI:
                     value = (U16)(prx.segments[rel.index_value].addr >> 16);
-                    memory->write16(addr, value);
+                    nucleus.memory->write16(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_HA:
                     value = (U16)(prx.segments[1].addr >> 16);
-                    memory->write16(addr, value);
+                    nucleus.memory->write16(addr, value);
                     break;
 
                 default:
@@ -277,14 +278,14 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
 
         for (const auto& import : importedLib.exports) {
             const U32 fnid = import.first;
-            memory->write32(import.second, targetLibrary->exports.at(fnid));
+            nucleus.memory->write32(import.second, targetLibrary->exports.at(fnid));
         }
     }
 
     // Recompile executable segments
     for (auto& prx_segment : prx.segments) {
         if (prx_segment.flags & PF_X) {
-            auto segment = new cpu::frontend::ppu::Module();
+            auto segment = new cpu::frontend::ppu::Module(nucleus.cpu.get());
             segment->address = prx_segment.addr;
             segment->size = prx_segment.size_file;
             if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {

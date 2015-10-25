@@ -15,6 +15,8 @@ class Cell : public CPU {
 public:
     // Executable memory segments
     std::vector<frontend::ppu::Module*> ppu_modules;
+
+    Cell(std::shared_ptr<mem::Memory> memory);
 };
 
 }  // namespace cpu

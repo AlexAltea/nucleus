@@ -10,6 +10,7 @@
 #include "tests/cpu/common.h"
 
 // Target
+#include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/backend/x86/x86_compiler.h"
 #include "nucleus/cpu/backend/ppc/ppc_assembler.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
@@ -52,12 +53,20 @@ public:
 
     std::unique_ptr<backend::Compiler> compiler;
 
+    // Mock hardware
+    std::shared_ptr<mem::Memory> memory;
+    std::shared_ptr<cpu::CPU> cpu;
+
     U32 buffer[256];
     PPUState state;
 
     PPCTestRunner() {
         module = new hir::Module();
         function = new hir::Function(module, hir::TYPE_VOID);
+
+        // Create mock hardware
+        memory = std::make_shared<mem::Memory>();
+        cpu = std::make_shared<cpu::CPU>(memory);
 
         compiler = std::make_unique<backend::x86::X86Compiler>();
         compiler->addPass(std::make_unique<hir::passes::RegisterAllocationPass>(compiler->targetInfo));
@@ -68,7 +77,7 @@ protected:
         function->reset();
         block = new hir::Block(function);
 
-        Recompiler recompiler(nullptr);
+        Recompiler recompiler(cpu.get(), nullptr);
         recompiler.builder.setInsertPoint(block);
 
         U32 buffer[256];
@@ -77,7 +86,7 @@ protected:
 
         for (size_t i = 0; i < a.codeSize; i += 4) {
             Instruction instr;
-            instr.instruction = *static_cast<U32*>(a.codeAddr);
+            instr.value = *static_cast<U32*>(a.codeAddr);
             auto method = get_entry(instr).recompile;
             (recompiler.*method)(instr);
         }

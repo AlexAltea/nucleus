@@ -18,6 +18,8 @@ namespace ppu {
 
 class Recompiler : public frontend::IRecompiler<U32> {
 private:
+    CPU* parent;
+
     // Register read
     hir::Value* getGPR(int index, hir::Type type = hir::TYPE_I64);
     hir::Value* getFPR(int index, hir::Type type = hir::TYPE_F64);
@@ -64,7 +66,7 @@ private:
 public:
     hir::Builder builder;
 
-    Recompiler(Function* function);
+    Recompiler(CPU* parent, Function* function);
 
     void createProlog();
     void createEpilog();

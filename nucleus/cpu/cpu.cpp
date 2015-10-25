@@ -21,7 +21,7 @@ namespace cpu {
 
 thread_local Thread* gCurrentThread = nullptr;
 
-CPU::CPU() {
+CPU::CPU(std::shared_ptr<mem::Memory> memory) : memory(std::move(memory)) {
 #if defined(NUCLEUS_ARCH_X86)
     compiler = std::make_unique<backend::x86::X86Compiler>();
 #elif defined(NUCLEUS_ARCH_ARM)

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/filesystem/filesystem.h"
 #include "nucleus/system/module.h"
@@ -109,10 +110,12 @@ public:
     ObjectManager objects;
     ModuleManager modules;
 
+    std::shared_ptr<mem::Memory> memory;
+
     // Process information
     sys_process_t proc;
 
-    LV2(U32 fw_type);
+    LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type);
 
     // Start the process at the given entry point
     bool init(U32 entry);

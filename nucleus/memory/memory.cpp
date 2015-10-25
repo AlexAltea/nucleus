@@ -18,9 +18,6 @@
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
-// Global memory object
-std::unique_ptr<mem::Memory> memory;
-
 namespace mem {
 
 Memory::Memory() {
@@ -37,12 +34,12 @@ Memory::Memory() {
     }
 
     // Initialize segments
-    m_segments[SEG_MAIN_MEMORY].init(0x00010000, 0x2FFF0000);
-    m_segments[SEG_USER_MEMORY].init(0x10000000, 0x10000000);
-    m_segments[SEG_RSX_MAP_MEMORY].init(0x40000000, 0x10000000);
-    m_segments[SEG_MMAPPER_MEMORY].init(0xB0000000, 0x10000000);
-    m_segments[SEG_RSX_LOCAL_MEMORY].init(0xC0000000, 0x10000000);
-    m_segments[SEG_STACK].init(0xD0000000, 0x10000000);
+    m_segments[SEG_MAIN_MEMORY].init(this, 0x00010000, 0x2FFF0000);
+    m_segments[SEG_USER_MEMORY].init(this, 0x10000000, 0x10000000);
+    m_segments[SEG_RSX_MAP_MEMORY].init(this, 0x40000000, 0x10000000);
+    m_segments[SEG_MMAPPER_MEMORY].init(this, 0xB0000000, 0x10000000);
+    m_segments[SEG_RSX_LOCAL_MEMORY].init(this, 0xC0000000, 0x10000000);
+    m_segments[SEG_STACK].init(this, 0xD0000000, 0x10000000);
 }
 
 Memory::~Memory() {

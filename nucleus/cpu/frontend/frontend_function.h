@@ -22,6 +22,9 @@ class Module;
 template <typename TAddr>
 class Function {
 public:
+    // Parent segment
+    Module<TAddr>* parent;
+
     // HIR Function
     hir::Function* hirFunction;
 
@@ -33,9 +36,6 @@ public:
 
     // Name of this function
     std::string name;
-
-    // Parent segment
-    Module<TAddr>* parent;
 
     // Control Flow Graph
     std::map<TAddr, Block<TAddr>*> blocks;
