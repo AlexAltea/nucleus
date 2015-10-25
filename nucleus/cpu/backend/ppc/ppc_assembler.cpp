@@ -266,7 +266,7 @@ void PPCAssembler::mffs() {  }
 void PPCAssembler::mffs_() {  }
 void PPCAssembler::mfocrf(RegGPR rd, U8 crm) { emitFormXFX(0x7C000026, rd, (0x200 | (crm << 1))); }
 void PPCAssembler::mfcr(RegGPR rd) { emitFormXFX(0x7C000026, rd, 0); }
-void PPCAssembler::mfspr(RegGPR rd, U16 spr) { emitFormXFX(0x7C0002A6, rd, spr); }
+void PPCAssembler::mfspr(RegGPR rd, U16 spr) { emitFormXFX(0x7C0002A6, rd, ((spr & 0x1F) << 5) | ((spr >> 5) & 0x1F)); }
 void PPCAssembler::mfxer(RegGPR rd) { mfspr(rd, 1); }
 void PPCAssembler::mflr(RegGPR rd) { mfspr(rd, 8); }
 void PPCAssembler::mfctr(RegGPR rd) { mfspr(rd, 9); }
@@ -279,7 +279,7 @@ void PPCAssembler::mtfsfx() {  }
 void PPCAssembler::mtocrf(U8 crm, RegGPR rs) { emitFormXFX(0x7C000120, rs, (0x200 | (crm << 1))); }
 void PPCAssembler::mtcrf(U8 crm, RegGPR rs) { emitFormXFX(0x7C000120, rs, (crm << 1)); }
 void PPCAssembler::mtcr(RegGPR rs) { mtcrf(0xFF, rs); }
-void PPCAssembler::mtspr(U16 spr, RegGPR rs) { emitFormXFX(0x7C0003A6, rs, spr); }
+void PPCAssembler::mtspr(U16 spr, RegGPR rs) { emitFormXFX(0x7C0003A6, rs, ((spr & 0x1F) << 5) | ((spr >> 5) & 0x1F)); }
 void PPCAssembler::mtxer(RegGPR rs) { mtspr(1, rs); }
 void PPCAssembler::mtlr(RegGPR rs) { mtspr(8, rs); }
 void PPCAssembler::mtctr(RegGPR rs) { mtspr(9, rs); }

@@ -160,9 +160,10 @@ Value* Recompiler::getLR() {
 
 Value* Recompiler::getXER() {
     Value* xer = builder.getConstantI64(0);
-    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_SO(), TYPE_I64), 31));
-    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_OV(), TYPE_I64), 30));
-    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_CA(), TYPE_I64), 29));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_SO(), TYPE_I64), U64(31)));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_OV(), TYPE_I64), U64(30)));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_CA(), TYPE_I64), U64(29)));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_BC(), TYPE_I64), U64(0)));
     return xer;
 }
 
@@ -178,6 +179,11 @@ Value* Recompiler::getXER_OV() {
 
 Value* Recompiler::getXER_CA() {
     constexpr U32 offset = offsetof(PPUState, xer.ca);
+    return builder.createCtxLoad(offset, TYPE_I8);
+}
+
+Value* Recompiler::getXER_BC() {
+    constexpr U32 offset = offsetof(PPUState, xer.bc);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
@@ -291,13 +297,13 @@ void Recompiler::setXER(Value* value) {
     Value* bc_i64 = builder.createAnd(value, builder.getConstantI64(0x7F));
     builder.createCtxStore(offset_bc, builder.createTrunc(bc_i64, TYPE_I8));
 
-    Value* ca_i64 = builder.createAnd(builder.createShl(value, 29), builder.getConstantI64(1));
+    Value* ca_i64 = builder.createAnd(builder.createShr(value, 29), builder.getConstantI64(1));
     builder.createCtxStore(offset_ca, builder.createTrunc(ca_i64, TYPE_I8));
 
-    Value* ov_i64 = builder.createAnd(builder.createShl(value, 30), builder.getConstantI64(1));
+    Value* ov_i64 = builder.createAnd(builder.createShr(value, 30), builder.getConstantI64(1));
     builder.createCtxStore(offset_ov, builder.createTrunc(ov_i64, TYPE_I8));
 
-    Value* so_i64 = builder.createAnd(builder.createShl(value, 31), builder.getConstantI64(1));
+    Value* so_i64 = builder.createAnd(builder.createShr(value, 31), builder.getConstantI64(1));
     builder.createCtxStore(offset_so, builder.createTrunc(so_i64, TYPE_I8));
 }
 
@@ -316,6 +322,12 @@ void Recompiler::setXER_OV(Value* value) {
 void Recompiler::setXER_CA(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::CA field");
     constexpr U32 offset = offsetof(PPUState, xer.ca);
+    builder.createCtxStore(offset, value);
+}
+
+void Recompiler::setXER_BC(Value* value) {
+    assert_true(value->type == TYPE_I8, "Wrong value type for XER::CA field");
+    constexpr U32 offset = offsetof(PPUState, xer.bc);
     builder.createCtxStore(offset, value);
 }
 

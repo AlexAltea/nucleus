@@ -29,6 +29,7 @@ private:
     hir::Value* getXER_SO();
     hir::Value* getXER_OV();
     hir::Value* getXER_CA();
+    hir::Value* getXER_BC();
     hir::Value* getCTR();
     hir::Value* getFPSCR();
 
@@ -43,6 +44,7 @@ private:
     void setXER_SO(hir::Value* value);
     void setXER_OV(hir::Value* value);
     void setXER_CA(hir::Value* value);
+    void setXER_BC(hir::Value* value);
     void setCTR(hir::Value* value);
     void setFPSCR(hir::Value* value);
 
