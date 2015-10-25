@@ -40,10 +40,10 @@ Thread* CPU::addThread(ThreadType type) {
     Thread* thread;
     switch (type) {
     case THREAD_TYPE_PPU:
-        thread = new frontend::ppu::PPUThread();
+        thread = new frontend::ppu::PPUThread(this);
         break;
     case THREAD_TYPE_SPU:
-        thread = new frontend::spu::SPUThread();
+        thread = new frontend::spu::SPUThread(this);
         return nullptr;
     case THREAD_TYPE_RAWSPU:
         logger.error(LOG_CPU, "Unimplemented CPU thread type");

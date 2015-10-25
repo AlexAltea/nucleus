@@ -19,7 +19,7 @@ class SPUThread : public Thread {
 public:
     std::unique_ptr<SPUState> state;
 
-    SPUThread();
+    SPUThread(CPU* parent = nullptr);
     ~SPUThread();
 
     virtual void start() override;

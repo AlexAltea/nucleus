@@ -7,6 +7,9 @@
 
 namespace cpu {
 
+Thread::Thread(CPU* parent) : parent(parent) {
+}
+
 void Thread::join() {
     m_thread.join();
 }

@@ -19,7 +19,7 @@ class PPUThread : public Thread {
 public:
     std::unique_ptr<PPUState> state;
 
-    PPUThread();
+    PPUThread(CPU* parent = nullptr);
     ~PPUThread();
 
     virtual void start() override;

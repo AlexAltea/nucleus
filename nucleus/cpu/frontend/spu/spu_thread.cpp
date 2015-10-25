@@ -12,7 +12,7 @@ namespace cpu {
 namespace frontend {
 namespace spu {
 
-SPUThread::SPUThread() {
+SPUThread::SPUThread(CPU* parent) : Thread(parent) {
     state = std::make_unique<SPUState>();
 }
 

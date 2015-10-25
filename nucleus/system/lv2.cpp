@@ -161,7 +161,7 @@ bool LV2::init(U32 entry) {
     sys_ppu_thread_create(&thread_id, &attr, 0, 0, 500/*TODO*/, 0x10000, 0, "main"/*TODO*/);
 
     // Set sys_initialize_tls arguments for liblv2.sprx's start function
-    auto* state = objects.get<cpu::frontend::ppu::PPUThread>(thread_id)->state.get();
+    auto* state = objects.get<sys_ppu_thread_t>(thread_id)->thread->state.get();
     state->r[7] = 0x0; // TODO
     state->r[8] = 0x0; // TODO
     state->r[9] = 0x0; // TODO

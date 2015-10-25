@@ -58,13 +58,13 @@ S32 sys_ppu_thread_exit(S32 errorcode) {
 S32 sys_ppu_thread_get_priority(U64 thread_id, BE<S32>* prio) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
-    auto* thread = lv2.objects.get<cpu::frontend::ppu::PPUThread>(thread_id);
+    auto* ppu_thread = lv2.objects.get<sys_ppu_thread_t>(thread_id);
 
     // Check requisites
     if (prio == memory->ptr(0)) {
         return CELL_EFAULT;
     }
-    if (!thread) {
+    if (!ppu_thread) {
         return CELL_ESRCH;
     }
 
@@ -86,28 +86,28 @@ S32 sys_ppu_thread_get_stack_information(sys_ppu_thread_stack_t* sp) {
 S32 sys_ppu_thread_join(U64 thread_id, BE<U64>* vptr) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
-    auto* thread = lv2.objects.get<cpu::frontend::ppu::PPUThread>(thread_id);
+    auto* ppu_thread = lv2.objects.get<sys_ppu_thread_t>(thread_id);
 
     // Check requisites
-    if (!thread) {
+    if (!ppu_thread) {
         return CELL_ESRCH;
     }
 
-    thread->join();
+    ppu_thread->thread->join();
     return CELL_OK;
 }
 
 S32 sys_ppu_thread_start(U64 thread_id) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
-    auto* thread = lv2.objects.get<cpu::frontend::ppu::PPUThread>(thread_id);
+    auto* ppu_thread = lv2.objects.get<sys_ppu_thread_t>(thread_id);
 
     // Check requisites
-    if (!thread) {
+    if (!ppu_thread) {
         return CELL_ESRCH;
     }
 
-    thread->start();
+    ppu_thread->thread->start();
     return CELL_OK;
 }
 

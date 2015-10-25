@@ -12,7 +12,7 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-PPUThread::PPUThread() {
+PPUThread::PPUThread(CPU* parent) : Thread(parent) {
     state = std::make_unique<PPUState>();
 }
 

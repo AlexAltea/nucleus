@@ -37,6 +37,9 @@ protected:
 public:
     CPU* parent;
 
+    // Constructor
+    Thread(CPU* parent = nullptr);
+
     // Open a new thread that will enter the code emulation loop
     virtual void start() = 0;
 
