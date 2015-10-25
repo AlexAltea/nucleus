@@ -81,21 +81,21 @@ std::string RSXFragmentProgram::get_header()
 
     // Input registers
     for (const auto& reg : input_regs) {
-        if (usedInputs & (1 << reg.rsxIndex) && !reg.predefined) {
+        if (usedInputs & (1ULL << reg.rsxIndex) && !reg.predefined) {
             header += format("in vec4 %s;", reg.glReg);
         }
     }
 
     // Output registers
     for (const auto& reg : output_regs) {
-        if (usedOutputs & (1 << reg.rsxRegIndex32)) {
+        if (usedOutputs & (1ULL << reg.rsxRegIndex32)) {
             header += format("layout (location = %d) out vec4 %s;", reg.rsxRegIndex32, reg.glReg);
         }
     }
 
     // Sampler registers
     for (int i = 0; i < 16; i++) {
-        if (usedSamplers & (1 << i)) {
+        if (usedSamplers & (1ULL << i)) {
             header += format("layout (binding = %d) uniform sampler2D tex%d;", i, i);
         }
     }
@@ -155,13 +155,13 @@ std::string RSXFragmentProgram::get_dst()
     if (instr.dst_index >= 48) {
         logger.error(LOG_GPU, "Fragment program: Destination register out of range");
     }
-    usedOutputs |= (1 << instr.dst_index);
+    usedOutputs |= (1ULL << instr.dst_index);
     return format("%s[%d]%s", instr.dst_half ? "h" : "r", instr.dst_index, get_fp_mask(instr.dst_mask));
 }
 
 std::string RSXFragmentProgram::get_tex()
 {
-    usedSamplers |= (1 << instr.tex);
+    usedSamplers |= (1ULL << instr.tex);
     return format("tex%d", instr.tex);
 }
 
@@ -214,14 +214,14 @@ void RSXFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
 
     // Map OpenGL input attributes to RSX input registers
     for (const auto& reg : input_regs) {
-        if (usedInputs & (1 << reg.rsxIndex)) {
+        if (usedInputs & (1ULL << reg.rsxIndex)) {
             source = format("%s = %s;", reg.rsxReg, reg.glReg) + source;
         }
     }
 
     // Map RSX output registers to OpenGL output attributes
     for (const auto& reg : output_regs) {
-        if (usedOutputs & (1 << reg.rsxRegIndex32)) {
+        if (usedOutputs & (1ULL << reg.rsxRegIndex32)) {
             source += format("%s = r[%d];", reg.glReg, reg.rsxRegIndex32);
         }
     }

@@ -29,7 +29,7 @@ DMAObject dma_address(U32 dma_object)
     }
 }
 
-U8 dma_read8(U32 dma_object, U8 offset)
+U8 dma_read8(U32 dma_object, U32 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -41,7 +41,7 @@ U8 dma_read8(U32 dma_object, U8 offset)
     return 0;
 }
 
-U16 dma_read16(U32 dma_object, U16 offset)
+U16 dma_read16(U32 dma_object, U32 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -65,7 +65,7 @@ U32 dma_read32(U32 dma_object, U32 offset)
     return 0;
 }
 
-U64 dma_read64(U32 dma_object, U64 offset)
+U64 dma_read64(U32 dma_object, U32 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 

@@ -23,8 +23,7 @@ std::unique_ptr<mem::Memory> memory;
 
 namespace mem {
 
-void Memory::init()
-{
+Memory::Memory() {
     // Reserve 4 GB of memory for any 32-bit pointer in the PS3 memory
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     m_base = VirtualAlloc(nullptr, 0x100000000ULL, MEM_RESERVE, PAGE_NOACCESS);
@@ -46,8 +45,7 @@ void Memory::init()
     m_segments[SEG_STACK].init(0xD0000000, 0x10000000);
 }
 
-void Memory::close()
-{
+Memory::~Memory() {
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (!VirtualFree(m_base, 0, MEM_RELEASE)) {
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)

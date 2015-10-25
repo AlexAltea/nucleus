@@ -103,7 +103,7 @@ void RSX::task()
             continue;
         }
 
-        for (int i = 0; i < cmd.method_count; i++) {
+        for (U32 i = 0; i < cmd.method_count; i++) {
             const U32 offset = (cmd.method_offset << 2) + (cmd.flag_ni ? 0 : 4*i);
             const U32 parameter = io_read32(get + 4*(i+1));
             //logger.notice(LOG_GPU, "METHOD: 0x%X;  IO: 0x%X;  PARAM: 0x%X", offset, get, parameter);
@@ -185,7 +185,7 @@ void RSX::method(U32 offset, U32 parameter)
         break;
 
     case NV4097_SET_ALPHA_REF:
-        pgraph.alpha_ref = parameter;
+        pgraph.alpha_ref = reinterpret_cast<F32&>(parameter);
         pgraph.AlphaFunc(pgraph.alpha_func, pgraph.alpha_ref);
         break;
 

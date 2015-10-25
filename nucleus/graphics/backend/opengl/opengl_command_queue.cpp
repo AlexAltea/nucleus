@@ -54,9 +54,9 @@ void OpenGLCommandQueue::executeClearColor(const OpenGLCommandData& data)
 
 void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data)
 {
-    const GLfloat framebuffer = data.clearDepthStencil.framebuffer;
+    const GLuint framebuffer = data.clearDepthStencil.framebuffer;
     const GLfloat depth = data.clearDepthStencil.depth;
-    const GLfloat stencil = data.clearDepthStencil.stencil;
+    const GLint stencil = data.clearDepthStencil.stencil;
 
 #if defined(GRAPHICS_OPENGL_GL45)
     glClearNamedFramebufferfi(framebuffer, GL_DEPTH_STENCIL, depth, stencil);
@@ -71,6 +71,10 @@ void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data)
 void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer)
 {
     commandBuffers.push(dynamic_cast<OpenGLCommandBuffer*>(cmdBuffer));
+}
+
+void OpenGLCommandQueue::waitIdle()
+{
 }
 
 }  // namespace graphics

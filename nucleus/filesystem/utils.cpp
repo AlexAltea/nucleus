@@ -24,9 +24,9 @@ Path getEmulatorPath()
 
     Path exePath = buffer;
 #ifdef NUCLEUS_PLATFORM_WINDOWS
-    int pos = exePath.rfind('\\');
+    size_t pos = exePath.rfind('\\');
 #else
-    int pos = exePath.rfind('/');
+    size_t pos = exePath.rfind('/');
 #endif
 
     return exePath.substr(0, pos+1);
@@ -57,9 +57,9 @@ Path getProcessPath(const Path& elfPath)
     // Get the path to the actual folder containing the ELF binary
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     std::replace(procPath.begin(), procPath.end(), '/', '\\');
-    int pos = procPath.rfind('\\');
+    size_t pos = procPath.rfind('\\');
 #else
-    int pos = procPath.rfind('/');
+    size_t pos = procPath.rfind('/');
 #endif
 
     return procPath.substr(0, pos+1);

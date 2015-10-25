@@ -39,7 +39,8 @@ bool HostPathDevice::existsFile(const Path& path)
 
 bool HostPathDevice::removeFile(const Path& path)
 {
-    int result = remove((localPath + path).c_str());
+    std::string realPath = localPath + path;
+    int result = remove(realPath.c_str());
     if (!remove) {
         return false;
     }

@@ -75,17 +75,17 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count)
 
             switch (typeSize) {
             case 1:
-                for (size_t j = 0; j < attr.size; j++) {
+                for (U8 j = 0; j < attr.size; j++) {
                     ((U8*)dst)[j] = memory->read8(src + 1*j);
                 }
                 break;
             case 2:
-                for (size_t j = 0; j < attr.size; j++) {
+                for (U8 j = 0; j < attr.size; j++) {
                     ((U16*)dst)[j] = memory->read16(src + 2*j);
                 }
                 break;
             case 4:
-                for (size_t j = 0; j < attr.size; j++) {
+                for (U8 j = 0; j < attr.size; j++) {
                     ((U32*)dst)[j] = memory->read32(src + 4*j);
                 }
                 break;

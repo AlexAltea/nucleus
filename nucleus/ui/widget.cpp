@@ -11,7 +11,7 @@ float Widget::getCoordinateX(Length x)
     float coordinate;
     switch (x.unit) {
     case Length::Unit::PCT:
-        coordinate = (x.value * 2.0) - 1.0;
+        coordinate = (x.value * 2.0f) - 1.0f;
         break;
     }
     return coordinate;
@@ -22,7 +22,7 @@ float Widget::getCoordinateY(Length y)
     float coordinate;
     switch (y.unit) {
     case Length::Unit::PCT:
-        coordinate = 1.0 - (y.value * 2.0);
+        coordinate = 1.0f - (y.value * 2.0f);
         break;
     }
 

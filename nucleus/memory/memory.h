@@ -28,8 +28,8 @@ class Memory {
     MemorySegment m_segments[SEG_COUNT];
 
 public:
-    void init();
-    void close();
+    Memory();
+    ~Memory();
 
     U32 alloc(U32 size, U32 align=1);
     void free(U32 addr);

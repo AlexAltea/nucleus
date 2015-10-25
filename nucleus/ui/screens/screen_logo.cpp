@@ -26,7 +26,7 @@ void ScreenLogo::render()
 void ScreenLogo::update()
 {
     if (dtime > 2000.0) {
-        logo.style.opacity = 1.0 - transition::easeOut((dtime - 2000.0) / 1000.0);
+        logo.style.opacity = 1.0f - transition::easeOut((dtime - 2000.0f) / 1000.0f);
     }
     if (dtime > 3000.0) {
         if (!config.boot.empty()) {

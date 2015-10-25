@@ -78,7 +78,7 @@ class PGRAPH {
 public:
     // Registers
     U32 alpha_func;
-    U32 alpha_ref;
+    F32 alpha_ref;
     U16 blend_sfactor_rgb;
     U16 blend_sfactor_alpha;
     U16 blend_dfactor_rgb;
