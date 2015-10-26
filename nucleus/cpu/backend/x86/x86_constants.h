@@ -51,7 +51,6 @@ void getXmmConstantCompI64(X86Emitter& e, Xbyak::Xmm dest, const S64 constant);
 void getXmmConstantCompF32(X86Emitter& e, Xbyak::Xmm dest, const F32 constant);
 void getXmmConstantCompF64(X86Emitter& e, Xbyak::Xmm dest, const F64 constant);
 
-
 }  // namespace x86
 }  // namespace backend
 }  // namespace cpu
