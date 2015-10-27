@@ -27,6 +27,8 @@
 *.lastcodeanalysissucceeded
 *.opensdf
 *.pdb
+*.ipdb
+*.iobj
 *.sdf
 *.suo
 *.user

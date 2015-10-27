@@ -51,13 +51,13 @@ private:
     void emit(U32 instruction);
 
     // Emit instruction form
-    void emitFormI(Operand opcd, Operand li, bool aa, bool lk);
-    void emitFormB(Operand opcd, Operand bo, Operand bi, Operand bd, bool aa, bool lk);
+    void emitFormI(U32 instruction, Operand li);
+    void emitFormB(U32 instruction, Operand bo, Operand bi, Operand bd);
     void emitFormSC(Operand opcd);
     void emitFormD(U32 instruction, Operand d, Operand a, U16 imm);
     void emitFormDS(U32 instruction, Operand d, Operand a, U16 imm);
     void emitFormX(U32 instruction, Operand d, Operand a, Operand b);
-    void emitFormXL(Operand opcd, Operand d, Operand a, Operand b, Operand xo, bool lk);
+    void emitFormXL(U32 instruction, Operand d, Operand a, Operand b);
     void emitFormXFX(U32 instruction, Operand d, Operand spr);
     void emitFormXFL(Operand opcd, Operand fm, Operand b, Operand xo, bool rc);
     void emitFormXS(Operand opcd, Operand s, Operand a, Operand sh, Operand xo, bool rc);
@@ -98,10 +98,46 @@ public:
     void andc_(RegGPR ra, RegGPR rs, RegGPR rb);
     void andi_(RegGPR ra, RegGPR rs, U16 uimm);
     void andis_(RegGPR ra, RegGPR rs, U16 uimm);
-    void bcctrx(); // TODO
-    void bclrx(); // TODO
-    void bcx(); // TODO
-    void bx(); // TODO
+    void b(Label label);
+    void ba(Label label);
+    void bl(Label label);
+    void bla(Label label);
+    void bc(U8 bo, U8 bi, Label label);
+    void blt(RegCR cr, Label label);
+    void ble(RegCR cr, Label label);
+    void beq(RegCR cr, Label label);
+    void bge(RegCR cr, Label label);
+    void bgt(RegCR cr, Label label);
+    void bne(RegCR cr, Label label);
+    void bso(RegCR cr, Label label);
+    void bca(U8 bo, U8 bi, Label label);
+    void blta(RegCR cr, Label label);
+    void blea(RegCR cr, Label label);
+    void beqa(RegCR cr, Label label);
+    void bgea(RegCR cr, Label label);
+    void bgta(RegCR cr, Label label);
+    void bnea(RegCR cr, Label label);
+    void bsoa(RegCR cr, Label label);
+    void bcl(U8 bo, U8 bi, Label label);
+    void bltl(RegCR cr, Label label);
+    void blel(RegCR cr, Label label);
+    void beql(RegCR cr, Label label);
+    void bgel(RegCR cr, Label label);
+    void bgtl(RegCR cr, Label label);
+    void bnel(RegCR cr, Label label);
+    void bsol(RegCR cr, Label label);
+    void bcla(U8 bo, U8 bi, Label label);
+    void bltla(RegCR cr, Label label);
+    void blela(RegCR cr, Label label);
+    void beqla(RegCR cr, Label label);
+    void bgela(RegCR cr, Label label);
+    void bgtla(RegCR cr, Label label);
+    void bnela(RegCR cr, Label label);
+    void bsola(RegCR cr, Label label);
+    void bcctr(U8 bo, U8 bi, U8 bh, Label label);
+    void bcctrl(U8 bo, U8 bi, U8 bh, Label label);
+    void bclr(U8 bo, U8 bi, U8 bh, Label label);
+    void bclrl(U8 bo, U8 bi, U8 bh, Label label);
     void cmp(RegCR crfd, RegGPR ra, RegGPR rb);
     void cmp(RegGPR ra, RegGPR rb);
     void cmpd(RegCR crfd, RegGPR ra, RegGPR rb);
@@ -130,14 +166,14 @@ public:
     void cntlzd_(RegGPR ra, RegGPR rs);
     void cntlzw(RegGPR ra, RegGPR rs);
     void cntlzw_(RegGPR ra, RegGPR rs);
-    void crand(RegCR crfd, RegCR crfa, RegCR crfb);
-    void crandc(RegCR crfd, RegCR crfa, RegCR crfb);
-    void creqv(RegCR crfd, RegCR crfa, RegCR crfb);
-    void crnand(RegCR crfd, RegCR crfa, RegCR crfb);
-    void crnor(RegCR crfd, RegCR crfa, RegCR crfb);
-    void cror(RegCR crfd, RegCR crfa, RegCR crfb);
-    void crorc(RegCR crfd, RegCR crfa, RegCR crfb);
-    void crxor(RegCR crfd, RegCR crfa, RegCR crfb);
+    void crand(U8 crfd, U8 crfa, U8 crfb);
+    void crandc(U8 crfd, U8 crfa, U8 crfb);
+    void creqv(U8 crfd, U8 crfa, U8 crfb);
+    void crnand(U8 crfd, U8 crfa, U8 crfb);
+    void crnor(U8 crfd, U8 crfa, U8 crfb);
+    void cror(U8 crfd, U8 crfa, U8 crfb);
+    void crorc(U8 crfd, U8 crfa, U8 crfb);
+    void crxor(U8 crfd, U8 crfa, U8 crfb);
     void dcbf(RegGPR ra, RegGPR rb);
     void dcbst(RegGPR ra, RegGPR rb);
     void dcbt(); // TODO

@@ -21,5 +21,9 @@ public:
     Assembler(size_t codeSize = 4096, void* codeAddr = nullptr);
 };
 
+class Label {
+public:
+};
+
 }  // namespace backend
 }  // namespace cpu
