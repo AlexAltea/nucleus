@@ -326,7 +326,7 @@ public:
     void nop();
     void nor(RegGPR ra, RegGPR rs, RegGPR rb);
     void nor_(RegGPR ra, RegGPR rs, RegGPR rb);
-    void not_(RegGPR rd, RegGPR rs );
+    void not_(RegGPR ra, RegGPR rs );
     void or_(RegGPR ra, RegGPR rs, RegGPR rb);
     void or__(RegGPR ra, RegGPR rs, RegGPR rb);
     void orc(RegGPR ra, RegGPR rs, RegGPR rb);

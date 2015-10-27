@@ -7,7 +7,7 @@ Created by Alexandro Sánchez Bach.
 
 A PlayStation 3 emulator for Windows / Linux / OS X / Android / iOS released under GPLv2 license.
 
-### Dependencies
+### Requirements
 You need to provide the PlayStation 3 firmware keys by placing a file named `keys.xml` next to the Nucleus executable. This file has to meet the requirements stated [here](docs/user/keys.md). Instructions about how to extract the keys and generate the file will be provided as well.
 
 ### Building

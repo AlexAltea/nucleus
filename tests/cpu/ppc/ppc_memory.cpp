@@ -524,6 +524,10 @@ void PPCTestRunner::lhax() {
     test_lhax(r1, addr + 0x00, 0x0000000000000010ULL, 0xFFFFFFFFFFFFFFFFULL);
     test_lhax(r1, addr + 0x10, 0xFFFFFFFFFFFFFFFEULL, 0x0000000000000000ULL);
     test_lhax(r1, addr + 0x08, 0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFEF00ULL);
+    test_lhax(r0, 0x8000000000000000ULL, addr + 0x00, 0x0000000000000123ULL);
+    test_lhax(r0, 0x8000000000000000ULL, addr + 0x10, 0xFFFFFFFFFFFFFFFFULL);
+    test_lhax(r0, 0x8000000000000000ULL, addr + 0x0E, 0x0000000000000000ULL);
+    test_lhax(r0, 0x8000000000000000ULL, addr + 0x07, 0xFFFFFFFFFFFFEF00ULL);
     memory->free(addr);
 }
 
@@ -651,6 +655,10 @@ void PPCTestRunner::lhzx() {
     test_lhzx(r1, addr + 0x00, 0x0000000000000010ULL, 0x000000000000FFFFULL);
     test_lhzx(r1, addr + 0x10, 0xFFFFFFFFFFFFFFFEULL, 0x0000000000000000ULL);
     test_lhzx(r1, addr + 0x08, 0xFFFFFFFFFFFFFFFFULL, 0x000000000000EF00ULL);
+    test_lhzx(r0, 0x8000000000000000ULL, addr + 0x00, 0x0000000000000123ULL);
+    test_lhzx(r0, 0x8000000000000000ULL, addr + 0x10, 0x000000000000FFFFULL);
+    test_lhzx(r0, 0x8000000000000000ULL, addr + 0x0E, 0x0000000000000000ULL);
+    test_lhzx(r0, 0x8000000000000000ULL, addr + 0x07, 0x000000000000EF00ULL);
     memory->free(addr);
 }
 
@@ -753,6 +761,10 @@ void PPCTestRunner::lwax() {
     test_lwax(r1, addr + 0x00, 0x0000000000000010ULL, 0xFFFFFFFFFFFFFFFFULL);
     test_lwax(r1, addr + 0x10, 0xFFFFFFFFFFFFFFFCULL, 0x0000000000000000ULL);
     test_lwax(r1, addr + 0x07, 0x0000000000000000ULL, 0xFFFFFFFFEF000000ULL);
+    test_lwax(r0, 0x8000000000000000ULL, addr + 0x00, 0x0000000001234567ULL);
+    test_lwax(r0, 0x8000000000000000ULL, addr + 0x10, 0xFFFFFFFFFFFFFFFFULL);
+    test_lwax(r0, 0x8000000000000000ULL, addr + 0x0C, 0x0000000000000000ULL);
+    test_lwax(r0, 0x8000000000000000ULL, addr + 0x07, 0xFFFFFFFFEF000000ULL);
     memory->free(addr);
 }
 
@@ -880,10 +892,41 @@ void PPCTestRunner::lwzx() {
     test_lwzx(r1, addr + 0x00, 0x0000000000000010ULL, 0x00000000FFFFFFFFULL);
     test_lwzx(r1, addr + 0x10, 0xFFFFFFFFFFFFFFFCULL, 0x0000000000000000ULL);
     test_lwzx(r1, addr + 0x07, 0x0000000000000000ULL, 0x00000000EF000000ULL);
+    test_lwzx(r0, 0x8000000000000000ULL, addr + 0x00, 0x0000000001234567ULL);
+    test_lwzx(r0, 0x8000000000000000ULL, addr + 0x10, 0x00000000FFFFFFFFULL);
+    test_lwzx(r0, 0x8000000000000000ULL, addr + 0x0C, 0x0000000000000000ULL);
+    test_lwzx(r0, 0x8000000000000000ULL, addr + 0x07, 0x00000000EF000000ULL);
     memory->free(addr);
 }
 
 void PPCTestRunner::stb() {
+        // Load Byte and Zero
+    TEST_INSTRUCTION(test_lbz, RAIndex, RA, D, RD, {
+        state.r[RAIndex] = RA;
+        state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
+        run(lbz(r2, RAIndex, D));
+        expect(state.r[2] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    const U32 addr = memory->alloc(0x1000);
+    memory->write64(addr + 0x00, 0x0123456789ABCDEFULL);
+    memory->write64(addr + 0x08, 0x0000000000000000ULL);
+    memory->write64(addr + 0x10, 0xFFFFFFFFFFFFFFFFULL);
+    memory->write64(addr + 0x18, 0x00000000FFFFFFFFULL);
+    memory->write64(addr + 0x20, 0x0000FFFF00FF0000ULL);
+
+    test_lbz(r1, addr + 0x00, 0x0000, 0x0000000000000001ULL);
+    test_lbz(r1, addr + 0x00, 0x0010, 0x00000000000000FFULL);
+    test_lbz(r1, addr + 0x10, 0xFFFF, 0x0000000000000000ULL);
+    test_lbz(r1, addr + 0x08, 0xFFFF, 0x00000000000000EFULL);
+    memory->free(addr);
 }
 
 void PPCTestRunner::stbu() {
