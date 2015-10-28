@@ -17,7 +17,7 @@ void PPCTestRunner::mfocrf() {
     // Move from One Condition Register Field
     TEST_INSTRUCTION(test_mfocrf, CR, CRM, RD, RDDefined, {
         state.setCR(CR);
-        run(mfocrf(r1, CRM));
+        run({ a.mfocrf(r1, CRM); });
         expect((state.r[1] & RDDefined) == RD);
         expect(!state.xer.so);
         expect(!state.xer.ov);
@@ -33,7 +33,7 @@ void PPCTestRunner::mfocrf() {
     TEST_INSTRUCTION(test_mfcr, oldRD, CR, newRD, {
         state.r[1] = oldRD;
         state.setCR(CR);
-        run(mfcr(r1));
+        run({ a.mfcr(r1); });
         expect(state.r[1] == newRD);
         expect(!state.xer.so);
         expect(!state.xer.ov);
@@ -51,7 +51,7 @@ void PPCTestRunner::mfspr() {
         state.xer.ov = OV;
         state.xer.ca = CA;
         state.xer.bc = BC;
-        run(mfxer(r1));
+        run({ a.mfxer(r1); });
         expect(state.r[1] == RD);
     });
 
@@ -65,7 +65,7 @@ void PPCTestRunner::mfspr() {
     // Move from LR register
     TEST_INSTRUCTION(test_mflr, LR, RD, {
         state.lr = LR;
-        run(mflr(r1));
+        run({ a.mflr(r1); });
         expect(state.r[1] == RD);
     });
 
@@ -76,7 +76,7 @@ void PPCTestRunner::mfspr() {
     // Move from CTR register
     TEST_INSTRUCTION(test_mfctr, CTR, RD, {
         state.ctr = CTR;
-        run(mfctr(r1));
+        run({ a.mfctr(r1); });
         expect(state.r[1] == RD);
     });
 
@@ -89,7 +89,7 @@ void PPCTestRunner::mtocrf() {
     // Move to One Condition Register Field
     TEST_INSTRUCTION(test_mtocrf, RS, CRM, CR, CRDefined, {
         state.r[1] = RS;
-        run(mtocrf(CRM, r1));
+        run({ a.mtocrf(CRM, r1); });
         expect((state.getCR() & CRDefined) == CR);
         expect(!state.xer.so);
         expect(!state.xer.ov);
@@ -104,7 +104,7 @@ void PPCTestRunner::mtocrf() {
     // Move to Condition Register Field
     TEST_INSTRUCTION(test_mtcrf, RS, CRM, CR, {
         state.r[1] = RS;
-        run(mtcrf(CRM, r1));
+        run({ a.mtcrf(CRM, r1); });
         expect(state.getCR() == CR);
         expect(!state.xer.so);
         expect(!state.xer.ov);
@@ -121,7 +121,7 @@ void PPCTestRunner::mtspr() {
     // Move to XER register
     TEST_INSTRUCTION(test_mtxer, RS, SO, OV, CA, BC, {
         state.r[1] = RS;
-        run(mtxer(r1));
+        run({ a.mtxer(r1); });
         expect(state.xer.so == SO);
         expect(state.xer.ov == OV);
         expect(state.xer.ca == CA);
@@ -138,7 +138,7 @@ void PPCTestRunner::mtspr() {
     // Move to LR register
     TEST_INSTRUCTION(test_mtlr, RS, LR, {
         state.r[1] = RS;
-        run(mtlr(r1));
+        run({ a.mtlr(r1); });
         expect(state.lr == LR);
     });
 
@@ -149,7 +149,7 @@ void PPCTestRunner::mtspr() {
     // Move to CTR register
     TEST_INSTRUCTION(test_mtctr, RS, CTR, {
         state.r[1] = RS;
-        run(mtctr(r1));
+        run({ a.mtctr(r1); });
         expect(state.ctr == CTR);
     });
 

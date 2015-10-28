@@ -17,7 +17,7 @@ void PPCTestRunner::lbz() {
     TEST_INSTRUCTION(test_lbz, RAIndex, RA, D, RD, {
         state.r[RAIndex] = RA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lbz(r2, RAIndex, D));
+        run({ a.lbz(r2, RAIndex, D); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -47,7 +47,7 @@ void PPCTestRunner::lbzu() {
     TEST_INSTRUCTION(test_lbzu, RAIndex, oldRA, D, RD, newRA, {
         state.r[RAIndex] = oldRA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lbzu(r2, RAIndex, D));
+        run({ a.lbzu(r2, RAIndex, D); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
@@ -79,7 +79,7 @@ void PPCTestRunner::lbzux() {
         state.r[RAIndex] = oldRA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lbzux(r3, RAIndex, r2));
+        run({ a.lbzux(r3, RAIndex, r2); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
@@ -111,7 +111,7 @@ void PPCTestRunner::lbzx() {
         state.r[RAIndex] = RA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lbzx(r3, RAIndex, r2));
+        run({ a.lbzx(r3, RAIndex, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -144,7 +144,7 @@ void PPCTestRunner::ld() {
     // Load Doubleword
     TEST_INSTRUCTION(test_ld, RAIndex, RA, D, RD, {
         state.r[RAIndex] = RA;
-        run(ld(r2, RAIndex, D));
+        run({ a.ld(r2, RAIndex, D); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -176,7 +176,7 @@ void PPCTestRunner::ldu() {
     // Load Doubleword with Update
     TEST_INSTRUCTION(test_ldu, RAIndex, oldRA, D, RD, newRA, {
         state.r[RAIndex] = oldRA;
-        run(ldu(r2, RAIndex, D));
+        run({ a.ldu(r2, RAIndex, D); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
@@ -207,7 +207,7 @@ void PPCTestRunner::ldux() {
     TEST_INSTRUCTION(test_ldux, RAIndex, oldRA, RB, RD, newRA, {
         state.r[RAIndex] = oldRA;
         state.r[2] = RB;
-        run(ldux(r3, RAIndex, r2));
+        run({ a.ldux(r3, RAIndex, r2); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
@@ -238,7 +238,7 @@ void PPCTestRunner::ldx() {
     TEST_INSTRUCTION(test_ldx, RAIndex, RA, RB, RD, {
         state.r[RAIndex] = RA;
         state.r[2] = RB;
-        run(ldx(r3, RAIndex, r2));
+        run({ a.ldx(r3, RAIndex, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -271,7 +271,7 @@ void PPCTestRunner::lfd() {
     // Load Floating-Point Double
     TEST_INSTRUCTION(test_lfd, RAIndex, RA, D, FRD, {
         state.r[RAIndex] = RA;
-        run(lfd(f0, RAIndex, D));
+        run({ a.lfd(f0, RAIndex, D); });
         expect(reinterpret_cast<U64&>(state.f[0]) == FRD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -300,7 +300,7 @@ void PPCTestRunner::lfdu() {
     // Load Floating-Point Double with Update
     TEST_INSTRUCTION(test_lfdu, RAIndex, oldRA, D, FRD, newRA, {
         state.r[RAIndex] = oldRA;
-        run(lfdu(f0, RAIndex, D));
+        run({ a.lfdu(f0, RAIndex, D); });
         expect(state.r[RAIndex] == newRA);
         expect(reinterpret_cast<U64&>(state.f[0]) == FRD);
         expect(!state.cr.field[0].lt);
@@ -331,7 +331,7 @@ void PPCTestRunner::lfdux() {
     TEST_INSTRUCTION(test_lfdux, RAIndex, oldRA, RB, FRD, newRA, {
         state.r[RAIndex] = oldRA;
         state.r[2] = RB;
-        run(lfdux(f0, RAIndex, r2));
+        run({ a.lfdux(f0, RAIndex, r2); });
         expect(state.r[RAIndex] == newRA);
         expect(reinterpret_cast<U64&>(state.f[0]) == FRD);
         expect(!state.cr.field[0].lt);
@@ -362,7 +362,7 @@ void PPCTestRunner::lfdx() {
     TEST_INSTRUCTION(test_lfdx, RAIndex, RA, RB, FRD, {
         state.r[RAIndex] = RA;
         state.r[2] = RB;
-        run(lfdx(f0, RAIndex, r2));
+        run({ a.lfdx(f0, RAIndex, r2); });
         expect(reinterpret_cast<U64&>(state.f[0]) == FRD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -408,7 +408,7 @@ void PPCTestRunner::lha() {
     TEST_INSTRUCTION(test_lha, RAIndex, RA, D, RD, {
         state.r[RAIndex] = RA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lha(r2, RAIndex, D));
+        run({ a.lha(r2, RAIndex, D); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -438,7 +438,7 @@ void PPCTestRunner::lhau() {
     TEST_INSTRUCTION(test_lhau, RAIndex, oldRA, D, RD, newRA, {
         state.r[RAIndex] = oldRA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lhau(r2, RAIndex, D));
+        run({ a.lhau(r2, RAIndex, D); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
@@ -470,7 +470,7 @@ void PPCTestRunner::lhaux() {
         state.r[RAIndex] = oldRA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lhaux(r3, RAIndex, r2));
+        run({ a.lhaux(r3, RAIndex, r2); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
@@ -502,7 +502,7 @@ void PPCTestRunner::lhax() {
         state.r[RAIndex] = RA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lhax(r3, RAIndex, r2));
+        run({ a.lhax(r3, RAIndex, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -539,7 +539,7 @@ void PPCTestRunner::lhz() {
     TEST_INSTRUCTION(test_lhz, RAIndex, RA, D, RD, {
         state.r[RAIndex] = RA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lhz(r2, RAIndex, D));
+        run({ a.lhz(r2, RAIndex, D); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -569,7 +569,7 @@ void PPCTestRunner::lhzu() {
     TEST_INSTRUCTION(test_lhzu, RAIndex, oldRA, D, RD, newRA, {
         state.r[RAIndex] = oldRA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lhzu(r2, RAIndex, D));
+        run({ a.lhzu(r2, RAIndex, D); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
@@ -601,7 +601,7 @@ void PPCTestRunner::lhzux() {
         state.r[RAIndex] = oldRA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lhzux(r3, RAIndex, r2));
+        run({ a.lhzux(r3, RAIndex, r2); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
@@ -633,7 +633,7 @@ void PPCTestRunner::lhzx() {
         state.r[RAIndex] = RA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lhzx(r3, RAIndex, r2));
+        run({ a.lhzx(r3, RAIndex, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -676,7 +676,7 @@ void PPCTestRunner::lwa() {
     TEST_INSTRUCTION(test_lwa, RAIndex, RA, D, RD, {
         state.r[RAIndex] = RA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lwa(r2, RAIndex, D));
+        run({ a.lwa(r2, RAIndex, D); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -707,7 +707,7 @@ void PPCTestRunner::lwaux() {
         state.r[RAIndex] = oldRA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lwaux(r3, RAIndex, r2));
+        run({ a.lwaux(r3, RAIndex, r2); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
@@ -739,7 +739,7 @@ void PPCTestRunner::lwax() {
         state.r[RAIndex] = RA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lwax(r3, RAIndex, r2));
+        run({ a.lwax(r3, RAIndex, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -776,7 +776,7 @@ void PPCTestRunner::lwz() {
     TEST_INSTRUCTION(test_lwz, RAIndex, RA, D, RD, {
         state.r[RAIndex] = RA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lwz(r2, RAIndex, D));
+        run({ a.lwz(r2, RAIndex, D); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -806,7 +806,7 @@ void PPCTestRunner::lwzu() {
     TEST_INSTRUCTION(test_lwzu, RAIndex, oldRA, D, RD, newRA, {
         state.r[RAIndex] = oldRA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lwzu(r2, RAIndex, D));
+        run({ a.lwzu(r2, RAIndex, D); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
@@ -838,7 +838,7 @@ void PPCTestRunner::lwzux() {
         state.r[RAIndex] = oldRA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lwzux(r3, RAIndex, r2));
+        run({ a.lwzux(r3, RAIndex, r2); });
         expect(state.r[RAIndex] == newRA);
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
@@ -870,7 +870,7 @@ void PPCTestRunner::lwzx() {
         state.r[RAIndex] = RA;
         state.r[2] = RB;
         state.r[3] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lwzx(r3, RAIndex, r2));
+        run({ a.lwzx(r3, RAIndex, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -904,7 +904,7 @@ void PPCTestRunner::stb() {
     TEST_INSTRUCTION(test_lbz, RAIndex, RA, D, RD, {
         state.r[RAIndex] = RA;
         state.r[2] = 0xFFFFFFFFFFFFFFFFULL;
-        run(lbz(r2, RAIndex, D));
+        run({ a.lbz(r2, RAIndex, D); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);

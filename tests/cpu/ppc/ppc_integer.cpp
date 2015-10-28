@@ -15,7 +15,7 @@ void PPCTestRunner::addx() {
     TEST_INSTRUCTION(test_add, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(add(r3, r1, r2));
+        run({ a.add(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -33,7 +33,7 @@ void PPCTestRunner::addx() {
     TEST_INSTRUCTION(test_add_, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(add_(r3, r1, r2));
+        run({ a.add_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -55,7 +55,7 @@ void PPCTestRunner::addcx() {
         state.r[1] = R1;
         state.r[2] = R2;
         state.xer.ca = oldCA;
-        run(addc(r3, r1, r2));
+        run({ a.addc(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -76,7 +76,7 @@ void PPCTestRunner::addcx() {
         state.r[1] = R1;
         state.r[2] = R2;
         state.xer.ca = oldCA;
-        run(addc_(r3, r1, r2));
+        run({ a.addc_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -99,7 +99,7 @@ void PPCTestRunner::addex() {
         state.r[1] = R1;
         state.r[2] = R2;
         state.xer.ca = oldCA;
-        run(adde(r3, r1, r2));
+        run({ a.adde(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -120,7 +120,7 @@ void PPCTestRunner::addex() {
         state.r[1] = R1;
         state.r[2] = R2;
         state.xer.ca = oldCA;
-        run(adde_(r3, r1, r2));
+        run({ a.adde_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -141,7 +141,7 @@ void PPCTestRunner::addi() {
     // Add Immediate
     TEST_INSTRUCTION(test_addi, RAIndex, RA, SIMM, RD, {
         state.r[RAIndex] = RA;
-        run(addi(r2, RAIndex, SIMM));
+        run({ a.addi(r2, RAIndex, SIMM); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -165,7 +165,7 @@ void PPCTestRunner::addic() {
     // Add Immediate Carrying
     TEST_INSTRUCTION(test_addic, R1, SIMM, R2, CA, {
         state.r[1] = R1;
-        run(addic(r2, r1, SIMM));
+        run({ a.addic(r2, r1, SIMM); });
         expect(state.r[2] == R2);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -186,7 +186,7 @@ void PPCTestRunner::addic_() {
     // Add Immediate Carrying and Record
     TEST_INSTRUCTION(test_addic_, R1, SIMM, R2, CA, LT, GT, EQ, SO, {
         state.r[1] = R1;
-        run(addic_(r2, r1, SIMM));
+        run({ a.addic_(r2, r1, SIMM); });
         expect(state.r[2] == R2);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -208,7 +208,7 @@ void PPCTestRunner::addis() {
     // Add Immediate Shifted
     TEST_INSTRUCTION(test_addis, RAIndex, RA, SIMM, RD, {
         state.r[RAIndex] = RA;
-        run(addis(r2, RAIndex, SIMM));
+        run({ a.addis(r2, RAIndex, SIMM); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -236,7 +236,7 @@ void PPCTestRunner::addzex() {
     TEST_INSTRUCTION(test_addze, RA, oldCA, RD, newCA, {
         state.r[1] = RA;
         state.xer.ca = oldCA;
-        run(addze(r2, r1));
+        run({ a.addze(r2, r1); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -258,7 +258,7 @@ void PPCTestRunner::addzex() {
     TEST_INSTRUCTION(test_addze_, RA, oldCA, RD, newCA, LT, GT, EQ, SO, {
         state.r[1] = RA;
         state.xer.ca = oldCA;
-        run(addze_(r2, r1));
+        run({ a.addze_(r2, r1); });
         expect(state.r[2] == RD);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -282,7 +282,7 @@ void PPCTestRunner::andx() {
     TEST_INSTRUCTION(test_and_, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(and_(r3, r1, r2));
+        run({ a.and_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -300,7 +300,7 @@ void PPCTestRunner::andx() {
     TEST_INSTRUCTION(test_and__, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(and__(r3, r1, r2));
+        run({ a.and__(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -321,7 +321,7 @@ void PPCTestRunner::andcx() {
     TEST_INSTRUCTION(test_andc, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(andc(r3, r1, r2));
+        run({ a.andc(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -339,7 +339,7 @@ void PPCTestRunner::andcx() {
     TEST_INSTRUCTION(test_andc_, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(andc_(r3, r1, r2));
+        run({ a.andc_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -359,7 +359,7 @@ void PPCTestRunner::andi_() {
     // AND Immediate
     TEST_INSTRUCTION(test_andi_, R1, UIMM, R2, LT, GT, EQ, SO, {
         state.r[1] = R1;
-        run(andi_(r2, r1, UIMM));
+        run({ a.andi_(r2, r1, UIMM); });
         expect(state.r[2] == R2);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -378,7 +378,7 @@ void PPCTestRunner::andis_() {
     // AND Immediate Shifted
     TEST_INSTRUCTION(test_andis_, R1, UIMM, R2, LT, GT, EQ, SO, {
         state.r[1] = R1;
-        run(andis_(r2, r1, UIMM));
+        run({ a.andis_(r2, r1, UIMM); });
         expect(state.r[2] == R2);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -430,7 +430,7 @@ void PPCTestRunner::extsbx() {
     // Extend Sign Byte
     TEST_INSTRUCTION(test_extsb, RS, RA, {
         state.r[1] = RS;
-        run(extsb(r2, r1));
+        run({ a.extsb(r2, r1); });
         expect(state.r[2] == RA);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -447,7 +447,7 @@ void PPCTestRunner::extsbx() {
     // Extend Sign Byte (with condition)
     TEST_INSTRUCTION(test_extsb_, RS, RA, LT, GT, EQ, SO, {
         state.r[1] = RS;
-        run(extsb_(r2, r1));
+        run({ a.extsb_(r2, r1); });
         expect(state.r[2] == RA);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -467,7 +467,7 @@ void PPCTestRunner::extshx() {
     // Extend Sign Halfword
     TEST_INSTRUCTION(test_extsh, RS, RA, {
         state.r[1] = RS;
-        run(extsh(r2, r1));
+        run({ a.extsh(r2, r1); });
         expect(state.r[2] == RA);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -484,7 +484,7 @@ void PPCTestRunner::extshx() {
     // Extend Sign Halfword (with condition)
     TEST_INSTRUCTION(test_extsh_, RS, RA, LT, GT, EQ, SO, {
         state.r[1] = RS;
-        run(extsh_(r2, r1));
+        run({ a.extsh_(r2, r1); });
         expect(state.r[2] == RA);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -504,7 +504,7 @@ void PPCTestRunner::extswx() {
     // Extend Sign Word
     TEST_INSTRUCTION(test_extsw, RS, RA, {
         state.r[1] = RS;
-        run(extsw(r2, r1));
+        run({ a.extsw(r2, r1); });
         expect(state.r[2] == RA);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -521,7 +521,7 @@ void PPCTestRunner::extswx() {
     // Extend Sign Word (with condition)
     TEST_INSTRUCTION(test_extsw_, RS, RA, LT, GT, EQ, SO, {
         state.r[1] = RS;
-        run(extsw_(r2, r1));
+        run({ a.extsw_(r2, r1); });
         expect(state.r[2] == RA);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -563,7 +563,7 @@ void PPCTestRunner::nandx() {
     TEST_INSTRUCTION(test_nand, RS, RB, RA, {
         state.r[1] = RS;
         state.r[2] = RB;
-        run(nand(r3, r1, r2));
+        run({ a.nand(r3, r1, r2); });
         expect(state.r[3] == RA);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -582,7 +582,7 @@ void PPCTestRunner::nandx() {
     TEST_INSTRUCTION(test_nand_, RS, RB, RA, LT, GT, EQ, SO, {
         state.r[1] = RS;
         state.r[2] = RB;
-        run(nand_(r3, r1, r2));
+        run({ a.nand_(r3, r1, r2); });
         expect(state.r[3] == RA);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -602,7 +602,7 @@ void PPCTestRunner::negx() {
     // Negate
     TEST_INSTRUCTION(test_neg, RA, RD, {
         state.r[1] = RA;
-        run(neg(r2, r1));
+        run({ a.neg(r2, r1); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -620,7 +620,7 @@ void PPCTestRunner::negx() {
     // Negate (with condition)
     TEST_INSTRUCTION(test_neg_, RA, RD, LT, GT, EQ, SO, {
         state.r[1] = RA;
-        run(neg_(r2, r1));
+        run({ a.neg_(r2, r1); });
         expect(state.r[2] == RD);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -641,7 +641,7 @@ void PPCTestRunner::norx() {
     TEST_INSTRUCTION(test_nor, RS, RB, RA, {
         state.r[1] = RS;
         state.r[2] = RB;
-        run(nor(r3, r1, r2));
+        run({ a.nor(r3, r1, r2); });
         expect(state.r[3] == RA);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -660,7 +660,7 @@ void PPCTestRunner::norx() {
     TEST_INSTRUCTION(test_nor_, RS, RB, RA, LT, GT, EQ, SO, {
         state.r[1] = RS;
         state.r[2] = RB;
-        run(nor_(r3, r1, r2));
+        run({ a.nor_(r3, r1, r2); });
         expect(state.r[3] == RA);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -681,7 +681,7 @@ void PPCTestRunner::orx() {
     TEST_INSTRUCTION(test_or_, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(or_(r3, r1, r2));
+        run({ a.or_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -699,7 +699,7 @@ void PPCTestRunner::orx() {
     TEST_INSTRUCTION(test_or__, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(or__(r3, r1, r2));
+        run({ a.or__(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -720,7 +720,7 @@ void PPCTestRunner::orcx() {
     TEST_INSTRUCTION(test_orc, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(orc(r3, r1, r2));
+        run({ a.orc(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -738,7 +738,7 @@ void PPCTestRunner::orcx() {
     TEST_INSTRUCTION(test_orc_, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(orc_(r3, r1, r2));
+        run({ a.orc_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -758,7 +758,7 @@ void PPCTestRunner::ori() {
     // OR Immediate
     TEST_INSTRUCTION(test_ori, R1, UIMM, R2,{
         state.r[1] = R1;
-        run(ori(r2, r1, UIMM));
+        run({ a.ori(r2, r1, UIMM); });
         expect(state.r[2] == R2);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -777,7 +777,7 @@ void PPCTestRunner::oris() {
     // OR Immediate Shifted
     TEST_INSTRUCTION(test_oris, R1, UIMM, R2, {
         state.r[1] = R1;
-        run(oris(r2, r1, UIMM));
+        run({ a.oris(r2, r1, UIMM); });
         expect(state.r[2] == R2);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -845,7 +845,7 @@ void PPCTestRunner::subfx() {
     TEST_INSTRUCTION(test_subf, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(subf(r3, r1, r2));
+        run({ a.subf(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -863,7 +863,7 @@ void PPCTestRunner::subfx() {
     TEST_INSTRUCTION(test_subf_, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(subf_(r3, r1, r2));
+        run({ a.subf_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -885,7 +885,7 @@ void PPCTestRunner::subfcx() {
         state.r[1] = RA;
         state.r[2] = RB;
         state.xer.ca = oldCA;
-        run(subfc(r3, r1, r2));
+        run({ a.subfc(r3, r1, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -906,7 +906,7 @@ void PPCTestRunner::subfcx() {
         state.r[1] = RA;
         state.r[2] = RB;
         state.xer.ca = oldCA;
-        run(subfc_(r3, r1, r2));
+        run({ a.subfc_(r3, r1, r2); });
         expect(state.r[3] == RD);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -929,7 +929,7 @@ void PPCTestRunner::subfex() {
         state.r[1] = R1;
         state.r[2] = R2;
         state.xer.ca = oldCA;
-        run(adde(r3, r1, r2));
+        run({ a.adde(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -950,7 +950,7 @@ void PPCTestRunner::subfex() {
         state.r[1] = R1;
         state.r[2] = R2;
         state.xer.ca = oldCA;
-        run(subfe_(r3, r1, r2));
+        run({ a.subfe_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -971,7 +971,7 @@ void PPCTestRunner::subfic() {
     // Subtract from Immediate Carrying
     TEST_INSTRUCTION(test_subfic, R1, SIMM, R2, CA, {
         state.r[1] = R1;
-        run(subfic(r2, r1, SIMM));
+        run({ a.subfic(r2, r1, SIMM); });
         expect(state.r[2] == R2);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -996,7 +996,7 @@ void PPCTestRunner::subfzex() {
     TEST_INSTRUCTION(test_subfze, RA, oldCA, RD, newCA, {
         state.r[1] = RA;
         state.xer.ca = oldCA;
-        run(addze(r2, r1));
+        run({ a.addze(r2, r1); });
         expect(state.r[2] == RD);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -1018,7 +1018,7 @@ void PPCTestRunner::subfzex() {
     TEST_INSTRUCTION(test_subfze_, RA, oldCA, RD, newCA, LT, GT, EQ, SO, {
         state.r[1] = RA;
         state.xer.ca = oldCA;
-        run(addze_(r2, r1));
+        run({ a.addze_(r2, r1); });
         expect(state.r[2] == RD);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -1042,7 +1042,7 @@ void PPCTestRunner::xorx() {
     TEST_INSTRUCTION(test_xor_, R1, R2, R3, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(xor_(r3, r1, r2));
+        run({ a.xor_(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -1060,7 +1060,7 @@ void PPCTestRunner::xorx() {
     TEST_INSTRUCTION(test_xor__, R1, R2, R3, LT, GT, EQ, SO, {
         state.r[1] = R1;
         state.r[2] = R2;
-        run(xor__(r3, r1, r2));
+        run({ a.xor__(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(state.cr.field[0].lt == LT);
         expect(state.cr.field[0].gt == GT);
@@ -1080,7 +1080,7 @@ void PPCTestRunner::xori() {
     // XOR Immediate
     TEST_INSTRUCTION(test_xori, R1, UIMM, R2,{
         state.r[1] = R1;
-        run(xori(r2, r1, UIMM));
+        run({ a.xori(r2, r1, UIMM); });
         expect(state.r[2] == R2);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -1099,7 +1099,7 @@ void PPCTestRunner::xoris() {
     // XOR Immediate Shifted
     TEST_INSTRUCTION(test_xoris, R1, UIMM, R2, {
         state.r[1] = R1;
-        run(xoris(r2, r1, UIMM));
+        run({ a.xoris(r2, r1, UIMM); });
         expect(state.r[2] == R2);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);

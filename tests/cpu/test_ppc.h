@@ -39,7 +39,7 @@ using namespace cpu::frontend::ppu;
 
 // Execute assembler generated PowerPC code
 #define run(expr) \
-    execute([&](PPCAssembler& a) { a.##expr##; })
+    execute([&](PPCAssembler& a) expr)
 
 // Check if expected condition holds
 #define expect(expr) \
@@ -84,9 +84,9 @@ protected:
         PPCAssembler a(sizeof(buffer), buffer);
         ppcFunc(a);
 
-        for (size_t i = 0; i < a.codeSize; i += 4) {
+        for (size_t i = 0; (i * sizeof(U32)) < a.curSize; i++) {
             Instruction instr;
-            instr.value = *static_cast<U32*>(a.codeAddr);
+            instr.value = static_cast<U32*>(a.codeAddr)[i];
             auto method = get_entry(instr).recompile;
             (recompiler.*method)(instr);
         }
