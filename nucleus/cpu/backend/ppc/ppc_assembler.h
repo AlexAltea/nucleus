@@ -62,7 +62,7 @@ private:
     void emitFormXFL(Operand opcd, Operand fm, Operand b, Operand xo, bool rc);
     void emitFormXS(Operand opcd, Operand s, Operand a, Operand sh, Operand xo, bool rc);
     void emitFormXO(U32 instruction, Operand d, Operand a, Operand b);
-    void emitFormA(Operand opcd, Operand d, Operand a, Operand b, Operand c, Operand xo, bool rc);
+    void emitFormA(U32 instruction, Operand d, Operand a, Operand b, Operand c);
 
 public:
     PPCAssembler(size_t codeSize = 4096, void* codeAddr = nullptr);
@@ -102,6 +102,7 @@ public:
     void ba(Label label);
     void bl(Label label);
     void bla(Label label);
+    void bc(U8 bo, U8 bi, U16 bd);
     void bc(U8 bo, U8 bi, Label label);
     void blt(RegCR cr, Label label);
     void ble(RegCR cr, Label label);
@@ -110,6 +111,7 @@ public:
     void bgt(RegCR cr, Label label);
     void bne(RegCR cr, Label label);
     void bso(RegCR cr, Label label);
+    void bca(U8 bo, U8 bi, U16 bd);
     void bca(U8 bo, U8 bi, Label label);
     void blta(RegCR cr, Label label);
     void blea(RegCR cr, Label label);
@@ -118,6 +120,7 @@ public:
     void bgta(RegCR cr, Label label);
     void bnea(RegCR cr, Label label);
     void bsoa(RegCR cr, Label label);
+    void bcl(U8 bo, U8 bi, U16 bd);
     void bcl(U8 bo, U8 bi, Label label);
     void bltl(RegCR cr, Label label);
     void blel(RegCR cr, Label label);
@@ -126,6 +129,7 @@ public:
     void bgtl(RegCR cr, Label label);
     void bnel(RegCR cr, Label label);
     void bsol(RegCR cr, Label label);
+    void bcla(U8 bo, U8 bi, U16 bd);
     void bcla(U8 bo, U8 bi, Label label);
     void bltla(RegCR cr, Label label);
     void blela(RegCR cr, Label label);
@@ -176,7 +180,7 @@ public:
     void crxor(U8 crfd, U8 crfa, U8 crfb);
     void dcbf(RegGPR ra, RegGPR rb);
     void dcbst(RegGPR ra, RegGPR rb);
-    void dcbt(); // TODO
+    void dcbt(RegGPR ra, RegGPR rb, U8 th);
     void dcbtst(RegGPR ra, RegGPR rb);
     void dcbz(RegGPR ra, RegGPR rb);
     void divd(RegGPR rd, RegGPR ra, RegGPR rb);
@@ -457,7 +461,7 @@ public:
     void subfze_(RegGPR rd, RegGPR ra);
     void subfzeo(RegGPR rd, RegGPR ra);
     void subfzeo_(RegGPR rd, RegGPR ra);
-    void sync();
+    void sync(U8 l);
     void td(); // TODO
     void tdi(); // TODO
     void tw(); // TODO

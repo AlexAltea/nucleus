@@ -12,6 +12,7 @@ namespace backend {
 Assembler::Assembler(size_t codeSize, void* codeAddr) :
     codeSize(codeSize), codeAddr(codeAddr) {
     curAddr = codeAddr;
+    curSize = 0;
 }
 
 }  // namespace backend

@@ -11,10 +11,10 @@ namespace cpu {
 namespace backend {
 
 class Assembler {
-protected:
-    void* curAddr;
-
 public:
+    void* curAddr;
+    size_t curSize;
+
     void* codeAddr;
     size_t codeSize;
 
