@@ -68,14 +68,14 @@ void Recompiler::mtocrf(Instruction code)
         if (count == 1) {
             Value* value = builder.createTrunc(builder.createShr(rs, 4 * (7 - field)), TYPE_I8);
             value = builder.createAnd(value, builder.getConstantI8(0xF));
-            setCR(field, value);
+            setCRField(field, value);
         }
     } else {
         for (int field = 0; field < 8; field++) {
             if (code.crm & (1 << (7 - field))) {
                 Value* value = builder.createTrunc(builder.createShr(rs, 4 * (7 - field)), TYPE_I8);
                 value = builder.createAnd(value, builder.getConstantI8(0xF));
-                setCR(field, value);
+                setCRField(field, value);
             }
         }
     }

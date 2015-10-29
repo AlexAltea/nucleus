@@ -64,12 +64,10 @@ void Recompiler::bcx(Instruction code)
 
     Value* cond_ok = nullptr;
     if (!bo0) {
-        Value* shift = builder.getConstantI8(3 - (code.bi & 0x3));
-        Value* bit = builder.createAnd(builder.createShr(getCR(code.bi >> 2), shift), builder.getConstantI8(1));
         if (!bo1) {
-            cond_ok = builder.createXor(bit, builder.getConstantI8(1));
+            cond_ok = builder.createXor(getCRBit(code.bi), builder.getConstantI8(1));
         } else {
-            cond_ok = bit;
+            cond_ok = getCRBit(code.bi);
         }
     }
 
@@ -163,12 +161,10 @@ void Recompiler::bclrx(Instruction code)
 
     Value* cond_ok = nullptr;
     if (!bo0) {
-        Value* shift = builder.getConstantI8(3 - (code.bi & 0x3));
-        Value* bit = builder.createAnd(builder.createShr(getCR(code.bi >> 2), shift), builder.getConstantI8(1));
         if (!bo1) {
-            cond_ok = builder.createXor(bit, builder.getConstantI8(1));
+            cond_ok = builder.createXor(getCRBit(code.bi), builder.getConstantI8(1));
         } else {
-            cond_ok = bit;
+            cond_ok = getCRBit(code.bi);
         }
     }
 
@@ -198,12 +194,12 @@ void Recompiler::bclrx(Instruction code)
 
 void Recompiler::crand(Instruction code)
 {
-    Value* crba = getCR(code.crba);
-    Value* crbb = getCR(code.crbb);
+    Value* crba = getCRField(code.crba);
+    Value* crbb = getCRField(code.crbb);
     Value* crbd;
 
     crbd = builder.createAnd(crba, crbb);
-    setCR(code.crbd, crbd);
+    setCRField(code.crbd, crbd);
 }
 
 void Recompiler::crandc(Instruction code)

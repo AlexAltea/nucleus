@@ -31,7 +31,6 @@ S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 a
     state->r[3] = arg;
     state->r[4] = state->r[1] - 0x80;
     state->r[5] = state->r[4] - 0x70;
-    state->r[11] = attr->entry;
     state->r[12] = lv2.proc.param.malloc_pagesize;
     state->r[13] = nucleus.memory->getSegment(mem::SEG_USER_MEMORY).getBaseAddr() + 0x7060; // TLS
 

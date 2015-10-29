@@ -128,10 +128,9 @@ Value* Recompiler::getVR(int index) {
     return builder.createCtxLoad(offset, TYPE_V128);
 }
 
-Value* Recompiler::getCR(int index) {
-    const U32 offset = offsetof(PPUState, cr.field[index]);
-
+Value* Recompiler::getCRField(int index) {
     // TODO: Use volatility information?
+
     Value* field = builder.createShl(builder.createCtxLoad(
         offsetof(PPUState, cr.field[index].bit[0]), TYPE_I8), U64(3));
     field = builder.createOr(field, builder.createShl(builder.createCtxLoad(
@@ -144,11 +143,19 @@ Value* Recompiler::getCR(int index) {
     return field;
 }
 
+Value* Recompiler::getCRBit(int index) {
+    const U32 offset = offsetof(PPUState, cr.field[index >> 2].bit[index & 0b11]);
+
+     // TODO: Use volatility information?
+
+    return builder.createCtxLoad(offset, TYPE_I8);
+}
+
 Value* Recompiler::getCR() {
     Value* cr = builder.getConstantI32(0);
     for (int field = 0; field < 8; field++) {
         cr = builder.createOr(cr, builder.createShl(
-            builder.createZExt(getCR(field), TYPE_I32), 4 * (7 - field)));
+            builder.createZExt(getCRField(field), TYPE_I32), 4 * (7 - field)));
     }
     return cr;
 }
@@ -240,7 +247,7 @@ void Recompiler::setVR(int index, Value* value) {
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setCR(int index, Value* value) {
+void Recompiler::setCRField(int index, Value* value) {
     // TODO: Use volatility information?
 
     switch (value->type) {
@@ -273,7 +280,7 @@ void Recompiler::setCR(Value* value) {
     }
 
     for (int field = 0; field < 8; field++) {
-        setCR(field, builder.createTrunc(builder.createShr(value, (4 * (7 - field))), TYPE_I8));
+        setCRField(field, builder.createTrunc(builder.createShr(value, (4 * (7 - field))), TYPE_I8));
     }
 }
 
@@ -396,7 +403,7 @@ void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalCompari
 
     result = builder.createSelect(isGT, builder.getConstantI32(0x00000100), builder.getConstantI32(0x00010000));
     result = builder.createSelect(isLT, builder.getConstantI32(0x00000001), result);
-    setCR(field, result);
+    setCRField(field, result);
 }
 
 void Recompiler::updateCR0(Value* value) {

@@ -24,7 +24,8 @@ private:
     hir::Value* getGPR(int index, hir::Type type = hir::TYPE_I64);
     hir::Value* getFPR(int index, hir::Type type = hir::TYPE_F64);
     hir::Value* getVR(int index);
-    hir::Value* getCR(int index);
+    hir::Value* getCRField(int index);
+    hir::Value* getCRBit(int index);
     hir::Value* getCR();
     hir::Value* getLR();
     hir::Value* getXER();
@@ -39,7 +40,8 @@ private:
     void setGPR(int index, hir::Value* value);
     void setFPR(int index, hir::Value* value);
     void setVR(int index, hir::Value* value);
-    void setCR(int index, hir::Value* value);
+    void setCRField(int index, hir::Value* value);
+    void setCRBit(int index, hir::Value* value);
     void setCR(hir::Value* value);
     void setLR(hir::Value* value);
     void setXER(hir::Value* value);

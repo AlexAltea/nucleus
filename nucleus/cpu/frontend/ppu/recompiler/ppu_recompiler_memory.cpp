@@ -573,7 +573,7 @@ void Recompiler::stdcx_(Instruction code)
     // TODO: Reservation
 
     // TODO: Is this correct?
-    setCR(0, builder.getConstantI8(2));
+    setCRField(0, builder.getConstantI8(2));
 
     writeMemory(addr, rs);
 }
@@ -806,7 +806,7 @@ void Recompiler::stwcx_(Instruction code)
     // TODO: Reservation
 
     // TODO: Is this correct?
-    setCR(0, builder.getConstantI8(2));
+    setCRField(0, builder.getConstantI8(2));
 
     writeMemory(addr, rs);
 }
