@@ -956,19 +956,21 @@ void Recompiler::srawix(Instruction code)
 
 void Recompiler::srdx(Instruction code)
 {
-    assert_always("Unimplemented");
-    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
-    Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
-    Value* temp;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb, TYPE_I8);
     Value* ra;
 
-    temp = builder.createLShr(rs, rb);
-    ra = builder.createTrunc<I64>(temp);
+    rs = builder.createZExt(rs, TYPE_I64);
+    rb = builder.createAnd(rb, builder.getConstantI8(0x7F));
+    ra = builder.createSelect(builder.createAnd(rb, builder.getConstantI8(0x40)),
+        builder.getConstantI64(0),
+        builder.createShr(rs, rb));
+
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);*/
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::srwx(Instruction code)
@@ -978,7 +980,7 @@ void Recompiler::srwx(Instruction code)
     Value* ra;
 
     rs = builder.createZExt(rs, TYPE_I64);
-    rb = builder.createZExt(builder.createAnd(rb, builder.getConstantI8(0x3F)), TYPE_I64);
+    rb = builder.createAnd(rb, builder.getConstantI8(0x3F));
     ra = builder.createShr(rs, rb);
     if (code.rc) {
         updateCR0(ra);

@@ -835,9 +835,111 @@ void PPCTestRunner::srawix() {
 }
 
 void PPCTestRunner::srdx() {
+    // Shift Right Doubleword
+    TEST_INSTRUCTION(test_srd, RS, RB, RA, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.srd(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_srd(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_srd(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000001ULL);
+    test_srd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_srd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x7FFFFFFFFFFFFFFFULL);
+    test_srd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000020ULL, 0x00000000FFFFFFFFULL);
+    test_srd(0xFFFFFFFFFFFFFFFFULL, 0x000000000000003FULL, 0x0000000000000001ULL);
+    test_srd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000040ULL, 0x0000000000000000ULL);
+    test_srd(0xFFFFFFFFFFFFFFFFULL, 0x000000000000007FULL, 0x0000000000000000ULL);
+    test_srd(0x1337C0DEDEADBEEFULL, 0x0000000000000080ULL, 0x1337C0DEDEADBEEFULL);
+    test_srd(0x1337C0DEDEADBEEFULL, 0x00000000000000A0ULL, 0x000000001337C0DEULL);
+
+    // Shift Right Doubleword (with condition)
+    TEST_INSTRUCTION(test_srd_, RS, RB, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.srd_(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_srd_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_srd_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_srd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_srd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x7FFFFFFFFFFFFFFFULL, 0,1,0,0);
+    test_srd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000020ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_srd_(0xFFFFFFFFFFFFFFFFULL, 0x000000000000003FULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_srd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000040ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_srd_(0xFFFFFFFFFFFFFFFFULL, 0x000000000000007FULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_srd_(0x1337C0DEDEADBEEFULL, 0x0000000000000080ULL, 0x1337C0DEDEADBEEFULL, 0,1,0,0);
+    test_srd_(0x1337C0DEDEADBEEFULL, 0x00000000000000A0ULL, 0x000000001337C0DEULL, 0,1,0,0);
 }
 
 void PPCTestRunner::srwx() {
+    // Shift Right Word
+    TEST_INSTRUCTION(test_srw, RS, RB, RA, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.srw(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_srw(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_srw(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000001ULL);
+    test_srw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x00000000FFFFFFFFULL);
+    test_srw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x000000007FFFFFFFULL);
+    test_srw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000010ULL, 0x000000000000FFFFULL);
+    test_srw(0xFFFFFFFFFFFFFFFFULL, 0x000000000000001FULL, 0x0000000000000001ULL);
+    test_srw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000020ULL, 0x0000000000000000ULL);
+    test_srw(0xFFFFFFFFFFFFFFFFULL, 0x000000000000003FULL, 0x0000000000000000ULL);
+    test_srw(0xFFFFFFFFDEADBEEFULL, 0x0000000000000040ULL, 0x00000000DEADBEEFULL);
+    test_srw(0xFFFFFFFFDEADBEEFULL, 0x0000000000000050ULL, 0x000000000000DEADULL);
+
+    // Shift Right Word (with condition)
+    TEST_INSTRUCTION(test_srw_, RS, RB, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.srw_(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_srw_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_srw_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_srw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_srw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x000000007FFFFFFFULL, 0,1,0,0);
+    test_srw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000010ULL, 0x000000000000FFFFULL, 0,1,0,0);
+    test_srw_(0xFFFFFFFFFFFFFFFFULL, 0x000000000000001FULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_srw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000020ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_srw_(0xFFFFFFFFFFFFFFFFULL, 0x000000000000003FULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_srw_(0xFFFFFFFFDEADBEEFULL, 0x0000000000000040ULL, 0x00000000DEADBEEFULL, 0,1,0,0);
+    test_srw_(0xFFFFFFFFDEADBEEFULL, 0x0000000000000050ULL, 0x000000000000DEADULL, 0,1,0,0);
 }
 
 void PPCTestRunner::subfx() {
