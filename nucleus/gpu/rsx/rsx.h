@@ -20,10 +20,10 @@ struct rsx_device_t {
 
 // LPAR DMA Control
 struct rsx_dma_control_t {
-    U8 unk[0x40];
-    BE<U32> put; // CellGcmControl
-    BE<U32> get; // CellGcmControl
-    BE<U32> ref; // CellGcmControl
+    U8 reserved[0x40];
+    BE<U32> put;
+    BE<U32> get;
+    BE<U32> ref;
     U32 unk2[2];
     BE<U32> unk3; // TODO: Seems to be another GET / PUT pointer
 };
@@ -59,6 +59,11 @@ struct rsx_semaphore_t {
     BE<U64> timestamp;
 };
 
+struct rsx_notify_t {
+    BE<U64> timestamp;
+    BE<U64> zero;
+};
+
 struct rsx_report_t {
     BE<U64> timestamp;
     BE<U32> value;
@@ -67,7 +72,7 @@ struct rsx_report_t {
 
 struct rsx_reports_t {
     rsx_semaphore_t semaphore[0x100];
-    U8 unk_notify[0x400];
+    rsx_notify_t notify[64]; // NOTE: Only the 8 first entries appear to be used
     rsx_report_t report[2048];
 };
 

@@ -16,9 +16,74 @@ Shared by all RSX contexts.
 |----|--------|-------------|-------------|
 |  8 | 0x1000 | Video RAM   | cellGcmInit |
 
+## Memory
+
+Areas in VRAM
+
+### RAMFC
+
+Stores the PFIFO state of channels that are not active.
+
+### RAMHT
+
+Hash table of objects that a channel can use. These are 32-bit handles that can represent either DMA objects or Engine objects. (Individual objects can be shared between channels?).
+
+A RAMHT entry is 8-bytes long:
+
+| Bits | Description                               |
+|------|-------------------------------------------|
+| 32   | Object handle (e.g.: `CAFEBABE`)          |
+| 9    | Channel ID                                |
+| 3    | Engine ID                                 |
+| 20   | Object offset (4 bits right-shifted)      |
+
+## Engines
+
+Following engines are available:
+
+* __PFIFO__: Pulls commands from the command buffers and delivers them to other engines.
+* __PGRAPH__: 2D and 3D rendering engine.
+
+In addition, there exists the pseudo-engine SOFTWARE, Causes an interrupt to runPseudo-engine
+
+### PFIFO
+Can control the following engines:
+
+| ID | Name     |
+|----|----------|
+| 0  | SOFTWARE |
+| 1  | PGRAPH   |
+
+Note that *SOFTWARE* is a pseudo-engine that causes interrupts for every command. It's commonly used to execute driver functions in sync with other commands. In the PlayStation 3 it will cause the execution of the `lv1_gpu*` driver functions.
+
+The PFIFO engine consists of following pieces:
+* __Pusher__: Reads user commands from the buffer and pushes them to the cache.
+* __Cache__: Queue holding the comands to be processed by the puller.
+* __Puller__: Executes the commands or forwards them the corresponding engine.
+* __Switcher__: Performs channel switches.
+
+#### Channel
+
+Consists of:
+
+* Mode: Can be PIO or DMA (IB too?).
+* PFIFO pusher state
+* PFIFO cache state
+* PFIFO puller state
+* RAMFC/RAMHT contents?
+* (Engine-specific state?)
+
+### PGRAPH
+
+Also referred to as *Curie Graphics Engine*
+
+#### Curie 3D Objects (NV4097)
+
+TODO
+
 ## Contexts
 
-*Cell OS Lv-1* handles a maximum of 3 RSX contexts, but the RSX can handle up to *???*. Games and other user processes create allocate one context. Nucleus only emulates a single process avoiding IPC's of any kind, therefore only 1 context is considered.
+*Cell OS Lv-1* supports a maximum of 3 RSX `SOFTWARE` class objects, which means only 3 RSX contexts can be created simultaneously, while the RSX is able to handle up to 8. Games and other user processes create one context. Nucleus only emulates a single process avoiding IPC's of any kind, therefore only 1 context is considered.
 
 ## Notifiers
 
@@ -144,12 +209,4 @@ TODO
 | `REP`       |  0x44  | Repeat |
 | `RET`       |  0x45  | Return |
     
-TODO
-
-## Curie Graphics Engine
-
-TODO
-
-### Curie 3D Objects (NV4097)
-
 TODO
