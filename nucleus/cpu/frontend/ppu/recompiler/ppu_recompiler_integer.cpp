@@ -926,12 +926,14 @@ void Recompiler::srawx(Instruction code)
 
     rs = builder.createShl(builder.createZExt(rs, TYPE_I64), 32);
     ra = builder.createShrA(rs, builder.createAnd(rb, builder.getConstantI8(0x3F)));
+    ca = builder.createAnd(
+        builder.createTrunc(builder.createShr(rs, 0x3F), TYPE_I8),
+        builder.createCmpNE(builder.createTrunc(ra, TYPE_I32), builder.getConstantI32(0)));
+
     ra = builder.createShrA(ra, 32);
     if (code.rc) {
         updateCR0(ra);
     }
-
-    // TODO: Update XER CA
 
     setXER_CA(ca);
     setGPR(code.ra, ra);
@@ -943,9 +945,18 @@ void Recompiler::srawix(Instruction code)
     Value* ra;
     Value* ca;
 
-    rs = builder.createShl(builder.createZExt(rs, TYPE_I64), 32);
-    ra = builder.createShrA(rs, code.sh);
-    ra = builder.createShrA(ra, 32);
+    if (code.sh == 0) {
+        ra = builder.createSExt(rs, TYPE_I64);
+        ca = builder.getConstantI8(0);
+    } else {
+        rs = builder.createShl(builder.createZExt(rs, TYPE_I64), 32);
+        ra = builder.createShrA(rs, code.sh);
+        ca = builder.createAnd(
+            builder.createTrunc(builder.createShr(rs, 0x3F), TYPE_I8),
+            builder.createCmpNE(builder.createTrunc(ra, TYPE_I32), builder.getConstantI32(0)));
+        ra = builder.createShrA(ra, 32);
+    }
+
     if (code.rc) {
         updateCR0(ra);
     }

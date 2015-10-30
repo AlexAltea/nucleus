@@ -829,9 +829,117 @@ void PPCTestRunner::sradix() {
 }
 
 void PPCTestRunner::srawx() {
+    // Shift Right Algebraic Word
+    TEST_INSTRUCTION(test_sraw, RS, RB, RA, CA, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.sraw(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(state.xer.ca == CA);
+    });
+
+    test_sraw(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false);
+    test_sraw(0xFFFFFFFF00000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false);
+    test_sraw(0x0000000080000000ULL, 0x0000000000000000ULL, 0xFFFFFFFF80000000ULL, false);
+    test_sraw(0x000000007FFFFFFFULL, 0x0000000000000000ULL, 0x000000007FFFFFFFULL, false);
+    test_sraw(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, true);
+    test_sraw(0x00000000FFFFFFFEULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, false);
+    test_sraw(0x0000000080000000ULL, 0x000000000000001FULL, 0xFFFFFFFFFFFFFFFFULL, false);
+    test_sraw(0x0000000080000000ULL, 0x0000000000000020ULL, 0xFFFFFFFFFFFFFFFFULL, true);
+    test_sraw(0x000000007FFFFFFFULL, 0x0000000000000001ULL, 0x000000003FFFFFFFULL, false);
+    test_sraw(0x000000007FFFFFFFULL, 0x000000000000001EULL, 0x0000000000000001ULL, false);
+    test_sraw(0x000000007FFFFFFFULL, 0x000000000000001FULL, 0x0000000000000000ULL, false);
+    test_sraw(0x0000000012345678ULL, 0x0000000000000010ULL, 0x0000000000001234ULL, false);
+    test_sraw(0x0000000012345678ULL, 0x0000000000000050ULL, 0x0000000000001234ULL, false);
+
+    // Shift Right Algebraic Word (with condition)
+    TEST_INSTRUCTION(test_sraw_, RS, RB, RA, CA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.sraw_(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(state.xer.ca == CA);
+    });
+
+    test_sraw_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false, 0,0,1,0);
+    test_sraw_(0xFFFFFFFF00000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false, 0,0,1,0);
+    test_sraw_(0x0000000080000000ULL, 0x0000000000000000ULL, 0xFFFFFFFF80000000ULL, false, 1,0,0,0);
+    test_sraw_(0x000000007FFFFFFFULL, 0x0000000000000000ULL, 0x000000007FFFFFFFULL, false, 0,1,0,0);
+    test_sraw_(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, true,  1,0,0,0);
+    test_sraw_(0x00000000FFFFFFFEULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, false, 1,0,0,0);
+    test_sraw_(0x0000000080000000ULL, 0x000000000000001FULL, 0xFFFFFFFFFFFFFFFFULL, false, 1,0,0,0);
+    test_sraw_(0x0000000080000000ULL, 0x0000000000000020ULL, 0xFFFFFFFFFFFFFFFFULL, true,  1,0,0,0);
+    test_sraw_(0x000000007FFFFFFFULL, 0x0000000000000001ULL, 0x000000003FFFFFFFULL, false, 0,1,0,0);
+    test_sraw_(0x000000007FFFFFFFULL, 0x000000000000001EULL, 0x0000000000000001ULL, false, 0,1,0,0);
+    test_sraw_(0x000000007FFFFFFFULL, 0x000000000000001FULL, 0x0000000000000000ULL, false, 0,0,1,0);
+    test_sraw_(0x0000000012345678ULL, 0x0000000000000010ULL, 0x0000000000001234ULL, false, 0,1,0,0);
+    test_sraw_(0x0000000012345678ULL, 0x0000000000000050ULL, 0x0000000000001234ULL, false, 0,1,0,0);
 }
 
 void PPCTestRunner::srawix() {
+    // Shift Right Algebraic Immediate Word
+    TEST_INSTRUCTION(test_srawi, RS, SH, RA, CA, {
+        state.r[1] = RS;
+        run({ a.srawi(r2, r1, SH); });
+        expect(state.r[2] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(state.xer.ca == CA);
+    });
+
+    test_srawi(0x0000000000000000ULL, 0x00, 0x0000000000000000ULL, false);
+    test_srawi(0xFFFFFFFF00000000ULL, 0x00, 0x0000000000000000ULL, false);
+    test_srawi(0x0000000080000000ULL, 0x00, 0xFFFFFFFF80000000ULL, false);
+    test_srawi(0x000000007FFFFFFFULL, 0x00, 0x000000007FFFFFFFULL, false);
+    test_srawi(0x00000000FFFFFFFFULL, 0x01, 0xFFFFFFFFFFFFFFFFULL, true);
+    test_srawi(0x00000000FFFFFFFEULL, 0x01, 0xFFFFFFFFFFFFFFFFULL, false);
+    test_srawi(0x0000000080000000ULL, 0x1F, 0xFFFFFFFFFFFFFFFFULL, false);
+    test_srawi(0x000000007FFFFFFFULL, 0x01, 0x000000003FFFFFFFULL, false);
+    test_srawi(0x000000007FFFFFFFULL, 0x1E, 0x0000000000000001ULL, false);
+    test_srawi(0x000000007FFFFFFFULL, 0x1F, 0x0000000000000000ULL, false);
+    test_srawi(0x0000000012345678ULL, 0x10, 0x0000000000001234ULL, false);
+
+    // Shift Right Algebraic Immediate Word (with condition)
+    TEST_INSTRUCTION(test_srawi_, RS, SH, RA, CA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        run({ a.srawi_(r2, r1, SH); });
+        expect(state.r[2] == RA);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(state.xer.ca == CA);
+    });
+
+    test_srawi_(0x0000000000000000ULL, 0x00, 0x0000000000000000ULL, false, 0,0,1,0);
+    test_srawi_(0xFFFFFFFF00000000ULL, 0x00, 0x0000000000000000ULL, false, 0,0,1,0);
+    test_srawi_(0x0000000080000000ULL, 0x00, 0xFFFFFFFF80000000ULL, false, 1,0,0,0);
+    test_srawi_(0x000000007FFFFFFFULL, 0x00, 0x000000007FFFFFFFULL, false, 0,1,0,0);
+    test_srawi_(0x00000000FFFFFFFFULL, 0x01, 0xFFFFFFFFFFFFFFFFULL, true,  1,0,0,0);
+    test_srawi_(0x00000000FFFFFFFEULL, 0x01, 0xFFFFFFFFFFFFFFFFULL, false, 1,0,0,0);
+    test_srawi_(0x0000000080000000ULL, 0x1F, 0xFFFFFFFFFFFFFFFFULL, false, 1,0,0,0);
+    test_srawi_(0x000000007FFFFFFFULL, 0x01, 0x000000003FFFFFFFULL, false, 0,1,0,0);
+    test_srawi_(0x000000007FFFFFFFULL, 0x1E, 0x0000000000000001ULL, false, 0,1,0,0);
+    test_srawi_(0x000000007FFFFFFFULL, 0x1F, 0x0000000000000000ULL, false, 0,0,1,0);
+    test_srawi_(0x0000000012345678ULL, 0x10, 0x0000000000001234ULL, false, 0,1,0,0);
 }
 
 void PPCTestRunner::srdx() {

@@ -329,6 +329,7 @@ Function* Module::addFunction(U32 addr)
     function->address = addr;
     function->declare();
     function->createPlaceholder();
+    parent->compiler->compile(function->hirFunction);
     
     // Save and return the function
     functions[addr] = function;

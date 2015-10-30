@@ -42,9 +42,8 @@ void nucleusSysCall() {
     //nucleus.lv2.call(*state);
 }
 
-
 void nucleusLog(U64 guestAddr) {
-    //auto* state = static_cast<frontend::ppu::Thread*>(nucleus.cell.getCurrentThread())->state.get();
+    auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
     //printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(guestAddr).name);
     int a = 0;
     a += 1;
