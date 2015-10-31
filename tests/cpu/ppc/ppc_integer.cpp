@@ -412,15 +412,192 @@ void PPCTestRunner::cntlzwx() {
 }
 
 void PPCTestRunner::divdx() {
+    // Divide Doubleword
+    TEST_INSTRUCTION(test_divd, RA, RB, RD, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divd(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_divd(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL);
+    test_divd(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL);
+    test_divd(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL);
+    test_divd(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL);
+    test_divd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_divd(0xFFFFFFFFFFFFFFE0ULL, 0xFFFFFFFFFFFFFFFEULL, 0x0000000000000010ULL);
+
+    // Divide Doubleword (with condition)
+    TEST_INSTRUCTION(test_divd_, RA, RB, RD, LT, GT, EQ, SO, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divd_(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_divd_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divd_(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_divd_(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL, 0,1,0,0);
+    test_divd_(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_divd_(0xFFFFFFFFFFFFFFE0ULL, 0xFFFFFFFFFFFFFFFEULL, 0x0000000000000010ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::divdux() {
+    // Divide Doubleword Unsigned
+    TEST_INSTRUCTION(test_divdu, RA, RB, RD, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divdu(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_divdu(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL);
+    test_divdu(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL);
+    test_divdu(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL);
+    test_divdu(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL);
+    test_divdu(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_divdu(0xFFFFFFFFFFFFFFE0ULL, 0xFFFFFFFFFFFFFFFEULL, 0x0000000000000000ULL);
+
+    // Divide Doubleword Unsigned (with condition)
+    TEST_INSTRUCTION(test_divdu_, RA, RB, RD, LT, GT, EQ, SO, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divdu_(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_divdu_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divdu_(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_divdu_(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL, 0,1,0,0);
+    test_divdu_(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divdu_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_divdu_(0xFFFFFFFFFFFFFFE0ULL, 0xFFFFFFFFFFFFFFFEULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::divwx() {
+    // Divide Doubleword
+    TEST_INSTRUCTION(test_divw, RA, RB, RD, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divw(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_divw(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL);
+    test_divw(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL);
+    test_divw(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL);
+    test_divw(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL);
+    test_divw(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL);
+    test_divw(0x00000000FFFFFFE0ULL, 0x00000000FFFFFFFEULL, 0x0000000000000010ULL);
+
+    // Divide Doubleword (with condition)
+    TEST_INSTRUCTION(test_divw_, RA, RB, RD, LT, GT, EQ, SO, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divw_(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    // NOTE: CR0 flags LT, GT, EQ are undefined in 64-bit mode
+    test_divw_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divw_(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_divw_(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL, 0,1,0,0);
+    test_divw_(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divw_(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_divw_(0x00000000FFFFFFE0ULL, 0x00000000FFFFFFFEULL, 0x0000000000000010ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::divwux() {
+    // Divide Doubleword Unsigned
+    TEST_INSTRUCTION(test_divwu, RA, RB, RD, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divwu(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_divwu(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL);
+    test_divwu(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL);
+    test_divwu(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL);
+    test_divwu(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL);
+    test_divwu(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL);
+    test_divwu(0x00000000FFFFFFE0ULL, 0x00000000FFFFFFFEULL, 0x0000000000000000ULL);
+
+    // Divide Doubleword Unsigned (with condition)
+    TEST_INSTRUCTION(test_divwu_, RA, RB, RD, LT, GT, EQ, SO, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.divwu_(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_divwu_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divwu_(0x0000000000000001ULL, 0x0000000000000002ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_divwu_(0x0000000000000004ULL, 0x0000000000000001ULL, 0x0000000000000004ULL, 0,1,0,0);
+    test_divwu_(0x0000000000000004ULL, 0x0000000000000004ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_divwu_(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_divwu_(0x00000000FFFFFFE0ULL, 0x00000000FFFFFFFEULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::eqvx() {
@@ -1115,12 +1292,79 @@ void PPCTestRunner::rlwinmx() {
 }
 
 void PPCTestRunner::rlwnmx() {
+    // Rotate Left Word then AND with Mask
+    TEST_INSTRUCTION(test_rlwnm, RS, RB, MB, ME, RA, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.rlwnm(r3, r1, r2, MB, ME); });
+        expect(state.r[3] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    //test_rlwnm(0x0000000012345678ULL, 0x0000000000000000ULL, 0x08, 0x0F, 0x0000000000000000ULL);
 }
 
 void PPCTestRunner::sldx() {
 }
 
 void PPCTestRunner::slwx() {
+    // Shift Left Word
+    TEST_INSTRUCTION(test_slw, RS, RB, RA, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.slw(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_slw(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_slw(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000001ULL);
+    test_slw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x00000000FFFFFFFFULL);
+    test_slw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFEULL);
+    test_slw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000010ULL, 0x00000000FFFF0000ULL);
+    test_slw(0xFFFFFFFFFFFFFFFFULL, 0x000000000000001FULL, 0x0000000080000000ULL);
+    test_slw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000020ULL, 0x0000000000000000ULL);
+    test_slw(0xFFFFFFFFFFFFFFFFULL, 0x000000000000003FULL, 0x0000000000000000ULL);
+    test_slw(0xFFFFFFFFDEADBEEFULL, 0x0000000000000040ULL, 0x00000000DEADBEEFULL);
+    test_slw(0xFFFFFFFFDEADBEEFULL, 0x0000000000000050ULL, 0x00000000BEEF0000ULL);
+
+    // Shift Left Word (with condition)
+    TEST_INSTRUCTION(test_slw_, RS, RB, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        state.r[2] = RB;
+        run({ a.slw_(r3, r1, r2); });
+        expect(state.r[3] == RA);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_slw_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_slw_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_slw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_slw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFEULL, 0,1,0,0);
+    test_slw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000010ULL, 0x00000000FFFF0000ULL, 0,1,0,0);
+    test_slw_(0xFFFFFFFFFFFFFFFFULL, 0x000000000000001FULL, 0x0000000080000000ULL, 0,1,0,0);
+    test_slw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000020ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_slw_(0xFFFFFFFFFFFFFFFFULL, 0x000000000000003FULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_slw_(0xFFFFFFFFDEADBEEFULL, 0x0000000000000040ULL, 0x00000000DEADBEEFULL, 0,1,0,0);
+    test_slw_(0xFFFFFFFFDEADBEEFULL, 0x0000000000000050ULL, 0x00000000BEEF0000ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::sradx() {

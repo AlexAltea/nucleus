@@ -430,8 +430,7 @@ struct MULH_I64 : Sequence<MULH_I64, I<OPCODE_MULH, I64Op, I64Op, I64Op>> {
 /**
  * Opcode: DIV
  */
-#define EMIT_DIV(divFunc, regA, regD) \
-    e.xor_(regD, regD); \
+#define EMIT_DIV(convFunc, divFunc, regA, regD) \
     if (i.src1.isConstant) { \
         e.mov(regA, i.src1.constant()); \
     } else { \
@@ -441,6 +440,7 @@ struct MULH_I64 : Sequence<MULH_I64, I<OPCODE_MULH, I64Op, I64Op, I64Op>> {
         e.mov(regD, i.src2.constant()); \
         divFunc(regD); \
     } else { \
+        convFunc;\
         divFunc(i.src2); \
     } \
     e.mov(i.dest, regA);
@@ -448,36 +448,36 @@ struct MULH_I64 : Sequence<MULH_I64, I<OPCODE_MULH, I64Op, I64Op, I64Op>> {
 struct DIV_I8 : Sequence<DIV_I8, I<OPCODE_DIV, I8Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            EMIT_DIV(e.div, e.al, e.dl);
+            EMIT_DIV(e.xor_(e.dl, e.dl), e.div, e.al, e.dl);
         } else {
-            EMIT_DIV(e.idiv, e.al, e.dl);
+            EMIT_DIV(e.xor_(e.dl, e.dl), e.idiv, e.al, e.dl);
         }
     }
 };
 struct DIV_I16 : Sequence<DIV_I16, I<OPCODE_DIV, I16Op, I16Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            EMIT_DIV(e.div, e.ax, e.dx);
+            EMIT_DIV(e.xor_(e.dx, e.dx), e.div, e.ax, e.dx);
         } else {
-            EMIT_DIV(e.idiv, e.ax, e.dx);
+            EMIT_DIV(e.cwd(), e.idiv, e.ax, e.dx);
         }
     }
 };
 struct DIV_I32 : Sequence<DIV_I32, I<OPCODE_DIV, I32Op, I32Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            EMIT_DIV(e.div, e.eax, e.edx);
+            EMIT_DIV(e.xor_(e.edx, e.edx), e.div, e.eax, e.edx);
         } else {
-            EMIT_DIV(e.idiv, e.eax, e.edx);
+            EMIT_DIV(e.cdq(), e.idiv, e.eax, e.edx);
         }
     }
 };
 struct DIV_I64 : Sequence<DIV_I64, I<OPCODE_DIV, I64Op, I64Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         if (i.instr->flags & ARITHMETIC_UNSIGNED) {
-            EMIT_DIV(e.div, e.rax, e.rdx);
+            EMIT_DIV(e.xor_(e.rdx, e.rdx), e.div, e.rax, e.rdx);
         } else {
-            EMIT_DIV(e.idiv, e.rax, e.rdx);
+            EMIT_DIV(e.cqo(), e.idiv, e.rax, e.rdx);
         }
         // TODO: Restore rdx
     }
