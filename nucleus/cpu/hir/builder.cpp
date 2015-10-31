@@ -338,6 +338,9 @@ Value* Builder::createTrunc(Value* value, Type type) {
 }
 
 Value* Builder::createCast(Value* value, Type type) {
+    if (value->type == type) {
+        return value;
+    }
     if (value->isConstant()) {
         Value* dest = cloneValue(value);
         dest->doCast(type);
@@ -350,6 +353,9 @@ Value* Builder::createCast(Value* value, Type type) {
 }
 
 Value* Builder::createConvert(Value* value, Type type) {
+    if (value->type == type) {
+        return value;
+    }
     if (value->isConstant()) {
         Value* dest = cloneValue(value);
         dest->doConvert(type);

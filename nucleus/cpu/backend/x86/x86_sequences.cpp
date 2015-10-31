@@ -1036,9 +1036,19 @@ struct CAST_F64_I64 : Sequence<CAST_F64_I64, I<OPCODE_CAST, F64Op, I64Op>> {
 /**
  * Opcode: CONVERT
  */
+struct CONVERT_I64_F64 : Sequence<CONVERT_I64_F64, I<OPCODE_CONVERT, I64Op, F64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vcvttsd2si(i.dest, i.src1);
+    }
+};
 struct CONVERT_F32_F64 : Sequence<CONVERT_F32_F64, I<OPCODE_CONVERT, F32Op, F64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         e.vcvtsd2ss(i.dest, i.src1);
+    }
+};
+struct CONVERT_F64_I64 : Sequence<CONVERT_F64_I64, I<OPCODE_CONVERT, F64Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        e.vcvtsi2sd(i.dest, i.src1);
     }
 };
 struct CONVERT_F64_F32 : Sequence<CONVERT_F64_F32, I<OPCODE_CONVERT, F64Op, F32Op>> {
@@ -2088,7 +2098,7 @@ void X86Sequences::init() {
         registerSequence<SEXT_I16_I8, SEXT_I32_I8, SEXT_I64_I8, SEXT_I32_I16, SEXT_I64_I16, SEXT_I64_I32>();
         registerSequence<TRUNC_I8_I16, TRUNC_I8_I32, TRUNC_I8_I64, TRUNC_I16_I32, TRUNC_I16_I64, TRUNC_I32_I64>();
         registerSequence<CAST_I32_F32, CAST_F32_I32, CAST_I64_F64, CAST_F64_I64>();
-        registerSequence<CONVERT_F32_F64, CONVERT_F64_F32>();
+        registerSequence<CONVERT_I64_F64, CONVERT_F32_F64, CONVERT_F64_I64, CONVERT_F64_F32>();
         registerSequence<CTLZ_I8, CTLZ_I16, CTLZ_I32, CTLZ_I64>();
         registerSequence<LOAD_I8, LOAD_I16, LOAD_I32, LOAD_I64, LOAD_F32, LOAD_F64, LOAD_V128>();
         registerSequence<STORE_I8, STORE_I16, STORE_I32, STORE_I64, STORE_F32, STORE_F64, STORE_V128>();

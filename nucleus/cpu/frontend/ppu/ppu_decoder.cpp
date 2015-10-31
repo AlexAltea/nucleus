@@ -520,6 +520,27 @@ void Module::recompile()
     backend::Generate(static_cast<frontend::Module<U32>*>(this));*/
 }
 
+void Module::hook(U32 funcAddr, U32 fnid) {
+    if (functions.find(funcAddr) == functions.end()) {
+        auto* func = new Function(this);
+        func->declare();
+        functions[funcAddr] = func;
+    }
+    auto* hirFunc = functions[funcAddr]->hirFunction;
+    hirFunc->reset();
+
+    hir::Builder builder;
+    hir::Block* block = new hir::Block(hirFunc);
+    block->flags |= hir::BLOCK_IS_ENTRY;
+    builder.setInsertPoint(block);
+
+    hir::Function* hookFunc = builder.getExternFunction(nucleusHook);
+    builder.createCall(hookFunc, { builder.getConstantI32(fnid) }, hir::CALL_EXTERN);
+    builder.createRet();
+
+    parent->compiler->compile(hirFunc);
+}
+
 }  // namespace ppu
 }  // namespace frontend
 }  // namespace cpu
