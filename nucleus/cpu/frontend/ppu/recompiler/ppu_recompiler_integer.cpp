@@ -325,6 +325,7 @@ void Recompiler::cntlzdx(Instruction code)
     Value* ra;
 
     ra = builder.createCtlz(rs);
+    ra = builder.createZExt(ra, TYPE_I64);
     if (code.rc) {
         updateCR0(ra);
     }
@@ -334,15 +335,16 @@ void Recompiler::cntlzdx(Instruction code)
 
 void Recompiler::cntlzwx(Instruction code)
 {
-    Value* rs = getGPR(code.rs);
+    Value* rs = getGPR(code.rs, TYPE_I32);
+    Value* ra;
 
-    Value* ra_i32 = builder.createCtlz(rs);
-    Value* ra_i64 = builder.createZExt(ra_i32, TYPE_I64);
+    ra = builder.createCtlz(rs);
+    ra = builder.createZExt(ra, TYPE_I64);
     if (code.rc) {
-        updateCR0(ra_i64);
+        updateCR0(ra);
     }
 
-    setGPR(code.ra, ra_i64);
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::divdx(Instruction code)
@@ -430,7 +432,7 @@ void Recompiler::eqvx(Instruction code)
     Value* ra;
 
     ra = builder.createXor(rs, rb);
-    ra = builder.createNeg(ra);
+    ra = builder.createNot(ra);
     if (code.rc) {
         updateCR0(ra);
     }

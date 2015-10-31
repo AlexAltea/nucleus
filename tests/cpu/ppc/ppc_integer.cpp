@@ -406,9 +406,87 @@ void PPCTestRunner::cmpli() {
 }
 
 void PPCTestRunner::cntlzdx() {
+    // Count Leading Zeros Doubleword
+    TEST_INSTRUCTION(test_cntlzd, RS, RA, {
+        state.r[1] = RS;
+        run({ a.cntlzd(r2, r1); });
+        expect(state.r[2] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_cntlzd(0x0000000000000000ULL, 0x0000000000000040ULL);
+    test_cntlzd(0x0000000000000001ULL, 0x000000000000003FULL);
+    test_cntlzd(0x7FFFFFFFFFFFFFFFULL, 0x0000000000000001ULL);
+    test_cntlzd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL);
+
+    // Count Leading Zeros Doubleword (with condition)
+    TEST_INSTRUCTION(test_cntlzd_, RS, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        run({ a.cntlzd_(r2, r1); });
+        expect(state.r[2] == RA);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_cntlzd_(0x0000000000000000ULL, 0x0000000000000040ULL, 0,1,0,0);
+    test_cntlzd_(0x0000000000000001ULL, 0x000000000000003FULL, 0,1,0,0);
+    test_cntlzd_(0x7FFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_cntlzd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::cntlzwx() {
+    // Count Leading Zeros Word
+    TEST_INSTRUCTION(test_cntlzw, RS, RA, {
+        state.r[1] = RS;
+        run({ a.cntlzw(r2, r1); });
+        expect(state.r[2] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_cntlzw(0x0000000000000000ULL, 0x0000000000000020ULL);
+    test_cntlzw(0x0000000000000001ULL, 0x000000000000001FULL);
+    test_cntlzw(0x000000007FFFFFFFULL, 0x0000000000000001ULL);
+    test_cntlzw(0x00000000FFFFFFFFULL, 0x0000000000000000ULL);
+    test_cntlzw(0xFFFFFFFF7FFFFFFFULL, 0x0000000000000001ULL);
+    test_cntlzw(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL);
+
+    // Count Leading Zeros Word (with condition)
+    TEST_INSTRUCTION(test_cntlzw_, RS, RA, LT, GT, EQ, SO, {
+        state.r[1] = RS;
+        run({ a.cntlzw_(r2, r1); });
+        expect(state.r[2] == RA);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_cntlzw_(0x0000000000000000ULL, 0x0000000000000020ULL, 0,1,0,0);
+    test_cntlzw_(0x0000000000000001ULL, 0x000000000000001FULL, 0,1,0,0);
+    test_cntlzw_(0x000000007FFFFFFFULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_cntlzw_(0x00000000FFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_cntlzw_(0xFFFFFFFF7FFFFFFFULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_cntlzw_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::divdx() {
@@ -601,6 +679,43 @@ void PPCTestRunner::divwux() {
 }
 
 void PPCTestRunner::eqvx() {
+    // Equivalent
+    TEST_INSTRUCTION(test_eqv, R1, R2, R3, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run({ a.eqv(r3, r1, r2); });
+        expect(state.r[3] == R3);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_eqv(0x0000FF00FF00FFFFULL, 0x000000FF00FFFFFFULL, 0xFFFF00000000FFFFULL);
+    test_eqv(0x000000000000FFFFULL, 0x80000000000000FFULL, 0x7FFFFFFFFFFF00FFULL);
+    test_eqv(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+        
+    // Equivalent (with condition)
+    TEST_INSTRUCTION(test_eqv_, R1, R2, R3, LT, GT, EQ, SO, {
+        state.r[1] = R1;
+        state.r[2] = R2;
+        run({ a.eqv_(r3, r1, r2); });
+        expect(state.r[3] == R3);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_eqv_(0x0000FF00FF00FFFFULL, 0x000000FF00FFFFFFULL, 0xFFFF00000000FFFFULL, 1,0,0,0);
+    test_eqv_(0x000000000000FFFFULL, 0x80000000000000FFULL, 0x7FFFFFFFFFFF00FFULL, 0,1,0,0);
+    test_eqv_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
 }
 
 void PPCTestRunner::extsbx() {
