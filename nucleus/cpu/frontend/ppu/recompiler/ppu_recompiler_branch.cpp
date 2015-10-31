@@ -194,47 +194,82 @@ void Recompiler::bclrx(Instruction code)
 
 void Recompiler::crand(Instruction code)
 {
-    Value* crba = getCRField(code.crba);
-    Value* crbb = getCRField(code.crbb);
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
     Value* crbd;
 
     crbd = builder.createAnd(crba, crbb);
-    setCRField(code.crbd, crbd);
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::crandc(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
+    Value* crbd;
+
+    crbd = builder.createAnd(crba, builder.createNot(crbb));
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::creqv(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
+    Value* crbd;
+
+    crbd = builder.createNot(builder.createXor(crba, crbb));
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::crnand(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
+    Value* crbd;
+
+    crbd = builder.createNot(builder.createAnd(crba, crbb));
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::crnor(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
+    Value* crbd;
+
+    crbd = builder.createNot(builder.createOr(crba, crbb));
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::cror(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
+    Value* crbd;
+
+    crbd = builder.createOr(crba, crbb);
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::crorc(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
+    Value* crbd;
+
+    crbd = builder.createOr(crba, builder.createNot(crbb));
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::crxor(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* crba = getCRBit(code.crba);
+    Value* crbb = getCRBit(code.crbb);
+    Value* crbd;
+
+    crbd = builder.createXor(crba, crbb);
+    setCRBit(code.crbd, crbd);
 }
 
 void Recompiler::mcrf(Instruction code)

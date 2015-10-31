@@ -881,44 +881,43 @@ void Recompiler::slwx(Instruction code)
 
 void Recompiler::sradx(Instruction code)
 {
-    assert_always("Unimplemented");
-    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
-    Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
-    Value* temp;
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb);
     Value* ra;
+    Value* ca;
 
-    rs = builder.createShl(rs, 64);
-    temp = builder.createAShr(rs, rb);
-    temp = builder.createAShr(temp, 64);
-    ra = builder.createTrunc<I64>(temp);
+    // TODO: This is totally wrong
+    ra = builder.createShrA(rs, builder.createTrunc(rb, TYPE_I8));
+    ca = builder.getConstantI8(0);
     if (code.rc) {
         updateCR0(ra);
     }
 
-    // TODO: Update XER CA
-
-    setGPR(code.ra, ra);*/
+    setXER_CA(ca);
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::sradix(Instruction code)
 {
-    assert_always("Unimplemented");
-    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
-    Value* temp;
+    Value* rs = getGPR(code.rs);
     Value* ra;
+    Value* ca;
 
     const U32 sh = code.sh | (code.sh_ << 5);
-    rs = builder.createShl(rs, 64);
-    temp = builder.createAShr(rs, sh);
-    temp = builder.createAShr(temp, 64);
-    ra = builder.createTrunc<I64>(temp);
+    if (sh == 0) {
+        ra = rs;
+        ca = builder.getConstantI8(0);
+    } else {
+        ra = builder.createShrA(rs, sh);
+        ca = builder.getConstantI8(0); // TODO
+    }
+
     if (code.rc) {
         updateCR0(ra);
     }
 
-    // TODO: Update XER CA
-
-    setGPR(code.ra, ra);*/
+    setXER_CA(ca);
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::srawx(Instruction code)

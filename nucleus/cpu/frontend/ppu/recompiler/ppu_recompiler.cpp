@@ -273,6 +273,14 @@ void Recompiler::setCRField(int index, Value* value) {
     }
 }
 
+void Recompiler::setCRBit(int index, Value* value) {
+    const U32 offset = offsetof(PPUState, cr.field[index >> 2].bit[index & 0b11]);
+
+     // TODO: Use volatility information?
+
+    builder.createCtxStore(offset, value);
+}
+
 void Recompiler::setCR(Value* value) {
     if (value->type != TYPE_I32) {
         logger.error(LOG_CPU, "Wrong value type for CR register");

@@ -658,7 +658,16 @@ void Recompiler::stfdx(Instruction code)
 
 void Recompiler::stfiwx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* addr = getGPR(code.rb);
+    Value* frs = getFPR(code.frs);
+
+    if (code.ra) {
+        addr = builder.createAdd(addr, getGPR(code.ra));
+    }
+
+    frs = builder.createCast(frs, TYPE_I64);
+    frs = builder.createTrunc(frs, TYPE_I32);
+    writeMemory(addr, frs);
 }
 
 void Recompiler::stfs(Instruction code)
