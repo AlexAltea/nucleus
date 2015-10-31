@@ -101,6 +101,9 @@ public:
 
     // Recompile each of the functions
     void recompile();
+
+    // Replace a function with a HLE hook
+    void hook(U32 funcAddr, U32 fnid);
 };
 
 }  // namespace ppu

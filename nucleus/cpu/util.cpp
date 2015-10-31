@@ -39,7 +39,12 @@ void nucleusCall(U64 guestAddr) {
 
 void nucleusSysCall() {
     auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
-    //nucleus.lv2.call(*state);
+    static_cast<sys::LV2*>(nucleus.sys.get())->call(*state);
+}
+
+void nucleusHook(U32 fnid) {
+    auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
+    static_cast<sys::LV2*>(nucleus.sys.get())->modules.call(*state, fnid);
 }
 
 void nucleusLog(U64 guestAddr) {

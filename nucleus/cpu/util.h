@@ -36,6 +36,11 @@ void nucleusCall(U64 guestAddr);
 void nucleusSysCall();
 
 /**
+ * Call module manager call method.
+ */
+void nucleusHook(U32 fnid);
+
+/**
  * This is just an utility function that can be placed between guest instructions to
  * obtain information in real-time about the thread state.
  * @param[in]  guestAddr  Guest address where the instruction to be executed is

@@ -38,6 +38,7 @@ public:
 
     // Get function ID from the current thread and call it
     void call(cpu::frontend::ppu::PPUState& state);
+    void call(cpu::frontend::ppu::PPUState& state, U32 fnid);
 };
 
 }  // namespace sys

@@ -5,6 +5,8 @@
 
 #include "sys_prx.h"
 #include "nucleus/emulator.h"
+#include "nucleus/cpu/cell.h"
+#include "nucleus/core/config.h"
 #include "nucleus/system/callback.h"
 #include "nucleus/system/lv2.h"
 #include "nucleus/system/lv2/sys_process.h"
@@ -79,14 +81,28 @@ S32 sys_prx_start_module(S32 id, U64 flags, sys_prx_start_module_option_t* pOpt)
 
                 // Try to link to a native implementation (HLE)
                 if (lv2.modules.find(lib.name, fnid)) {
-                    U32 hookAddr = nucleus.memory->alloc(20, 8);
-                    nucleus.memory->write32(hookAddr + 0, 0x3D600000 | ((fnid >> 16) & 0xFFFF));  // lis  r11, fnid:hi
-                    nucleus.memory->write32(hookAddr + 4, 0x616B0000 | (fnid & 0xFFFF));          // ori  r11, r11, fnid:lo
-                    nucleus.memory->write32(hookAddr + 8, 0x44000042);                            // sc   2
-                    nucleus.memory->write32(hookAddr + 12, 0x4E800020);                           // blr
-                    nucleus.memory->write32(hookAddr + 16, hookAddr);                             // OPD: Function address
-                    nucleus.memory->write32(hookAddr + 20, 0);                                    // OPD: Function RTOC
-                    nucleus.memory->write32(importedLibrary.fstub_addr + 4*i, hookAddr + 16);
+                    if (config.ppuTranslator == CPU_TRANSLATOR_INSTRUCTION) {
+                        U32 hookAddr = nucleus.memory->alloc(20, 8);
+                        nucleus.memory->write32(hookAddr + 0, 0x3D600000 | ((fnid >> 16) & 0xFFFF));  // lis  r11, fnid:hi
+                        nucleus.memory->write32(hookAddr + 4, 0x616B0000 | (fnid & 0xFFFF));          // ori  r11, r11, fnid:lo
+                        nucleus.memory->write32(hookAddr + 8, 0x44000042);                            // sc   2
+                        nucleus.memory->write32(hookAddr + 12, 0x4E800020);                           // blr
+                        nucleus.memory->write32(hookAddr + 16, hookAddr);                             // OPD: Function address
+                        nucleus.memory->write32(hookAddr + 20, 0);                                    // OPD: Function RTOC
+                        nucleus.memory->write32(importedLibrary.fstub_addr + 4*i, hookAddr + 16);
+                    }
+                    if (config.ppuTranslator == CPU_TRANSLATOR_FUNCTION) {
+                        const U32 addr = lib.exports.at(fnid);
+                        const U32 func_addr = nucleus.memory->read32(addr + 0);
+                        const U32 func_rtoc = nucleus.memory->read32(addr + 4);
+                        for (auto& module : static_cast<cpu::Cell*>(nucleus.cpu.get())->ppu_modules) {
+                            if (module->contains(func_addr)) {
+                                module->hook(func_addr, fnid);
+                                break;
+                            }
+                        }
+                        nucleus.memory->write32(importedLibrary.fstub_addr + 4*i, addr);
+                    }
                 }
 
                 // Otherwise, link to original function (LLE)
