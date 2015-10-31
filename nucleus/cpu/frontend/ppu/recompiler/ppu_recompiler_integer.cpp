@@ -512,6 +512,7 @@ void Recompiler::mulhwx(Instruction code)
     Value* rd;
 
     rd = builder.createMulH(ra, rb, ARITHMETIC_SIGNED);
+    rd = builder.createZExt(rd, TYPE_I64);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -526,6 +527,7 @@ void Recompiler::mulhwux(Instruction code)
     Value* rd;
 
     rd = builder.createMulH(ra, rb, ARITHMETIC_UNSIGNED);
+    rd = builder.createZExt(rd, TYPE_I64);
     if (code.rc) {
         updateCR0(rd);
     }
@@ -866,7 +868,7 @@ void Recompiler::slwx(Instruction code)
     Value* ra;
 
     rs = builder.createZExt(rs, TYPE_I64);
-    rb = builder.createZExt(builder.createAnd(rb, builder.getConstantI8(0x3F)), TYPE_I64);
+    rb = builder.createAnd(rb, builder.getConstantI8(0x3F));
     ra = builder.createZExt(builder.createTrunc(builder.createShl(rs, rb), TYPE_I32), TYPE_I64);
     if (code.rc) {
         updateCR0(ra);

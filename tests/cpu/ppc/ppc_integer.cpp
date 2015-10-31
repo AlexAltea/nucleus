@@ -538,24 +538,325 @@ void PPCTestRunner::extswx() {
 }
 
 void PPCTestRunner::mulhdx() {
+    // Multiply High Doubleword
+    TEST_INSTRUCTION(test_mulhd, RA, RB, RD, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhd(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulhd(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhd(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhd(0x8000000000000000ULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_mulhd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_mulhd(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000002ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_mulhd(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL);
+    test_mulhd(0x0000111111111111ULL, 0x0000111111111111ULL, 0x0000000001234567ULL);
+
+    // Multiply High Doubleword (with condition)
+    TEST_INSTRUCTION(test_mulhd_, RA, RB, RD, LT, GT, EQ, SO, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhd_(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulhd_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhd_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhd_(0x8000000000000000ULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_mulhd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_mulhd_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000002ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_mulhd_(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhd_(0x0000111111111111ULL, 0x0000111111111111ULL, 0x0000000001234567ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::mulhdux() {
+    // Multiply High Doubleword Unsigned
+    TEST_INSTRUCTION(test_mulhdu, RA, RB, RD, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhdu(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulhdu(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhdu(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhdu(0x8000000000000000ULL, 0x0000000000000001ULL, 0x0000000000000000ULL);
+    test_mulhdu(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x0000000000000000ULL);
+    test_mulhdu(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000002ULL, 0x0000000000000001ULL);
+    test_mulhdu(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFEULL);
+    test_mulhdu(0x0000111111111111ULL, 0x0000111111111111ULL, 0x0000000001234567ULL);
+
+    // Multiply High Doubleword Unsigned (with condition)
+    TEST_INSTRUCTION(test_mulhdu_, RA, RB, RD, LT, GT, EQ, SO, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhdu_(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulhdu_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhdu_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhdu_(0x8000000000000000ULL, 0x0000000000000001ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhdu_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhdu_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000002ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_mulhdu_(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFEULL, 1,0,0,0);
+    test_mulhdu_(0x0000111111111111ULL, 0x0000111111111111ULL, 0x0000000001234567ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::mulhwx() {
+    // Multiply High Word
+    TEST_INSTRUCTION(test_mulhw, RA, RB, RD, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhw(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulhw(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhw(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhw(0x0000000080000000ULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL);
+    test_mulhw(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL);
+    test_mulhw(0x00000000FFFFFFFFULL, 0x0000000000000002ULL, 0x00000000FFFFFFFFULL);
+    test_mulhw(0x00000000FFFFFFFFULL, 0x00000000FFFFFFFFULL, 0x0000000000000000ULL);
+    test_mulhw(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000000000000123ULL);
+    test_mulhw(0xFFFF000000111111ULL, 0xFFFF000000111111ULL, 0x0000000000000123ULL);
+
+    // Multiply High Word (with condition)
+    TEST_INSTRUCTION(test_mulhw_, RA, RB, RD, LT, GT, EQ, SO, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhw_(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    // NOTE: CR0 flags LT, GT, EQ are undefined in 64-bit mode
+    test_mulhw_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhw_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhw_(0x0000000080000000ULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_mulhw_(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_mulhw_(0x00000000FFFFFFFFULL, 0x0000000000000002ULL, 0x00000000FFFFFFFFULL, 0,1,0,0);
+    test_mulhw_(0x00000000FFFFFFFFULL, 0x00000000FFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhw_(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000000000000123ULL, 0,1,0,0);
+    test_mulhw_(0xFFFF000000111111ULL, 0xFFFF000000111111ULL, 0x0000000000000123ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::mulhwux() {
+    // Multiply High Word Unsigned
+    TEST_INSTRUCTION(test_mulhwu, RA, RB, RD, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhwu(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulhwu(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhwu(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulhwu(0x0000000080000000ULL, 0x0000000000000001ULL, 0x0000000000000000ULL);
+    test_mulhwu(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x0000000000000000ULL);
+    test_mulhwu(0x00000000FFFFFFFFULL, 0x0000000000000002ULL, 0x0000000000000001ULL);
+    test_mulhwu(0x00000000FFFFFFFFULL, 0x00000000FFFFFFFFULL, 0x00000000FFFFFFFEULL);
+    test_mulhwu(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000000000000123ULL);
+    test_mulhwu(0xFFFF000000111111ULL, 0xFFFF000000111111ULL, 0x0000000000000123ULL);
+    
+    // Multiply High Word Unsigned (with condition)
+    TEST_INSTRUCTION(test_mulhwu_, RA, RB, RD, LT, GT, EQ, SO, {
+        constexpr U64 mask = 0x00000000FFFFFFFFULL;
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulhwu_(r3, r1, r2); });
+        expect((state.r[3] & mask) == (RD & mask));
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    // NOTE: CR0 flags LT, GT, EQ are undefined in 64-bit mode
+    test_mulhwu_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhwu_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhwu_(0x0000000080000000ULL, 0x0000000000000001ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhwu_(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulhwu_(0x00000000FFFFFFFFULL, 0x0000000000000002ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_mulhwu_(0x00000000FFFFFFFFULL, 0x00000000FFFFFFFFULL, 0x00000000FFFFFFFEULL, 0,1,0,0);
+    test_mulhwu_(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000000000000123ULL, 0,1,0,0);
+    test_mulhwu_(0xFFFF000000111111ULL, 0xFFFF000000111111ULL, 0x0000000000000123ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::mulldx() {
+    // Multiply Low Doubleword
+    TEST_INSTRUCTION(test_mulld, RA, RB, RD, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulld(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulld(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulld(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mulld(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL);
+    test_mulld(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_mulld(0xFFFFFFFFFFFFFFFCULL, 0x0000000000000004ULL, 0xFFFFFFFFFFFFFFF0ULL);
+    test_mulld(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL);
+    test_mulld(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000012345654321ULL);
+
+    // Multiply Low Doubleword (with condition)
+    TEST_INSTRUCTION(test_mulld_, RA, RB, RD, LT, GT, EQ, SO, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mulld_(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulld_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulld_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mulld_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_mulld_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_mulld_(0xFFFFFFFFFFFFFFFCULL, 0x0000000000000004ULL, 0xFFFFFFFFFFFFFFF0ULL, 1,0,0,0);
+    test_mulld_(0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_mulld_(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000012345654321ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::mulli() {
+    // Multiply Low Immediate
+    TEST_INSTRUCTION(test_mulli, RA, SIMM, RD, {
+        state.r[1] = RA;
+        run({ a.mulli(r2, r1, SIMM); });
+        expect(state.r[2] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mulli(0x0000000000000000ULL, 0x0000, 0x0000000000000000ULL);
+    test_mulli(0x0000000000000001ULL, 0x0000, 0x0000000000000000ULL);
+    test_mulli(0x0000000000000001ULL, 0x0001, 0x0000000000000001ULL);
+    test_mulli(0xFFFFFFFFFFFFFFFFULL, 0x0001, 0xFFFFFFFFFFFFFFFFULL);
+    test_mulli(0xFFFFFFFFFFFFFFFCULL, 0x0004, 0xFFFFFFFFFFFFFFF0ULL);
+    test_mulli(0xFFFFFFFFFFFFFFFFULL, 0xFFFF, 0x0000000000000001ULL);
+    test_mulli(0x0000000000000111ULL, 0x0111, 0x0000000000012321ULL);
 }
 
 void PPCTestRunner::mullwx() {
+    // Multiply Low Word
+    TEST_INSTRUCTION(test_mullw, RA, RB, RD, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mullw(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mullw(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mullw(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL);
+    test_mullw(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL);
+    test_mullw(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_mullw(0x00000000FFFFFFFCULL, 0x0000000000000004ULL, 0xFFFFFFFFFFFFFFF0ULL);
+    test_mullw(0x00000000FFFFFFFFULL, 0x00000000FFFFFFFFULL, 0x0000000000000001ULL);
+    test_mullw(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000012345654321ULL);
+
+    // Multiply Low Word (with condition)
+    TEST_INSTRUCTION(test_mullw_, RA, RB, RD, LT, GT, EQ, SO, {
+        state.r[1] = RA;
+        state.r[2] = RB;
+        run({ a.mullw_(r3, r1, r2); });
+        expect(state.r[3] == RD);
+        expect(state.cr.field[0].lt == LT);
+        expect(state.cr.field[0].gt == GT);
+        expect(state.cr.field[0].eq == EQ);
+        expect(state.cr.field[0].so == SO);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_mullw_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mullw_(0x0000000000000001ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_mullw_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_mullw_(0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 1,0,0,0);
+    test_mullw_(0x00000000FFFFFFFCULL, 0x0000000000000004ULL, 0xFFFFFFFFFFFFFFF0ULL, 1,0,0,0);
+    test_mullw_(0x00000000FFFFFFFFULL, 0x00000000FFFFFFFFULL, 0x0000000000000001ULL, 0,1,0,0);
+    test_mullw_(0x0000000000111111ULL, 0x0000000000111111ULL, 0x0000012345654321ULL, 0,1,0,0);
 }
 
 void PPCTestRunner::nandx() {

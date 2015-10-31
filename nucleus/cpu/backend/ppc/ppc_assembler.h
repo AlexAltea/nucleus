@@ -63,6 +63,7 @@ private:
     void emitFormXS(Operand opcd, Operand s, Operand a, Operand sh, Operand xo, bool rc);
     void emitFormXO(U32 instruction, Operand d, Operand a, Operand b);
     void emitFormA(U32 instruction, Operand d, Operand a, Operand b, Operand c);
+    void emitFormM(U32 instruction, Operand s, Operand a, Operand b, Operand mb, Operand me);
 
 public:
     PPCAssembler(size_t codeSize = 4096, void* codeAddr = nullptr);

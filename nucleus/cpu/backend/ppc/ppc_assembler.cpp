@@ -71,6 +71,14 @@ void PPCAssembler::emitFormA(U32 instruction, Operand d, Operand a, Operand b, O
     const U32 cMask = (c & 0x1F) <<  6;
     emit(instruction | dMask | aMask | bMask | cMask);
 }
+void PPCAssembler::emitFormM(U32 instruction, Operand s, Operand a, Operand b, Operand mb, Operand me) {
+    const U32 sMask = (s & 0x1F) << 21;
+    const U32 aMask = (a & 0x1F) << 16;
+    const U32 bMask = (b & 0x1F) << 11;
+    const U32 mbMask = (mb & 0x1F) << 6;
+    const U32 meMask = (me & 0x1F) << 1;
+    emit(instruction | sMask | aMask | bMask | mbMask | meMask);
+}
 
 // PPC instructions
 void PPCAssembler::add(RegGPR rd, RegGPR ra, RegGPR rb) { emitFormXO(0x7C000214, rd, ra, rb); }
@@ -390,12 +398,12 @@ void PPCAssembler::rldicr(RegGPR ra, RegGPR rs, U8 sh, U8 me) {  }
 void PPCAssembler::rldicr_(RegGPR ra, RegGPR rs, U8 sh, U8 me) {  }
 void PPCAssembler::rldimi(RegGPR ra, RegGPR rs, U8 sh, U8 mb) {  }
 void PPCAssembler::rldimi_(RegGPR ra, RegGPR rs, U8 sh, U8 mb) {  }
-void PPCAssembler::rlwimi(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) {  }
-void PPCAssembler::rlwimi_(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) {  }
-void PPCAssembler::rlwinm(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) {  }
-void PPCAssembler::rlwinm_(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) {  }
-void PPCAssembler::rlwnm(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb, U8 me) {  }
-void PPCAssembler::rlwnm_(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb, U8 me) {  }
+void PPCAssembler::rlwimi(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) { emitFormM(0x50000000, rs, ra, sh, mb, me); }
+void PPCAssembler::rlwimi_(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) { emitFormM(0x50000001, rs, ra, sh, mb, me); }
+void PPCAssembler::rlwinm(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) { emitFormM(0x54000000, rs, ra, sh, mb, me); }
+void PPCAssembler::rlwinm_(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me) { emitFormM(0x54000001, rs, ra, sh, mb, me); }
+void PPCAssembler::rlwnm(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb, U8 me) { emitFormM(0x5C000000, rs, ra, rb, mb, me); }
+void PPCAssembler::rlwnm_(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb, U8 me) { emitFormM(0x5C000001, rs, ra, rb, mb, me); }
 void PPCAssembler::sc() {  }
 void PPCAssembler::sld(RegGPR ra, RegGPR rs, RegGPR rb) { emitFormX(0x7C000036, rs, ra, rb); }
 void PPCAssembler::sld_(RegGPR ra, RegGPR rs, RegGPR rb) { emitFormX(0x7C000037, rs, ra, rb); }

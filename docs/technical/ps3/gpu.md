@@ -44,8 +44,6 @@ Following engines are available:
 * __PFIFO__: Pulls commands from the command buffers and delivers them to other engines.
 * __PGRAPH__: 2D and 3D rendering engine.
 
-In addition, there exists the pseudo-engine SOFTWARE, Causes an interrupt to runPseudo-engine
-
 ### PFIFO
 Can control the following engines:
 
