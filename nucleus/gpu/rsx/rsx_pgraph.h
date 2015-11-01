@@ -12,6 +12,7 @@
 #include "nucleus/gpu/rsx/rsx_fp.h"
 #include "nucleus/gpu/rsx/rsx_texture.h"
 
+#include <memory>
 #include <unordered_map>
 #include <vector>
 

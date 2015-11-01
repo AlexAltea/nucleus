@@ -3,16 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "widget_texture.h"
+#include "direct3d12_command_queue.h"
 
-namespace ui {
+namespace gfx {
 
-void WidgetTexture::init()
-{
-}
-
-void WidgetTexture::render()
-{
-}
-
-}  // namespace ui
+}  // namespace gfx

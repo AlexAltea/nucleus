@@ -7,14 +7,15 @@
 
 #include "nucleus/ui/widget.h"
 
+namespace ui {
+
 class WidgetTexture : public Widget {
 public:
-    // OpenGL information
-    GLuint textureId;
-
-    // Initialize from the texture ID pointer
-    void init(GLuint* id);
+    // Initialize the texture
+    void init();
 
     // Render the image
     virtual void render() override;
 };
+
+}  // namespace ui

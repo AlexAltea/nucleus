@@ -6,6 +6,8 @@
 #include "widget.h"
 #include "nucleus/ui/ui.h"
 
+namespace ui {
+
 float Widget::getCoordinateX(Length x)
 {
     float coordinate;
@@ -31,6 +33,8 @@ float Widget::getCoordinateY(Length y)
 
 Length Widget::correctHeight(Length height)
 {
-    height.value *= ui.surfaceProportion;
+    //height.value *= ui.surfaceProportion;
     return height;
 }
+
+}  // namespace ui

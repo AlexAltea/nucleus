@@ -55,7 +55,7 @@ WindowOpenGL::WindowOpenGL(const std::string& title, int width, int height) : Wi
      */
     HGLRC dummyRc = wglCreateContext(hdc);
     wglMakeCurrent(hdc, dummyRc);
-    if (!graphics::initializeOpenGL()) {
+    if (!gfx::initializeOpenGL()) {
         MessageBox(m_hwnd, "Could not initialize all OpenGL extensions.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }

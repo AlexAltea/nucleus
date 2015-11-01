@@ -14,6 +14,8 @@
 #include <thread>
 #include <vector>
 
+namespace ui {
+
 class UI {
     std::shared_ptr<gfx::IBackend> graphics;
 
@@ -53,4 +55,4 @@ public:
     void push_screen(Screen* screen);
 };
 
-extern UI ui;
+}  // namespace ui

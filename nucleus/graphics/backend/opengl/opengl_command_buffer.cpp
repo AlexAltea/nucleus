@@ -9,9 +9,18 @@
 
 namespace gfx {
 
+OpenGLCommandBuffer::OpenGLCommandBuffer() {
+}
+
+OpenGLCommandBuffer::~OpenGLCommandBuffer() {
+}
+
 bool OpenGLCommandBuffer::reset() {
     commands.clear();
     return true;
+}
+
+void OpenGLCommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
 }
 
 void OpenGLCommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorValue) {
@@ -45,6 +54,18 @@ void OpenGLCommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 
     command.data.clearDepthStencil.depth = depthValue;
     command.data.clearDepthStencil.stencil = stencilValue;
     commands.push_back(command);
+}
+
+void OpenGLCommandBuffer::cmdDraw() {
+}
+
+void OpenGLCommandBuffer::cmdDrawIndexed() {
+}
+
+void OpenGLCommandBuffer::cmdDrawIndirect() {
+}
+
+void OpenGLCommandBuffer::cmdDrawIndexedIndirect() {
 }
 
 }  // namespace gfx

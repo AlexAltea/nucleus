@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="backend\direct3d12\direct3d12_backend.cpp" />
     <ClCompile Include="backend\direct3d12\direct3d12_command_buffer.cpp" />
+    <ClCompile Include="backend\direct3d12\direct3d12_command_queue.cpp" />
     <ClCompile Include="backend\opengl\opengl.cpp" />
     <ClCompile Include="backend\opengl\opengl_backend.cpp" />
     <ClCompile Include="backend\opengl\opengl_command_buffer.cpp" />
@@ -23,7 +25,10 @@
     <ClCompile Include="hir\module.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="backends.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_backend.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_command_buffer.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_command_queue.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_pipeline.h" />
     <ClInclude Include="backend\opengl\opengl.h" />
     <ClInclude Include="backend\opengl\opengl_backend.h" />

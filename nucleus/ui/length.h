@@ -5,6 +5,8 @@
 
 #pragma once
 
+namespace ui {
+
 struct Length {
     float value;
     enum Unit {
@@ -25,3 +27,5 @@ struct Length {
     Length operator* (const Length& rhs) { return Length{value * rhs.value, unit}; }
     Length operator/ (const Length& rhs) { return Length{value / rhs.value, unit}; }
 };
+
+}  // namespace ui

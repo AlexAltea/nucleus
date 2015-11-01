@@ -22,8 +22,8 @@ int main(int argc, char **argv)
     // Using UI
     if (!config.console) {
         // Initialize UI
-        switch (config.gpuBackend) {
-        case GPU_BACKEND_OPENGL:
+        switch (config.graphicsBackend) {
+        case GRAPHICS_BACKEND_OPENGL:
             window = new WindowOpenGL("Nucleus", 960, 544);
             break;
         default:

@@ -9,6 +9,8 @@
 
 #include "nucleus/ui/widgets/widget_image.h"
 
+namespace ui {
+
 class ScreenLogo : public Screen {
     WidgetImage logo;
 
@@ -18,3 +20,5 @@ public:
     virtual void update() override;
     virtual void render() override;
 };
+
+}  // namespace ui

@@ -43,6 +43,12 @@
     <ClCompile Include="backend\opengl\opengl_command_queue.cpp">
       <Filter>backend\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="backend\direct3d12\direct3d12_command_queue.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\direct3d12\direct3d12_backend.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
@@ -100,6 +106,13 @@
       <Filter>backend\opengl</Filter>
     </ClInclude>
     <ClInclude Include="pipeline.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_command_queue.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d12\direct3d12_backend.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backends.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">

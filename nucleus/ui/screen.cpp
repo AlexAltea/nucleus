@@ -5,18 +5,19 @@
 
 #include "screen.h"
 
-Screen::Screen()
-{
+namespace ui {
+
+Screen::Screen() {
     time_creation = Clock::now();
 }
 
-void Screen::prologue()
-{
+void Screen::prologue() {
     time_current = Clock::now();
     dtime = std::chrono::duration_cast<std::chrono::milliseconds>(time_current - time_creation).count();
 }
 
-void Screen::epilogue()
-{
+void Screen::epilogue() {
     frame += 1;
 }
+
+}  // namespace ui

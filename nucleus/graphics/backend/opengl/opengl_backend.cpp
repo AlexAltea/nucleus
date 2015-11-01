@@ -11,9 +11,22 @@ namespace gfx {
 OpenGLBackend::OpenGLBackend() {
 }
 
+OpenGLBackend::~OpenGLBackend() {
+}
+
+ICommandQueue* OpenGLBackend::createCommandQueue() {
+    return nullptr;
+}
+
 ICommandBuffer* OpenGLBackend::createCommandBuffer() {
     ICommandBuffer* commandBuffer = new OpenGLCommandBuffer();
     return commandBuffer;
+}
+
+void OpenGLBackend::createPipeline() {
+}
+
+void OpenGLBackend::createShader() {
 }
 
 }  // namespace gfx

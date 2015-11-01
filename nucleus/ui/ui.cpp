@@ -13,6 +13,8 @@
 extern Window* window;
 #endif
 
+namespace ui {
+
 UI::UI(std::shared_ptr<gfx::IBackend> graphics) :
     graphics(std::move(graphics)),
     thread([this]{ task(); }) {
@@ -96,3 +98,5 @@ void UI::swap_buffers() {
     window->swap_buffers();
 #endif
 }
+
+}  // namespace ui

@@ -10,10 +10,10 @@
 
 namespace gfx {
 
-class OpenGLBackend : public IBackend {
+class Direct3D12Backend : public IBackend {
 public:
-    OpenGLBackend();
-    ~OpenGLBackend();
+    Direct3D12Backend();
+    ~Direct3D12Backend();
 
     virtual ICommandQueue* createCommandQueue() override;
     virtual ICommandBuffer* createCommandBuffer() override;

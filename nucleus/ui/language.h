@@ -11,6 +11,8 @@
 
 #include <string>
 
+namespace ui {
+
 class Language {
     // Holds the parsed XML file
     char* buffer;
@@ -26,3 +28,5 @@ public:
     // Close language file and clear cache
     void close();
 };
+
+}  // namespace ui

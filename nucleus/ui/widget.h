@@ -7,6 +7,8 @@
 
 #include "nucleus/ui/length.h"
 
+namespace ui {
+
 enum ProportionMode {
     PROPORTION_FIXED,      // Use the provided width/height dimensions
     PROPORTION_AUTOWIDTH,  // Calculate width based on the given height
@@ -38,3 +40,5 @@ public:
     // Render the screen components
     virtual void render() = 0;
 };
+
+}  // namespace ui

@@ -36,11 +36,6 @@ int nucleusInitialize(int argc, char **argv)
         std::cerr << "Debugger listening on 127.0.0.1:8000" << std::endl;
     }
 
-    // Start UI if console-only mode is disabled
-    if (!config.console) {
-        ui.init();
-    }
-
     // Start emulator
     if (!config.boot.empty()) {
         nucleus.load(config.boot);
@@ -56,10 +51,10 @@ int nucleusInitialize(int argc, char **argv)
  */
 void nucleusOnResize(unsigned int w, unsigned int h, unsigned int dpi, unsigned int hz)
 {
-    ui.surfaceWidth = w;
+    /*ui.surfaceWidth = w;
     ui.surfaceHeight = h;
     ui.surfaceDpi = dpi;
     ui.surfaceHz = hz;
     ui.surfaceProportion = float(w) / float(h);
-    ui.surfaceChanged = true;
+    ui.surfaceChanged = true;*/
 }

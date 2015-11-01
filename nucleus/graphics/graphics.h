@@ -8,9 +8,6 @@
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/command_queue.h"
 
-// Backends
-#include "nucleus/graphics/backend/opengl/opengl_backend.h"
-
 namespace gfx {
 
 enum PrimitiveTopology {

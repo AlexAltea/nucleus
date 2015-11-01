@@ -5,6 +5,8 @@
 
 #include "emulator.h"
 #include "nucleus/core/config.h"
+#include "nucleus/graphics/backends.h"
+#include "nucleus/ui/ui.h"
 #include "nucleus/cpu/cell.h"
 #include "nucleus/gpu/rsx/rsx.h"
 #include "nucleus/filesystem/utils.h"
@@ -21,7 +23,7 @@ Emulator::Emulator() {
         graphics = std::make_shared<gfx::OpenGLBackend>();
         break;
     case GRAPHICS_BACKEND_DIRECT3D:
-        graphics = std::make_shared<gfx::OpenGLBackend>();
+        graphics = std::make_shared<gfx::Direct3D12Backend>();
         break;
     default:
         logger.warning(LOG_COMMON, "Unsupported graphics backend");

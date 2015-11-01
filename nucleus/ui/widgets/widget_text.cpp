@@ -7,6 +7,8 @@
 
 #include "externals/stb/stb_truetype.h"
 
+namespace ui {
+
 void WidgetText::update(const std::string& text)
 {
 }
@@ -14,3 +16,5 @@ void WidgetText::update(const std::string& text)
 void WidgetText::render()
 {
 }
+
+}  // namespace ui

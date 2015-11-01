@@ -9,6 +9,8 @@
 
 #include "externals/stb/stb_image.h"
 
+namespace ui {
+
 WidgetImage::~WidgetImage()
 {
     delete image.buffer;
@@ -40,13 +42,6 @@ void WidgetImage::init(const unsigned char* pngbuffer, size_t size)
      * Vertical quad coordinates are swapped on rendering to make sure the image shows up properly.
      */
     image.buffer = stbi_load_from_memory(pngbuffer, size, &image.width, &image.height, &image.components, 4);
-
-    glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.buffer);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
 void WidgetImage::render()
@@ -61,19 +56,6 @@ void WidgetImage::render()
         height = width * float(image.height) / float(image.width);
     }
     height = Widget::correctHeight(height);
-    
-    GLfloat x1 = Widget::getCoordinateX(style.left);
-    GLfloat x2 = Widget::getCoordinateX(style.left + width);
-    GLfloat y1 = Widget::getCoordinateY(style.top);
-    GLfloat y2 = Widget::getCoordinateY(style.top + height);
-
-    // Draw a textured quad
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glBegin(GL_QUADS);
-    glColor4f(1.0f, 1.0f, 1.0f, style.opacity);
-    glTexCoord2f(0, 0); glVertex3f(x1, y1, 0);
-    glTexCoord2f(0, 1); glVertex3f(x1, y2, 0);
-    glTexCoord2f(1, 1); glVertex3f(x2, y2, 0);
-    glTexCoord2f(1, 0); glVertex3f(x2, y1, 0);
-    glEnd();
 }
+
+}  // namespace ui

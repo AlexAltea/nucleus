@@ -14,6 +14,8 @@
 #include <Windows.h>
 #endif
 
+namespace ui {
+
 struct LanguageResource {
     ConfigLanguage id;
     int winResource;
@@ -26,8 +28,7 @@ static const LanguageResource langResources[] = {
     { LANGUAGE_ES_ES,   IDR_LANGUAGE_ES_ES }
 };
 
-void Language::open(ConfigLanguage language)
-{
+void Language::open(ConfigLanguage language) {
     if (buffer) {
         close();
     }
@@ -60,8 +61,7 @@ void Language::open(ConfigLanguage language)
     doc.parse<0>(buffer);
 }
 
-char* Language::translate(const std::string& msgid)
-{
+char* Language::translate(const std::string& msgid) {
     auto nodeLang = doc.first_node();
     auto nodeEntries = nodeLang->first_node("entries");
     for (auto node = nodeEntries->first_node(); node; node = node->next_sibling("msg")) {
@@ -74,8 +74,9 @@ char* Language::translate(const std::string& msgid)
     return "UNKNOWN";
 }
 
-void Language::close()
-{
+void Language::close() {
     // Delete the buffer holding the parsed XML language file
     delete[] buffer;
 }
+
+}  // namespace ui

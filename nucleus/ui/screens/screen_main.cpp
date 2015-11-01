@@ -5,6 +5,8 @@
 
 #include "screen_main.h"
 
+namespace ui {
+
 ScreenMain::ScreenMain()
 {
 }
@@ -16,3 +18,5 @@ void ScreenMain::render()
 void ScreenMain::update()
 {
 }
+
+}  // namespace ui

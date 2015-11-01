@@ -9,11 +9,9 @@
 
 #include <string>
 
-class WidgetText : public Widget
-{
-    // OpenGL information
-    GLuint textureId;
+namespace ui {
 
+class WidgetText : public Widget {
 public:
     // Update the texture given a text string
     void update(const std::string& text);
@@ -21,3 +19,5 @@ public:
     // Render the image
     virtual void render() override;
 };
+
+}  // namespace ui

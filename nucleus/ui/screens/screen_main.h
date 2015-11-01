@@ -7,6 +7,8 @@
 
 #include "nucleus/ui/screen.h"
 
+namespace ui {
+
 class ScreenMain : public Screen {
 public:
     ScreenMain();
@@ -14,3 +16,5 @@ public:
     virtual void update() override;
     virtual void render() override;
 };
+
+}  // namespace ui

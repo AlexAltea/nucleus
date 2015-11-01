@@ -5,6 +5,7 @@
 
 #pragma once
 
+namespace ui {
 namespace transition {
 
 /**
@@ -18,3 +19,4 @@ double easeOut(double t);
 double easeOut(double t);
 
 }  // namespace transition
+}  // namespace ui

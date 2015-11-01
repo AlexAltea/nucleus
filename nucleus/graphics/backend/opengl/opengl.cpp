@@ -12,7 +12,7 @@
 #define LOAD_EXTENSION(type, function) { \
     function = reinterpret_cast<type>(wglGetProcAddress(#function)); \
     if (!function) { \
-        logger.error(LOG_HLE, "Could not load OpenGL extension '%s'", #function); \
+        logger.error(LOG_GRAPHICS, "Could not load OpenGL extension '%s'", #function); \
         return false; \
     } \
 }
@@ -20,7 +20,7 @@
 #define LOAD_EXTENSION(type, function) { \
     function = reinterpret_cast<type>(glXGetProcAddress(#function)); \
     if (!function) { \
-        logger.error(LOG_HLE, "Could not load OpenGL extension '%s'", #function); \
+        logger.error(LOG_GRAPHICS, "Could not load OpenGL extension '%s'", #function); \
         return false; \
     } \
 }
@@ -28,7 +28,7 @@
 #define LOAD_EXTENSION(type, function) { \
     function = reinterpret_cast<type>(eglGetProcAddress(#function)); \
     if (!function) { \
-        logger.error(LOG_HLE, "Could not load OpenGL ES extension '%s'", #function); \
+        logger.error(LOG_GRAPHICS, "Could not load OpenGL ES extension '%s'", #function); \
         return false; \
     } \
 }
@@ -43,8 +43,7 @@
 
 namespace gfx {
 
-bool initializeOpenGL()
-{
+bool initializeOpenGL() {
 #define EXTENSION LOAD_EXTENSION
 #include "opengl.inl"
 #undef EXTENSION

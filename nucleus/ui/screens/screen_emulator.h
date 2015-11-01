@@ -9,6 +9,8 @@
 
 #include "nucleus/ui/widgets/widget_texture.h"
 
+namespace ui {
+
 class ScreenEmulator : public Screen
 {
     WidgetTexture rsxDisplay;
@@ -19,3 +21,5 @@ public:
     virtual void update() override;
     virtual void render() override;
 };
+
+}  // namespace ui

@@ -9,6 +9,8 @@
 #include "nucleus/ui/screens/screen_emulator.h"
 #include "nucleus/ui/screens/screen_main.h"
 
+namespace ui {
+
 ScreenLogo::ScreenLogo()
 {
     logo.init("..\\resources\\images\\nucleus-logo.png");
@@ -30,10 +32,12 @@ void ScreenLogo::update()
     }
     if (dtime > 3000.0) {
         if (!config.boot.empty()) {
-            ui.push_screen(new ScreenEmulator());
+            parent->push_screen(new ScreenEmulator());
         } else {
-            ui.push_screen(new ScreenMain());
+            parent->push_screen(new ScreenMain());
         }
         finished = true;
     }
 }
+
+}  // namespace ui

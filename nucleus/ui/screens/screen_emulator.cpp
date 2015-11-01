@@ -6,6 +6,8 @@
 #include "screen_emulator.h"
 #include "nucleus/emulator.h"
 
+namespace ui {
+
 ScreenEmulator::ScreenEmulator()
 {
     rsxDisplay.style.top = Length{0.00, Length::Unit::PCT};
@@ -24,3 +26,5 @@ void ScreenEmulator::render()
 void ScreenEmulator::update()
 {
 }
+
+}  // namespace ui

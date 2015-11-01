@@ -9,6 +9,8 @@
 
 #include <string>
 
+namespace ui {
+
 class WidgetImage : public Widget {
     struct Image {
         unsigned char* buffer = nullptr;
@@ -16,9 +18,6 @@ class WidgetImage : public Widget {
         int height;
         int components;
     } image;
-
-    // OpenGL information
-    GLuint textureId;
 
 public:
     ~WidgetImage();
@@ -32,3 +31,5 @@ public:
     // Render the image
     virtual void render() override;
 };
+
+}  // namespace ui
