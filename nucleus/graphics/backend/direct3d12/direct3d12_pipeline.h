@@ -7,10 +7,10 @@
 
 #include "nucleus/graphics/pipeline.h"
 
-namespace graphics {
+namespace gfx {
 
 class Direct3D12PipelineState : public IPipelineState {
 public:
 };
 
-}  // namespace graphics
+}  // namespace gfx

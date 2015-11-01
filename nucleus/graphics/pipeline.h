@@ -5,7 +5,7 @@
 
 #pragma once
 
-namespace graphics {
+namespace gfx {
 
 enum Blend {
     BLEND_ZERO,
@@ -109,4 +109,4 @@ public:
     
 };
 
-}  // namespace graphics
+}  // namespace gfx

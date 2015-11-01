@@ -8,21 +8,21 @@
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
 
-namespace graphics {
+namespace gfx {
+
+// Forward declarations
+class IBackend;
 
 class OpenGLBackend : public IBackend {
 public:
     OpenGLBackend();
     ~OpenGLBackend();
 
-    // Command queue management
-    virtual void CommandQueueSubmit() override;
-
     // Command buffer management
-    virtual ICommandBuffer* CreateCommandBuffer() override;
+    virtual ICommandBuffer* createCommandBuffer() override;
 
     // Pipeline management
-    virtual void CreatePipeline() override;
+    virtual void createPipeline() override;
 };
 
-}  // namespace graphics
+}  // namespace gfx

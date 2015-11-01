@@ -8,7 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/graphics/command_buffer.h"
 
-namespace graphics {
+namespace gfx {
 
 class ICommandQueue {
 public:
@@ -24,4 +24,4 @@ public:
     virtual void waitIdle() = 0;
 };
 
-}  // namespace graphics
+}  // namespace gfx

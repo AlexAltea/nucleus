@@ -9,7 +9,7 @@
 #include "nucleus/graphics/pipeline.h"
 #include "nucleus/graphics/target.h"
 
-namespace graphics {
+namespace gfx {
 
 class ICommandBuffer {
 public:
@@ -66,4 +66,4 @@ public:
     virtual void cmdDrawIndexedIndirect() = 0;
 };
 
-}  // namespace graphics
+}  // namespace gfx

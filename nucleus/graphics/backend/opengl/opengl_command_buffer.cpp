@@ -7,7 +7,7 @@
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
 #include "nucleus/logger/logger.h"
 
-namespace graphics {
+namespace gfx {
 
 bool OpenGLCommandBuffer::reset() {
     commands.clear();
@@ -47,4 +47,4 @@ void OpenGLCommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 
     commands.push_back(command);
 }
 
-}  // namespace graphics
+}  // namespace gfx

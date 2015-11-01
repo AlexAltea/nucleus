@@ -8,7 +8,7 @@
 #include "nucleus/graphics/graphics.h"
 #include "nucleus/graphics/command_buffer.h"
 
-namespace graphics {
+namespace gfx {
 
 class Direct3D12CommandBuffer : public ICommandBuffer {
 public:
@@ -16,6 +16,14 @@ public:
     ~Direct3D12CommandBuffer();
 
     virtual bool reset() override;
+
+    virtual void cmdBindPipeline(IPipelineState* pipeline) override;
+    virtual void cmdClearColor(IColorTarget* target, const F32* colorValue) override;
+    virtual void cmdClearDepthStencil(IDepthStencilTarget* target, F32 depthValue, U8 stencilValue) override;
+    virtual void cmdDraw() override;
+    virtual void cmdDrawIndexed() override;
+    virtual void cmdDrawIndirect() override;
+    virtual void cmdDrawIndexedIndirect() override;
 };
 
-}  // namespace graphics
+}  // namespace gfx

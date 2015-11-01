@@ -46,9 +46,9 @@
 #undef EXTENSION
 #undef DECLARE_EXTENSION
 
-namespace graphics {
+namespace gfx {
 
 // Load extensions
 bool initializeOpenGL();
 
-}  // namespace graphics
+}  // namespace gfx

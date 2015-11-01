@@ -41,7 +41,7 @@
 #undef EXTENSION
 #undef DECLARE_EXTENSION
 
-namespace graphics {
+namespace gfx {
 
 bool initializeOpenGL()
 {
@@ -52,4 +52,4 @@ bool initializeOpenGL()
     return true;
 }
 
-}  // namespace graphics
+}  // namespace gfx

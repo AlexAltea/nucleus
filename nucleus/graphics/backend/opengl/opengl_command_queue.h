@@ -10,7 +10,7 @@
 
 #include <queue>
 
-namespace graphics {
+namespace gfx {
 
 class OpenGLCommandQueue : public ICommandQueue {
 private:
@@ -30,7 +30,6 @@ public:
 
     virtual void submit(ICommandBuffer* cmdBuffer) override;
     virtual void waitIdle() override;
-
 };
 
-}  // namespace graphics
+}  // namespace gfx

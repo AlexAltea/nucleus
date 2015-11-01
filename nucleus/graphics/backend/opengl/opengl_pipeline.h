@@ -8,7 +8,7 @@
 #include "nucleus/graphics/pipeline.h"
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
-namespace graphics {
+namespace gfx {
 
 class OpenGLPipelineState : public IPipelineState {
 public:
@@ -17,4 +17,4 @@ public:
     GLenum dfactor;
 };
 
-}  // namespace graphics
+}  // namespace gfx

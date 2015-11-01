@@ -10,7 +10,7 @@
 
 #include <vector>
 
-namespace graphics {
+namespace gfx {
 
 // Command type
 enum OpenGLCommandType {
@@ -47,7 +47,7 @@ struct OpenGLCommand {
 };
 
 class OpenGLCommandBuffer : public ICommandBuffer {
-
+private:
     // Holds the commands to be pushed
     std::vector<OpenGLCommand> commands;
 
@@ -67,4 +67,4 @@ public:
     virtual void cmdDrawIndexedIndirect() override;
 };
 
-}  // namespace graphics
+}  // namespace gfx

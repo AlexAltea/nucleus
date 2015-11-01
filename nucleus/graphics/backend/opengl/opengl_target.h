@@ -8,7 +8,7 @@
 #include "nucleus/graphics/target.h"
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
-namespace graphics {
+namespace gfx {
 
 class OpenGLColorTarget : public IColorTarget {
 public:
@@ -21,4 +21,4 @@ public:
     GLuint framebuffer;
 };
 
-}  // namespace graphics
+}  // namespace gfx

@@ -5,7 +5,7 @@
 
 #pragma once
 
-namespace graphics {
+namespace gfx {
 
 class IColorTarget {
 public:
@@ -17,4 +17,4 @@ public:
 
 };
 
-}  // namespace graphics
+}  // namespace gfx

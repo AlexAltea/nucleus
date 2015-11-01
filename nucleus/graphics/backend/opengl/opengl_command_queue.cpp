@@ -13,7 +13,7 @@
     } \
 }
 
-namespace graphics {
+namespace gfx {
 
 void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     switch (cmd.type) {
@@ -72,4 +72,4 @@ void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {
 void OpenGLCommandQueue::waitIdle() {
 }
 
-}  // namespace graphics
+}  // namespace gfx

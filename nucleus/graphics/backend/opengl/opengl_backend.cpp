@@ -6,16 +6,14 @@
 #include "opengl_backend.h"
 #include "nucleus/graphics/backend/opengl/opengl_command_buffer.h"
 
-namespace graphics {
+namespace gfx {
 
-OpenGLBackend::OpenGLBackend()
-{
+OpenGLBackend::OpenGLBackend() {
 }
 
-ICommandBuffer* OpenGLBackend::CreateCommandBuffer()
-{
+ICommandBuffer* OpenGLBackend::createCommandBuffer() {
     ICommandBuffer* commandBuffer = new OpenGLCommandBuffer();
     return commandBuffer;
 }
 
-}  // namespace graphics
+}  // namespace gfx

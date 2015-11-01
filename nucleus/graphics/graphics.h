@@ -6,8 +6,12 @@
 #pragma once
 
 #include "nucleus/graphics/command_buffer.h"
+#include "nucleus/graphics/command_queue.h"
 
-namespace graphics {
+// Backends
+#include "nucleus/graphics/backend/opengl/opengl_backend.h"
+
+namespace gfx {
 
 enum PrimitiveTopology {
     TOPOLOGY_POINT_LIST,
@@ -20,21 +24,18 @@ enum PrimitiveTopology {
 };
 
 class IBackend {
-
+public:
     // Command queue management
-    virtual void CreateCommandQueue() = 0;
-    virtual void CommandQueueSubmit() = 0;
+    virtual ICommandQueue* createCommandQueue() = 0;
 
-    /**
-     * Create a new command buffer
-     */
-    virtual ICommandBuffer* CreateCommandBuffer() = 0;
+    // Command buffer management
+    virtual ICommandBuffer* createCommandBuffer() = 0;
 
     // Pipeline management
-    virtual void CreatePipeline() = 0;
+    virtual void createPipeline() = 0;
 
     // Shader management
-    virtual void CreateShader() = 0;
+    virtual void createShader() = 0;
 };
 
-}  // namespace graphics
+}  // namespace gfx

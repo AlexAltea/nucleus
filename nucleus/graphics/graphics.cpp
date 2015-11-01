@@ -5,6 +5,6 @@
 
 #include "graphics.h"
 
-namespace graphics {
+namespace gfx {
 
-}  // namespace graphics
+}  // namespace gfx
