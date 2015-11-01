@@ -15,8 +15,7 @@
 
 namespace graphics {
 
-void OpenGLCommandQueue::execute(const OpenGLCommand& cmd)
-{
+void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     switch (cmd.type) {
     case OPENGL_CMD_CLEAR_COLOR:
         executeClearColor(cmd.data);
@@ -31,8 +30,7 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd)
     }
 }
 
-void OpenGLCommandQueue::executeClearColor(const OpenGLCommandData& data)
-{
+void OpenGLCommandQueue::executeClearColor(const OpenGLCommandData& data) {
     const GLuint framebuffer = data.clearColor.framebuffer;
     const GLint drawbuffer = data.clearColor.drawbuffer;
     const GLfloat value[4] = {
@@ -52,8 +50,7 @@ void OpenGLCommandQueue::executeClearColor(const OpenGLCommandData& data)
     checkBackendError("OpenGLCommandQueue::executeClearColor");
 }
 
-void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data)
-{
+void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data) {
     const GLuint framebuffer = data.clearDepthStencil.framebuffer;
     const GLfloat depth = data.clearDepthStencil.depth;
     const GLint stencil = data.clearDepthStencil.stencil;
@@ -68,13 +65,11 @@ void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data)
     checkBackendError("OpenGLCommandQueue::executeClearDepthStencil");
 }
 
-void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer)
-{
+void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {
     commandBuffers.push(dynamic_cast<OpenGLCommandBuffer*>(cmdBuffer));
 }
 
-void OpenGLCommandQueue::waitIdle()
-{
+void OpenGLCommandQueue::waitIdle() {
 }
 
 }  // namespace graphics

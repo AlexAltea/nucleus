@@ -13,7 +13,7 @@
 namespace graphics {
 
 class OpenGLCommandQueue : public ICommandQueue {
-
+private:
     // Holds a queue of command buffers to execute
     std::queue<OpenGLCommandBuffer*> commandBuffers;
 

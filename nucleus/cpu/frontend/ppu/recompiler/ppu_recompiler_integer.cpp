@@ -850,17 +850,20 @@ void Recompiler::rlwnmx(Instruction code)
 
 void Recompiler::sldx(Instruction code)
 {
-    assert_always("Unimplemented");
-    /*Value* rs = builder.createZExt<I128>(getGPR(code.rs));
-    Value* rb = builder.createZExt<I128>(builder.createAnd(getGPR(code.rb, TYPE_I8), 0x7F));
+    Value* rs = getGPR(code.rs);
+    Value* rb = getGPR(code.rb, TYPE_I8);
     Value* ra;
 
-    ra = builder.createTrunc(builder.createShl(rs, rb), TYPE_I64);
+    rb = builder.createAnd(rb, builder.getConstantI8(0x7F));
+    ra = builder.createSelect(builder.createShr(rb, 6),
+        builder.getConstantI64(0),
+        builder.createShl(rs, rb));
+
     if (code.rc) {
         updateCR0(ra);
     }
 
-    setGPR(code.ra, ra);*/
+    setGPR(code.ra, ra);
 }
 
 void Recompiler::slwx(Instruction code)
