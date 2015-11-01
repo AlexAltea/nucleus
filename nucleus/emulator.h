@@ -14,6 +14,8 @@
 #include <string>
 
 // Forward declarations
+namespace gfx { class IBackend; }
+namespace ui  { class UI; }
 namespace cpu { class CPU; }
 namespace gpu { class GPU; }
 namespace sys { class System; }
@@ -25,11 +27,17 @@ class Emulator {
     EmulatorStatus m_status;
 
 public:
+    std::shared_ptr<gfx::IBackend> graphics;
+    std::shared_ptr<ui::UI> ui;
+
     // Hardware & OS
     std::shared_ptr<mem::Memory> memory;
     std::shared_ptr<cpu::CPU> cpu;
     std::shared_ptr<gpu::GPU> gpu;
     std::shared_ptr<sys::System> sys;
+
+    // Constructor
+    Emulator();
 
     // Control the emulated process
     bool load(const std::string& filepath);

@@ -15,9 +15,9 @@
 #include <vector>
 
 class UI {
-    graphics::IBackend* graphics;
+    std::shared_ptr<gfx::IBackend> graphics;
 
-    std::thread* m_thread;
+    std::thread thread;
     std::vector<Screen*> m_screens;
 
     // New screens to be added
@@ -40,11 +40,11 @@ public:
     unsigned int surfaceHz = 60;
     float surfaceProportion = 1.0;
 
+    // Constructor
+    UI(std::shared_ptr<gfx::IBackend> graphics);
+
     // RSX connection
     bool rsxChanged = false;
-
-    // Initialize the UI manager, and run task() in a separate thread
-    void init();
 
     void task();
 

@@ -147,7 +147,7 @@ public:
     std::vector<rsx_iomap_t> iomaps;
 
     // Constructor
-    RSX(std::shared_ptr<mem::Memory> memory);
+    RSX(std::shared_ptr<mem::Memory> memory, std::shared_ptr<gfx::IBackend> graphics);
 
     U32 io_read8(U32 offset);
     U32 io_read16(U32 offset);

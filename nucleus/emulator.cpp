@@ -4,6 +4,7 @@
  */
 
 #include "emulator.h"
+#include "nucleus/core/config.h"
 #include "nucleus/cpu/cell.h"
 #include "nucleus/gpu/rsx/rsx.h"
 #include "nucleus/filesystem/utils.h"
@@ -14,11 +15,28 @@
 // Global emulator object
 Emulator nucleus;
 
+Emulator::Emulator() {
+    switch (config.graphicsBackend) {
+    case GRAPHICS_BACKEND_OPENGL:
+        graphics = std::make_shared<gfx::OpenGLBackend>();
+        break;
+    case GRAPHICS_BACKEND_DIRECT3D:
+        graphics = std::make_shared<gfx::OpenGLBackend>();
+        break;
+    default:
+        logger.warning(LOG_COMMON, "Unsupported graphics backend");
+    }
+
+    if (!config.console) {
+        ui = std::make_shared<ui::UI>(graphics);
+    }
+}
+
 bool Emulator::load(const std::string& filepath) {
     // Initialize hardware
     memory = std::make_shared<mem::Memory>();
     cpu = std::make_shared<cpu::Cell>(memory);
-    gpu = std::make_shared<gpu::RSX>(memory);
+    gpu = std::make_shared<gpu::RSX>(memory, graphics);
     sys = std::make_shared<sys::LV2>(memory, sys::LV2_DEX);
 
     // Initialize application filesystem devices

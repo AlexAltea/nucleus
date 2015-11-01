@@ -31,12 +31,12 @@ enum ConfigCpuTranslator {
     CPU_TRANSLATOR_IS_AOT       = CPU_TRANSLATOR_MODULE,
 };
 
-// GPU Settings
-enum ConfigGpuBackend {
-    GPU_BACKEND_NULL,
-    GPU_BACKEND_SOFTWARE,
-    GPU_BACKEND_OPENGL,
-    GPU_BACKEND_DIRECT3D,
+// Graphics Settings
+enum ConfigGraphicsBackend {
+    GRAPHICS_BACKEND_NULL,
+    GRAPHICS_BACKEND_SOFTWARE,
+    GRAPHICS_BACKEND_OPENGL,
+    GRAPHICS_BACKEND_DIRECT3D,
 };
 
 class Config
@@ -51,7 +51,7 @@ public:
     ConfigLanguage language = LANGUAGE_DEFAULT;
     ConfigCpuTranslator ppuTranslator = CPU_TRANSLATOR_FUNCTION;
     ConfigCpuTranslator spuTranslator = CPU_TRANSLATOR_INSTRUCTION;
-    ConfigGpuBackend gpuBackend = GPU_BACKEND_OPENGL;
+    ConfigGraphicsBackend graphicsBackend = GRAPHICS_BACKEND_OPENGL;
 
     // Modify settings with arguments or JSON files
     void parseArguments(int argc, char** argv);

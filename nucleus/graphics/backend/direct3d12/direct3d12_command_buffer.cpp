@@ -5,10 +5,10 @@
 
 #include "direct3d12_command_buffer.h"
 
-namespace graphics {
+namespace gfx {
 
 bool Direct3D12CommandBuffer::reset() {
     return true;
 }
 
-}  // namespace graphics
+}  // namespace gfx

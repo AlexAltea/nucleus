@@ -12,6 +12,10 @@
 
 namespace gpu {
 
+PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> graphics) :
+    graphics(std::move(graphics)) {
+}
+
 U64 PGRAPH::HashTexture()
 {
     return 0;

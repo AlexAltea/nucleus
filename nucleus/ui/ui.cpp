@@ -13,33 +13,27 @@
 extern Window* window;
 #endif
 
-// Global UI manager object
-UI ui;
-
-void UI::init()
-{
-    // Initialize UI translation mechanisms
-    language.open(config.language);
-
-    m_thread = new std::thread([&]{
-        connect();
-        task();
-    });
+UI::UI(std::shared_ptr<gfx::IBackend> graphics) :
+    graphics(std::move(graphics)),
+    thread([this]{ task(); }) {
 }
 
-void UI::task()
-{
+void UI::task() {
+    language.open(config.language);
+
+    connect();
+
     // Prepare context
 #ifdef NUCLEUS_PLATFORM_WINDOWS
-    wglSwapIntervalEXT(0);
+    //TODO//wglSwapIntervalEXT(0);
 #endif
 
     // Prepare state
-    glEnable(GL_TEXTURE_2D);
+    /*TODO*//*glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
 
     push_screen(new ScreenLogo());
     while (true) {
@@ -49,7 +43,7 @@ void UI::task()
         }
 
         // Clear buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //TODO//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Display screens
         auto it = m_screens.begin();
@@ -82,26 +76,22 @@ void UI::task()
     }
 }
 
-void UI::resize()
-{
-    glViewport(0, 0, surfaceWidth, surfaceHeight);
+void UI::resize() {
+    //TODO//glViewport(0, 0, surfaceWidth, surfaceHeight);
     surfaceChanged = false;
 }
 
-void UI::push_screen(Screen* screen)
-{
+void UI::push_screen(Screen* screen) {
     m_new_screens.push(screen);
 }
 
-void UI::connect()
-{
+void UI::connect() {
 #ifdef NUCLEUS_PLATFORM_WINDOWS
     window->connect_ui();
 #endif
 }
 
-void UI::swap_buffers()
-{
+void UI::swap_buffers() {
 #ifdef NUCLEUS_PLATFORM_WINDOWS
     window->swap_buffers();
 #endif

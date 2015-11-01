@@ -60,7 +60,7 @@ struct rsx_viewport_t {
 
 // RSX's PGRAPH engine (Curie)
 class PGRAPH {
-    graphics::IBackend* graphics;
+    std::shared_ptr<gfx::IBackend> graphics;
 
     // Cache
     std::unordered_map<U64, RSXVertexProgram> cache_vp;
@@ -113,6 +113,9 @@ public:
     U32 fp_location;                     // Location: Local Memory (0) or Main Memory (1)
     U32 fp_offset;                       // Offset at the specified location
     U32 fp_control;                      // Control the performance of the program
+
+    // Constructor
+    PGRAPH(std::shared_ptr<gfx::IBackend> graphics);
 
     // Hashing methods
     U64 HashTexture();
