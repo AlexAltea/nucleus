@@ -10,9 +10,25 @@
 
 namespace gfx {
 
+// OpenGL context handler
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+using OpenGLContext = HGLRC;
+#elif defined(NUCLEUS_PLATFORM_LINUX)
+using OpenGLContext = GLXContext;
+#elif defined(NUCLEUS_PLATFORM_OSX)
+using OpenGLContext = GLXContext;
+#elif defined(NUCLEUS_PLATFORM_ANDROID)
+using OpenGLContext = EGLContext;
+#elif defined(NUCLEUS_PLATFORM_IOS)
+using OpenGLContext = EGLContext;
+#endif
+
 class OpenGLBackend : public IBackend {
+private:
+    OpenGLContext context;
+
 public:
-    OpenGLBackend();
+    OpenGLBackend(DisplayHandler display);
     ~OpenGLBackend();
 
     virtual ICommandQueue* createCommandQueue() override;

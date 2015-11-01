@@ -6,11 +6,14 @@
 #pragma once
 
 #include "nucleus/graphics/graphics.h"
-#include "nucleus/graphics/command_queue.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 
 namespace gfx {
 
 class Direct3D12CommandQueue : public ICommandQueue {
+private:
+    ID3D12CommandQueue* queue;
+
 public:
     Direct3D12CommandQueue();
     ~Direct3D12CommandQueue();

@@ -15,7 +15,7 @@ namespace ui {
 
 class Language {
     // Holds the parsed XML file
-    char* buffer;
+    char* buffer = nullptr;
     rapidxml::xml_document<> doc;
 
 public:

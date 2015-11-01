@@ -3,11 +3,10 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "graphics.h"
+#pragma once
 
-namespace gfx {
+#include "nucleus/common.h"
 
-IBackend::IBackend(DisplayHandler display) : display(display) {
-}
-
-}  // namespace gfx
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#include <d3d12.h>
+#endif

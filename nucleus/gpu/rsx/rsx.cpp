@@ -509,11 +509,4 @@ U32 RSX::get_ea(U32 offset)
     return pgraph.GetColorTarget(displayAddr);
 }*/
 
-void RSX::connect()
-{
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    window->connect_rsx();
-#endif
-}
-
 }  // namespace gpu

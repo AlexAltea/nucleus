@@ -25,9 +25,6 @@ class UI {
     // New screens to be added
     std::queue<Screen*> m_new_screens;
 
-    // Connect to the global UI
-    void connect();
-
     // Swaps the buffers updating the contents of the window (platform independent)
     void swap_buffers();
 

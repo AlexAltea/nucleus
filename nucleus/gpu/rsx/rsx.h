@@ -127,9 +127,6 @@ class RSX : public GPU {
     // Call stack
     std::stack<U32> m_pfifo_stack;
 
-    // Connect to the global UI
-    void connect();
-
 public:
     // RSX Local Memory (mapped into the user space)
     rsx_device_t* device;

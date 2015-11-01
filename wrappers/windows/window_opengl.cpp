@@ -61,40 +61,6 @@ WindowOpenGL::WindowOpenGL(const std::string& title, int width, int height) : Wi
     }
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(dummyRc);
-
-    /**
-     * Setting up OpenGL contexts
-     */
-    static const int contextAttribs[] = {
-        WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
-        0
-    };
-    hrc_ui = wglCreateContextAttribsARB(hdc, 0, contextAttribs);
-    if (!hrc_ui) {
-        MessageBox(m_hwnd, "UI OpenGL context: wglCreateContext failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return;
-    }
-    hrc_rsx = wglCreateContextAttribsARB(hdc, hrc_ui, contextAttribs);
-    if (!hrc_rsx) {
-        MessageBox(m_hwnd, "RSX OpenGL context: wglCreateContext failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return;
-    }
-}
-
-void WindowOpenGL::connect_ui()
-{
-    if (!wglMakeCurrent(hdc, hrc_ui)) {
-        MessageBox(m_hwnd, "UI OpenGL context: wglMakeCurrent failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return;
-    }
-}
-
-void WindowOpenGL::connect_rsx()
-{
-    if (!wglMakeCurrent(hdc, hrc_rsx)) {
-        MessageBox(m_hwnd, "RSX OpenGL context: wglMakeCurrent failed.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return;
-    }
 }
 
 void WindowOpenGL::swap_buffers()

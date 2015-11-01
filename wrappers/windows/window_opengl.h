@@ -13,8 +13,6 @@
 
 class WindowOpenGL : public Window {
     HDC hdc;
-    HGLRC hrc_ui;
-    HGLRC hrc_rsx;
 
 public:
     WindowOpenGL(const std::string& title, int width, int height);

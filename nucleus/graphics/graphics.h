@@ -5,10 +5,18 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/command_queue.h"
 
 namespace gfx {
+
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+using DisplayHandler = HDC;
+#elif defined(NUCLEUS_PLATFORM_LINUX)
+using DisplayHandler = Display*;
+#endif
 
 enum PrimitiveTopology {
     TOPOLOGY_POINT_LIST,
@@ -21,7 +29,13 @@ enum PrimitiveTopology {
 };
 
 class IBackend {
+protected:
+    DisplayHandler display;
+
 public:
+    // Constructor
+    IBackend(DisplayHandler display);
+
     // Command queue management
     virtual ICommandQueue* createCommandQueue() = 0;
 

@@ -8,7 +8,7 @@
 
 namespace gfx {
 
-Direct3D12Backend::Direct3D12Backend() {
+Direct3D12Backend::Direct3D12Backend(DisplayHandler display) : IBackend(display) {
 }
 
 Direct3D12Backend::~Direct3D12Backend() {

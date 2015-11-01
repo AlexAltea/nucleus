@@ -59,7 +59,6 @@
       <Filter>backend\opengl</Filter>
     </ClInclude>
     <ClInclude Include="command_buffer.h" />
-    <ClInclude Include="device.h" />
     <ClInclude Include="backend\opengl\opengl.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
@@ -113,6 +112,9 @@
       <Filter>backend\direct3d12</Filter>
     </ClInclude>
     <ClInclude Include="backends.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">

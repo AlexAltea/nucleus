@@ -17,13 +17,12 @@ namespace ui {
 
 UI::UI(std::shared_ptr<gfx::IBackend> graphics) :
     graphics(std::move(graphics)),
-    thread([this]{ task(); }) {
+    thread([this]{ task(); }),
+    language() {
 }
 
 void UI::task() {
     language.open(config.language);
-
-    connect();
 
     // Prepare context
 #ifdef NUCLEUS_PLATFORM_WINDOWS
@@ -85,12 +84,6 @@ void UI::resize() {
 
 void UI::push_screen(Screen* screen) {
     m_new_screens.push(screen);
-}
-
-void UI::connect() {
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    window->connect_ui();
-#endif
 }
 
 void UI::swap_buffers() {

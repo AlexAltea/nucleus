@@ -21,9 +21,11 @@ void Direct3D12CommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
 }
 
 void Direct3D12CommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorValue) {
+    //list->ClearRenderTargetView(target, colorValue, 0, nullptr);
 }
 
 void Direct3D12CommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
+    //list->ClearDepthStencilView(target, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depthValue, stencilValue, 0, nullptr);
 }
 
 void Direct3D12CommandBuffer::cmdDraw() {

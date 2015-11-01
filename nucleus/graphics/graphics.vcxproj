@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_backend.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_command_buffer.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_command_queue.h" />
@@ -38,7 +39,6 @@
     <ClInclude Include="backend\opengl\opengl_target.h" />
     <ClInclude Include="command_buffer.h" />
     <ClInclude Include="command_queue.h" />
-    <ClInclude Include="device.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="hir\block.h" />
     <ClInclude Include="hir\builder.h" />
@@ -58,6 +58,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DEC03C34-1B7E-4DC5-B19D-9529F79C448F}</ProjectGuid>
     <RootNamespace>graphics</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
