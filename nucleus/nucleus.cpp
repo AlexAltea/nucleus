@@ -11,14 +11,18 @@
 
 #include <iostream>
 
-void nucleusConfigure(int argc, char **argv)
-{
+void nucleusConfigure(int argc, char **argv) {
     // Configure emulator
     config.parseArguments(argc, argv);
 }
 
-int nucleusInitialize(int argc, char **argv)
-{
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+void nucleusPrepare(HDC display) {
+    nucleus.initialize(display);
+}
+#endif
+
+int nucleusInitialize(int argc, char **argv) {
     if (argc <= 1) {
         std::cout
             << "Nucleus v0.0.4: A PlayStation 3 emulator.\n"
@@ -49,8 +53,7 @@ int nucleusInitialize(int argc, char **argv)
 /**
  * Events
  */
-void nucleusOnResize(unsigned int w, unsigned int h, unsigned int dpi, unsigned int hz)
-{
+void nucleusOnResize(unsigned int w, unsigned int h, unsigned int dpi, unsigned int hz) {
     /*ui.surfaceWidth = w;
     ui.surfaceHeight = h;
     ui.surfaceDpi = dpi;

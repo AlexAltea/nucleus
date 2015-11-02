@@ -12,8 +12,10 @@ namespace gfx {
 
 class Direct3D12Backend : public IBackend {
 public:
-    Direct3D12Backend(DisplayHandler display);
+    Direct3D12Backend();
     ~Direct3D12Backend();
+
+    virtual bool initialize(DisplayHandler display) override;
 
     virtual ICommandQueue* createCommandQueue() override;
     virtual ICommandBuffer* createCommandBuffer() override;

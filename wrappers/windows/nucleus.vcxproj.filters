@@ -3,11 +3,9 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="window.cpp" />
-    <ClCompile Include="window_opengl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.h" />
-    <ClInclude Include="window_opengl.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

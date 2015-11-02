@@ -36,6 +36,7 @@ union OpenGLCommandData {
 
     struct ClearDepthStencil {
         GLuint framebuffer;
+        GLint drawbuffer;
         GLfloat depth;
         GLint stencil;
     } clearDepthStencil;

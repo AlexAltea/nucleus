@@ -5,7 +5,20 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#include <Windows.h>
+#endif
+
 void nucleusConfigure(int argc, char **argv);
+
+// Initialize UI
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+void nucleusPrepare(HDC display);
+#elif defined(NUCLEUS_PLATFORM_LINUX)
+void nucleusPrepare(Display* display);
+#endif
 
 int nucleusInitialize(int argc, char **argv);
 

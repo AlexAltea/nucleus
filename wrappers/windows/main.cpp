@@ -4,15 +4,11 @@
  */
 
 #include "window.h"
-#include "window_opengl.h"
 
 #include "nucleus/core/config.h"
 #include "nucleus/nucleus.h"
 
 #include <thread>
-
-// Global Nucleus window
-Window* window = nullptr;
 
 int main(int argc, char **argv)
 {
@@ -21,26 +17,19 @@ int main(int argc, char **argv)
 
     // Using UI
     if (!config.console) {
-        // Initialize UI
-        switch (config.graphicsBackend) {
-        case GRAPHICS_BACKEND_OPENGL:
-            window = new WindowOpenGL("Nucleus", 960, 544);
-            break;
-        default:
-            break;
-        }
+        Window window("Nucleus", 960, 544);
 
-        new std::thread([&]{ nucleusInitialize(argc, argv); });
-        window->loop();
+        auto thread = std::thread([&]{
+            nucleusPrepare(window.hdc);
+            nucleusInitialize(argc, argv);
+        });
 
-        // Finalize UI
-        delete window;
+        window.loop();
     }
 
     // Using console
     else {
-        // Run Nucleus
-        int result = nucleusInitialize(argc, argv);
+        nucleusInitialize(argc, argv);
     }
 
     return 0;

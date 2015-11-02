@@ -58,7 +58,7 @@ struct U128 {
 /**
  * 128-bit vector
  * Allows component-wise signed and unsigned 8-bit, 16-bit and 32-bit
- * integer operations and component-wise 32-bit floating point operations.
+ * integer operations and component-wise 32-bit and 64-bit floating point operations.
  */
 union V128 {
     F64 f64[2];

@@ -28,8 +28,10 @@ private:
     OpenGLContext context;
 
 public:
-    OpenGLBackend(DisplayHandler display);
+    OpenGLBackend();
     ~OpenGLBackend();
+
+    virtual bool initialize(DisplayHandler display) override;
 
     virtual ICommandQueue* createCommandQueue() override;
     virtual ICommandBuffer* createCommandBuffer() override;

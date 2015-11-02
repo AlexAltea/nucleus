@@ -8,6 +8,27 @@
 
 #include "nucleus/nucleus.h"
 
+static const PIXELFORMATDESCRIPTOR pfd = {
+    sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
+    1,                              // Version
+    PFD_DRAW_TO_WINDOW |            // Format must support Window
+    PFD_SUPPORT_OPENGL |            // Format must support OpenGL
+    PFD_DOUBLEBUFFER,               // Format must support double buffering
+    PFD_TYPE_RGBA,                  // Request an RGBA format
+    24,                             // Select our color depth
+    0, 0, 0, 0, 0, 0,               // Color bits ignored
+    8,                              // No alpha buffer
+    0,                              // Shift bit ignored
+    0,                              // No accumulation Buffer
+    0, 0, 0, 0,                     // Accumulation bits Ignored
+    16,                             // At least a 16-bit Z-buffer (depth buffer)
+    8,                              // 8-bit stencil buffer
+    0,                              // No auxiliary buffer
+    PFD_MAIN_PLANE,                 // Main drawing layer
+    0,                              // Reserved
+    0, 0, 0                         // Layer masks ignored
+};
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch(msg) {
@@ -27,8 +48,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-Window::Window(const std::string& title, int width, int height) : m_title(title), m_width(width), m_height(height)
-{
+Window::Window(const std::string& title, int width, int height) :
+    title(title), width(width), height(height) {
     WNDCLASSEX wc;
     HINSTANCE hInstance = GetModuleHandle(NULL);
     const char lpszClassName[] = "NucleusWindowClass";
@@ -53,14 +74,14 @@ Window::Window(const std::string& title, int width, int height) : m_title(title)
     }
 
     // Set initial size
-    RECT rc = {0, 0, m_width, m_height};
+    RECT rc = {0, 0, width, height};
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
     // Create the Window
-    m_hwnd = CreateWindowEx(
+    hwnd = CreateWindowEx(
         WS_EX_APPWINDOW,
         lpszClassName,
-        m_title.c_str(),
+        title.c_str(),
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT,
         rc.right - rc.left, rc.bottom - rc.top,
@@ -69,20 +90,39 @@ Window::Window(const std::string& title, int width, int height) : m_title(title)
         hInstance,
         NULL);
 
-    if (!m_hwnd) {
+    if (!hwnd) {
         MessageBox(NULL, "Window Creation Failed!", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
 
-    ShowWindow(m_hwnd, SW_SHOWNORMAL);
-    UpdateWindow(m_hwnd);
+    ShowWindow(hwnd, SW_SHOWNORMAL);
+    UpdateWindow(hwnd);
+
+    // Setting up device context
+    hdc = GetDC(hwnd);
+    if (!hdc) {
+        MessageBox(hwnd, "Failed to get a device context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
+    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
+    if (!pixelFormat) {
+        MessageBox(hwnd, "Can't find a suitable PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
+    if (!SetPixelFormat(hdc, pixelFormat, &pfd)) {
+        MessageBox(hwnd, "Can't set the PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        return;
+    }
 }
 
-void Window::loop()
-{
+void Window::loop() {
     MSG msg;
     while(GetMessage(&msg, NULL, 0, 0) > 0) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+}
+
+void Window::swapBuffers() {
+    SwapBuffers(hdc);
 }

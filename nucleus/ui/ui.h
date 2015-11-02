@@ -25,9 +25,6 @@ class UI {
     // New screens to be added
     std::queue<Screen*> m_new_screens;
 
-    // Swaps the buffers updating the contents of the window (platform independent)
-    void swap_buffers();
-
 public:
     Language language;
 
@@ -44,6 +41,8 @@ public:
 
     // RSX connection
     bool rsxChanged = false;
+
+    bool initialize();
 
     void task();
 

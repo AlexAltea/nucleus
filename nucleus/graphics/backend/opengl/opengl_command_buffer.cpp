@@ -51,6 +51,7 @@ void OpenGLCommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 
     OpenGLCommand command;
     command.type = OPENGL_CMD_CLEAR_DEPTH_STENCIL;
     command.data.clearDepthStencil.framebuffer = glTarget->framebuffer;
+    command.data.clearDepthStencil.drawbuffer = glTarget->drawbuffer;
     command.data.clearDepthStencil.depth = depthValue;
     command.data.clearDepthStencil.stencil = stencilValue;
     commands.push_back(command);

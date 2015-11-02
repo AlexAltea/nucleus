@@ -19,6 +19,7 @@ public:
 class OpenGLDepthStencilTarget : public IDepthStencilTarget {
 public:
     GLuint framebuffer;
+    GLint drawbuffer;
 };
 
 }  // namespace gfx

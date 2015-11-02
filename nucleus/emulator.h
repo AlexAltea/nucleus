@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/memory/memory.h"
+#include "nucleus/graphics/graphics.h"
 
 #include <memory>
 #include <mutex>
@@ -14,7 +15,6 @@
 #include <string>
 
 // Forward declarations
-namespace gfx { class IBackend; }
 namespace ui  { class UI; }
 namespace cpu { class CPU; }
 namespace gpu { class GPU; }
@@ -36,8 +36,8 @@ public:
     std::shared_ptr<gpu::GPU> gpu;
     std::shared_ptr<sys::System> sys;
 
-    // Constructor
-    Emulator();
+    // Initializes the emulator
+    bool initialize(gfx::DisplayHandler display);
 
     // Control the emulated process
     bool load(const std::string& filepath);

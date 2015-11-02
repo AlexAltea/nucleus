@@ -10,8 +10,13 @@
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/command_queue.h"
 
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#include <Windows.h>
+#endif
+
 namespace gfx {
 
+// Display handler
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 using DisplayHandler = HDC;
 #elif defined(NUCLEUS_PLATFORM_LINUX)
@@ -34,7 +39,9 @@ protected:
 
 public:
     // Constructor
-    IBackend(DisplayHandler display);
+    IBackend();
+
+    virtual bool initialize(DisplayHandler display) = 0;
 
     // Command queue management
     virtual ICommandQueue* createCommandQueue() = 0;

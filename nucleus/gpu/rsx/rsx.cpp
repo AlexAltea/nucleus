@@ -71,7 +71,6 @@ RSX::RSX(std::shared_ptr<mem::Memory> mem, std::shared_ptr<gfx::IBackend> graphi
     dma_control->put = 0;
 
     m_pfifo_thread = new std::thread([&](){
-        connect();
         task();
     });
 }

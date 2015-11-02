@@ -8,10 +8,14 @@
 
 namespace gfx {
 
-Direct3D12Backend::Direct3D12Backend(DisplayHandler display) : IBackend(display) {
+Direct3D12Backend::Direct3D12Backend() : IBackend() {
 }
 
 Direct3D12Backend::~Direct3D12Backend() {
+}
+
+bool Direct3D12Backend::initialize(DisplayHandler display) {
+    return true;
 }
 
 ICommandQueue* Direct3D12Backend::createCommandQueue() {

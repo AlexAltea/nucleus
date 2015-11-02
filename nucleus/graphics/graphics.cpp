@@ -7,7 +7,7 @@
 
 namespace gfx {
 
-IBackend::IBackend(DisplayHandler display) : display(display) {
+IBackend::IBackend() {
 }
 
 }  // namespace gfx

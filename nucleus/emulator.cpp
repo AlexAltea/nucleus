@@ -17,7 +17,7 @@
 // Global emulator object
 Emulator nucleus;
 
-Emulator::Emulator() {
+bool Emulator::initialize(gfx::DisplayHandler display) {
     switch (config.graphicsBackend) {
     case GRAPHICS_BACKEND_OPENGL:
         graphics = std::make_shared<gfx::OpenGLBackend>();
@@ -27,11 +27,23 @@ Emulator::Emulator() {
         break;
     default:
         logger.warning(LOG_COMMON, "Unsupported graphics backend");
+        return false;
+    }
+
+    if (!graphics->initialize(display)) {
+        logger.warning(LOG_COMMON, "Could not initialize graphics backend");
+        return false;
     }
 
     if (!config.console) {
         ui = std::make_shared<ui::UI>(graphics);
+        if (!ui->initialize()) {
+            logger.warning(LOG_COMMON, "Could not initialize user interface");
+            return false;
+        }
     }
+
+    return true;
 }
 
 bool Emulator::load(const std::string& filepath) {

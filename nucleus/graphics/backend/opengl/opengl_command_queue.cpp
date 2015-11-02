@@ -52,11 +52,12 @@ void OpenGLCommandQueue::executeClearColor(const OpenGLCommandData& data) {
 
 void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data) {
     const GLuint framebuffer = data.clearDepthStencil.framebuffer;
+    const GLint drawbuffer = data.clearDepthStencil.drawbuffer;
     const GLfloat depth = data.clearDepthStencil.depth;
     const GLint stencil = data.clearDepthStencil.stencil;
 
 #if defined(GRAPHICS_OPENGL_GL45)
-    glClearNamedFramebufferfi(framebuffer, GL_DEPTH_STENCIL, depth, stencil);
+    glClearNamedFramebufferfi(framebuffer, GL_DEPTH_STENCIL, drawbuffer, depth, stencil);
 #elif defined(GRAPHICS_OPENGL_GLES31)
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, stencil);

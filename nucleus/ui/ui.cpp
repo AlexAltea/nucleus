@@ -15,15 +15,20 @@ extern Window* window;
 
 namespace ui {
 
-UI::UI(std::shared_ptr<gfx::IBackend> graphics) :
-    graphics(std::move(graphics)),
-    thread([this]{ task(); }),
-    language() {
+UI::UI(std::shared_ptr<gfx::IBackend> graphics) : graphics(std::move(graphics)), language() {
+}
+
+bool UI::initialize() {
+    language.open(config.language);
+
+    thread = std::thread([this]{
+        task();
+    });
+
+    return true;
 }
 
 void UI::task() {
-    language.open(config.language);
-
     // Prepare context
 #ifdef NUCLEUS_PLATFORM_WINDOWS
     //TODO//wglSwapIntervalEXT(0);
@@ -72,8 +77,6 @@ void UI::task() {
 
         // TODO: Adjusting the framerate manually at 60 FPS is a terrible idea
         std::this_thread::sleep_for(std::chrono::milliseconds(15));
-
-        swap_buffers();
     }
 }
 
@@ -84,12 +87,6 @@ void UI::resize() {
 
 void UI::push_screen(Screen* screen) {
     m_new_screens.push(screen);
-}
-
-void UI::swap_buffers() {
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    window->swap_buffers();
-#endif
 }
 
 }  // namespace ui
