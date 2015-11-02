@@ -16,6 +16,7 @@
 namespace cpu {
 namespace hir {
 
+// Forward declarations
 class Block;
 class Value;
 

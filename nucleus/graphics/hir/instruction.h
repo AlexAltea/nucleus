@@ -6,13 +6,13 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/cpu/hir/opcodes.h"
-#include "nucleus/cpu/hir/value.h"
+#include "nucleus/graphics/hir/opcodes.h"
+#include "nucleus/graphics/hir/value.h"
 
 #include <vector>
 #include <map>
 
-namespace cpu {
+namespace gfx {
 namespace hir {
 
 // Forward declarations
@@ -67,4 +67,4 @@ public:
 };
 
 }  // namespace hir
-}  // namespace cpu
+}  // namespace gfx

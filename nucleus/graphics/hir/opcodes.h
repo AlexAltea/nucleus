@@ -7,20 +7,10 @@
 
 #include "nucleus/common.h"
 
-namespace cpu {
+namespace gfx {
 namespace hir {
 
 using OpcodeFlags = U8;
-
-enum ArithmeticFlags : OpcodeFlags {
-    ARITHMETIC_SIGNED    = 0 << 0,
-    ARITHMETIC_UNSIGNED  = 1 << 0,
-};
-
-enum CallFlags : OpcodeFlags {
-    CALL_INTERN  = 0 << 0,
-    CALL_EXTERN  = 1 << 0,
-};
 
 enum CompareFlags : OpcodeFlags {
     COMPARE_EQ   = 1 << 0,
@@ -35,19 +25,12 @@ enum CompareFlags : OpcodeFlags {
     COMPARE_UGT  = COMPARE_SGT | (1 << 6),
 };
 
-enum MemoryFlags : OpcodeFlags {
-    ENDIAN_DEFAULT  = 0,
-    ENDIAN_BIG      = 1 << 0,  // Big Endian memory access
-    ENDIAN_LITTLE   = 1 << 1,  // Little Endian memory access
-};
-
 enum VectorFlags : OpcodeFlags {
-    COMPONENT_I8,
+    COMPONENT_NONE,
     COMPONENT_I16,
     COMPONENT_I32,
-    COMPONENT_I64,
+    COMPONENT_F16,
     COMPONENT_F32,
-    COMPONENT_F64,
 };
 
 enum Opcode {
@@ -110,4 +93,4 @@ struct OpcodeInfo {
 extern OpcodeInfo opcodeInfo[__OPCODE_COUNT + 1];
 
 }  // namespace hir
-}  // namespace cpu
+}  // namespace gfx

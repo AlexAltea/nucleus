@@ -4,23 +4,16 @@
  */
 
 #include "function.h"
-#include "nucleus/cpu/hir/block.h"
-#include "nucleus/cpu/hir/module.h"
+#include "nucleus/graphics/hir/block.h"
+#include "nucleus/graphics/hir/module.h"
 
-namespace cpu {
+namespace gfx {
 namespace hir {
 
 Function::Function(Module* parent, TypeOut tOut, TypeIn tIn)
-    : parent(parent), typeOut(tOut), typeIn(tIn), flags(0), nativeAddress(nullptr) {
+    : parent(parent), typeOut(tOut), typeIn(tIn), flags(0)  {
     // Set flags
     flags |= FUNCTION_IS_DECLARED;
-
-    // Argument values
-    for (auto type : tIn) {
-        Value* value = new Value();
-        value->type = type;
-        args.push_back(value);
-    }
 
     // Add function to parent module
     parent->addFunction(this);
@@ -39,11 +32,6 @@ S32 Function::getId() {
     return id;
 }
 
-void Function::reset() {
-    flags = FUNCTION_IS_DECLARED;
-    blocks.clear();
-}
-
 std::string Function::dump() {
     std::string output;
     output += "f" + std::to_string(getId()) + "() {\n";
@@ -55,4 +43,4 @@ std::string Function::dump() {
 }
 
 }  // namespace hir
-}  // namespace cpu
+}  // namespace gfx

@@ -49,6 +49,15 @@
     <ClCompile Include="backend\direct3d12\direct3d12_backend.cpp">
       <Filter>backend\direct3d12</Filter>
     </ClCompile>
+    <ClCompile Include="hir\value.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="hir\opcodes.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="hir\instruction.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
@@ -87,9 +96,6 @@
     <ClInclude Include="hir\value.h">
       <Filter>hir</Filter>
     </ClInclude>
-    <ClInclude Include="hir\hir.h">
-      <Filter>hir</Filter>
-    </ClInclude>
     <ClInclude Include="command_queue.h" />
     <ClInclude Include="backend\opengl\opengl_command_queue.h">
       <Filter>backend\opengl</Filter>
@@ -115,10 +121,16 @@
     <ClInclude Include="backend\direct3d12\direct3d12.h">
       <Filter>backend\direct3d12</Filter>
     </ClInclude>
+    <ClInclude Include="hir\opcodes.h">
+      <Filter>hir</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">
       <Filter>backend\opengl</Filter>
+    </None>
+    <None Include="hir\opcodes.inl">
+      <Filter>hir</Filter>
     </None>
   </ItemGroup>
 </Project>

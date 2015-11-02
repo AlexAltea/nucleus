@@ -10,7 +10,7 @@
 #include <list>
 #include <string>
 
-namespace cpu {
+namespace gfx {
 namespace hir {
 
 // Forward declarations
@@ -47,4 +47,4 @@ public:
 };
 
 }  // namespace hir
-}  // namespace cpu
+}  // namespace gfx
