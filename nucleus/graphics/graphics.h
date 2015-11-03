@@ -16,12 +16,17 @@
 
 namespace gfx {
 
-// Display handler
+// Graphics backend parameters
+struct BackendParameters {
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-using DisplayHandler = HDC;
+    HWND hwnd;
+    HDC hdc;
+    size_t width;
+    size_t height;
 #elif defined(NUCLEUS_PLATFORM_LINUX)
-using DisplayHandler = Display*;
+    Display* display;
 #endif
+};
 
 enum PrimitiveTopology {
     TOPOLOGY_POINT_LIST,
@@ -35,13 +40,13 @@ enum PrimitiveTopology {
 
 class IBackend {
 protected:
-    DisplayHandler display;
+    BackendParameters parameters;
 
 public:
     // Constructor
     IBackend();
 
-    virtual bool initialize(DisplayHandler display) = 0;
+    virtual bool initialize(const BackendParameters& params) = 0;
 
     // Command queue management
     virtual ICommandQueue* createCommandQueue() = 0;

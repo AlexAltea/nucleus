@@ -17,7 +17,7 @@
 // Global emulator object
 Emulator nucleus;
 
-bool Emulator::initialize(gfx::DisplayHandler display) {
+bool Emulator::initialize(const gfx::BackendParameters& params) {
     switch (config.graphicsBackend) {
     case GRAPHICS_BACKEND_OPENGL:
         graphics = std::make_shared<gfx::OpenGLBackend>();
@@ -30,7 +30,7 @@ bool Emulator::initialize(gfx::DisplayHandler display) {
         return false;
     }
 
-    if (!graphics->initialize(display)) {
+    if (!graphics->initialize(params)) {
         logger.warning(LOG_COMMON, "Could not initialize graphics backend");
         return false;
     }

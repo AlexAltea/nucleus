@@ -17,8 +17,14 @@ void nucleusConfigure(int argc, char **argv) {
 }
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-void nucleusPrepare(HDC display) {
-    nucleus.initialize(display);
+void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height) {
+    gfx::BackendParameters params = {};
+    params.hdc = hdc;
+    params.hwnd = hwnd;
+    params.width = width;
+    params.height = height;
+
+    nucleus.initialize(params);
 }
 #endif
 

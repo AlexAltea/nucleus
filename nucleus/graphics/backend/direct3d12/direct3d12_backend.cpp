@@ -5,6 +5,7 @@
 
 #include "direct3d12_backend.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_buffer.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_queue.h"
 
@@ -16,8 +17,27 @@ Direct3D12Backend::Direct3D12Backend() : IBackend() {
 Direct3D12Backend::~Direct3D12Backend() {
 }
 
-bool Direct3D12Backend::initialize(DisplayHandler display) {
-    D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
+bool Direct3D12Backend::initialize(const BackendParameters& params) {
+    if (!initializeDirect3D12()) {
+        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could load Direct3D12 dynamic library");
+        return false;
+    }
+
+    _D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
+
+    DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+	swapChainDesc.BufferCount = 2;
+	swapChainDesc.BufferDesc.Width = params.width;
+	swapChainDesc.BufferDesc.Height = params.height;
+	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.OutputWindow = params.hwnd;
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.Windowed = TRUE;
+
+    parameters = params;
+    return true;
 }
 
 ICommandQueue* Direct3D12Backend::createCommandQueue() {

@@ -11,3 +11,17 @@
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #endif
+
+// Declare Function
+#define DECLARE_FUNCTION(type, function) extern type _##function;
+#define FUNCTION DECLARE_FUNCTION
+#include "direct3d12.inl"
+#undef FUNCTION
+#undef DECLARE_FUNCTION
+
+namespace gfx {
+
+// Load extensions
+bool initializeDirect3D12();
+
+}  // namespace gfx

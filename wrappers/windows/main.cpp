@@ -17,9 +17,11 @@ int main(int argc, char **argv)
 
     // Using UI
     if (!config.console) {
-        Window window("Nucleus", 960, 544);
+        unsigned int width = 960;
+        unsigned int height = 544;
+        Window window("Nucleus", width, height);
 
-        nucleusPrepare(window.hdc);
+        nucleusPrepare(window.hwnd, window.hdc, width, height);
         auto thread = std::thread([&]{
             nucleusInitialize(argc, argv);
         });

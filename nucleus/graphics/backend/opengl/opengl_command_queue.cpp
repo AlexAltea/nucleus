@@ -15,9 +15,15 @@
 
 namespace gfx {
 
-bool OpenGLCommandQueue::initialize(DisplayHandler display, OpenGLContext context) {
+OpenGLCommandQueue::OpenGLCommandQueue() {
+}
+
+OpenGLCommandQueue::~OpenGLCommandQueue() {
+}
+
+bool OpenGLCommandQueue::initialize(const BackendParameters& params, OpenGLContext context) {
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-    if (!wglMakeCurrent(display, context)) {
+    if (!wglMakeCurrent(params.hdc, context)) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: wglMakeCurrent failed");
         return false;
     }

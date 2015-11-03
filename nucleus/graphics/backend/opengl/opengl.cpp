@@ -4,7 +4,6 @@
  */
 
 #include "opengl.h"
-#include "nucleus/common.h"
 #include "nucleus/logger/logger.h"
 
 // Load extensions

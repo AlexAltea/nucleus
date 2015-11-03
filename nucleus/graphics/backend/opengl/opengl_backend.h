@@ -31,7 +31,7 @@ public:
     OpenGLBackend();
     ~OpenGLBackend();
 
-    virtual bool initialize(DisplayHandler display) override;
+    virtual bool initialize(const BackendParameters& params) override;
 
     virtual ICommandQueue* createCommandQueue() override;
     virtual ICommandBuffer* createCommandBuffer() override;

@@ -37,7 +37,7 @@ public:
     OpenGLCommandQueue();
     ~OpenGLCommandQueue();
 
-    bool initialize(DisplayHandler display, OpenGLContext context);
+    bool initialize(const BackendParameters& params, OpenGLContext context);
 
     virtual void submit(ICommandBuffer* cmdBuffer) override;
     virtual void waitIdle() override;

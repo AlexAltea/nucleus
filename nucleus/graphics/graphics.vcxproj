@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="backend\direct3d12\direct3d12.cpp" />
     <ClCompile Include="backend\direct3d12\direct3d12_backend.cpp" />
     <ClCompile Include="backend\direct3d12\direct3d12_command_buffer.cpp" />
     <ClCompile Include="backend\direct3d12\direct3d12_command_queue.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="backend\direct3d12\direct3d12.inl" />
     <None Include="backend\opengl\opengl.inl" />
     <None Include="hir\opcodes.inl" />
   </ItemGroup>

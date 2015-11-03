@@ -15,7 +15,7 @@ void nucleusConfigure(int argc, char **argv);
 
 // Initialize UI
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
-void nucleusPrepare(HDC display);
+void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height);
 #elif defined(NUCLEUS_PLATFORM_LINUX)
 void nucleusPrepare(Display* display);
 #endif

@@ -58,6 +58,9 @@
     <ClCompile Include="hir\instruction.cpp">
       <Filter>hir</Filter>
     </ClCompile>
+    <ClCompile Include="backend\direct3d12\direct3d12.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
@@ -131,6 +134,9 @@
     </None>
     <None Include="hir\opcodes.inl">
       <Filter>hir</Filter>
+    </None>
+    <None Include="backend\direct3d12\direct3d12.inl">
+      <Filter>backend\direct3d12</Filter>
     </None>
   </ItemGroup>
 </Project>

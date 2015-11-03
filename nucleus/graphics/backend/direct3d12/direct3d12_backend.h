@@ -7,7 +7,9 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
-#include "nucleus/graphics/backend/direct3d12/direct3d12.h"
+
+// Forward Direct3D12 declarations
+class ID3D12Device;
 
 namespace gfx {
 
@@ -18,7 +20,7 @@ public:
     Direct3D12Backend();
     ~Direct3D12Backend();
 
-    virtual bool initialize(DisplayHandler display) override;
+    virtual bool initialize(const BackendParameters& params) override;
 
     virtual ICommandQueue* createCommandQueue() override;
     virtual ICommandBuffer* createCommandBuffer() override;

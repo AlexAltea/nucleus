@@ -20,6 +20,7 @@ bool Direct3D12CommandQueue::initialize(ID3D12Device* device) {
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
     device->CreateCommandQueue(nullptr, IID_PPV_ARGS(&queue));
+    return true;
 }
 
 void Direct3D12CommandQueue::submit(ICommandBuffer* cmdBuffer) {

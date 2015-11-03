@@ -11,14 +11,13 @@
 
 class Window {
 private:
-    HWND hwnd;
-
     std::string title;
     int width;
     int height;
 
 public:
     HDC hdc;
+    HWND hwnd;
 
     Window(const std::string& title, int width, int height);
 

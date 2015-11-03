@@ -37,7 +37,7 @@ public:
     std::shared_ptr<sys::System> sys;
 
     // Initializes the emulator
-    bool initialize(gfx::DisplayHandler display);
+    bool initialize(const gfx::BackendParameters& params);
 
     // Control the emulated process
     bool load(const std::string& filepath);
