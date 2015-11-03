@@ -7,10 +7,13 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 
 namespace gfx {
 
 class Direct3D12Backend : public IBackend {
+    ID3D12Device* device;
+
 public:
     Direct3D12Backend();
     ~Direct3D12Backend();

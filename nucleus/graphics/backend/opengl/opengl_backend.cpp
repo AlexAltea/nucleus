@@ -6,6 +6,7 @@
 #include "opengl_backend.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/graphics/backend/opengl/opengl_command_buffer.h"
+#include "nucleus/graphics/backend/opengl/opengl_command_queue.h"
 
 namespace gfx {
 
@@ -34,28 +35,34 @@ bool OpenGLBackend::initialize(DisplayHandler display) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: wglCreateContextAttribsARB failed");
         return false;
     }
-    if (!wglMakeCurrent(display, context)) {
-        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: wglMakeCurrent failed");
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+    if (!gfx::initializeOpenGL()) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");
         return false;
     }
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     XVisualInfo* info = glXChooseVisual(display, 0, nullptr/*TODO*/);
     context = glXCreateContext(display, info, NULL, GL_TRUE);
     if (!context) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXCreateContext failed");
         return false;
     }
-    if (!glXMakeCurrent(display, 0/*TODO*/, context)) {
-        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXMakeCurrent failed");
+#elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
+    if (!gfx::initializeOpenGL()) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");
         return false;
     }
-#elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
 #endif
     return true;
 }
 
 ICommandQueue* OpenGLBackend::createCommandQueue() {
-    return nullptr;
+    auto* commandQueue = new OpenGLCommandQueue();
+
+    if (!commandQueue->initialize(display, context)) {
+        logger.error(LOG_GRAPHICS, "OpenGLBackend::createCommandQueue: Could not initialize OpenGLCommandQueue");
+        return nullptr;
+    }
+    return commandQueue;
 }
 
 ICommandBuffer* OpenGLBackend::createCommandBuffer() {

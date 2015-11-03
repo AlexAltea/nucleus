@@ -18,7 +18,10 @@ public:
     Direct3D12CommandQueue();
     ~Direct3D12CommandQueue();
 
+    bool initialize(ID3D12Device* device);
+
     void submit(ICommandBuffer* cmdBuffer) override;
+    void waitIdle() override;
 };
 
 }  // namespace gfx

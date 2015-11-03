@@ -9,4 +9,5 @@
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <d3d12.h>
+#include <dxgi1_4.h>
 #endif

@@ -48,11 +48,10 @@ struct OpenGLCommand {
 };
 
 class OpenGLCommandBuffer : public ICommandBuffer {
-private:
+public:
     // Holds the commands to be pushed
     std::vector<OpenGLCommand> commands;
 
-public:
     OpenGLCommandBuffer();
     ~OpenGLCommandBuffer();
 

@@ -15,6 +15,43 @@
 
 namespace gfx {
 
+bool OpenGLCommandQueue::initialize(DisplayHandler display, OpenGLContext context) {
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+    if (!wglMakeCurrent(display, context)) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: wglMakeCurrent failed");
+        return false;
+    }
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+    if (!glXMakeCurrent(display, 0/*TODO*/, context)) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXMakeCurrent failed");
+        return false;
+    }
+#elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
+    if (!eglMakeCurrent(/*TODO*/)) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: eglMakeCurrent failed");
+        return false;
+    }
+#endif
+
+    // Start command processing thread
+    thread = std::thread([&] {
+        while (true) {
+            std::unique_lock<std::mutex> lock(mutex);
+            cv.wait(lock);
+
+            while (!commandBuffers.empty()) {
+                const auto& buffer = commandBuffers.front();
+                for (const auto& cmd : buffer->commands) {
+                    execute(cmd);
+                }
+                commandBuffers.pop();
+            }
+        }
+    });
+
+    return true;
+}
+
 void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     switch (cmd.type) {
     case OPENGL_CMD_CLEAR_COLOR:
@@ -68,6 +105,7 @@ void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data)
 
 void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {
     commandBuffers.push(dynamic_cast<OpenGLCommandBuffer*>(cmdBuffer));
+    cv.notify_one();
 }
 
 void OpenGLCommandQueue::waitIdle() {

@@ -19,8 +19,8 @@ int main(int argc, char **argv)
     if (!config.console) {
         Window window("Nucleus", 960, 544);
 
+        nucleusPrepare(window.hdc);
         auto thread = std::thread([&]{
-            nucleusPrepare(window.hdc);
             nucleusInitialize(argc, argv);
         });
 
