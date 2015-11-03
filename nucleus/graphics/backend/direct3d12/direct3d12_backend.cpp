@@ -26,15 +26,15 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     _D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
 
     DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-	swapChainDesc.BufferCount = 2;
-	swapChainDesc.BufferDesc.Width = params.width;
-	swapChainDesc.BufferDesc.Height = params.height;
-	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-	swapChainDesc.OutputWindow = params.hwnd;
-	swapChainDesc.SampleDesc.Count = 1;
-	swapChainDesc.Windowed = TRUE;
+    swapChainDesc.BufferCount = 2;
+    swapChainDesc.BufferDesc.Width = params.width;
+    swapChainDesc.BufferDesc.Height = params.height;
+    swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swapChainDesc.OutputWindow = params.hwnd;
+    swapChainDesc.SampleDesc.Count = 1;
+    swapChainDesc.Windowed = TRUE;
 
     parameters = params;
     return true;

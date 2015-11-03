@@ -766,7 +766,7 @@ void Recompiler::rldimix(Instruction code)
         auto resh = builder.createShl(rs, sh);
         temp = builder.createOr(resh, resl);
     }
-    
+
     const U64 mask = rotateMask[mb][63 - sh];
     temp = builder.createAnd(temp, builder.getConstantI64(mask));
     ra = builder.createAnd(ra, builder.getConstantI64(~mask));

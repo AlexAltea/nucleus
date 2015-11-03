@@ -262,7 +262,7 @@ void Recompiler::setCRField(int index, Value* value) {
         builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[3]),
             builder.createAnd(builder.createShr(value, U64(0)), builder.getConstantI8(1)));
         break;
-    
+
     // Store the unpacked value directly
     case TYPE_I32:
         builder.createCtxStore(offsetof(PPUState, cr.field[index]), value);
@@ -294,7 +294,7 @@ void Recompiler::setCR(Value* value) {
 
 void Recompiler::setLR(Value* value) {
     constexpr U32 offset = offsetof(PPUState, lr);
-    
+
     if (value->type != TYPE_I64) {
         logger.error(LOG_CPU, "Wrong value type for LR register");
         return;
@@ -308,7 +308,7 @@ void Recompiler::setXER(Value* value) {
     constexpr U32 offset_ov = offsetof(PPUState, xer.ov);
     constexpr U32 offset_ca = offsetof(PPUState, xer.ca);
     constexpr U32 offset_bc = offsetof(PPUState, xer.bc);
-    
+
     Value* bc_i64 = builder.createAnd(value, builder.getConstantI64(0x7F));
     builder.createCtxStore(offset_bc, builder.createTrunc(bc_i64, TYPE_I8));
 
@@ -348,7 +348,7 @@ void Recompiler::setXER_BC(Value* value) {
 
 void Recompiler::setCTR(Value* value) {
     constexpr U32 offset = offsetof(PPUState, ctr);
-    
+
     if (value->type != TYPE_I64) {
         logger.error(LOG_CPU, "Wrong value type for CTR register");
         return;
@@ -358,7 +358,7 @@ void Recompiler::setCTR(Value* value) {
 
 void Recompiler::setFPSCR(Value* value) {
     constexpr U32 offset = offsetof(PPUState, fpscr);
-    
+
     if (value->type != TYPE_I32) {
         logger.error(LOG_CPU, "Wrong value type for FPSCR register");
         return;
@@ -425,7 +425,7 @@ void Recompiler::updateCR6(Value* value) {
 }
 
 /**
- * Branching 
+ * Branching
  */
 void Recompiler::createFunctionCall(U32 nia, Value* condition) {
     auto* module = function->parent;

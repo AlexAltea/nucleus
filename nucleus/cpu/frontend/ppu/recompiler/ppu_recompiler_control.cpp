@@ -56,7 +56,7 @@ void Recompiler::mtocrf(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
 
-	if (code.l11) {
+    if (code.l11) {
         int field = 0;
         int count = 0;
         for (int i = 0; i < 8; i++) {

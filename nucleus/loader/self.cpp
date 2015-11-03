@@ -30,7 +30,7 @@ bool SELFLoader::open(fs::File* file)
     case FILETYPE_SELF:
         decrypt();
         return true;
-    
+
     case FILETYPE_ELF:
         elf.resize(selfSize);
         memcpy(&elf[0], &self[0], selfSize);

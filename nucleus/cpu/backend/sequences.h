@@ -204,7 +204,7 @@ template <typename RegType>
 struct V256OpBase : ValueOp<V256OpBase<RegType>, RegType, V256, hir::TYPE_V256> {
     const V256 constant() const {
         return value->constant.v256;
-   } 
+   }
 };
 template <typename RegType>
 struct PtrOpBase : ValueOp<PtrOpBase<RegType>, RegType, void*, hir::TYPE_PTR> {

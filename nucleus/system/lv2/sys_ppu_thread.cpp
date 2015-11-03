@@ -16,7 +16,7 @@ S32 sys_ppu_thread_create(BE<U64>* thread_id, sys_ppu_thread_attr_t* attr, U64 a
 
     const U32 entry_pc = nucleus.memory->read32(attr->entry);
     const U32 entry_rtoc = nucleus.memory->read32(attr->entry + 4);
-    
+
     // Create PPU thread
     auto* ppu_thread = new sys_ppu_thread_t();
     ppu_thread->stack.size = stacksize;

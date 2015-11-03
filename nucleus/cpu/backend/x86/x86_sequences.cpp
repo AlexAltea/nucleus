@@ -1640,7 +1640,7 @@ struct SELECT_F64 : Sequence<SELECT_F64, I<OPCODE_SELECT, F64Op, I8Op, F64Op, F6
     } else { \
         e.##cmp##(i.src1, i.src2); \
     } \
-    e.##set##(i.dest); 
+    e.##set##(i.dest);
 
 
 struct CMP_I8 : Sequence<CMP_I8, I<OPCODE_CMP, I8Op, I8Op, I8Op>> {

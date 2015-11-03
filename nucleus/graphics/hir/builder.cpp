@@ -47,7 +47,7 @@ Value* Builder::cloneValue(Value* source) {
     Value* value = new Value();
     value->type = source->type;
     value->flags = source->flags;
-    
+
     if (source->isConstant()) {
         switch (source->type) {
         case TYPE_I16: value->constant.i16 = source->constant.i16; break;

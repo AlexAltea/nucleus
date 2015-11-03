@@ -13,7 +13,7 @@ namespace backend {
 namespace arm {
 
 class ARMAssembler : public Assembler {
-    
+
 };
 
 }  // namespace arm

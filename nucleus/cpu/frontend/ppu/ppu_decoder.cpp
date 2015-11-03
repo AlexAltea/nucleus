@@ -330,7 +330,7 @@ Function* Module::addFunction(U32 addr)
     function->declare();
     function->createPlaceholder();
     parent->compiler->compile(function->hirFunction);
-    
+
     // Save and return the function
     functions[addr] = function;
     return function;
@@ -458,7 +458,7 @@ void Module::recompile()
     builder.setInsertPoint(entryBlock);
     hir::Value* state = builder.createCall(funcGetState);
     auto switchInst = builder.createSwitch(hir::Value<hir::I32>{ callerFunction.function->arg_begin() }, defaultBlock);
-    
+
     for (auto& item : functions) {
         auto& function = static_cast<Function&>(*item.second);
 

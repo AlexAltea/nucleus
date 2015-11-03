@@ -48,7 +48,7 @@ public:
 
     /**
      * Check whether a specific x86 extension is available
-     * @return True if the extension exists 
+     * @return True if the extension exists
      */
     bool isExtensionAvailable(U32 queriedExtension) const;
 

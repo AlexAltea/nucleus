@@ -234,7 +234,7 @@ public:
     /**
      * CR registers
      * ============
-     * The condition register (CR) is a 32-bit register that reflects the result of 
+     * The condition register (CR) is a 32-bit register that reflects the result of
      * certain operations and provides a mechanism for testing and branching.
      * and consists of following 8 fields, ordered from MSb to LSb:
      *

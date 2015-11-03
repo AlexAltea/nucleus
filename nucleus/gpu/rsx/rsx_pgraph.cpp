@@ -105,7 +105,7 @@ PGRAPH::PGRAPH()
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
 
-PGRAPH::~PGRAPH() 
+PGRAPH::~PGRAPH()
 {
     glDeleteFramebuffers(1, &framebuffer);
 }
@@ -246,7 +246,7 @@ void PGRAPH::DrawArrays(U32 first, U32 count)
     if (surface.dirty) {
         surface.dirty = false;
         switch (surface.colorTarget) {
-        case RSX_SURFACE_TARGET_NONE:    
+        case RSX_SURFACE_TARGET_NONE:
             break;
 
         case RSX_SURFACE_TARGET_0:

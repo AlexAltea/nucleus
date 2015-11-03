@@ -34,7 +34,7 @@ class VirtualFileSystem {
 
     // Find an appropriate device to handle the given path
     IDevice* getDevice(const Path& path);
-    
+
 public:
     bool registerDevice(IDevice* device);
 

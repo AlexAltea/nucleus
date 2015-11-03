@@ -19,7 +19,7 @@ enum OpenMode {
 
 enum SeekMode {
     SeekSet,  // Beginning of the file
-    SeekCur,  // Current position of the file pointer 
+    SeekCur,  // Current position of the file pointer
     SeekEnd,  // End of file
 };
 

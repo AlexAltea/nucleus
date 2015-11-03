@@ -21,7 +21,7 @@ using namespace cpu::hir;
 // Constant-Formation Instructions (Chapter 4)
 void Recompiler::fsmbi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::il(Instruction code)
@@ -255,389 +255,389 @@ void Recompiler::bg(Instruction code)
 
 void Recompiler::bgx(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::cg(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::cgx(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::clz(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::cntb(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::eqv(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fsm(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fsmb(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::fsmh(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::gb(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::gbb(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::gbh(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpy(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpya(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyh(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyhh(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyhha(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyhhau(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyhhu(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpys(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyu(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::mpyui(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::nand(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::nor(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::or_(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::orbi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::orc(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::orhi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::ori(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::orx(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::selb(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sf(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sfh(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sfhi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sfi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sfx(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shufb(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::sumb(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xor_(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xorbi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xorhi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xori(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xsbh(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xshw(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::xswd(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 
 // Shift and Rotate Instructions (Chapter 6)
 void Recompiler::shl(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shlh(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shlhi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shli(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shlqbi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shlqbii(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shlqby(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shlqbybi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::shlqbyi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rot(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::roth(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rothi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rothm(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rothmi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::roti(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotm(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotma(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotmah(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotmahi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotmai(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotmi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqbi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqbii(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqby(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqbybi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqbyi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqmbi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqmbii(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqmby(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqmbybi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 void Recompiler::rotqmbyi(Instruction code)
 {
-	assert_always("Unimplemented");
+    assert_always("Unimplemented");
 }
 
 }  // namespace spu

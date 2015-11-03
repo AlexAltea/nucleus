@@ -49,7 +49,7 @@ Value* Builder::cloneValue(Value* source) {
     Value* value = new Value();
     value->type = source->type;
     value->flags = source->flags;
-    
+
     if (source->isConstant()) {
         switch (source->type) {
         case TYPE_I8:  value->constant.i8  = source->constant.i8;  break;
@@ -437,7 +437,7 @@ Value* Builder::createNot(Value* value) {
         dest->doNot();
         return dest;
     }
-    
+
     Instruction* i = appendInstr(OPCODE_NOT, 0, allocValue(value->type));
     i->src1.setValue(value);
     return i->dest;

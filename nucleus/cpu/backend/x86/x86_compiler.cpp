@@ -155,7 +155,7 @@ bool X86Compiler::call(hir::Function* function, void* state, const std::vector<h
     e.pop(e.r10);
     e.pop(e.rbx);
     e.ret();
-   
+
     // Execute caller
     auto callerFunc = reinterpret_cast<void(*)()>(e.getCode());
     callerFunc();

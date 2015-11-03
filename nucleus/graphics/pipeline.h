@@ -106,7 +106,7 @@ public:
 class IPipelineState {
 public:
 
-    
+
 };
 
 }  // namespace gfx

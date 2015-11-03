@@ -12,7 +12,7 @@ namespace cpu {
 namespace hir {
 namespace passes {
 
-RegisterAllocationPass::RegisterAllocationPass(const backend::TargetInfo& targetInfo) 
+RegisterAllocationPass::RegisterAllocationPass(const backend::TargetInfo& targetInfo)
     : targetInfo(targetInfo) {
     for (const auto& regSet : targetInfo.regSets) {
         RegSetUsage regUsage;
