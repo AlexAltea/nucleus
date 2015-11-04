@@ -12,8 +12,11 @@
 #include <dxgi1_4.h>
 #endif
 
+// Function types: dxgi.dll
+typedef HRESULT(WINAPI *PFN_CreateDXGIFactory1)(REFIID, void **);
+
 // Declare Function
-#define DECLARE_FUNCTION(type, function) extern type _##function;
+#define DECLARE_FUNCTION(type, module, function) extern type _##function;
 #define FUNCTION DECLARE_FUNCTION
 #include "direct3d12.inl"
 #undef FUNCTION

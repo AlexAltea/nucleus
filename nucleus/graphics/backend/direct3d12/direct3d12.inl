@@ -3,5 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-// Common extensions
-FUNCTION(PFN_D3D12_CREATE_DEVICE, D3D12CreateDevice);
+// Functions: d3d12.dll
+FUNCTION(PFN_D3D12_CREATE_DEVICE, d3d12, D3D12CreateDevice);
+
+// Functions: dxgi.dll
+FUNCTION(PFN_CreateDXGIFactory1, dxgi, CreateDXGIFactory1);

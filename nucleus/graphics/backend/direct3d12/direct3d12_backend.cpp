@@ -25,6 +25,10 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
 
     _D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
 
+    IDXGIFactory4* factory;
+    _CreateDXGIFactory1(IID_PPV_ARGS(&factory));
+
+    // Create swap chain
     DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
     swapChainDesc.BufferCount = 2;
     swapChainDesc.BufferDesc.Width = params.width;
@@ -35,6 +39,23 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     swapChainDesc.OutputWindow = params.hwnd;
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.Windowed = TRUE;
+    
+    if (FAILED(factory->CreateSwapChain(device, &swapChainDesc, &swapChain))) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: factory->CreateSwapChain failed");
+        return false;
+    }
+
+    // Create render target view
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
+	rtvHeapDesc.NumDescriptors = 2;
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+    ID3D12DescriptorHeap* rtvHeap;
+    if (FAILED(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap)))) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: device->CreateDescriptorHeap failed");
+        return false;
+    }
 
     parameters = params;
     return true;

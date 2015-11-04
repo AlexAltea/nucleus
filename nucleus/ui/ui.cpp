@@ -15,7 +15,8 @@ extern Window* window;
 
 namespace ui {
 
-UI::UI(std::shared_ptr<gfx::IBackend> graphics) : graphics(std::move(graphics)), language() {
+UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::ICommandQueue* queue) :
+    graphics(std::move(graphics)), queue(queue), language() {
 }
 
 bool UI::initialize() {
@@ -34,6 +35,7 @@ void UI::task() {
     //TODO//wglSwapIntervalEXT(0);
 #endif
 
+    gfx::ICommandBuffer* cmdBuffer = graphics->createCommandBuffer();
     // Prepare state
     /*TODO*//*glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
@@ -47,6 +49,8 @@ void UI::task() {
         if (surfaceChanged) {
             resize();
         }
+
+        const float clearColor[] = { 0.5f, 0.5f, 0.0f, 1.0f};
 
         // Clear buffers
         //TODO//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -74,6 +78,8 @@ void UI::task() {
             m_screens.push_back(screen);
             m_new_screens.pop();
         }
+
+        queue->submit(cmdBuffer);
 
         // TODO: Adjusting the framerate manually at 60 FPS is a terrible idea
         std::this_thread::sleep_for(std::chrono::milliseconds(15));

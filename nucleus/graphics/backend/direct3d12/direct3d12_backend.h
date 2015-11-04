@@ -16,6 +16,11 @@ namespace gfx {
 class Direct3D12Backend : public IBackend {
     ID3D12Device* device;
 
+    IDXGISwapChain* swapChain;
+	ID3D12DescriptorHeap* m_renderTargetViewHeap;
+	ID3D12Resource* m_backBufferRenderTarget[2];
+	unsigned int m_bufferIndex;
+
 public:
     Direct3D12Backend();
     ~Direct3D12Backend();
