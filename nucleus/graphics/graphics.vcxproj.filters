@@ -127,6 +127,13 @@
     <ClInclude Include="hir\opcodes.h">
       <Filter>hir</Filter>
     </ClInclude>
+    <ClInclude Include="backend\direct3d12\direct3d12_target.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="heap.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_heap.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">

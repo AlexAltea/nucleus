@@ -17,9 +17,9 @@ class Direct3D12Backend : public IBackend {
     ID3D12Device* device;
 
     IDXGISwapChain* swapChain;
-	ID3D12DescriptorHeap* m_renderTargetViewHeap;
-	ID3D12Resource* m_backBufferRenderTarget[2];
-	unsigned int m_bufferIndex;
+    ID3D12DescriptorHeap* renderTargetViewHeap;
+    ID3D12Resource* backBufferRenderTarget[2];
+    unsigned int bufferIndex;
 
 public:
     Direct3D12Backend();
@@ -27,10 +27,11 @@ public:
 
     virtual bool initialize(const BackendParameters& params) override;
 
-    virtual ICommandQueue* createCommandQueue() override;
-    virtual ICommandBuffer* createCommandBuffer() override;
-    virtual void createPipeline() override;
-    virtual void createShader() override;
+    ICommandQueue* createCommandQueue() override;
+    ICommandBuffer* createCommandBuffer() override;
+    IHeap* createHeap(const HeapDesc& desc) override;
+    void createPipeline() override;
+    void createShader() override;
 };
 
 }  // namespace gfx

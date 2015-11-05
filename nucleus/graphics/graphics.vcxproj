@@ -34,7 +34,9 @@
     <ClInclude Include="backend\direct3d12\direct3d12_backend.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_command_buffer.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_command_queue.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_heap.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_pipeline.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_target.h" />
     <ClInclude Include="backend\opengl\opengl.h" />
     <ClInclude Include="backend\opengl\opengl_backend.h" />
     <ClInclude Include="backend\opengl\opengl_command_buffer.h" />
@@ -44,6 +46,7 @@
     <ClInclude Include="command_buffer.h" />
     <ClInclude Include="command_queue.h" />
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="heap.h" />
     <ClInclude Include="hir\block.h" />
     <ClInclude Include="hir\builder.h" />
     <ClInclude Include="hir\function.h" />

@@ -6,8 +6,10 @@
 #include "direct3d12_backend.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
+
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_buffer.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_queue.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_heap.h"
 
 namespace gfx {
 
@@ -39,7 +41,7 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     swapChainDesc.OutputWindow = params.hwnd;
     swapChainDesc.SampleDesc.Count = 1;
     swapChainDesc.Windowed = TRUE;
-    
+
     if (FAILED(factory->CreateSwapChain(device, &swapChainDesc, &swapChain))) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: factory->CreateSwapChain failed");
         return false;
@@ -47,9 +49,9 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
 
     // Create render target view
     D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-	rtvHeapDesc.NumDescriptors = 2;
-	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    rtvHeapDesc.NumDescriptors = 2;
+    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
     ID3D12DescriptorHeap* rtvHeap;
     if (FAILED(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap)))) {
@@ -72,8 +74,32 @@ ICommandQueue* Direct3D12Backend::createCommandQueue() {
 }
 
 ICommandBuffer* Direct3D12Backend::createCommandBuffer() {
-    ICommandBuffer* commandBuffer = new Direct3D12CommandBuffer();
+    auto* commandBuffer = new Direct3D12CommandBuffer();
     return commandBuffer;
+}
+
+IHeap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
+    auto* heap = new Direct3D12Heap();
+
+    D3D12_DESCRIPTOR_HEAP_DESC d3dDesc = {};
+    d3dDesc.NumDescriptors = desc.size;
+    d3dDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+    switch (desc.type) {
+    case HEAP_TYPE_CT:
+        d3dDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; break;
+    case HEAP_TYPE_DST:
+        d3dDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV; break;
+    default:
+        logger.error(LOG_GRAPHICS, "Unimplemented descriptor heap type");
+    }
+
+    if (FAILED(device->CreateDescriptorHeap(&d3dDesc, IID_PPV_ARGS(&heap->heap)))) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createHeap: device->CreateDescriptorHeap failed");
+        return nullptr;
+    }
+
+    return heap;
 }
 
 void Direct3D12Backend::createPipeline() {

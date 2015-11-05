@@ -33,10 +33,11 @@ public:
 
     virtual bool initialize(const BackendParameters& params) override;
 
-    virtual ICommandQueue* createCommandQueue() override;
-    virtual ICommandBuffer* createCommandBuffer() override;
-    virtual void createPipeline() override;
-    virtual void createShader() override;
+    ICommandQueue* createCommandQueue() override;
+    ICommandBuffer* createCommandBuffer() override;
+    IHeap* createHeap(const HeapDesc& desc) override;
+    void createPipeline() override;
+    void createShader() override;
 };
 
 }  // namespace gfx

@@ -4,6 +4,8 @@
  */
 
 #include "direct3d12_command_buffer.h"
+#include "nucleus/logger/logger.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 
 namespace gfx {
 
@@ -21,11 +23,23 @@ void Direct3D12CommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
 }
 
 void Direct3D12CommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorValue) {
-    //list->ClearRenderTargetView(target, colorValue, 0, nullptr);
+    auto d3dTarget = static_cast<Direct3D12ColorTarget*>(target);
+    if (!d3dTarget) {
+        logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdClearColor: Invalid target specified");
+        return;
+    }
+
+    list->ClearRenderTargetView(d3dTarget->handle, colorValue, 0, nullptr);
 }
 
 void Direct3D12CommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
-    //list->ClearDepthStencilView(target, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depthValue, stencilValue, 0, nullptr);
+    auto d3dTarget = static_cast<Direct3D12DepthStencilTarget*>(target);
+    if (!d3dTarget) {
+        logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdClearDepthStencil: Invalid target specified");
+        return;
+    }
+
+    list->ClearDepthStencilView(d3dTarget->handle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depthValue, stencilValue, 0, nullptr);
 }
 
 void Direct3D12CommandBuffer::cmdDraw() {

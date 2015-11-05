@@ -9,6 +9,7 @@
 
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/command_queue.h"
+#include "nucleus/graphics/heap.h"
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
@@ -48,11 +49,24 @@ public:
 
     virtual bool initialize(const BackendParameters& params) = 0;
 
-    // Command queue management
+    /**
+     * Creates a new command queue
+     * @return Command queue
+     */
     virtual ICommandQueue* createCommandQueue() = 0;
 
-    // Command buffer management
+    /**
+     * Creates a new command buffer
+     * @return Command buffer
+     */
     virtual ICommandBuffer* createCommandBuffer() = 0;
+
+    /**
+     * Creates a new descriptor heap
+     * @param[in]  desc  Describes the descriptor heap
+     * @return           Descriptor heap
+     */
+    virtual IHeap* createHeap(const HeapDesc& desc) = 0;
 
     // Pipeline management
     virtual void createPipeline() = 0;

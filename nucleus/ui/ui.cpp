@@ -50,7 +50,7 @@ void UI::task() {
             resize();
         }
 
-        const float clearColor[] = { 0.5f, 0.5f, 0.0f, 1.0f};
+        const float clearColor[] = {0.5f, 0.5f, 0.0f, 1.0f};
 
         // Clear buffers
         //TODO//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
