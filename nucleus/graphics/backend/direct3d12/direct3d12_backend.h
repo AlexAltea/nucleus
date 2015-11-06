@@ -10,6 +10,9 @@
 
 // Forward Direct3D12 declarations
 class ID3D12Device;
+class ID3D12DescriptorHeap;
+class ID3D12Resource;
+class IDXGISwapChain;
 
 namespace gfx {
 

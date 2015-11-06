@@ -5,8 +5,10 @@
 
 #include "opengl_backend.h"
 #include "nucleus/logger/logger.h"
+
 #include "nucleus/graphics/backend/opengl/opengl_command_buffer.h"
 #include "nucleus/graphics/backend/opengl/opengl_command_queue.h"
+#include "nucleus/graphics/backend/opengl/opengl_heap.h"
 
 namespace gfx {
 
@@ -68,8 +70,13 @@ ICommandQueue* OpenGLBackend::createCommandQueue() {
 }
 
 ICommandBuffer* OpenGLBackend::createCommandBuffer() {
-    ICommandBuffer* commandBuffer = new OpenGLCommandBuffer();
+    auto* commandBuffer = new OpenGLCommandBuffer();
     return commandBuffer;
+}
+
+IHeap* OpenGLBackend::createHeap(const HeapDesc& desc) {
+    auto* heap = new OpenGLHeap();
+    return heap;
 }
 
 void OpenGLBackend::createPipeline() {
