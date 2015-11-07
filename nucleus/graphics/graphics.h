@@ -10,6 +10,8 @@
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/command_queue.h"
 #include "nucleus/graphics/heap.h"
+#include "nucleus/graphics/target.h"
+#include "nucleus/graphics/texture.h"
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
@@ -73,6 +75,13 @@ public:
 
     // Shader management
     virtual void createShader() = 0;
+
+    /**
+     * Creates a new texture
+     * @param[in]  desc  Describes the texture
+     * @return           Texture
+     */
+    virtual ITexture* createTexture(const TextureDesc& desc) = 0;
 };
 
 }  // namespace gfx

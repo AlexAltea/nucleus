@@ -10,6 +10,8 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_buffer.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_queue.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_heap.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_texture.h"
 
 namespace gfx {
 
@@ -47,17 +49,9 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
         return false;
     }
 
-    // Create render target view
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-    rtvHeapDesc.NumDescriptors = 2;
-    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-
-    ID3D12DescriptorHeap* rtvHeap;
-    if (FAILED(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap)))) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: device->CreateDescriptorHeap failed");
-        return false;
-    }
+    // Get render target buffers from swap chain
+    swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainRenderBuffer[0]));
+    swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainRenderBuffer[1]));
 
     parameters = params;
     return true;
@@ -106,6 +100,39 @@ void Direct3D12Backend::createPipeline() {
 }
 
 void Direct3D12Backend::createShader() {
+}
+
+ITexture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
+    auto* texture = new Direct3D12Texture(); 
+
+    // Create resource description
+    D3D12_RESOURCE_DESC d3dDesc = {};
+    d3dDesc.Alignment = desc.alignment;
+    d3dDesc.Height = desc.height;
+    d3dDesc.Width = desc.width;
+    d3dDesc.MipLevels = desc.mipmapLevels;
+
+    // Pick appropriate format
+    switch (desc.format) {
+    case TEXTURE_FORMAT_R8G8B8A8:
+        d3dDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT; break;
+    default:
+        logger.error(LOG_GRAPHICS, "Unimplemented texture format");
+    }
+
+    D3D12_HEAP_PROPERTIES heapProps = {};
+    heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
+    heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+    heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+    heapProps.CreationNodeMask = 1;
+    heapProps.VisibleNodeMask = 1;
+
+    if (FAILED(device->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &d3dDesc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&texture->resource)))) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createTexture: device->CreateCommittedResource failed");
+        return nullptr;
+    }
+
+    return texture;
 }
 
 }  // namespace gfx

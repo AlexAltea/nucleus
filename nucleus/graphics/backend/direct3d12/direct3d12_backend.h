@@ -19,10 +19,10 @@ namespace gfx {
 class Direct3D12Backend : public IBackend {
     ID3D12Device* device;
 
+    // Swap chain
     IDXGISwapChain* swapChain;
-    ID3D12DescriptorHeap* renderTargetViewHeap;
-    ID3D12Resource* backBufferRenderTarget[2];
-    unsigned int bufferIndex;
+    ID3D12Resource* swapChainRenderBuffer[2];
+    unsigned int swapChainIndex;
 
 public:
     Direct3D12Backend();
@@ -35,6 +35,7 @@ public:
     IHeap* createHeap(const HeapDesc& desc) override;
     void createPipeline() override;
     void createShader() override;
+    ITexture* createTexture(const TextureDesc& desc) override;
 };
 
 }  // namespace gfx

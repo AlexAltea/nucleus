@@ -38,6 +38,7 @@ public:
     IHeap* createHeap(const HeapDesc& desc) override;
     void createPipeline() override;
     void createShader() override;
+    ITexture* createTexture(const TextureDesc& desc) override;
 };
 
 }  // namespace gfx

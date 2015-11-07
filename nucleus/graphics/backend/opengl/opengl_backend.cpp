@@ -9,6 +9,8 @@
 #include "nucleus/graphics/backend/opengl/opengl_command_buffer.h"
 #include "nucleus/graphics/backend/opengl/opengl_command_queue.h"
 #include "nucleus/graphics/backend/opengl/opengl_heap.h"
+#include "nucleus/graphics/backend/opengl/opengl_target.h"
+#include "nucleus/graphics/backend/opengl/opengl_texture.h"
 
 namespace gfx {
 
@@ -83,6 +85,11 @@ void OpenGLBackend::createPipeline() {
 }
 
 void OpenGLBackend::createShader() {
+}
+
+ITexture* OpenGLBackend::createTexture(const TextureDesc& desc) {
+    auto* texture = new OpenGLTexture();
+    return nullptr;
 }
 
 }  // namespace gfx
