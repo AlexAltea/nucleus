@@ -37,12 +37,15 @@
     <ClInclude Include="backend\direct3d12\direct3d12_heap.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_pipeline.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_target.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_texture.h" />
     <ClInclude Include="backend\opengl\opengl.h" />
     <ClInclude Include="backend\opengl\opengl_backend.h" />
     <ClInclude Include="backend\opengl\opengl_command_buffer.h" />
     <ClInclude Include="backend\opengl\opengl_command_queue.h" />
+    <ClInclude Include="backend\opengl\opengl_heap.h" />
     <ClInclude Include="backend\opengl\opengl_pipeline.h" />
     <ClInclude Include="backend\opengl\opengl_target.h" />
+    <ClInclude Include="backend\opengl\opengl_texture.h" />
     <ClInclude Include="command_buffer.h" />
     <ClInclude Include="command_queue.h" />
     <ClInclude Include="graphics.h" />

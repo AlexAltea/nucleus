@@ -81,6 +81,14 @@ IHeap* OpenGLBackend::createHeap(const HeapDesc& desc) {
     return heap;
 }
 
+IColorTarget* OpenGLBackend::createColorTarget(ITexture* texture) {
+    return nullptr;
+}
+
+IDepthStencilTarget* OpenGLBackend::createDepthStencilTarget(ITexture* texture) {
+    return nullptr;
+}
+
 void OpenGLBackend::createPipeline() {
 }
 
@@ -89,6 +97,8 @@ void OpenGLBackend::createShader() {
 
 ITexture* OpenGLBackend::createTexture(const TextureDesc& desc) {
     auto* texture = new OpenGLTexture();
+
+    glGenTextures(1, &texture->id);
     return nullptr;
 }
 

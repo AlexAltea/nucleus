@@ -12,11 +12,13 @@
 class ID3D12Device;
 class ID3D12DescriptorHeap;
 class ID3D12Resource;
+class IDXGIAdapter1;
 class IDXGISwapChain;
 
 namespace gfx {
 
 class Direct3D12Backend : public IBackend {
+    IDXGIAdapter1* adapter;
     ID3D12Device* device;
 
     // Swap chain
@@ -33,6 +35,8 @@ public:
     ICommandQueue* createCommandQueue() override;
     ICommandBuffer* createCommandBuffer() override;
     IHeap* createHeap(const HeapDesc& desc) override;
+    IColorTarget* createColorTarget(ITexture* texture) override;
+    IDepthStencilTarget* createDepthStencilTarget(ITexture* texture) override;
     void createPipeline() override;
     void createShader() override;
     ITexture* createTexture(const TextureDesc& desc) override;

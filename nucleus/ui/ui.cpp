@@ -30,10 +30,12 @@ bool UI::initialize() {
 }
 
 void UI::task() {
-    // Prepare context
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    //TODO//wglSwapIntervalEXT(0);
-#endif
+    // Prepare output buffers
+    gfx::HeapDesc desc = {};
+    desc.type = gfx::HEAP_TYPE_CT;
+    desc.size = 2;
+
+    graphics->createHeap(desc);
 
     gfx::ICommandBuffer* cmdBuffer = graphics->createCommandBuffer();
     // Prepare state

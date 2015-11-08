@@ -80,7 +80,6 @@
     <ClInclude Include="backend\direct3d12\direct3d12_command_buffer.h">
       <Filter>backend\direct3d12</Filter>
     </ClInclude>
-    <ClInclude Include="texture.h" />
     <ClInclude Include="hir\block.h">
       <Filter>hir</Filter>
     </ClInclude>
@@ -133,6 +132,16 @@
     <ClInclude Include="heap.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_heap.h">
       <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\opengl\opengl_heap.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_texture.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\opengl\opengl_texture.h">
+      <Filter>backend\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -36,6 +36,8 @@ public:
     ICommandQueue* createCommandQueue() override;
     ICommandBuffer* createCommandBuffer() override;
     IHeap* createHeap(const HeapDesc& desc) override;
+    IColorTarget* createColorTarget(ITexture* texture) override;
+    IDepthStencilTarget* createDepthStencilTarget(ITexture* texture) override;
     void createPipeline() override;
     void createShader() override;
     ITexture* createTexture(const TextureDesc& desc) override;

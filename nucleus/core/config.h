@@ -39,19 +39,21 @@ enum ConfigGraphicsBackend {
     GRAPHICS_BACKEND_DIRECT3D,
 };
 
-class Config
-{
+class Config {
 public:
     // Immediate settings
     std::string boot;       // Boot the specified file automatically
-    bool console = false;   // Run Nucleus in console-only mode, preventing UI or GPU backends from running
-    bool debugger = false;  // Start Nerve debugging server
+    bool console;           // Run Nucleus in console-only mode, preventing UI or GPU backends from running
+    bool debugger;          // Start Nerve debugging server
 
     // Saved settings
-    ConfigLanguage language = LANGUAGE_DEFAULT;
-    ConfigCpuTranslator ppuTranslator = CPU_TRANSLATOR_FUNCTION;
-    ConfigCpuTranslator spuTranslator = CPU_TRANSLATOR_INSTRUCTION;
-    ConfigGraphicsBackend graphicsBackend = GRAPHICS_BACKEND_OPENGL;
+    ConfigLanguage language;
+    ConfigCpuTranslator ppuTranslator;
+    ConfigCpuTranslator spuTranslator;
+    ConfigGraphicsBackend graphicsBackend;
+
+    // Constructor
+    Config();
 
     // Modify settings with arguments or JSON files
     void parseArguments(int argc, char** argv);

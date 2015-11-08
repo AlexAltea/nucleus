@@ -13,7 +13,9 @@
 #endif
 
 // Function types: dxgi.dll
+typedef HRESULT(WINAPI *PFN_CreateDXGIFactory)(REFIID, void **);
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory1)(REFIID, void **);
+typedef HRESULT(WINAPI *PFN_CreateDXGIFactory2)(UINT, REFIID, void **);
 
 // Declare Function
 #define DECLARE_FUNCTION(type, module, function) extern type _##function;

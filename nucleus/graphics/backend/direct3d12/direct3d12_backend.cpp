@@ -13,6 +13,8 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_texture.h"
 
+#include <vector>
+
 namespace gfx {
 
 Direct3D12Backend::Direct3D12Backend() : IBackend() {
@@ -27,10 +29,16 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
         return false;
     }
 
-    _D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
-
     IDXGIFactory4* factory;
-    _CreateDXGIFactory1(IID_PPV_ARGS(&factory));
+    if (FAILED(_CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&factory)))) {
+        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: CreateDXGIFactory1 failed");
+        return false;
+    }
+
+    if (FAILED(_D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device)))) {
+        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: D3D12CreateDevice failed");
+        return false;
+    }
 
     // Create swap chain
     DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
@@ -94,6 +102,22 @@ IHeap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
     }
 
     return heap;
+}
+
+IColorTarget* Direct3D12Backend::createColorTarget(ITexture* texture) {
+    auto d3dTexture = static_cast<Direct3D12Texture*>(texture);
+    if (!d3dTexture) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createColorTarget: Invalid texture specified");
+        return nullptr;
+    }
+
+    auto* target = new Direct3D12ColorTarget();
+    device->CreateRenderTargetView(d3dTexture->resource, NULL, target->handle);
+    return target;
+}
+
+IDepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(ITexture* texture) {
+    return nullptr;
 }
 
 void Direct3D12Backend::createPipeline() {

@@ -7,4 +7,6 @@
 FUNCTION(PFN_D3D12_CREATE_DEVICE, d3d12, D3D12CreateDevice);
 
 // Functions: dxgi.dll
+FUNCTION(PFN_CreateDXGIFactory, dxgi, CreateDXGIFactory);
 FUNCTION(PFN_CreateDXGIFactory1, dxgi, CreateDXGIFactory1);
+FUNCTION(PFN_CreateDXGIFactory2, dxgi, CreateDXGIFactory2);

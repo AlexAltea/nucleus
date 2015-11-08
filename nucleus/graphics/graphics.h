@@ -70,6 +70,20 @@ public:
      */
     virtual IHeap* createHeap(const HeapDesc& desc) = 0;
 
+    /**
+     * Creates a new color target
+     * @param[in]  texture  Texture resource
+     * @return              Color target CPU descriptor handle
+     */
+    virtual IColorTarget* createColorTarget(ITexture* texture) = 0;
+
+    /**
+     * Creates a new depth-stencil target
+     * @param[in]  texture  Texture resource
+     * @return              Depth-stencil target CPU descriptor handle
+     */
+    virtual IDepthStencilTarget* createDepthStencilTarget(ITexture* texture) = 0;
+
     // Pipeline management
     virtual void createPipeline() = 0;
 

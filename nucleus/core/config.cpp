@@ -11,8 +11,17 @@
 // Global configuration object
 Config config;
 
-void Config::parseArguments(int argc, char** argv)
-{
+Config::Config() {
+    // Default settings
+    console = false;
+    debugger = false;
+
+    language = LANGUAGE_DEFAULT;
+    ppuTranslator = CPU_TRANSLATOR_FUNCTION;
+    spuTranslator = CPU_TRANSLATOR_INSTRUCTION;
+    graphicsBackend = GRAPHICS_BACKEND_OPENGL;
+}
+void Config::parseArguments(int argc, char** argv) {
     // Parse arguments
     for (int i = 0; i < argc; i++) {
         if (!strcmp(argv[i], "--console")) {
