@@ -30,14 +30,14 @@ void OpenGLCommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorVa
         return;
     }
 
-    OpenGLCommand command;
-    command.type = OPENGL_CMD_CLEAR_COLOR;
-    command.data.clearColor.framebuffer = glTarget->framebuffer;
-    command.data.clearColor.drawbuffer = glTarget->drawbuffer;
-    command.data.clearColor.r = colorValue[0];
-    command.data.clearColor.g = colorValue[1];
-    command.data.clearColor.b = colorValue[2];
-    command.data.clearColor.a = colorValue[3];
+    auto* command = new OpenGLCommandClearColor();
+    command->framebuffer = glTarget->framebuffer;
+    command->drawbuffer = glTarget->drawbuffer;
+    command->r = colorValue[0];
+    command->g = colorValue[1];
+    command->b = colorValue[2];
+    command->a = colorValue[3];
+
     commands.push_back(command);
 }
 
@@ -48,12 +48,12 @@ void OpenGLCommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 
         return;
     }
 
-    OpenGLCommand command;
-    command.type = OPENGL_CMD_CLEAR_DEPTH_STENCIL;
-    command.data.clearDepthStencil.framebuffer = glTarget->framebuffer;
-    command.data.clearDepthStencil.drawbuffer = glTarget->drawbuffer;
-    command.data.clearDepthStencil.depth = depthValue;
-    command.data.clearDepthStencil.stencil = stencilValue;
+    auto* command = new OpenGLCommandClearDepthStencil();
+    command->framebuffer = glTarget->framebuffer;
+    command->drawbuffer = glTarget->drawbuffer;
+    command->depth = depthValue;
+    command->stencil = stencilValue;
+
     commands.push_back(command);
 }
 

@@ -12,45 +12,47 @@
 
 namespace gfx {
 
-// Command type
-enum OpenGLCommandType {
-    OPENGL_CMD_BIND_PIPELINE,
-    OPENGL_CMD_CLEAR_COLOR,
-    OPENGL_CMD_CLEAR_DEPTH_STENCIL,
-    OPENGL_CMD_DRAW,
-    OPENGL_CMD_DRAW_INDEXED,
-    OPENGL_CMD_DRAW_INDIRECT,
-    OPENGL_CMD_DRAW_INDEXED_INDIRECT,
-};
-
-// Command arguments
-union OpenGLCommandData {
-    struct ClearColor {
-        GLuint framebuffer;
-        GLint drawbuffer;
-        GLfloat r;
-        GLfloat g;
-        GLfloat b;
-        GLfloat a;
-    } clearColor;
-
-    struct ClearDepthStencil {
-        GLuint framebuffer;
-        GLint drawbuffer;
-        GLfloat depth;
-        GLint stencil;
-    } clearDepthStencil;
-};
-
+// Command
 struct OpenGLCommand {
-    OpenGLCommandType type;
-    OpenGLCommandData data;
+    enum Type {
+        TYPE_BIND_PIPELINE,
+        TYPE_CLEAR_COLOR,
+        TYPE_CLEAR_DEPTH_STENCIL,
+        TYPE_DRAW,
+        TYPE_DRAW_INDEXED,
+        TYPE_DRAW_INDIRECT,
+        TYPE_DRAW_INDEXED_INDIRECT,
+    } type;
+
+    // Constructor
+    OpenGLCommand(Type type) : type(type) {}
 };
 
+struct OpenGLCommandClearColor : public OpenGLCommand {
+    OpenGLCommandClearColor() : OpenGLCommand(TYPE_CLEAR_COLOR) {}
+
+    GLuint framebuffer;
+    GLint drawbuffer;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+    GLfloat a;
+};
+
+struct OpenGLCommandClearDepthStencil : public OpenGLCommand {
+    OpenGLCommandClearDepthStencil() : OpenGLCommand(TYPE_CLEAR_DEPTH_STENCIL) {}
+
+    GLuint framebuffer;
+    GLint drawbuffer;
+    GLfloat depth;
+    GLint stencil;
+};
+
+// Command buffer
 class OpenGLCommandBuffer : public ICommandBuffer {
 public:
     // Holds the commands to be pushed
-    std::vector<OpenGLCommand> commands;
+    std::vector<OpenGLCommand*> commands;
 
     OpenGLCommandBuffer();
     ~OpenGLCommandBuffer();

@@ -27,8 +27,9 @@ private:
     std::condition_variable cv;
 
     // Specific commands
-    void executeClearColor(const OpenGLCommandData& data);
-    void executeClearDepthStencil(const OpenGLCommandData& data);
+    void execute(const OpenGLCommandClearColor& cmd);
+    void execute(const OpenGLCommandClearDepthStencil& cmd);
+    void execute(const OpenGLCommandSetTargets& cmd);
 
     // Execute a command
     void execute(const OpenGLCommand& cmd);

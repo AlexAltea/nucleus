@@ -47,8 +47,8 @@ bool OpenGLCommandQueue::initialize(const BackendParameters& params, OpenGLConte
 
             while (!commandBuffers.empty()) {
                 const auto& buffer = commandBuffers.front();
-                for (const auto& cmd : buffer->commands) {
-                    execute(cmd);
+                for (const auto* cmd : buffer->commands) {
+                    execute(*cmd);
                 }
                 commandBuffers.pop();
             }
@@ -60,12 +60,11 @@ bool OpenGLCommandQueue::initialize(const BackendParameters& params, OpenGLConte
 
 void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     switch (cmd.type) {
-    case OPENGL_CMD_CLEAR_COLOR:
-        executeClearColor(cmd.data);
+    case OpenGLCommand::TYPE_CLEAR_COLOR:
+        execute(static_cast<const OpenGLCommandClearColor&>(cmd));
         break;
-
-    case OPENGL_CMD_CLEAR_DEPTH_STENCIL:
-        executeClearDepthStencil(cmd.data);
+    case OpenGLCommand::TYPE_CLEAR_DEPTH_STENCIL:
+        execute(static_cast<const OpenGLCommandClearDepthStencil&>(cmd));
         break;
 
     default:
@@ -73,15 +72,10 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     }
 }
 
-void OpenGLCommandQueue::executeClearColor(const OpenGLCommandData& data) {
-    const GLuint framebuffer = data.clearColor.framebuffer;
-    const GLint drawbuffer = data.clearColor.drawbuffer;
-    const GLfloat value[4] = {
-        data.clearColor.r,
-        data.clearColor.g,
-        data.clearColor.b,
-        data.clearColor.a
-    };
+void OpenGLCommandQueue::execute(const OpenGLCommandClearColor& cmd) {
+    const GLuint framebuffer = cmd.framebuffer;
+    const GLint drawbuffer = cmd.drawbuffer;
+    const GLfloat value[4] = { cmd.r, cmd.g, cmd.b, cmd.a };
 
 #if defined(GRAPHICS_OPENGL_GL45)
     glClearNamedFramebufferfv(framebuffer, GL_COLOR, drawbuffer, value);
@@ -90,14 +84,14 @@ void OpenGLCommandQueue::executeClearColor(const OpenGLCommandData& data) {
     glClearBufferfv(GL_COLOR, drawbuffer, value);
 #endif
 
-    checkBackendError("OpenGLCommandQueue::executeClearColor");
+    checkBackendError("OpenGLCommandQueue::execute: cmdClearColor");
 }
 
-void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data) {
-    const GLuint framebuffer = data.clearDepthStencil.framebuffer;
-    const GLint drawbuffer = data.clearDepthStencil.drawbuffer;
-    const GLfloat depth = data.clearDepthStencil.depth;
-    const GLint stencil = data.clearDepthStencil.stencil;
+void OpenGLCommandQueue::execute(const OpenGLCommandClearDepthStencil& cmd) {
+    const GLuint framebuffer = cmd.framebuffer;
+    const GLint drawbuffer = cmd.drawbuffer;
+    const GLfloat depth = cmd.depth;
+    const GLint stencil = cmd.stencil;
 
 #if defined(GRAPHICS_OPENGL_GL45)
     glClearNamedFramebufferfi(framebuffer, GL_DEPTH_STENCIL, drawbuffer, depth, stencil);
@@ -106,7 +100,11 @@ void OpenGLCommandQueue::executeClearDepthStencil(const OpenGLCommandData& data)
     glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, stencil);
 #endif
 
-    checkBackendError("OpenGLCommandQueue::executeClearDepthStencil");
+    checkBackendError("OpenGLCommandQueue::execute: cmdClearDepthStencil");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandSetTargets& cmd) {
+    checkBackendError("OpenGLCommandQueue::execute: cmdClearDepthStencil");
 }
 
 void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {
