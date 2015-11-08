@@ -27,6 +27,7 @@ public:
     virtual void cmdDrawIndexed() override;
     virtual void cmdDrawIndirect() override;
     virtual void cmdDrawIndexedIndirect() override;
+    virtual void cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) override;
 };
 
 }  // namespace gfx

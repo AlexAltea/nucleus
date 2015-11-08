@@ -54,4 +54,8 @@ void Direct3D12CommandBuffer::cmdDrawIndirect() {
 void Direct3D12CommandBuffer::cmdDrawIndexedIndirect() {
 }
 
+void Direct3D12CommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) {
+    list->OMSetRenderTargets(colorCount, nullptr, FALSE, nullptr); // TODO
+}
+
 }  // namespace gfx

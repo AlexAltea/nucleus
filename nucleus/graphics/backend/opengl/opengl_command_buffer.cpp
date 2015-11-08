@@ -6,6 +6,7 @@
 #include "opengl_command_buffer.h"
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/assert.h"
 
 namespace gfx {
 
@@ -67,6 +68,33 @@ void OpenGLCommandBuffer::cmdDrawIndirect() {
 }
 
 void OpenGLCommandBuffer::cmdDrawIndexedIndirect() {
+}
+
+void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) {
+    assert_true(colorCount <= 32, "Unsupported amount of color targets");
+
+    auto* command = new OpenGLCommandSetTargets();
+
+    // Color targets
+    command->colorCount = colorCount;
+    for (U32 i = 0; i < colorCount; i++) {
+        auto* glTarget = static_cast<OpenGLColorTarget*>(colorTargets[i]);
+        if (!glTarget) {
+            logger.error(LOG_GRAPHICS, "OpenGLCommandBuffer::cmdSetTargets: Invalid color target specified");
+            return;
+        }
+        command->colorTargets[i] = glTarget->drawbuffer;
+    }
+
+    // Depth-stencil target
+    auto* glTarget = static_cast<OpenGLDepthStencilTarget*>(depthStencilTarget);
+    if (glTarget) {
+        command->depthStencilTarget = glTarget->drawbuffer;
+    } else {
+        command->depthStencilTarget = 0;
+    }
+
+    commands.push_back(command);
 }
 
 }  // namespace gfx

@@ -64,6 +64,14 @@ public:
      * Pushes a command to draw instanced, indexed geometry from GPU-stored data
      */
     virtual void cmdDrawIndexedIndirect() = 0;
+
+    /**
+     * Set the color targets and depth-stencil target for rendering
+     * @param[in]  colorCount          Length of color targets array
+     * @param[in]  colorTargets        Color targets array
+     * @param[in]  depthStencilTarget  Depth-stencil target (optional)
+     */
+    virtual void cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) = 0;
 };
 
 }  // namespace gfx

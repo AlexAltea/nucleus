@@ -66,6 +66,9 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     case OpenGLCommand::TYPE_CLEAR_DEPTH_STENCIL:
         execute(static_cast<const OpenGLCommandClearDepthStencil&>(cmd));
         break;
+    case OpenGLCommand::TYPE_SET_TARGETS:
+        execute(static_cast<const OpenGLCommandSetTargets&>(cmd));
+        break;
 
     default:
         logger.error(LOG_GRAPHICS, "OpenGLCommandQueue::execute: Unrecognized command (%d)", cmd.type);
@@ -104,7 +107,14 @@ void OpenGLCommandQueue::execute(const OpenGLCommandClearDepthStencil& cmd) {
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommandSetTargets& cmd) {
-    checkBackendError("OpenGLCommandQueue::execute: cmdClearDepthStencil");
+    for (U32 index = 0; index < cmd.colorCount; index++) {
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, cmd.colorTargets[index], 0);
+    }
+    if (cmd.depthStencilTarget) {
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, cmd.depthStencilTarget, 0);
+    }
+
+    checkBackendError("OpenGLCommandQueue::execute: cmdSetTargets");
 }
 
 void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {
