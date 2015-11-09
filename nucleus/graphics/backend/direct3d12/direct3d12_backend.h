@@ -32,14 +32,14 @@ public:
 
     virtual bool initialize(const BackendParameters& params) override;
 
-    ICommandQueue* createCommandQueue() override;
-    ICommandBuffer* createCommandBuffer() override;
-    IHeap* createHeap(const HeapDesc& desc) override;
-    IColorTarget* createColorTarget(ITexture* texture) override;
-    IDepthStencilTarget* createDepthStencilTarget(ITexture* texture) override;
-    void createPipeline() override;
-    void createShader() override;
-    ITexture* createTexture(const TextureDesc& desc) override;
+    virtual ICommandQueue* createCommandQueue() override;
+    virtual ICommandBuffer* createCommandBuffer() override;
+    virtual IHeap* createHeap(const HeapDesc& desc) override;
+    virtual IColorTarget* createColorTarget(ITexture* texture) override;
+    virtual IDepthStencilTarget* createDepthStencilTarget(ITexture* texture) override;
+    virtual void createPipeline() override;
+    virtual void createShader() override;
+    virtual ITexture* createTexture(const TextureDesc& desc) override;
 };
 
 }  // namespace gfx

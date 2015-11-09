@@ -30,6 +30,7 @@ private:
     void execute(const OpenGLCommandClearColor& cmd);
     void execute(const OpenGLCommandClearDepthStencil& cmd);
     void execute(const OpenGLCommandSetTargets& cmd);
+    void execute(const OpenGLCommandSetViewports& cmd);
 
     // Execute a command
     void execute(const OpenGLCommand& cmd);

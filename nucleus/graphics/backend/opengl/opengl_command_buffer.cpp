@@ -97,4 +97,16 @@ void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTarg
     commands.push_back(command);
 }
 
+void OpenGLCommandBuffer::cmdSetViewports(U32 viewportsCount, Viewport* viewports) {
+    assert_true(viewportsCount > 1, "OpenGLCommandBuffer::cmdSetViewports: Multiple viewports not supported");
+
+    auto* command = new OpenGLCommandSetViewports();
+    command->x = viewports[0].originX;
+    command->y = viewports[0].originY;
+    command->width = viewports[0].width;
+    command->height = viewports[0].height;
+
+    commands.push_back(command);
+}
+
 }  // namespace gfx

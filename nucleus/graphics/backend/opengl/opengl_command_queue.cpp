@@ -69,6 +69,9 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     case OpenGLCommand::TYPE_SET_TARGETS:
         execute(static_cast<const OpenGLCommandSetTargets&>(cmd));
         break;
+    case OpenGLCommand::TYPE_SET_VIEWPORTS:
+        execute(static_cast<const OpenGLCommandSetViewports&>(cmd));
+        break;
 
     default:
         logger.error(LOG_GRAPHICS, "OpenGLCommandQueue::execute: Unrecognized command (%d)", cmd.type);
@@ -115,6 +118,11 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetTargets& cmd) {
     }
 
     checkBackendError("OpenGLCommandQueue::execute: cmdSetTargets");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandSetViewports& cmd) {
+    glViewport(cmd.x, cmd.y, cmd.width, cmd.height);
+    checkBackendError("OpenGLCommandQueue::execute: cmdSetViewports");
 }
 
 void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {

@@ -46,6 +46,9 @@ protected:
     BackendParameters parameters;
 
 public:
+    IColorTarget* screenBackBuffer;
+    IColorTarget* screenFrontBuffer;
+
     // Constructor
     IBackend();
 

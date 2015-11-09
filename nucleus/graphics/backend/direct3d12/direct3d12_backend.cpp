@@ -127,7 +127,7 @@ void Direct3D12Backend::createShader() {
 }
 
 ITexture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
-    auto* texture = new Direct3D12Texture(); 
+    auto* texture = new Direct3D12Texture();
 
     // Create resource description
     D3D12_RESOURCE_DESC d3dDesc = {};

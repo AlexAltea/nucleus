@@ -82,9 +82,6 @@ void UI::task() {
         }
 
         queue->submit(cmdBuffer);
-
-        // TODO: Adjusting the framerate manually at 60 FPS is a terrible idea
-        std::this_thread::sleep_for(std::chrono::milliseconds(15));
     }
 }
 

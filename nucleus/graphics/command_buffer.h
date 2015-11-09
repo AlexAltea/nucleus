@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/graphics/pipeline.h"
 #include "nucleus/graphics/target.h"
+#include "nucleus/graphics/viewport.h"
 
 namespace gfx {
 
@@ -72,6 +73,13 @@ public:
      * @param[in]  depthStencilTarget  Depth-stencil target (optional)
      */
     virtual void cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) = 0;
+
+    /**
+     * Set the viewports
+     * @param[in]  viewportsCount  Length of viewports array
+     * @param[in]  viewports       Viewports array
+     */
+    virtual void cmdSetViewports(U32 viewportsCount, Viewport* viewports) = 0;
 };
 
 }  // namespace gfx

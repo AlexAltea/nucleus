@@ -58,4 +58,24 @@ void Direct3D12CommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** color
     list->OMSetRenderTargets(colorCount, nullptr, FALSE, nullptr); // TODO
 }
 
+void Direct3D12CommandBuffer::cmdSetViewports(U32 viewportsCount, Viewport* viewports) {
+    if (!viewports) {
+        logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdSetViewports: Invalid viewport array specified");
+        return;
+    }
+
+    auto* d3dViewports = new D3D12_VIEWPORT[viewportsCount];
+    for (U32 i = 0; i < viewportsCount; i++) {
+        d3dViewports[i].TopLeftX = viewports[i].originX;
+        d3dViewports[i].TopLeftY = viewports[i].originY;
+        d3dViewports[i].Width = viewports[i].width;
+        d3dViewports[i].Height = viewports[i].height;
+        d3dViewports[i].MinDepth = viewports[i].minDepth;
+        d3dViewports[i].MaxDepth = viewports[i].maxDepth;
+    }
+
+    list->RSSetViewports(viewportsCount, d3dViewports);
+    delete[] d3dViewports;
+}
+
 }  // namespace gfx
