@@ -72,6 +72,9 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     case OpenGLCommand::TYPE_SET_VIEWPORTS:
         execute(static_cast<const OpenGLCommandSetViewports&>(cmd));
         break;
+    case OpenGLCommand::TYPE_SET_SCISSORS:
+        execute(static_cast<const OpenGLCommandSetScissors&>(cmd));
+        break;
 
     default:
         logger.error(LOG_GRAPHICS, "OpenGLCommandQueue::execute: Unrecognized command (%d)", cmd.type);
@@ -123,6 +126,11 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetTargets& cmd) {
 void OpenGLCommandQueue::execute(const OpenGLCommandSetViewports& cmd) {
     glViewport(cmd.x, cmd.y, cmd.width, cmd.height);
     checkBackendError("OpenGLCommandQueue::execute: cmdSetViewports");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandSetScissors& cmd) {
+    glScissor(cmd.x, cmd.y, cmd.width, cmd.height);
+    checkBackendError("OpenGLCommandQueue::execute: cmdSetScissors");
 }
 
 void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {

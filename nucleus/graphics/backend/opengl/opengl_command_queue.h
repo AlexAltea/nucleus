@@ -31,6 +31,7 @@ private:
     void execute(const OpenGLCommandClearDepthStencil& cmd);
     void execute(const OpenGLCommandSetTargets& cmd);
     void execute(const OpenGLCommandSetViewports& cmd);
+    void execute(const OpenGLCommandSetScissors& cmd);
 
     // Execute a command
     void execute(const OpenGLCommand& cmd);

@@ -59,8 +59,10 @@
     <ClInclude Include="hir\type.h" />
     <ClInclude Include="hir\value.h" />
     <ClInclude Include="pipeline.h" />
+    <ClInclude Include="rectangle.h" />
     <ClInclude Include="target.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="viewport.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\direct3d12\direct3d12.inl" />

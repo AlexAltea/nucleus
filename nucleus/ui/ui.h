@@ -31,7 +31,6 @@ public:
     Language language;
 
     // Surface properties
-    bool surfaceChanged = false;
     unsigned int surfaceWidth = 0;
     unsigned int surfaceHeight = 0;
     unsigned int surfaceDpi = 100;
@@ -47,8 +46,6 @@ public:
     bool initialize();
 
     void task();
-
-    void resize();
 
     void push_screen(Screen* screen);
 };

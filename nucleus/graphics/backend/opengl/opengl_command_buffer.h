@@ -24,6 +24,7 @@ struct OpenGLCommand {
         TYPE_DRAW_INDEXED_INDIRECT,
         TYPE_SET_TARGETS,
         TYPE_SET_VIEWPORTS,
+        TYPE_SET_SCISSORS,
     } type;
 
     // Constructor
@@ -67,6 +68,15 @@ struct OpenGLCommandSetViewports : public OpenGLCommand {
     GLsizei height;
 };
 
+struct OpenGLCommandSetScissors : public OpenGLCommand {
+    OpenGLCommandSetScissors() : OpenGLCommand(TYPE_SET_VIEWPORTS) {}
+
+    GLint x;
+    GLint y;
+    GLsizei width;
+    GLsizei height;
+};
+
 // Command buffer
 class OpenGLCommandBuffer : public ICommandBuffer {
 public:
@@ -87,7 +97,8 @@ public:
     virtual void cmdDrawIndirect() override;
     virtual void cmdDrawIndexedIndirect() override;
     virtual void cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) override;
-    virtual void cmdSetViewports(U32 viewportsCount, Viewport* viewports) override;
+    virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) override;
+    virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) override;
 };
 
 }  // namespace gfx

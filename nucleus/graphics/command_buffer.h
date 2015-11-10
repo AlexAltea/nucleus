@@ -9,6 +9,7 @@
 #include "nucleus/graphics/pipeline.h"
 #include "nucleus/graphics/target.h"
 #include "nucleus/graphics/viewport.h"
+#include "nucleus/graphics/rectangle.h"
 
 namespace gfx {
 
@@ -79,7 +80,14 @@ public:
      * @param[in]  viewportsCount  Length of viewports array
      * @param[in]  viewports       Viewports array
      */
-    virtual void cmdSetViewports(U32 viewportsCount, Viewport* viewports) = 0;
+    virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) = 0;
+
+    /**
+     * Set the scissor rectangles
+     * @param[in]  scissorsCount  Length of scissor rectangles array
+     * @param[in]  scissors       Scissor rectangles array
+     */
+    virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) = 0;
 };
 
 }  // namespace gfx

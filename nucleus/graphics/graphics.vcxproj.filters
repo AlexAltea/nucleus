@@ -143,6 +143,8 @@
     <ClInclude Include="backend\opengl\opengl_texture.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="viewport.h" />
+    <ClInclude Include="rectangle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">

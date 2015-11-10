@@ -28,7 +28,8 @@ public:
     virtual void cmdDrawIndirect() override;
     virtual void cmdDrawIndexedIndirect() override;
     virtual void cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) override;
-    virtual void cmdSetViewports(U32 viewportsCount, Viewport* viewports) override;
+    virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) override;
+    virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) override;
 };
 
 }  // namespace gfx

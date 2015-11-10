@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "nucleus/common.h"
-
 namespace gfx {
 
 struct Viewport {

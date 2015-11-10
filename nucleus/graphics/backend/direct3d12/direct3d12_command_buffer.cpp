@@ -58,7 +58,7 @@ void Direct3D12CommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** color
     list->OMSetRenderTargets(colorCount, nullptr, FALSE, nullptr); // TODO
 }
 
-void Direct3D12CommandBuffer::cmdSetViewports(U32 viewportsCount, Viewport* viewports) {
+void Direct3D12CommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport* viewports) {
     if (!viewports) {
         logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdSetViewports: Invalid viewport array specified");
         return;
@@ -76,6 +76,24 @@ void Direct3D12CommandBuffer::cmdSetViewports(U32 viewportsCount, Viewport* view
 
     list->RSSetViewports(viewportsCount, d3dViewports);
     delete[] d3dViewports;
+}
+
+void Direct3D12CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) {
+    if (!scissors) {
+        logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdSetScissors: Invalid scissor rectangle array specified");
+        return;
+    }
+
+    auto* d3dRects = new D3D12_RECT[scissorsCount];
+    for (U32 i = 0; i < scissorsCount; i++) {
+        d3dRects[i].left = scissors[i].left;
+        d3dRects[i].top = scissors[i].top;
+        d3dRects[i].right = scissors[i].right;
+        d3dRects[i].bottom = scissors[i].bottom;
+    }
+
+    list->RSSetScissorRects(scissorsCount, d3dRects);
+    delete[] d3dRects;
 }
 
 }  // namespace gfx

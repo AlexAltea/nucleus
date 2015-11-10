@@ -37,25 +37,22 @@ void UI::task() {
 
     graphics->createHeap(desc);
 
+    const float clearColor[] = {0.5f, 0.5f, 0.0f, 1.0f};
     gfx::ICommandBuffer* cmdBuffer = graphics->createCommandBuffer();
+    gfx::IColorTarget* colorTarget = nullptr; // TODO
     // Prepare state
-    /*TODO*//*glEnable(GL_TEXTURE_2D);
+    /* TODO
+    glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
 
-    push_screen(new ScreenLogo());
+    //push_screen(new ScreenLogo());
     while (true) {
-        // Process events
-        if (surfaceChanged) {
-            resize();
-        }
-
-        const float clearColor[] = {0.5f, 0.5f, 0.0f, 1.0f};
-
-        // Clear buffers
-        //TODO//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        const gfx::Viewport viewport = { 0, 0, surfaceWidth, surfaceHeight };
+        
+        cmdBuffer->cmdSetViewports(1, &viewport);
+        cmdBuffer->cmdClearColor(colorTarget, clearColor);
 
         // Display screens
         auto it = m_screens.begin();
@@ -83,11 +80,6 @@ void UI::task() {
 
         queue->submit(cmdBuffer);
     }
-}
-
-void UI::resize() {
-    //TODO//glViewport(0, 0, surfaceWidth, surfaceHeight);
-    surfaceChanged = false;
 }
 
 void UI::push_screen(Screen* screen) {
