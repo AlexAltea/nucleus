@@ -22,10 +22,7 @@ class UI {
     gfx::ICommandQueue* queue;
 
     std::thread thread;
-    std::vector<Screen*> m_screens;
-
-    // New screens to be added
-    std::queue<Screen*> m_new_screens;
+    std::vector<std::unique_ptr<Screen>> screens;
 
 public:
     Language language;
@@ -47,7 +44,11 @@ public:
 
     void task();
 
-    void push_screen(Screen* screen);
+    /**
+     * Pushes a new screen to the back of the screen array
+     * @param[in]  screen  Screen to be passed
+     */
+    void pushScreen(std::unique_ptr<Screen>&& screen);
 };
 
 }  // namespace ui

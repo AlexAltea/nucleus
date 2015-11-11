@@ -11,30 +11,27 @@
 
 namespace ui {
 
-ScreenLogo::ScreenLogo()
-{
+ScreenLogo::ScreenLogo(UI* parent) : Screen(parent) {
     logo.init("..\\resources\\images\\nucleus-logo.png");
-    logo.style.top = Length{0.25, Length::Unit::PCT};
-    logo.style.left = Length{0.25, Length::Unit::PCT};
-    logo.style.width = Length{0.50, Length::Unit::PCT};
+    logo.style.top = 25.0_pct;
+    logo.style.left = 25.0_pct;
+    logo.style.width = 50.0_pct;
     logo.style.sizeMode = PROPORTION_AUTOHEIGHT;
 }
 
-void ScreenLogo::render()
-{
+void ScreenLogo::render() {
     logo.render();
 }
 
-void ScreenLogo::update()
-{
+void ScreenLogo::update() {
     if (dtime > 2000.0) {
         logo.style.opacity = 1.0f - transition::easeOut((dtime - 2000.0f) / 1000.0f);
     }
     if (dtime > 3000.0) {
         if (!config.boot.empty()) {
-            parent->push_screen(new ScreenEmulator());
+            parent->pushScreen(std::make_unique<ScreenEmulator>(parent));
         } else {
-            parent->push_screen(new ScreenMain());
+            parent->pushScreen(std::make_unique<ScreenMain>(parent));
         }
         finished = true;
     }

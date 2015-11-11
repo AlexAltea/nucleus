@@ -31,7 +31,7 @@ public:
     // Tells the UI that this screen should be removed
     bool finished = false;
 
-    Screen();
+    Screen(UI* parent);
 
     // Common tasks before and after rendering, respectively
     void prologue();

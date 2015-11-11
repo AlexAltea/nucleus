@@ -1,14 +1,14 @@
 <svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<defs>
-<linearGradient id="bg" x1="0" y1="0" x2="0" y2="100%">
-<stop offset="0" stop-color="#283888"/>
-<stop offset="1" stop-color="#27275b"/>
-</linearGradient>
-<path id="sh" d="M-288,-384v768h112v-640l304,384v-128l-304,-384z"/>
-</defs>
-<rect fill="url(#bg)" width="1024" height="1024"/>
-<g fill="#ffffff" transform="translate(512,512)">
-<use xlink:href="#sh"/>
-<use xlink:href="#sh" transform="scale(-1,-1)"/>
-</g>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="100%">
+      <stop offset="0" stop-color="#283888"/>
+      <stop offset="1" stop-color="#27275b"/>
+    </linearGradient>
+    <path id="sh" d="M-288,-384v768h112v-640l304,384v-128l-304,-384z"/>
+  </defs>
+  <rect fill="url(#bg)" width="1024" height="1024"/>
+  <g fill="#ffffff" transform="translate(512,512)">
+    <use xlink:href="#sh"/>
+    <use xlink:href="#sh" transform="scale(-1,-1)"/>
+  </g>
 </svg>

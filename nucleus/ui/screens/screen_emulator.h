@@ -11,12 +11,11 @@
 
 namespace ui {
 
-class ScreenEmulator : public Screen
-{
+class ScreenEmulator : public Screen {
     WidgetTexture rsxDisplay;
 
 public:
-    ScreenEmulator();
+    ScreenEmulator(UI* parent);
 
     virtual void update() override;
     virtual void render() override;

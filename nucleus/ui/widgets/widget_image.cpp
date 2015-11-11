@@ -11,13 +11,11 @@
 
 namespace ui {
 
-WidgetImage::~WidgetImage()
-{
+WidgetImage::~WidgetImage() {
     delete image.buffer;
 }
 
-void WidgetImage::init(const std::string& pngfile)
-{
+void WidgetImage::init(const std::string& pngfile) {
     // Get file contents
     FILE* file = fopen(pngfile.c_str(), "rb");
     if (!file) {
@@ -35,8 +33,7 @@ void WidgetImage::init(const std::string& pngfile)
     init(pngbuffer, size);
 }
 
-void WidgetImage::init(const unsigned char* pngbuffer, size_t size)
-{
+void WidgetImage::init(const unsigned char* pngbuffer, size_t size) {
     /**
      * NOTE: STB generates stores the image rows in reverse order with respect to the format OpenGL expects.
      * Vertical quad coordinates are swapped on rendering to make sure the image shows up properly.
@@ -44,8 +41,7 @@ void WidgetImage::init(const unsigned char* pngbuffer, size_t size)
     image.buffer = stbi_load_from_memory(pngbuffer, size, &image.width, &image.height, &image.components, 4);
 }
 
-void WidgetImage::render()
-{
+void WidgetImage::render() {
     Length width = style.width;
     Length height = style.height;
 

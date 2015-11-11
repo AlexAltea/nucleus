@@ -7,7 +7,7 @@
 
 namespace ui {
 
-Screen::Screen() {
+Screen::Screen(UI* parent) : parent(parent) {
     time_creation = Clock::now();
 }
 

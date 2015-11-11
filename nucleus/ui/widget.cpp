@@ -8,22 +8,20 @@
 
 namespace ui {
 
-float Widget::getCoordinateX(Length x)
-{
+float Widget::getCoordinateX(Length x) {
     float coordinate;
-    switch (x.unit) {
-    case Length::Unit::PCT:
+    switch (x.type) {
+    case Length::TYPE_PCT:
         coordinate = (x.value * 2.0f) - 1.0f;
         break;
     }
     return coordinate;
 }
 
-float Widget::getCoordinateY(Length y)
-{
+float Widget::getCoordinateY(Length y) {
     float coordinate;
-    switch (y.unit) {
-    case Length::Unit::PCT:
+    switch (y.type) {
+    case Length::TYPE_PCT:
         coordinate = 1.0f - (y.value * 2.0f);
         break;
     }
@@ -31,8 +29,7 @@ float Widget::getCoordinateY(Length y)
     return coordinate;
 }
 
-Length Widget::correctHeight(Length height)
-{
+Length Widget::correctHeight(Length height) {
     //height.value *= ui.surfaceProportion;
     return height;
 }

@@ -47,7 +47,9 @@ void UI::task() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
 
-    //push_screen(new ScreenLogo());
+    // Initial screen
+    screens.push_back(std::make_unique<ScreenLogo>(this));
+
     while (true) {
         const gfx::Viewport viewport = { 0, 0, surfaceWidth, surfaceHeight };
         
@@ -55,35 +57,24 @@ void UI::task() {
         cmdBuffer->cmdClearColor(colorTarget, clearColor);
 
         // Display screens
-        auto it = m_screens.begin();
-        while (it != m_screens.end()) {
-            Screen* screen = *it;
+        for (auto i = 0ULL; i < screens.size(); i++) {
+            auto& screen = screens[i];
             screen->prologue();
             screen->render();
             screen->update();
             screen->epilogue();
 
             if (screen->finished) {
-                delete screen;
-                it = m_screens.erase(it);
-            } else {
-                it++;
+                screens.erase(screens.begin() + i--);
             }
-        }
-
-        // Add new screens
-        while (!m_new_screens.empty()) {
-            Screen* screen = m_new_screens.front();
-            m_screens.push_back(screen);
-            m_new_screens.pop();
         }
 
         queue->submit(cmdBuffer);
     }
 }
 
-void UI::push_screen(Screen* screen) {
-    m_new_screens.push(screen);
+void UI::pushScreen(std::unique_ptr<Screen>&& screen) {
+    screens.push_back(std::move(screen));
 }
 
 }  // namespace ui

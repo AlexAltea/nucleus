@@ -15,7 +15,7 @@ class ScreenLogo : public Screen {
     WidgetImage logo;
 
 public:
-    ScreenLogo();
+    ScreenLogo(UI* parent);
 
     virtual void update() override;
     virtual void render() override;

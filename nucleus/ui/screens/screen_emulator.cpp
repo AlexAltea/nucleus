@@ -8,23 +8,19 @@
 
 namespace ui {
 
-ScreenEmulator::ScreenEmulator()
-{
-    rsxDisplay.style.top = Length{0.00, Length::Unit::PCT};
-    rsxDisplay.style.left = Length{0.00, Length::Unit::PCT};
-    rsxDisplay.style.width = Length{1.00, Length::Unit::PCT};
-    rsxDisplay.style.height = Length{1.00, Length::Unit::PCT};
+ScreenEmulator::ScreenEmulator(UI* parent) : Screen(parent) {
+    rsxDisplay.style.top = 0.0_pct;
+    rsxDisplay.style.left = 0.0_pct;
+    rsxDisplay.style.width = 100.0_pct;
+    rsxDisplay.style.height = 100.0_pct;
 }
 
-void ScreenEmulator::render()
-{
+void ScreenEmulator::render() {
     //rsxDisplay.textureId = nucleus.rsx.get_display();
     rsxDisplay.render();
-    //glFinish();
 }
 
-void ScreenEmulator::update()
-{
+void ScreenEmulator::update() {
 }
 
 }  // namespace ui

@@ -7,16 +7,13 @@
 
 namespace ui {
 
-ScreenMain::ScreenMain()
-{
+ScreenMain::ScreenMain(UI* parent) : Screen(parent) {
 }
 
-void ScreenMain::render()
-{
+void ScreenMain::render() {
 }
 
-void ScreenMain::update()
-{
+void ScreenMain::update() {
 }
 
 }  // namespace ui
