@@ -40,6 +40,7 @@ public:
     virtual void createPipeline() override;
     virtual void createShader() override;
     virtual ITexture* createTexture(const TextureDesc& desc) override;
+    virtual bool doSwapBuffers() override;
 };
 
 }  // namespace gfx

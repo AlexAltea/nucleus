@@ -99,6 +99,12 @@ public:
      * @return           Texture
      */
     virtual ITexture* createTexture(const TextureDesc& desc) = 0;
+
+    /**
+     * Swaps the back buffer and front buffer
+     * @return  True on success
+     */
+    virtual bool doSwapBuffers() = 0;
 };
 
 }  // namespace gfx

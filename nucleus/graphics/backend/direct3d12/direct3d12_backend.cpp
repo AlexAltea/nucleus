@@ -159,4 +159,13 @@ ITexture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
     return texture;
 }
 
+bool Direct3D12Backend::doSwapBuffers() {
+    if (FAILED(swapChain->Present(0, 0))) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::doSwapBuffers: swapChain->Present failed");
+        return false;
+    }
+    std::swap(screenBackBuffer, screenFrontBuffer);
+    return true;
+}
+
 }  // namespace gfx

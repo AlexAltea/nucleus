@@ -98,7 +98,7 @@ void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTarg
 }
 
 void OpenGLCommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport* viewports) {
-    assert_true(viewportsCount > 1, "OpenGLCommandBuffer::cmdSetViewports: Multiple viewports not supported");
+    assert_true(viewportsCount == 1, "OpenGLCommandBuffer::cmdSetViewports: Only one viewport is supported");
 
     auto* command = new OpenGLCommandSetViewports();
     command->x = viewports[0].originX;
@@ -110,7 +110,7 @@ void OpenGLCommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport* vi
 }
 
 void OpenGLCommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) {
-    assert_true(scissorsCount > 1, "OpenGLCommandBuffer::cmdSetScissors: Multiple scissor rectangles not supported");
+    assert_true(scissorsCount == 1, "OpenGLCommandBuffer::cmdSetScissors: Only one scissor rectangle is supported");
 
     auto* command = new OpenGLCommandSetScissors();
     command->x = scissors[0].left;

@@ -45,7 +45,7 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
         return false;
     }
     XVisualInfo* info = glXChooseVisual(display, 0, nullptr/*TODO*/);
-    context = glXCreateContext(display, info, NULL, GL_TRUE);
+    context = glXCreateContext(params.display, info, NULL, GL_TRUE);
     if (!context) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXCreateContext failed");
         return false;
@@ -100,6 +100,21 @@ ITexture* OpenGLBackend::createTexture(const TextureDesc& desc) {
 
     glGenTextures(1, &texture->id);
     return nullptr;
+}
+
+bool OpenGLBackend::doSwapBuffers() {
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+    SwapBuffers(parameters.hdc);
+#elif defined(NUCLEUS_PLATFORM_LINUX)
+    glXSwapBuffers(parameters.display, window);
+#elif defined(NUCLEUS_PLATFORM_OSX)
+    glXSwapBuffers(parameters.display, window);
+#elif defined(NUCLEUS_PLATFORM_ANDROID)
+    eglSwapBuffers(parameters.display, surface);
+#elif defined(NUCLEUS_PLATFORM_IOS)
+    eglSwapBuffers(parameters.display, surface);
+#endif
+    return true;
 }
 
 }  // namespace gfx

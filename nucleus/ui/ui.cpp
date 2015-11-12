@@ -70,6 +70,8 @@ void UI::task() {
         }
 
         queue->submit(cmdBuffer);
+
+        graphics->doSwapBuffers();
     }
 }
 
