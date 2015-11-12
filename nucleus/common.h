@@ -53,6 +53,16 @@
 #define NUCLEUS_COMPILER_CLANG
 #endif
 
+/**
+ * Builds
+ */
+#if defined(_DEBUG)
+#define NUCLEUS_BUILD_DEBUG
+#endif
+#if defined(NDEBUG)
+#define NUCLEUS_BUILD_RELEASE
+#endif
+
 #include "nucleus/endianness.h"
 #include "nucleus/types.h"
 
