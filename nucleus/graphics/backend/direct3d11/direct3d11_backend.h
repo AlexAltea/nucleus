@@ -10,6 +10,7 @@
 
 // Forward Direct3D11 declarations
 class ID3D11Device;
+class ID3D11DeviceContext;
 class ID3D11DescriptorHeap;
 class ID3D11Resource;
 class IDXGIAdapter1;

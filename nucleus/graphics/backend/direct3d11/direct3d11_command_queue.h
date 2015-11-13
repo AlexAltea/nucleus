@@ -12,7 +12,7 @@ namespace gfx {
 
 class Direct3D11CommandQueue : public ICommandQueue {
 private:
-    ID3D11CommandQueue* queue;
+    ID3D11DeviceContext* immediateContext;
 
 public:
     Direct3D11CommandQueue();

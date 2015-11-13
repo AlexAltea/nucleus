@@ -88,25 +88,6 @@ ICommandBuffer* Direct3D11Backend::createCommandBuffer() {
 
 IHeap* Direct3D11Backend::createHeap(const HeapDesc& desc) {
     auto* heap = new Direct3D11Heap();
-
-    D3D11_DESCRIPTOR_HEAP_DESC d3dDesc = {};
-    d3dDesc.NumDescriptors = desc.size;
-    d3dDesc.Flags = D3D11_DESCRIPTOR_HEAP_FLAG_NONE;
-
-    switch (desc.type) {
-    case HEAP_TYPE_CT:
-        d3dDesc.Type = D3D11_DESCRIPTOR_HEAP_TYPE_RTV; break;
-    case HEAP_TYPE_DST:
-        d3dDesc.Type = D3D11_DESCRIPTOR_HEAP_TYPE_DSV; break;
-    default:
-        logger.error(LOG_GRAPHICS, "Unimplemented descriptor heap type");
-    }
-
-    if (FAILED(device->CreateDescriptorHeap(&d3dDesc, IID_PPV_ARGS(&heap->heap)))) {
-        logger.error(LOG_GRAPHICS, "Direct3D11Backend::createHeap: device->CreateDescriptorHeap failed");
-        return nullptr;
-    }
-
     return heap;
 }
 
@@ -118,7 +99,7 @@ IColorTarget* Direct3D11Backend::createColorTarget(ITexture* texture) {
     }
 
     auto* target = new Direct3D11ColorTarget();
-    device->CreateRenderTargetView(d3dTexture->resource, NULL, target->handle);
+    device->CreateRenderTargetView(d3dTexture->texture, NULL, &target->view);
     return target;
 }
 
@@ -136,8 +117,7 @@ ITexture* Direct3D11Backend::createTexture(const TextureDesc& desc) {
     auto* texture = new Direct3D11Texture();
 
     // Create resource description
-    D3D11_RESOURCE_DESC d3dDesc = {};
-    d3dDesc.Alignment = desc.alignment;
+    D3D11_TEXTURE2D_DESC d3dDesc = {};
     d3dDesc.Height = desc.height;
     d3dDesc.Width = desc.width;
     d3dDesc.MipLevels = desc.mipmapLevels;
@@ -150,14 +130,7 @@ ITexture* Direct3D11Backend::createTexture(const TextureDesc& desc) {
         logger.error(LOG_GRAPHICS, "Unimplemented texture format");
     }
 
-    D3D11_HEAP_PROPERTIES heapProps = {};
-    heapProps.Type = D3D11_HEAP_TYPE_DEFAULT;
-    heapProps.CPUPageProperty = D3D11_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProps.MemoryPoolPreference = D3D11_MEMORY_POOL_UNKNOWN;
-    heapProps.CreationNodeMask = 1;
-    heapProps.VisibleNodeMask = 1;
-
-    if (FAILED(device->CreateCommittedResource(&heapProps, D3D11_HEAP_FLAG_NONE, &d3dDesc, D3D11_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&texture->resource)))) {
+    if (FAILED(device->CreateTexture2D(&d3dDesc, nullptr, &texture->texture))) {
         logger.error(LOG_GRAPHICS, "Direct3D11Backend::createTexture: device->CreateCommittedResource failed");
         return nullptr;
     }

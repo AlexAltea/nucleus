@@ -12,7 +12,7 @@ namespace gfx {
 
 class Direct3D11Texture : public ITexture {
 public:
-    ID3D11Resource* resource;
+    ID3D11Texture2D* texture;
 };
 
 }  // namespace gfx

@@ -54,6 +54,26 @@ void Direct3D12CommandBuffer::cmdDrawIndirect() {
 void Direct3D12CommandBuffer::cmdDrawIndexedIndirect() {
 }
 
+void Direct3D12CommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
+    D3D12_PRIMITIVE_TOPOLOGY d3dTopology;
+    switch (topology) {
+    case TOPOLOGY_POINT_LIST:
+        d3dTopology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST; break;
+    case TOPOLOGY_LINE_LIST:
+        d3dTopology = D3D_PRIMITIVE_TOPOLOGY_LINELIST; break;
+    case TOPOLOGY_LINE_STRIP:
+        d3dTopology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP; break;
+    case TOPOLOGY_TRIANGLE_LIST:
+        d3dTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST; break;
+    case TOPOLOGY_TRIANGLE_STRIP:
+        d3dTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP; break;
+    default:
+        logger.error(LOG_GRAPHICS, "Unimplemented primitive topology type");
+        return;
+    }
+    list->IASetPrimitiveTopology(d3dTopology);
+}
+
 void Direct3D12CommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) {
     list->OMSetRenderTargets(colorCount, nullptr, FALSE, nullptr); // TODO
 }

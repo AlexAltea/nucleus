@@ -29,7 +29,7 @@ void Direct3D11CommandBuffer::cmdClearColor(IColorTarget* target, const F32* col
         return;
     }
 
-    list->ClearRenderTargetView(d3dTarget->handle, colorValue, 0, nullptr);
+    context->ClearRenderTargetView(d3dTarget->view, colorValue);
 }
 
 void Direct3D11CommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
@@ -39,7 +39,7 @@ void Direct3D11CommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, 
         return;
     }
 
-    list->ClearDepthStencilView(d3dTarget->handle, D3D11_CLEAR_FLAG_DEPTH | D3D11_CLEAR_FLAG_STENCIL, depthValue, stencilValue, 0, nullptr);
+    context->ClearDepthStencilView(d3dTarget->view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depthValue, stencilValue);
 }
 
 void Direct3D11CommandBuffer::cmdDraw() {
@@ -55,7 +55,27 @@ void Direct3D11CommandBuffer::cmdDrawIndexedIndirect() {
 }
 
 void Direct3D11CommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) {
-    list->OMSetRenderTargets(colorCount, nullptr, FALSE, nullptr); // TODO
+    context->OMSetRenderTargets(colorCount, nullptr, nullptr); // TODO
+}
+
+void Direct3D11CommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
+    D3D11_PRIMITIVE_TOPOLOGY d3dTopology;
+    switch (topology) {
+    case TOPOLOGY_POINT_LIST:
+        d3dTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST; break;
+    case TOPOLOGY_LINE_LIST:
+        d3dTopology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST; break;
+    case TOPOLOGY_LINE_STRIP:
+        d3dTopology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP; break;
+    case TOPOLOGY_TRIANGLE_LIST:
+        d3dTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST; break;
+    case TOPOLOGY_TRIANGLE_STRIP:
+        d3dTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP; break;
+    default:
+        logger.error(LOG_GRAPHICS, "Unimplemented primitive topology type");
+        return;
+    }
+    context->IASetPrimitiveTopology(d3dTopology);
 }
 
 void Direct3D11CommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport* viewports) {
@@ -74,7 +94,7 @@ void Direct3D11CommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport
         d3dViewports[i].MaxDepth = viewports[i].maxDepth;
     }
 
-    list->RSSetViewports(viewportsCount, d3dViewports);
+    context->RSSetViewports(viewportsCount, d3dViewports);
     delete[] d3dViewports;
 }
 
@@ -92,7 +112,7 @@ void Direct3D11CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle*
         d3dRects[i].bottom = scissors[i].bottom;
     }
 
-    list->RSSetScissorRects(scissorsCount, d3dRects);
+    context->RSSetScissorRects(scissorsCount, d3dRects);
     delete[] d3dRects;
 }
 

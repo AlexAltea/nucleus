@@ -31,16 +31,6 @@ struct BackendParameters {
 #endif
 };
 
-enum PrimitiveTopology {
-    TOPOLOGY_POINT_LIST,
-    TOPOLOGY_LINE_LIST,
-    TOPOLOGY_LINE_STRIP,
-    TOPOLOGY_TRIANGLE_LIST,
-    TOPOLOGY_TRIANGLE_STRIP,
-    TOPOLOGY_QUAD_LIST,
-    TOPOLOGY_QUAD_STRIP,
-};
-
 class IBackend {
 protected:
     BackendParameters parameters;

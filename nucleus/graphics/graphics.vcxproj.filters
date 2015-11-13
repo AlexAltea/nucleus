@@ -13,6 +13,9 @@
     <Filter Include="backend\direct3d12">
       <UniqueIdentifier>{b4f630a9-8353-4a1a-927e-8fd826fb2fb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backend\direct3d11">
+      <UniqueIdentifier>{4ab2c109-14cf-4e95-b618-9607518bd7f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="graphics.cpp" />
@@ -60,6 +63,18 @@
     </ClCompile>
     <ClCompile Include="backend\direct3d12\direct3d12.cpp">
       <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\direct3d11\direct3d11_backend.cpp">
+      <Filter>backend\direct3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\direct3d11\direct3d11_command_buffer.cpp">
+      <Filter>backend\direct3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\direct3d11\direct3d11_command_queue.cpp">
+      <Filter>backend\direct3d11</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\direct3d11\direct3d11.cpp">
+      <Filter>backend\direct3d11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +160,31 @@
     </ClInclude>
     <ClInclude Include="viewport.h" />
     <ClInclude Include="rectangle.h" />
+    <ClInclude Include="backend\direct3d11\direct3d11_backend.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d11\direct3d11_command_buffer.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d11\direct3d11_command_queue.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d11\direct3d11_heap.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d11\direct3d11_pipeline.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d11\direct3d11_target.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d11\direct3d11_texture.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d11\direct3d11.h">
+      <Filter>backend\direct3d11</Filter>
+    </ClInclude>
+    <ClInclude Include="primitive.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">
@@ -155,6 +195,9 @@
     </None>
     <None Include="backend\direct3d12\direct3d12.inl">
       <Filter>backend\direct3d12</Filter>
+    </None>
+    <None Include="backend\direct3d11\direct3d11.inl">
+      <Filter>backend\direct3d11</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/pipeline.h"
+#include "nucleus/graphics/primitive.h"
 #include "nucleus/graphics/target.h"
 #include "nucleus/graphics/viewport.h"
 #include "nucleus/graphics/rectangle.h"
@@ -66,6 +67,12 @@ public:
      * Pushes a command to draw instanced, indexed geometry from GPU-stored data
      */
     virtual void cmdDrawIndexedIndirect() = 0;
+
+    /**
+     * Set the primitive topology used for drawing
+     * @param[in]  topology  Primitive topology
+     */
+    virtual void cmdSetPrimitiveTopology(PrimitiveTopology topology) = 0;
 
     /**
      * Set the color targets and depth-stencil target for rendering
