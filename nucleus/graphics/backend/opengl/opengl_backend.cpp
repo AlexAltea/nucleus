@@ -57,6 +57,12 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     }
 #endif
 
+    auto* backBuffer = new OpenGLColorTarget();
+    backBuffer->attached = true;
+    backBuffer->framebuffer = 0;
+    backBuffer->drawbuffer = 0;
+    screenBackBuffer = backBuffer;
+
     parameters = params;
     return true;
 }
@@ -82,6 +88,7 @@ IHeap* OpenGLBackend::createHeap(const HeapDesc& desc) {
 }
 
 IColorTarget* OpenGLBackend::createColorTarget(ITexture* texture) {
+
     return nullptr;
 }
 

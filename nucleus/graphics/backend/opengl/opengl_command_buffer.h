@@ -7,6 +7,7 @@
 
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/backend/opengl/opengl.h"
+#include "nucleus/graphics/backend/opengl/opengl_target.h"
 
 #include <vector>
 
@@ -34,8 +35,7 @@ struct OpenGLCommand {
 struct OpenGLCommandClearColor : public OpenGLCommand {
     OpenGLCommandClearColor() : OpenGLCommand(TYPE_CLEAR_COLOR) {}
 
-    GLuint framebuffer;
-    GLint drawbuffer;
+    OpenGLColorTarget* target;
     GLfloat r;
     GLfloat g;
     GLfloat b;

@@ -39,13 +39,13 @@ void UI::task() {
 
     const float clearColor[] = {0.5f, 0.5f, 0.0f, 1.0f};
     gfx::ICommandBuffer* cmdBuffer = graphics->createCommandBuffer();
-    gfx::IColorTarget* colorTarget = nullptr; // TODO
+    gfx::IColorTarget* colorTarget = graphics->screenBackBuffer;
+
     // Prepare state
     /* TODO
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
     // Initial screen
     screens.push_back(std::make_unique<ScreenLogo>(this));
@@ -69,6 +69,13 @@ void UI::task() {
             }
         }
 
+        // Add new screens
+        while (!newScreens.empty()) {
+            auto& screen = newScreens.front();
+            screens.push_back(std::move(screen));
+            newScreens.pop();
+        }
+
         queue->submit(cmdBuffer);
 
         graphics->doSwapBuffers();
@@ -76,7 +83,7 @@ void UI::task() {
 }
 
 void UI::pushScreen(std::unique_ptr<Screen>&& screen) {
-    screens.push_back(std::move(screen));
+    newScreens.push(std::move(screen));
 }
 
 }  // namespace ui

@@ -18,6 +18,13 @@ namespace gfx {
 
 class OpenGLCommandQueue : public ICommandQueue {
 private:
+    // Internal state
+    GLuint scratchFramebuffer;
+
+private:
+    // Parent OpenGL backend
+    OpenGLBackend* parent;
+
     // Holds a queue of command buffers to execute
     std::queue<OpenGLCommandBuffer*> commandBuffers;
 
@@ -35,6 +42,9 @@ private:
 
     // Execute a command
     void execute(const OpenGLCommand& cmd);
+
+    // Main loop
+    void task(const BackendParameters& params, OpenGLContext context);
 
 public:
     OpenGLCommandQueue();

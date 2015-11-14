@@ -23,6 +23,7 @@ class UI {
 
     std::thread thread;
     std::vector<std::unique_ptr<Screen>> screens;
+    std::queue<std::unique_ptr<Screen>> newScreens;
 
 public:
     Language language;

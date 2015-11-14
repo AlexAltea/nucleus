@@ -22,14 +22,14 @@
         return false; \
     }
 
+namespace gfx {
+
 // Declare functions
 #define DECLARE_FUNCTION(type, module, function) type _##function;
 #define FUNCTION DECLARE_FUNCTION
 #include "direct3d11.inl"
 #undef FUNCTION
 #undef DECLARE_FUNCTION
-
-namespace gfx {
 
 bool initializeDirect3D11() {
     LOAD_MODULE(d3d11);

@@ -32,8 +32,7 @@ void OpenGLCommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorVa
     }
 
     auto* command = new OpenGLCommandClearColor();
-    command->framebuffer = glTarget->framebuffer;
-    command->drawbuffer = glTarget->drawbuffer;
+    command->target = glTarget;
     command->r = colorValue[0];
     command->g = colorValue[1];
     command->b = colorValue[2];

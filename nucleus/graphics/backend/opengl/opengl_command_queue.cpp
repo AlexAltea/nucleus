@@ -22,40 +22,48 @@ OpenGLCommandQueue::~OpenGLCommandQueue() {
 }
 
 bool OpenGLCommandQueue::initialize(const BackendParameters& params, OpenGLContext context) {
+    // Start command processing thread
+    thread = std::thread([&] {
+        task(params, context);
+    });
+
+    return true;
+}
+
+void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext context) {
+    // Set context
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (!wglMakeCurrent(params.hdc, context)) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: wglMakeCurrent failed");
-        return false;
+        return;
     }
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     if (!glXMakeCurrent(display, 0/*TODO*/, context)) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXMakeCurrent failed");
-        return false;
+        return;
     }
 #elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
     if (!eglMakeCurrent(/*TODO*/)) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: eglMakeCurrent failed");
-        return false;
+        return;
     }
 #endif
 
-    // Start command processing thread
-    thread = std::thread([&] {
-        while (true) {
-            std::unique_lock<std::mutex> lock(mutex);
-            cv.wait(lock);
+    // Initial scratch state
+    glGenFramebuffers(1, &scratchFramebuffer);
 
-            while (!commandBuffers.empty()) {
-                const auto& buffer = commandBuffers.front();
-                for (const auto* cmd : buffer->commands) {
-                    execute(*cmd);
-                }
-                commandBuffers.pop();
+    while (true) {
+        std::unique_lock<std::mutex> lock(mutex);
+        cv.wait(lock);
+
+        while (!commandBuffers.empty()) {
+            const auto& buffer = commandBuffers.front();
+            for (const auto* cmd : buffer->commands) {
+                execute(*cmd);
             }
+            commandBuffers.pop();
         }
-    });
-
-    return true;
+    }
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
@@ -82,9 +90,20 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommandClearColor& cmd) {
-    const GLuint framebuffer = cmd.framebuffer;
-    const GLint drawbuffer = cmd.drawbuffer;
-    const GLfloat value[4] = { cmd.r, cmd.g, cmd.b, cmd.a };
+    GLuint framebuffer;
+    GLint drawbuffer;
+    GLfloat value[4] = { cmd.r, cmd.g, cmd.b, cmd.a };
+    
+    const auto& target = cmd.target;
+    if (target->attached) {
+        framebuffer = target->framebuffer;
+        drawbuffer = target->drawbuffer;
+    } else {
+        glBindFramebuffer(GL_FRAMEBUFFER, scratchFramebuffer);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, target->texture, 0);
+        framebuffer = scratchFramebuffer;
+        drawbuffer = 0;
+    }
 
 #if defined(GRAPHICS_OPENGL_GL45)
     glClearNamedFramebufferfv(framebuffer, GL_COLOR, drawbuffer, value);
@@ -135,7 +154,7 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetScissors& cmd) {
 
 void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {
     commandBuffers.push(dynamic_cast<OpenGLCommandBuffer*>(cmdBuffer));
-    cv.notify_one();
+    cv.notify_all();
 }
 
 void OpenGLCommandQueue::waitIdle() {

@@ -12,12 +12,24 @@ namespace gfx {
 
 class OpenGLColorTarget : public IColorTarget {
 public:
+    // Texture ID holding this color buffer
+    GLuint texture;
+
+    // True if this target is attached to the framebuffer below
+    bool attached;
+
     GLuint framebuffer;
     GLint drawbuffer;
 };
 
 class OpenGLDepthStencilTarget : public IDepthStencilTarget {
 public:
+    // Texture ID holding this depth-stencil buffer
+    GLuint texture;
+
+    // True if this target is attached to the framebuffer below
+    bool attached;
+
     GLuint framebuffer;
     GLint drawbuffer;
 };
