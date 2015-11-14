@@ -16,6 +16,14 @@
 
 namespace gfx {
 
+struct OpenGLCommandQueueUnit {
+    // Command buffer to be executed
+    OpenGLCommandBuffer* cmdBuffer;
+
+    // Delete command buffer after execution
+    bool destroyOnCompletion;
+};
+
 class OpenGLCommandQueue : public CommandQueue {
 private:
     // Internal state
@@ -25,8 +33,8 @@ private:
     // Parent OpenGL backend
     OpenGLBackend* parent;
 
-    // Holds a queue of command buffers to execute
-    std::queue<OpenGLCommandBuffer*> commandBuffers;
+    // Holds a queue of work units to execute
+    std::queue<OpenGLCommandQueueUnit> work;
 
     // Command execution thread
     std::thread thread;
@@ -39,6 +47,8 @@ private:
     void execute(const OpenGLCommandSetTargets& cmd);
     void execute(const OpenGLCommandSetViewports& cmd);
     void execute(const OpenGLCommandSetScissors& cmd);
+    void execute(const OpenGLCommandInternalCreateTexture& cmd);
+    void execute(const OpenGLCommandInternalCreateVertexBuffer& cmd);
     void execute(const OpenGLCommandInternalSignalFence& cmd);
 
     // Execute a command

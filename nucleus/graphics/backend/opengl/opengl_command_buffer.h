@@ -9,6 +9,8 @@
 #include "nucleus/graphics/backend/opengl/opengl.h"
 #include "nucleus/graphics/backend/opengl/opengl_fence.h"
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
+#include "nucleus/graphics/backend/opengl/opengl_texture.h"
+#include "nucleus/graphics/backend/opengl/opengl_vertex_buffer.h"
 
 #include <vector>
 
@@ -30,6 +32,8 @@ struct OpenGLCommand {
         TYPE_SET_SCISSORS,
 
         // Private
+        TYPE_INTERNAL_CREATE_TEXTURE,
+        TYPE_INTERNAL_CREATE_VERTEXBUFFER,
         TYPE_INTERNAL_SIGNAL_FENCE,
     } type;
 
@@ -84,6 +88,14 @@ struct OpenGLCommandSetScissors : public OpenGLCommand {
 };
 
 // Private commands
+struct OpenGLCommandInternalCreateTexture : public OpenGLCommand {
+    OpenGLCommandInternalCreateTexture() : OpenGLCommand(TYPE_INTERNAL_CREATE_TEXTURE) {}
+    OpenGLTexture* texture;
+};
+struct OpenGLCommandInternalCreateVertexBuffer : public OpenGLCommand {
+    OpenGLCommandInternalCreateVertexBuffer() : OpenGLCommand(TYPE_INTERNAL_CREATE_VERTEXBUFFER) {}
+    OpenGLVertexBuffer* vtxBuffer;
+};
 struct OpenGLCommandInternalSignalFence : public OpenGLCommand {
     OpenGLCommandInternalSignalFence() : OpenGLCommand(TYPE_INTERNAL_SIGNAL_FENCE) {}
 

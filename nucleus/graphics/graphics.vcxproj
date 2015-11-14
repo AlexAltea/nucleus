@@ -11,14 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="backend\direct3d11\direct3d11.cpp" />
-    <ClCompile Include="backend\direct3d11\direct3d11_backend.cpp" />
-    <ClCompile Include="backend\direct3d11\direct3d11_command_buffer.cpp" />
-    <ClCompile Include="backend\direct3d11\direct3d11_command_queue.cpp" />
-    <ClCompile Include="backend\direct3d12\direct3d12.cpp" />
-    <ClCompile Include="backend\direct3d12\direct3d12_backend.cpp" />
-    <ClCompile Include="backend\direct3d12\direct3d12_command_buffer.cpp" />
-    <ClCompile Include="backend\direct3d12\direct3d12_command_queue.cpp" />
     <ClCompile Include="backend\opengl\opengl.cpp" />
     <ClCompile Include="backend\opengl\opengl_backend.cpp" />
     <ClCompile Include="backend\opengl\opengl_command_buffer.cpp" />
@@ -35,22 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_backend.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_command_buffer.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_command_queue.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_heap.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_pipeline.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_target.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_texture.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_backend.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_command_buffer.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_command_queue.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_heap.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_pipeline.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_target.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_texture.h" />
     <ClInclude Include="backend\opengl\opengl.h" />
     <ClInclude Include="backend\opengl\opengl_backend.h" />
     <ClInclude Include="backend\opengl\opengl_command_buffer.h" />
@@ -60,6 +36,7 @@
     <ClInclude Include="backend\opengl\opengl_pipeline.h" />
     <ClInclude Include="backend\opengl\opengl_target.h" />
     <ClInclude Include="backend\opengl\opengl_texture.h" />
+    <ClInclude Include="backend\opengl\opengl_vertex_buffer.h" />
     <ClInclude Include="command_buffer.h" />
     <ClInclude Include="command_queue.h" />
     <ClInclude Include="fence.h" />
@@ -78,11 +55,10 @@
     <ClInclude Include="rectangle.h" />
     <ClInclude Include="target.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="vertex_buffer.h" />
     <ClInclude Include="viewport.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="backend\direct3d11\direct3d11.inl" />
-    <None Include="backend\direct3d12\direct3d12.inl" />
     <None Include="backend\opengl\opengl.inl" />
     <None Include="hir\opcodes.inl" />
   </ItemGroup>

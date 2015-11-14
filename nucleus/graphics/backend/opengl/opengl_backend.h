@@ -23,9 +23,13 @@ using OpenGLContext = EGLContext;
 using OpenGLContext = EGLContext;
 #endif
 
+// Forward declarations
+class OpenGLCommandQueue;
+
 class OpenGLBackend : public IBackend {
 private:
     OpenGLContext context;
+    OpenGLCommandQueue* queue;
 
 public:
     OpenGLBackend();
@@ -42,6 +46,7 @@ public:
     virtual void createPipeline() override;
     virtual void createShader() override;
     virtual Texture* createTexture(const TextureDesc& desc) override;
+    virtual VertexBuffer* createVertexBuffer(const VertexBufferDesc& desc) override;
     virtual bool doSwapBuffers() override;
 };
 

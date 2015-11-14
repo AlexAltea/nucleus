@@ -10,12 +10,6 @@
     <Filter Include="hir">
       <UniqueIdentifier>{1d46846f-7248-4b02-bf2d-2b9ca13ff384}</UniqueIdentifier>
     </Filter>
-    <Filter Include="backend\direct3d12">
-      <UniqueIdentifier>{b4f630a9-8353-4a1a-927e-8fd826fb2fb6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="backend\direct3d11">
-      <UniqueIdentifier>{4ab2c109-14cf-4e95-b618-9607518bd7f0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="graphics.cpp" />
@@ -31,9 +25,6 @@
     <ClCompile Include="backend\opengl\opengl_backend.cpp">
       <Filter>backend\opengl</Filter>
     </ClCompile>
-    <ClCompile Include="backend\direct3d12\direct3d12_command_buffer.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
     <ClCompile Include="hir\function.cpp">
       <Filter>hir</Filter>
     </ClCompile>
@@ -46,12 +37,6 @@
     <ClCompile Include="backend\opengl\opengl_command_queue.cpp">
       <Filter>backend\opengl</Filter>
     </ClCompile>
-    <ClCompile Include="backend\direct3d12\direct3d12_command_queue.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\direct3d12\direct3d12_backend.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
     <ClCompile Include="hir\value.cpp">
       <Filter>hir</Filter>
     </ClCompile>
@@ -60,21 +45,6 @@
     </ClCompile>
     <ClCompile Include="hir\instruction.cpp">
       <Filter>hir</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\direct3d12\direct3d12.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\direct3d11\direct3d11_backend.cpp">
-      <Filter>backend\direct3d11</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\direct3d11\direct3d11_command_buffer.cpp">
-      <Filter>backend\direct3d11</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\direct3d11\direct3d11_command_queue.cpp">
-      <Filter>backend\direct3d11</Filter>
-    </ClCompile>
-    <ClCompile Include="backend\direct3d11\direct3d11.cpp">
-      <Filter>backend\direct3d11</Filter>
     </ClCompile>
     <ClCompile Include="backend\opengl\opengl_fence.cpp">
       <Filter>backend\opengl</Filter>
@@ -94,9 +64,6 @@
     </ClInclude>
     <ClInclude Include="backend\opengl\opengl_backend.h">
       <Filter>backend\opengl</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d12\direct3d12_command_buffer.h">
-      <Filter>backend\direct3d12</Filter>
     </ClInclude>
     <ClInclude Include="hir\block.h">
       <Filter>hir</Filter>
@@ -124,72 +91,31 @@
     <ClInclude Include="backend\opengl\opengl_target.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
-    <ClInclude Include="backend\direct3d12\direct3d12_pipeline.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="backend\opengl\opengl_pipeline.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
     <ClInclude Include="pipeline.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_command_queue.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d12\direct3d12_backend.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="backends.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="hir\opcodes.h">
       <Filter>hir</Filter>
     </ClInclude>
-    <ClInclude Include="backend\direct3d12\direct3d12_target.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="heap.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_heap.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="backend\opengl\opengl_heap.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
     <ClInclude Include="texture.h" />
-    <ClInclude Include="backend\direct3d12\direct3d12_texture.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="backend\opengl\opengl_texture.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
     <ClInclude Include="viewport.h" />
     <ClInclude Include="rectangle.h" />
-    <ClInclude Include="backend\direct3d11\direct3d11_backend.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d11\direct3d11_command_buffer.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d11\direct3d11_command_queue.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d11\direct3d11_heap.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d11\direct3d11_pipeline.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d11\direct3d11_target.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d11\direct3d11_texture.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
-    <ClInclude Include="backend\direct3d11\direct3d11.h">
-      <Filter>backend\direct3d11</Filter>
-    </ClInclude>
     <ClInclude Include="primitive.h" />
     <ClInclude Include="fence.h" />
     <ClInclude Include="backend\opengl\opengl_fence.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_buffer.h" />
+    <ClInclude Include="backend\opengl\opengl_vertex_buffer.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
   </ItemGroup>
@@ -199,12 +125,6 @@
     </None>
     <None Include="hir\opcodes.inl">
       <Filter>hir</Filter>
-    </None>
-    <None Include="backend\direct3d12\direct3d12.inl">
-      <Filter>backend\direct3d12</Filter>
-    </None>
-    <None Include="backend\direct3d11\direct3d11.inl">
-      <Filter>backend\direct3d11</Filter>
     </None>
   </ItemGroup>
 </Project>

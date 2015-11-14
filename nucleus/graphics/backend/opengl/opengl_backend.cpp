@@ -69,13 +69,13 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
 }
 
 CommandQueue* OpenGLBackend::createCommandQueue() {
-    auto* commandQueue = new OpenGLCommandQueue();
+    queue = new OpenGLCommandQueue();
 
-    if (!commandQueue->initialize(parameters, context)) {
+    if (!queue->initialize(parameters, context)) {
         logger.error(LOG_GRAPHICS, "OpenGLBackend::createCommandQueue: Could not initialize OpenGLCommandQueue");
         return nullptr;
     }
-    return commandQueue;
+    return queue;
 }
 
 CommandBuffer* OpenGLBackend::createCommandBuffer() {
@@ -111,8 +111,25 @@ void OpenGLBackend::createShader() {
 Texture* OpenGLBackend::createTexture(const TextureDesc& desc) {
     auto* texture = new OpenGLTexture();
 
-    glGenTextures(1, &texture->id);
-    return nullptr;
+    auto cmdBuffer = new OpenGLCommandBuffer();
+    auto cmd = new OpenGLCommandInternalCreateTexture();
+    cmd->texture = texture;
+    cmdBuffer->commands.push_back(cmd);
+    queue->submit(cmdBuffer, nullptr);
+
+    return texture;
+}
+
+VertexBuffer* OpenGLBackend::createVertexBuffer(const VertexBufferDesc& desc) {
+    auto* vtxBuffer = new OpenGLVertexBuffer();
+
+    auto cmdBuffer = new OpenGLCommandBuffer();
+    auto cmd = new OpenGLCommandInternalCreateVertexBuffer();
+    cmd->vtxBuffer = vtxBuffer;
+    cmdBuffer->commands.push_back(cmd);
+    queue->submit(cmdBuffer, nullptr);
+
+    return vtxBuffer;
 }
 
 bool OpenGLBackend::doSwapBuffers() {

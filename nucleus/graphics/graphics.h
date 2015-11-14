@@ -13,6 +13,7 @@
 #include "nucleus/graphics/heap.h"
 #include "nucleus/graphics/target.h"
 #include "nucleus/graphics/texture.h"
+#include "nucleus/graphics/vertex_buffer.h"
 
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
@@ -97,6 +98,13 @@ public:
      * @return           Texture
      */
     virtual Texture* createTexture(const TextureDesc& desc) = 0;
+
+    /**
+     * Creates a new vertex buffer
+     * @param[in]  desc  Describes the vertex buffer
+     * @return           Vertex buffer
+     */
+    virtual VertexBuffer* createVertexBuffer(const VertexBufferDesc& desc) = 0;
 
     /**
      * Swaps the back buffer and front buffer

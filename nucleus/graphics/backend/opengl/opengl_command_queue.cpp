@@ -56,12 +56,15 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
         std::unique_lock<std::mutex> lock(mutex);
         cv.wait(lock);
 
-        while (!commandBuffers.empty()) {
-            const auto& buffer = commandBuffers.front();
-            for (const auto* cmd : buffer->commands) {
+        while (!work.empty()) {
+            const auto& workUnit = work.front();
+            for (const auto* cmd : workUnit.cmdBuffer->commands) {
                 execute(*cmd);
             }
-            commandBuffers.pop();
+            if (workUnit.destroyOnCompletion) {
+                delete workUnit.cmdBuffer;
+            }
+            work.pop();
         }
     }
 }
@@ -82,6 +85,12 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
         break;
     case OpenGLCommand::TYPE_SET_SCISSORS:
         execute(static_cast<const OpenGLCommandSetScissors&>(cmd));
+        break;
+    case OpenGLCommand::TYPE_INTERNAL_CREATE_TEXTURE:
+        execute(static_cast<const OpenGLCommandInternalCreateTexture&>(cmd));
+        break;
+    case OpenGLCommand::TYPE_INTERNAL_CREATE_VERTEXBUFFER:
+        execute(static_cast<const OpenGLCommandInternalCreateVertexBuffer&>(cmd));
         break;
     case OpenGLCommand::TYPE_INTERNAL_SIGNAL_FENCE:
         execute(static_cast<const OpenGLCommandInternalSignalFence&>(cmd));
@@ -154,6 +163,16 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetScissors& cmd) {
     checkBackendError("OpenGLCommandQueue::execute: cmdSetScissors");
 }
 
+void OpenGLCommandQueue::execute(const OpenGLCommandInternalCreateTexture& cmd) {
+    glGenTextures(1, &cmd.texture->id);
+    checkBackendError("OpenGLCommandQueue::execute: cmdInternalCreateTexture");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandInternalCreateVertexBuffer& cmd) {
+    glGenBuffers(1, &cmd.vtxBuffer->id);
+    checkBackendError("OpenGLCommandQueue::execute: cmdInternalCreateVertexBuffer");
+}
+
 void OpenGLCommandQueue::execute(const OpenGLCommandInternalSignalFence& cmd) {
     glFinish();
     cmd.fence->signal();
@@ -161,18 +180,24 @@ void OpenGLCommandQueue::execute(const OpenGLCommandInternalSignalFence& cmd) {
 }
 
 void OpenGLCommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
-    auto* glCmdBuffer = static_cast<OpenGLCommandBuffer*>(cmdBuffer);
+    auto glCmdBuffer = static_cast<OpenGLCommandBuffer*>(cmdBuffer);
     auto* glFence = static_cast<OpenGLFence*>(fence);
 
     // Append fence signaling command if requested
+    bool destroyOnCompletion = true;
     if (fence) {
+        destroyOnCompletion = false;
         auto* cmd = new OpenGLCommandInternalSignalFence();
         cmd->fence = glFence;
         glFence->clear();
         glCmdBuffer->commands.push_back(cmd);
     }
 
-    commandBuffers.push(glCmdBuffer);
+    OpenGLCommandQueueUnit unit;
+    unit.cmdBuffer = glCmdBuffer;
+    unit.destroyOnCompletion = destroyOnCompletion;
+    work.push(unit);
+
     cv.notify_all();
 }
 
