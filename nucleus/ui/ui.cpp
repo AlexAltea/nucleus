@@ -15,7 +15,7 @@ extern Window* window;
 
 namespace ui {
 
-UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::ICommandQueue* queue) :
+UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue) :
     graphics(std::move(graphics)), queue(queue), language() {
 }
 
@@ -31,15 +31,17 @@ bool UI::initialize() {
 
 void UI::task() {
     // Prepare output buffers
-    gfx::HeapDesc desc = {};
-    desc.type = gfx::HEAP_TYPE_CT;
-    desc.size = 2;
+    gfx::HeapDesc heapDesc = {};
+    heapDesc.type = gfx::HEAP_TYPE_CT;
+    heapDesc.size = 2;
+    graphics->createHeap(heapDesc);
 
-    graphics->createHeap(desc);
+    gfx::FenceDesc fenceDesc = {};
+    gfx::Fence* fence = graphics->createFence(fenceDesc);
 
     const float clearColor[] = {0.5f, 0.5f, 0.0f, 1.0f};
-    gfx::ICommandBuffer* cmdBuffer = graphics->createCommandBuffer();
-    gfx::IColorTarget* colorTarget = graphics->screenBackBuffer;
+    gfx::CommandBuffer* cmdBuffer = graphics->createCommandBuffer();
+    gfx::ColorTarget* colorTarget = graphics->screenBackBuffer;
 
     // Prepare state
     /* TODO
@@ -53,6 +55,7 @@ void UI::task() {
     while (true) {
         const gfx::Viewport viewport = { 0, 0, surfaceWidth, surfaceHeight };
         
+        cmdBuffer->reset();
         cmdBuffer->cmdSetViewports(1, &viewport);
         cmdBuffer->cmdClearColor(colorTarget, clearColor);
 
@@ -76,7 +79,8 @@ void UI::task() {
             newScreens.pop();
         }
 
-        queue->submit(cmdBuffer);
+        queue->submit(cmdBuffer, fence);
+        fence->wait();
 
         graphics->doSwapBuffers();
     }

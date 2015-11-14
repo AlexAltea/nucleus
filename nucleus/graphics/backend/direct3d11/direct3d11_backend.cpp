@@ -71,7 +71,7 @@ bool Direct3D11Backend::initialize(const BackendParameters& params) {
     return true;
 }
 
-ICommandQueue* Direct3D11Backend::createCommandQueue() {
+CommandQueue* Direct3D11Backend::createCommandQueue() {
     auto* commandQueue = new Direct3D11CommandQueue();
 
     if (!commandQueue->initialize(device)) {
@@ -81,17 +81,21 @@ ICommandQueue* Direct3D11Backend::createCommandQueue() {
     return commandQueue;
 }
 
-ICommandBuffer* Direct3D11Backend::createCommandBuffer() {
+CommandBuffer* Direct3D11Backend::createCommandBuffer() {
     auto* commandBuffer = new Direct3D11CommandBuffer();
     return commandBuffer;
 }
 
-IHeap* Direct3D11Backend::createHeap(const HeapDesc& desc) {
+Fence* Direct3D11Backend::createFence(const FenceDesc& desc) {
+    return nullptr;
+}
+
+Heap* Direct3D11Backend::createHeap(const HeapDesc& desc) {
     auto* heap = new Direct3D11Heap();
     return heap;
 }
 
-IColorTarget* Direct3D11Backend::createColorTarget(ITexture* texture) {
+ColorTarget* Direct3D11Backend::createColorTarget(Texture* texture) {
     auto d3dTexture = static_cast<Direct3D11Texture*>(texture);
     if (!d3dTexture) {
         logger.error(LOG_GRAPHICS, "Direct3D11Backend::createColorTarget: Invalid texture specified");
@@ -103,7 +107,7 @@ IColorTarget* Direct3D11Backend::createColorTarget(ITexture* texture) {
     return target;
 }
 
-IDepthStencilTarget* Direct3D11Backend::createDepthStencilTarget(ITexture* texture) {
+DepthStencilTarget* Direct3D11Backend::createDepthStencilTarget(Texture* texture) {
     return nullptr;
 }
 
@@ -113,7 +117,7 @@ void Direct3D11Backend::createPipeline() {
 void Direct3D11Backend::createShader() {
 }
 
-ITexture* Direct3D11Backend::createTexture(const TextureDesc& desc) {
+Texture* Direct3D11Backend::createTexture(const TextureDesc& desc) {
     auto* texture = new Direct3D11Texture();
 
     // Create resource description

@@ -22,7 +22,7 @@ bool Direct3D11CommandBuffer::reset() {
 void Direct3D11CommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
 }
 
-void Direct3D11CommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorValue) {
+void Direct3D11CommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {
     auto d3dTarget = static_cast<Direct3D11ColorTarget*>(target);
     if (!d3dTarget) {
         logger.error(LOG_GRAPHICS, "Direct3D11CommandBuffer::cmdClearColor: Invalid target specified");
@@ -32,7 +32,7 @@ void Direct3D11CommandBuffer::cmdClearColor(IColorTarget* target, const F32* col
     context->ClearRenderTargetView(d3dTarget->view, colorValue);
 }
 
-void Direct3D11CommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
+void Direct3D11CommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
     auto d3dTarget = static_cast<Direct3D11DepthStencilTarget*>(target);
     if (!d3dTarget) {
         logger.error(LOG_GRAPHICS, "Direct3D11CommandBuffer::cmdClearDepthStencil: Invalid target specified");
@@ -54,7 +54,7 @@ void Direct3D11CommandBuffer::cmdDrawIndirect() {
 void Direct3D11CommandBuffer::cmdDrawIndexedIndirect() {
 }
 
-void Direct3D11CommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) {
+void Direct3D11CommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {
     context->OMSetRenderTargets(colorCount, nullptr, nullptr); // TODO
 }
 

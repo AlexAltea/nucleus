@@ -65,7 +65,7 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     return true;
 }
 
-ICommandQueue* Direct3D12Backend::createCommandQueue() {
+CommandQueue* Direct3D12Backend::createCommandQueue() {
     auto* commandQueue = new Direct3D12CommandQueue();
 
     if (!commandQueue->initialize(device)) {
@@ -75,12 +75,16 @@ ICommandQueue* Direct3D12Backend::createCommandQueue() {
     return commandQueue;
 }
 
-ICommandBuffer* Direct3D12Backend::createCommandBuffer() {
+CommandBuffer* Direct3D12Backend::createCommandBuffer() {
     auto* commandBuffer = new Direct3D12CommandBuffer();
     return commandBuffer;
 }
 
-IHeap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
+Fence* Direct3D12Backend::createFence(const FenceDesc& desc) {
+    return nullptr;
+}
+
+Heap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
     auto* heap = new Direct3D12Heap();
 
     D3D12_DESCRIPTOR_HEAP_DESC d3dDesc = {};
@@ -104,7 +108,7 @@ IHeap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
     return heap;
 }
 
-IColorTarget* Direct3D12Backend::createColorTarget(ITexture* texture) {
+ColorTarget* Direct3D12Backend::createColorTarget(Texture* texture) {
     auto d3dTexture = static_cast<Direct3D12Texture*>(texture);
     if (!d3dTexture) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::createColorTarget: Invalid texture specified");
@@ -116,7 +120,7 @@ IColorTarget* Direct3D12Backend::createColorTarget(ITexture* texture) {
     return target;
 }
 
-IDepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(ITexture* texture) {
+DepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(Texture* texture) {
     return nullptr;
 }
 
@@ -126,7 +130,7 @@ void Direct3D12Backend::createPipeline() {
 void Direct3D12Backend::createShader() {
 }
 
-ITexture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
+Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
     auto* texture = new Direct3D12Texture();
 
     // Create resource description

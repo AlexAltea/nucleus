@@ -19,7 +19,7 @@ namespace ui {
 class UI {
     // Graphics
     std::shared_ptr<gfx::IBackend> graphics;
-    gfx::ICommandQueue* queue;
+    gfx::CommandQueue* queue;
 
     std::thread thread;
     std::vector<std::unique_ptr<Screen>> screens;
@@ -36,7 +36,7 @@ public:
     float surfaceProportion = 1.0;
 
     // Constructor
-    UI(std::shared_ptr<gfx::IBackend> graphics, gfx::ICommandQueue* queue);
+    UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue);
 
     // RSX connection
     bool rsxChanged = false;

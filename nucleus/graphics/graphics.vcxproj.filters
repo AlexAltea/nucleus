@@ -76,6 +76,9 @@
     <ClCompile Include="backend\direct3d11\direct3d11.cpp">
       <Filter>backend\direct3d11</Filter>
     </ClCompile>
+    <ClCompile Include="backend\opengl\opengl_fence.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
@@ -185,6 +188,10 @@
       <Filter>backend\direct3d11</Filter>
     </ClInclude>
     <ClInclude Include="primitive.h" />
+    <ClInclude Include="fence.h" />
+    <ClInclude Include="backend\opengl\opengl_fence.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">

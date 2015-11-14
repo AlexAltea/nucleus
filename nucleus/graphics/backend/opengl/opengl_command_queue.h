@@ -16,7 +16,7 @@
 
 namespace gfx {
 
-class OpenGLCommandQueue : public ICommandQueue {
+class OpenGLCommandQueue : public CommandQueue {
 private:
     // Internal state
     GLuint scratchFramebuffer;
@@ -39,6 +39,7 @@ private:
     void execute(const OpenGLCommandSetTargets& cmd);
     void execute(const OpenGLCommandSetViewports& cmd);
     void execute(const OpenGLCommandSetScissors& cmd);
+    void execute(const OpenGLCommandInternalSignalFence& cmd);
 
     // Execute a command
     void execute(const OpenGLCommand& cmd);
@@ -52,7 +53,7 @@ public:
 
     bool initialize(const BackendParameters& params, OpenGLContext context);
 
-    virtual void submit(ICommandBuffer* cmdBuffer) override;
+    virtual void submit(CommandBuffer* cmdBuffer, Fence* fence) override;
     virtual void waitIdle() override;
 };
 

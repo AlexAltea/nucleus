@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-class Direct3D12Texture : public ITexture {
+class Direct3D12Texture : public Texture {
 public:
     ID3D12Resource* resource;
 };

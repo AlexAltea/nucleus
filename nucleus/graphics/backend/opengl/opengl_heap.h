@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-class OpenGLHeap : public IHeap {
+class OpenGLHeap : public Heap {
 public:
 };
 

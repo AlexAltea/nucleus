@@ -34,14 +34,15 @@ public:
 
     virtual bool initialize(const BackendParameters& params) override;
 
-    virtual ICommandQueue* createCommandQueue() override;
-    virtual ICommandBuffer* createCommandBuffer() override;
-    virtual IHeap* createHeap(const HeapDesc& desc) override;
-    virtual IColorTarget* createColorTarget(ITexture* texture) override;
-    virtual IDepthStencilTarget* createDepthStencilTarget(ITexture* texture) override;
+    virtual CommandQueue* createCommandQueue() override;
+    virtual CommandBuffer* createCommandBuffer() override;
+    virtual Fence* createFence(const FenceDesc& desc) override;
+    virtual Heap* createHeap(const HeapDesc& desc) override;
+    virtual ColorTarget* createColorTarget(Texture* texture) override;
+    virtual DepthStencilTarget* createDepthStencilTarget(Texture* texture) override;
     virtual void createPipeline() override;
     virtual void createShader() override;
-    virtual ITexture* createTexture(const TextureDesc& desc) override;
+    virtual Texture* createTexture(const TextureDesc& desc) override;
     virtual bool doSwapBuffers() override;
 };
 

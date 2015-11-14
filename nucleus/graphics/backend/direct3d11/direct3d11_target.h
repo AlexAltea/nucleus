@@ -10,12 +10,12 @@
 
 namespace gfx {
 
-class Direct3D11ColorTarget : public IColorTarget {
+class Direct3D11ColorTarget : public ColorTarget {
 public:
     ID3D11RenderTargetView* view;
 };
 
-class Direct3D11DepthStencilTarget : public IDepthStencilTarget {
+class Direct3D11DepthStencilTarget : public DepthStencilTarget {
 public:
     ID3D11DepthStencilView* view;
 };

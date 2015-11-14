@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-class Direct3D11Heap : public IHeap {
+class Direct3D11Heap : public Heap {
 public:
     ID3D11DescriptorHeap* heap;
 };

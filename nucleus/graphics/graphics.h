@@ -9,6 +9,7 @@
 
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/command_queue.h"
+#include "nucleus/graphics/fence.h"
 #include "nucleus/graphics/heap.h"
 #include "nucleus/graphics/target.h"
 #include "nucleus/graphics/texture.h"
@@ -36,8 +37,8 @@ protected:
     BackendParameters parameters;
 
 public:
-    IColorTarget* screenBackBuffer;
-    IColorTarget* screenFrontBuffer;
+    ColorTarget* screenBackBuffer;
+    ColorTarget* screenFrontBuffer;
 
     // Constructor
     IBackend();
@@ -48,34 +49,41 @@ public:
      * Creates a new command queue
      * @return Command queue
      */
-    virtual ICommandQueue* createCommandQueue() = 0;
+    virtual CommandQueue* createCommandQueue() = 0;
 
     /**
      * Creates a new command buffer
      * @return Command buffer
      */
-    virtual ICommandBuffer* createCommandBuffer() = 0;
+    virtual CommandBuffer* createCommandBuffer() = 0;
+
+    /**
+     * Creates a new fence
+     * @param[in]  desc  Describes the fence
+     * @return           Fence
+     */
+    virtual Fence* createFence(const FenceDesc& desc) = 0;
 
     /**
      * Creates a new descriptor heap
      * @param[in]  desc  Describes the descriptor heap
      * @return           Descriptor heap
      */
-    virtual IHeap* createHeap(const HeapDesc& desc) = 0;
+    virtual Heap* createHeap(const HeapDesc& desc) = 0;
 
     /**
      * Creates a new color target
      * @param[in]  texture  Texture resource
      * @return              Color target CPU descriptor handle
      */
-    virtual IColorTarget* createColorTarget(ITexture* texture) = 0;
+    virtual ColorTarget* createColorTarget(Texture* texture) = 0;
 
     /**
      * Creates a new depth-stencil target
      * @param[in]  texture  Texture resource
      * @return              Depth-stencil target CPU descriptor handle
      */
-    virtual IDepthStencilTarget* createDepthStencilTarget(ITexture* texture) = 0;
+    virtual DepthStencilTarget* createDepthStencilTarget(Texture* texture) = 0;
 
     // Pipeline management
     virtual void createPipeline() = 0;
@@ -88,7 +96,7 @@ public:
      * @param[in]  desc  Describes the texture
      * @return           Texture
      */
-    virtual ITexture* createTexture(const TextureDesc& desc) = 0;
+    virtual Texture* createTexture(const TextureDesc& desc) = 0;
 
     /**
      * Swaps the back buffer and front buffer

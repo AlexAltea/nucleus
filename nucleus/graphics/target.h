@@ -7,14 +7,12 @@
 
 namespace gfx {
 
-class IColorTarget {
+class ColorTarget {
 public:
-
 };
 
-class IDepthStencilTarget {
+class DepthStencilTarget {
 public:
-
 };
 
 }  // namespace gfx

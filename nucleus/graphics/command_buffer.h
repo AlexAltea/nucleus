@@ -14,7 +14,7 @@
 
 namespace gfx {
 
-class ICommandBuffer {
+class CommandBuffer {
 public:
     /**
      * Reset the command buffer, reverting it back to the state of a new command buffer
@@ -33,7 +33,7 @@ public:
      * @param[in]  target         Color buffer to be cleared
      * @param[in]  colorValue     The 4-component array of the RGBA value to clear with
      */
-    virtual void cmdClearColor(IColorTarget* target, const F32* colorValue) = 0;
+    virtual void cmdClearColor(ColorTarget* target, const F32* colorValue) = 0;
 
     /**
      * Pushes a command to clear a depth-stencil buffer
@@ -41,7 +41,7 @@ public:
      * @param[in]  depthValue     The value to clear the depth buffer with
      * @param[in]  stencilValue   The value to clear the stencil buffer with
      */
-    virtual void cmdClearDepthStencil(IDepthStencilTarget* target, F32 depthValue, U8 stencilValue) = 0;
+    virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) = 0;
 
     /**
      * Pushes a command to draw instanced, non-indexed geometry
@@ -80,7 +80,7 @@ public:
      * @param[in]  colorTargets        Color targets array
      * @param[in]  depthStencilTarget  Depth-stencil target (optional)
      */
-    virtual void cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) = 0;
+    virtual void cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) = 0;
 
     /**
      * Set the viewports

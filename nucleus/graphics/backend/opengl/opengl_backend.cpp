@@ -8,6 +8,7 @@
 
 #include "nucleus/graphics/backend/opengl/opengl_command_buffer.h"
 #include "nucleus/graphics/backend/opengl/opengl_command_queue.h"
+#include "nucleus/graphics/backend/opengl/opengl_fence.h"
 #include "nucleus/graphics/backend/opengl/opengl_heap.h"
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
 #include "nucleus/graphics/backend/opengl/opengl_texture.h"
@@ -67,7 +68,7 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     return true;
 }
 
-ICommandQueue* OpenGLBackend::createCommandQueue() {
+CommandQueue* OpenGLBackend::createCommandQueue() {
     auto* commandQueue = new OpenGLCommandQueue();
 
     if (!commandQueue->initialize(parameters, context)) {
@@ -77,22 +78,27 @@ ICommandQueue* OpenGLBackend::createCommandQueue() {
     return commandQueue;
 }
 
-ICommandBuffer* OpenGLBackend::createCommandBuffer() {
+CommandBuffer* OpenGLBackend::createCommandBuffer() {
     auto* commandBuffer = new OpenGLCommandBuffer();
     return commandBuffer;
 }
 
-IHeap* OpenGLBackend::createHeap(const HeapDesc& desc) {
+Fence* OpenGLBackend::createFence(const FenceDesc& desc) {
+    auto* heap = new OpenGLFence();
+    return heap;
+}
+
+Heap* OpenGLBackend::createHeap(const HeapDesc& desc) {
     auto* heap = new OpenGLHeap();
     return heap;
 }
 
-IColorTarget* OpenGLBackend::createColorTarget(ITexture* texture) {
+ColorTarget* OpenGLBackend::createColorTarget(Texture* texture) {
 
     return nullptr;
 }
 
-IDepthStencilTarget* OpenGLBackend::createDepthStencilTarget(ITexture* texture) {
+DepthStencilTarget* OpenGLBackend::createDepthStencilTarget(Texture* texture) {
     return nullptr;
 }
 
@@ -102,7 +108,7 @@ void OpenGLBackend::createPipeline() {
 void OpenGLBackend::createShader() {
 }
 
-ITexture* OpenGLBackend::createTexture(const TextureDesc& desc) {
+Texture* OpenGLBackend::createTexture(const TextureDesc& desc) {
     auto* texture = new OpenGLTexture();
 
     glGenTextures(1, &texture->id);

@@ -21,7 +21,7 @@ struct HeapDesc {
     HeapSize size;  // Number of descriptors
 };
 
-class IHeap {
+class Heap {
 public:
 };
 

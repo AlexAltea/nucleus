@@ -10,12 +10,12 @@
 
 namespace gfx {
 
-class Direct3D12ColorTarget : public IColorTarget {
+class Direct3D12ColorTarget : public ColorTarget {
 public:
     D3D12_CPU_DESCRIPTOR_HANDLE handle;
 };
 
-class Direct3D12DepthStencilTarget : public IDepthStencilTarget {
+class Direct3D12DepthStencilTarget : public DepthStencilTarget {
 public:
     D3D12_CPU_DESCRIPTOR_HANDLE handle;
 };

@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-class OpenGLTexture : public ITexture {
+class OpenGLTexture : public Texture {
 public:
     GLuint id;
 };

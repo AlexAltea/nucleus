@@ -19,7 +19,7 @@ bool Direct3D11CommandQueue::initialize(ID3D11Device* device) {
     return true;
 }
 
-void Direct3D11CommandQueue::submit(ICommandBuffer* cmdBuffer) {
+void Direct3D11CommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
     auto* cmdList = dynamic_cast<Direct3D11CommandBuffer*>(cmdBuffer);
 
     // TODO

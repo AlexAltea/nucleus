@@ -26,7 +26,7 @@ struct TextureDesc {
     TextureFlags flags;     // Flags
 };
 
-class ITexture {
+class Texture {
 public:
 };
 

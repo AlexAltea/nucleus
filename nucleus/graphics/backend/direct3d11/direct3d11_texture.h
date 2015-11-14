@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-class Direct3D11Texture : public ITexture {
+class Direct3D11Texture : public Texture {
 public:
     ID3D11Texture2D* texture;
 };

@@ -7,16 +7,18 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/command_buffer.h"
+#include "nucleus/graphics/fence.h"
 
 namespace gfx {
 
-class ICommandQueue {
+class CommandQueue {
 public:
     /**
      * Submits a command buffer to this queue for execution
      * @param[in]  cmdBuffer  Command buffer to be submitted
+     * @param[in]  fence      Fence to be signaled (Optional)
      */
-    virtual void submit(ICommandBuffer* cmdBuffer) = 0;
+    virtual void submit(CommandBuffer* cmdBuffer, Fence* fence) = 0;
 
     /**
      * Makes the calling thread wait for the execution of all submitted command buffers

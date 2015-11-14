@@ -83,7 +83,9 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     case OpenGLCommand::TYPE_SET_SCISSORS:
         execute(static_cast<const OpenGLCommandSetScissors&>(cmd));
         break;
-
+    case OpenGLCommand::TYPE_INTERNAL_SIGNAL_FENCE:
+        execute(static_cast<const OpenGLCommandInternalSignalFence&>(cmd));
+        break;
     default:
         logger.error(LOG_GRAPHICS, "OpenGLCommandQueue::execute: Unrecognized command (%d)", cmd.type);
     }
@@ -152,8 +154,25 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetScissors& cmd) {
     checkBackendError("OpenGLCommandQueue::execute: cmdSetScissors");
 }
 
-void OpenGLCommandQueue::submit(ICommandBuffer* cmdBuffer) {
-    commandBuffers.push(dynamic_cast<OpenGLCommandBuffer*>(cmdBuffer));
+void OpenGLCommandQueue::execute(const OpenGLCommandInternalSignalFence& cmd) {
+    glFinish();
+    cmd.fence->signal();
+    checkBackendError("OpenGLCommandQueue::execute: cmdInternalSignalFence");
+}
+
+void OpenGLCommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
+    auto* glCmdBuffer = static_cast<OpenGLCommandBuffer*>(cmdBuffer);
+    auto* glFence = static_cast<OpenGLFence*>(fence);
+
+    // Append fence signaling command if requested
+    if (fence) {
+        auto* cmd = new OpenGLCommandInternalSignalFence();
+        cmd->fence = glFence;
+        glFence->clear();
+        glCmdBuffer->commands.push_back(cmd);
+    }
+
+    commandBuffers.push(glCmdBuffer);
     cv.notify_all();
 }
 

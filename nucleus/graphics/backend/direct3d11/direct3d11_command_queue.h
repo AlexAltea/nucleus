@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-class Direct3D11CommandQueue : public ICommandQueue {
+class Direct3D11CommandQueue : public CommandQueue {
 private:
     ID3D11DeviceContext* immediateContext;
 
@@ -20,7 +20,7 @@ public:
 
     bool initialize(ID3D11Device* device);
 
-    void submit(ICommandBuffer* cmdBuffer) override;
+    void submit(CommandBuffer* cmdBuffer, Fence* fence) override;
     void waitIdle() override;
 };
 

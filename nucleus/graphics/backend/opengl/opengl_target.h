@@ -10,7 +10,7 @@
 
 namespace gfx {
 
-class OpenGLColorTarget : public IColorTarget {
+class OpenGLColorTarget : public ColorTarget {
 public:
     // Texture ID holding this color buffer
     GLuint texture;
@@ -22,7 +22,7 @@ public:
     GLint drawbuffer;
 };
 
-class OpenGLDepthStencilTarget : public IDepthStencilTarget {
+class OpenGLDepthStencilTarget : public DepthStencilTarget {
 public:
     // Texture ID holding this depth-stencil buffer
     GLuint texture;

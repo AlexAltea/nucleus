@@ -23,7 +23,7 @@ bool Direct3D12CommandQueue::initialize(ID3D12Device* device) {
     return true;
 }
 
-void Direct3D12CommandQueue::submit(ICommandBuffer* cmdBuffer) {
+void Direct3D12CommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
     auto* cmdList = dynamic_cast<Direct3D12CommandBuffer*>(cmdBuffer);
 
     ID3D12CommandList* ppCommandLists[] = { cmdList->list };

@@ -24,7 +24,7 @@ bool OpenGLCommandBuffer::reset() {
 void OpenGLCommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
 }
 
-void OpenGLCommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorValue) {
+void OpenGLCommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {
     auto glTarget = static_cast<OpenGLColorTarget*>(target);
     if (!glTarget) {
         logger.error(LOG_GRAPHICS, "OpenGLCommandBuffer::cmdClearColor: Invalid target specified");
@@ -41,7 +41,7 @@ void OpenGLCommandBuffer::cmdClearColor(IColorTarget* target, const F32* colorVa
     commands.push_back(command);
 }
 
-void OpenGLCommandBuffer::cmdClearDepthStencil(IDepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
+void OpenGLCommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
     auto glTarget = static_cast<OpenGLDepthStencilTarget*>(target);
     if (!glTarget) {
         logger.error(LOG_GRAPHICS, "OpenGLCommandBuffer::cmdClearDepthStencil: Invalid target specified");
@@ -69,7 +69,7 @@ void OpenGLCommandBuffer::cmdDrawIndirect() {
 void OpenGLCommandBuffer::cmdDrawIndexedIndirect() {
 }
 
-void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, IColorTarget** colorTargets, IDepthStencilTarget* depthStencilTarget) {
+void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {
     assert_true(colorCount <= 32, "Unsupported amount of color targets");
 
     auto* command = new OpenGLCommandSetTargets();
