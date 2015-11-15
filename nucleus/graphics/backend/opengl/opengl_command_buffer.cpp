@@ -57,16 +57,30 @@ void OpenGLCommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F32 d
     commands.push_back(command);
 }
 
-void OpenGLCommandBuffer::cmdDraw() {
+void OpenGLCommandBuffer::cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) {
+    assert_false(firstVertex > 0 && firstInstance > 0, "OpenGLCommandBuffer::cmdSetTargets: Unsupported combination of parameters");
+
+    auto* command = new OpenGLCommandDraw();
+    command->firstVertex = firstVertex;
+    command->vertexCount = vertexCount;
+    command->firstInstance = firstInstance;
+    command->instanceCount = instanceCount;
+
+    commands.push_back(command);
 }
 
-void OpenGLCommandBuffer::cmdDrawIndexed() {
+void OpenGLCommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) {
+    auto* command = new OpenGLCommandDrawIndexed();
+    command->firstIndex = firstIndex;
+    command->indexCount = indexCount;
+    command->vertexOffset = vertexOffset;
+    command->firstInstance = firstInstance;
+    command->instanceCount = instanceCount;
+
+    commands.push_back(command);
 }
 
-void OpenGLCommandBuffer::cmdDrawIndirect() {
-}
-
-void OpenGLCommandBuffer::cmdDrawIndexedIndirect() {
+void OpenGLCommandBuffer::cmdSetVertexBuffers() {
 }
 
 void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {

@@ -45,8 +45,12 @@ public:
 
     /**
      * Pushes a command to draw instanced, non-indexed geometry
+     * @param[in]  firstVertex    Offset to the first vertex
+     * @param[in]  vertexCount    Number of vertices per instance to draw
+     * @param[in]  firstInstance  Offset to the first instance
+     * @param[in]  instanceCount  Number of instances to draw
      */
-    virtual void cmdDraw() = 0;
+    virtual void cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) = 0;
 
     /**
      * Pushes a command to draw instanced, indexed geometry
@@ -56,26 +60,22 @@ public:
      * @param[in]  firstInstance  Offset to the first instance
      * @param[in]  instanceCount  Number of instances to draw
      */
-    virtual void cmdDrawIndexed() = 0;
+    virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) = 0;
 
     /**
-     * Pushes a command to draw instanced, non-indexed geometry from GPU-stored data
+     * Pushes a command to set the input layout for the pipeline
+     * @param[in]  topology  InputLayourPrimitive topology
      */
-    virtual void cmdDrawIndirect() = 0;
+    virtual void cmdSetVertexBuffers() = 0;
 
     /**
-     * Pushes a command to draw instanced, indexed geometry from GPU-stored data
-     */
-    virtual void cmdDrawIndexedIndirect() = 0;
-
-    /**
-     * Set the primitive topology used for drawing
+     * Pushes a command to set the primitive topology used for drawing
      * @param[in]  topology  Primitive topology
      */
     virtual void cmdSetPrimitiveTopology(PrimitiveTopology topology) = 0;
 
     /**
-     * Set the color targets and depth-stencil target for rendering
+     * Pushes a command to set the color targets and depth-stencil target for rendering
      * @param[in]  colorCount          Length of color targets array
      * @param[in]  colorTargets        Color targets array
      * @param[in]  depthStencilTarget  Depth-stencil target (optional)
@@ -83,14 +83,14 @@ public:
     virtual void cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) = 0;
 
     /**
-     * Set the viewports
+     * Pushes a command to set the viewports
      * @param[in]  viewportsCount  Length of viewports array
      * @param[in]  viewports       Viewports array
      */
     virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) = 0;
 
     /**
-     * Set the scissor rectangles
+     * Pushes a command to set the scissor rectangles
      * @param[in]  scissorsCount  Length of scissor rectangles array
      * @param[in]  scissors       Scissor rectangles array
      */

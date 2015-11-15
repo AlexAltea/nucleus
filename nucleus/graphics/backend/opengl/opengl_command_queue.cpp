@@ -77,6 +77,12 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     case OpenGLCommand::TYPE_CLEAR_DEPTH_STENCIL:
         execute(static_cast<const OpenGLCommandClearDepthStencil&>(cmd));
         break;
+    case OpenGLCommand::TYPE_DRAW:
+        execute(static_cast<const OpenGLCommandDraw&>(cmd));
+        break;
+    case OpenGLCommand::TYPE_DRAW_INDEXED:
+        execute(static_cast<const OpenGLCommandDrawIndexed&>(cmd));
+        break;
     case OpenGLCommand::TYPE_SET_TARGETS:
         execute(static_cast<const OpenGLCommandSetTargets&>(cmd));
         break;
@@ -140,6 +146,28 @@ void OpenGLCommandQueue::execute(const OpenGLCommandClearDepthStencil& cmd) {
 #endif
 
     checkBackendError("OpenGLCommandQueue::execute: cmdClearDepthStencil");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandDraw& cmd) {
+    const GLint first = cmd.firstVertex;
+    const GLsizei instancecount = cmd.instanceCount;
+    const GLsizei count = cmd.vertexCount;
+    const GLuint baseinstance = cmd.firstInstance;
+
+    // TODO: Set primitive topology
+    glDrawArraysInstancedBaseInstance(0, first, count, instancecount, baseinstance);
+    checkBackendError("OpenGLCommandQueue::execute: cmdDraw");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandDrawIndexed& cmd) {
+    const GLsizei count = cmd.indexCount;
+    const GLsizei instancecount = cmd.instanceCount;
+    const GLint basevertex = cmd.vertexOffset;
+    const GLuint baseinstance = cmd.firstInstance;
+
+    // TODO: Set index buffer (modify it via cmd.firstIndex) and primitive topology
+    glDrawElementsInstancedBaseVertexBaseInstance(0, count, 0, nullptr, instancecount, basevertex, baseinstance);
+    checkBackendError("OpenGLCommandQueue::execute: cmdDrawIndexed");
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommandSetTargets& cmd) {
