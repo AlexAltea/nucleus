@@ -10,7 +10,7 @@
 
 namespace fs {
 
-class HostPathDevice : public IDevice {
+class HostPathDevice : public Device {
     Path localPath;
 
 public:

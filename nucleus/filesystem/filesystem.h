@@ -30,13 +30,13 @@ public:
 };
 
 class VirtualFileSystem {
-    std::vector<IDevice*> devices;
+    std::vector<Device*> devices;
 
     // Find an appropriate device to handle the given path
-    IDevice* getDevice(const Path& path);
+    Device* getDevice(const Path& path);
 
 public:
-    bool registerDevice(IDevice* device);
+    bool registerDevice(Device* device);
 
     File* openFile(const Path& path, OpenMode mode);
     bool createFile(const Path& path);

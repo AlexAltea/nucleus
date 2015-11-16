@@ -11,13 +11,13 @@
 
 namespace fs {
 
-class IDevice {
+class Device {
 public:
     Path mountPath;
 
     U64 blockSize;
 
-    IDevice(const Path& mountPath) : mountPath(mountPath) {
+    Device(const Path& mountPath) : mountPath(mountPath) {
     }
 
     virtual File* openFile(const Path& path, OpenMode mode) = 0;

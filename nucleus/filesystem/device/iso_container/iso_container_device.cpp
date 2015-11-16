@@ -10,7 +10,7 @@
 namespace fs {
 
 ISOContainerDevice::ISOContainerDevice(const Path& mountPath, File* isoFile)
-    : IDevice(mountPath), isoFile(isoFile)
+    : Device(mountPath), isoFile(isoFile)
 {
 }
 

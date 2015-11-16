@@ -4,7 +4,7 @@
  */
 
 #include "config.h"
-#include "nucleus/loader/loader.h"
+#include "nucleus/filesystem/filesystem.h"
 
 #include <cstring>
 
@@ -21,6 +21,7 @@ Config::Config() {
     spuTranslator = CPU_TRANSLATOR_INSTRUCTION;
     graphicsBackend = GRAPHICS_BACKEND_OPENGL;
 }
+
 void Config::parseArguments(int argc, char** argv) {
     // Parse arguments
     for (int i = 0; i < argc; i++) {
@@ -33,10 +34,10 @@ void Config::parseArguments(int argc, char** argv) {
     }
 
     // Check if booting an executable was requested
-    std::string lastArgument = argv[argc - 1];
-    /*switch (detectFiletype(lastArgument)) {
-    case FILETYPE_ELF:
-    case FILETYPE_SELF:*/
-        boot = lastArgument;
-    //}
+    if (argc > 1) {
+        std::string lastArgument = argv[argc - 1];
+        if (fs::HostFileSystem::existsFile(lastArgument)) {
+            boot = lastArgument;
+        }
+    }
 }

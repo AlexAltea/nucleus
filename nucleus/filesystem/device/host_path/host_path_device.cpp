@@ -9,7 +9,7 @@
 namespace fs {
 
 HostPathDevice::HostPathDevice(const Path& mountPath, const Path& localPath)
-    : IDevice(mountPath), localPath(localPath)
+    : Device(mountPath), localPath(localPath)
 {
 }
 

@@ -56,6 +56,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "system", "nucleus\system\system.vcxproj", "{3F169D7D-3E50-448A-88A2-35FF7A6BD004}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "nucleus\core\core.vcxproj", "{C3E1D12D-C2D8-419E-B50D-87109376430E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{03262B99-C1D8-4A52-9B4C-50E9A3283648} = {03262B99-C1D8-4A52-9B4C-50E9A3283648}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "memory", "nucleus\memory\memory.vcxproj", "{96B95468-3FE2-4D9D-9D4F-B5B996C872C6}"
 EndProject

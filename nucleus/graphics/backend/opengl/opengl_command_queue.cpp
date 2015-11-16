@@ -34,7 +34,7 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
     // Set context
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     if (!wglMakeCurrent(params.hdc, context)) {
-        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: wglMakeCurrent failed");
+        logger.warning(LOG_GRAPHICS, "OpenGLCommandQueue::task: wglMakeCurrent failed");
         return;
     }
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
@@ -54,12 +54,16 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
 
     while (true) {
         std::unique_lock<std::mutex> lock(mutex);
-        cv.wait(lock);
+
+        if (work.empty()) {
+            cv.wait(lock);
+        }
 
         while (!work.empty()) {
             const auto& workUnit = work.front();
-            for (const auto* cmd : workUnit.cmdBuffer->commands) {
-                execute(*cmd);
+            const auto& commands = workUnit.cmdBuffer->commands;
+            for (size_t i = 0; i < commands.size(); i++) {
+                execute(*commands[i]);
             }
             if (workUnit.destroyOnCompletion) {
                 delete workUnit.cmdBuffer;
@@ -224,6 +228,8 @@ void OpenGLCommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
     OpenGLCommandQueueUnit unit;
     unit.cmdBuffer = glCmdBuffer;
     unit.destroyOnCompletion = destroyOnCompletion;
+
+    std::lock_guard<std::mutex> lock(mutex);
     work.push(unit);
 
     cv.notify_all();

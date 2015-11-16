@@ -13,7 +13,7 @@
 
 namespace fs {
 
-class ISOContainerDevice : public IDevice {
+class ISOContainerDevice : public Device {
     File* isoFile;
 
 public:

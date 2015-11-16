@@ -7,14 +7,17 @@
 
 namespace fs {
 
-std::unique_ptr<File> HostFileSystem::openFile(const Path& path, OpenMode mode)
-{
+std::unique_ptr<File> HostFileSystem::openFile(const Path& path, OpenMode mode) {
     auto hostDevice = HostPathDevice("", "");
     return std::unique_ptr<File>(hostDevice.openFile(path, mode));
 }
 
-IDevice* VirtualFileSystem::getDevice(const Path& path)
-{
+bool HostFileSystem::existsFile(const Path& path) {
+    auto hostDevice = HostPathDevice("", "");
+    return hostDevice.existsFile(path);
+}
+
+Device* VirtualFileSystem::getDevice(const Path& path) {
     for (auto* device : devices) {
         if (path.compare(0, device->mountPath.length(), device->mountPath) == 0) {
             return device;
@@ -23,14 +26,12 @@ IDevice* VirtualFileSystem::getDevice(const Path& path)
     return nullptr;
 }
 
-bool VirtualFileSystem::registerDevice(IDevice* device)
-{
+bool VirtualFileSystem::registerDevice(Device* device) {
     devices.push_back(device);
     return true;
 }
 
-File* VirtualFileSystem::openFile(const Path& path, OpenMode mode)
-{
+File* VirtualFileSystem::openFile(const Path& path, OpenMode mode) {
     auto* device = getDevice(path);
     if (!device) {
         return nullptr;
@@ -40,8 +41,7 @@ File* VirtualFileSystem::openFile(const Path& path, OpenMode mode)
     return device->openFile(relativePath, mode);
 }
 
-bool VirtualFileSystem::createFile(const Path& path)
-{
+bool VirtualFileSystem::createFile(const Path& path) {
     auto* device = getDevice(path);
     if (!device) {
         return false;
@@ -56,8 +56,7 @@ bool VirtualFileSystem::createFile(const Path& path)
     return true;
 }
 
-bool VirtualFileSystem::existsFile(const Path& path)
-{
+bool VirtualFileSystem::existsFile(const Path& path) {
     auto* device = getDevice(path);
     if (!device) {
         return nullptr;
@@ -67,8 +66,7 @@ bool VirtualFileSystem::existsFile(const Path& path)
     return device->existsFile(relativePath);
 }
 
-bool VirtualFileSystem::removeFile(const Path& path)
-{
+bool VirtualFileSystem::removeFile(const Path& path) {
     auto* device = getDevice(path);
     if (!device) {
         return nullptr;
@@ -78,8 +76,7 @@ bool VirtualFileSystem::removeFile(const Path& path)
     return device->removeFile(relativePath);
 }
 
-File::Attributes VirtualFileSystem::getFileAttributes(const Path& path)
-{
+File::Attributes VirtualFileSystem::getFileAttributes(const Path& path) {
     auto* device = getDevice(path);
     if (!device) {
         return File::Attributes{};
