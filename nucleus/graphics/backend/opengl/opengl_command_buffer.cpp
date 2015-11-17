@@ -21,7 +21,7 @@ bool OpenGLCommandBuffer::reset() {
     return true;
 }
 
-void OpenGLCommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
+void OpenGLCommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
 }
 
 void OpenGLCommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {
@@ -80,7 +80,33 @@ void OpenGLCommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 ver
     commands.push_back(command);
 }
 
-void OpenGLCommandBuffer::cmdSetVertexBuffers() {
+void OpenGLCommandBuffer::cmdSetVertexBuffers(U32 index, VertexBuffer* vtxBuffer) {
+    auto* command = new OpenGLCommandSetVertexBuffers();
+}
+
+void OpenGLCommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
+    GLenum glTopology;
+    switch (topology) {
+    case TOPOLOGY_POINT_LIST:
+        glTopology = GL_POINTS; break;
+    case TOPOLOGY_LINE_LIST:
+        glTopology = GL_LINES; break;
+    case TOPOLOGY_LINE_STRIP:
+        glTopology = GL_LINE_LOOP; break;
+    case TOPOLOGY_TRIANGLE_LIST:
+        glTopology = GL_TRIANGLES; break;
+    case TOPOLOGY_TRIANGLE_STRIP:
+        glTopology = GL_TRIANGLE_STRIP; break;
+    case TOPOLOGY_QUAD_LIST:
+        glTopology = GL_QUADS; break;
+    case TOPOLOGY_QUAD_STRIP:
+        glTopology = GL_QUAD_STRIP; break;
+    default:
+        logger.error(LOG_GRAPHICS, "Unimplemented primitive topology type");
+        return;
+    }
+
+    // TODO
 }
 
 void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {
@@ -108,31 +134,6 @@ void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTarge
     }
 
     commands.push_back(command);
-}
-
-void OpenGLCommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
-    GLenum glTopology;
-    switch (topology) {
-    case TOPOLOGY_POINT_LIST:
-        glTopology = GL_POINTS; break;
-    case TOPOLOGY_LINE_LIST:
-        glTopology = GL_LINES; break;
-    case TOPOLOGY_LINE_STRIP:
-        glTopology = GL_LINE_LOOP; break;
-    case TOPOLOGY_TRIANGLE_LIST:
-        glTopology = GL_TRIANGLES; break;
-    case TOPOLOGY_TRIANGLE_STRIP:
-        glTopology = GL_TRIANGLE_STRIP; break;
-    case TOPOLOGY_QUAD_LIST:
-        glTopology = GL_QUADS; break;
-    case TOPOLOGY_QUAD_STRIP:
-        glTopology = GL_QUAD_STRIP; break;
-    default:
-        logger.error(LOG_GRAPHICS, "Unimplemented primitive topology type");
-        return;
-    }
-
-    // TODO
 }
 
 void OpenGLCommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport* viewports) {

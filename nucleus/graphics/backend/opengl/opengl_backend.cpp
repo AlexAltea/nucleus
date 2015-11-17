@@ -10,6 +10,7 @@
 #include "nucleus/graphics/backend/opengl/opengl_command_queue.h"
 #include "nucleus/graphics/backend/opengl/opengl_fence.h"
 #include "nucleus/graphics/backend/opengl/opengl_heap.h"
+#include "nucleus/graphics/backend/opengl/opengl_pipeline.h"
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
 #include "nucleus/graphics/backend/opengl/opengl_texture.h"
 
@@ -102,10 +103,15 @@ DepthStencilTarget* OpenGLBackend::createDepthStencilTarget(Texture* texture) {
     return nullptr;
 }
 
-void OpenGLBackend::createPipeline() {
+Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
+    auto* pipeline = new OpenGLPipeline();
+    // TODO
+
+    return pipeline;
 }
 
-void OpenGLBackend::createShader() {
+Shader* OpenGLBackend::createShader(const ShaderDesc& desc) {
+    return nullptr;
 }
 
 Texture* OpenGLBackend::createTexture(const TextureDesc& desc) {

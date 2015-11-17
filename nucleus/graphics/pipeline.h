@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/graphics/shader.h"
+
 namespace gfx {
 
 enum Blend {
@@ -82,13 +84,7 @@ struct CBState {
 struct DBState {
 };
 
-/**
- * Pipeline shader
- */
-class Shader {
-};
-
-class PipelineStateDescription {
+class PipelineDesc {
 public:
     Shader vs;  // Vertex Shader
     Shader hs;  // Hull Shader
@@ -103,10 +99,8 @@ public:
     DBState dbState;      // Depth-stencil static pipeline state
 };
 
-class IPipelineState {
+class Pipeline {
 public:
-
-
 };
 
 }  // namespace gfx

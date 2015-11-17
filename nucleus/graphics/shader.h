@@ -5,16 +5,13 @@
 
 #pragma once
 
-#include "nucleus/graphics/pipeline.h"
-#include "nucleus/graphics/backend/opengl/opengl.h"
-
 namespace gfx {
 
-class OpenGLPipeline : public Pipeline {
+class ShaderDesc {
+};
+
+class Shader {
 public:
-    // Blending
-    GLenum sfactor;
-    GLenum dfactor;
 };
 
 }  // namespace gfx

@@ -52,6 +52,9 @@ void WidgetImage::render(gfx::CommandBuffer* cmdBuffer) {
         height = width * float(image.height) / float(image.width);
     }
     height = Widget::correctHeight(height);
+
+    cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_QUAD_LIST);
+    cmdBuffer->cmdDraw(0, 4, 0, 1);
 }
 
 }  // namespace ui

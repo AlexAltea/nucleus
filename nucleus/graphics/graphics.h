@@ -86,11 +86,19 @@ public:
      */
     virtual DepthStencilTarget* createDepthStencilTarget(Texture* texture) = 0;
 
-    // Pipeline management
-    virtual void createPipeline() = 0;
+    /**
+     * Creates a new pipeline state
+     * @param[in]  desc  Describes the pipeline state
+     * @return           Pipeline state
+     */
+    virtual Pipeline* createPipeline(const PipelineDesc& desc) = 0;
 
-    // Shader management
-    virtual void createShader() = 0;
+    /**
+     * Creates a new shader
+     * @param[in]  desc  Describes the shader
+     * @return           Shader
+     */
+    virtual Shader* createShader(const ShaderDesc& desc) = 0;
 
     /**
      * Creates a new texture

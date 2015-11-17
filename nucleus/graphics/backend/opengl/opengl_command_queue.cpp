@@ -50,7 +50,7 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
 #endif
 
     // Initial scratch state
-    glGenFramebuffers(1, &scratchFramebuffer);
+    glGenFramebuffers(1, &tmpFramebuffer);
 
     while (true) {
         std::unique_lock<std::mutex> lock(mutex);
@@ -87,6 +87,12 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     case OpenGLCommand::TYPE_DRAW_INDEXED:
         execute(static_cast<const OpenGLCommandDrawIndexed&>(cmd));
         break;
+    case OpenGLCommand::TYPE_SET_VERTEX_BUFFERS:
+        execute(static_cast<const OpenGLCommandSetVertexBuffers&>(cmd));
+        break;
+    case OpenGLCommand::TYPE_SET_PRIMITIVE_TOPOLOGY:
+        execute(static_cast<const OpenGLCommandSetPrimitiveTopology&>(cmd));
+        break;
     case OpenGLCommand::TYPE_SET_TARGETS:
         execute(static_cast<const OpenGLCommandSetTargets&>(cmd));
         break;
@@ -120,9 +126,9 @@ void OpenGLCommandQueue::execute(const OpenGLCommandClearColor& cmd) {
         framebuffer = target->framebuffer;
         drawbuffer = target->drawbuffer;
     } else {
-        glBindFramebuffer(GL_FRAMEBUFFER, scratchFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, tmpFramebuffer);
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, target->texture, 0);
-        framebuffer = scratchFramebuffer;
+        framebuffer = tmpFramebuffer;
         drawbuffer = 0;
     }
 
@@ -158,8 +164,7 @@ void OpenGLCommandQueue::execute(const OpenGLCommandDraw& cmd) {
     const GLsizei count = cmd.vertexCount;
     const GLuint baseinstance = cmd.firstInstance;
 
-    // TODO: Set primitive topology
-    glDrawArraysInstancedBaseInstance(0, first, count, instancecount, baseinstance);
+    glDrawArraysInstancedBaseInstance(tmpTopology, first, count, instancecount, baseinstance);
     checkBackendError("OpenGLCommandQueue::execute: cmdDraw");
 }
 
@@ -169,9 +174,21 @@ void OpenGLCommandQueue::execute(const OpenGLCommandDrawIndexed& cmd) {
     const GLint basevertex = cmd.vertexOffset;
     const GLuint baseinstance = cmd.firstInstance;
 
-    // TODO: Set index buffer (modify it via cmd.firstIndex) and primitive topology
-    glDrawElementsInstancedBaseVertexBaseInstance(0, count, 0, nullptr, instancecount, basevertex, baseinstance);
+    // TODO: Set index buffer (modify it via cmd.firstIndex)
+    glDrawElementsInstancedBaseVertexBaseInstance(tmpTopology, count, 0, nullptr, instancecount, basevertex, baseinstance);
     checkBackendError("OpenGLCommandQueue::execute: cmdDrawIndexed");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandSetVertexBuffers& cmd) {
+    GLuint index = cmd.index;
+
+    //glVertexAttribPointer(0, )
+    checkBackendError("OpenGLCommandQueue::execute: cmdSetVertexBuffers");
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandSetPrimitiveTopology& cmd) {
+    tmpTopology = cmd.topology;
+    checkBackendError("OpenGLCommandQueue::execute: cmdSetPrimitiveTopology");
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommandSetTargets& cmd) {

@@ -27,7 +27,8 @@ struct OpenGLCommandQueueUnit {
 class OpenGLCommandQueue : public CommandQueue {
 private:
     // Internal state
-    GLuint scratchFramebuffer;
+    GLuint tmpFramebuffer;
+    GLenum tmpTopology;
 
 private:
     // Parent OpenGL backend
@@ -46,6 +47,8 @@ private:
     void execute(const OpenGLCommandClearDepthStencil& cmd);
     void execute(const OpenGLCommandDraw& cmd);
     void execute(const OpenGLCommandDrawIndexed& cmd);
+    void execute(const OpenGLCommandSetVertexBuffers& cmd);
+    void execute(const OpenGLCommandSetPrimitiveTopology& cmd);
     void execute(const OpenGLCommandSetTargets& cmd);
     void execute(const OpenGLCommandSetViewports& cmd);
     void execute(const OpenGLCommandSetScissors& cmd);

@@ -18,28 +18,28 @@ class CommandBuffer {
 public:
     /**
      * Reset the command buffer, reverting it back to the state of a new command buffer
-     * @return                    True on success
+     * @return  True on success
      */
     virtual bool reset() = 0;
 
     /**
      * Bind a graphics pipeline to the current command buffer state
-     * @param[in]  pipeline       Pipeline state
+     * @param[in]  pipeline  Pipeline state
      */
-    virtual void cmdBindPipeline(IPipelineState* pipeline) = 0;
+    virtual void cmdBindPipeline(Pipeline* pipeline) = 0;
 
     /**
      * Pushes a command to clear a color buffer
-     * @param[in]  target         Color buffer to be cleared
-     * @param[in]  colorValue     The 4-component array of the RGBA value to clear with
+     * @param[in]  target      Color buffer to be cleared
+     * @param[in]  colorValue  The 4-component array of the RGBA value to clear with
      */
     virtual void cmdClearColor(ColorTarget* target, const F32* colorValue) = 0;
 
     /**
      * Pushes a command to clear a depth-stencil buffer
-     * @param[in]  target         Depth-stencil buffer to be cleared
-     * @param[in]  depthValue     The value to clear the depth buffer with
-     * @param[in]  stencilValue   The value to clear the stencil buffer with
+     * @param[in]  target        Depth-stencil buffer to be cleared
+     * @param[in]  depthValue    The value to clear the depth buffer with
+     * @param[in]  stencilValue  The value to clear the stencil buffer with
      */
     virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) = 0;
 
@@ -63,10 +63,11 @@ public:
     virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) = 0;
 
     /**
-     * Pushes a command to set the input layout for the pipeline
-     * @param[in]  topology  InputLayourPrimitive topology
+     * Pushes a command to set the vertex buffer for an input slots
+     * @param[in]  index      Slot index
+     * @param[in]  vtxBuffer  Vertex buffer
      */
-    virtual void cmdSetVertexBuffers() = 0;
+    virtual void cmdSetVertexBuffers(U32 index, VertexBuffer* vtxBuffer) = 0;
 
     /**
      * Pushes a command to set the primitive topology used for drawing

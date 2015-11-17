@@ -25,6 +25,8 @@ struct OpenGLCommand {
         TYPE_CLEAR_DEPTH_STENCIL,
         TYPE_DRAW,
         TYPE_DRAW_INDEXED,
+        TYPE_SET_VERTEX_BUFFERS,
+        TYPE_SET_PRIMITIVE_TOPOLOGY,
         TYPE_SET_TARGETS,
         TYPE_SET_VIEWPORTS,
         TYPE_SET_SCISSORS,
@@ -70,12 +72,24 @@ struct OpenGLCommandDraw : public OpenGLCommand {
 
 struct OpenGLCommandDrawIndexed : public OpenGLCommand {
     OpenGLCommandDrawIndexed() : OpenGLCommand(TYPE_DRAW_INDEXED) {}
-
     GLint firstIndex;
     GLsizei indexCount;
     GLint vertexOffset;
     GLuint firstInstance;
     GLsizei instanceCount;
+};
+
+struct OpenGLCommandSetVertexBuffers : public OpenGLCommand {
+    OpenGLCommandSetVertexBuffers() : OpenGLCommand(TYPE_SET_VERTEX_BUFFERS) {}
+
+    GLuint index;
+    OpenGLVertexBuffer* vtxBuffer;
+};
+
+struct OpenGLCommandSetPrimitiveTopology : public OpenGLCommand {
+    OpenGLCommandSetPrimitiveTopology() : OpenGLCommand(TYPE_SET_PRIMITIVE_TOPOLOGY) {}
+
+    GLenum topology;
 };
 
 struct OpenGLCommandSetTargets : public OpenGLCommand {
@@ -97,7 +111,6 @@ struct OpenGLCommandSetViewports : public OpenGLCommand {
 
 struct OpenGLCommandSetScissors : public OpenGLCommand {
     OpenGLCommandSetScissors() : OpenGLCommand(TYPE_SET_VIEWPORTS) {}
-
     GLint x;
     GLint y;
     GLsizei width;
@@ -130,12 +143,13 @@ public:
     virtual bool reset() override;
 
     // Commands
-    virtual void cmdBindPipeline(IPipelineState* pipeline) override;
+    virtual void cmdBindPipeline(Pipeline* pipeline) override;
     virtual void cmdClearColor(ColorTarget* target, const F32* colorValue) override;
     virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) override;
     virtual void cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) override;
     virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) override;
-    virtual void cmdSetVertexBuffers() override;
+    virtual void cmdSetVertexBuffers(U32 index, VertexBuffer* vtxBuffer) override;
+    virtual void cmdSetPrimitiveTopology(PrimitiveTopology topology) override;
     virtual void cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) override;
     virtual void cmdSetPrimitiveTopology(PrimitiveTopology topology) override;
     virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) override;
