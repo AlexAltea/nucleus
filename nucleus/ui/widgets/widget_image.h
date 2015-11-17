@@ -29,7 +29,7 @@ public:
     void init(const unsigned char* pngbuffer, size_t size);
 
     // Render the image
-    virtual void render() override;
+    virtual void render(gfx::CommandBuffer* cmdBuffer) override;
 };
 
 }  // namespace ui

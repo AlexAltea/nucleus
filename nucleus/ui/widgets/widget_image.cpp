@@ -41,7 +41,7 @@ void WidgetImage::init(const unsigned char* pngbuffer, size_t size) {
     image.buffer = stbi_load_from_memory(pngbuffer, size, &image.width, &image.height, &image.components, 4);
 }
 
-void WidgetImage::render() {
+void WidgetImage::render(gfx::CommandBuffer* cmdBuffer) {
     Length width = style.width;
     Length height = style.height;
 

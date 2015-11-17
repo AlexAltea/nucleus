@@ -79,6 +79,7 @@
     <ClCompile Include="transitions.cpp" />
     <ClCompile Include="ui.cpp" />
     <ClCompile Include="widget.cpp" />
+    <ClCompile Include="widgets\widget_container.cpp" />
     <ClCompile Include="widgets\widget_image.cpp" />
     <ClCompile Include="widgets\widget_text.cpp" />
     <ClCompile Include="widgets\widget_texture.cpp" />
@@ -87,12 +88,16 @@
     <ClInclude Include="language.h" />
     <ClInclude Include="length.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="screens\list.h" />
     <ClInclude Include="screens\screen_emulator.h" />
     <ClInclude Include="screens\screen_logo.h" />
     <ClInclude Include="screens\screen_main.h" />
+    <ClInclude Include="style.h" />
     <ClInclude Include="transitions.h" />
     <ClInclude Include="ui.h" />
     <ClInclude Include="widget.h" />
+    <ClInclude Include="widgets\list.h" />
+    <ClInclude Include="widgets\widget_container.h" />
     <ClInclude Include="widgets\widget_image.h" />
     <ClInclude Include="widgets\widget_text.h" />
     <ClInclude Include="widgets\widget_texture.h" />

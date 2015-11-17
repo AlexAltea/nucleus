@@ -5,26 +5,24 @@
 
 #include "screen_logo.h"
 #include "nucleus/ui/ui.h"
+#include "nucleus/ui/screens/list.h"
 #include "nucleus/ui/transitions.h"
-#include "nucleus/ui/screens/screen_emulator.h"
-#include "nucleus/ui/screens/screen_main.h"
 
 namespace ui {
 
 ScreenLogo::ScreenLogo(UI* parent) : Screen(parent) {
-    logo.init("..\\resources\\images\\nucleus-logo.png");
-    logo.style.top = 25.0_pct;
-    logo.style.left = 25.0_pct;
-    logo.style.width = 50.0_pct;
-    logo.style.sizeMode = PROPORTION_AUTOHEIGHT;
-}
+    auto* logo = new WidgetImage();
+    logo->init("..\\resources\\images\\nucleus-logo.png");
+    logo->style.top = 25.0_pct;
+    logo->style.left = 25.0_pct;
+    logo->style.width = 50.0_pct;
+    logo->style.sizeMode = PROPORTION_AUTOHEIGHT;
 
-void ScreenLogo::render() {
-    logo.render();
+    body.addElement(logo);
 }
 
 void ScreenLogo::update() {
-    if (dtime > 2000.0) {
+    /*if (dtime > 2000.0) {
         logo.style.opacity = 1.0f - transition::easeOut((dtime - 2000.0f) / 1000.0f);
     }
     if (dtime > 3000.0) {
@@ -34,7 +32,7 @@ void ScreenLogo::update() {
             parent->pushScreen(std::make_unique<ScreenMain>(parent));
         }
         finished = true;
-    }
+    }*/
 }
 
 }  // namespace ui

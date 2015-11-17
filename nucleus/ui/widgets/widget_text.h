@@ -17,7 +17,7 @@ public:
     void update(const std::string& text);
 
     // Render the image
-    virtual void render() override;
+    virtual void render(gfx::CommandBuffer* cmdBuffer) override;
 };
 
 }  // namespace ui

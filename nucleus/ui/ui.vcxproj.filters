@@ -24,6 +24,9 @@
     <ClCompile Include="screens\screen_emulator.cpp">
       <Filter>screens</Filter>
     </ClCompile>
+    <ClCompile Include="widgets\widget_container.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="transitions.h" />
@@ -50,6 +53,16 @@
       <Filter>screens</Filter>
     </ClInclude>
     <ClInclude Include="length.h" />
+    <ClInclude Include="widgets\widget_container.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="style.h" />
+    <ClInclude Include="widgets\list.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="screens\list.h">
+      <Filter>screens</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="screens">

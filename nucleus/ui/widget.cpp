@@ -8,6 +8,13 @@
 
 namespace ui {
 
+Widget* Widget::find(const std::string& query) {
+    if (id == query) {
+        return this;
+    }
+    return nullptr;
+}
+
 float Widget::getCoordinateX(Length x) {
     float coordinate;
     switch (x.type) {

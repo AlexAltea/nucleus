@@ -13,7 +13,11 @@ Screen::Screen(UI* parent) : parent(parent) {
 
 void Screen::prologue() {
     time_current = Clock::now();
-    dtime = std::chrono::duration_cast<std::chrono::milliseconds>(time_current - time_creation).count();
+    dtime = time_current - time_creation;
+}
+
+void Screen::render(gfx::CommandBuffer* cmdBuffer) {
+    body.render(cmdBuffer);
 }
 
 void Screen::epilogue() {

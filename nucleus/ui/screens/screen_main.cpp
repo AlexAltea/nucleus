@@ -10,9 +10,6 @@ namespace ui {
 ScreenMain::ScreenMain(UI* parent) : Screen(parent) {
 }
 
-void ScreenMain::render() {
-}
-
 void ScreenMain::update() {
 }
 

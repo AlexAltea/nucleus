@@ -5,40 +5,45 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+#include "nucleus/graphics/graphics.h"
 #include "nucleus/ui/length.h"
+#include "nucleus/ui/style.h"
+
+#include <string>
 
 namespace ui {
 
-enum ProportionMode {
-    PROPORTION_FIXED,      // Use the provided width/height dimensions
-    PROPORTION_AUTOWIDTH,  // Calculate width based on the given height
-    PROPORTION_AUTOHEIGHT, // Calculate height based on the given width
-    PROPORTION_AUTO,       // Calculate width and height
-};
-
 class Widget {
-public:
-    struct Style {
-        // Position of the image in the [+0.0, +1.0] system
-        Length top;
-        Length left;
+protected:
+    // Parent widget if applicable
+    Widget* parent;
 
-        // Dimensions of the image in the [+0.0, +1.0] system
-        ProportionMode sizeMode = PROPORTION_AUTO;
-        Length width;
-        Length height;
-
-        float opacity = 1.0;
-    } style;
+    // Texture produced after rendering the contents of this widget
+    gfx::Texture* texture;
 
 public:
+    std::string id;
+
+    Style style;
+
+    /**
+     * Search children nodes for a particular identifier
+     * @param[in]  query  Identifier to search for
+     * @return            Pointer to the found widget or nullptr otherwise
+     */
+    virtual Widget* find(const std::string& query);
+
+    /**
+     * Pass the rendering commands to the UI command buffer
+     * @param[in]  cmdBuffer  Command buffer to store the rendering commands in
+     */
+    virtual void render(gfx::CommandBuffer* cmdBuffer) = 0;
+
     static Length correctHeight(Length height);
 
     static float getCoordinateX(Length x);
     static float getCoordinateY(Length y);
-
-    // Render the screen components
-    virtual void render() = 0;
 };
 
 }  // namespace ui

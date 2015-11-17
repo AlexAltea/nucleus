@@ -12,13 +12,10 @@
 namespace ui {
 
 class ScreenLogo : public Screen {
-    WidgetImage logo;
-
 public:
     ScreenLogo(UI* parent);
 
     virtual void update() override;
-    virtual void render() override;
 };
 
 }  // namespace ui

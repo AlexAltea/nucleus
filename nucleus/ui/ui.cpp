@@ -63,7 +63,7 @@ void UI::task() {
         for (auto i = 0ULL; i < screens.size(); i++) {
             auto& screen = screens[i];
             screen->prologue();
-            screen->render();
+            screen->render(cmdBuffer);
             screen->update();
             screen->epilogue();
 

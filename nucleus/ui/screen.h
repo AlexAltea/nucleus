@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include "nucleus/graphics/graphics.h"
+#include "nucleus/ui/widgets/list.h"
+
 #include <chrono>
 
 namespace ui {
@@ -20,9 +23,10 @@ class Screen {
 
 protected:
     UI* parent;
+    WidgetContainer body;
 
-    // Elapsed time in milliseconds since screen creation
-    double dtime = 0.0;
+    // Elapsed time since screen creation
+    Clock::duration dtime;
 
     // Rendered frames at this screen
     unsigned int frame = 0;
@@ -38,7 +42,7 @@ public:
     void epilogue();
 
     // Render the screen widgets
-    virtual void render() = 0;
+    void render(gfx::CommandBuffer* cmdBuffer);
 
     // Update the screen members
     virtual void update() = 0;

@@ -15,7 +15,7 @@ public:
     void init();
 
     // Render the image
-    virtual void render() override;
+    virtual void render(gfx::CommandBuffer* cmdBuffer) override;
 };
 
 }  // namespace ui

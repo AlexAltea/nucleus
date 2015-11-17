@@ -9,15 +9,6 @@
 namespace ui {
 
 ScreenEmulator::ScreenEmulator(UI* parent) : Screen(parent) {
-    rsxDisplay.style.top = 0.0_pct;
-    rsxDisplay.style.left = 0.0_pct;
-    rsxDisplay.style.width = 100.0_pct;
-    rsxDisplay.style.height = 100.0_pct;
-}
-
-void ScreenEmulator::render() {
-    //rsxDisplay.textureId = nucleus.rsx.get_display();
-    rsxDisplay.render();
 }
 
 void ScreenEmulator::update() {

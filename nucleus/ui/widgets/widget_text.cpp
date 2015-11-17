@@ -9,12 +9,10 @@
 
 namespace ui {
 
-void WidgetText::update(const std::string& text)
-{
+void WidgetText::update(const std::string& text) {
 }
 
-void WidgetText::render()
-{
+void WidgetText::render(gfx::CommandBuffer* cmdBuffer) {
 }
 
 }  // namespace ui
