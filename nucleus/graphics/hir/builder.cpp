@@ -71,9 +71,8 @@ Value* Builder::getConstantI32(U32 c) {
     return value;
 }
 Value* Builder::getConstantF16(F32 c) {
-    Value* value = allocValue(TYPE_I16);
-    value->setConstantI16(c);
-    return value;
+    // TODO
+    return nullptr;
 }
 Value* Builder::getConstantF32(F32 c) {
     Value* value = allocValue(TYPE_F32);
@@ -114,10 +113,6 @@ Value* Builder::createAdd(Value* lhs, Value* rhs, VectorFlags flags) {
         return rhs;
     } else if (rhs->isConstantZero()) {
         return lhs;
-    } else if (lhs->isConstant() && rhs->isConstant()) {
-        Value* dest = cloneValue(lhs);
-        dest->doAdd(rhs);
-        return dest;
     }
 
     Instruction* i = appendInstr(OPCODE_ADD, flags, allocValue(lhs->type));

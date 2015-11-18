@@ -9,6 +9,7 @@
 #include "nucleus/graphics/pipeline.h"
 #include "nucleus/graphics/primitive.h"
 #include "nucleus/graphics/target.h"
+#include "nucleus/graphics/vertex_buffer.h"
 #include "nucleus/graphics/viewport.h"
 #include "nucleus/graphics/rectangle.h"
 

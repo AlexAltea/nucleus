@@ -151,7 +151,6 @@ public:
     virtual void cmdSetVertexBuffers(U32 index, VertexBuffer* vtxBuffer) override;
     virtual void cmdSetPrimitiveTopology(PrimitiveTopology topology) override;
     virtual void cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) override;
-    virtual void cmdSetPrimitiveTopology(PrimitiveTopology topology) override;
     virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) override;
     virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) override;
 };

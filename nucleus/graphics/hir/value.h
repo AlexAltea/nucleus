@@ -19,6 +19,8 @@ class Instruction;
 enum ValueFlags {
     VALUE_IS_CONSTANT  = (1 << 0),
     VALUE_IS_ARGUMENT  = (1 << 1),
+    VALUE_IS_INPUT     = (1 << 2),
+    VALUE_IS_OUTPUT    = (1 << 3),
 };
 
 class Value {
@@ -49,6 +51,7 @@ public:
 
     // Get ID of this value
     S32 getId();
+    void setId(S32 id);
 
     // Type properties
     bool isTypeInteger() const;
@@ -69,10 +72,6 @@ public:
     void setConstantF16(F32 c); // TODO
     void setConstantF32(F32 c);
     void setConstantV128(V128 c);
-
-    // Constant operations
-    void doAdd(Value* rhs);
-    void doSub(Value* rhs);
 };
 
 }  // namespace hir

@@ -54,6 +54,7 @@ void WidgetImage::render(gfx::CommandBuffer* cmdBuffer) {
     height = Widget::correctHeight(height);
 
     cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_QUAD_LIST);
+    cmdBuffer->cmdSetVertexBuffers(0, nullptr); // TODO
     cmdBuffer->cmdDraw(0, 4, 0, 1);
 }
 

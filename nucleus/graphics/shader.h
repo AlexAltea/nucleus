@@ -5,9 +5,13 @@
 
 #pragma once
 
+#include "nucleus/graphics/hir/module.h"
+
 namespace gfx {
 
 class ShaderDesc {
+public:
+    hir::Module* module;
 };
 
 class Shader {

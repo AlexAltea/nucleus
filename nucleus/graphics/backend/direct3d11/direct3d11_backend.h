@@ -40,8 +40,8 @@ public:
     virtual Heap* createHeap(const HeapDesc& desc) override;
     virtual ColorTarget* createColorTarget(Texture* texture) override;
     virtual DepthStencilTarget* createDepthStencilTarget(Texture* texture) override;
-    virtual void createPipeline() override;
-    virtual void createShader() override;
+    virtual Pipeline* createPipeline(const PipelineDesc& desc) override;
+    virtual Shader* createShader(const ShaderDesc& desc) override;
     virtual Texture* createTexture(const TextureDesc& desc) override;
     virtual bool doSwapBuffers() override;
 };

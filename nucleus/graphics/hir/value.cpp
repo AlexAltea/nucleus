@@ -25,6 +25,10 @@ S32 Value::getId() {
     return id;
 }
 
+void Value::setId(S32 newId) {
+    id = newId;
+}
+
 // Type properties
 bool Value::isTypeInteger() const {
     return type == TYPE_I16 || type == TYPE_I32;
@@ -90,6 +94,31 @@ bool Value::isConstantZero() const {
         assert_always("Wrong type");
         return false;
     }
+}
+
+// Constants setters
+void Value::setConstantI16(U16 c) {
+    constant.i16 = c;
+    type = TYPE_I16;
+    flags |= VALUE_IS_CONSTANT;
+}
+void Value::setConstantI32(U32 c) {
+    constant.i32 = c;
+    type = TYPE_I32;
+    flags |= VALUE_IS_CONSTANT;
+}
+void Value::setConstantF16(F32 c) {
+    // TODO
+}
+void Value::setConstantF32(F32 c) {
+    constant.f32 = c;
+    type = TYPE_F32;
+    flags |= VALUE_IS_CONSTANT;
+}
+void Value::setConstantV128(V128 c) {
+    constant.v128 = c;
+    type = TYPE_V128;
+    flags |= VALUE_IS_CONSTANT;
 }
 
 }  // namespace hir

@@ -16,6 +16,7 @@
     <ClCompile Include="backend\opengl\opengl_command_buffer.cpp" />
     <ClCompile Include="backend\opengl\opengl_command_queue.cpp" />
     <ClCompile Include="backend\opengl\opengl_fence.cpp" />
+    <ClCompile Include="backend\opengl\opengl_shader.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="hir\block.cpp" />
     <ClCompile Include="hir\builder.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="backend\opengl\opengl_fence.h" />
     <ClInclude Include="backend\opengl\opengl_heap.h" />
     <ClInclude Include="backend\opengl\opengl_pipeline.h" />
+    <ClInclude Include="backend\opengl\opengl_shader.h" />
     <ClInclude Include="backend\opengl\opengl_target.h" />
     <ClInclude Include="backend\opengl\opengl_texture.h" />
     <ClInclude Include="backend\opengl\opengl_vertex_buffer.h" />
@@ -53,6 +55,7 @@
     <ClInclude Include="pipeline.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="rectangle.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="target.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="vertex_buffer.h" />
