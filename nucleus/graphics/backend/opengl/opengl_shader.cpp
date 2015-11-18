@@ -91,6 +91,7 @@ std::string OpenGLShader::compile(Module* module) {
 }
 
 bool OpenGLShader::initialize(const ShaderDesc& desc) {
+    std::string source = compile(desc.module);
     return true;
 }
 

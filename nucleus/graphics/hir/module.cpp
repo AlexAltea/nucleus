@@ -30,7 +30,7 @@ bool Module::setOutputs(std::vector<Type> outputTypes) {
         value->flags |= VALUE_IS_OUTPUT;
         value->type = type;
         value->setId(index++);
-        inputs.push_back(value);
+        outputs.push_back(value);
     }
     return true;
 }

@@ -9,8 +9,12 @@
 
 namespace gfx {
 
-class ShaderDesc {
-public:
+enum ShaderFlags {
+    SHADER_FLAGS_NONE = 0,
+};
+
+struct ShaderDesc {
+    ShaderFlags flags;
     hir::Module* module;
 };
 

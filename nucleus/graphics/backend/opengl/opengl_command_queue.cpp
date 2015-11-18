@@ -102,12 +102,6 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     case OpenGLCommand::TYPE_SET_SCISSORS:
         execute(static_cast<const OpenGLCommandSetScissors&>(cmd));
         break;
-    case OpenGLCommand::TYPE_INTERNAL_CREATE_TEXTURE:
-        execute(static_cast<const OpenGLCommandInternalCreateTexture&>(cmd));
-        break;
-    case OpenGLCommand::TYPE_INTERNAL_CREATE_VERTEXBUFFER:
-        execute(static_cast<const OpenGLCommandInternalCreateVertexBuffer&>(cmd));
-        break;
     case OpenGLCommand::TYPE_INTERNAL_SIGNAL_FENCE:
         execute(static_cast<const OpenGLCommandInternalSignalFence&>(cmd));
         break;
@@ -210,16 +204,6 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetViewports& cmd) {
 void OpenGLCommandQueue::execute(const OpenGLCommandSetScissors& cmd) {
     glScissor(cmd.x, cmd.y, cmd.width, cmd.height);
     checkBackendError("OpenGLCommandQueue::execute: cmdSetScissors");
-}
-
-void OpenGLCommandQueue::execute(const OpenGLCommandInternalCreateTexture& cmd) {
-    glGenTextures(1, &cmd.texture->id);
-    checkBackendError("OpenGLCommandQueue::execute: cmdInternalCreateTexture");
-}
-
-void OpenGLCommandQueue::execute(const OpenGLCommandInternalCreateVertexBuffer& cmd) {
-    glGenBuffers(1, &cmd.vtxBuffer->id);
-    checkBackendError("OpenGLCommandQueue::execute: cmdInternalCreateVertexBuffer");
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommandInternalSignalFence& cmd) {

@@ -11,10 +11,13 @@
 #include "nucleus/graphics/backend/opengl/opengl_fence.h"
 #include "nucleus/graphics/backend/opengl/opengl_heap.h"
 #include "nucleus/graphics/backend/opengl/opengl_pipeline.h"
+#include "nucleus/graphics/backend/opengl/opengl_shader.h"
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
 #include "nucleus/graphics/backend/opengl/opengl_texture.h"
 
 namespace gfx {
+
+thread_local OpenGLContext gCurrentContext = 0;
 
 OpenGLBackend::OpenGLBackend() : IBackend() {
 }
@@ -22,7 +25,23 @@ OpenGLBackend::OpenGLBackend() : IBackend() {
 OpenGLBackend::~OpenGLBackend() {
 }
 
+OpenGLContext OpenGLBackend::createContext() {
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+    static const int contextAttribs[] = {
+        WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+        WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+        WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
+        0};
+    gCurrentContext = wglCreateContextAttribsARB(parameters.hdc, context, contextAttribs);
+#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+    gCurrentContext = glXCreateContext(parameters.display, info, NULL, GL_TRUE);
+#endif
+    return gCurrentContext;
+}
+
 bool OpenGLBackend::initialize(const BackendParameters& params) {
+    parameters = params;
+
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     // Retrieving OpenGL extension pointers requires in Windows owning a context
     HGLRC dummyRc = wglCreateContext(params.hdc);
@@ -33,25 +52,12 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     }
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(dummyRc);
-
-    // Create context and make it current
-    static const int contextAttribs[] = { WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB, 0 };
-    context = wglCreateContextAttribsARB(params.hdc, 0, contextAttribs);
-    if (!context) {
-        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: wglCreateContextAttribsARB failed");
-        return false;
-    }
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     if (!initializeOpenGL()) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");
         return false;
     }
     XVisualInfo* info = glXChooseVisual(display, 0, nullptr/*TODO*/);
-    context = glXCreateContext(params.display, info, NULL, GL_TRUE);
-    if (!context) {
-        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXCreateContext failed");
-        return false;
-    }
 #elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
     if (!initializeOpenGL()) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");
@@ -59,13 +65,19 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     }
 #endif
 
+    // Initialize context
+    context = createContext();
+    if (!context) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: createContext failed");
+        return false;
+    }
+
     auto* backBuffer = new OpenGLColorTarget();
     backBuffer->attached = true;
     backBuffer->framebuffer = 0;
     backBuffer->drawbuffer = 0;
     screenBackBuffer = backBuffer;
 
-    parameters = params;
     return true;
 }
 
@@ -111,30 +123,29 @@ Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
 }
 
 Shader* OpenGLBackend::createShader(const ShaderDesc& desc) {
-    return nullptr;
+    if (!gCurrentContext) {
+        createContext();
+    }
+    auto* shader = new OpenGLShader();
+    shader->initialize(desc);
+    return shader;
 }
 
 Texture* OpenGLBackend::createTexture(const TextureDesc& desc) {
+    if (!gCurrentContext) {
+        createContext();
+    }
     auto* texture = new OpenGLTexture();
-
-    auto cmdBuffer = new OpenGLCommandBuffer();
-    auto cmd = new OpenGLCommandInternalCreateTexture();
-    cmd->texture = texture;
-    cmdBuffer->commands.push_back(cmd);
-    queue->submit(cmdBuffer, nullptr);
-
+    glGenTextures(1, &texture->id);
     return texture;
 }
 
 VertexBuffer* OpenGLBackend::createVertexBuffer(const VertexBufferDesc& desc) {
+    if (!gCurrentContext) {
+        createContext();
+    }
     auto* vtxBuffer = new OpenGLVertexBuffer();
-
-    auto cmdBuffer = new OpenGLCommandBuffer();
-    auto cmd = new OpenGLCommandInternalCreateVertexBuffer();
-    cmd->vtxBuffer = vtxBuffer;
-    cmdBuffer->commands.push_back(cmd);
-    queue->submit(cmdBuffer, nullptr);
-
+    glGenBuffers(1, &vtxBuffer->id);
     return vtxBuffer;
 }
 

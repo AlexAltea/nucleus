@@ -32,8 +32,6 @@ struct OpenGLCommand {
         TYPE_SET_SCISSORS,
 
         // Private
-        TYPE_INTERNAL_CREATE_TEXTURE,
-        TYPE_INTERNAL_CREATE_VERTEXBUFFER,
         TYPE_INTERNAL_SIGNAL_FENCE,
     } type;
 
@@ -111,6 +109,7 @@ struct OpenGLCommandSetViewports : public OpenGLCommand {
 
 struct OpenGLCommandSetScissors : public OpenGLCommand {
     OpenGLCommandSetScissors() : OpenGLCommand(TYPE_SET_VIEWPORTS) {}
+
     GLint x;
     GLint y;
     GLsizei width;
@@ -118,16 +117,9 @@ struct OpenGLCommandSetScissors : public OpenGLCommand {
 };
 
 // Private commands
-struct OpenGLCommandInternalCreateTexture : public OpenGLCommand {
-    OpenGLCommandInternalCreateTexture() : OpenGLCommand(TYPE_INTERNAL_CREATE_TEXTURE) {}
-    OpenGLTexture* texture;
-};
-struct OpenGLCommandInternalCreateVertexBuffer : public OpenGLCommand {
-    OpenGLCommandInternalCreateVertexBuffer() : OpenGLCommand(TYPE_INTERNAL_CREATE_VERTEXBUFFER) {}
-    OpenGLVertexBuffer* vtxBuffer;
-};
 struct OpenGLCommandInternalSignalFence : public OpenGLCommand {
     OpenGLCommandInternalSignalFence() : OpenGLCommand(TYPE_INTERNAL_SIGNAL_FENCE) {}
+
     OpenGLFence* fence;
 };
 

@@ -52,8 +52,6 @@ private:
     void execute(const OpenGLCommandSetTargets& cmd);
     void execute(const OpenGLCommandSetViewports& cmd);
     void execute(const OpenGLCommandSetScissors& cmd);
-    void execute(const OpenGLCommandInternalCreateTexture& cmd);
-    void execute(const OpenGLCommandInternalCreateVertexBuffer& cmd);
     void execute(const OpenGLCommandInternalSignalFence& cmd);
 
     // Execute a command

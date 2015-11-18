@@ -28,8 +28,14 @@ class OpenGLCommandQueue;
 
 class OpenGLBackend : public IBackend {
 private:
-    OpenGLContext context;
+    OpenGLContext context = 0;
     OpenGLCommandQueue* queue;
+
+    /**
+     * Creates a context for the calling thread sharing lists with the main context
+     * @return  OpenGL context
+     */
+    OpenGLContext createContext();
 
 public:
     OpenGLBackend();
