@@ -9,11 +9,20 @@
 
 namespace gfx {
 
+enum ShaderType {
+    SHADER_TYPE_VERTEX,
+    SHADER_TYPE_HULL,
+    SHADER_TYPE_DOMAIN,
+    SHADER_TYPE_GEOMETRY,
+    SHADER_TYPE_FRAGMENT,
+};
+
 enum ShaderFlags {
     SHADER_FLAGS_NONE = 0,
 };
 
 struct ShaderDesc {
+    ShaderFlags type;
     ShaderFlags flags;
     hir::Module* module;
 };

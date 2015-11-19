@@ -15,6 +15,16 @@ Function::Function(Module* parent, TypeOut tOut, TypeIn tIn)
     // Set flags
     flags |= FUNCTION_IS_DECLARED;
 
+    // Set arguments
+    S32 index = 0;
+    for (auto& type : tIn) {
+        auto* value = new Value();
+        value->flags |= VALUE_IS_ARGUMENT;
+        value->type = type;
+        value->setId(index++);
+        args.push_back(value);
+    }
+
     // Add function to parent module
     parent->addFunction(this);
 }

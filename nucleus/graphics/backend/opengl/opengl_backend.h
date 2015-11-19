@@ -29,7 +29,13 @@ class OpenGLCommandQueue;
 class OpenGLBackend : public IBackend {
 private:
     OpenGLContext context = 0;
+    OpenGLContext subContext[8];
     OpenGLCommandQueue* queue;
+
+    /**
+     * Picks an available sub-context and makes it current
+     */
+    void useAvailableContext();
 
     /**
      * Creates a context for the calling thread sharing lists with the main context

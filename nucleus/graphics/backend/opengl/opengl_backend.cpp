@@ -4,6 +4,7 @@
  */
 
 #include "opengl_backend.h"
+#include "nucleus/assert.h"
 #include "nucleus/logger/logger.h"
 
 #include "nucleus/graphics/backend/opengl/opengl_command_buffer.h"
@@ -25,18 +26,28 @@ OpenGLBackend::OpenGLBackend() : IBackend() {
 OpenGLBackend::~OpenGLBackend() {
 }
 
+void OpenGLBackend::useAvailableContext() {
+    static size_t index = 0;
+    assert_true(index < 8, "OpenGLBackend::getContext: Too many OpenGL sub-contexts requested");
+    gCurrentContext = subContext[index++];
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
+    wglMakeCurrent(parameters.hdc, gCurrentContext);
+#endif
+}
+
 OpenGLContext OpenGLBackend::createContext() {
+    OpenGLContext newContext;
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     static const int contextAttribs[] = {
         WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
         WGL_CONTEXT_MINOR_VERSION_ARB, 3,
         WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
         0};
-    gCurrentContext = wglCreateContextAttribsARB(parameters.hdc, context, contextAttribs);
+    newContext = wglCreateContextAttribsARB(parameters.hdc, context, contextAttribs);
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
-    gCurrentContext = glXCreateContext(parameters.display, info, NULL, GL_TRUE);
+    newContext = glXCreateContext(parameters.display, info, NULL, GL_TRUE);
 #endif
-    return gCurrentContext;
+    return newContext;
 }
 
 bool OpenGLBackend::initialize(const BackendParameters& params) {
@@ -70,6 +81,11 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     if (!context) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: createContext failed");
         return false;
+    }
+
+    // NOTE: Sharing lists on other threads fails, therefore potential new contexts are created at initialization
+    for (unsigned int i = 0; i < 8; i++) {
+        subContext[i] = createContext();
     }
 
     auto* backBuffer = new OpenGLColorTarget();
@@ -124,16 +140,34 @@ Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
 
 Shader* OpenGLBackend::createShader(const ShaderDesc& desc) {
     if (!gCurrentContext) {
-        createContext();
+        useAvailableContext();
     }
+
+    GLenum glType;
+    switch (desc.type) {
+    case SHADER_TYPE_VERTEX:
+        glType = GL_VERTEX_SHADER; break;
+    case SHADER_TYPE_HULL:
+        glType = GL_TESS_CONTROL_SHADER; break;
+    case SHADER_TYPE_DOMAIN:
+        glType = GL_TESS_EVALUATION_SHADER; break;
+    case SHADER_TYPE_GEOMETRY:
+        glType = GL_GEOMETRY_SHADER; break;
+    case SHADER_TYPE_FRAGMENT:
+        glType = GL_FRAGMENT_SHADER; break;
+    default:
+        assert_always("Unimplemented case");
+    }
+
     auto* shader = new OpenGLShader();
+    shader->id = glCreateShader(glType);
     shader->initialize(desc);
     return shader;
 }
 
 Texture* OpenGLBackend::createTexture(const TextureDesc& desc) {
     if (!gCurrentContext) {
-        createContext();
+        useAvailableContext();
     }
     auto* texture = new OpenGLTexture();
     glGenTextures(1, &texture->id);
@@ -142,7 +176,7 @@ Texture* OpenGLBackend::createTexture(const TextureDesc& desc) {
 
 VertexBuffer* OpenGLBackend::createVertexBuffer(const VertexBufferDesc& desc) {
     if (!gCurrentContext) {
-        createContext();
+        useAvailableContext();
     }
     auto* vtxBuffer = new OpenGLVertexBuffer();
     glGenBuffers(1, &vtxBuffer->id);

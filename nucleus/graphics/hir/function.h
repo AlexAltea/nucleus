@@ -23,6 +23,7 @@ enum FunctionFlags {
     FUNCTION_IS_DEFINING    = (1 << 1),  // Function is being analyzed and HIR emitted
     FUNCTION_IS_DEFINED     = (1 << 2),  // Function has been analyzed and HIR emitted
     FUNCTION_IS_CALLABLE    = (1 << 3),  // Function can be called
+    FUNCTION_IS_ENTRY       = (1 << 4),  // Function is the module entry point
 };
 
 class Function {
@@ -33,6 +34,9 @@ class Function {
     S32 id = -1;
 
 public:
+    std::vector<Block*> blocks;
+    std::vector<Value*> args;
+
     Module* parent;
 
     // Function flags
@@ -41,9 +45,6 @@ public:
     // Return and argument types
     TypeOut typeOut;
     TypeIn typeIn;
-
-    // Blocks
-    std::vector<Block*> blocks;
 
     // Constructor
     Function(Module* parent, TypeOut tOut, TypeIn tIn = {});

@@ -22,9 +22,12 @@ class Module;
 }  // namespace hir
 
 class OpenGLShader : public Shader {
+    // Conversion
+    const char* getType(hir::Type type);
+
     // Utilities
-    std::string getType(hir::Type);
-    std::string getFunctionDeclaration(S32 id, const std::vector<hir::Type>& typeIn, hir::Type typeOut);
+    std::string getDeclaration(hir::Value* value);
+    std::string getDeclaration(hir::Function* function);
 
     // Compile HIR components into GLSL
     std::string compile(hir::Instruction* instr);

@@ -8,17 +8,21 @@
 #include "opengl_shader.h"
 #include "nucleus/assert.h"
 #include "nucleus/format.h"
+#include "nucleus/logger/logger.h"
 #include "nucleus/graphics/hir/block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/graphics/hir/instruction.h"
 #include "nucleus/graphics/hir/opcodes.h"
 
+#include <iostream>
+
 namespace gfx {
 
 using namespace gfx::hir;
 
-std::string OpenGLShader::getType(Type type) {
+const char* OpenGLShader::getType(Type type) {
     switch (type) {
+    case TYPE_VOID: return "void";
     case TYPE_I16:  return "int";
     case TYPE_I32:  return "int";
     case TYPE_F16:  return "float";
@@ -30,8 +34,40 @@ std::string OpenGLShader::getType(Type type) {
     }
 }
 
-std::string OpenGLShader::getFunctionDeclaration(S32 id, const std::vector<Type>& typeIn, Type typeOut) {
+std::string OpenGLShader::getDeclaration(Value* value) {
     std::string source;
+    if (value->flags & VALUE_IS_ARGUMENT) {
+        return format("%s a%d", getType(value->type), value->getId());
+    } else if (value->flags & VALUE_IS_INPUT) {
+        return format("%s i%d", getType(value->type), value->getId());
+    } else if (value->flags & VALUE_IS_OUTPUT) {
+        return format("%s o%d", getType(value->type), value->getId());
+    } else {
+        return format("%s v%d", getType(value->type), value->getId());
+    }
+    return source;
+}
+
+std::string OpenGLShader::getDeclaration(Function* function) {
+    std::string source;
+    source += getType(function->typeOut);
+
+    // Function name
+    if (function->flags & FUNCTION_IS_ENTRY) {
+        source += " main(";
+    } else {
+        source += format(" func%d(", id);
+    }
+
+    // Function arguments
+    for (auto* value : function->args) {
+        source += getDeclaration(value);
+        if (value->getId() != function->args.size() - 1) {
+            source += format(", ");
+        }
+    }
+
+    source += ")";
     return source;
 }
 
@@ -57,12 +93,9 @@ std::string OpenGLShader::compile(Function* function) {
     std::string source;
 
     // Function declaration
-    const auto& id = function->getId();
-    const auto& typeIn = function->typeIn;
-    const auto& typeOut = function->typeOut;
-    source += getFunctionDeclaration(id, typeIn, typeOut);
+    source += getDeclaration(function);
 
-    source += "{\n";
+    source += " {\n";
     for (auto* block : function->blocks) {
         source += compile(block);
     }
@@ -73,14 +106,15 @@ std::string OpenGLShader::compile(Function* function) {
 std::string OpenGLShader::compile(Module* module) {
     std::string source;
 
+    // Version
+    source += "#version 450\n";
+
     // Pipeline input and outputs
     for (auto* value : module->inputs) {
-        std::string typeName = getType(value->type);
-        source += format("in %s i%d;\n", typeName.c_str(), value->getId());
+        source += format("in %s i%d;\n", getType(value->type), value->getId());
     }
     for (auto* value : module->outputs) {
-        std::string typeName = getType(value->type);
-        source += format("out %s o%d;\n", typeName.c_str(), value->getId());
+        source += format("out %s o%d;\n", getType(value->type), value->getId());
     }
 
     // Compile functions
@@ -91,7 +125,27 @@ std::string OpenGLShader::compile(Module* module) {
 }
 
 bool OpenGLShader::initialize(const ShaderDesc& desc) {
-    std::string source = compile(desc.module);
+    const std::string source = compile(desc.module);
+    std::cout << source.c_str() << std::endl;
+
+    // Compile shader
+    const GLchar* sourceString = source.data();
+    const GLint sourceLength = source.length();
+    glShaderSource(id, 1, &sourceString, &sourceLength);
+    glCompileShader(id);
+
+    // Check if shader compiled succesfully
+    GLint status;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &status);
+    if (status != GL_TRUE) {
+        GLint length;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        
+        std::vector<GLchar> infoLog(length);
+        glGetShaderInfoLog(id, infoLog.size(), nullptr, infoLog.data());
+        logger.error(LOG_GPU, "OpenGLShader::initialize: Cannot compile shader:\n%s", infoLog.data());
+        return false;
+    }
     return true;
 }
 

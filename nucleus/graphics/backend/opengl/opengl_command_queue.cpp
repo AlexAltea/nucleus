@@ -23,7 +23,7 @@ OpenGLCommandQueue::~OpenGLCommandQueue() {
 
 bool OpenGLCommandQueue::initialize(const BackendParameters& params, OpenGLContext context) {
     // Start command processing thread
-    thread = std::thread([&] {
+    thread = std::thread([=] {
         task(params, context);
     });
 
