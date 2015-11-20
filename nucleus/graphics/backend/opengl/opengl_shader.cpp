@@ -20,6 +20,7 @@ namespace gfx {
 
 using namespace gfx::hir;
 
+// Conversion
 const char* OpenGLShader::getType(Type type) {
     switch (type) {
     case TYPE_VOID: return "void";
@@ -34,30 +35,78 @@ const char* OpenGLShader::getType(Type type) {
     }
 }
 
-std::string OpenGLShader::getDeclaration(Value* value) {
-    std::string source;
-    if (value->flags & VALUE_IS_ARGUMENT) {
-        return format("%s a%d", getType(value->type), value->getId());
-    } else if (value->flags & VALUE_IS_INPUT) {
-        return format("%s i%d", getType(value->type), value->getId());
-    } else if (value->flags & VALUE_IS_OUTPUT) {
-        return format("%s o%d", getType(value->type), value->getId());
-    } else {
-        return format("%s v%d", getType(value->type), value->getId());
+const char* OpenGLShader::getBuiltin(ValueBuiltin builtin) {
+    switch (builtin) {
+    case VALUE_BUILTIN_POSITION:      return "gl_Position";
+    case VALUE_BUILTIN_CLIPDISTANCE:  return "gl_ClipDistance";
+    case VALUE_BUILTIN_CULLDISTANCE:  return "gl_CullDistance";
+    case VALUE_BUILTIN_FRAGCOORD:     return "gl_FragCoord";
+    case VALUE_BUILTIN_FRAGDEPTH:     return "gl_FragDepth";
+    case VALUE_BUILTIN_POINTCOORD:    return "gl_PointCoord";
+    case VALUE_BUILTIN_POINTSIZE:     return "gl_PointSize";
+    default:
+        assert_always("Unimplemented case");
+        return "UNIMPLEMENTED";
     }
-    return source;
+}
+
+// Emitters
+std::string OpenGLShader::emitOp(const char* fmt) {
+    return fmt;
+}
+std::string OpenGLShader::emitOp(const char* fmt, hir::Value* v0) {
+    std::string v0Name = getName(v0);
+    return format(fmt, v0Name.c_str());
+}
+std::string OpenGLShader::emitOp(const char* fmt, hir::Value* v0, hir::Value* v1) {
+    std::string v0Name = getName(v0);
+    std::string v1Name = getName(v1);
+    return format(fmt, v0Name.c_str(), v1Name.c_str());
+}
+std::string OpenGLShader::emitOp(const char* fmt, hir::Value* v0, hir::Value* v1, hir::Value* v2) {
+    std::string v0Name = getName(v0);
+    std::string v1Name = getName(v1);
+    std::string v2Name = getName(v2);
+    return format(fmt, v0Name.c_str(), v1Name.c_str(), v2Name.c_str());
+}
+
+
+// Utilities
+std::string OpenGLShader::getName(hir::Value* value) {
+    const S32 valueId = value->getId();
+    if (value->flags & VALUE_IS_ARGUMENT) {
+        return format("a%d", valueId);
+    } else if (value->flags & VALUE_IS_INPUT) {
+        return format("i%d", valueId);
+    } else if (value->flags & VALUE_IS_OUTPUT) {
+        return format("o%d", valueId);
+    } else if (value->flags % VALUE_IS_BUILTIN) {
+        return getBuiltin(value->builtin);
+    } else {
+        return format("v%d", valueId);
+    }
+}
+
+std::string OpenGLShader::getName(hir::Function* function) {
+    if (function->flags & FUNCTION_IS_ENTRY) {
+        return "main";
+    } else {
+        return format("func%d", function->getId());
+    }
+}
+
+std::string OpenGLShader::getDeclaration(Value* value) {
+    std::string valueType = getType(value->type);
+    std::string valueName = getName(value);
+    return format("%s %s", valueType.c_str(), valueName.c_str());
 }
 
 std::string OpenGLShader::getDeclaration(Function* function) {
     std::string source;
-    source += getType(function->typeOut);
 
     // Function name
-    if (function->flags & FUNCTION_IS_ENTRY) {
-        source += " main(";
-    } else {
-        source += format(" func%d(", id);
-    }
+    std::string funcName = getName(function);
+    source += format("%s %s(", getType(function->typeOut), funcName.c_str());
 
     // Function arguments
     for (auto* value : function->args) {
@@ -66,16 +115,29 @@ std::string OpenGLShader::getDeclaration(Function* function) {
             source += format(", ");
         }
     }
-
     source += ")";
     return source;
 }
 
-std::string OpenGLShader::compile(Instruction* instr) {
+std::string OpenGLShader::compile(Instruction* i) {
     std::string source;
-    switch (instr->opcode) {
+    switch (i->opcode) {
     case OPCODE_ADD:
-        source = "v1 = v2 + v2"; break;
+        source = emitOp("%s = %s + %s", i->dest, i->src1.value, i->src2.value); break;
+    case OPCODE_SUB:
+        source = emitOp("%s = %s - %s", i->dest, i->src1.value, i->src2.value); break;
+    case OPCODE_MUL:
+        source = emitOp("%s = %s * %s", i->dest, i->src1.value, i->src2.value); break;
+    case OPCODE_DIV:
+        source = emitOp("%s = %s / %s", i->dest, i->src1.value, i->src2.value); break;
+    case OPCODE_COS:
+        source = emitOp("%s = cos(%s)", i->dest, i->src1.value); break;
+    case OPCODE_SIN:
+        source = emitOp("%s = sin(%s)", i->dest, i->src1.value); break;
+    case OPCODE_LOAD:
+        source = emitOp("%s = %s", i->dest, i->src1.value); break;
+    case OPCODE_STORE:
+        source = emitOp("%s = %s", i->src1.value, i->src2.value); break;
     }
     return source;
 }

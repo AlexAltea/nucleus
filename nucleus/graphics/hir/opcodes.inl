@@ -19,3 +19,5 @@ OPCODE(RSQRT,     "rsqrt",     OPCODE_SIG_V_V)     // Reciprocal square root
 OPCODE(SQRT,      "sqrt",      OPCODE_SIG_V_V)     // Square root
 OPCODE(COS,       "cos",       OPCODE_SIG_V_V)     // Cosine
 OPCODE(SIN,       "sin",       OPCODE_SIG_V_V)     // Sine
+OPCODE(LOAD,      "load",      OPCODE_SIG_V_V)     // Load
+OPCODE(STORE,     "store",     OPCODE_SIG_X_V_V)   // Store

@@ -55,6 +55,10 @@ public:
     Value* createSub(Value* lhs, Value* rhs, VectorFlags flags);
     Value* createMul(Value* lhs, Value* rhs, VectorFlags flags);
     Value* createDiv(Value* lhs, Value* rhs, VectorFlags flags);
+
+    // Variable operations
+    Value* createLoad(Value* variable);
+    void createStore(Value* variable, Value* value);
 };
 
 }  // namespace hir

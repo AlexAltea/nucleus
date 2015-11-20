@@ -121,5 +121,17 @@ Value* Builder::createAdd(Value* lhs, Value* rhs, VectorFlags flags) {
     return i->dest;
 }
 
+Value* Builder::createLoad(Value* variable) {
+    Instruction* i = appendInstr(OPCODE_LOAD, 0, allocValue(variable->type));
+    i->src1.setValue(variable);
+    return i->dest;
+}
+
+void Builder::createStore(Value* variable, Value* value) {
+    Instruction* i = appendInstr(OPCODE_STORE, 0, nullptr);
+    i->src1.setValue(variable);
+    i->src2.setValue(value);
+}
+
 }  // namespace hir
 }  // namespace gfx
