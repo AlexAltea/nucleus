@@ -71,6 +71,15 @@ union V128 {
     S16 s16[8];
     U8 u8[16];
     S8 s8[16];
+
+    static V128 from(F32 a0, F32 a1, F32 a2, F32 a3) {
+        V128 result;
+        result.f32[0] = a0;
+        result.f32[1] = a1;
+        result.f32[2] = a2;
+        result.f32[3] = a3;
+        return result;
+    }
 };
 
 /**
@@ -89,4 +98,13 @@ union V256 {
     S16 s16[16];
     U8 u8[32];
     S8 s8[32];
+
+    static V256 from(F64 a0, F64 a1, F64 a2, F64 a3) {
+        V256 result;
+        result.f64[0] = a0;
+        result.f64[1] = a1;
+        result.f64[2] = a2;
+        result.f64[3] = a3;
+        return result;
+    }
 };

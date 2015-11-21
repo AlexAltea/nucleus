@@ -51,27 +51,58 @@ const char* OpenGLShader::getBuiltin(ValueBuiltin builtin) {
 }
 
 // Emitters
+std::string OpenGLShader::getDst(Value* value) {
+    if (value->flags & (VALUE_IS_INPUT | VALUE_IS_OUTPUT | VALUE_IS_BUILTIN)) {
+        return getName(value);
+    } else {
+        return getDeclaration(value);
+    }
+}
+
+std::string OpenGLShader::getSrc(Value* value) {
+    if (value->flags & VALUE_IS_CONSTANT) {
+        return getConstant(value);
+    } else {
+        return getName(value);
+    }
+}
+
 std::string OpenGLShader::emitOp(const char* fmt) {
     return fmt;
 }
+
 std::string OpenGLShader::emitOp(const char* fmt, hir::Value* v0) {
-    std::string v0Name = getName(v0);
+    std::string v0Name = getDst(v0);
     return format(fmt, v0Name.c_str());
 }
+
 std::string OpenGLShader::emitOp(const char* fmt, hir::Value* v0, hir::Value* v1) {
-    std::string v0Name = getName(v0);
-    std::string v1Name = getName(v1);
+    std::string v0Name = getDst(v0);
+    std::string v1Name = getSrc(v1);
     return format(fmt, v0Name.c_str(), v1Name.c_str());
 }
+
 std::string OpenGLShader::emitOp(const char* fmt, hir::Value* v0, hir::Value* v1, hir::Value* v2) {
-    std::string v0Name = getName(v0);
-    std::string v1Name = getName(v1);
-    std::string v2Name = getName(v2);
+    std::string v0Name = getDst(v0);
+    std::string v1Name = getSrc(v1);
+    std::string v2Name = getSrc(v2);
     return format(fmt, v0Name.c_str(), v1Name.c_str(), v2Name.c_str());
 }
 
-
 // Utilities
+std::string OpenGLShader::getConstant(Value* value) {
+    Value::Constant& c = value->constant;
+    switch (value->type) {
+    case TYPE_F32:
+        return format("float(%f)", c.f32);
+    case TYPE_V128:
+        return format("vec4(%f, %f, %f, %f)", c.v128.f32[0], c.v128.f32[1], c.v128.f32[2], c.v128.f32[3]);
+    default:
+        assert_always("Unimplemented case");
+        return "UNIMPLEMENTED";
+    }
+}
+
 std::string OpenGLShader::getName(hir::Value* value) {
     const S32 valueId = value->getId();
     if (value->flags & VALUE_IS_ARGUMENT) {
@@ -80,7 +111,7 @@ std::string OpenGLShader::getName(hir::Value* value) {
         return format("i%d", valueId);
     } else if (value->flags & VALUE_IS_OUTPUT) {
         return format("o%d", valueId);
-    } else if (value->flags % VALUE_IS_BUILTIN) {
+    } else if (value->flags & VALUE_IS_BUILTIN) {
         return getBuiltin(value->builtin);
     } else {
         return format("v%d", valueId);
@@ -188,7 +219,6 @@ std::string OpenGLShader::compile(Module* module) {
 
 bool OpenGLShader::initialize(const ShaderDesc& desc) {
     const std::string source = compile(desc.module);
-    std::cout << source.c_str() << std::endl;
 
     // Compile shader
     const GLchar* sourceString = source.data();

@@ -85,6 +85,18 @@ Value* Builder::getConstantV128(V128 c) {
     return value;
 }
 
+// HIR builtins
+Value* Builder::getBuiltinValue(ValueBuiltin builtin) {
+    hir::Function* parFunction = ib->parent;
+    hir::Module* parModule = parFunction->parent;
+
+    Value* value = allocValue(TYPE_V128);
+    value->parent.module = parModule;
+    value->flags |= VALUE_IS_BUILTIN;
+    value->builtin = builtin;
+    return value;
+}
+
 // Instruction generation
 Instruction* Builder::appendInstr(Opcode opcode, OpcodeFlags flags, Value* dest) {
     Instruction* instr = new Instruction();

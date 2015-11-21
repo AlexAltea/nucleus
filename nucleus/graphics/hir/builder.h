@@ -42,8 +42,8 @@ public:
     Value* getConstantF32(F32 c);
     Value* getConstantV128(V128 c);
 
-    // HIR functions
-    Function* getExternFunction(void* hostAddr);
+    // HIR builtins
+    Value* getBuiltinValue(ValueBuiltin builtin);
 
     /**
      * HIR instruction generation

@@ -86,11 +86,11 @@ struct DBState {
 
 class PipelineDesc {
 public:
-    Shader vs;  // Vertex Shader
-    Shader hs;  // Hull Shader
-    Shader ds;  // Domain Shader
-    Shader gs;  // Geometry Shader
-    Shader ps;  // Pixel Shader
+    Shader* vs;  // Vertex Shader
+    Shader* hs;  // Hull Shader
+    Shader* ds;  // Domain Shader
+    Shader* gs;  // Geometry Shader
+    Shader* ps;  // Pixel Shader
 
     IAState iaState;      // Input assembler static pipeline state
     TessState tessState;  // Tessellator static pipeline state

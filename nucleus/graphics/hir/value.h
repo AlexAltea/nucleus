@@ -13,6 +13,7 @@ namespace gfx {
 namespace hir {
 
 // Forward declarations
+class Module;
 class Function;
 class Instruction;
 
@@ -40,6 +41,7 @@ class Value {
 
 public:
     union Parent {
+        Module* module;
         Function* function;
         Instruction* instruction;
     } parent;
@@ -51,6 +53,8 @@ public:
         F32 f32;
         V128 v128;
     } constant;
+
+    ValueBuiltin builtin;
 
     // Counter of instructions using this value as source
     U32 usage;

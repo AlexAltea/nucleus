@@ -8,6 +8,7 @@
 #include "nucleus/graphics/shader.h"
 #include "nucleus/graphics/backend/opengl/opengl.h"
 #include "nucleus/graphics/hir/type.h"
+#include "nucleus/graphics/hir/value.h"
 
 #include <vector>
 
@@ -27,12 +28,15 @@ class OpenGLShader : public Shader {
     const char* getBuiltin(hir::ValueBuiltin builtin);
 
     // Emitters
+    std::string getDst(hir::Value* value);
+    std::string getSrc(hir::Value* value);
     std::string emitOp(const char* fmt);
     std::string emitOp(const char* fmt, hir::Value* v0);
     std::string emitOp(const char* fmt, hir::Value* v0, hir::Value* v1);
     std::string emitOp(const char* fmt, hir::Value* v0, hir::Value* v1, hir::Value* v2);
 
     // Utilities
+    std::string getConstant(hir::Value* constant);
     std::string getName(hir::Value* value);
     std::string getName(hir::Function* function);
     std::string getDeclaration(hir::Value* value);

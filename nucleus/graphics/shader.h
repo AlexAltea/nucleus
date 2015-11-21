@@ -14,7 +14,7 @@ enum ShaderType {
     SHADER_TYPE_HULL,
     SHADER_TYPE_DOMAIN,
     SHADER_TYPE_GEOMETRY,
-    SHADER_TYPE_FRAGMENT,
+    SHADER_TYPE_PIXEL,
 };
 
 enum ShaderFlags {
@@ -22,7 +22,7 @@ enum ShaderFlags {
 };
 
 struct ShaderDesc {
-    ShaderFlags type;
+    ShaderType type;
     ShaderFlags flags;
     hir::Module* module;
 };
