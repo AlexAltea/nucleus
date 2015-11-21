@@ -12,6 +12,8 @@ namespace gfx {
 
 class OpenGLPipeline : public Pipeline {
 public:
+    GLuint program;
+
     // Blending
     GLenum sfactor;
     GLenum dfactor;

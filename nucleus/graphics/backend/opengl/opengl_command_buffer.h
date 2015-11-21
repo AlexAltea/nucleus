@@ -8,6 +8,7 @@
 #include "nucleus/graphics/command_buffer.h"
 #include "nucleus/graphics/backend/opengl/opengl.h"
 #include "nucleus/graphics/backend/opengl/opengl_fence.h"
+#include "nucleus/graphics/backend/opengl/opengl_pipeline.h"
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
 #include "nucleus/graphics/backend/opengl/opengl_texture.h"
 #include "nucleus/graphics/backend/opengl/opengl_vertex_buffer.h"
@@ -40,6 +41,12 @@ struct OpenGLCommand {
 };
 
 // Public commands
+struct OpenGLCommandBindPipeline: public OpenGLCommand {
+    OpenGLCommandBindPipeline() : OpenGLCommand(TYPE_BIND_PIPELINE) {}
+
+    OpenGLPipeline* pipeline;
+};
+
 struct OpenGLCommandClearColor : public OpenGLCommand {
     OpenGLCommandClearColor() : OpenGLCommand(TYPE_CLEAR_COLOR) {}
 

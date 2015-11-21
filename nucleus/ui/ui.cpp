@@ -49,6 +49,18 @@ void UI::task() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
+
+    ShaderDesc vertDesc = {};
+    ShaderDesc fragDesc = {};
+    vertDesc.type = SHADER_TYPE_VERTEX;
+    fragDesc.type = SHADER_TYPE_PIXEL;
+    auto* vertShader = graphics->createShader(vertDesc);
+    auto* fragShader = graphics->createShader(fragDesc);
+    PipelineDesc pipelineDesc = {};
+    pipelineDesc.vs = vertShader;
+    pipelineDesc.ps = fragShader;
+    Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
+
     // Initial screen
     screens.push_back(std::make_unique<ScreenLogo>(this));
 
@@ -56,6 +68,7 @@ void UI::task() {
         const gfx::Viewport viewport = { 0, 0, surfaceWidth, surfaceHeight };
         
         cmdBuffer->reset();
+        cmdBuffer->cmdBindPipeline(pipeline);
         cmdBuffer->cmdSetViewports(1, &viewport);
         cmdBuffer->cmdClearColor(colorTarget, clearColor);
 

@@ -43,6 +43,7 @@ private:
     std::condition_variable cv;
 
     // Specific commands
+    void execute(const OpenGLCommandBindPipeline& cmd);
     void execute(const OpenGLCommandClearColor& cmd);
     void execute(const OpenGLCommandClearDepthStencil& cmd);
     void execute(const OpenGLCommandDraw& cmd);

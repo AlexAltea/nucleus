@@ -132,9 +132,47 @@ DepthStencilTarget* OpenGLBackend::createDepthStencilTarget(Texture* texture) {
 }
 
 Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
-    auto* pipeline = new OpenGLPipeline();
-    // TODO
+    if (!gCurrentContext) {
+        useAvailableContext();
+    }
 
+    // Create program, then attach and link shaders to it
+    GLuint progId = glCreateProgram();
+    for (const auto& shader : { desc.vs, desc.hs, desc.ds, desc.gs, desc.ps }) {
+        auto* glShader = static_cast<OpenGLShader*>(shader);
+        if (!glShader) {
+            continue;
+        }
+        glAttachShader(progId, glShader->id);
+    }
+    glLinkProgram(progId);
+
+    // Check if program linked succesfully
+    GLint status;
+    glGetProgramiv(progId, GL_LINK_STATUS, &status);
+    if (status != GL_TRUE) {
+        GLint length;
+		glGetProgramiv(progId, GL_INFO_LOG_LENGTH, &length);
+        
+        std::vector<GLchar> infoLog(length);
+        glGetProgramInfoLog(progId, infoLog.size(), nullptr, infoLog.data());
+        logger.error(LOG_GPU, "OpenGLBackend::createPipeline: Cannot link program:\n%s", infoLog.data());
+        return nullptr;
+    }
+    glGetProgramiv(progId, GL_VALIDATE_STATUS, &status);
+    if (status != GL_TRUE) {
+        GLint length;
+		glGetProgramiv(progId, GL_INFO_LOG_LENGTH, &length);
+        
+        std::vector<GLchar> infoLog(length);
+        glGetProgramInfoLog(progId, infoLog.size(), nullptr, infoLog.data());
+        logger.error(LOG_GPU, "OpenGLBackend::createPipeline: Cannot validate program:\n%s", infoLog.data());
+        return nullptr;
+    }
+
+    // Prepare OpenGL pipeline object
+    auto* pipeline = new OpenGLPipeline();
+    pipeline->program = progId;
     return pipeline;
 }
 
@@ -153,7 +191,7 @@ Shader* OpenGLBackend::createShader(const ShaderDesc& desc) {
         glType = GL_TESS_EVALUATION_SHADER; break;
     case SHADER_TYPE_GEOMETRY:
         glType = GL_GEOMETRY_SHADER; break;
-    case SHADER_TYPE_FRAGMENT:
+    case SHADER_TYPE_PIXEL:
         glType = GL_FRAGMENT_SHADER; break;
     default:
         assert_always("Unimplemented case");

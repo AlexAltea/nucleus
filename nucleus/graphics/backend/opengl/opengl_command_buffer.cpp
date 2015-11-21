@@ -22,6 +22,16 @@ bool OpenGLCommandBuffer::reset() {
 }
 
 void OpenGLCommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
+    auto glPipeline = static_cast<OpenGLPipeline*>(pipeline);
+    if (!glPipeline) {
+        logger.error(LOG_GRAPHICS, "OpenGLCommandBuffer::cmdBindPipeline: Invalid pipeline specified");
+        return;
+    }
+
+    auto* command = new OpenGLCommandBindPipeline();
+    command->pipeline = glPipeline;
+
+    commands.push_back(command);
 }
 
 void OpenGLCommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {

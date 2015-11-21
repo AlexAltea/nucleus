@@ -75,6 +75,9 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
 
 void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     switch (cmd.type) {
+    case OpenGLCommand::TYPE_BIND_PIPELINE:
+        execute(static_cast<const OpenGLCommandBindPipeline&>(cmd));
+        break;
     case OpenGLCommand::TYPE_CLEAR_COLOR:
         execute(static_cast<const OpenGLCommandClearColor&>(cmd));
         break;
@@ -108,6 +111,13 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
     default:
         logger.error(LOG_GRAPHICS, "OpenGLCommandQueue::execute: Unrecognized command (%d)", cmd.type);
     }
+}
+
+void OpenGLCommandQueue::execute(const OpenGLCommandBindPipeline& cmd) {
+    auto* glPipeline = static_cast<OpenGLPipeline*>(cmd.pipeline);
+
+    glUseProgram(glPipeline->program);
+    checkBackendError("OpenGLCommandQueue::execute: cmdBindPipeline");
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommandClearColor& cmd) {
