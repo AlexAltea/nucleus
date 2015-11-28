@@ -8,7 +8,7 @@
 
 namespace ui {
 
-ScreenEmulator::ScreenEmulator(UI* parent) : Screen(parent) {
+ScreenEmulator::ScreenEmulator(UI* manager) : Screen(manager) {
 }
 
 void ScreenEmulator::update() {

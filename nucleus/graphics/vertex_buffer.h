@@ -11,6 +11,7 @@ namespace gfx {
 
 struct VertexBufferDesc {
     U64 size;
+    void* data;
 };
 
 class VertexBuffer {

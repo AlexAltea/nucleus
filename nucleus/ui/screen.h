@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/graphics/graphics.h"
-#include "nucleus/ui/widgets/list.h"
+#include "nucleus/ui/widgets/widget_container.h"
 
 #include <chrono>
 
@@ -22,7 +22,7 @@ class Screen {
     Clock::time_point time_current;
 
 protected:
-    UI* parent;
+    UI* manager;
     WidgetContainer body;
 
     // Elapsed time since screen creation
@@ -35,14 +35,14 @@ public:
     // Tells the UI that this screen should be removed
     bool finished = false;
 
-    Screen(UI* parent);
+    Screen(UI* ui);
 
     // Common tasks before and after rendering, respectively
     void prologue();
     void epilogue();
 
     // Render the screen widgets
-    void render(gfx::CommandBuffer* cmdBuffer);
+    void render();
 
     // Update the screen members
     virtual void update() = 0;

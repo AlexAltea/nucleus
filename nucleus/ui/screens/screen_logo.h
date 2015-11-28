@@ -13,7 +13,7 @@ namespace ui {
 
 class ScreenLogo : public Screen {
 public:
-    ScreenLogo(UI* parent);
+    ScreenLogo(UI* manager);
 
     virtual void update() override;
 };

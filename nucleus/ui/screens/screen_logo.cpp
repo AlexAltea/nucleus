@@ -7,10 +7,11 @@
 #include "nucleus/ui/ui.h"
 #include "nucleus/ui/screens/list.h"
 #include "nucleus/ui/transitions.h"
+#include "nucleus/ui/length.h"
 
 namespace ui {
 
-ScreenLogo::ScreenLogo(UI* parent) : Screen(parent) {
+ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     auto* logo = new WidgetImage();
     logo->init("..\\resources\\images\\nucleus-logo.png");
     logo->style.top = 25.0_pct;

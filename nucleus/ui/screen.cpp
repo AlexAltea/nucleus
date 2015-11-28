@@ -7,8 +7,13 @@
 
 namespace ui {
 
-Screen::Screen(UI* parent) : parent(parent) {
+Screen::Screen(UI* ui) : manager(ui) {
     time_creation = Clock::now();
+
+    // Body container style
+    body.manager = ui;
+    body.style.height = 100.0_pct;
+    body.style.width = 100.0_pct;
 }
 
 void Screen::prologue() {
@@ -16,8 +21,8 @@ void Screen::prologue() {
     dtime = time_current - time_creation;
 }
 
-void Screen::render(gfx::CommandBuffer* cmdBuffer) {
-    body.render(cmdBuffer);
+void Screen::render() {
+    body.render();
 }
 
 void Screen::epilogue() {

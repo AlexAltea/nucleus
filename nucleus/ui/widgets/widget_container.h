@@ -31,7 +31,7 @@ public:
     bool removeElement(const std::string& target);
 
     virtual Widget* find(const std::string& query) override;
-    virtual void render(gfx::CommandBuffer* cmdBuffer) override;
+    virtual void render() override;
 };
 
 }  // namespace ui

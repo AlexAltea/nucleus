@@ -13,7 +13,7 @@ namespace ui {
 
 class ScreenEmulator : public Screen {
 public:
-    ScreenEmulator(UI* parent);
+    ScreenEmulator(UI* manager);
 
     virtual void update() override;
 };

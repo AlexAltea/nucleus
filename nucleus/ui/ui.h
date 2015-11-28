@@ -19,7 +19,8 @@ namespace ui {
 class UI {
     // Graphics
     std::shared_ptr<gfx::IBackend> graphics;
-    gfx::CommandQueue* queue;
+    gfx::CommandQueue* cmdQueue;
+    gfx::CommandBuffer* cmdBuffer;
 
     std::thread thread;
     std::vector<std::unique_ptr<Screen>> screens;
@@ -50,6 +51,16 @@ public:
      * @param[in]  screen  Screen to be passed
      */
     void pushScreen(std::unique_ptr<Screen>&& screen);
+
+public:
+    // Rendering methods
+    std::vector<WidgetInput> widgetVtxBuffer;
+
+    /**
+     * Pushes a new screen to the back of the screen array
+     * @param[in]  screen  Widget vertices to include in the buffer
+     */
+    void renderWidget(const WidgetInput& input);
 };
 
 }  // namespace ui

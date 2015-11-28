@@ -6,6 +6,7 @@
 #include "widget_image.h"
 #include "nucleus/common.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/ui/ui.h"
 
 #include "externals/stb/stb_image.h"
 
@@ -41,7 +42,7 @@ void WidgetImage::init(const unsigned char* pngbuffer, size_t size) {
     image.buffer = stbi_load_from_memory(pngbuffer, size, &image.width, &image.height, &image.components, 4);
 }
 
-void WidgetImage::render(gfx::CommandBuffer* cmdBuffer) {
+void WidgetImage::render() {
     Length width = style.width;
     Length height = style.height;
 
@@ -53,9 +54,8 @@ void WidgetImage::render(gfx::CommandBuffer* cmdBuffer) {
     }
     height = Widget::correctHeight(height);
 
-    cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_QUAD_LIST);
-    cmdBuffer->cmdSetVertexBuffers(0, nullptr); // TODO
-    cmdBuffer->cmdDraw(0, 4, 0, 1);
+    WidgetInput input;
+    manager->renderWidget(input);
 }
 
 }  // namespace ui

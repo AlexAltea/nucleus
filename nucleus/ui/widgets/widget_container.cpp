@@ -4,10 +4,14 @@
  */
 
 #include "widget_container.h"
+#include "nucleus/assert.h"
 
 namespace ui {
 
 bool WidgetContainer::addElement(Widget* widget) {
+    assert_true(widget->parent == nullptr, "Widget already has a parent");
+    widget->parent = this;
+    widget->manager = manager;
     children.push_back(widget);
     return true;
 }
@@ -37,9 +41,9 @@ Widget* WidgetContainer::find(const std::string& query) {
     return nullptr;
 }
 
-void WidgetContainer::render(gfx::CommandBuffer* cmdBuffer) {
+void WidgetContainer::render() {
     for (auto& child : children) {
-        child->render(cmdBuffer);
+        child->render();
     }
 }
 

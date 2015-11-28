@@ -16,7 +16,7 @@ extern Window* window;
 namespace ui {
 
 UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue) :
-    graphics(std::move(graphics)), queue(queue), language() {
+    graphics(std::move(graphics)), cmdQueue(queue), language() {
 }
 
 bool UI::initialize() {
@@ -40,7 +40,7 @@ void UI::task() {
     gfx::Fence* fence = graphics->createFence(fenceDesc);
 
     const float clearColor[] = {0.5f, 0.5f, 0.0f, 1.0f};
-    gfx::CommandBuffer* cmdBuffer = graphics->createCommandBuffer();
+    cmdBuffer = graphics->createCommandBuffer();
     gfx::ColorTarget* colorTarget = graphics->screenBackBuffer;
 
     // Prepare state
@@ -49,17 +49,16 @@ void UI::task() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
-
-    ShaderDesc vertDesc = {};
-    ShaderDesc fragDesc = {};
+    gfx::ShaderDesc vertDesc = {};
+    gfx::ShaderDesc fragDesc = {};
     vertDesc.type = SHADER_TYPE_VERTEX;
     fragDesc.type = SHADER_TYPE_PIXEL;
     auto* vertShader = graphics->createShader(vertDesc);
     auto* fragShader = graphics->createShader(fragDesc);
-    PipelineDesc pipelineDesc = {};
+    gfx::PipelineDesc pipelineDesc = {};
     pipelineDesc.vs = vertShader;
     pipelineDesc.ps = fragShader;
-    Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
+    gfx::Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
 
     // Initial screen
     screens.push_back(std::make_unique<ScreenLogo>(this));
@@ -71,6 +70,9 @@ void UI::task() {
         cmdBuffer->cmdBindPipeline(pipeline);
         cmdBuffer->cmdSetViewports(1, &viewport);
         cmdBuffer->cmdClearColor(colorTarget, clearColor);
+
+        // Vertex buffer
+        widgetVtxBuffer.clear();
 
         // Display screens
         for (auto i = 0ULL; i < screens.size(); i++) {
@@ -85,6 +87,16 @@ void UI::task() {
             }
         }
 
+        // Render widgets
+        gfx::VertexBufferDesc vtxBufferDesc = {};
+        vtxBufferDesc.size = widgetVtxBuffer.size() * sizeof(WidgetInput);
+        vtxBufferDesc.data = widgetVtxBuffer.data();
+        gfx::VertexBuffer* vtxBuffer = graphics->createVertexBuffer(vtxBufferDesc);
+
+        cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
+        cmdBuffer->cmdSetVertexBuffers(0, vtxBuffer);
+        cmdBuffer->cmdDraw(0, widgetVtxBuffer.size(), 0, 1);
+
         // Add new screens
         while (!newScreens.empty()) {
             auto& screen = newScreens.front();
@@ -92,7 +104,7 @@ void UI::task() {
             newScreens.pop();
         }
 
-        queue->submit(cmdBuffer, fence);
+        cmdQueue->submit(cmdBuffer, fence);
         fence->wait();
 
         graphics->doSwapBuffers();
@@ -101,6 +113,13 @@ void UI::task() {
 
 void UI::pushScreen(std::unique_ptr<Screen>&& screen) {
     newScreens.push(std::move(screen));
+}
+
+// Rendering
+void UI::renderWidget(const WidgetInput& input) {
+    const U32 offset = sizeof(WidgetInput) * widgetVtxBuffer.size();
+    widgetVtxBuffer.push_back(input);
+    cmdBuffer->cmdDraw(offset, 3, 0, 1);
 }
 
 }  // namespace ui

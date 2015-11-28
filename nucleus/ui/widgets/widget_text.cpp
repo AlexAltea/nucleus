@@ -12,7 +12,7 @@ namespace ui {
 void WidgetText::update(const std::string& text) {
 }
 
-void WidgetText::render(gfx::CommandBuffer* cmdBuffer) {
+void WidgetText::render() {
 }
 
 }  // namespace ui

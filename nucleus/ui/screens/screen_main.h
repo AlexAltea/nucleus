@@ -11,7 +11,7 @@ namespace ui {
 
 class ScreenMain : public Screen {
 public:
-    ScreenMain(UI* parent);
+    ScreenMain(UI* manager);
 
     virtual void update() override;
 };

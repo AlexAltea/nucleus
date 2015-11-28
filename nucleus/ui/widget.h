@@ -14,15 +14,27 @@
 
 namespace ui {
 
+// Forward declarations
+class UI;
+
+struct WidgetInput {
+    struct WidgetVertex {
+        F32 position[2];
+    } vertex[4];
+};
+
 class Widget {
 protected:
-    // Parent widget if applicable
-    Widget* parent;
-
     // Texture produced after rendering the contents of this widget
     gfx::Texture* texture;
 
 public:
+    // UI Manager
+    UI* manager;
+
+    // Parent widget if applicable
+    Widget* parent = nullptr;
+
     std::string id;
 
     Style style;
@@ -38,7 +50,7 @@ public:
      * Pass the rendering commands to the UI command buffer
      * @param[in]  cmdBuffer  Command buffer to store the rendering commands in
      */
-    virtual void render(gfx::CommandBuffer* cmdBuffer) = 0;
+    virtual void render() = 0;
 
     static Length correctHeight(Length height);
 

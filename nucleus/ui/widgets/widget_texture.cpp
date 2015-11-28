@@ -10,7 +10,7 @@ namespace ui {
 void WidgetTexture::init() {
 }
 
-void WidgetTexture::render(gfx::CommandBuffer* cmdBuffer) {
+void WidgetTexture::render() {
 }
 
 }  // namespace ui

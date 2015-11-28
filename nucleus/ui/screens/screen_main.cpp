@@ -7,7 +7,7 @@
 
 namespace ui {
 
-ScreenMain::ScreenMain(UI* parent) : Screen(parent) {
+ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
 }
 
 void ScreenMain::update() {
