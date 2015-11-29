@@ -5,6 +5,7 @@
 
 #include "opengl_command_queue.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/graphics/backend/opengl/opengl_debug.h"
 
 #define checkBackendError(name) { \
     GLenum error = glGetError(); \
@@ -48,6 +49,11 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
         return;
     }
 #endif
+
+    // Logging
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+    glDebugMessageCallback(reinterpret_cast<GLDEBUGPROC>(OpenGLDebugCallback), nullptr);
 
     // Initial scratch state
     glGenFramebuffers(1, &tmpFramebuffer);

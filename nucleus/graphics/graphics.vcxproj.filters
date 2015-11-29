@@ -52,6 +52,9 @@
     <ClCompile Include="backend\opengl\opengl_shader.cpp">
       <Filter>backend\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="backend\opengl\opengl_debug.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
@@ -123,6 +126,9 @@
     </ClInclude>
     <ClInclude Include="shader.h" />
     <ClInclude Include="backend\opengl\opengl_shader.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\opengl\opengl_debug.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
   </ItemGroup>
