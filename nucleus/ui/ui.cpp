@@ -90,8 +90,11 @@ void UI::task() {
         // Render widgets
         gfx::VertexBufferDesc vtxBufferDesc = {};
         vtxBufferDesc.size = widgetVtxBuffer.size() * sizeof(WidgetInput);
-        vtxBufferDesc.data = widgetVtxBuffer.data();
         gfx::VertexBuffer* vtxBuffer = graphics->createVertexBuffer(vtxBufferDesc);
+
+        void* bufferAddr = vtxBuffer->map();
+        memcpy(bufferAddr, widgetVtxBuffer.data(), vtxBufferDesc.size);
+        vtxBuffer->unmap();
 
         cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
         cmdBuffer->cmdSetVertexBuffers(0, vtxBuffer);

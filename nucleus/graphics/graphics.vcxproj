@@ -18,6 +18,7 @@
     <ClCompile Include="backend\opengl\opengl_debug.cpp" />
     <ClCompile Include="backend\opengl\opengl_fence.cpp" />
     <ClCompile Include="backend\opengl\opengl_shader.cpp" />
+    <ClCompile Include="backend\opengl\opengl_vertex_buffer.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="hir\block.cpp" />
     <ClCompile Include="hir\builder.cpp" />

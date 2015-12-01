@@ -55,6 +55,9 @@
     <ClCompile Include="backend\opengl\opengl_debug.cpp">
       <Filter>backend\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="backend\opengl\opengl_vertex_buffer.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />

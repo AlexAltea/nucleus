@@ -217,7 +217,6 @@ VertexBuffer* OpenGLBackend::createVertexBuffer(const VertexBufferDesc& desc) {
         useAvailableContext();
     }
     auto* vtxBuffer = new OpenGLVertexBuffer();
-    glGenBuffers(1, &vtxBuffer->id);
     return vtxBuffer;
 }
 

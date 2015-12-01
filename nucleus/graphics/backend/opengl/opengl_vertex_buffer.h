@@ -13,6 +13,12 @@ namespace gfx {
 class OpenGLVertexBuffer : public VertexBuffer {
 public:
     GLuint id;
+
+    OpenGLVertexBuffer();
+    ~OpenGLVertexBuffer();
+
+    virtual void* map() override;
+    virtual bool unmap() override;
 };
 
 }  // namespace gfx
