@@ -134,6 +134,7 @@
     <ClInclude Include="backend\opengl\opengl_debug.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="format.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">

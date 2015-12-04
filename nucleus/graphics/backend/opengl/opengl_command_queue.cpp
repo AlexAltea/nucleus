@@ -123,6 +123,7 @@ void OpenGLCommandQueue::execute(const OpenGLCommandBindPipeline& cmd) {
     auto* glPipeline = static_cast<OpenGLPipeline*>(cmd.pipeline);
 
     glUseProgram(glPipeline->program);
+    glBindVertexArray(glPipeline->vao);
     checkBackendError("OpenGLCommandQueue::execute: cmdBindPipeline");
 }
 
@@ -190,9 +191,17 @@ void OpenGLCommandQueue::execute(const OpenGLCommandDrawIndexed& cmd) {
 }
 
 void OpenGLCommandQueue::execute(const OpenGLCommandSetVertexBuffers& cmd) {
-    GLuint index = cmd.index;
+    GLint index = cmd.index;
+    GLsizei count = cmd.count;
+    const auto& buffers = cmd.buffers;
+    const auto& offsets = cmd.offsets;
+    const auto& strides = cmd.strides;
 
-    //glVertexAttribPointer(0, )
+    if (buffers.size() == 0) {
+        glBindVertexBuffers(index, count, nullptr, nullptr, nullptr);
+    } else {
+        glBindVertexBuffers(index, count, buffers.data(), offsets.data(), strides.data());
+    }
     checkBackendError("OpenGLCommandQueue::execute: cmdSetVertexBuffers");
 }
 

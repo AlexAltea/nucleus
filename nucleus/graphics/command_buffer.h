@@ -65,10 +65,13 @@ public:
 
     /**
      * Pushes a command to set the vertex buffer for an input slots
-     * @param[in]  index      Slot index
-     * @param[in]  vtxBuffer  Vertex buffer
+     * @param[in]  index           Slot index
+     * @param[in]  vtxBufferCount  Amount of slot indices to set
+     * @param[in]  vtxBuffer       Array of vertex buffers
+     * @param[in]  offsets         Offsets
+     * @param[in]  strides         Strides
      */
-    virtual void cmdSetVertexBuffers(U32 index, VertexBuffer* vtxBuffer) = 0;
+    virtual void cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) = 0;
 
     /**
      * Pushes a command to set the primitive topology used for drawing

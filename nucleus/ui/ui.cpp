@@ -55,9 +55,13 @@ void UI::task() {
     fragDesc.type = SHADER_TYPE_PIXEL;
     auto* vertShader = graphics->createShader(vertDesc);
     auto* fragShader = graphics->createShader(fragDesc);
+
     gfx::PipelineDesc pipelineDesc = {};
     pipelineDesc.vs = vertShader;
     pipelineDesc.ps = fragShader;
+    pipelineDesc.iaState.inputLayout = {
+        { 1, gfx::DATA_FORMAT_R32G32B32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+    };
     gfx::Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
 
     // Initial screen
@@ -98,6 +102,7 @@ void UI::task() {
 
         cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
         cmdBuffer->cmdSetVertexBuffers(0, vtxBuffer);
+        cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, {0}, {0});
         cmdBuffer->cmdDraw(0, widgetVtxBuffer.size(), 0, 1);
 
         // Add new screens

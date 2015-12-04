@@ -88,7 +88,10 @@ struct OpenGLCommandSetVertexBuffers : public OpenGLCommand {
     OpenGLCommandSetVertexBuffers() : OpenGLCommand(TYPE_SET_VERTEX_BUFFERS) {}
 
     GLuint index;
-    OpenGLVertexBuffer* vtxBuffer;
+    U32 count;
+    std::vector<GLuint> buffers;
+    std::vector<GLintptr> offsets;
+    std::vector<GLsizei> strides;
 };
 
 struct OpenGLCommandSetPrimitiveTopology : public OpenGLCommand {
@@ -147,7 +150,7 @@ public:
     virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) override;
     virtual void cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) override;
     virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) override;
-    virtual void cmdSetVertexBuffers(U32 index, VertexBuffer* vtxBuffer) override;
+    virtual void cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) override;
     virtual void cmdSetPrimitiveTopology(PrimitiveTopology topology) override;
     virtual void cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) override;
     virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) override;

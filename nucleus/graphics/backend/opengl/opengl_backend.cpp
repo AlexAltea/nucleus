@@ -137,42 +137,70 @@ Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
     }
 
     // Create program, then attach and link shaders to it
-    GLuint progId = glCreateProgram();
+    GLuint program = glCreateProgram();
     for (const auto& shader : { desc.vs, desc.hs, desc.ds, desc.gs, desc.ps }) {
         auto* glShader = static_cast<OpenGLShader*>(shader);
         if (!glShader) {
             continue;
         }
-        glAttachShader(progId, glShader->id);
+        glAttachShader(program, glShader->id);
     }
-    glLinkProgram(progId);
+    glLinkProgram(program);
 
     // Check if program linked succesfully
     GLint status;
-    glGetProgramiv(progId, GL_LINK_STATUS, &status);
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
     if (status != GL_TRUE) {
         GLint length;
-		glGetProgramiv(progId, GL_INFO_LOG_LENGTH, &length);
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
         
         std::vector<GLchar> infoLog(length);
-        glGetProgramInfoLog(progId, infoLog.size(), nullptr, infoLog.data());
+        glGetProgramInfoLog(program, infoLog.size(), nullptr, infoLog.data());
         logger.error(LOG_GPU, "OpenGLBackend::createPipeline: Cannot link program:\n%s", infoLog.data());
         return nullptr;
     }
-    glGetProgramiv(progId, GL_VALIDATE_STATUS, &status);
+    glGetProgramiv(program, GL_VALIDATE_STATUS, &status);
     if (status != GL_TRUE) {
         GLint length;
-		glGetProgramiv(progId, GL_INFO_LOG_LENGTH, &length);
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
         
         std::vector<GLchar> infoLog(length);
-        glGetProgramInfoLog(progId, infoLog.size(), nullptr, infoLog.data());
+        glGetProgramInfoLog(program, infoLog.size(), nullptr, infoLog.data());
         logger.error(LOG_GPU, "OpenGLBackend::createPipeline: Cannot validate program:\n%s", infoLog.data());
         return nullptr;
     }
 
+    // Create VAO
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    for (const auto& inputElement : desc.iaState.inputLayout) {
+        GLuint index = inputElement.semanticIndex;
+        GLuint slot = inputElement.inputSlot;
+        GLsizei stride = inputElement.stride;
+ 	    GLint size;
+ 	    GLenum type;
+        GLboolean normalized;
+
+        switch (inputElement.format) {
+        case DATA_FORMAT_R32G32:
+            size = 2; type = GL_FLOAT; normalized = GL_FALSE; break;
+        case DATA_FORMAT_R32G32B32:
+            size = 3; type = GL_FLOAT; normalized = GL_FALSE; break;
+        case DATA_FORMAT_R32G32B32A32:
+            size = 4; type = GL_FLOAT; normalized = GL_FALSE; break;
+        }
+
+        glEnableVertexAttribArray(index);
+        glVertexAttribFormat(index, size, type, normalized, 0);
+        glVertexAttribBinding(index, slot);
+    }
+    glBindVertexArray(0);
+
     // Prepare OpenGL pipeline object
     auto* pipeline = new OpenGLPipeline();
-    pipeline->program = progId;
+    pipeline->program = program;
+    pipeline->vao = vao;
     return pipeline;
 }
 

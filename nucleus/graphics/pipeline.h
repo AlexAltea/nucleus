@@ -5,10 +5,30 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+#include "nucleus/graphics/format.h"
 #include "nucleus/graphics/shader.h"
 
 namespace gfx {
 
+// Input Assembler
+enum InputClassification {
+    INPUT_CLASSIFICATION_PER_VERTEX,
+    INPUT_CLASSIFICATION_PER_INSTANCE,
+};
+
+struct InputElement {
+    U32 semanticIndex;
+    DataFormat format;
+    U32 inputSlot;
+    U32 offset;
+    U32 stride;
+    U32 size;
+    InputClassification inputClassification;
+    U32 instanceStepRate;
+};
+
+// Color Blender
 enum Blend {
     BLEND_ZERO,
     BLEND_ONE,
@@ -57,6 +77,7 @@ enum LogicOp {
 };
 
 struct IAState {
+    std::vector<InputElement> inputLayout;
 };
 
 struct TessState {

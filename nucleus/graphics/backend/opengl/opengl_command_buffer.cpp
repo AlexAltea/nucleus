@@ -90,8 +90,24 @@ void OpenGLCommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 ver
     commands.push_back(command);
 }
 
-void OpenGLCommandBuffer::cmdSetVertexBuffers(U32 index, VertexBuffer* vtxBuffer) {
+void OpenGLCommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) {
     auto* command = new OpenGLCommandSetVertexBuffers();
+    command->index = index;
+    command->count = vtxBufferCount;
+
+    for (U32 i = 0; i < vtxBufferCount; i++) {
+        if (vtxBuffer != nullptr) {
+            auto glBuffer = static_cast<OpenGLVertexBuffer*>(vtxBuffer[i]);
+            command->buffers.push_back(glBuffer->id);
+        }
+        if (offsets != nullptr) {
+            command->buffers.push_back(offsets[i]);
+        }
+        if (strides != nullptr) {
+            command->buffers.push_back(strides[i]);
+        }
+    }
+    commands.push_back(command);
 }
 
 void OpenGLCommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
