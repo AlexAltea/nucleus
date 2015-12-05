@@ -52,6 +52,7 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
 
     // Logging
     glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
     glDebugMessageCallback(reinterpret_cast<GLDEBUGPROC>(OpenGLDebugCallback), nullptr);
 
@@ -122,8 +123,38 @@ void OpenGLCommandQueue::execute(const OpenGLCommand& cmd) {
 void OpenGLCommandQueue::execute(const OpenGLCommandBindPipeline& cmd) {
     auto* glPipeline = static_cast<OpenGLPipeline*>(cmd.pipeline);
 
+    if (!glPipeline->vao) {
+        glGenVertexArrays(1, &glPipeline->vao);
+        glBindVertexArray(glPipeline->vao);
+
+        for (const auto& inputElement : glPipeline->vaoDesc) {
+            GLuint index = inputElement.semanticIndex;
+            GLuint slot = inputElement.inputSlot;
+            GLsizei stride = inputElement.stride;
+
+            GLint size;
+            GLenum type;
+            GLboolean normalized;
+            switch (inputElement.format) {
+            case DATA_FORMAT_R32G32:
+                size = 2; type = GL_FLOAT; normalized = GL_FALSE; break;
+            case DATA_FORMAT_R32G32B32:
+                size = 3; type = GL_FLOAT; normalized = GL_FALSE; break;
+            case DATA_FORMAT_R32G32B32A32:
+                size = 4; type = GL_FLOAT; normalized = GL_FALSE; break;
+            }
+
+            glEnableVertexAttribArray(index);
+            glVertexAttribFormat(index, size, type, normalized, 0);
+            glVertexAttribBinding(index, slot);
+        }
+        glPipeline->vaoDesc.clear();
+    }
+    else {
+        glBindVertexArray(glPipeline->vao);
+    }
+
     glUseProgram(glPipeline->program);
-    glBindVertexArray(glPipeline->vao);
     checkBackendError("OpenGLCommandQueue::execute: cmdBindPipeline");
 }
 

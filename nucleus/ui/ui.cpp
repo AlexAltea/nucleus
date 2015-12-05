@@ -100,9 +100,10 @@ void UI::task() {
         memcpy(bufferAddr, widgetVtxBuffer.data(), vtxBufferDesc.size);
         vtxBuffer->unmap();
 
+        U32 offsets[] = {0};
+        U32 strides[] = {0};
         cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
-        cmdBuffer->cmdSetVertexBuffers(0, vtxBuffer);
-        cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, {0}, {0});
+        cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
         cmdBuffer->cmdDraw(0, widgetVtxBuffer.size(), 0, 1);
 
         // Add new screens
@@ -127,7 +128,6 @@ void UI::pushScreen(std::unique_ptr<Screen>&& screen) {
 void UI::renderWidget(const WidgetInput& input) {
     const U32 offset = sizeof(WidgetInput) * widgetVtxBuffer.size();
     widgetVtxBuffer.push_back(input);
-    cmdBuffer->cmdDraw(offset, 3, 0, 1);
 }
 
 }  // namespace ui

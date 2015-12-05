@@ -14,7 +14,7 @@ class OpenGLVertexBuffer : public VertexBuffer {
 public:
     GLuint id;
 
-    OpenGLVertexBuffer();
+    OpenGLVertexBuffer(GLsizeiptr size, GLenum usage);
     ~OpenGLVertexBuffer();
 
     virtual void* map() override;

@@ -170,37 +170,11 @@ Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
         return nullptr;
     }
 
-    // Create VAO
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    for (const auto& inputElement : desc.iaState.inputLayout) {
-        GLuint index = inputElement.semanticIndex;
-        GLuint slot = inputElement.inputSlot;
-        GLsizei stride = inputElement.stride;
- 	    GLint size;
- 	    GLenum type;
-        GLboolean normalized;
-
-        switch (inputElement.format) {
-        case DATA_FORMAT_R32G32:
-            size = 2; type = GL_FLOAT; normalized = GL_FALSE; break;
-        case DATA_FORMAT_R32G32B32:
-            size = 3; type = GL_FLOAT; normalized = GL_FALSE; break;
-        case DATA_FORMAT_R32G32B32A32:
-            size = 4; type = GL_FLOAT; normalized = GL_FALSE; break;
-        }
-
-        glEnableVertexAttribArray(index);
-        glVertexAttribFormat(index, size, type, normalized, 0);
-        glVertexAttribBinding(index, slot);
-    }
-    glBindVertexArray(0);
-
     // Prepare OpenGL pipeline object
     auto* pipeline = new OpenGLPipeline();
     pipeline->program = program;
-    pipeline->vao = vao;
+    pipeline->vao = 0;
+    pipeline->vaoDesc = desc.iaState.inputLayout;
     return pipeline;
 }
 
@@ -244,7 +218,10 @@ VertexBuffer* OpenGLBackend::createVertexBuffer(const VertexBufferDesc& desc) {
     if (!gCurrentContext) {
         useAvailableContext();
     }
-    auto* vtxBuffer = new OpenGLVertexBuffer();
+
+    GLsizeiptr size = desc.size;
+    GLenum usage = GL_DYNAMIC_DRAW;
+    auto* vtxBuffer = new OpenGLVertexBuffer(size, usage);
     return vtxBuffer;
 }
 

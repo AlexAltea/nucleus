@@ -10,9 +10,21 @@
 
 namespace gfx {
 
+/**
+ * OpenGL Pipeline
+ * ===============
+ * Holds the state of an OpenGL graphics pipeline.
+ *
+ * Notes:
+ *  - Generation of the VAO happens on the main command queue since
+ *    it's not possible to share VAO objects between contexts.
+ */
 class OpenGLPipeline : public Pipeline {
 public:
     GLuint program;
+
+    // Input Layout
+    std::vector<InputElement> vaoDesc;
     GLuint vao;
 
     // Blending

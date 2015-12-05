@@ -101,10 +101,10 @@ void OpenGLCommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, Ver
             command->buffers.push_back(glBuffer->id);
         }
         if (offsets != nullptr) {
-            command->buffers.push_back(offsets[i]);
+            command->offsets.push_back(offsets[i]);
         }
         if (strides != nullptr) {
-            command->buffers.push_back(strides[i]);
+            command->strides.push_back(strides[i]);
         }
     }
     commands.push_back(command);
