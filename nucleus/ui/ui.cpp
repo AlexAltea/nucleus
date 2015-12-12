@@ -101,10 +101,10 @@ void UI::task() {
         vtxBuffer->unmap();
 
         U32 offsets[] = {0};
-        U32 strides[] = {0};
+        U32 strides[] = {16};
         cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
         cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
-        cmdBuffer->cmdDraw(0, widgetVtxBuffer.size(), 0, 1);
+        cmdBuffer->cmdDraw(0, 3 * widgetVtxBuffer.size(), 0, 1);
 
         // Add new screens
         while (!newScreens.empty()) {

@@ -132,7 +132,10 @@ void OpenGLCommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
         return;
     }
 
-    // TODO
+    auto* command = new OpenGLCommandSetPrimitiveTopology();
+    command->topology = glTopology;
+
+    commands.push_back(command);
 }
 
 void OpenGLCommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {

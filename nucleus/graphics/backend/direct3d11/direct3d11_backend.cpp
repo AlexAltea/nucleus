@@ -35,13 +35,13 @@ bool Direct3D11Backend::initialize(const BackendParameters& params) {
         return false;
     }
 
-    UINT createDeviceFlags;
+    UINT createDeviceFlags = 0;
 #ifdef NUCLEUS_BUILD_DEBUG
     createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-    
+
     D3D_FEATURE_LEVEL featureLevel;
-    if (FAILED(_D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, 0, createDeviceFlags, 0, 0, D3D11_SDK_VERSION, &device, &featureLevel, &deviceContext))) {
+    if (FAILED(_D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, createDeviceFlags, 0, 0, D3D11_SDK_VERSION, &device, &featureLevel, &deviceContext))) {
         logger.warning(LOG_GRAPHICS, "Direct3D11Backend::initialize: D3D11CreateDevice failed");
         return false;
     }
@@ -111,10 +111,12 @@ DepthStencilTarget* Direct3D11Backend::createDepthStencilTarget(Texture* texture
     return nullptr;
 }
 
-void Direct3D11Backend::createPipeline() {
+Pipeline* Direct3D11Backend::createPipeline(const PipelineDesc& desc) {
+    return nullptr;
 }
 
-void Direct3D11Backend::createShader() {
+Shader* Direct3D11Backend::createShader(const ShaderDesc& desc) {
+    return nullptr;
 }
 
 Texture* Direct3D11Backend::createTexture(const TextureDesc& desc) {
@@ -140,6 +142,10 @@ Texture* Direct3D11Backend::createTexture(const TextureDesc& desc) {
     }
 
     return texture;
+}
+
+VertexBuffer* Direct3D11Backend::createVertexBuffer(const VertexBufferDesc& desc) {
+    return nullptr;
 }
 
 bool Direct3D11Backend::doSwapBuffers() {

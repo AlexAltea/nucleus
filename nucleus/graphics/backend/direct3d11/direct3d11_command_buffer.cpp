@@ -19,7 +19,7 @@ bool Direct3D11CommandBuffer::reset() {
     return true;
 }
 
-void Direct3D11CommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
+void Direct3D11CommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
 }
 
 void Direct3D11CommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {
@@ -42,16 +42,13 @@ void Direct3D11CommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F
     context->ClearDepthStencilView(d3dTarget->view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depthValue, stencilValue);
 }
 
-void Direct3D11CommandBuffer::cmdDraw() {
+void Direct3D11CommandBuffer::cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) {
 }
 
-void Direct3D11CommandBuffer::cmdDrawIndexed() {
+void Direct3D11CommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) {
 }
 
-void Direct3D11CommandBuffer::cmdDrawIndirect() {
-}
-
-void Direct3D11CommandBuffer::cmdDrawIndexedIndirect() {
+void Direct3D11CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) {
 }
 
 void Direct3D11CommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {
