@@ -19,7 +19,7 @@ bool Direct3D12CommandBuffer::reset() {
     return true;
 }
 
-void Direct3D12CommandBuffer::cmdBindPipeline(IPipelineState* pipeline) {
+void Direct3D12CommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
 }
 
 void Direct3D12CommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {
@@ -42,16 +42,13 @@ void Direct3D12CommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F
     list->ClearDepthStencilView(d3dTarget->handle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depthValue, stencilValue, 0, nullptr);
 }
 
-void Direct3D12CommandBuffer::cmdDraw() {
+void Direct3D12CommandBuffer::cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) {
 }
 
-void Direct3D12CommandBuffer::cmdDrawIndexed() {
+void Direct3D12CommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) {
 }
 
-void Direct3D12CommandBuffer::cmdDrawIndirect() {
-}
-
-void Direct3D12CommandBuffer::cmdDrawIndexedIndirect() {
+void Direct3D12CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) {
 }
 
 void Direct3D12CommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {

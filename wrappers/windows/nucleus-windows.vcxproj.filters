@@ -9,6 +9,6 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="nucleus.rc" />
+    <ResourceCompile Include="nucleus-windows.rc" />
   </ItemGroup>
 </Project>

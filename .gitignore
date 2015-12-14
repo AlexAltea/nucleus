@@ -25,6 +25,7 @@
 *.idc
 *.ilk
 *.lastcodeanalysissucceeded
+*.opendb
 *.opensdf
 *.pdb
 *.ipdb
