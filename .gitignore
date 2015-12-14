@@ -28,6 +28,7 @@
 *.opendb
 *.opensdf
 *.pdb
+*.pfx
 *.ipdb
 *.iobj
 *.sdf
