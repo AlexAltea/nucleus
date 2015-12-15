@@ -1,27 +1,41 @@
-﻿//
-// MainPage.xaml.cpp
-// Implementation of the MainPage class.
-//
+﻿/**
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
 
 #include "pch.h"
 #include "MainPage.xaml.h"
 
 using namespace nucleus_uwp;
 
-using namespace Platform;
-using namespace Windows::Foundation;
-using namespace Windows::Foundation::Collections;
-using namespace Windows::UI::Xaml;
-using namespace Windows::UI::Xaml::Controls;
-using namespace Windows::UI::Xaml::Controls::Primitives;
-using namespace Windows::UI::Xaml::Data;
-using namespace Windows::UI::Xaml::Input;
-using namespace Windows::UI::Xaml::Media;
-using namespace Windows::UI::Xaml::Navigation;
+using namespace Windows::UI;
+using namespace Windows::UI::ViewManagement;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+MainPage::MainPage() {
+    InitializeComponent();
 
-MainPage::MainPage()
-{
-	InitializeComponent();
+    // Global colors
+    Color colorWhite    = ColorHelper::FromArgb(255, 255, 255, 255);
+    Color colorWhiteD1  = ColorHelper::FromArgb(255, 224, 224, 224);
+    Color colorWhiteD2  = ColorHelper::FromArgb(255, 200, 200, 200);
+    Color colorBlue     = ColorHelper::FromArgb(255,  40,  40,  92);
+    Color colorBlueL1   = ColorHelper::FromArgb(255,  56,  56, 110);
+    Color colorBlueL2   = ColorHelper::FromArgb(255,  72,  72, 128);
+
+    // Set Title Bar color
+    ApplicationViewTitleBar^ titleBar = ApplicationView::GetForCurrentView()->TitleBar;
+    titleBar->BackgroundColor = colorBlue;
+    titleBar->ForegroundColor = colorWhite;
+    titleBar->InactiveBackgroundColor = colorBlueL1;
+    titleBar->InactiveForegroundColor = colorWhiteD1;
+
+    titleBar->ButtonBackgroundColor = colorBlue;
+    titleBar->ButtonHoverBackgroundColor = colorBlueL1;
+    titleBar->ButtonPressedBackgroundColor = colorBlueL2;
+    titleBar->ButtonInactiveBackgroundColor = colorBlueL1;
+
+    titleBar->ButtonForegroundColor = colorWhiteD1;
+    titleBar->ButtonHoverForegroundColor = colorWhite;
+    titleBar->ButtonPressedForegroundColor = colorWhite;
+    titleBar->ButtonInactiveForegroundColor = colorWhiteD2;
 }

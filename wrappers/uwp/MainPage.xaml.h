@@ -1,21 +1,17 @@
-﻿//
-// MainPage.xaml.h
-// Declaration of the MainPage class.
-//
+﻿/**
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
 
 #pragma once
 
 #include "MainPage.g.h"
 
-namespace nucleus_uwp
-{
-	/// <summary>
-	/// An empty page that can be used on its own or navigated to within a Frame.
-	/// </summary>
-	public ref class MainPage sealed
-	{
-	public:
-		MainPage();
+namespace nucleus_uwp {
 
-	};
+public ref class MainPage sealed {
+public:
+    MainPage();
+};
+
 }

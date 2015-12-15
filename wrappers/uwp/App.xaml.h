@@ -1,27 +1,28 @@
-﻿//
-// App.xaml.h
-// Declaration of the App class.
-//
+﻿/**
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
 
 #pragma once
 
 #include "App.g.h"
 
-namespace nucleus_uwp
-{
-	/// <summary>
-	/// Provides application-specific behavior to supplement the default Application class.
-	/// </summary>
-	ref class App sealed
-	{
-	protected:
-		virtual void OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs^ e) override;
+namespace nucleus_uwp {
 
-	internal:
-		App();
+ref class App sealed {
+protected:
+    // Invoked when the application is launched normally by the end user
+    virtual void OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEventArgs^ e) override;
 
-	private:
-		void OnSuspending(Platform::Object^ sender, Windows::ApplicationModel::SuspendingEventArgs^ e);
-		void OnNavigationFailed(Platform::Object ^sender, Windows::UI::Xaml::Navigation::NavigationFailedEventArgs ^e);
-	};
-}
+internal:
+    App();
+
+private:
+    // Invoked when application execution is being suspended
+    void OnSuspending(Platform::Object^ sender, Windows::ApplicationModel::SuspendingEventArgs^ e);
+
+    // Invoked when Navigation to a certain page fails
+    void OnNavigationFailed(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationFailedEventArgs^ e);
+};
+
+}  // nucleus_uwp
