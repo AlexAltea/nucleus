@@ -24,36 +24,55 @@ Direct3D12Backend::~Direct3D12Backend() {
 }
 
 bool Direct3D12Backend::initialize(const BackendParameters& params) {
+    HRESULT hr;
     if (!initializeDirect3D12()) {
-        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could load Direct3D12 dynamic library");
+        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not load Direct3D12 dynamic library");
         return false;
     }
 
     IDXGIFactory4* factory;
-    if (FAILED(_CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&factory)))) {
-        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: CreateDXGIFactory1 failed");
+    hr = _CreateDXGIFactory1(IID_PPV_ARGS(&factory));
+    if (FAILED(hr)) {
+        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: CreateDXGIFactory1 failed (0x%X)", hr);
         return false;
     }
 
-    if (FAILED(_D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device)))) {
-        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: D3D12CreateDevice failed");
+    hr = _D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
+    if (FAILED(hr)) {
+        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: D3D12CreateDevice failed (0x%X)", hr);
         return false;
     }
 
     // Create swap chain
-    DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-    swapChainDesc.BufferCount = 2;
-    swapChainDesc.BufferDesc.Width = params.width;
-    swapChainDesc.BufferDesc.Height = params.height;
-    swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-    swapChainDesc.OutputWindow = params.hwnd;
+    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+    swapChainDesc.Width = params.width;
+    swapChainDesc.Height = params.height;
+    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    swapChainDesc.Stereo = false;
     swapChainDesc.SampleDesc.Count = 1;
-    swapChainDesc.Windowed = TRUE;
+    swapChainDesc.SampleDesc.Quality = 0;
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapChainDesc.BufferCount = 2;
+    swapChainDesc.Scaling = DXGI_SCALING_NONE;
+    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+    swapChainDesc.Flags = 0;
 
-    if (FAILED(factory->CreateSwapChain(device, &swapChainDesc, &swapChain))) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: factory->CreateSwapChain failed");
+    DXGI_SWAP_CHAIN_FULLSCREEN_DESC swapChainFullscreenDesc = {};
+    swapChainFullscreenDesc.RefreshRate.Numerator = 60;
+    swapChainFullscreenDesc.RefreshRate.Denominator = 1;
+    swapChainFullscreenDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+    swapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+    swapChainFullscreenDesc.Windowed = TRUE;
+
+    if (parameters.window) {
+        hr = factory->CreateSwapChainForCoreWindow(device, params.window, &swapChainDesc, nullptr, &swapChain);
+    } else {
+        hr = factory->CreateSwapChainForHwnd(device, parameters.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &swapChain);
+    }
+
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not create swap chain (0x%X)", hr);
         return false;
     }
 
@@ -124,10 +143,12 @@ DepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(Texture* texture
     return nullptr;
 }
 
-void Direct3D12Backend::createPipeline() {
+Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
+    return nullptr;
 }
 
-void Direct3D12Backend::createShader() {
+Shader* Direct3D12Backend::createShader(const ShaderDesc& desc) {
+    return nullptr;
 }
 
 Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {

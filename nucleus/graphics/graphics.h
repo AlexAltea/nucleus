@@ -24,6 +24,7 @@ namespace gfx {
 // Graphics backend parameters
 struct BackendParameters {
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
+    IUnknown* window;
     HWND hwnd;
     HDC hdc;
     size_t width;

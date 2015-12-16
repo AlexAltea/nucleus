@@ -9,8 +9,7 @@
 
 #include <thread>
 
-class Debugger
-{
+class Debugger {
     // Mongoose server
     mg_server* m_server = nullptr;
 

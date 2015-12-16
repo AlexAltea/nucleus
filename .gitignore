@@ -43,4 +43,5 @@
 
 # Project objects/libraries
 /**/x64/*
+/ipch/*
 /libs/*

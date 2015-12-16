@@ -6,9 +6,12 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 
+#include "nucleus/nucleus.h"
+
 using namespace nucleus_uwp;
 
 using namespace Windows::UI;
+using namespace Windows::UI::Core;
 using namespace Windows::UI::ViewManagement;
 
 MainPage::MainPage() {
@@ -38,4 +41,10 @@ MainPage::MainPage() {
     titleBar->ButtonHoverForegroundColor = colorWhite;
     titleBar->ButtonPressedForegroundColor = colorWhite;
     titleBar->ButtonInactiveForegroundColor = colorWhiteD2;
+
+    // Initialize UI
+    IUnknown* window = reinterpret_cast<IUnknown*>(CoreWindow::GetForCurrentThread());
+    unsigned int width = 960;
+    unsigned int height = 544;
+    nucleusPrepare(window, width, height);
 }

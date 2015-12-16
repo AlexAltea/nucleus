@@ -14,4 +14,4 @@ public:
     MainPage();
 };
 
-}
+}  // nucleus_uwp

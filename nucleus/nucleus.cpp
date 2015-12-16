@@ -26,6 +26,15 @@ void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height) {
 
     nucleus.initialize(params);
 }
+
+void nucleusPrepare(IUnknown* window, int width, int height) {
+    gfx::BackendParameters params = {};
+    params.window = window;
+    params.width = width;
+    params.height = height;
+
+    nucleus.initialize(params);
+}
 #endif
 
 int nucleusInitialize(int argc, char **argv) {
