@@ -14,6 +14,9 @@
     <ClCompile Include="config.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\architecture.h" />
+    <ClInclude Include="..\compiler.h" />
+    <ClInclude Include="..\platform.h" />
     <ClInclude Include="config.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

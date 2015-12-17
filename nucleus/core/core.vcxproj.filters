@@ -5,5 +5,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />
+    <ClInclude Include="..\architecture.h" />
+    <ClInclude Include="..\compiler.h" />
+    <ClInclude Include="..\platform.h" />
   </ItemGroup>
 </Project>
