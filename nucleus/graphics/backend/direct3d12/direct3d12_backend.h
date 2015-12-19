@@ -9,6 +9,7 @@
 #include "nucleus/graphics/graphics.h"
 
 // Forward Direct3D12 declarations
+class ID3D12CommandQueue;
 class ID3D12Debug;
 class ID3D12Device;
 class ID3D12DescriptorHeap;
@@ -22,6 +23,7 @@ class Direct3D12Backend : public IBackend {
     IDXGIAdapter1* adapter;
     ID3D12Debug* debugController;
     ID3D12Device* device;
+    ID3D12CommandQueue* queue;
 
     // Swap chain
     IDXGISwapChain1* swapChain;

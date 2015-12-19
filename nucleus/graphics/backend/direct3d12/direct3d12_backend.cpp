@@ -25,6 +25,8 @@ Direct3D12Backend::~Direct3D12Backend() {
 
 bool Direct3D12Backend::initialize(const BackendParameters& params) {
     HRESULT hr;
+    parameters = params;
+
     if (!initializeDirect3D12()) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not load Direct3D12 dynamic library");
         return false;
@@ -55,6 +57,17 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
         }
     }
 
+    // Create main command queue
+    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+
+    hr = device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&queue));
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not create main command queue (0x%X)", hr);
+        return false;
+    }
+
     // Create swap chain
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = params.width;
@@ -77,10 +90,10 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     swapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     swapChainFullscreenDesc.Windowed = TRUE;
 
-    if (parameters.window) {
-        hr = factory->CreateSwapChainForCoreWindow(device, params.window, &swapChainDesc, nullptr, &swapChain);
+    if (params.window) {
+        hr = factory->CreateSwapChainForCoreWindow(queue, params.window, &swapChainDesc, nullptr, &swapChain);
     } else {
-        hr = factory->CreateSwapChainForHwnd(device, parameters.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &swapChain);
+        hr = factory->CreateSwapChainForHwnd(device, params.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &swapChain);
     }
 
     if (FAILED(hr)) {
@@ -91,8 +104,6 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     // Get render target buffers from swap chain
     swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainRenderBuffer[0]));
     swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainRenderBuffer[1]));
-
-    parameters = params;
     return true;
 }
 
