@@ -23,7 +23,7 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
         //graphics = std::make_shared<gfx::Direct3D11Backend>();
         break;
     case GRAPHICS_BACKEND_DIRECT3D12:
-        //graphics = std::make_shared<gfx::Direct3D12Backend>();
+        graphics = std::make_shared<gfx::Direct3D12Backend>();
         break;
     case GRAPHICS_BACKEND_OPENGL:
         graphics = std::make_shared<gfx::OpenGLBackend>();

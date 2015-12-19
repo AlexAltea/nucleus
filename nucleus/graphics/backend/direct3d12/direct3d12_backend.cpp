@@ -26,21 +26,33 @@ Direct3D12Backend::~Direct3D12Backend() {
 bool Direct3D12Backend::initialize(const BackendParameters& params) {
     HRESULT hr;
     if (!initializeDirect3D12()) {
-        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not load Direct3D12 dynamic library");
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not load Direct3D12 dynamic library");
         return false;
     }
 
     IDXGIFactory4* factory;
     hr = _CreateDXGIFactory1(IID_PPV_ARGS(&factory));
     if (FAILED(hr)) {
-        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: CreateDXGIFactory1 failed (0x%X)", hr);
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: CreateDXGIFactory1 failed (0x%X)", hr);
         return false;
     }
 
-    hr = _D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
+#if defined(NUCLEUS_BUILD_DEBUG)
+    hr = _D3D12GetDebugInterface(IID_PPV_ARGS(&debugController));
+    if (SUCCEEDED(hr)) {
+        debugController->EnableDebugLayer();
+    }
+#endif
+
+    hr = _D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
     if (FAILED(hr)) {
-        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: D3D12CreateDevice failed (0x%X)", hr);
-        return false;
+        logger.warning(LOG_GRAPHICS, "Direct3D12Backend::initialize: Creating WARP device");
+        factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter));
+        hr = _D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
+        if (FAILED(hr)) {
+            logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: D3D12CreateDevice failed (0x%X)", hr);
+            return false;
+        }
     }
 
     // Create swap chain
@@ -182,6 +194,10 @@ Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
     }
 
     return texture;
+}
+
+VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc) {
+    return nullptr;
 }
 
 bool Direct3D12Backend::doSwapBuffers() {

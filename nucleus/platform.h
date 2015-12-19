@@ -21,6 +21,8 @@
 #define NUCLEUS_PLATFORM_IOS
 #endif
 
+namespace core {
+
 enum Platform {
     PLATFORM_LINUX,
     PLATFORM_WINDOWS,
@@ -29,3 +31,5 @@ enum Platform {
     PLATFORM_ANDROID,
     PLATFORM_IOS,
 };
+
+}  // namespace core

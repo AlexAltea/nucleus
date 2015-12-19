@@ -18,8 +18,12 @@
 #define NUCLEUS_ARCH_ARM
 #endif
 
+namespace core {
+
 enum Architecture {
     ARCHITECTURE_X86,
     ARCHITECTURE_ARM,
     ARCHITECTURE_PPC,
 };
+
+}  // namespace core
