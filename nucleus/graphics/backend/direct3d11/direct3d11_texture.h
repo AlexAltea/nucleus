@@ -9,10 +9,12 @@
 #include "nucleus/graphics/backend/direct3d11/direct3d11.h"
 
 namespace gfx {
+namespace direct3d11 {
 
 class Direct3D11Texture : public Texture {
 public:
     ID3D11Texture2D* texture;
 };
 
+}  // namespace direct3d11
 }  // namespace gfx

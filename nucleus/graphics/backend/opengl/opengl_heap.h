@@ -9,9 +9,11 @@
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
 namespace gfx {
+namespace opengl {
 
 class OpenGLHeap : public Heap {
 public:
 };
 
+}  // namespace opengl
 }  // namespace gfx

@@ -8,9 +8,11 @@
 #include "nucleus/graphics/pipeline.h"
 
 namespace gfx {
+namespace direct3d11 {
 
 class Direct3D11PipelineState : public IPipelineState {
 public:
 };
 
+}  // namespace direct3d11
 }  // namespace gfx

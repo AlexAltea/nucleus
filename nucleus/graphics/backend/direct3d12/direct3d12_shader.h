@@ -12,15 +12,18 @@
 
 #include <vector>
 
-namespace gfx {
-
 // Forward declarations
+namespace gfx {
 namespace hir {
 class Instruction;
 class Block;
 class Function;
 class Module;
 }  // namespace hir
+}  // namespace gfx
+
+namespace gfx {
+namespace direct3d12 {
 
 class Direct3D12Shader : public Shader {
     // Conversion
@@ -55,4 +58,5 @@ public:
     bool initialize(const ShaderDesc& desc);
 };
 
+}  // namespace direct3d12
 }  // namespace gfx

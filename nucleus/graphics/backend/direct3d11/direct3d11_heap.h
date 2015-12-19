@@ -9,10 +9,12 @@
 #include "nucleus/graphics/backend/direct3d11/direct3d11.h"
 
 namespace gfx {
+namespace direct3d11 {
 
 class Direct3D11Heap : public Heap {
 public:
     ID3D11DescriptorHeap* heap;
 };
 
+}  // namespace direct3d11
 }  // namespace gfx

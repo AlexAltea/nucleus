@@ -15,6 +15,7 @@
 }
 
 namespace gfx {
+namespace opengl {
 
 OpenGLCommandQueue::OpenGLCommandQueue() {
 }
@@ -295,4 +296,5 @@ void OpenGLCommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
 void OpenGLCommandQueue::waitIdle() {
 }
 
+}  // namespace opengl
 }  // namespace gfx

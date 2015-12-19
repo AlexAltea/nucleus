@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 
 namespace gfx {
+namespace direct3d12 {
 
 Direct3D12CommandBuffer::Direct3D12CommandBuffer() {
 }
@@ -134,4 +135,5 @@ void Direct3D12CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle*
     delete[] d3dRects;
 }
 
+}  // namespace direct3d12
 }  // namespace gfx

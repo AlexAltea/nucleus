@@ -7,5 +7,12 @@
 
 // Backends
 #include "nucleus/graphics/backend/opengl/opengl_backend.h"
-#include "nucleus/graphics/backend/direct3d11/direct3d11_backend.h"
+//#include "nucleus/graphics/backend/direct3d11/direct3d11_backend.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_backend.h"
+
+namespace gfx {
+
+using Direct3D12Backend = direct3d12::Direct3D12Backend;
+using OpenGLBackend = opengl::OpenGLBackend;
+
+}  // namespace gfx

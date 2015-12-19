@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
 namespace gfx {
+namespace opengl {
 
 /**
  * Callback for OpenGL debug messages. Has to match the signature of GLDEBUGPROC.
@@ -22,4 +23,5 @@ namespace gfx {
  */
 void OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, GLvoid* userParam);
 
+}  // namespace opengl
 }  // namespace gfx

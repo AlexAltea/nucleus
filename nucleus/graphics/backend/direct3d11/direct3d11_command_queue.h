@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/direct3d11/direct3d11.h"
 
 namespace gfx {
+namespace direct3d11 {
 
 class Direct3D11CommandQueue : public CommandQueue {
 private:
@@ -24,4 +25,5 @@ public:
     void waitIdle() override;
 };
 
+}  // namespace direct3d11
 }  // namespace gfx

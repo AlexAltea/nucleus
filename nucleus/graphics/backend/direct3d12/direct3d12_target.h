@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 
 namespace gfx {
+namespace direct3d12 {
 
 class Direct3D12ColorTarget : public ColorTarget {
 public:
@@ -20,4 +21,5 @@ public:
     D3D12_CPU_DESCRIPTOR_HANDLE handle;
 };
 
+}  // namespace direct3d12
 }  // namespace gfx

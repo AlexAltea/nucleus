@@ -10,12 +10,16 @@
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <d3d12.h>
 #include <dxgi1_4.h>
+#include <d3dcompiler.h>
 #endif
 
 // Function types: dxgi.dll
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory)(REFIID, void **);
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory1)(REFIID, void **);
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory2)(UINT, REFIID, void **);
+
+namespace gfx {
+namespace direct3d12 {
 
 // Declare Function
 #define DECLARE_FUNCTION(type, module, function) extern type _##function;
@@ -24,9 +28,8 @@ typedef HRESULT(WINAPI *PFN_CreateDXGIFactory2)(UINT, REFIID, void **);
 #undef FUNCTION
 #undef DECLARE_FUNCTION
 
-namespace gfx {
-
 // Load extensions
 bool initializeDirect3D12();
 
+}  // namespace direct3d12
 }  // namespace gfx

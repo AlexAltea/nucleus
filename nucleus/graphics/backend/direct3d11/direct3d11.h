@@ -18,6 +18,7 @@ typedef HRESULT(WINAPI *PFN_CreateDXGIFactory1)(REFIID, void **);
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory2)(UINT, REFIID, void **);
 
 namespace gfx {
+namespace direct3d11 {
 
 // Declare Function
 #define DECLARE_FUNCTION(type, module, function) extern type _##function;
@@ -29,4 +30,5 @@ namespace gfx {
 // Load extensions
 bool initializeDirect3D11();
 
+}  // namespace direct3d11
 }  // namespace gfx

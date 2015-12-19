@@ -14,6 +14,7 @@
 }
 
 namespace gfx {
+namespace opengl {
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(GLsizeiptr size, GLenum usage) {
     glGenBuffers(1, &id);
@@ -56,4 +57,5 @@ bool OpenGLVertexBuffer::unmap() {
     return result;
 }
 
+}  // namespace opengl
 }  // namespace gfx

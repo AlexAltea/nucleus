@@ -12,15 +12,18 @@
 
 #include <vector>
 
-namespace gfx {
-
 // Forward declarations
+namespace gfx {
 namespace hir {
 class Instruction;
 class Block;
 class Function;
 class Module;
 }  // namespace hir
+}  // namespace gfx
+
+namespace gfx {
+namespace opengl {
 
 class OpenGLShader : public Shader {
     // Conversion
@@ -54,4 +57,5 @@ public:
     bool initialize(const ShaderDesc& desc);
 };
 
+}  // namespace opengl
 }  // namespace gfx

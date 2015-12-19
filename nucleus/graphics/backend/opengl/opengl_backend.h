@@ -9,6 +9,7 @@
 #include "nucleus/graphics/graphics.h"
 
 namespace gfx {
+namespace opengl {
 
 // OpenGL context handler
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
@@ -62,4 +63,5 @@ public:
     virtual bool doSwapBuffers() override;
 };
 
+}  // namespace opengl
 }  // namespace gfx

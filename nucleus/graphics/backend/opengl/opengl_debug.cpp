@@ -7,6 +7,7 @@
 #include "nucleus/logger/logger.h"
 
 namespace gfx {
+namespace opengl {
 
 void OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, GLvoid* userParam) {
     const char* sourceName = "(Unknown)";
@@ -63,4 +64,5 @@ void OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
         sourceName, typeName, severityName, id, message);
 }
 
+}  // namespace opengl
 }  // namespace gfx

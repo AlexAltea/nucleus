@@ -39,6 +39,9 @@
 #include <GLES3/gl3platform.h>
 #endif
 
+namespace gfx {
+namespace opengl {
+
 // Declare extensions
 #define DECLARE_EXTENSION(type, function) extern type function;
 #define EXTENSION DECLARE_EXTENSION
@@ -46,9 +49,8 @@
 #undef EXTENSION
 #undef DECLARE_EXTENSION
 
-namespace gfx {
-
 // Load extensions
 bool initializeOpenGL();
 
+}  // namespace opengl
 }  // namespace gfx

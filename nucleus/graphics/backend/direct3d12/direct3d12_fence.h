@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 
 namespace gfx {
+namespace direct3d12 {
 
 class Direct3D12Fence : public Fence {
 private:
@@ -26,4 +27,5 @@ public:
     virtual void wait(Clock::duration timeout) override;
 };
 
+}  // namespace direct3d12
 }  // namespace gfx

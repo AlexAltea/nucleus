@@ -10,6 +10,7 @@
 
 
 namespace gfx {
+namespace direct3d12 {
 
 class Direct3D12CommandBuffer : public CommandBuffer {
 private:
@@ -38,4 +39,5 @@ public:
     virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) override;
 };
 
+}  // namespace direct3d12
 }  // namespace gfx

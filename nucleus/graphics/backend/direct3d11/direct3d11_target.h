@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/direct3d11/direct3d11.h"
 
 namespace gfx {
+namespace direct3d11 {
 
 class Direct3D11ColorTarget : public ColorTarget {
 public:
@@ -20,4 +21,5 @@ public:
     ID3D11DepthStencilView* view;
 };
 
+}  // namespace direct3d11
 }  // namespace gfx

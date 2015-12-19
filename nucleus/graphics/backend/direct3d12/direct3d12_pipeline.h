@@ -9,10 +9,12 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 
 namespace gfx {
+namespace direct3d12 {
 
 class Direct3D12Pipeline : public Pipeline {
 public:
     ID3D12PipelineState* state;
 };
 
+}  // namespace direct3d12
 }  // namespace gfx

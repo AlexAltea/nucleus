@@ -19,6 +19,7 @@
 #include <vector>
 
 namespace gfx {
+namespace direct3d12 {
 
 Direct3D12Backend::Direct3D12Backend() : IBackend() {
 }
@@ -275,4 +276,5 @@ bool Direct3D12Backend::doSwapBuffers() {
     return true;
 }
 
+}  // namespace direct3d12
 }  // namespace gfx

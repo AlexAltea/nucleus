@@ -7,6 +7,7 @@
 #include "nucleus/graphics/backend/direct3d11/direct3d11_command_buffer.h"
 
 namespace gfx {
+namespace direct3d11 {
 
 Direct3D11CommandQueue::Direct3D11CommandQueue() {
 }
@@ -29,4 +30,5 @@ void Direct3D11CommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
 void Direct3D11CommandQueue::waitIdle() {
 }
 
+}  // namespace direct3d11
 }  // namespace gfx

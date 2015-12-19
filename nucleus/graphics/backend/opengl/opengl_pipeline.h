@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
 namespace gfx {
+namespace opengl {
 
 /**
  * OpenGL Pipeline
@@ -32,4 +33,5 @@ public:
     GLenum dfactor;
 };
 
+}  // namespace opengl
 }  // namespace gfx

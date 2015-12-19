@@ -6,6 +6,7 @@
 #include "opengl_fence.h"
 
 namespace gfx {
+namespace opengl {
 
 void OpenGLFence::clear() {
     signaled = false;
@@ -26,4 +27,5 @@ void OpenGLFence::wait(Clock::duration timeout) {
     cv.wait_for(lock, timeout, [&]{ return signaled; });
 }
 
+}  // namespace opengl
 }  // namespace gfx

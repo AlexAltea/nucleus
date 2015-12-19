@@ -16,6 +16,7 @@
 #include <vector>
 
 namespace gfx {
+namespace opengl {
 
 // Command
 struct OpenGLCommand {
@@ -157,4 +158,5 @@ public:
     virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) override;
 };
 
+}  // namespace opengl
 }  // namespace gfx

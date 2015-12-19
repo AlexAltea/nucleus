@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
 namespace gfx {
+namespace opengl {
 
 class OpenGLColorTarget : public ColorTarget {
 public:
@@ -34,4 +35,5 @@ public:
     GLint drawbuffer;
 };
 
+}  // namespace opengl
 }  // namespace gfx

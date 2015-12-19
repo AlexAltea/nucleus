@@ -23,6 +23,7 @@
     }
 
 namespace gfx {
+namespace direct3d11 {
 
 // Declare functions
 #define DECLARE_FUNCTION(type, module, function) type _##function;
@@ -42,4 +43,5 @@ bool initializeDirect3D11() {
     return true;
 }
 
+}  // namespace direct3d11
 }  // namespace gfx

@@ -7,6 +7,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_buffer.h"
 
 namespace gfx {
+namespace direct3d12 {
 
 Direct3D12CommandQueue::Direct3D12CommandQueue() {
 }
@@ -41,4 +42,5 @@ void Direct3D12CommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
 void Direct3D12CommandQueue::waitIdle() {
 }
 
+}  // namespace direct3d12
 }  // namespace gfx

@@ -22,6 +22,9 @@
         return false; \
     }
 
+namespace gfx {
+namespace direct3d12 {
+
 // Declare functions
 #define DECLARE_FUNCTION(type, module, function) type _##function;
 #define FUNCTION DECLARE_FUNCTION
@@ -29,11 +32,10 @@
 #undef FUNCTION
 #undef DECLARE_FUNCTION
 
-namespace gfx {
-
 bool initializeDirect3D12() {
     LOAD_MODULE(d3d12);
     LOAD_MODULE(dxgi);
+    LOAD_MODULE(d3dcompiler_47);
 
 #define FUNCTION LOAD_FUNCTION
 #include "direct3d12.inl"
@@ -42,4 +44,5 @@ bool initializeDirect3D12() {
     return true;
 }
 
+}  // namespace direct3d12
 }  // namespace gfx

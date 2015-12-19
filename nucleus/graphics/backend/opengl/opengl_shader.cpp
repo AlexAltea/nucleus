@@ -17,6 +17,7 @@
 #include <iostream>
 
 namespace gfx {
+namespace opengl {
 
 using namespace gfx::hir;
 
@@ -241,4 +242,5 @@ bool OpenGLShader::initialize(const ShaderDesc& desc) {
     return true;
 }
 
+}  // namespace opengl
 }  // namespace gfx

@@ -8,6 +8,7 @@
 #include "nucleus/graphics/backend/direct3d11/direct3d11_target.h"
 
 namespace gfx {
+namespace direct3d11 {
 
 Direct3D11CommandBuffer::Direct3D11CommandBuffer() {
 }
@@ -113,4 +114,5 @@ void Direct3D11CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle*
     delete[] d3dRects;
 }
 
+}  // namespace direct3d11
 }  // namespace gfx

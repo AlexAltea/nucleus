@@ -6,6 +6,7 @@
 #include "direct3d12_fence.h"
 
 namespace gfx {
+namespace direct3d12 {
 
 Direct3D12Fence::Direct3D12Fence() {
 }
@@ -32,4 +33,5 @@ void Direct3D12Fence::wait() {
 void Direct3D12Fence::wait(Clock::duration timeout) {
 }
 
+}  // namespace direct3d12
 }  // namespace gfx

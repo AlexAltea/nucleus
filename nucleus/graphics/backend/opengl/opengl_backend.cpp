@@ -17,6 +17,7 @@
 #include "nucleus/graphics/backend/opengl/opengl_texture.h"
 
 namespace gfx {
+namespace opengl {
 
 thread_local OpenGLContext gCurrentContext = 0;
 
@@ -240,4 +241,5 @@ bool OpenGLBackend::doSwapBuffers() {
     return true;
 }
 
+}  // namespace opengl
 }  // namespace gfx

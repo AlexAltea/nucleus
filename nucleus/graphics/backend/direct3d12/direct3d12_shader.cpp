@@ -17,6 +17,7 @@
 #include <iostream>
 
 namespace gfx {
+namespace direct3d12 {
 
 using namespace gfx::hir;
 
@@ -45,4 +46,5 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
     return true;
 }
 
+}  // namespace direct3d12
 }  // namespace gfx

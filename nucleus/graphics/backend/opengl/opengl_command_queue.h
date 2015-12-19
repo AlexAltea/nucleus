@@ -15,6 +15,7 @@
 #include <thread>
 
 namespace gfx {
+namespace opengl {
 
 struct OpenGLCommandQueueUnit {
     // Command buffer to be executed
@@ -71,4 +72,5 @@ public:
     virtual void waitIdle() override;
 };
 
+}  // namespace opengl
 }  // namespace gfx

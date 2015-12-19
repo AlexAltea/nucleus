@@ -17,6 +17,7 @@ class IDXGIAdapter1;
 class IDXGISwapChain;
 
 namespace gfx {
+namespace direct3d11 {
 
 class Direct3D11Backend : public IBackend {
     IDXGIAdapter1* adapter;
@@ -47,4 +48,5 @@ public:
     virtual bool doSwapBuffers() override;
 };
 
+}  // namespace direct3d11
 }  // namespace gfx

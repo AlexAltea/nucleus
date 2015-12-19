@@ -16,6 +16,7 @@
 #include <vector>
 
 namespace gfx {
+namespace direct3d11 {
 
 Direct3D11Backend::Direct3D11Backend() : IBackend() {
 }
@@ -157,4 +158,5 @@ bool Direct3D11Backend::doSwapBuffers() {
     return true;
 }
 
+}  // namespace direct3d11
 }  // namespace gfx

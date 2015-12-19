@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
 namespace gfx {
+namespace opengl {
 
 class OpenGLVertexBuffer : public VertexBuffer {
 public:
@@ -21,4 +22,5 @@ public:
     virtual bool unmap() override;
 };
 
+}  // namespace opengl
 }  // namespace gfx

@@ -33,14 +33,15 @@
 }
 #endif
 
+namespace gfx {
+namespace opengl {
+
 // Declare extensions
 #define DECLARE_EXTENSION(type, function) type function;
 #define EXTENSION DECLARE_EXTENSION
 #include "opengl.inl"
 #undef EXTENSION
 #undef DECLARE_EXTENSION
-
-namespace gfx {
 
 bool initializeOpenGL() {
 #define EXTENSION LOAD_EXTENSION
@@ -50,4 +51,5 @@ bool initializeOpenGL() {
     return true;
 }
 
+}  // namespace opengl
 }  // namespace gfx

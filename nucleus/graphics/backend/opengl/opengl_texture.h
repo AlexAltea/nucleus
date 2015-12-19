@@ -9,10 +9,12 @@
 #include "nucleus/graphics/backend/opengl/opengl.h"
 
 namespace gfx {
+namespace opengl {
 
 class OpenGLTexture : public Texture {
 public:
     GLuint id;
 };
 
+}  // namespace opengl
 }  // namespace gfx

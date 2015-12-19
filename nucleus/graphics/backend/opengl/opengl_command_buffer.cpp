@@ -9,6 +9,7 @@
 #include "nucleus/assert.h"
 
 namespace gfx {
+namespace opengl {
 
 OpenGLCommandBuffer::OpenGLCommandBuffer() {
 }
@@ -189,4 +190,5 @@ void OpenGLCommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle* sci
     commands.push_back(command);
 }
 
+}  // namespace opengl
 }  // namespace gfx

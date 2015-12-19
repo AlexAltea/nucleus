@@ -12,6 +12,7 @@
 #include <mutex>
 
 namespace gfx {
+namespace opengl {
 
 class OpenGLFence : public Fence {
     std::condition_variable cv;
@@ -30,4 +31,5 @@ public:
     virtual void wait(Clock::duration timeout) override;
 };
 
+}  // namespace opengl
 }  // namespace gfx
