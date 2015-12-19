@@ -23,6 +23,14 @@ bool Direct3D12CommandQueue::initialize(ID3D12Device* device) {
     return true;
 }
 
+bool Direct3D12CommandQueue::initialize(ID3D12CommandQueue* newQueue) {
+    if (!newQueue) {
+        return false;
+    }
+    queue = newQueue;
+    return true;
+}
+
 void Direct3D12CommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
     auto* cmdList = dynamic_cast<Direct3D12CommandBuffer*>(cmdBuffer);
 

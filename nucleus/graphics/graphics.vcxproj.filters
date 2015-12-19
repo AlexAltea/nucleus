@@ -73,6 +73,12 @@
     <ClCompile Include="backend\direct3d12\direct3d12_backend.cpp">
       <Filter>backend\direct3d12</Filter>
     </ClCompile>
+    <ClCompile Include="backend\direct3d12\direct3d12_fence.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\direct3d12\direct3d12_shader.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
@@ -172,6 +178,12 @@
       <Filter>backend\direct3d12</Filter>
     </ClInclude>
     <ClInclude Include="backend\direct3d12\direct3d12_backend.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d12\direct3d12_fence.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d12\direct3d12_shader.h">
       <Filter>backend\direct3d12</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,11 +6,13 @@
 #pragma once
 
 #include "nucleus/graphics/pipeline.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 
 namespace gfx {
 
-class Direct3D12PipelineState : public IPipelineState {
+class Direct3D12Pipeline : public Pipeline {
 public:
+    ID3D12PipelineState* state;
 };
 
 }  // namespace gfx

@@ -5,6 +5,7 @@
 
 #include "direct3d12_command_buffer.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_pipeline.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 
 namespace gfx {
@@ -15,11 +16,31 @@ Direct3D12CommandBuffer::Direct3D12CommandBuffer() {
 Direct3D12CommandBuffer::~Direct3D12CommandBuffer() {
 }
 
+bool Direct3D12CommandBuffer::initialize(ID3D12Device* device) {
+    HRESULT hr;
+    hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&allocator));
+    if (FAILED(hr)) {
+        return false;
+    }
+    hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, allocator, NULL, IID_PPV_ARGS(&list));
+    if (FAILED(hr)) {
+        return false;
+    }
+    return true;
+}
+
 bool Direct3D12CommandBuffer::reset() {
     return true;
 }
 
 void Direct3D12CommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
+    auto d3dPipeline = static_cast<Direct3D12Pipeline*>(pipeline);
+    if (!d3dPipeline) {
+        logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdBindPipeline: Invalid pipeline specified");
+        return;
+    }
+
+    list->SetPipelineState(d3dPipeline->state);
 }
 
 void Direct3D12CommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {

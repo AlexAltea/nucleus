@@ -21,6 +21,7 @@
 *.app
 
 # Visual Studio files
+/enc_temp_folder/
 *.aps
 *.idc
 *.ilk
@@ -42,6 +43,6 @@
 *.trace
 
 # Project objects/libraries
-/**/x64/*
-/ipch/*
-/libs/*
+/**/x64/
+/ipch/
+/libs/

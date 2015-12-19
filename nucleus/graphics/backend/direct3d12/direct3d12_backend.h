@@ -15,7 +15,7 @@ class ID3D12Device;
 class ID3D12DescriptorHeap;
 class ID3D12Resource;
 class IDXGIAdapter1;
-class IDXGISwapChain1;
+class IDXGISwapChain3;
 
 namespace gfx {
 
@@ -26,8 +26,9 @@ class Direct3D12Backend : public IBackend {
     ID3D12CommandQueue* queue;
 
     // Swap chain
-    IDXGISwapChain1* swapChain;
+    IDXGISwapChain3* swapChain;
     ID3D12Resource* swapChainRenderBuffer[2];
+    ID3D12DescriptorHeap* swapChainRTVHeap;
     unsigned int swapChainIndex;
 
 public:

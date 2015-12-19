@@ -19,6 +19,7 @@ public:
     ~Direct3D12CommandQueue();
 
     bool initialize(ID3D12Device* device);
+    bool initialize(ID3D12CommandQueue* newQueue);
 
     void submit(CommandBuffer* cmdBuffer, Fence* fence) override;
     void waitIdle() override;

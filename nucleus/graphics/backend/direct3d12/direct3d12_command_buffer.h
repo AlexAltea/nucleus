@@ -12,11 +12,16 @@
 namespace gfx {
 
 class Direct3D12CommandBuffer : public CommandBuffer {
+private:
+    ID3D12CommandAllocator* allocator;
+
 public:
     ID3D12GraphicsCommandList* list;
 
     Direct3D12CommandBuffer();
     ~Direct3D12CommandBuffer();
+
+    bool initialize(ID3D12Device* device);
 
     virtual bool reset() override;
 

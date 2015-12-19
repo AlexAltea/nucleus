@@ -84,7 +84,7 @@ void NucleusApp::Load(Platform::String^ entryPoint) {
     IUnknown* window = reinterpret_cast<IUnknown*>(CoreWindow::GetForCurrentThread());
     unsigned int width = 960;
     unsigned int height = 544;
-    //nucleusPrepare(window, width, height);
+    nucleusPrepare(window, width, height);
 }
 
 void NucleusApp::Run() {
@@ -93,6 +93,7 @@ void NucleusApp::Run() {
     CoreDispatcher^ dispatcher = CoreWindow::GetForCurrentThread()->Dispatcher;
     while (true) {
         dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 

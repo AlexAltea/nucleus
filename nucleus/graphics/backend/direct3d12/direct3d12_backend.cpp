@@ -9,7 +9,10 @@
 
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_buffer.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_queue.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_fence.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_heap.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_pipeline.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_shader.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_texture.h"
 
@@ -90,28 +93,55 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     swapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     swapChainFullscreenDesc.Windowed = TRUE;
 
+    IDXGISwapChain1* tempSwapChain;
     if (params.window) {
-        hr = factory->CreateSwapChainForCoreWindow(queue, params.window, &swapChainDesc, nullptr, &swapChain);
+        hr = factory->CreateSwapChainForCoreWindow(queue, params.window, &swapChainDesc, nullptr, &tempSwapChain);
     } else {
-        hr = factory->CreateSwapChainForHwnd(device, params.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &swapChain);
+        hr = factory->CreateSwapChainForHwnd(device, params.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &tempSwapChain);
     }
 
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not create swap chain (0x%X)", hr);
         return false;
     }
+    hr = tempSwapChain->QueryInterface(IID_PPV_ARGS(&swapChain));
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not request a IDXGISwapChain3 swap chain (0x%X)", hr);
+        return false;
+    }
 
     // Get render target buffers from swap chain
-    swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainRenderBuffer[0]));
-    swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainRenderBuffer[1]));
+    D3D12_DESCRIPTOR_HEAP_DESC swapChainRTVHeapDesc = {};
+    swapChainRTVHeapDesc.NumDescriptors = 2;
+    swapChainRTVHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    swapChainRTVHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    device->CreateDescriptorHeap(&swapChainRTVHeapDesc, IID_PPV_ARGS(&swapChainRTVHeap));
+
+    Direct3D12ColorTarget swapChainColorTargets[2];
+    D3D12_CPU_DESCRIPTOR_HANDLE swapChainRTVHeapStart = swapChainRTVHeap->GetCPUDescriptorHandleForHeapStart();
+    unsigned int rtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    for (UINT i = 0; i < swapChainRTVHeapDesc.NumDescriptors; i++) {
+        swapChainColorTargets[i].handle.ptr = swapChainRTVHeapStart.ptr + (i * rtvDescriptorSize);
+        swapChain->GetBuffer(i, IID_PPV_ARGS(&swapChainRenderBuffer[i]));
+        device->CreateRenderTargetView(swapChainRenderBuffer[0], NULL, swapChainColorTargets[i].handle);
+    }
+
+    if (swapChain->GetCurrentBackBufferIndex() == 0) {
+        screenBackBuffer = new Direct3D12ColorTarget(swapChainColorTargets[0]);
+        screenFrontBuffer = new Direct3D12ColorTarget(swapChainColorTargets[1]);
+    } else {
+        screenBackBuffer = new Direct3D12ColorTarget(swapChainColorTargets[1]);
+        screenFrontBuffer = new Direct3D12ColorTarget(swapChainColorTargets[0]);
+    }
+
     return true;
 }
 
 CommandQueue* Direct3D12Backend::createCommandQueue() {
     auto* commandQueue = new Direct3D12CommandQueue();
 
-    if (!commandQueue->initialize(device)) {
-        logger.error(LOG_GRAPHICS, "OpenGLBackend::createCommandQueue: Could not initialize OpenGLCommandQueue");
+    if (!commandQueue->initialize(queue)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createCommandQueue: Could not initialize Direct3D12CommandQueue");
         return nullptr;
     }
     return commandQueue;
@@ -119,11 +149,22 @@ CommandQueue* Direct3D12Backend::createCommandQueue() {
 
 CommandBuffer* Direct3D12Backend::createCommandBuffer() {
     auto* commandBuffer = new Direct3D12CommandBuffer();
+
+    if (!commandBuffer->initialize(device)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createCommandBuffer: Could not initialize Direct3D12CommandBuffer");
+        return nullptr;
+    }
     return commandBuffer;
 }
 
 Fence* Direct3D12Backend::createFence(const FenceDesc& desc) {
-    return nullptr;
+    auto* fence = new Direct3D12Fence();
+
+    if (!fence->initialize(device)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createCommandQueue: Could not initialize Direct3D12Fence");
+        return nullptr;
+    }
+    return fence;
 }
 
 Heap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
@@ -142,8 +183,9 @@ Heap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
         logger.error(LOG_GRAPHICS, "Unimplemented descriptor heap type");
     }
 
-    if (FAILED(device->CreateDescriptorHeap(&d3dDesc, IID_PPV_ARGS(&heap->heap)))) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createHeap: device->CreateDescriptorHeap failed");
+    HRESULT hr = device->CreateDescriptorHeap(&d3dDesc, IID_PPV_ARGS(&heap->heap));
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createHeap: device->CreateDescriptorHeap failed (0x%X)", hr);
         return nullptr;
     }
 
@@ -167,11 +209,24 @@ DepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(Texture* texture
 }
 
 Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
-    return nullptr;
+    auto* pipeline = new Direct3D12Pipeline();
+
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dDesc = {};
+    d3dDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+    d3dDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+
+    HRESULT hr = device->CreateGraphicsPipelineState(&d3dDesc, IID_PPV_ARGS(&pipeline->state));
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createPipeline: CreateGraphicsPipelineState failed (0x%X)", hr);
+        return nullptr;
+    }
+    return pipeline;
 }
 
 Shader* Direct3D12Backend::createShader(const ShaderDesc& desc) {
-    return nullptr;
+    auto* shader = new Direct3D12Shader();
+    shader->initialize(desc);
+    return shader;
 }
 
 Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
@@ -199,11 +254,11 @@ Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
     heapProps.CreationNodeMask = 1;
     heapProps.VisibleNodeMask = 1;
 
-    if (FAILED(device->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &d3dDesc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&texture->resource)))) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createTexture: device->CreateCommittedResource failed");
+    HRESULT hr = device->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &d3dDesc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&texture->resource));
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createTexture: device->CreateCommittedResource failed (0x%X)", hr);
         return nullptr;
     }
-
     return texture;
 }
 
