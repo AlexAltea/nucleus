@@ -203,7 +203,7 @@ std::string OpenGLShader::compile(Module* module) {
     // Version
     source += "#version 450\n";
 
-    // Pipeline input and outputs
+    // Shader input and outputs
     for (auto* value : module->inputs) {
         source += format("in %s i%d;\n", getType(value->type), value->getId());
     }
