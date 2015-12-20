@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/format.h"
+#include "nucleus/graphics/primitive.h"
 #include "nucleus/graphics/shader.h"
 
 namespace gfx {
@@ -19,7 +20,7 @@ enum InputClassification {
 
 struct InputElement {
     U32 semanticIndex;
-    DataFormat format;
+    Format format;
     U32 inputSlot;
     U32 offset;
     U32 stride;
@@ -29,18 +30,19 @@ struct InputElement {
 };
 
 struct IAState {
+    PrimitiveTopology topology;
     std::vector<InputElement> inputLayout;
 };
 
+// Tesselator
 struct TessState {
 };
 
+// Rasterizer
 struct RSState {
 };
 
-/**
- * Color blender state
- */
+// Color Blender
 enum Blend {
     BLEND_ZERO,
     BLEND_ONE,

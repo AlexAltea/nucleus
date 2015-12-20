@@ -217,6 +217,30 @@ std::string Direct3D12Shader::compile(Module* module) {
 
 bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
     const std::string source = compile(desc.module);
+
+    LPCSTR target;
+    switch (desc.type) {
+    case SHADER_TYPE_VERTEX:    target = "vs_5_0"; break;
+    case SHADER_TYPE_HULL:      target = "hs_5_0"; break;
+    case SHADER_TYPE_DOMAIN:    target = "ds_5_0"; break;
+    case SHADER_TYPE_GEOMETRY:  target = "gs_5_0"; break;
+    case SHADER_TYPE_PIXEL:     target = "ps_5_0"; break;
+    default:
+        assert_always("Unimplemented case");
+        return false;
+    }
+
+    ID3DBlob* bytecode;
+    ID3DBlob* errors;
+    HRESULT hr = D3DCompile(source.data(), source.size(), "shader", nullptr, nullptr, "main", target, 0, 0, &bytecode, &errors);
+    if (FAILED(hr)) {
+        LPVOID errorString = errors->GetBufferPointer();
+        logger.error(LOG_GPU, "Direct3D12Shader::initialize: Cannot compile shader (0x%X):\n%s", hr, errorString);
+        return false;
+    }
+
+    bytecodeData = bytecode->GetBufferPointer();
+    bytecodeSize = bytecode->GetBufferSize();
     return true;
 }
 

@@ -43,8 +43,9 @@ void UI::task() {
     gfx::PipelineDesc pipelineDesc = {};
     pipelineDesc.vs = vertShader;
     pipelineDesc.ps = fragShader;
+    pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_LIST;
     pipelineDesc.iaState.inputLayout = {
-        { 0, gfx::DATA_FORMAT_R32G32B32A32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+        { 0, gfx::FORMAT_R32G32B32A32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
     };
     pipelineDesc.cbState.colorTarget[0] = { true, false,
         gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
@@ -95,6 +96,7 @@ void UI::task() {
         cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
         cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
         cmdBuffer->cmdDraw(0, 3 * widgetVtxBuffer.size(), 0, 1);
+        cmdBuffer->finalize();
 
         // Add new screens
         while (!newScreens.empty()) {

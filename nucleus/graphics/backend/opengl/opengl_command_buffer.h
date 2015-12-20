@@ -144,6 +144,7 @@ public:
     ~OpenGLCommandBuffer();
 
     virtual bool reset() override;
+    virtual bool finalize() override;
 
     // Commands
     virtual void cmdBindPipeline(Pipeline* pipeline) override;

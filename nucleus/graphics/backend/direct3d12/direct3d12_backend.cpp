@@ -252,6 +252,47 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dDesc = {};
     d3dDesc.pRootSignature = rootSignature;
 
+    // Shaders
+    if (desc.vs) {
+        auto* d3dShader = static_cast<Direct3D12Shader*>(desc.vs);
+        d3dDesc.VS.pShaderBytecode = d3dShader->bytecodeData;
+        d3dDesc.VS.BytecodeLength = d3dShader->bytecodeSize;
+    }
+    if (desc.hs) {
+        auto* d3dShader = static_cast<Direct3D12Shader*>(desc.hs);
+        d3dDesc.HS.pShaderBytecode = d3dShader->bytecodeData;
+        d3dDesc.HS.BytecodeLength = d3dShader->bytecodeSize;
+    }
+    if (desc.ds) {
+        auto* d3dShader = static_cast<Direct3D12Shader*>(desc.ds);
+        d3dDesc.DS.pShaderBytecode = d3dShader->bytecodeData;
+        d3dDesc.DS.BytecodeLength = d3dShader->bytecodeSize;
+    }
+    if (desc.gs) {
+        auto* d3dShader = static_cast<Direct3D12Shader*>(desc.gs);
+        d3dDesc.GS.pShaderBytecode = d3dShader->bytecodeData;
+        d3dDesc.GS.BytecodeLength = d3dShader->bytecodeSize;
+    }
+    if (desc.ps) {
+        auto* d3dShader = static_cast<Direct3D12Shader*>(desc.ps);
+        d3dDesc.PS.pShaderBytecode = d3dShader->bytecodeData;
+        d3dDesc.PS.BytecodeLength = d3dShader->bytecodeSize;
+    }
+
+    // IA state
+    std::vector<D3D12_INPUT_ELEMENT_DESC> d3dInputElements;
+    for (const auto& element : desc.iaState.inputLayout) {
+        DXGI_FORMAT format = convertFormat(element.format);
+        D3D12_INPUT_CLASSIFICATION inputClassification = convertInputClassification(element.inputClassification);
+        d3dInputElements.emplace_back(D3D12_INPUT_ELEMENT_DESC{
+            "TEXCOORD", element.semanticIndex, format, element.inputSlot, element.offset,
+            inputClassification, element.instanceStepRate
+        });
+    }
+    d3dDesc.InputLayout.NumElements = d3dInputElements.size();
+    d3dDesc.InputLayout.pInputElementDescs = d3dInputElements.data();
+    d3dDesc.PrimitiveTopologyType = convertPrimitiveTopologyType(desc.iaState.topology);
+
     // RS state
     d3dDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // TODO
     d3dDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // TODO
@@ -302,7 +343,7 @@ Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
 
     // Pick appropriate format
     switch (desc.format) {
-    case TEXTURE_FORMAT_R8G8B8A8:
+    case FORMAT_R8G8B8A8:
         d3dDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT; break;
     default:
         logger.error(LOG_GRAPHICS, "Unimplemented texture format");

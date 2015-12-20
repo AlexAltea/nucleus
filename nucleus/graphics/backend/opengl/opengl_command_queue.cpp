@@ -137,11 +137,11 @@ void OpenGLCommandQueue::execute(const OpenGLCommandBindPipeline& cmd) {
             GLenum type;
             GLboolean normalized;
             switch (inputElement.format) {
-            case DATA_FORMAT_R32G32:
+            case FORMAT_R32G32:
                 size = 2; type = GL_FLOAT; normalized = GL_FALSE; break;
-            case DATA_FORMAT_R32G32B32:
+            case FORMAT_R32G32B32:
                 size = 3; type = GL_FLOAT; normalized = GL_FALSE; break;
-            case DATA_FORMAT_R32G32B32A32:
+            case FORMAT_R32G32B32A32:
                 size = 4; type = GL_FLOAT; normalized = GL_FALSE; break;
             }
 

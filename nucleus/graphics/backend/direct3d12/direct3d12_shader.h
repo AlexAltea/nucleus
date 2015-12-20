@@ -52,8 +52,8 @@ class Direct3D12Shader : public Shader {
     std::string compile(hir::Module* module);
 
 public:
-    const void* bytecode;
-    SIZE_T* bytecodeLength;
+    const void* bytecodeData;
+    SIZE_T bytecodeSize;
 
     bool initialize(const ShaderDesc& desc);
 };

@@ -27,11 +27,21 @@ bool Direct3D12CommandBuffer::initialize(ID3D12Device* device) {
     if (FAILED(hr)) {
         return false;
     }
+    hr = list->Close();
+    if (FAILED(hr)) {
+        return false;
+    }
     return true;
 }
 
 bool Direct3D12CommandBuffer::reset() {
-    return true;
+    HRESULT hr = list->Reset(allocator, nullptr);
+    return SUCCEEDED(hr);
+}
+
+bool Direct3D12CommandBuffer::finalize() {
+    HRESULT hr = list->Close();
+    return SUCCEEDED(hr);
 }
 
 void Direct3D12CommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
@@ -103,18 +113,17 @@ void Direct3D12CommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport
         return;
     }
 
-    auto* d3dViewports = new D3D12_VIEWPORT[viewportsCount];
+    std::vector<D3D12_VIEWPORT> d3dViewports(viewportsCount);
     for (U32 i = 0; i < viewportsCount; i++) {
         d3dViewports[i].TopLeftX = viewports[i].originX;
         d3dViewports[i].TopLeftY = viewports[i].originY;
         d3dViewports[i].Width = viewports[i].width;
         d3dViewports[i].Height = viewports[i].height;
-        d3dViewports[i].MinDepth = viewports[i].minDepth;
-        d3dViewports[i].MaxDepth = viewports[i].maxDepth;
+        d3dViewports[i].MinDepth = 0.0f;
+        d3dViewports[i].MaxDepth = 1.0f;
     }
 
-    list->RSSetViewports(viewportsCount, d3dViewports);
-    delete[] d3dViewports;
+    list->RSSetViewports(viewportsCount, d3dViewports.data());
 }
 
 void Direct3D12CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) {
@@ -123,7 +132,7 @@ void Direct3D12CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle*
         return;
     }
 
-    auto* d3dRects = new D3D12_RECT[scissorsCount];
+    std::vector<D3D12_RECT> d3dRects(scissorsCount);
     for (U32 i = 0; i < scissorsCount; i++) {
         d3dRects[i].left = scissors[i].left;
         d3dRects[i].top = scissors[i].top;
@@ -131,8 +140,7 @@ void Direct3D12CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle*
         d3dRects[i].bottom = scissors[i].bottom;
     }
 
-    list->RSSetScissorRects(scissorsCount, d3dRects);
-    delete[] d3dRects;
+    list->RSSetScissorRects(scissorsCount, d3dRects.data());
 }
 
 }  // namespace direct3d12

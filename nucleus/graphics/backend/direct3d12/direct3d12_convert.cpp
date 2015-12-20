@@ -47,6 +47,28 @@ D3D12_BLEND_OP convertBlendOp(gfx::BlendOp blendOp) {
     }
 }
 
+DXGI_FORMAT convertFormat(gfx::Format format) {
+    switch (format) {
+    case FORMAT_R8G8B8A8:      return DXGI_FORMAT_R8G8B8A8_UINT;
+    case FORMAT_R32G32:        return DXGI_FORMAT_R32G32_FLOAT;
+    case FORMAT_R32G32B32:     return DXGI_FORMAT_R32G32B32_FLOAT;
+    case FORMAT_R32G32B32A32:  return DXGI_FORMAT_R32G32B32A32_FLOAT;
+    default:
+        assert_always("Unimplemented case");
+        return DXGI_FORMAT_UNKNOWN;
+    }
+}
+
+D3D12_INPUT_CLASSIFICATION convertInputClassification(gfx::InputClassification inputClassification) {
+    switch (inputClassification) {
+    case INPUT_CLASSIFICATION_PER_VERTEX:    return D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+    case INPUT_CLASSIFICATION_PER_INSTANCE:  return D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
+    default:
+        assert_always("Unimplemented case");
+        return D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+    }
+}
+
 D3D12_LOGIC_OP convertLogicOp(gfx::LogicOp logicOp) {
     switch (logicOp) {
     case LOGIC_OP_COPY:           return D3D12_LOGIC_OP_COPY;
@@ -68,6 +90,21 @@ D3D12_LOGIC_OP convertLogicOp(gfx::LogicOp logicOp) {
     default:
         assert_always("Unimplemented case");
         return D3D12_LOGIC_OP_NOOP;
+    }
+}
+
+D3D12_PRIMITIVE_TOPOLOGY_TYPE convertPrimitiveTopologyType(gfx::PrimitiveTopology primitiveTopology) {
+    switch (primitiveTopology) {
+    case TOPOLOGY_POINT_LIST:      return D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+    case TOPOLOGY_LINE_LIST:       return D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+    case TOPOLOGY_LINE_STRIP:      return D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+    case TOPOLOGY_TRIANGLE_LIST:   return D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    case TOPOLOGY_TRIANGLE_STRIP:  return D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    case TOPOLOGY_QUAD_LIST:       return D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+    case TOPOLOGY_QUAD_STRIP:      return D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+    default:
+        assert_always("Unimplemented case");
+        return D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED;
     }
 }
 

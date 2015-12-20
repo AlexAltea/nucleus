@@ -25,6 +25,7 @@ public:
     bool initialize(ID3D12Device* device);
 
     virtual bool reset() override;
+    virtual bool finalize() override;
 
     // Commands
     virtual void cmdBindPipeline(Pipeline* pipeline) override;

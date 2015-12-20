@@ -7,6 +7,9 @@
 
 namespace gfx {
 
+enum Primitive {
+};
+
 enum PrimitiveTopology {
     TOPOLOGY_POINT_LIST,
     TOPOLOGY_LINE_LIST,
@@ -15,6 +18,13 @@ enum PrimitiveTopology {
     TOPOLOGY_TRIANGLE_STRIP,
     TOPOLOGY_QUAD_LIST,
     TOPOLOGY_QUAD_STRIP,
+};
+
+enum PrimitiveTopologyType {
+    TOPOLOGY_TYPE_POINT,
+    TOPOLOGY_TYPE_LINE,
+    TOPOLOGY_TYPE_TRIANGLE,
+    TOPOLOGY_TYPE_PATCH,
 };
 
 }  // namespace gfx

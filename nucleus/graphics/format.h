@@ -7,11 +7,11 @@
 
 namespace gfx {
 
-enum DataFormat {
-    DATA_FORMAT_R8G8B8A8,
-    DATA_FORMAT_R32G32,
-    DATA_FORMAT_R32G32B32,
-    DATA_FORMAT_R32G32B32A32,
+enum Format {
+    FORMAT_R8G8B8A8,
+    FORMAT_R32G32,
+    FORMAT_R32G32B32,
+    FORMAT_R32G32B32A32,
 };
 
 }  // namespace gfx

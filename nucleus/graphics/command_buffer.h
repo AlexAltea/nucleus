@@ -24,6 +24,12 @@ public:
     virtual bool reset() = 0;
 
     /**
+     * Finalize the command buffer, making it ready to be sent to a command queue
+     * @return  True on success
+     */
+    virtual bool finalize() = 0;
+
+    /**
      * Bind a graphics pipeline to the current command buffer state
      * @param[in]  pipeline  Pipeline state
      */

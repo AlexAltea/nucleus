@@ -22,6 +22,10 @@ bool OpenGLCommandBuffer::reset() {
     return true;
 }
 
+bool OpenGLCommandBuffer::finalize() {
+    return true;
+}
+
 void OpenGLCommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
     auto glPipeline = static_cast<OpenGLPipeline*>(pipeline);
     if (!glPipeline) {
