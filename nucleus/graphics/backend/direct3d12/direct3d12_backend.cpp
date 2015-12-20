@@ -6,6 +6,7 @@
 #include "direct3d12_backend.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_convert.h"
 
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_buffer.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_queue.h"
@@ -210,13 +211,72 @@ DepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(Texture* texture
 }
 
 Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
+    HRESULT hr;
     auto* pipeline = new Direct3D12Pipeline();
 
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dDesc = {};
-    d3dDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-    d3dDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+    // Root signature parameters
+    D3D12_DESCRIPTOR_RANGE range;
+    range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+    range.NumDescriptors = 1;
+    range.BaseShaderRegister = 0;
+    range.RegisterSpace = 0;
+    range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    HRESULT hr = device->CreateGraphicsPipelineState(&d3dDesc, IID_PPV_ARGS(&pipeline->state));
+    D3D12_ROOT_PARAMETER parameter = {};
+    parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    parameter.DescriptorTable.NumDescriptorRanges = 1;
+    parameter.DescriptorTable.pDescriptorRanges = &range;
+    parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+
+    // Root signature
+    D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+    rootSignatureDesc.NumParameters = 1;
+    rootSignatureDesc.pParameters = &parameter;
+    rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+        D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+        D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
+        D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+        D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+
+    ID3DBlob* signature;
+    ID3DBlob* error;
+    ID3D12RootSignature* rootSignature;
+    D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
+
+    hr = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createPipeline: CreateRootSignature failed (0x%X)", hr);
+        return nullptr;
+    }
+
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dDesc = {};
+    d3dDesc.pRootSignature = rootSignature;
+
+    // RS state
+    d3dDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // TODO
+    d3dDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // TODO
+    d3dDesc.RasterizerState.DepthClipEnable = TRUE; // TODO
+
+    // CB state
+    d3dDesc.BlendState.AlphaToCoverageEnable = desc.cbState.enableAlphaToCoverage;
+    d3dDesc.BlendState.IndependentBlendEnable = desc.cbState.enableIndependentBlend;
+    UINT sizeColorTargetBlendArray = d3dDesc.BlendState.IndependentBlendEnable ? 8 : 1;
+    for (UINT i = 0; i < sizeColorTargetBlendArray; i++) {
+        const auto& source = desc.cbState.colorTarget[i];
+        auto& d3dTarget = d3dDesc.BlendState.RenderTarget[i];
+        d3dTarget.BlendEnable = source.enableBlend;
+        d3dTarget.LogicOpEnable = source.enableLogicOp;
+        d3dTarget.SrcBlend = convertBlend(source.srcBlend);
+        d3dTarget.DestBlend = convertBlend(source.destBlend);
+        d3dTarget.BlendOp = convertBlendOp(source.blendOp);
+        d3dTarget.SrcBlendAlpha = convertBlend(source.srcBlendAlpha);
+        d3dTarget.DestBlendAlpha = convertBlend(source.destBlendAlpha);
+        d3dTarget.BlendOpAlpha = convertBlendOp(source.blendOpAlpha);
+        d3dTarget.LogicOp = convertLogicOp(source.logicOp);
+        d3dTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL; // TODO
+    }
+
+    hr = device->CreateGraphicsPipelineState(&d3dDesc, IID_PPV_ARGS(&pipeline->state));
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::createPipeline: CreateGraphicsPipelineState failed (0x%X)", hr);
         return nullptr;

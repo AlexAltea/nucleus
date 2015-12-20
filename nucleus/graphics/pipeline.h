@@ -28,7 +28,19 @@ struct InputElement {
     U32 instanceStepRate;
 };
 
-// Color Blender
+struct IAState {
+    std::vector<InputElement> inputLayout;
+};
+
+struct TessState {
+};
+
+struct RSState {
+};
+
+/**
+ * Color blender state
+ */
 enum Blend {
     BLEND_ZERO,
     BLEND_ONE,
@@ -76,20 +88,18 @@ enum LogicOp {
     LOGIC_OP_SET,
 };
 
-struct IAState {
-    std::vector<InputElement> inputLayout;
-};
-
-struct TessState {
-};
-
-struct RSState {
+enum ColorWriteEnable {
+    COLOR_WRITE_ENABLE_RED    = (1 << 0),
+    COLOR_WRITE_ENABLE_GREEN  = (1 << 1),
+    COLOR_WRITE_ENABLE_BLUE	  = (1 << 2),
+    COLOR_WRITE_ENABLE_ALPHA  = (1 << 3),
+    COLOR_WRITE_ENABLE_ALL	  = COLOR_WRITE_ENABLE_RED | COLOR_WRITE_ENABLE_GREEN | COLOR_WRITE_ENABLE_BLUE | COLOR_WRITE_ENABLE_ALPHA,
 };
 
 struct CBState {
     bool enableAlphaToCoverage;
-    bool enableDualSourceBlend;
-    struct RenderTarget {
+    bool enableIndependentBlend;
+    struct ColorTargetBlendDesc {
         bool enableBlend;
         bool enableLogicOp;
         Blend srcBlend;
@@ -99,12 +109,24 @@ struct CBState {
         Blend destBlendAlpha;
         BlendOp blendOpAlpha;
         LogicOp logicOp;
-    } renderTarget[8];
+        ColorWriteEnable colorWriteEnable;
+    } colorTarget[8];
 };
 
 struct DBState {
 };
 
+/**
+ * Pipeline Description
+ * ====================
+ * Consists of:
+ * +----+    +====+    +====+    +====+    +====+    +----+    +====+    +----+----+
+ * | IA | -> | VS | -> | HS | -> | DS | -> | GS | -> | RS | -> | PS | -> | CB | DB |
+ * +----+    +====+    +====+    +====+    +====+    +----+    +====+    +----+----+
+ *                    \________________/
+ *                           Tess                            ---- Fixed stage
+ *                                                           ==== Programmable stage
+ */
 class PipelineDesc {
 public:
     Shader* vs;  // Vertex Shader

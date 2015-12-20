@@ -79,6 +79,12 @@
     <ClCompile Include="backend\direct3d12\direct3d12_shader.cpp">
       <Filter>backend\direct3d12</Filter>
     </ClCompile>
+    <ClCompile Include="backend\direct3d12\direct3d12_convert.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="backend\opengl\opengl_convert.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
@@ -185,6 +191,12 @@
     </ClInclude>
     <ClInclude Include="backend\direct3d12\direct3d12_shader.h">
       <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\direct3d12\direct3d12_convert.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="backend\opengl\opengl_convert.h">
+      <Filter>backend\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

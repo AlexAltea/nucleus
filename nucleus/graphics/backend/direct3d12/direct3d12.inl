@@ -6,6 +6,7 @@
 // Functions: d3d12.dll
 FUNCTION(PFN_D3D12_CREATE_DEVICE, d3d12, D3D12CreateDevice);
 FUNCTION(PFN_D3D12_GET_DEBUG_INTERFACE, d3d12, D3D12GetDebugInterface);
+FUNCTION(PFN_D3D12_SERIALIZE_ROOT_SIGNATURE, d3d12, D3D12SerializeRootSignature);
 
 // Functions: dxgi.dll
 FUNCTION(PFN_CreateDXGIFactory, dxgi, CreateDXGIFactory);

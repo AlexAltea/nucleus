@@ -7,11 +7,6 @@
 #include "nucleus/core/config.h"
 #include "nucleus/ui/screens/screen_logo.h"
 
-// Platform specific drawing contexts
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-#include "wrappers/windows/window.h"
-extern Window* window;
-#endif
 
 namespace ui {
 
@@ -30,12 +25,6 @@ bool UI::initialize() {
 }
 
 void UI::task() {
-    // Prepare output buffers
-    gfx::HeapDesc heapDesc = {};
-    heapDesc.type = gfx::HEAP_TYPE_CT;
-    heapDesc.size = 2;
-    graphics->createHeap(heapDesc);
-
     gfx::FenceDesc fenceDesc = {};
     gfx::Fence* fence = graphics->createFence(fenceDesc);
 
@@ -43,11 +32,6 @@ void UI::task() {
     cmdBuffer = graphics->createCommandBuffer();
     gfx::ColorTarget* colorTarget = graphics->screenBackBuffer;
 
-    // Prepare state
-    /* TODO
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
@@ -60,7 +44,13 @@ void UI::task() {
     pipelineDesc.vs = vertShader;
     pipelineDesc.ps = fragShader;
     pipelineDesc.iaState.inputLayout = {
-        { 1, gfx::DATA_FORMAT_R32G32B32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+        { 0, gfx::DATA_FORMAT_R32G32B32A32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+    };
+    pipelineDesc.cbState.colorTarget[0] = { true, false,
+        gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
+        gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
+        gfx::LOGIC_OP_NOOP,
+        gfx::COLOR_WRITE_ENABLE_ALL
     };
     gfx::Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
 
