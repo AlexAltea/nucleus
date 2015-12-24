@@ -251,6 +251,9 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dDesc = {};
     d3dDesc.pRootSignature = rootSignature;
+    d3dDesc.NumRenderTargets = 1;
+    d3dDesc.RTVFormats[0] = DXGI_FORMAT_B8G8R8A8_UNORM;
+    d3dDesc.SampleDesc.Count = 1;
 
     // Shaders
     if (desc.vs) {
@@ -369,8 +372,9 @@ VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc
 }
 
 bool Direct3D12Backend::doSwapBuffers() {
-    if (FAILED(swapChain->Present(0, 0))) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::doSwapBuffers: swapChain->Present failed");
+    HRESULT hr = swapChain->Present(0, 0);
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::doSwapBuffers: swapChain->Present failed (0x%X)", hr);
         return false;
     }
     std::swap(screenBackBuffer, screenFrontBuffer);

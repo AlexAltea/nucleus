@@ -157,6 +157,7 @@ public:
     virtual void cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) override;
     virtual void cmdSetViewports(U32 viewportsCount, const Viewport* viewports) override;
     virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) override;
+    virtual void cmdResourceBarrier(U32 barrierCount, const ResourceBarrier* barriers) override;
 };
 
 }  // namespace opengl

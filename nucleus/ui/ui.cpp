@@ -28,10 +28,8 @@ void UI::task() {
     gfx::FenceDesc fenceDesc = {};
     gfx::Fence* fence = graphics->createFence(fenceDesc);
 
-    const float clearColor[] = {0.5f, 0.5f, 0.0f, 1.0f};
+    const float clearColor[] = {0.157f, 0.157f, 0.360f, 1.0f};
     cmdBuffer = graphics->createCommandBuffer();
-    gfx::ColorTarget* colorTarget = graphics->screenBackBuffer;
-
 
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
@@ -63,8 +61,9 @@ void UI::task() {
         
         cmdBuffer->reset();
         cmdBuffer->cmdBindPipeline(pipeline);
+        cmdBuffer->cmdSetTargets(1, &graphics->screenBackBuffer, nullptr);
         cmdBuffer->cmdSetViewports(1, &viewport);
-        cmdBuffer->cmdClearColor(colorTarget, clearColor);
+        cmdBuffer->cmdClearColor(graphics->screenBackBuffer, clearColor);
 
         // Vertex buffer
         widgetVtxBuffer.clear();

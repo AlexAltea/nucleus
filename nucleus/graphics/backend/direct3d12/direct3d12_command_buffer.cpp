@@ -104,7 +104,12 @@ void Direct3D12CommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology
 }
 
 void Direct3D12CommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {
-    list->OMSetRenderTargets(colorCount, nullptr, FALSE, nullptr); // TODO
+    std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargets;
+    for (UINT i = 0; i < colorCount; i++) {
+        auto* d3dColorTarget = static_cast<Direct3D12ColorTarget*>(colorTargets[i]);
+        renderTargets.push_back(d3dColorTarget->handle);
+    }
+    list->OMSetRenderTargets(colorCount, renderTargets.data(), FALSE, nullptr); // TODO
 }
 
 void Direct3D12CommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport* viewports) {

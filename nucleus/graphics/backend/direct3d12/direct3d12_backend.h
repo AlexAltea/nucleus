@@ -9,13 +9,13 @@
 #include "nucleus/graphics/graphics.h"
 
 // Forward Direct3D12 declarations
-class ID3D12CommandQueue;
-class ID3D12Debug;
-class ID3D12Device;
-class ID3D12DescriptorHeap;
-class ID3D12Resource;
-class IDXGIAdapter1;
-class IDXGISwapChain3;
+struct ID3D12CommandQueue;
+struct ID3D12Debug;
+struct ID3D12Device;
+struct ID3D12DescriptorHeap;
+struct ID3D12Resource;
+struct IDXGIAdapter1;
+struct IDXGISwapChain3;
 
 namespace gfx {
 namespace direct3d12 {

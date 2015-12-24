@@ -23,6 +23,9 @@ public:
 
     bool initialize(ID3D12Device* device);
 
+    // Trigger the signal status
+    void signal(ID3D12CommandQueue* queue);
+
     virtual void wait() override;
     virtual void wait(Clock::duration timeout) override;
 };

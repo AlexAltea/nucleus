@@ -5,6 +5,7 @@
 
 #include "direct3d12_command_queue.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_command_buffer.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_fence.h"
 
 namespace gfx {
 namespace direct3d12 {
@@ -37,6 +38,11 @@ void Direct3D12CommandQueue::submit(CommandBuffer* cmdBuffer, Fence* fence) {
 
     ID3D12CommandList* ppCommandLists[] = { cmdList->list };
     queue->ExecuteCommandLists(1, ppCommandLists);
+
+    auto* d3dFence = static_cast<Direct3D12Fence*>(fence);
+    if (d3dFence) {
+        d3dFence->signal(queue);
+    }
 }
 
 void Direct3D12CommandQueue::waitIdle() {
