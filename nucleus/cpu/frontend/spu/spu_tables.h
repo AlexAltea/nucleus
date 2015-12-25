@@ -7,8 +7,6 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/spu/spu_instruction.h"
-#include "nucleus/cpu/frontend/spu/analyzer/spu_analyzer.h"
-#include "nucleus/cpu/frontend/spu/interpreter/spu_interpreter.h"
 #include "nucleus/cpu/frontend/spu/recompiler/spu_recompiler.h"
 
 #include <string>
@@ -34,8 +32,6 @@ struct Entry
 
     // Instruction data
     const char* name;
-    void (Analyzer::*analyze)(Instruction);
-    void (Interpreter::*interpret)(Instruction);
     void (Recompiler::*recompile)(Instruction);
 };
 

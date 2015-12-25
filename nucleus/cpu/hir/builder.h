@@ -81,11 +81,11 @@ public:
 
     // Shifting operations
     Value* createShl(Value* value, Value* amount);
-    Value* createShl(Value* value, U64 rhs);
+    Value* createShl(Value* value, U8 rhs);
     Value* createShr(Value* value, Value* amount);
-    Value* createShr(Value* value, U64 rhs);
+    Value* createShr(Value* value, U8 rhs);
     Value* createShrA(Value* value, Value* amount);
-    Value* createShrA(Value* value, U64 rhs);
+    Value* createShrA(Value* value, U8 rhs);
 
     // Memory access and context operations
     Value* createLoad(Value* address, Type type, MemoryFlags flags = ENDIAN_DEFAULT);

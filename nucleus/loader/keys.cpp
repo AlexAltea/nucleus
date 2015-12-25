@@ -12,7 +12,7 @@
 
 #include <map>
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_COMPILER_MSVC)
 #define fseeko64 _fseeki64
 #define ftello64 _ftelli64
 #endif
@@ -38,7 +38,8 @@ static struct KeyvaultHandler {
     KeyvaultHandler() {
         // Access the Keyvault file and get its size
         std::string path = fs::getEmulatorPath() + KEYVAULT_FILE;
-        std::FILE* file = fopen(path.c_str(), "rb");
+        std::FILE* file;
+        fopen_s(&file, path.c_str(), "rb");
         fseeko64(file, 0, SEEK_END);
         const U64 kvSize = ftello64(file);
 
@@ -54,8 +55,7 @@ static struct KeyvaultHandler {
     }
 } keyvault;
 
-const SelfKey getSelfKey(U32 type, U64 version, U16 revision)
-{
+const SelfKey getSelfKey(U32 type, U64 version, U16 revision) {
     // Locate the SELF keys node
     auto nodeKeyvault = keyvault.doc.first_node();
     auto nodeSelf = nodeKeyvault->first_node("self");

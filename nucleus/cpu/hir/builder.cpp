@@ -116,7 +116,7 @@ Function* Builder::getExternFunction(void* hostAddr) {
     hir::Module* parModule = parFunction->parent;
 
     // Check builtin functions
-    Function* externFunc;
+    Function* externFunc = nullptr;
     if (hostAddr == nucleusTranslate) {
         externFunc = new Function(parModule, TYPE_VOID, {TYPE_PTR, TYPE_I64});
     } else if (hostAddr == nucleusCall) {
@@ -466,7 +466,7 @@ Value* Builder::createShl(Value* value, Value* amount) {
     return i->dest;
 }
 
-Value* Builder::createShl(Value* value, U64 rhs) {
+Value* Builder::createShl(Value* value, U8 rhs) {
     return createShl(value, getConstantI8(rhs));
 }
 
@@ -492,7 +492,7 @@ Value* Builder::createShr(Value* value, Value* amount) {
     return i->dest;
 }
 
-Value* Builder::createShr(Value* value, U64 rhs) {
+Value* Builder::createShr(Value* value, U8 rhs) {
     return createShr(value, getConstantI8(rhs));
 }
 
@@ -518,7 +518,7 @@ Value* Builder::createShrA(Value* value, Value* amount) {
     return i->dest;
 }
 
-Value* Builder::createShrA(Value* value, U64 rhs) {
+Value* Builder::createShrA(Value* value, U8 rhs) {
     return createShrA(value, getConstantI8(rhs));
 }
 

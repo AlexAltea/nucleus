@@ -69,6 +69,7 @@ void Recompiler::addx(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented: OE flag");
+        rd = builder.getConstantI64(0); // TODO
     } else {
         rd = builder.createAdd(ra, rb);
     }
@@ -89,6 +90,8 @@ void Recompiler::addcx(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
+        ca = builder.getConstantI8(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, rb);
@@ -111,6 +114,7 @@ void Recompiler::addex(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, rb);
@@ -194,6 +198,7 @@ void Recompiler::addmex(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createSub(ra, builder.getConstantI64(1));
@@ -217,6 +222,7 @@ void Recompiler::addzex(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, builder.createZExt(ca, TYPE_I64));
@@ -1014,6 +1020,7 @@ void Recompiler::subfx(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
         // TODO: XER SO, OV update
     } else {
         rd = builder.createSub(rb, ra);
@@ -1035,6 +1042,8 @@ void Recompiler::subfcx(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
+        ca = builder.getConstantI8(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, rb);
@@ -1058,6 +1067,7 @@ void Recompiler::subfex(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(builder.createNot(ra), rb);
@@ -1095,6 +1105,8 @@ void Recompiler::subfmex(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
+        ca = builder.getConstantI8(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createSub(builder.createNot(ra), builder.getConstantI64(1));
@@ -1118,6 +1130,8 @@ void Recompiler::subfzex(Instruction code)
 
     if (code.oe) {
         assert_always("Unimplemented");
+        rd = builder.getConstantI64(0); // TODO
+        ca = builder.getConstantI8(0); // TODO
         // TODO: XER OV update
     } else {
         rd = builder.createNot(ra);

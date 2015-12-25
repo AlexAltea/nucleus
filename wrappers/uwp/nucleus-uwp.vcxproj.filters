@@ -10,13 +10,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.xaml.cpp" />
-    <ClCompile Include="MainPage.xaml.cpp" />
     <ClCompile Include="App.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.xaml.h" />
-    <ClInclude Include="MainPage.xaml.h" />
     <ClInclude Include="App.h" />
   </ItemGroup>
   <ItemGroup>
@@ -47,5 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="nucleus-uwp_TemporaryKey.pfx" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

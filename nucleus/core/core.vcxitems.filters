@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)config.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\aes.cpp">
+      <Filter>externals</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.cpp">
+      <Filter>externals</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\mongoose\mongoose.c">
+      <Filter>externals\mongoose</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_image.c">
+      <Filter>externals\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_truetype.c">
+      <Filter>externals\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\keys.cpp">
+      <Filter>loader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\loader.cpp">
+      <Filter>loader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\psf.cpp">
+      <Filter>loader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\self.cpp">
+      <Filter>loader</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\emulator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\format.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\nucleus.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\aes.h">
+      <Filter>externals</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.h">
+      <Filter>externals</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\mongoose\mongoose.h">
+      <Filter>externals\mongoose</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_image.h">
+      <Filter>externals\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_truetype.h">
+      <Filter>externals\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\keys.h">
+      <Filter>loader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\loader.h">
+      <Filter>loader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\psf.h">
+      <Filter>loader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\self.h">
+      <Filter>loader</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\assert.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\emulator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\endianness.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\format.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\macro.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\nucleus.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\architecture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\compiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="externals">
+      <UniqueIdentifier>{e809ab99-fe03-4cdd-bb7b-b5f8c53f32a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externals\mongoose">
+      <UniqueIdentifier>{49ff4b96-fc64-4552-9563-0a23f614e5f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externals\stb">
+      <UniqueIdentifier>{e3d41dc9-43f3-432e-9e14-bf79aef4ef93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="loader">
+      <UniqueIdentifier>{2babb73a-fe6f-43bb-acfc-ef94369243b5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

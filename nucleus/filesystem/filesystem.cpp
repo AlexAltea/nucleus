@@ -59,7 +59,7 @@ bool VirtualFileSystem::createFile(const Path& path) {
 bool VirtualFileSystem::existsFile(const Path& path) {
     auto* device = getDevice(path);
     if (!device) {
-        return nullptr;
+        return false;
     }
 
     Path relativePath = path.substr(device->mountPath.length());
@@ -69,7 +69,7 @@ bool VirtualFileSystem::existsFile(const Path& path) {
 bool VirtualFileSystem::removeFile(const Path& path) {
     auto* device = getDevice(path);
     if (!device) {
-        return nullptr;
+        return false;
     }
 
     Path relativePath = path.substr(device->mountPath.length());

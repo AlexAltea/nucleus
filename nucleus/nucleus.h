@@ -7,16 +7,19 @@
 
 #include "nucleus/common.h"
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_PLATFORM_UWP)
+#include <Windows.h>
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
 #endif
 
 void nucleusConfigure(int argc, char **argv);
 
 // Initialize UI
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
-void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height);
+#if defined(NUCLEUS_PLATFORM_UWP)
 void nucleusPrepare(IUnknown* window, int width, int height);
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height);
 #elif defined(NUCLEUS_PLATFORM_LINUX)
 void nucleusPrepare(Display* display);
 #endif

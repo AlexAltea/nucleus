@@ -22,6 +22,7 @@
 
 # Visual Studio files
 /enc_temp_folder/
+/ipch/
 *.aps
 *.idc
 *.ilk
@@ -44,5 +45,4 @@
 
 # Project objects/libraries
 /**/x64/
-/ipch/
 /libs/

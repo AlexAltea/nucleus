@@ -46,6 +46,7 @@ void Recompiler::mfspr(Instruction code)
         break;
 
     default:
+        rd = builder.getConstantI64(0);
         logger.error(LOG_CPU, "Recompiler::mfspr error: Unknown SPR");
     }
 

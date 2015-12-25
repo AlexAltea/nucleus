@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="screens">
+      <UniqueIdentifier>{b8fcf84b-9c46-48cf-addf-f8e46436bd9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="widgets">
+      <UniqueIdentifier>{4f97e9c1-7f33-4978-9e4e-57b9f719d3c8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_text.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_texture.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\list.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_container.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_image.h">
+      <Filter>widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)screens\screen_emulator.h">
+      <Filter>screens</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)screens\screen_logo.h">
+      <Filter>screens</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)screens\screen_main.h">
+      <Filter>screens</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)screens\list.h">
+      <Filter>screens</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)language.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)length.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)screen.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)style.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)transitions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ui.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)widget.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_texture.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_container.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_image.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_text.cpp">
+      <Filter>widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)screens\screen_logo.cpp">
+      <Filter>screens</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)screens\screen_main.cpp">
+      <Filter>screens</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)screens\screen_emulator.cpp">
+      <Filter>screens</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)language.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)screen.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)transitions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ui.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)widget.cpp" />
+  </ItemGroup>
+</Project>

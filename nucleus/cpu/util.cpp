@@ -5,6 +5,7 @@
 
 #include "util.h"
 #include "nucleus/emulator.h"
+#include "nucleus/logger/logger.h"
 #include "nucleus/system/lv2.h"
 #include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/hir/function.h"
@@ -72,7 +73,7 @@ U64 nucleusTime() {
     const U64 sec = cycle.QuadPart / freq.value;
     return sec * 79800000 + (cycle.QuadPart % freq.value) * 79800000 / freq.value;
 #else
-    nucleus.log.error(LOG_CPU, "Could not get the Timebase value");
+    logger.error(LOG_CPU, "Could not get the Timebase value");
     return 0;
 #endif
 }

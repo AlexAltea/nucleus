@@ -32,6 +32,19 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
+  <ImportGroup Label="Shared">
+    <Import Project="..\..\nucleus\audio\audio.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\core\core.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\cpu\cpu.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\debugger\debugger.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\filesystem\filesystem.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\gpu\gpu.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\graphics\graphics.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\logger\logger.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\memory\memory.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\system\system.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\ui\ui.vcxitems" Label="Shared" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>

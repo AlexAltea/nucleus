@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{7EC60005-180C-4CC7-AE7C-A0C3058F4F26}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)device.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\host_path\host_path_device.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\host_path\host_path_file.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_device.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)directory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)file.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)path.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\host_path\host_path_device.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\host_path\host_path_file.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_device.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
+  </ItemGroup>
+</Project>

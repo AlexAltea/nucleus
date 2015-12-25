@@ -6,10 +6,10 @@
 #include "spu_tables.h"
 
 // Instruction entry
-#define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, &Analyzer::name, &Interpreter::name, &Recompiler::name }
+#define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, &Recompiler::name }
 
 // Table entry
-# define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr, nullptr, nullptr }
+# define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr }
 
 namespace cpu {
 namespace spu {
@@ -25,7 +25,7 @@ template <int N>
 struct Table {
     Entry table[N];
 
-    const Entry& operator[] (const u32 i) const {
+    const Entry& operator[] (const U32 i) const {
         return table[i];
     }
 };

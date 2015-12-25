@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{D40B9BFD-09DE-49C1-8FAB-800901DA53FB}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)gpu.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_dma.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_fp.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)gpu.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_dma.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_enum.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_fp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_methods.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_texture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.h" />
+  </ItemGroup>
+</Project>

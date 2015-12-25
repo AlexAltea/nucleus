@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{E7BE9E89-784D-49A9-9E30-506B6D99E4E4}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\aes.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\mongoose\mongoose.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_image.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_truetype.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\emulator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\format.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\keys.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\loader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\psf.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\self.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\nucleus.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)config.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\aes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\mongoose\mongoose.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_image.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_truetype.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\architecture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\assert.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\common.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\compiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\emulator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\endianness.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\format.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\keys.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\loader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\psf.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\self.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\macro.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\nucleus.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
+  </ItemGroup>
+</Project>

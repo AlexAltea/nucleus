@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="backend">
+      <UniqueIdentifier>{12ef92de-2436-45ef-ad57-95d98ec9a769}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backend\direct3d12">
+      <UniqueIdentifier>{9249b02a-f608-4707-9120-c4a7a18a3aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backend\opengl">
+      <UniqueIdentifier>{8be55d0c-4ec2-44cf-aed9-98bc23b48a4d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_fence.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_shader.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_backend.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_buffer.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_queue.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_buffer.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_queue.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_convert.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_debug.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_fence.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_shader.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_vertex_buffer.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_backend.cpp">
+      <Filter>backend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)graphics.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_fence.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_heap.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_pipeline.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_resource.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_shader.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_target.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_texture.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_backend.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_buffer.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_queue.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_buffer.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_queue.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_convert.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_debug.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_fence.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_heap.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_pipeline.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_shader.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_target.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_texture.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_vertex_buffer.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_backend.h">
+      <Filter>backend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backends.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)command_buffer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)command_queue.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)fence.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)format.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)graphics.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)heap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pipeline.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)primitive.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rectangle.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)resource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)shader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)target.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)texture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)vertex_buffer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)viewport.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl">
+      <Filter>backend\direct3d12</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.inl">
+      <Filter>backend\opengl</Filter>
+    </None>
+  </ItemGroup>
+</Project>

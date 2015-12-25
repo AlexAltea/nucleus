@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{03FB3CC2-2975-49A5-8F6B-6D4D409396BB}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\arm\arm_assembler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\compiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\ppc\ppc_assembler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\sequences.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\settings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\target.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_compiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_constants.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_emitter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_sequences.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)cell.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)cpu.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_block.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_function.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_module.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_recompiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_decoder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_instruction.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_state.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_tables.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_thread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_instruction.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_state.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_tables.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_thread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\builder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\function.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\instruction.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\opcodes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\pass.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes\dead_code_elimination_pass.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\type.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\value.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)thread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\arm\arm_assembler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\assembler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\compiler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\ppc\ppc_assembler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_compiler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_constants.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_emitter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_sequences.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)cell.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)cpu.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_branch.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_control.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_float.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_integer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_memory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_vector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_decoder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_instruction.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_state.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_tables.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_thread.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_branch.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_control.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_float.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_integer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_memory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_vector.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_instruction.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_state.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_tables.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_thread.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\builder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\function.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\instruction.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\module.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\opcodes.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\dead_code_elimination_pass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\type.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\value.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)thread.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl" />
+  </ItemGroup>
+</Project>

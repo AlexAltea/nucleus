@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{2D4B90ED-C848-4D60-BF54-7D660405B653}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)callback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv1.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv1\lv1_gpu.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_cond.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_config.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_dbg.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_event.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_fs.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_gamepad.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_hid.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_lwmutex.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_memory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_mmapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_mutex.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_ppu_thread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_process.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_prx.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_rsx.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_semaphore.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_ss.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_synchronization.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_time.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_timer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_tty.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)module.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)modules\libsysmodule.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)modules\libsysutil_avconf_ext.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)object.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)syscall.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)system.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv1\lv1_gpu.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_cond.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_config.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_dbg.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_event.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_fs.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_gamepad.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_hid.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_lwmutex.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_memory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_mmapper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_mutex.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_ppu_thread.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_process.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_prx.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_rsx.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_semaphore.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_ss.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_time.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_timer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_tty.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)module.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysmodule.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil_avconf_ext.cpp" />
+  </ItemGroup>
+</Project>

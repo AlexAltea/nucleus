@@ -5,7 +5,7 @@
 
 #include "host_path_file.h"
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_COMPILER_MSVC)
 #define fseeko64 _fseeki64
 #define ftello64 _ftelli64
 #endif
@@ -44,7 +44,7 @@ const int getSeekMode(SeekMode mode)
 
 HostPathFile::HostPathFile(const Path& path, OpenMode mode)
 {
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_COMPILER_MSVC)
     fopen_s(&handle, path.c_str(), getOpenMode(mode));
 #else
     handle = fopen(path.c_str(), getOpenMode(mode));

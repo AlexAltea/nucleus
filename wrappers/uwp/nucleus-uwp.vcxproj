@@ -77,6 +77,19 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
+  <ImportGroup Label="Shared">
+    <Import Project="..\..\nucleus\audio\audio.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\cpu\cpu.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\core\core.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\debugger\debugger.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\filesystem\filesystem.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\graphics\graphics.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\gpu\gpu.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\logger\logger.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\memory\memory.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\ui\ui.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\system\system.vcxitems" Label="Shared" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -132,6 +145,7 @@
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions>_NUCLEUS_PLATFORM_UWP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\libs\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
@@ -144,6 +158,7 @@
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions>_NUCLEUS_PLATFORM_UWP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\libs\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
@@ -158,6 +173,7 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="nucleus-uwp_TemporaryKey.pfx" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
@@ -183,5 +199,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\ANGLE.WindowsStore.2.1.6\build\native\ANGLE.WindowsStore.targets" Condition="Exists('..\..\packages\ANGLE.WindowsStore.2.1.6\build\native\ANGLE.WindowsStore.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\ANGLE.WindowsStore.2.1.6\build\native\ANGLE.WindowsStore.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\ANGLE.WindowsStore.2.1.6\build\native\ANGLE.WindowsStore.targets'))" />
+  </Target>
 </Project>

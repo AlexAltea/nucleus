@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="backend">
+      <UniqueIdentifier>{37d913e1-8e1e-4f7f-88df-68dc534434c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend">
+      <UniqueIdentifier>{16a6f356-2314-421c-b781-c0b10ce41488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hir">
+      <UniqueIdentifier>{1568994f-6680-4680-a925-d57842398f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backend\arm">
+      <UniqueIdentifier>{f845aaf2-f014-48ba-87cc-9db0c226f801}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backend\ppc">
+      <UniqueIdentifier>{949acf8c-7a27-4e03-82ce-4ff6b2d13f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backend\x86">
+      <UniqueIdentifier>{1b91abd9-27b3-4203-a523-88fa8e6562f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend\ppu">
+      <UniqueIdentifier>{ef1e1844-14c8-4202-ab8a-f0d60ab673c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend\spu">
+      <UniqueIdentifier>{25e7a8e5-97da-4df7-a8cb-44847d6c0a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend\ppu\analyzer">
+      <UniqueIdentifier>{cf830a63-b8c1-42ba-915b-8e7108ed162e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend\ppu\recompiler">
+      <UniqueIdentifier>{a34b6b7e-17d4-4d11-9501-9cb168be53f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hir\passes">
+      <UniqueIdentifier>{265e9980-218c-4682-86cf-bbe575a9e6be}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\assembler.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\compiler.cpp">
+      <Filter>backend</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\arm\arm_assembler.cpp">
+      <Filter>backend\arm</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\ppc\ppc_assembler.cpp">
+      <Filter>backend\ppc</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_constants.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_emitter.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_sequences.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_compiler.cpp">
+      <Filter>backend\x86</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_decoder.cpp">
+      <Filter>frontend\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_instruction.cpp">
+      <Filter>frontend\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_state.cpp">
+      <Filter>frontend\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_tables.cpp">
+      <Filter>frontend\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_thread.cpp">
+      <Filter>frontend\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_utils.cpp">
+      <Filter>frontend\ppu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_integer.cpp">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_memory.cpp">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_vector.cpp">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler.cpp">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_branch.cpp">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_control.cpp">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_float.cpp">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_float.cpp">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_integer.cpp">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_memory.cpp">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_vector.cpp">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer.cpp">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_branch.cpp">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_control.cpp">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_state.cpp">
+      <Filter>frontend\spu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_tables.cpp">
+      <Filter>frontend\spu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_thread.cpp">
+      <Filter>frontend\spu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_instruction.cpp">
+      <Filter>frontend\spu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\type.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\value.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\builder.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\function.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\instruction.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\module.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\opcodes.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.cpp">
+      <Filter>hir\passes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\dead_code_elimination_pass.cpp">
+      <Filter>hir\passes</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)cell.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)cpu.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)thread.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\compiler.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\sequences.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\settings.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\target.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\arm\arm_assembler.h">
+      <Filter>backend\arm</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\ppc\ppc_assembler.h">
+      <Filter>backend\ppc</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_constants.h">
+      <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_emitter.h">
+      <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_sequences.h">
+      <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_compiler.h">
+      <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_function.h">
+      <Filter>frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_module.h">
+      <Filter>frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_recompiler.h">
+      <Filter>frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\frontend_block.h">
+      <Filter>frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_decoder.h">
+      <Filter>frontend\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_instruction.h">
+      <Filter>frontend\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_state.h">
+      <Filter>frontend\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_tables.h">
+      <Filter>frontend\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_thread.h">
+      <Filter>frontend\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_utils.h">
+      <Filter>frontend\ppu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler.h">
+      <Filter>frontend\ppu\recompiler</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer.h">
+      <Filter>frontend\ppu\analyzer</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_instruction.h">
+      <Filter>frontend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_state.h">
+      <Filter>frontend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_tables.h">
+      <Filter>frontend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_thread.h">
+      <Filter>frontend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\pass.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\type.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\value.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\builder.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\function.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\instruction.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\opcodes.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes\dead_code_elimination_pass.h">
+      <Filter>hir\passes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.h">
+      <Filter>hir\passes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)cell.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)cpu.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)thread.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl">
+      <Filter>hir</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="device">
+      <UniqueIdentifier>{a0353142-e53b-44c0-9a86-414e201841b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="device\host_path">
+      <UniqueIdentifier>{dc5db753-8d0f-40bf-87db-5dfb4a8eb9d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="device\iso_container">
+      <UniqueIdentifier>{24504325-62a7-4abf-8152-d89f13f8a7fe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.cpp">
+      <Filter>device\iso_container</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_device.cpp">
+      <Filter>device\iso_container</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\host_path\host_path_file.cpp">
+      <Filter>device\host_path</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)device\host_path\host_path_device.cpp">
+      <Filter>device\host_path</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.h">
+      <Filter>device\iso_container</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_device.h">
+      <Filter>device\iso_container</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\host_path\host_path_device.h">
+      <Filter>device\host_path</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\host_path\host_path_file.h">
+      <Filter>device\host_path</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)device.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)directory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)file.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)path.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)utils.h" />
+  </ItemGroup>
+</Project>

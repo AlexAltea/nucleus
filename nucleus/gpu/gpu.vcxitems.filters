@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="rsx">
+      <UniqueIdentifier>{c11c18ec-d618-4ddd-a3a5-1f0ca7ac2cf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="r10xx">
+      <UniqueIdentifier>{3c637fe5-2e2a-44cb-9ddc-c62c3cd4c003}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_methods.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_texture.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_dma.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_enum.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_fp.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)gpu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_dma.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_fp.cpp">
+      <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)gpu.cpp" />
+  </ItemGroup>
+</Project>
