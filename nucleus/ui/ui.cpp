@@ -65,6 +65,11 @@ void UI::task() {
         cmdBuffer->cmdSetViewports(1, &viewport);
         cmdBuffer->cmdClearColor(graphics->screenBackBuffer, clearColor);
 
+        gfx::ResourceBarrier barrierBegin;
+        barrierBegin.transition.before = gfx::RESOURCE_STATE_PRESENT;
+        barrierBegin.transition.after = gfx::RESOURCE_STATE_COLOR_TARGET;
+        cmdBuffer->cmdResourceBarrier(1, &barrierBegin);
+
         // Vertex buffer
         widgetVtxBuffer.clear();
 
@@ -103,6 +108,11 @@ void UI::task() {
             screens.push_back(std::move(screen));
             newScreens.pop();
         }
+
+        gfx::ResourceBarrier barrierEnd;
+        barrierEnd.transition.before = gfx::RESOURCE_STATE_COLOR_TARGET;
+        barrierEnd.transition.after = gfx::RESOURCE_STATE_PRESENT;
+        cmdBuffer->cmdResourceBarrier(1, &barrierEnd);
 
         cmdQueue->submit(cmdBuffer, fence);
         fence->wait();

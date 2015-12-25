@@ -5,6 +5,8 @@
 
 #include "direct3d12_command_buffer.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_convert.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_resource.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_pipeline.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 
@@ -146,6 +148,18 @@ void Direct3D12CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle*
     }
 
     list->RSSetScissorRects(scissorsCount, d3dRects.data());
+}
+
+void Direct3D12CommandBuffer::cmdResourceBarrier(U32 barrierCount, const ResourceBarrier* barriers) {
+    std::vector<D3D12_RESOURCE_BARRIER> d3dBarriers;
+    for (U32 i = 0; i < barrierCount; i++) {
+        d3dBarriers[i].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        d3dBarriers[i].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+        d3dBarriers[i].Transition.pResource = static_cast<Direct3D12Resource*>(barriers[i].transition.resource)->handle;
+        d3dBarriers[i].Transition.StateBefore = convertResourceState(barriers[i].transition.before);
+        d3dBarriers[i].Transition.StateAfter = convertResourceState(barriers[i].transition.after);
+    }
+    list->ResourceBarrier(barrierCount, d3dBarriers.data());
 }
 
 }  // namespace direct3d12

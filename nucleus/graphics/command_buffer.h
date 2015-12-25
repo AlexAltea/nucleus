@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/graphics/pipeline.h"
 #include "nucleus/graphics/primitive.h"
+#include "nucleus/graphics/resource.h"
 #include "nucleus/graphics/target.h"
 #include "nucleus/graphics/vertex_buffer.h"
 #include "nucleus/graphics/viewport.h"
@@ -106,6 +107,13 @@ public:
      * @param[in]  scissors       Scissor rectangles array
      */
     virtual void cmdSetScissors(U32 scissorsCount, const Rectangle* scissors) = 0;
+
+    /**
+     * Pushes a command to trigger a resource barrier
+     * @param[in]  barrierCount  Length of the resource barrier array
+     * @param[in]  barriers      Resource barrier array
+     */
+    virtual void cmdResourceBarrier(U32 barrierCount, const ResourceBarrier* barriers) = 0;
 };
 
 }  // namespace gfx

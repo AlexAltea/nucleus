@@ -108,5 +108,15 @@ D3D12_PRIMITIVE_TOPOLOGY_TYPE convertPrimitiveTopologyType(gfx::PrimitiveTopolog
     }
 }
 
+D3D12_RESOURCE_STATES convertResourceState(gfx::ResourceState resourceState) {
+    switch (resourceState) {
+    case RESOURCE_STATE_PRESENT:       return D3D12_RESOURCE_STATE_PRESENT;
+    case RESOURCE_STATE_COLOR_TARGET:  return D3D12_RESOURCE_STATE_RENDER_TARGET;
+    default:
+        assert_always("Unimplemented case");
+        return D3D12_RESOURCE_STATE_COMMON;
+    }
+}
+
 }  // namespace direct3d12
 }  // namespace gfx

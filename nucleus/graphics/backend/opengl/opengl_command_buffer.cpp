@@ -194,5 +194,9 @@ void OpenGLCommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle* sci
     commands.push_back(command);
 }
 
+void OpenGLCommandBuffer::cmdResourceBarrier(U32 barrierCount, const ResourceBarrier* barriers) {
+    return;
+}
+
 }  // namespace opengl
 }  // namespace gfx

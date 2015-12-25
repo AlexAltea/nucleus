@@ -198,6 +198,10 @@
     <ClInclude Include="backend\opengl\opengl_convert.h">
       <Filter>backend\opengl</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_resource.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="backend\opengl\opengl.inl">

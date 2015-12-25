@@ -46,6 +46,7 @@
     <ClInclude Include="backend\direct3d12\direct3d12_fence.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_heap.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_pipeline.h" />
+    <ClInclude Include="backend\direct3d12\direct3d12_resource.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_shader.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_target.h" />
     <ClInclude Include="backend\direct3d12\direct3d12_texture.h" />
@@ -79,6 +80,7 @@
     <ClInclude Include="pipeline.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="rectangle.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="target.h" />
     <ClInclude Include="texture.h" />
