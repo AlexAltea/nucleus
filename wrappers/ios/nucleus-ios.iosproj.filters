@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Products">
+      <UniqueIdentifier>{cc670e93-b7d9-49aa-b05b-cfb8235768d5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ObjCCompile Include="main.mm">
+      <Filter>Products</Filter>
+    </ObjCCompile>
+  </ItemGroup>
+</Project>
