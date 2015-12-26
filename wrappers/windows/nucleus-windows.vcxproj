@@ -12,8 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}</ProjectGuid>
-    <RootNamespace>Nucleus</RootNamespace>
-    <ProjectName>nucleus-windows</ProjectName>
+    <RootNamespace>nucleus_windows</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

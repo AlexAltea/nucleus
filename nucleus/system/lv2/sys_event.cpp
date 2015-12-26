@@ -9,7 +9,11 @@
 #include "nucleus/cpu/cpu.h"
 #include "nucleus/emulator.h"
 
+// Avoid <Windows.h> macro collisions with std::min and std::max
+#if defined(NUCLEUS_PLATFORM_UWP) || defined(NUCLEUS_PLATFORM_WINDOWS)
+#undef min
 #undef max
+#endif
 
 #include <algorithm>
 
