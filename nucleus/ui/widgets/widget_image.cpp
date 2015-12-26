@@ -8,8 +8,6 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/ui/ui.h"
 
-#include "externals/stb/stb_image.h"
-
 namespace ui {
 
 WidgetImage::~WidgetImage() {
@@ -40,7 +38,7 @@ void WidgetImage::init(const unsigned char* pngbuffer, size_t size) {
      * NOTE: STB generates stores the image rows in reverse order with respect to the format OpenGL expects.
      * Vertical quad coordinates are swapped on rendering to make sure the image shows up properly.
      */
-    image.buffer = stbi_load_from_memory(pngbuffer, size, &image.width, &image.height, &image.components, 4);
+    //image.buffer = stbi_load_from_memory(pngbuffer, size, &image.width, &image.height, &image.components, 4);
 }
 
 void WidgetImage::render() {

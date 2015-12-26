@@ -20,11 +20,11 @@ using namespace rapidjson;
 Debugger debugger;
 
 // Serializers
-void dbg_connect(mg_connection *conn);
-void dbg_cpu_threads(mg_connection *conn);
+//void dbg_connect(mg_connection *conn);
+//void dbg_cpu_threads(mg_connection *conn);
 
 // Mongoose event handler
-int ev_handler(mg_connection *conn, mg_event ev)
+/*int ev_handler(mg_connection *conn, mg_event ev)
 {
     switch (ev) {
     case MG_AUTH:
@@ -41,12 +41,12 @@ int ev_handler(mg_connection *conn, mg_event ev)
     default:
         return MG_FALSE;
     }
-}
+}*/
 
 /**
  * Debugger serializers
  */
-void dbg_connect(mg_connection *conn)
+/*void dbg_connect(mg_connection *conn)
 {
     StringBuffer buffer;
     PrettyWriter<StringBuffer> writer(buffer);
@@ -73,14 +73,14 @@ void dbg_connect(mg_connection *conn)
 
 void dbg_cpu_threads(mg_connection *conn)
 {
-}
+}*/
 
 /**
  * Debugger methods
  */
 bool Debugger::init()
 {
-    m_server = mg_create_server(nullptr, ev_handler);
+    /*m_server = mg_create_server(nullptr, ev_handler);
     if (!m_server) {
         std::cerr << "Could not start debugger" << std::endl;
         return false;
@@ -89,23 +89,23 @@ bool Debugger::init()
     mg_set_option(m_server, "listening_port", "8000");
     m_listener = new std::thread([&](){
         listen();
-    });
+    });*/
 
     return true;
 }
 
 void Debugger::listen()
 {
-    while (true) {
+    /*while (true) {
         mg_poll_server(m_server, 1000);
-    }
+    }*/
 }
 
 bool Debugger::exit()
 {
-    if (m_server) {
+    /*if (m_server) {
         mg_destroy_server(&m_server);
         return true;
-    }
+    }*/
     return false;
 }

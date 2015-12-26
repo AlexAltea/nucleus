@@ -5,16 +5,14 @@
 
 #pragma once
 
-#include "externals/mongoose/mongoose.h"
-
 #include <thread>
 
 class Debugger {
     // Mongoose server
-    mg_server* m_server = nullptr;
+    //mg_server* m_server = nullptr;
 
     // Listener thread
-    std::thread* m_listener;
+    //std::thread* m_listener;
 
 public:
     ~Debugger() { exit(); }

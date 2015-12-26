@@ -5,8 +5,6 @@
 
 #include "widget_text.h"
 
-#include "externals/stb/stb_truetype.h"
-
 namespace ui {
 
 void WidgetText::update(const std::string& text) {
