@@ -11,12 +11,12 @@ namespace backend {
 namespace x86 {
 
 X86Emitter::X86Emitter(const X86Compiler* compiler) :
-    CodeGenerator(1 * 1024 * 1024),
+    X86Assembler(1 * 1024 * 1024),
     compiler(compiler) {
 }
 
 X86Emitter::X86Emitter(const X86Compiler* compiler, void* address, U64 size) :
-    CodeGenerator(size, address),
+    X86Assembler(size, address),
     compiler(compiler) {
 }
 

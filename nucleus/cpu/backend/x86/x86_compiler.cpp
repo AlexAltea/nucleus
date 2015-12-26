@@ -8,8 +8,6 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
-#include "externals/xbyak/xbyak_util.h"
-
 #include <queue>
 
 namespace cpu {
@@ -31,13 +29,13 @@ void X86Compiler::init() {
     X86Sequences::init();
 
     // Set extensions information
-    Xbyak::util::Cpu cpu;
+    /*Xbyak::util::Cpu cpu;
     extensions = 0;
     extensions |= cpu.has(Xbyak::util::Cpu::tAVX)   ? X86Extension::AVX : 0;
     extensions |= cpu.has(Xbyak::util::Cpu::tAVX2)  ? X86Extension::AVX2 : 0;
     extensions |= cpu.has(Xbyak::util::Cpu::tBMI2)  ? X86Extension::BMI2 : 0;
     extensions |= cpu.has(Xbyak::util::Cpu::tLZCNT) ? X86Extension::LZCNT : 0;
-    extensions |= cpu.has(Xbyak::util::Cpu::tMOVBE) ? X86Extension::MOVBE : 0;
+    extensions |= cpu.has(Xbyak::util::Cpu::tMOVBE) ? X86Extension::MOVBE : 0;*/
 
     // Set target information
 #if defined(NUCLEUS_PLATFORM_WINDOWS)

@@ -1,4 +1,8 @@
-const char *getVersionString() const { return "4.87"; }
+/**
+ * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ */
+
 void packssdw(const Mmx& mmx, const Operand& op) { opMMX(mmx, op, 0x6B); }
 void packsswb(const Mmx& mmx, const Operand& op) { opMMX(mmx, op, 0x63); }
 void packuswb(const Mmx& mmx, const Operand& op) { opMMX(mmx, op, 0x67); }
@@ -174,162 +178,154 @@ void cvtsi2sd(const Operand& reg, const Operand& op) { opGen(reg, op, 0x2A, 0xF2
 void cvtsd2si(const Operand& reg, const Operand& op) { opGen(reg, op, 0x2D, 0xF2, isREG32_XMMorMEM); }
 void cvttpd2pi(const Operand& reg, const Operand& op) { opGen(reg, op, 0x2C, 0x66, isMMX_XMMorMEM); }
 void cvttsd2si(const Operand& reg, const Operand& op) { opGen(reg, op, 0x2C, 0xF2, isREG32_XMMorMEM); }
-void prefetcht0(const Address& addr) { opModM(addr, Reg32(1), 0x0F, B00011000); }
-void prefetcht1(const Address& addr) { opModM(addr, Reg32(2), 0x0F, B00011000); }
-void prefetcht2(const Address& addr) { opModM(addr, Reg32(3), 0x0F, B00011000); }
-void prefetchnta(const Address& addr) { opModM(addr, Reg32(0), 0x0F, B00011000); }
+void prefetcht0(const Address& addr) { opModM(addr, Reg32(1), 0x0F, 0b00011000); }
+void prefetcht1(const Address& addr) { opModM(addr, Reg32(2), 0x0F, 0b00011000); }
+void prefetcht2(const Address& addr) { opModM(addr, Reg32(3), 0x0F, 0b00011000); }
+void prefetchnta(const Address& addr) { opModM(addr, Reg32(0), 0x0F, 0b00011000); }
 void movhps(const Operand& op1, const Operand& op2) { opMovXMM(op1, op2, 0x16, 0x100); }
 void movlps(const Operand& op1, const Operand& op2) { opMovXMM(op1, op2, 0x12, 0x100); }
 void movhpd(const Operand& op1, const Operand& op2) { opMovXMM(op1, op2, 0x16, 0x66); }
 void movlpd(const Operand& op1, const Operand& op2) { opMovXMM(op1, op2, 0x12, 0x66); }
-void cmovo(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 0); }
+void cmovo(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 0); }
 void jo(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x70, 0x80, 0x0F); }
 void jo(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x70, 0x80, 0x0F); }
-void seto(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 0); }
-void cmovno(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 1); }
+void seto(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 0); }
+void cmovno(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 1); }
 void jno(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x71, 0x81, 0x0F); }
 void jno(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x71, 0x81, 0x0F); }
-void setno(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 1); }
-void cmovb(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 2); }
+void setno(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 1); }
+void cmovb(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 2); }
 void jb(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x72, 0x82, 0x0F); }
 void jb(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x72, 0x82, 0x0F); }
-void setb(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 2); }
-void cmovc(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 2); }
+void setb(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 2); }
+void cmovc(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 2); }
 void jc(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x72, 0x82, 0x0F); }
 void jc(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x72, 0x82, 0x0F); }
-void setc(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 2); }
-void cmovnae(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 2); }
+void setc(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 2); }
+void cmovnae(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 2); }
 void jnae(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x72, 0x82, 0x0F); }
 void jnae(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x72, 0x82, 0x0F); }
-void setnae(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 2); }
-void cmovnb(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 3); }
+void setnae(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 2); }
+void cmovnb(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 3); }
 void jnb(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x73, 0x83, 0x0F); }
 void jnb(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x73, 0x83, 0x0F); }
-void setnb(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 3); }
-void cmovae(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 3); }
+void setnb(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 3); }
+void cmovae(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 3); }
 void jae(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x73, 0x83, 0x0F); }
 void jae(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x73, 0x83, 0x0F); }
-void setae(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 3); }
-void cmovnc(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 3); }
+void setae(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 3); }
+void cmovnc(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 3); }
 void jnc(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x73, 0x83, 0x0F); }
 void jnc(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x73, 0x83, 0x0F); }
-void setnc(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 3); }
-void cmove(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 4); }
+void setnc(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 3); }
+void cmove(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 4); }
 void je(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x74, 0x84, 0x0F); }
 void je(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x74, 0x84, 0x0F); }
-void sete(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 4); }
-void cmovz(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 4); }
+void sete(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 4); }
+void cmovz(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 4); }
 void jz(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x74, 0x84, 0x0F); }
 void jz(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x74, 0x84, 0x0F); }
-void setz(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 4); }
-void cmovne(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 5); }
+void setz(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 4); }
+void cmovne(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 5); }
 void jne(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x75, 0x85, 0x0F); }
 void jne(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x75, 0x85, 0x0F); }
-void setne(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 5); }
-void cmovnz(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 5); }
+void setne(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 5); }
+void cmovnz(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 5); }
 void jnz(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x75, 0x85, 0x0F); }
 void jnz(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x75, 0x85, 0x0F); }
-void setnz(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 5); }
-void cmovbe(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 6); }
+void setnz(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 5); }
+void cmovbe(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 6); }
 void jbe(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x76, 0x86, 0x0F); }
 void jbe(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x76, 0x86, 0x0F); }
-void setbe(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 6); }
-void cmovna(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 6); }
+void setbe(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 6); }
+void cmovna(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 6); }
 void jna(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x76, 0x86, 0x0F); }
 void jna(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x76, 0x86, 0x0F); }
-void setna(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 6); }
-void cmovnbe(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 7); }
+void setna(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 6); }
+void cmovnbe(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 7); }
 void jnbe(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x77, 0x87, 0x0F); }
 void jnbe(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x77, 0x87, 0x0F); }
-void setnbe(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 7); }
-void cmova(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 7); }
+void setnbe(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 7); }
+void cmova(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 7); }
 void ja(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x77, 0x87, 0x0F); }
 void ja(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x77, 0x87, 0x0F); }
-void seta(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 7); }
-void cmovs(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 8); }
+void seta(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 7); }
+void cmovs(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 8); }
 void js(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x78, 0x88, 0x0F); }
 void js(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x78, 0x88, 0x0F); }
-void sets(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 8); }
-void cmovns(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 9); }
+void sets(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 8); }
+void cmovns(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 9); }
 void jns(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x79, 0x89, 0x0F); }
 void jns(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x79, 0x89, 0x0F); }
-void setns(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 9); }
-void cmovp(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 10); }
+void setns(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 9); }
+void cmovp(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 10); }
 void jp(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7A, 0x8A, 0x0F); }
 void jp(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7A, 0x8A, 0x0F); }
-void setp(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 10); }
-void cmovpe(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 10); }
+void setp(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 10); }
+void cmovpe(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 10); }
 void jpe(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7A, 0x8A, 0x0F); }
 void jpe(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7A, 0x8A, 0x0F); }
-void setpe(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 10); }
-void cmovnp(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 11); }
+void setpe(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 10); }
+void cmovnp(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 11); }
 void jnp(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7B, 0x8B, 0x0F); }
 void jnp(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7B, 0x8B, 0x0F); }
-void setnp(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 11); }
-void cmovpo(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 11); }
+void setnp(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 11); }
+void cmovpo(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 11); }
 void jpo(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7B, 0x8B, 0x0F); }
 void jpo(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7B, 0x8B, 0x0F); }
-void setpo(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 11); }
-void cmovl(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 12); }
+void setpo(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 11); }
+void cmovl(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 12); }
 void jl(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7C, 0x8C, 0x0F); }
 void jl(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7C, 0x8C, 0x0F); }
-void setl(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 12); }
-void cmovnge(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 12); }
+void setl(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 12); }
+void cmovnge(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 12); }
 void jnge(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7C, 0x8C, 0x0F); }
 void jnge(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7C, 0x8C, 0x0F); }
-void setnge(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 12); }
-void cmovnl(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 13); }
+void setnge(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 12); }
+void cmovnl(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 13); }
 void jnl(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7D, 0x8D, 0x0F); }
 void jnl(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7D, 0x8D, 0x0F); }
-void setnl(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 13); }
-void cmovge(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 13); }
+void setnl(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 13); }
+void cmovge(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 13); }
 void jge(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7D, 0x8D, 0x0F); }
 void jge(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7D, 0x8D, 0x0F); }
-void setge(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 13); }
-void cmovle(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 14); }
+void setge(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 13); }
+void cmovle(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 14); }
 void jle(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7E, 0x8E, 0x0F); }
 void jle(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7E, 0x8E, 0x0F); }
-void setle(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 14); }
-void cmovng(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 14); }
+void setle(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 14); }
+void cmovng(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 14); }
 void jng(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7E, 0x8E, 0x0F); }
 void jng(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7E, 0x8E, 0x0F); }
-void setng(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 14); }
-void cmovnle(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 15); }
+void setng(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 14); }
+void cmovnle(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 15); }
 void jnle(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7F, 0x8F, 0x0F); }
 void jnle(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7F, 0x8F, 0x0F); }
-void setnle(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 15); }
-void cmovg(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, B01000000 | 15); }
+void setnle(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 15); }
+void cmovg(const Reg32e& reg, const Operand& op) { opModRM(reg, op, op.isREG(i32e), op.isMEM(), 0x0F, 0b01000000 | 15); }
 void jg(std::string label, LabelType type = T_AUTO) { opJmp(label, type, 0x7F, 0x8F, 0x0F); }
 void jg(const Label& label, LabelType type = T_AUTO) { opJmp(label, type, 0x7F, 0x8F, 0x0F); }
-void setg(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, B10010000 | 15); }
-#ifdef XBYAK32
-void jcxz(std::string label) { db(0x67); opJmp(label, T_SHORT, 0xe3, 0, 0); }
-void jcxz(const Label& label) { db(0x67); opJmp(label, T_SHORT, 0xe3, 0, 0); }
-void jecxz(std::string label) { opJmp(label, T_SHORT, 0xe3, 0, 0); }
-void jecxz(const Label& label) { opJmp(label, T_SHORT, 0xe3, 0, 0); }
-#else
-void jecxz(std::string label) { db(0x67); opJmp(label, T_SHORT, 0xe3, 0, 0); }
-void jecxz(const Label& label) { db(0x67); opJmp(label, T_SHORT, 0xe3, 0, 0); }
+void setg(const Operand& op) { opR_ModM(op, 8, 0, 0x0F, 0b10010000 | 15); }
+void jcxz(std::string label) { if (32) { db(0x67); } opJmp(label, T_SHORT, 0xe3, 0, 0); }
+void jcxz(const Label& label) { if (32) { db(0x67); } opJmp(label, T_SHORT, 0xe3, 0, 0); }
+void jecxz(std::string label) { if (64) { db(0x67); } opJmp(label, T_SHORT, 0xe3, 0, 0); }
+void jecxz(const Label& label) { if (64) { db(0x67); } opJmp(label, T_SHORT, 0xe3, 0, 0); }
 void jrcxz(std::string label) { opJmp(label, T_SHORT, 0xe3, 0, 0); }
 void jrcxz(const Label& label) { opJmp(label, T_SHORT, 0xe3, 0, 0); }
-#endif
-#ifdef XBYAK64
-void cdqe() { db(0x48); db(0x98); }
-void cqo() { db(0x48); db(0x99); }
-#else
-void aaa() { db(0x37); }
-void aad() { db(0xD5); db(0x0A); }
-void aam() { db(0xD4); db(0x0A); }
-void aas() { db(0x3F); }
-void daa() { db(0x27); }
-void das() { db(0x2F); }
-void popad() { db(0x61); }
-void popfd() { db(0x9D); }
-void pusha() { db(0x60); }
-void pushad() { db(0x60); }
-void pushfd() { db(0x9C); }
-void popa() { db(0x61); }
-#endif
+void cdqe() { db(0x48); db(0x98); } // 64
+void cqo() { db(0x48); db(0x99); } // 64
+void aaa() { db(0x37); } // 32
+void aad() { db(0xD5); db(0x0A); } // 32
+void aam() { db(0xD4); db(0x0A); } // 32
+void aas() { db(0x3F); } // 32
+void daa() { db(0x27); } // 32
+void das() { db(0x2F); } // 32
+void popad() { db(0x61); } // 32
+void popfd() { db(0x9D); } // 32
+void pusha() { db(0x60); } // 32
+void pushad() { db(0x60); } // 32
+void pushfd() { db(0x9C); } // 32
+void popa() { db(0x61); } // 32
 void cbw() { db(0x66); db(0x98); }
 void cdq() { db(0x99); }
 void clc() { db(0xF8); }
@@ -418,28 +414,16 @@ void add(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x00); }
 void add(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x00, 0); }
 void and_(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x20); }
 void and_(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x20, 4); }
-#ifndef XBYAK_NO_OP_NAMES
-void and(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x20); }
-void and(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x20, 4); }
-#endif
 void cmp(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x38); }
 void cmp(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x38, 7); }
 void or_(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x08); }
 void or_(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x08, 1); }
-#ifndef XBYAK_NO_OP_NAMES
-void or(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x08); }
-void or(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x08, 1); }
-#endif
 void sbb(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x18); }
 void sbb(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x18, 3); }
 void sub(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x28); }
 void sub(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x28, 5); }
 void xor_(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x30); }
 void xor_(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x30, 6); }
-#ifndef XBYAK_NO_OP_NAMES
-void xor(const Operand& op1, const Operand& op2) { opRM_RM(op1, op2, 0x30); }
-void xor(const Operand& op, uint32 imm) { opRM_I(op, imm, 0x30, 6); }
-#endif
 void dec(const Operand& op) { opIncDec(op, 0x48, 1); }
 void inc(const Operand& op) { opIncDec(op, 0x40, 0); }
 void bt(const Operand& op, const Reg& reg) { opModRM(reg, op, op.isREG(16|32|64) && op.getBit() == reg.getBit(), op.isMEM(), 0x0f, 0xa3); }
@@ -456,9 +440,6 @@ void imul(const Operand& op) { opR_ModM(op, 0, 5, 0xF6); }
 void mul(const Operand& op) { opR_ModM(op, 0, 4, 0xF6); }
 void neg(const Operand& op) { opR_ModM(op, 0, 3, 0xF6); }
 void not_(const Operand& op) { opR_ModM(op, 0, 2, 0xF6); }
-#ifndef XBYAK_NO_OP_NAMES
-void not(const Operand& op) { opR_ModM(op, 0, 2, 0xF6); }
-#endif
 void rcl(const Operand& op, int imm) { opShift(op, imm, 2); }
 void rcl(const Operand& op, const Reg8& _cl) { opShift(op, _cl, 2); }
 void rcr(const Operand& op, int imm) { opShift(op, imm, 3); }
@@ -1428,17 +1409,15 @@ void vcvtpd2dq(const Xmm& x, const Operand& op) { if (x.isYMM()) throw Error(ERR
 void vcvttpd2dq(const Xmm& x, const Operand& op) { if (x.isYMM()) throw Error(ERR_BAD_COMBINATION); opAVX_X_X_XM(op.isYMM() ? Ymm(x.getIdx()) : x, op.isYMM() ? ym0 : xm0, op, MM_0F | PP_66, 0xE6, true); }
 void vcvtph2ps(const Xmm& x, const Operand& op) { if (!op.isMEM() && !op.isXMM()) throw Error(ERR_BAD_COMBINATION); opVex(x, NULL, &op, MM_0F38 | PP_66, 0x13, 0); }
 void vcvtps2ph(const Operand& op, const Xmm& x, uint8 imm) { if (!op.isMEM() && !op.isXMM()) throw Error(ERR_BAD_COMBINATION); opVex(x, NULL, &op, MM_0F3A | PP_66, 0x1d, 0, imm); }
-#ifdef XBYAK64
-void vmovq(const Xmm& x, const Reg64& reg) { opAVX_X_X_XM(x, xm0, Xmm(reg.getIdx()), MM_0F | PP_66, 0x6E, false, 1); }
-void vmovq(const Reg64& reg, const Xmm& x) { opAVX_X_X_XM(x, xm0, Xmm(reg.getIdx()), MM_0F | PP_66, 0x7E, false, 1); }
-void vpextrq(const Operand& op, const Xmm& x, uint8 imm) { if (!op.isREG(64) && !op.isMEM()) throw Error(ERR_BAD_COMBINATION); opAVX_X_X_XMcvt(x, xm0, op, !op.isMEM(), Operand::XMM, MM_0F3A | PP_66, 0x16, false, 1, imm); }
-void vpinsrq(const Xmm& x1, const Xmm& x2, const Operand& op, uint8 imm) { if (!op.isREG(64) && !op.isMEM()) throw Error(ERR_BAD_COMBINATION); opAVX_X_X_XMcvt(x1, x2, op, !op.isMEM(), Operand::XMM, MM_0F3A | PP_66, 0x22, false, 1, imm); }
-void vpinsrq(const Xmm& x, const Operand& op, uint8 imm) { if (!op.isREG(64) && !op.isMEM()) throw Error(ERR_BAD_COMBINATION); opAVX_X_X_XMcvt(x, x, op, !op.isMEM(), Operand::XMM, MM_0F3A | PP_66, 0x22, false, 1, imm); }
-void vcvtss2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F3, 0x2D, false, 1); }
-void vcvttss2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F3, 0x2C, false, 1); }
-void vcvtsd2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F2, 0x2D, false, 1); }
-void vcvttsd2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F2, 0x2C, false, 1); }
-#endif
+void vmovq(const Xmm& x, const Reg64& reg) { opAVX_X_X_XM(x, xm0, Xmm(reg.getIdx()), MM_0F | PP_66, 0x6E, false, 1); } // 64
+void vmovq(const Reg64& reg, const Xmm& x) { opAVX_X_X_XM(x, xm0, Xmm(reg.getIdx()), MM_0F | PP_66, 0x7E, false, 1); } // 64
+void vpextrq(const Operand& op, const Xmm& x, uint8 imm) { if (!op.isREG(64) && !op.isMEM()) throw Error(ERR_BAD_COMBINATION); opAVX_X_X_XMcvt(x, xm0, op, !op.isMEM(), Operand::XMM, MM_0F3A | PP_66, 0x16, false, 1, imm); } // 64
+void vpinsrq(const Xmm& x1, const Xmm& x2, const Operand& op, uint8 imm) { if (!op.isREG(64) && !op.isMEM()) throw Error(ERR_BAD_COMBINATION); opAVX_X_X_XMcvt(x1, x2, op, !op.isMEM(), Operand::XMM, MM_0F3A | PP_66, 0x22, false, 1, imm); } // 64
+void vpinsrq(const Xmm& x, const Operand& op, uint8 imm) { if (!op.isREG(64) && !op.isMEM()) throw Error(ERR_BAD_COMBINATION); opAVX_X_X_XMcvt(x, x, op, !op.isMEM(), Operand::XMM, MM_0F3A | PP_66, 0x22, false, 1, imm); } // 64
+void vcvtss2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F3, 0x2D, false, 1); } // 64
+void vcvttss2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F3, 0x2C, false, 1); } // 64
+void vcvtsd2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F2, 0x2D, false, 1); } // 64
+void vcvttsd2si(const Reg64& r, const Operand& op) { opAVX_X_X_XM(Xmm(r.getIdx()), xm0, op, MM_0F | PP_F2, 0x2C, false, 1); } // 64
 void andn(const Reg32e& r1, const Reg32e& r2, const Operand& op) { opGpr(r1, r2, op, MM_0F38, 0xf2, true); }
 void mulx(const Reg32e& r1, const Reg32e& r2, const Operand& op) { opGpr(r1, r2, op, MM_0F38 | PP_F2, 0xf6, true); }
 void pdep(const Reg32e& r1, const Reg32e& r2, const Operand& op) { opGpr(r1, r2, op, MM_0F38 | PP_F2, 0xf5, true); }

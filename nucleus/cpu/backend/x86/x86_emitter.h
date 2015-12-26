@@ -8,10 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/backend/settings.h"
-
-// Xbyak dependency
-#define XBYAK_NO_OP_NAMES
-#include "externals/xbyak/xbyak.h"
+#include "nucleus/cpu/backend/x86/x86_assembler.h"
 
 #include <unordered_map>
 
@@ -27,7 +24,7 @@ enum X86Mode {
     X86_MODE_64BITS = (1 << 1),
 };
 
-class X86Emitter : public Xbyak::CodeGenerator {
+class X86Emitter : public Xbyak::X86Assembler {
 private:
     // Available x86 extensions
     const X86Compiler* compiler;

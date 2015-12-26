@@ -21,6 +21,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\sequences.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\settings.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\target.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_assembler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_compiler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_constants.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_emitter.h" />
@@ -107,6 +108,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)backend\x86\x86_assembler.inl" />
     <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl" />
   </ItemGroup>
 </Project>

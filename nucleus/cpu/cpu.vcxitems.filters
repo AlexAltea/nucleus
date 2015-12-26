@@ -289,10 +289,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)cpu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)thread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)util.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_assembler.h">
+      <Filter>backend\x86</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl">
       <Filter>hir</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)backend\x86\x86_assembler.inl">
+      <Filter>backend\x86</Filter>
     </None>
   </ItemGroup>
 </Project>
