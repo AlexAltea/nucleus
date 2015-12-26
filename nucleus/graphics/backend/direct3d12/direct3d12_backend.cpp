@@ -74,6 +74,7 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     }
 
     // Create swap chain
+    IDXGISwapChain1* tempSwapChain;
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = params.width;
     swapChainDesc.Height = params.height;
@@ -95,17 +96,16 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     swapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     swapChainFullscreenDesc.Windowed = TRUE;
 
-    IDXGISwapChain1* tempSwapChain;
-    if (params.window) {
-        hr = factory->CreateSwapChainForCoreWindow(queue, params.window, &swapChainDesc, nullptr, &tempSwapChain);
-    } else {
-        hr = factory->CreateSwapChainForHwnd(device, params.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &tempSwapChain);
-    }
-
+#ifdef NUCLEUS_PLATFORM_UWP
+    hr = factory->CreateSwapChainForCoreWindow(queue, params.window, &swapChainDesc, nullptr, &tempSwapChain);
+#else
+    hr = factory->CreateSwapChainForHwnd(device, params.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &tempSwapChain);
+#endif
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not create swap chain (0x%X)", hr);
         return false;
     }
+
     hr = tempSwapChain->QueryInterface(IID_PPV_ARGS(&swapChain));
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not request a IDXGISwapChain3 swap chain (0x%X)", hr);

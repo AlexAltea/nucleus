@@ -7,7 +7,14 @@
 
 #include "nucleus/common.h"
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_PLATFORM_UWP)
+#include <Windows.h>
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <d3dcompiler.h>
+
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#include <Windows.h>
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>

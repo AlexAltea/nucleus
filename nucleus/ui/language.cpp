@@ -5,6 +5,7 @@
 
 #include "language.h"
 #include "nucleus/emulator.h"
+#include "nucleus/logger/logger.h"
 #include "externals/rapidxml/rapidxml.hpp"
 
 #include <cstring>
@@ -21,12 +22,14 @@ struct LanguageResource {
     int winResource;
 };
 
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
 static const LanguageResource langResources[] = {
     { LANGUAGE_DEFAULT, IDR_LANGUAGE_EN_US },
     { LANGUAGE_DE_DE,   IDR_LANGUAGE_DE_DE },
     { LANGUAGE_EN_US,   IDR_LANGUAGE_EN_US },
     { LANGUAGE_ES_ES,   IDR_LANGUAGE_ES_ES }
 };
+#endif
 
 void Language::open(ConfigLanguage language) {
     if (buffer) {
@@ -34,6 +37,7 @@ void Language::open(ConfigLanguage language) {
     }
 
     // Get language file/resource or use the default one
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     LanguageResource lang = { LANGUAGE_DEFAULT, IDR_LANGUAGE_EN_US };
 
     for (const auto& langResource : langResources) {
@@ -44,7 +48,6 @@ void Language::open(ConfigLanguage language) {
     }
 
     // Open the file/resource
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
     HRSRC hRes = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(lang.winResource), "LANGUAGE");
     HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRes);
     DWORD langSize = SizeofResource(GetModuleHandle(NULL), hRes);

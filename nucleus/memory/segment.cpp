@@ -26,12 +26,15 @@ Block::Block(void* baseAddr, U32 blockAddr, U32 blockSize) {
     size = PAGE_4K(blockSize);
     realaddr = reinterpret_cast<void*>((reinterpret_cast<intptr_t>(baseAddr) + blockAddr));
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
-    if (VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr) {
+    bool success;
+#if defined(NUCLEUS_PLATFORM_UWP)
+    success = false;
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+    success = VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr;
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
-    if (::mprotect(realaddr, block_size, PROT_READ | PROT_WRITE)) {
+    success = ::mprotect(realaddr, block_size, PROT_READ | PROT_WRITE);
 #endif
-        // Error
+    if (!success) {
         realaddr = nullptr;
         return;
     }

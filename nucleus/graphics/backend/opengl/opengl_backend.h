@@ -7,21 +7,24 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
+#include "nucleus/graphics/backend/opengl/opengl.h"
 
 namespace gfx {
 namespace opengl {
 
 // OpenGL context handler
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
-using OpenGLContext = HGLRC;
+#if defined(NUCLEUS_PLATFORM_ANDROID)
+using OpenGLContext = EGLContext;
+#elif defined(NUCLEUS_PLATFORM_IOS)
+using OpenGLContext = EGLContext;
 #elif defined(NUCLEUS_PLATFORM_LINUX)
 using OpenGLContext = GLXContext;
 #elif defined(NUCLEUS_PLATFORM_OSX)
 using OpenGLContext = GLXContext;
-#elif defined(NUCLEUS_PLATFORM_ANDROID)
+#elif defined(NUCLEUS_PLATFORM_UWP)
 using OpenGLContext = EGLContext;
-#elif defined(NUCLEUS_PLATFORM_IOS)
-using OpenGLContext = EGLContext;
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+using OpenGLContext = HGLRC;
 #endif
 
 // Forward declarations

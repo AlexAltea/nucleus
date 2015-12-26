@@ -17,13 +17,15 @@ GLenum convertBlend(gfx::Blend blend) {
     case BLEND_INV_SRC_COLOR:     return GL_ONE_MINUS_SRC_COLOR;
     case BLEND_SRC_ALPHA:         return GL_SRC_ALPHA;
     case BLEND_INV_SRC_ALPHA:     return GL_ONE_MINUS_SRC_ALPHA;
+#ifdef GRAPHICS_OPENGL_GL
     case BLEND_SRC1_COLOR:        return GL_SRC1_COLOR;
     case BLEND_INV_SRC1_COLOR:    return GL_ONE_MINUS_SRC1_COLOR;
     case BLEND_SRC1_ALPHA:        return GL_SRC1_ALPHA;
     case BLEND_INV_SRC1_ALPHA:    return GL_ONE_MINUS_SRC1_ALPHA;
+#endif
     default:
         assert_always("Unimplemented case");
-        return GL_ZERO;
+        return 0;
     }
 }
 
@@ -36,12 +38,13 @@ GLenum convertBlendOp(gfx::BlendOp blendOp) {
     case BLEND_OP_MAX:           return GL_MAX;
     default:
         assert_always("Unimplemented case");
-        return GL_FUNC_ADD;
+        return 0;
     }
 }
 
 GLenum convertLogicOp(gfx::LogicOp logicOp) {
     switch (logicOp) {
+#ifdef GRAPHICS_OPENGL_GL
     case LOGIC_OP_COPY:           return GL_COPY;
     case LOGIC_OP_CLEAR:          return GL_CLEAR;
     case LOGIC_OP_AND:            return GL_AND;
@@ -58,9 +61,27 @@ GLenum convertLogicOp(gfx::LogicOp logicOp) {
     case LOGIC_OP_OR_INVERTED:    return GL_OR_INVERTED;
     case LOGIC_OP_NAND:           return GL_NAND;
     case LOGIC_OP_SET:            return GL_SET;
+#endif
     default:
         assert_always("Unimplemented case");
-        return GL_NOOP;
+        return 0;
+    }
+}
+
+GLenum convertPrimitiveTopology(gfx::PrimitiveTopology primitiveTopology) {
+    switch (primitiveTopology) {
+    case TOPOLOGY_POINT_LIST:      return GL_POINTS; break;
+    case TOPOLOGY_LINE_LIST:       return GL_LINES; break;
+    case TOPOLOGY_LINE_STRIP:      return GL_LINE_LOOP; break;
+    case TOPOLOGY_TRIANGLE_LIST:   return GL_TRIANGLES; break;
+    case TOPOLOGY_TRIANGLE_STRIP:  return GL_TRIANGLE_STRIP; break;
+#ifdef GRAPHICS_OPENGL_GL
+    case TOPOLOGY_QUAD_LIST:       return GL_QUADS; break;
+    case TOPOLOGY_QUAD_STRIP:      return GL_QUAD_STRIP; break;
+#endif
+    default:
+        assert_always("Unimplemented case");
+        return 0;
     }
 }
 

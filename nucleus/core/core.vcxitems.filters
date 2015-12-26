@@ -8,15 +8,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.cpp">
       <Filter>externals</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\mongoose\mongoose.c">
-      <Filter>externals\mongoose</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_image.c">
-      <Filter>externals\stb</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_truetype.c">
-      <Filter>externals\stb</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\keys.cpp">
       <Filter>loader</Filter>
     </ClCompile>
@@ -40,15 +31,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.h">
       <Filter>externals</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\mongoose\mongoose.h">
-      <Filter>externals\mongoose</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_image.h">
-      <Filter>externals\stb</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\stb\stb_truetype.h">
-      <Filter>externals\stb</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\keys.h">
       <Filter>loader</Filter>
@@ -77,12 +59,6 @@
   <ItemGroup>
     <Filter Include="externals">
       <UniqueIdentifier>{e809ab99-fe03-4cdd-bb7b-b5f8c53f32a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="externals\mongoose">
-      <UniqueIdentifier>{49ff4b96-fc64-4552-9563-0a23f614e5f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="externals\stb">
-      <UniqueIdentifier>{e3d41dc9-43f3-432e-9e14-bf79aef4ef93}</UniqueIdentifier>
     </Filter>
     <Filter Include="loader">
       <UniqueIdentifier>{2babb73a-fe6f-43bb-acfc-ef94369243b5}</UniqueIdentifier>

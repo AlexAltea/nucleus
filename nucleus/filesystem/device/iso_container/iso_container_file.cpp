@@ -9,38 +9,37 @@
 namespace fs {
 
 ISOContainerFile::ISOContainerFile(ISOContainerDevice* parent)
-    : parent(parent)
-{
+    : parent(parent) {
 }
 
-ISOContainerFile::~ISOContainerFile()
-{
+ISOContainerFile::~ISOContainerFile() {
 }
 
-Size ISOContainerFile::read(void* dst, Size size)
-{
+Size ISOContainerFile::read(void* dst, Size size) {
     std::lock_guard<std::mutex> lock(parent->mutex);
 
     logger.warning(LOG_FS, "ISOContainerFile::read is not implemented");
     return 0;
 }
 
-Size ISOContainerFile::write(const void* src, Size size)
-{
+Size ISOContainerFile::write(const void* src, Size size) {
     logger.error(LOG_FS, "ISOContainerFile cannot be written to");
     return 0;
 }
 
-Position ISOContainerFile::seek(Position pos, SeekMode mode)
-{
+Position ISOContainerFile::seek(Position pos, SeekMode mode) {
     logger.warning(LOG_FS, "ISOContainerFile::seek is not implemented");
     return 0;
 }
 
-Position ISOContainerFile::tell()
-{
+Position ISOContainerFile::tell() {
     logger.warning(LOG_FS, "ISOContainerFile::tell is not implemented");
     return 0;
+}
+
+File::Attributes ISOContainerFile::attributes() {
+    // TODO
+    return {};
 }
 
 }  // namespace fs

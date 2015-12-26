@@ -15,7 +15,9 @@
 #include "nucleus/graphics/texture.h"
 #include "nucleus/graphics/vertex_buffer.h"
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_PLATFORM_UWP)
+#include <Windows.h>
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>
 #endif
 
@@ -23,14 +25,23 @@ namespace gfx {
 
 // Graphics backend parameters
 struct BackendParameters {
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_PLATFORM_ANDROID)
+    Display* display;
+#elif defined(NUCLEUS_PLATFORM_IOS)
+    Display* display;
+#elif defined(NUCLEUS_PLATFORM_LINUX)
+    Display* display;
+#elif defined(NUCLEUS_PLATFORM_OSX)
+    Display* display;
+#elif defined(NUCLEUS_PLATFORM_UWP)
     IUnknown* window;
+    size_t width;
+    size_t height;
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
     HWND hwnd;
     HDC hdc;
     size_t width;
     size_t height;
-#elif defined(NUCLEUS_PLATFORM_LINUX)
-    Display* display;
 #endif
 };
 

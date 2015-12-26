@@ -7,12 +7,21 @@
 #include "nucleus/logger/logger.h"
 
 // Load modules
+#if defined(NUCLEUS_PLATFORM_UWP)
+#define LOAD_MODULE(module) \
+    HMODULE hmodule_##module = LoadPackagedLibrary(L#module ".dll", 0); \
+    if (!hmodule_##module) { \
+        logger.error(LOG_GRAPHICS, "initializeDirect3D12: Could not load " #module ".dll module"); \
+        return false; \
+    }
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
 #define LOAD_MODULE(module) \
     HMODULE hmodule_##module = LoadLibrary(#module ".dll"); \
     if (!hmodule_##module) { \
         logger.error(LOG_GRAPHICS, "initializeDirect3D12: Could not load " #module ".dll module"); \
         return false; \
     }
+#endif
 
 // Load functions
 #define LOAD_FUNCTION(type, module, function) \

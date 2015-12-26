@@ -31,22 +31,24 @@ void OpenGLBackend::useAvailableContext() {
     static size_t index = 0;
     assert_true(index < 8, "OpenGLBackend::getContext: Too many OpenGL sub-contexts requested");
     gCurrentContext = subContext[index++];
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(GRAPHICS_OPENGL_API_WGL)
     wglMakeCurrent(parameters.hdc, gCurrentContext);
 #endif
 }
 
 OpenGLContext OpenGLBackend::createContext() {
     OpenGLContext newContext;
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(GRAPHICS_OPENGL_API_WGL)
     static const int contextAttribs[] = {
         WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
         WGL_CONTEXT_MINOR_VERSION_ARB, 3,
         WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
         0};
     newContext = wglCreateContextAttribsARB(parameters.hdc, context, contextAttribs);
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(GRAPHICS_OPENGL_API_GLX)
     newContext = glXCreateContext(parameters.display, info, NULL, GL_TRUE);
+#elif defined(GRAPHICS_OPENGL_API_EGL)
+    newContext = eglCreateContext(0, 0, 0, nullptr); // TODO
 #endif
     return newContext;
 }
@@ -54,7 +56,7 @@ OpenGLContext OpenGLBackend::createContext() {
 bool OpenGLBackend::initialize(const BackendParameters& params) {
     parameters = params;
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(GRAPHICS_OPENGL_API_WGL)
     // Retrieving OpenGL extension pointers requires in Windows owning a context
     HGLRC dummyRc = wglCreateContext(params.hdc);
     wglMakeCurrent(params.hdc, dummyRc);
@@ -64,13 +66,13 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     }
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(dummyRc);
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(GRAPHICS_OPENGL_API_GLX)
     if (!initializeOpenGL()) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");
         return false;
     }
     XVisualInfo* info = glXChooseVisual(display, 0, nullptr/*TODO*/);
-#elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
+#elif defined(GRAPHICS_OPENGL_API_EGL)
     if (!initializeOpenGL()) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");
         return false;
@@ -124,7 +126,6 @@ Heap* OpenGLBackend::createHeap(const HeapDesc& desc) {
 }
 
 ColorTarget* OpenGLBackend::createColorTarget(Texture* texture) {
-
     return nullptr;
 }
 
@@ -188,14 +189,16 @@ Shader* OpenGLBackend::createShader(const ShaderDesc& desc) {
     switch (desc.type) {
     case SHADER_TYPE_VERTEX:
         glType = GL_VERTEX_SHADER; break;
+    case SHADER_TYPE_PIXEL:
+        glType = GL_FRAGMENT_SHADER; break;
+#ifdef GRAPHICS_OPENGL_GL
     case SHADER_TYPE_HULL:
         glType = GL_TESS_CONTROL_SHADER; break;
     case SHADER_TYPE_DOMAIN:
         glType = GL_TESS_EVALUATION_SHADER; break;
     case SHADER_TYPE_GEOMETRY:
         glType = GL_GEOMETRY_SHADER; break;
-    case SHADER_TYPE_PIXEL:
-        glType = GL_FRAGMENT_SHADER; break;
+#endif
     default:
         assert_always("Unimplemented case");
     }

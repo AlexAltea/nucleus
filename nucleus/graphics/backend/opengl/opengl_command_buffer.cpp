@@ -4,6 +4,7 @@
  */
 
 #include "opengl_command_buffer.h"
+#include "nucleus/graphics/backend/opengl/opengl_convert.h"
 #include "nucleus/graphics/backend/opengl/opengl_target.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/assert.h"
@@ -116,29 +117,8 @@ void OpenGLCommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, Ver
 }
 
 void OpenGLCommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
-    GLenum glTopology;
-    switch (topology) {
-    case TOPOLOGY_POINT_LIST:
-        glTopology = GL_POINTS; break;
-    case TOPOLOGY_LINE_LIST:
-        glTopology = GL_LINES; break;
-    case TOPOLOGY_LINE_STRIP:
-        glTopology = GL_LINE_LOOP; break;
-    case TOPOLOGY_TRIANGLE_LIST:
-        glTopology = GL_TRIANGLES; break;
-    case TOPOLOGY_TRIANGLE_STRIP:
-        glTopology = GL_TRIANGLE_STRIP; break;
-    case TOPOLOGY_QUAD_LIST:
-        glTopology = GL_QUADS; break;
-    case TOPOLOGY_QUAD_STRIP:
-        glTopology = GL_QUAD_STRIP; break;
-    default:
-        logger.error(LOG_GRAPHICS, "Unimplemented primitive topology type");
-        return;
-    }
-
     auto* command = new OpenGLCommandSetPrimitiveTopology();
-    command->topology = glTopology;
+    command->topology = convertPrimitiveTopology(topology);
 
     commands.push_back(command);
 }

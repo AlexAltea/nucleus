@@ -22,7 +22,9 @@ namespace mem {
 
 Memory::Memory() {
     // Reserve 4 GB of memory for any 32-bit pointer in the PS3 memory
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_PLATFORM_UWP)
+    m_base = nullptr;
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
     m_base = VirtualAlloc(nullptr, 0x100000000ULL, MEM_RESERVE, PAGE_NOACCESS);
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
     m_base = ::mmap(nullptr, 0x100000000ULL, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
@@ -43,11 +45,15 @@ Memory::Memory() {
 }
 
 Memory::~Memory() {
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
-    if (!VirtualFree(m_base, 0, MEM_RELEASE)) {
+    bool success;
+#if defined(NUCLEUS_PLATFORM_UWP)
+    success = false;
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+    success = SUCCEEDED(VirtualFree(m_base, 0, MEM_RELEASE));
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
-    if (::munmap(m_base, 0x100000000ULL)) {
+    success = munmap(m_base, 0x100000000ULL);
 #endif
+    if (!success) {
         logger.error(LOG_MEMORY, "Could not release memory");
     }
 }

@@ -34,28 +34,30 @@ bool OpenGLCommandQueue::initialize(const BackendParameters& params, OpenGLConte
 
 void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext context) {
     // Set context
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(GRAPHICS_OPENGL_API_WGL)
     if (!wglMakeCurrent(params.hdc, context)) {
         logger.warning(LOG_GRAPHICS, "OpenGLCommandQueue::task: wglMakeCurrent failed");
         return;
     }
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(GRAPHICS_OPENGL_API_GLX)
     if (!glXMakeCurrent(display, 0/*TODO*/, context)) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXMakeCurrent failed");
         return;
     }
-#elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
-    if (!eglMakeCurrent(/*TODO*/)) {
+#elif defined(GRAPHICS_OPENGL_API_EGL)
+    if (!eglMakeCurrent(0/*TODO*/, 0/*TODO*/, 0/*TODO*/, context)) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: eglMakeCurrent failed");
         return;
     }
 #endif
 
     // Logging
+#ifdef GRAPHICS_OPENGL_GL
     glEnable(GL_DEBUG_OUTPUT);
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
     glDebugMessageCallback(reinterpret_cast<GLDEBUGPROC>(OpenGLDebugCallback), nullptr);
+#endif
 
     // Initial scratch state
     glGenFramebuffers(1, &tmpFramebuffer);
@@ -170,7 +172,7 @@ void OpenGLCommandQueue::execute(const OpenGLCommandClearColor& cmd) {
         drawbuffer = target->drawbuffer;
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, tmpFramebuffer);
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, target->texture, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->texture, 0);
         framebuffer = tmpFramebuffer;
         drawbuffer = 0;
     }
@@ -207,7 +209,9 @@ void OpenGLCommandQueue::execute(const OpenGLCommandDraw& cmd) {
     const GLsizei count = cmd.vertexCount;
     const GLuint baseinstance = cmd.firstInstance;
 
+#if defined(GRAPHICS_OPENGL_GL)
     glDrawArraysInstancedBaseInstance(tmpTopology, first, count, instancecount, baseinstance);
+#endif
     checkBackendError("OpenGLCommandQueue::execute: cmdDraw");
 }
 
@@ -217,8 +221,10 @@ void OpenGLCommandQueue::execute(const OpenGLCommandDrawIndexed& cmd) {
     const GLint basevertex = cmd.vertexOffset;
     const GLuint baseinstance = cmd.firstInstance;
 
+#if defined(GRAPHICS_OPENGL_GL)
     // TODO: Set index buffer (modify it via cmd.firstIndex)
     glDrawElementsInstancedBaseVertexBaseInstance(tmpTopology, count, 0, nullptr, instancecount, basevertex, baseinstance);
+#endif
     checkBackendError("OpenGLCommandQueue::execute: cmdDrawIndexed");
 }
 
@@ -229,11 +235,21 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetVertexBuffers& cmd) {
     const auto& offsets = cmd.offsets;
     const auto& strides = cmd.strides;
 
+#if defined(GRAPHICS_OPENGL_GL)
     if (buffers.size() == 0) {
         glBindVertexBuffers(index, count, nullptr, nullptr, nullptr);
     } else {
         glBindVertexBuffers(index, count, buffers.data(), offsets.data(), strides.data());
     }
+#else
+    for (size_t i = 0; i < count; i++) {
+        if (buffers.size() == 0) {
+            glBindVertexBuffer(index, NULL, NULL, NULL);
+        } else {
+            glBindVertexBuffer(index, buffers[i], offsets[i], strides[i]);
+        }
+    }
+#endif
     checkBackendError("OpenGLCommandQueue::execute: cmdSetVertexBuffers");
 }
 
@@ -244,10 +260,10 @@ void OpenGLCommandQueue::execute(const OpenGLCommandSetPrimitiveTopology& cmd) {
 
 void OpenGLCommandQueue::execute(const OpenGLCommandSetTargets& cmd) {
     for (U32 index = 0; index < cmd.colorCount; index++) {
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, cmd.colorTargets[index], 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, cmd.colorTargets[index], 0);
     }
     if (cmd.depthStencilTarget) {
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, cmd.depthStencilTarget, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, cmd.depthStencilTarget, 0);
     }
 
     checkBackendError("OpenGLCommandQueue::execute: cmdSetTargets");

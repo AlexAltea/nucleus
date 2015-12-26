@@ -7,7 +7,7 @@
 #include "nucleus/logger/logger.h"
 
 // Load extensions
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(GRAPHICS_OPENGL_API_WGL)
 #define LOAD_EXTENSION(type, function) { \
     function = reinterpret_cast<type>(wglGetProcAddress(#function)); \
     if (!function) { \
@@ -15,7 +15,7 @@
         return false; \
     } \
 }
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(GRAPHICS_OPENGL_API_GLX)
 #define LOAD_EXTENSION(type, function) { \
     function = reinterpret_cast<type>(glXGetProcAddress(#function)); \
     if (!function) { \
@@ -23,7 +23,7 @@
         return false; \
     } \
 }
-#elif defined(NUCLEUS_PLATFORM_ANDROID) || defined(NUCLEUS_PLATFORM_IOS)
+#elif defined(GRAPHICS_OPENGL_API_EGL)
 #define LOAD_EXTENSION(type, function) { \
     function = reinterpret_cast<type>(eglGetProcAddress(#function)); \
     if (!function) { \

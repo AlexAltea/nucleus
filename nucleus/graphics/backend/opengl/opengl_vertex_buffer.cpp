@@ -36,7 +36,7 @@ void* OpenGLVertexBuffer::map() {
     address = glMapNamedBuffer(id, GL_WRITE_ONLY);
 #else
     glBindBuffer(GL_ARRAY_BUFFER, id);
-    address = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+    address = glMapBufferRange(GL_ARRAY_BUFFER, 0/*TODO*/, 0/*TODO*/, GL_WRITE_ONLY);
 #endif
 
     checkBackendError("OpenGLVertexBuffer::map");

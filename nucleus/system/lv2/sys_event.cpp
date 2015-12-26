@@ -9,6 +9,8 @@
 #include "nucleus/cpu/cpu.h"
 #include "nucleus/emulator.h"
 
+#undef max
+
 #include <algorithm>
 
 namespace sys {

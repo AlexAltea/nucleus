@@ -18,7 +18,8 @@ WidgetImage::~WidgetImage() {
 
 void WidgetImage::init(const std::string& pngfile) {
     // Get file contents
-    FILE* file = fopen(pngfile.c_str(), "rb");
+    std::FILE* file;
+    fopen_s(&file, pngfile.c_str(), "rb");
     if (!file) {
         logger.error(LOG_UI, "Image not found: %s", pngfile.c_str());
         return;

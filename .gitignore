@@ -23,6 +23,7 @@
 # Visual Studio files
 /enc_temp_folder/
 /ipch/
+/packages/
 *.aps
 *.idc
 *.ilk

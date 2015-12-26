@@ -10,6 +10,7 @@ namespace gfx {
 namespace opengl {
 
 void OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, GLvoid* userParam) {
+#ifdef GRAPHICS_OPENGL_GL
     const char* sourceName = "(Unknown)";
     switch (source) {
     case GL_DEBUG_SOURCE_API_ARB:
@@ -62,6 +63,7 @@ void OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
 
     logger.error(LOG_GRAPHICS, "OpenGL Debug Message (Source: %s, Type: %s, Severity: %s, ID: %d):\n%s",
         sourceName, typeName, severityName, id, message);
+#endif
 }
 
 }  // namespace opengl
