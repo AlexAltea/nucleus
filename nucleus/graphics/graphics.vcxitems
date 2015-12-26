@@ -46,6 +46,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)format.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)graphics.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)heap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\builder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\function.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\instruction.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\opcodes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\type.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\value.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pipeline.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)primitive.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rectangle.h" />
@@ -74,9 +82,17 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_shader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_vertex_buffer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)graphics.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\builder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\function.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\instruction.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\module.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\opcodes.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl" />
     <None Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.inl" />
+    <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl" />
   </ItemGroup>
 </Project>

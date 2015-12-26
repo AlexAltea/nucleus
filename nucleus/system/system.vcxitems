@@ -40,7 +40,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_tty.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)module.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)modules\libsysmodule.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)modules\libsysutil.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)modules\libsysutil_avconf_ext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)syscall.h" />
@@ -70,7 +70,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_timer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_tty.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)module.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysmodule.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil_avconf_ext.cpp" />
   </ItemGroup>
 </Project>

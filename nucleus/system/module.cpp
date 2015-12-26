@@ -7,7 +7,7 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/system/lv2.h"
 
-#include "modules/libsysmodule.h"
+#include "modules/libsysutil.h"
 #include "modules/libsysutil_avconf_ext.h"
 
 namespace sys {

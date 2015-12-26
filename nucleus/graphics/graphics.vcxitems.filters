@@ -10,6 +10,9 @@
     <Filter Include="backend\opengl">
       <UniqueIdentifier>{8be55d0c-4ec2-44cf-aed9-98bc23b48a4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hir">
+      <UniqueIdentifier>{7bff1ef5-f604-4242-8c2a-e0aec6cba531}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.cpp">
@@ -61,6 +64,27 @@
       <Filter>backend\opengl</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)graphics.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\opcodes.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\value.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\builder.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\function.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\instruction.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\module.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">
@@ -154,6 +178,30 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)texture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)vertex_buffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)viewport.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\opcodes.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\type.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\value.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\builder.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\function.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\instruction.h">
+      <Filter>hir</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl">
@@ -161,6 +209,9 @@
     </None>
     <None Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.inl">
       <Filter>backend\opengl</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl">
+      <Filter>hir</Filter>
     </None>
   </ItemGroup>
 </Project>

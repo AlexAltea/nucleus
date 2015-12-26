@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "libsysmodule.h"
+#include "libsysutil.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/system/lv2.h"
 
