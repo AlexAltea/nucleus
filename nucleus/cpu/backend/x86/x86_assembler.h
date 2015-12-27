@@ -302,13 +302,11 @@ public:
 		YMM = 1 << 7
 	};
 	enum Code {
-#ifdef XBYAK64
 		RAX = 0, RCX, RDX, RBX, RSP, RBP, RSI, RDI, R8, R9, R10, R11, R12, R13, R14, R15,
 		R8D = 8, R9D, R10D, R11D, R12D, R13D, R14D, R15D,
 		R8W = 8, R9W, R10W, R11W, R12W, R13W, R14W, R15W,
 		R8B = 8, R9B, R10B, R11B, R12B, R13B, R14B, R15B,
 		SPL = 4, BPL, SIL, DIL,
-#endif
 		EAX = 0, ECX, EDX, EBX, ESP, EBP, ESI, EDI,
 		AX = 0, CX, DX, BX, SP, BP, SI, DI,
 		AL = 0, CL, DL, BL, AH, CH, DH, BH
@@ -386,9 +384,8 @@ class Label;
 struct Reg8;
 struct Reg16;
 struct Reg32;
-#ifdef XBYAK64
 struct Reg64;
-#endif
+
 class Reg : public Operand {
 	bool hasRex() const { return isExt8bit() | isREG(64) | isExtIdx(); }
 public:
@@ -403,9 +400,7 @@ public:
 	Reg8 cvt8() const;
 	Reg16 cvt16() const;
 	Reg32 cvt32() const;
-#ifdef XBYAK64
 	Reg64 cvt64() const;
-#endif
 };
 
 struct Reg8 : public Reg {
@@ -438,7 +433,7 @@ struct Reg32e : public Reg {
 struct Reg32 : public Reg32e {
 	explicit Reg32(int idx = 0) : Reg32e(idx, 32) {}
 };
-#ifdef XBYAK64
+
 struct Reg64 : public Reg32e {
 	explicit Reg64(int idx = 0) : Reg32e(idx, 64) {}
 };
@@ -457,15 +452,14 @@ struct RegRip {
 		return RegRip(r.disp_, &label);
 	}
 };
-#endif
 
 inline Reg8 Reg::cvt8() const
 {
 	const int idx = getIdx();
 	if (isBit(8)) return Reg8(idx, isExt8bit());
-#ifdef XBYAK32
+//#ifdef XBYAK32
 	if (idx >= 4) throw Error(ERR_CANT_CONVERT);
-#endif
+//#endif
 	return Reg8(idx, 4 <= idx && idx < 8);
 }
 
@@ -483,14 +477,13 @@ inline Reg32 Reg::cvt32() const
 	return Reg32(idx);
 }
 
-#ifdef XBYAK64
 inline Reg64 Reg::cvt64() const
 {
 	const int idx = getIdx();
 	if (isBit(8) && (4 <= idx && idx < 8) && !isExt8bit()) throw Error(ERR_CANT_CONVERT);
 	return Reg64(idx);
 }
-#endif
+
 
 #ifndef XBYAK_DISABLE_SEGMENT
 // not derived from Reg
@@ -1653,7 +1646,6 @@ public:
 	const Reg8 al, cl, dl, bl, ah, ch, dh, bh;
 	const AddressFrame ptr, byte, word, dword, qword;
 	const Fpu st0, st1, st2, st3, st4, st5, st6, st7;
-#ifdef XBYAK64
 	const Reg64 rax, rcx, rdx, rbx, rsp, rbp, rsi, rdi, r8, r9, r10, r11, r12, r13, r14, r15;
 	const Reg32 r8d, r9d, r10d, r11d, r12d, r13d, r14d, r15d;
 	const Reg16 r8w, r9w, r10w, r11w, r12w, r13w, r14w, r15w;
@@ -1664,10 +1656,8 @@ public:
 	const Xmm &xm8, &xm9, &xm10, &xm11, &xm12, &xm13, &xm14, &xm15; // for my convenience
 	const Ymm &ym8, &ym9, &ym10, &ym11, &ym12, &ym13, &ym14, &ym15;
 	const RegRip rip;
-#endif
-#ifndef XBYAK_DISABLE_SEGMENT
 	const Segment es, cs, ss, ds, fs, gs;
-#endif
+
 	void L(const std::string& label) { labelMgr_.defineSlabel(label); }
 	void L(const Label& label) { labelMgr_.defineClabel(label); }
 	/*
@@ -2024,7 +2014,6 @@ public:
 		if (mmx.isXMM()) db(0x66);
 		opModM(addr, mmx, 0x0F, mmx.isXMM() ? 0b11010110 : 0b01111111);
 	}
-#ifdef XBYAK64
 	void movq(const Reg64& reg, const Mmx& mmx)
 	{
 		if (mmx.isXMM()) db(0x66);
@@ -2050,7 +2039,7 @@ public:
 		if (!op.isBit(32)) throw Error(ERR_BAD_COMBINATION);
 		opModRM(reg, op, op.isREG(), op.isMEM(), 0x63);
 	}
-#endif
+
 	// MMX2 : pextrw : reg, mmx/xmm, imm
 	// SSE4 : pextrw, pextrb, pextrd, extractps : reg/mem, mmx/xmm, imm
 	void pextrw(const Operand& op, const Mmx& xmm, uint8 imm) { opExt(op, xmm, 0x15, imm, true); }
@@ -2111,7 +2100,6 @@ public:
 		, al(Operand::AL), cl(Operand::CL), dl(Operand::DL), bl(Operand::BL), ah(Operand::AH), ch(Operand::CH), dh(Operand::DH), bh(Operand::BH)
 		, ptr(0), byte(8), word(16), dword(32), qword(64)
 		, st0(0), st1(1), st2(2), st3(3), st4(4), st5(5), st6(6), st7(7)
-#ifdef XBYAK64
 		, rax(Operand::RAX), rcx(Operand::RCX), rdx(Operand::RDX), rbx(Operand::RBX), rsp(Operand::RSP), rbp(Operand::RBP), rsi(Operand::RSI), rdi(Operand::RDI), r8(Operand::R8), r9(Operand::R9), r10(Operand::R10), r11(Operand::R11), r12(Operand::R12), r13(Operand::R13), r14(Operand::R14), r15(Operand::R15)
 		, r8d(Operand::R8D), r9d(Operand::R9D), r10d(Operand::R10D), r11d(Operand::R11D), r12d(Operand::R12D), r13d(Operand::R13D), r14d(Operand::R14D), r15d(Operand::R15D)
 		, r8w(Operand::R8W), r9w(Operand::R9W), r10w(Operand::R10W), r11w(Operand::R11W), r12w(Operand::R12W), r13w(Operand::R13W), r14w(Operand::R14W), r15w(Operand::R15W)
@@ -2122,10 +2110,7 @@ public:
 		, xm8(xmm8), xm9(xmm9), xm10(xmm10), xm11(xmm11), xm12(xmm12), xm13(xmm13), xm14(xmm14), xm15(xmm15) // for my convenience
 		, ym8(ymm8), ym9(ymm9), ym10(ymm10), ym11(ymm11), ym12(ymm12), ym13(ymm13), ym14(ymm14), ym15(ymm15) // for my convenience
 		, rip()
-#endif
-#ifndef XBYAK_DISABLE_SEGMENT
 		, es(Segment::es), cs(Segment::cs), ss(Segment::ss), ds(Segment::ds), fs(Segment::fs), gs(Segment::gs)
-#endif
 	{
 		labelMgr_.set(this);
 	}
@@ -2175,7 +2160,6 @@ static const Reg16 ax(Operand::AX), cx(Operand::CX), dx(Operand::DX), bx(Operand
 static const Reg8 al(Operand::AL), cl(Operand::CL), dl(Operand::DL), bl(Operand::BL), ah(Operand::AH), ch(Operand::CH), dh(Operand::DH), bh(Operand::BH);
 static const AddressFrame ptr(0), byte(8), word(16), dword(32), qword(64);
 static const Fpu st0(0), st1(1), st2(2), st3(3), st4(4), st5(5), st6(6), st7(7);
-#ifdef XBYAK64
 static const Reg64 rax(Operand::RAX), rcx(Operand::RCX), rdx(Operand::RDX), rbx(Operand::RBX), rsp(Operand::RSP), rbp(Operand::RBP), rsi(Operand::RSI), rdi(Operand::RDI), r8(Operand::R8), r9(Operand::R9), r10(Operand::R10), r11(Operand::R11), r12(Operand::R12), r13(Operand::R13), r14(Operand::R14), r15(Operand::R15);
 static const Reg32 r8d(Operand::R8D), r9d(Operand::R9D), r10d(Operand::R10D), r11d(Operand::R11D), r12d(Operand::R12D), r13d(Operand::R13D), r14d(Operand::R14D), r15d(Operand::R15D);
 static const Reg16 r8w(Operand::R8W), r9w(Operand::R9W), r10w(Operand::R10W), r11w(Operand::R11W), r12w(Operand::R12W), r13w(Operand::R13W), r14w(Operand::R14W), r15w(Operand::R15W);
@@ -2183,10 +2167,8 @@ static const Reg8 r8b(Operand::R8B), r9b(Operand::R9B), r10b(Operand::R10B), r11
 static const Xmm xmm8(8), xmm9(9), xmm10(10), xmm11(11), xmm12(12), xmm13(13), xmm14(14), xmm15(15);
 static const Ymm ymm8(8), ymm9(9), ymm10(10), ymm11(11), ymm12(12), ymm13(13), ymm14(14), ymm15(15);
 static const RegRip rip;
-#endif
-#ifndef XBYAK_DISABLE_SEGMENT
 static const Segment es(Segment::es), cs(Segment::cs), ss(Segment::ss), ds(Segment::ds), fs(Segment::fs), gs(Segment::gs);
-#endif
+
 } // util
 
 } // end of namespace
