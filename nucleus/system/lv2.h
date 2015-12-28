@@ -8,7 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/memory/memory.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/system/module.h"
 #include "nucleus/system/object.h"
 #include "nucleus/system/syscall.h"

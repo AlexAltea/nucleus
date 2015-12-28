@@ -5,7 +5,7 @@
 
 #include "sys_fs.h"
 #include "nucleus/emulator.h"
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/system/lv2.h"
 

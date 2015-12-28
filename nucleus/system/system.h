@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/filesystem_virtual.h"
 
 namespace sys {
 

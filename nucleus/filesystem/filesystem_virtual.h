@@ -6,29 +6,22 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/filesystem/device/list.h"
 #include "nucleus/filesystem/device.h"
 #include "nucleus/filesystem/directory.h"
 #include "nucleus/filesystem/file.h"
 #include "nucleus/filesystem/path.h"
 
-// Devices
-#include "device/host_path/host_path_device.h"
-#include "device/iso_container/iso_container_device.h"
-
 #include <memory>
-#include <string>
 #include <vector>
 
 namespace fs {
 
-class HostFileSystem {
-public:
-    static std::unique_ptr<File> openFile(const Path& path, OpenMode mode);
-    static bool createFile(const Path& path);
-    static bool existsFile(const Path& path);
-    static bool removeFile(const Path& path);
-};
-
+/**
+ * Virtual File System
+ * ===================
+ * Aggregates multiple devices which are mapped to different path prefixes.
+ */
 class VirtualFileSystem {
     std::vector<Device*> devices;
 

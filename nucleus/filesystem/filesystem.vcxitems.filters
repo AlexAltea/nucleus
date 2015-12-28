@@ -10,6 +10,9 @@
     <Filter Include="device\iso_container">
       <UniqueIdentifier>{24504325-62a7-4abf-8152-d89f13f8a7fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="device\img_container">
+      <UniqueIdentifier>{930be902-da46-4f37-8264-79634c2e722c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.cpp">
@@ -24,8 +27,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)device\host_path\host_path_device.cpp">
       <Filter>device\host_path</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_virtual.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_host.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_resource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.h">
@@ -43,8 +48,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)device.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)directory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)file.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)path.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem_resource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem_virtual.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem_host.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\list.h">
+      <Filter>device</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)device\img_container\img_container_device.h">
+      <Filter>device\img_container</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

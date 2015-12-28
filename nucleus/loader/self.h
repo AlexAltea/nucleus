@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/file.h"
 #include "nucleus/system/lv2/sys_process.h"
 #include "nucleus/system/lv2/sys_prx.h"
 

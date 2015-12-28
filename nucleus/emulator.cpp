@@ -6,6 +6,8 @@
 #include "emulator.h"
 #include "nucleus/core/config.h"
 #include "nucleus/graphics/backends.h"
+#include "nucleus/filesystem/filesystem_host.h"
+#include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/ui/ui.h"
 #include "nucleus/cpu/cell.h"
 #include "nucleus/gpu/rsx/rsx.h"

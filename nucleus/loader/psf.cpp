@@ -7,7 +7,7 @@
 #include "nucleus/emulator.h"
 #include "nucleus/system/system.h"
 #include "nucleus/format.h"
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/loader/loader.h"
 #include "nucleus/logger/logger.h"
 

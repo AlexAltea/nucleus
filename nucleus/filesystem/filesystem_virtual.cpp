@@ -3,19 +3,9 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "filesystem.h"
+#include "filesystem_virtual.h"
 
 namespace fs {
-
-std::unique_ptr<File> HostFileSystem::openFile(const Path& path, OpenMode mode) {
-    auto hostDevice = HostPathDevice("", "");
-    return std::unique_ptr<File>(hostDevice.openFile(path, mode));
-}
-
-bool HostFileSystem::existsFile(const Path& path) {
-    auto hostDevice = HostPathDevice("", "");
-    return hostDevice.existsFile(path);
-}
 
 Device* VirtualFileSystem::getDevice(const Path& path) {
     for (auto* device : devices) {

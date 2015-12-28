@@ -4,7 +4,7 @@
  */
 
 #include "config.h"
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/filesystem_host.h"
 
 #include <cstring>
 

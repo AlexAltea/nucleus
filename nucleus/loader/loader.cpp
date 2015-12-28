@@ -5,7 +5,7 @@
 
 #include "loader.h"
 #include "nucleus/emulator.h"
-#include "nucleus/filesystem/filesystem.h"
+#include "nucleus/filesystem/filesystem_host.h"
 
 Filetype detectFiletype(const std::string& filepath)
 {
