@@ -10,12 +10,13 @@
 #include "externals/rapidxml/rapidxml.hpp"
 
 #include <string>
+#include <vector>
 
 namespace ui {
 
 class Language {
     // Holds the parsed XML file
-    char* buffer = nullptr;
+    std::vector<char> buffer;
     rapidxml::xml_document<> doc;
 
 public:
@@ -23,10 +24,7 @@ public:
     void open(ConfigLanguage language);
 
     // Translate a message
-    char* translate(const std::string& msgid);
-
-    // Close language file and clear cache
-    void close();
+    const char* translate(const std::string& msgid);
 };
 
 }  // namespace ui

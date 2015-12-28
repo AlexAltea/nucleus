@@ -4,82 +4,43 @@
  */
 
 #include "language.h"
-#include "nucleus/emulator.h"
+#include "nucleus/core/resource.h"
 #include "nucleus/logger/logger.h"
 #include "externals/rapidxml/rapidxml.hpp"
 
 #include <cstring>
-
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-#include "wrappers/windows/resource.h"
-#include <Windows.h>
-#endif
+#include <unordered_map>
 
 namespace ui {
 
-struct LanguageResource {
-    ConfigLanguage id;
-    int winResource;
+static const std::unordered_map<ConfigLanguage, core::ResourceName> langResources = {
+    { LANGUAGE_DEFAULT, RES_LANGUAGE_EN_US },
+    { LANGUAGE_DE_DE,   RES_LANGUAGE_DE_DE },
+    { LANGUAGE_EN_US,   RES_LANGUAGE_EN_US },
+    { LANGUAGE_ES_ES,   RES_LANGUAGE_ES_ES }
 };
-
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
-static const LanguageResource langResources[] = {
-    { LANGUAGE_DEFAULT, IDR_LANGUAGE_EN_US },
-    { LANGUAGE_DE_DE,   IDR_LANGUAGE_DE_DE },
-    { LANGUAGE_EN_US,   IDR_LANGUAGE_EN_US },
-    { LANGUAGE_ES_ES,   IDR_LANGUAGE_ES_ES }
-};
-#endif
 
 void Language::open(ConfigLanguage language) {
-    if (buffer) {
-        close();
-    }
-
-    // Get language file/resource or use the default one
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
-    LanguageResource lang = { LANGUAGE_DEFAULT, IDR_LANGUAGE_EN_US };
-
-    for (const auto& langResource : langResources) {
-        if (langResource.id == language) {
-            lang = langResource;
-            break;
-        }
-    }
-
-    // Open the file/resource
-    HRSRC hRes = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(lang.winResource), "LANGUAGE");
-    HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRes);
-    DWORD langSize = SizeofResource(GetModuleHandle(NULL), hRes);
-    LPVOID langData = LockResource(hGlob);
-#else
-    logger.error(LOG_UI, "Languages not supported in your platform");
-    unsigned long langSize = 0;
-    char* langData = nullptr;
-#endif
+    core::ResourceName resName = langResources.at(language);
+    core::Resource res(resName);
 
     // Copy language resource to buffer and parse XML (this will modify the buffer)
-    buffer = new char[langSize+1]();
-    memcpy(buffer, langData, langSize);
-    doc.parse<0>(buffer);
+    buffer.resize(res.size);
+    memcpy(buffer.data(), res.data, res.size);
+    doc.parse<0>(buffer.data());
 }
 
-char* Language::translate(const std::string& msgid) {
+const char* Language::translate(const std::string& msgid) {
     auto nodeLang = doc.first_node();
     auto nodeEntries = nodeLang->first_node("entries");
     for (auto node = nodeEntries->first_node(); node; node = node->next_sibling("msg")) {
-        char* id = node->first_attribute("id")->value();
-        char* value = node->first_attribute("value")->value();
+        const char* id = node->first_attribute("id")->value();
+        const char* value = node->first_attribute("value")->value();
         if (msgid == id) {
             return value;
         }
     }
     return "UNKNOWN";
-}
-
-void Language::close() {
-    // Delete the buffer holding the parsed XML language file
-    delete[] buffer;
 }
 
 }  // namespace ui

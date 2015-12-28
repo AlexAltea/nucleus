@@ -24,7 +24,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)directory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)file.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)filesystem_host.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem_resource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)filesystem_virtual.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)path.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)utils.h" />
@@ -34,9 +33,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)device\host_path\host_path_file.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_device.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_host.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_virtual.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
   </ItemGroup>
 </Project>

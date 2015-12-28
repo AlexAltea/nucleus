@@ -15,23 +15,6 @@
 
 namespace fs {
 
-Path getEmulatorPath()
-{
-    char buffer[4096];
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    GetModuleFileName(NULL, buffer, sizeof(buffer));
-#endif
-
-    Path exePath = buffer;
-#ifdef NUCLEUS_PLATFORM_WINDOWS
-    size_t pos = exePath.rfind('\\');
-#else
-    size_t pos = exePath.rfind('/');
-#endif
-
-    return exePath.substr(0, pos+1);
-}
-
 Path getProcessPath(const Path& elfPath)
 {
     // Get current working directory

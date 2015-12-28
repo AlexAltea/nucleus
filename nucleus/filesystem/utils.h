@@ -9,9 +9,6 @@
 
 namespace fs {
 
-// Get the path to the folder that contains the Nucleus executable
-Path getEmulatorPath();
-
 // Get the path to the folder that contains the emulated ELF binary
 Path getProcessPath(const Path& elfPath);
 
