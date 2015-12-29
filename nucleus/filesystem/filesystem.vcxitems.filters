@@ -30,6 +30,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_virtual.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_host.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)filesystem_application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)device\iso_container\iso_container_file.h">
@@ -57,5 +58,6 @@
       <Filter>device\img_container</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)utils.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)filesystem_application.h" />
   </ItemGroup>
 </Project>

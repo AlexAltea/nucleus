@@ -57,6 +57,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\compiler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)resource.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\target.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="externals">

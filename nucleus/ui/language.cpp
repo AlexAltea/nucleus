@@ -14,10 +14,10 @@
 namespace ui {
 
 static const std::unordered_map<ConfigLanguage, core::ResourceName> langResources = {
-    { LANGUAGE_DEFAULT, RES_LANGUAGE_EN_US },
-    { LANGUAGE_DE_DE,   RES_LANGUAGE_DE_DE },
-    { LANGUAGE_EN_US,   RES_LANGUAGE_EN_US },
-    { LANGUAGE_ES_ES,   RES_LANGUAGE_ES_ES }
+    { LANGUAGE_DEFAULT, core::RES_LANGUAGE_EN_US },
+    { LANGUAGE_DE_DE,   core::RES_LANGUAGE_DE_DE },
+    { LANGUAGE_EN_US,   core::RES_LANGUAGE_EN_US },
+    { LANGUAGE_ES_ES,   core::RES_LANGUAGE_ES_ES }
 };
 
 void Language::open(ConfigLanguage language) {

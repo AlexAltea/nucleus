@@ -37,7 +37,7 @@ static struct KeyvaultHandler {
 
     KeyvaultHandler() {
         // Access the Keyvault file and get its size
-        std::string path = fs::getEmulatorPath() + KEYVAULT_FILE;
+        /*std::string path = fs::getEmulatorPath() + KEYVAULT_FILE;
         std::FILE* file;
         fopen_s(&file, path.c_str(), "rb");
         fseeko64(file, 0, SEEK_END);
@@ -48,7 +48,7 @@ static struct KeyvaultHandler {
         fseeko64(file, 0, SEEK_SET);
         fread(buffer, 1, kvSize, file);
         fclose(file);
-        doc.parse<0>(buffer);
+        doc.parse<0>(buffer);*/
     }
     ~KeyvaultHandler() {
         delete[] buffer;
