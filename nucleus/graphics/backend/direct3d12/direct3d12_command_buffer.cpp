@@ -151,7 +151,7 @@ void Direct3D12CommandBuffer::cmdSetScissors(U32 scissorsCount, const Rectangle*
 }
 
 void Direct3D12CommandBuffer::cmdResourceBarrier(U32 barrierCount, const ResourceBarrier* barriers) {
-    std::vector<D3D12_RESOURCE_BARRIER> d3dBarriers;
+    std::vector<D3D12_RESOURCE_BARRIER> d3dBarriers(barrierCount);
     for (U32 i = 0; i < barrierCount; i++) {
         d3dBarriers[i].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
         d3dBarriers[i].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;

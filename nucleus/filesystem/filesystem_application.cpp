@@ -17,17 +17,17 @@ Path ApplicationFileSystem::getPath(Location location) {
 #if defined(NUCLEUS_PLATFORM_UWP)
     Windows::Storage::StorageFolder^ folder;
     switch (location) {
-    case LOCAL:
+    case APPLICATION_LOCATION_LOCAL:
         folder = Windows::Storage::ApplicationData::Current->LocalFolder; break;
-    case ROAMING:
+    case APPLICATION_LOCATION_ROAMING:
         folder = Windows::Storage::ApplicationData::Current->RoamingFolder; break;
-    case TEMP:
+    case APPLICATION_LOCATION_TEMP:
         folder = Windows::Storage::ApplicationData::Current->TemporaryFolder; break;
     }
     std::wstring widePath = folder->Path->Data();
     std::string narrowPath(widePath.begin(), widePath.end()); // HACK: Implement proper Path class
     path = narrowPath;
-#else defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
     assert_always("Unimplemented");
     path = "%temp%";
 #endif

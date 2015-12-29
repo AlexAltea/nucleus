@@ -8,6 +8,12 @@
       <UniqueIdentifier>69219378-3fd9-4def-8b0a-9c04c679acfe</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{17116206-104a-4728-ae9a-ca289e09b30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\languages">
+      <UniqueIdentifier>{4a6981f6-5ac2-46e2-94f9-3ed33d5d489c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -44,5 +50,16 @@
   <ItemGroup>
     <None Include="nucleus-uwp_TemporaryKey.pfx" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\resources\languages\en_US.xml">
+      <Filter>resources\languages</Filter>
+    </Xml>
+    <Xml Include="..\..\resources\languages\es_ES.xml">
+      <Filter>resources\languages</Filter>
+    </Xml>
+    <Xml Include="..\..\resources\languages\de_DE.xml">
+      <Filter>resources\languages</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

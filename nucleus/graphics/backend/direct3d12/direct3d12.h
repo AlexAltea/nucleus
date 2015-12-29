@@ -29,11 +29,24 @@ namespace gfx {
 namespace direct3d12 {
 
 // Declare Function
+#if defined(NUCLEUS_PLATFORM_UWP)
+#define _D3D12CreateDevice            D3D12CreateDevice
+#define _D3D12GetDebugInterface       D3D12GetDebugInterface
+#define _D3D12SerializeRootSignature  D3D12SerializeRootSignature
+#define _CreateDXGIFactory            CreateDXGIFactory
+#define _CreateDXGIFactory1           CreateDXGIFactory1
+#define _CreateDXGIFactory2           CreateDXGIFactory2
+#define _D3DCompile                   D3DCompile
+#define _D3DDisassemble               D3DDisassemble
+#define _D3DPreprocess                D3DPreprocess
+
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
 #define DECLARE_FUNCTION(type, module, function) extern type _##function;
 #define FUNCTION DECLARE_FUNCTION
 #include "direct3d12.inl"
 #undef FUNCTION
 #undef DECLARE_FUNCTION
+#endif
 
 // Load extensions
 bool initializeDirect3D12();

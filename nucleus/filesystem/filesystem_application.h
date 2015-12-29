@@ -15,6 +15,12 @@
 
 namespace fs {
 
+enum ApplicationFileSystemLocation {
+    APPLICATION_LOCATION_LOCAL,    // Application data on the current device
+    APPLICATION_LOCATION_ROAMING,  // Application data synchronized across multiple devices
+    APPLICATION_LOCATION_TEMP,     // Temporary location
+};
+
 /**
  * Application File System
  * =======================
@@ -22,24 +28,19 @@ namespace fs {
  * the underlying host operating system
  */
 class ApplicationFileSystem {
+    using Location = ApplicationFileSystemLocation;
+
 public:
-    enum Location {
-        LOCAL,    // Application data on the current device
-        ROAMING,  // Application data synchronized across multiple devices
-        TEMP,     // Temporary location
-    };
-
-    static std::unique_ptr<File> openFile(Location location, const Path& path, OpenMode mode);
-    static bool createFile(Location location, const Path& path);
-    static bool existsFile(Location location, const Path& path);
-    static bool removeFile(Location location, const Path& path);
-
-private:
     /**
      * Return absolute path of the specified application location
      * @param[in]  location  Application folder
      */
     static Path getPath(Location location);
+
+    static std::unique_ptr<File> openFile(Location location, const Path& path, OpenMode mode);
+    static bool createFile(Location location, const Path& path);
+    static bool existsFile(Location location, const Path& path);
+    static bool removeFile(Location location, const Path& path);
 };
 
 }  // namespace fs

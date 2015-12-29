@@ -7,6 +7,9 @@
 
 #include "nucleus/common.h"
 
+#include <cstdio>
+#include <vector>
+
 namespace core {
 
 enum ResourceName {
@@ -16,6 +19,11 @@ enum ResourceName {
 };
 
 class Resource {
+#if defined(NUCLEUS_PLATFORM_UWP)
+    std::FILE* file;
+    std::vector<char> buffer;
+#endif
+
 public:
     size_t size;
     void* data;

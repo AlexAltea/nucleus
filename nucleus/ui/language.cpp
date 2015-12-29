@@ -25,7 +25,7 @@ void Language::open(ConfigLanguage language) {
     core::Resource res(resName);
 
     // Copy language resource to buffer and parse XML (this will modify the buffer)
-    buffer.resize(res.size);
+    buffer.resize(res.size + 1);
     memcpy(buffer.data(), res.data, res.size);
     doc.parse<0>(buffer.data());
 }

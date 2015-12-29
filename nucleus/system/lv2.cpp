@@ -5,7 +5,7 @@
 
 #include "lv2.h"
 #include "nucleus/emulator.h"
-#include "nucleus/filesystem/utils.h"
+#include "nucleus/filesystem/filesystem_application.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/system/callback.h"
 
@@ -137,7 +137,7 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
     }
 
     // Initialize global filesystem devices
-    const fs::Path& nucleusPath = fs::getEmulatorPath();
+    const fs::Path& nucleusPath = fs::ApplicationFileSystem::getPath(fs::APPLICATION_LOCATION_LOCAL);
     vfs.registerDevice(new fs::HostPathDevice("/dev_flash", nucleusPath + "dev_flash"));
     vfs.registerDevice(new fs::HostPathDevice("/dev_hdd0", nucleusPath + "dev_hdd0"));
     vfs.registerDevice(new fs::HostPathDevice("/dev_hdd1", nucleusPath + "dev_hdd1"));

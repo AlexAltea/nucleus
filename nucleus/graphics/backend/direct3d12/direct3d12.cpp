@@ -7,21 +7,12 @@
 #include "nucleus/logger/logger.h"
 
 // Load modules
-#if defined(NUCLEUS_PLATFORM_UWP)
-#define LOAD_MODULE(module) \
-    HMODULE hmodule_##module = LoadPackagedLibrary(L#module ".dll", 0); \
-    if (!hmodule_##module) { \
-        logger.error(LOG_GRAPHICS, "initializeDirect3D12: Could not load " #module ".dll module"); \
-        return false; \
-    }
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
 #define LOAD_MODULE(module) \
     HMODULE hmodule_##module = LoadLibrary(#module ".dll"); \
     if (!hmodule_##module) { \
         logger.error(LOG_GRAPHICS, "initializeDirect3D12: Could not load " #module ".dll module"); \
         return false; \
     }
-#endif
 
 // Load functions
 #define LOAD_FUNCTION(type, module, function) \
@@ -35,13 +26,16 @@ namespace gfx {
 namespace direct3d12 {
 
 // Declare functions
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
 #define DECLARE_FUNCTION(type, module, function) type _##function;
 #define FUNCTION DECLARE_FUNCTION
 #include "direct3d12.inl"
 #undef FUNCTION
 #undef DECLARE_FUNCTION
+#endif
 
 bool initializeDirect3D12() {
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     LOAD_MODULE(d3d12);
     LOAD_MODULE(dxgi);
     LOAD_MODULE(d3dcompiler_47);
@@ -49,7 +43,7 @@ bool initializeDirect3D12() {
 #define FUNCTION LOAD_FUNCTION
 #include "direct3d12.inl"
 #undef FUNCTION
-
+#endif
     return true;
 }
 

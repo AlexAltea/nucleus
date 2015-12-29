@@ -187,7 +187,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\libs\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zlib.lib;opengl32.lib;kernel32.lib;gdi32.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;opengl32.lib;d3d12.lib;dxgi.lib;kernel32.lib;gdi32.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -201,7 +201,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)\libs\$(Platform)\$(Configuration)\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>zlib.lib;opengl32.lib;kernel32.lib;gdi32.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlib.lib;opengl32.lib;d3d12.lib;dxgi.lib;kernel32.lib;gdi32.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -235,6 +235,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\resources\languages\de_DE.xml" />
+    <Xml Include="..\..\resources\languages\en_US.xml" />
+    <Xml Include="..\..\resources\languages\es_ES.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
