@@ -14,6 +14,9 @@ namespace direct3d12 {
 class Direct3D12Resource : public Resource {
 public:
     ID3D12Resource* handle;
+
+    Direct3D12Resource(ID3D12Resource* handle) : handle(handle) {
+    }
 };
 
 }  // namespace direct3d12

@@ -13,6 +13,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_fence.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_heap.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_pipeline.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_resource.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_shader.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_texture.h"
@@ -99,7 +100,7 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
 #ifdef NUCLEUS_PLATFORM_UWP
     hr = factory->CreateSwapChainForCoreWindow(queue, params.window, &swapChainDesc, nullptr, &tempSwapChain);
 #else
-    hr = factory->CreateSwapChainForHwnd(device, params.hwnd, &swapChainDesc,  &swapChainFullscreenDesc, nullptr, &tempSwapChain);
+    hr = factory->CreateSwapChainForHwnd(queue, params.hwnd, &swapChainDesc, &swapChainFullscreenDesc, nullptr, &tempSwapChain);
 #endif
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::initialize: Could not create swap chain (0x%X)", hr);
@@ -129,11 +130,15 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     }
 
     if (swapChain->GetCurrentBackBufferIndex() == 0) {
-        screenBackBuffer = new Direct3D12ColorTarget(swapChainColorTargets[0]);
-        screenFrontBuffer = new Direct3D12ColorTarget(swapChainColorTargets[1]);
+        screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
+        screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
+        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
+        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
     } else {
-        screenBackBuffer = new Direct3D12ColorTarget(swapChainColorTargets[1]);
-        screenFrontBuffer = new Direct3D12ColorTarget(swapChainColorTargets[0]);
+        screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
+        screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
+        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
+        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
     }
 
     return true;
@@ -241,7 +246,7 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     ID3DBlob* signature;
     ID3DBlob* error;
     ID3D12RootSignature* rootSignature;
-    D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
+    _D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
 
     hr = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
     if (FAILED(hr)) {
@@ -378,6 +383,7 @@ bool Direct3D12Backend::doSwapBuffers() {
         return false;
     }
     std::swap(screenBackBuffer, screenFrontBuffer);
+    std::swap(screenBackTarget, screenFrontTarget);
     return true;
 }
 

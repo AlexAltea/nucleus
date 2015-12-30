@@ -96,7 +96,7 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     backBuffer->framebuffer = 0;
     backBuffer->drawbuffer = 0;
 
-    screenBackBuffer = backBuffer;
+    screenBackTarget = backBuffer;
     return true;
 }
 

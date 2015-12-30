@@ -61,14 +61,16 @@ void UI::task() {
         
         cmdBuffer->reset();
         cmdBuffer->cmdBindPipeline(pipeline);
-        cmdBuffer->cmdSetTargets(1, &graphics->screenBackBuffer, nullptr);
-        cmdBuffer->cmdSetViewports(1, &viewport);
-        cmdBuffer->cmdClearColor(graphics->screenBackBuffer, clearColor);
 
         gfx::ResourceBarrier barrierBegin;
+        barrierBegin.transition.resource = graphics->screenBackBuffer;
         barrierBegin.transition.before = gfx::RESOURCE_STATE_PRESENT;
         barrierBegin.transition.after = gfx::RESOURCE_STATE_COLOR_TARGET;
         cmdBuffer->cmdResourceBarrier(1, &barrierBegin);
+
+        cmdBuffer->cmdSetTargets(1, &graphics->screenBackTarget, nullptr);
+        cmdBuffer->cmdSetViewports(1, &viewport);
+        //cmdBuffer->cmdClearColor(graphics->screenBackTarget, clearColor);
 
         // Vertex buffer
         widgetVtxBuffer.clear();
@@ -100,7 +102,6 @@ void UI::task() {
         cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
         cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
         cmdBuffer->cmdDraw(0, 3 * widgetVtxBuffer.size(), 0, 1);
-        cmdBuffer->finalize();
 
         // Add new screens
         while (!newScreens.empty()) {
@@ -110,9 +111,11 @@ void UI::task() {
         }
 
         gfx::ResourceBarrier barrierEnd;
+        barrierEnd.transition.resource = graphics->screenBackBuffer;
         barrierEnd.transition.before = gfx::RESOURCE_STATE_COLOR_TARGET;
         barrierEnd.transition.after = gfx::RESOURCE_STATE_PRESENT;
         cmdBuffer->cmdResourceBarrier(1, &barrierEnd);
+        cmdBuffer->finalize();
 
         cmdQueue->submit(cmdBuffer, fence);
         fence->wait();
