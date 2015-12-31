@@ -17,3 +17,6 @@ FUNCTION(PFN_CreateDXGIFactory2, dxgi, CreateDXGIFactory2);
 FUNCTION(pD3DCompile, d3dcompiler_47, D3DCompile);
 FUNCTION(pD3DDisassemble, d3dcompiler_47, D3DDisassemble);
 FUNCTION(pD3DPreprocess, d3dcompiler_47, D3DPreprocess);
+
+// Functions: dxgidebug.dll
+FUNCTION(PFN_DXGIGetDebugInterface, dxgidebug, DXGIGetDebugInterface);

@@ -46,10 +46,7 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     }
 
 #if defined(NUCLEUS_BUILD_DEBUG)
-    hr = _D3D12GetDebugInterface(IID_PPV_ARGS(&debugController));
-    if (SUCCEEDED(hr)) {
-        debugController->EnableDebugLayer();
-    }
+    debug.enable();
 #endif
 
     hr = _D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
@@ -62,6 +59,10 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
             return false;
         }
     }
+
+#if defined(NUCLEUS_BUILD_DEBUG)
+    debug.initialize(device);
+#endif
 
     // Create main command queue
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
@@ -377,6 +378,9 @@ VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc
 }
 
 bool Direct3D12Backend::doSwapBuffers() {
+#if defined(NUCLEUS_BUILD_DEBUG)
+    debug.printMessages();
+#endif
     HRESULT hr = swapChain->Present(0, 0);
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::doSwapBuffers: swapChain->Present failed (0x%X)", hr);

@@ -58,7 +58,7 @@ void UI::task() {
 
     while (true) {
         const gfx::Viewport viewport = { 0, 0, surfaceWidth, surfaceHeight };
-        
+
         cmdBuffer->reset();
         cmdBuffer->cmdBindPipeline(pipeline);
 

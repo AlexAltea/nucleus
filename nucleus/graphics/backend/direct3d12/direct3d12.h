@@ -7,23 +7,21 @@
 
 #include "nucleus/common.h"
 
-#if defined(NUCLEUS_PLATFORM_UWP)
 #include <Windows.h>
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>
 
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
-#include <Windows.h>
-#include <d3d12.h>
-#include <dxgi1_4.h>
-#include <d3dcompiler.h>
+#if defined(NUCLEUS_BUILD_DEBUG)
+#include <initguid.h>
+#include <dxgidebug.h>
 #endif
 
 // Function types: dxgi.dll
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory)(REFIID, void **);
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory1)(REFIID, void **);
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory2)(UINT, REFIID, void **);
+typedef HRESULT(WINAPI *PFN_DXGIGetDebugInterface)(REFIID riid, void **ppDebug);
 
 namespace gfx {
 namespace direct3d12 {

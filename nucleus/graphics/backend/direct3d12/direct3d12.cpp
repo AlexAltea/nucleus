@@ -40,6 +40,10 @@ bool initializeDirect3D12() {
     LOAD_MODULE(dxgi);
     LOAD_MODULE(d3dcompiler_47);
 
+#if defined(NUCLEUS_BUILD_DEBUG)
+    LOAD_MODULE(dxgidebug)
+#endif
+
 #define FUNCTION LOAD_FUNCTION
 #include "direct3d12.inl"
 #undef FUNCTION

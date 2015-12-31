@@ -7,10 +7,10 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_debug.h"
 
 // Forward Direct3D12 declarations
 struct ID3D12CommandQueue;
-struct ID3D12Debug;
 struct ID3D12Device;
 struct ID3D12DescriptorHeap;
 struct ID3D12Resource;
@@ -21,8 +21,11 @@ namespace gfx {
 namespace direct3d12 {
 
 class Direct3D12Backend : public IBackend {
+private:
+    // Debugging
+    Direct3D12Debug debug;
+
     IDXGIAdapter1* adapter;
-    ID3D12Debug* debugController;
     ID3D12Device* device;
     ID3D12CommandQueue* queue;
 
