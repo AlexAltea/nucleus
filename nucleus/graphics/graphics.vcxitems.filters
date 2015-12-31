@@ -88,6 +88,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_debug.cpp">
       <Filter>backend\direct3d12</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">
@@ -206,6 +209,9 @@
       <Filter>hir</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_debug.h">
+      <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.h">
       <Filter>backend\direct3d12</Filter>
     </ClInclude>
   </ItemGroup>

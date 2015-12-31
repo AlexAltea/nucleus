@@ -17,6 +17,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_shader.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_texture.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_vertex_buffer.h"
 
 #include <vector>
 
@@ -127,7 +128,7 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     for (UINT i = 0; i < swapChainRTVHeapDesc.NumDescriptors; i++) {
         swapChainColorTargets[i].handle.ptr = swapChainRTVHeapStart.ptr + (i * rtvDescriptorSize);
         swapChain->GetBuffer(i, IID_PPV_ARGS(&swapChainRenderBuffer[i]));
-        device->CreateRenderTargetView(swapChainRenderBuffer[0], NULL, swapChainColorTargets[i].handle);
+        device->CreateRenderTargetView(swapChainRenderBuffer[i], NULL, swapChainColorTargets[i].handle);
     }
 
     if (swapChain->GetCurrentBackBufferIndex() == 0) {
@@ -374,7 +375,9 @@ Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
 }
 
 VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc) {
-    return nullptr;
+    UINT64 size = desc.size;
+    auto* vtxBuffer = new Direct3D12VertexBuffer(device, size);
+    return vtxBuffer;
 }
 
 bool Direct3D12Backend::doSwapBuffers() {

@@ -9,6 +9,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_resource.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_pipeline.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_vertex_buffer.h"
 
 namespace gfx {
 namespace direct3d12 {
@@ -77,12 +78,24 @@ void Direct3D12CommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F
 }
 
 void Direct3D12CommandBuffer::cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) {
+    list->DrawInstanced(vertexCount, instanceCount, firstVertex, firstInstance);
 }
 
 void Direct3D12CommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) {
+    list->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 }
 
 void Direct3D12CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) {
+    std::vector<D3D12_VERTEX_BUFFER_VIEW> vtxBufferView(vtxBufferCount);
+    for (UINT i = 0; i < vtxBufferCount; i++) {
+        auto* d3dVertexBuffer = static_cast<Direct3D12VertexBuffer*>(vtxBuffer[i]);
+        vtxBufferView[i].BufferLocation = d3dVertexBuffer->resource->GetGPUVirtualAddress();
+        vtxBufferView[i].StrideInBytes = strides[i];
+        vtxBufferView[i].SizeInBytes = 0xC; // TODO
+    }
+    UINT startSlot = index;
+    UINT numViews = vtxBufferCount;
+    list->IASetVertexBuffers(startSlot, numViews, vtxBufferView.data());
 }
 
 void Direct3D12CommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology) {
@@ -106,10 +119,10 @@ void Direct3D12CommandBuffer::cmdSetPrimitiveTopology(PrimitiveTopology topology
 }
 
 void Direct3D12CommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorTargets, DepthStencilTarget* depthStencilTarget) {
-    std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargets;
+    std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargets(colorCount);
     for (UINT i = 0; i < colorCount; i++) {
         auto* d3dColorTarget = static_cast<Direct3D12ColorTarget*>(colorTargets[i]);
-        renderTargets.push_back(d3dColorTarget->handle);
+        renderTargets[i] = d3dColorTarget->handle;
     }
     list->OMSetRenderTargets(colorCount, renderTargets.data(), FALSE, nullptr); // TODO
 }
