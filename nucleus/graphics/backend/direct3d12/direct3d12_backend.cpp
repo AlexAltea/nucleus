@@ -1,5 +1,5 @@
 /**
- * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * (c) 2014-2016 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -247,19 +247,18 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
 
     ID3DBlob* signature;
     ID3DBlob* error;
-    ID3D12RootSignature* rootSignature;
     _D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
 
-    hr = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
+    hr = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&pipeline->rootSignature));
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::createPipeline: CreateRootSignature failed (0x%X)", hr);
         return nullptr;
     }
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dDesc = {};
-    d3dDesc.pRootSignature = rootSignature;
+    d3dDesc.pRootSignature = pipeline->rootSignature;
     d3dDesc.NumRenderTargets = 1;
-    d3dDesc.RTVFormats[0] = DXGI_FORMAT_B8G8R8A8_UNORM;
+    d3dDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     d3dDesc.SampleDesc.Count = 1;
 
     // Shaders
@@ -295,7 +294,7 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
         DXGI_FORMAT format = convertFormat(element.format);
         D3D12_INPUT_CLASSIFICATION inputClassification = convertInputClassification(element.inputClassification);
         d3dInputElements.emplace_back(D3D12_INPUT_ELEMENT_DESC{
-            "TEXCOORD", element.semanticIndex, format, element.inputSlot, element.offset,
+            "INPUT", element.semanticIndex, format, element.inputSlot, element.offset,
             inputClassification, element.instanceStepRate
         });
     }
@@ -307,6 +306,10 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     d3dDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // TODO
     d3dDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // TODO
     d3dDesc.RasterizerState.DepthClipEnable = TRUE; // TODO
+
+    d3dDesc.SampleMask = UINT_MAX;
+    d3dDesc.DepthStencilState.DepthEnable = FALSE;
+    d3dDesc.DepthStencilState.StencilEnable = FALSE;
 
     // CB state
     d3dDesc.BlendState.AlphaToCoverageEnable = desc.cbState.enableAlphaToCoverage;

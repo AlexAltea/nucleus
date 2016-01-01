@@ -5,8 +5,7 @@
 
 #include "ui.h"
 #include "nucleus/core/config.h"
-#include "nucleus/ui/screens/screen_logo.h"
-
+#include "nucleus/ui/screens/list.h"
 
 namespace ui {
 
@@ -44,6 +43,7 @@ void UI::task() {
     pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_LIST;
     pipelineDesc.iaState.inputLayout = {
         { 0, gfx::FORMAT_R32G32B32A32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+        { 1, gfx::FORMAT_R32G32B32A32, 0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
     };
     pipelineDesc.cbState.colorTarget[0] = { true, false,
         gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
@@ -54,10 +54,15 @@ void UI::task() {
     gfx::Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
 
     // Initial screen
+#if defined(NUCLEUS_PLATFORM_UWP)
+    screens.push_back(std::make_unique<ScreenMain>(this));
+#else
     screens.push_back(std::make_unique<ScreenLogo>(this));
+#endif
 
     while (true) {
-        const gfx::Viewport viewport = { 0, 0, surfaceWidth, surfaceHeight };
+        const gfx::Viewport viewport = { 0, 0, 960, 544 /*surfaceWidth, surfaceHeight*/ };
+        const gfx::Rectangle scissor = { 0, 0, 960, 544 /*surfaceWidth, surfaceHeight*/ };
 
         cmdBuffer->reset();
         cmdBuffer->cmdBindPipeline(pipeline);
@@ -70,7 +75,8 @@ void UI::task() {
 
         cmdBuffer->cmdSetTargets(1, &graphics->screenBackTarget, nullptr);
         cmdBuffer->cmdSetViewports(1, &viewport);
-        //cmdBuffer->cmdClearColor(graphics->screenBackTarget, clearColor);
+        cmdBuffer->cmdSetScissors(1, &scissor);
+        cmdBuffer->cmdClearColor(graphics->screenBackTarget, clearColor);
 
         // Vertex buffer
         widgetVtxBuffer.clear();

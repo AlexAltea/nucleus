@@ -1,5 +1,5 @@
 /**
- * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * (c) 2014-2016 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
@@ -53,7 +53,7 @@ void Direct3D12CommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
         logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdBindPipeline: Invalid pipeline specified");
         return;
     }
-
+    list->SetGraphicsRootSignature(d3dPipeline->rootSignature);
     list->SetPipelineState(d3dPipeline->state);
 }
 
@@ -63,7 +63,6 @@ void Direct3D12CommandBuffer::cmdClearColor(ColorTarget* target, const F32* colo
         logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdClearColor: Invalid target specified");
         return;
     }
-
     list->ClearRenderTargetView(d3dTarget->handle, colorValue, 0, nullptr);
 }
 
