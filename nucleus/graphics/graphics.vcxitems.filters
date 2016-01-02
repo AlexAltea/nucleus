@@ -13,6 +13,15 @@
     <Filter Include="hir">
       <UniqueIdentifier>{7bff1ef5-f604-4242-8c2a-e0aec6cba531}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backend\vulkan">
+      <UniqueIdentifier>{24c448a2-a700-402a-911d-bc09e323996c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend">
+      <UniqueIdentifier>{e8ed3987-fff5-4bbf-8cf5-9bbd79b74340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend\opengl">
+      <UniqueIdentifier>{d6879cf1-cc5b-4f64-b6a9-349f9119146a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.cpp">
@@ -90,6 +99,15 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.cpp">
       <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.cpp">
+      <Filter>backend\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\opengl_shader_parser.cpp">
+      <Filter>frontend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\shader_parser.cpp">
+      <Filter>frontend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +231,18 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.h">
       <Filter>backend\direct3d12</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.h">
+      <Filter>backend\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\hir.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\opengl\opengl_shader_parser.h">
+      <Filter>frontend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\shader_parser.h">
+      <Filter>frontend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,9 @@
     <Filter Include="resources\languages">
       <UniqueIdentifier>{4a6981f6-5ac2-46e2-94f9-3ed33d5d489c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\shaders">
+      <UniqueIdentifier>{ddbfa608-0be3-4658-b863-bff446e600a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -50,6 +53,12 @@
   <ItemGroup>
     <None Include="nucleus-uwp_TemporaryKey.pfx" />
     <None Include="packages.config" />
+    <None Include="..\..\resources\shaders\ui_widget_vs.glsl">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="..\..\resources\shaders\ui_widget_ps.glsl">
+      <Filter>resources\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\resources\languages\en_US.xml">

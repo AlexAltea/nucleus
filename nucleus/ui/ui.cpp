@@ -1,10 +1,12 @@
 /**
- * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * (c) 2014-2016 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
 #include "ui.h"
 #include "nucleus/core/config.h"
+#include "nucleus/core/resource.h"
+#include "nucleus/graphics/frontend/shader_parser.h"
 #include "nucleus/ui/screens/list.h"
 
 namespace ui {
@@ -32,8 +34,12 @@ void UI::task() {
 
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
-    vertDesc.type = SHADER_TYPE_VERTEX;
-    fragDesc.type = SHADER_TYPE_PIXEL;
+    core::Resource resVS(core::RES_SHADER_UI_WIDGET_VS);
+    core::Resource resPS(core::RES_SHADER_UI_WIDGET_PS);
+    vertDesc.type = gfx::SHADER_TYPE_VERTEX;
+    vertDesc.module = gfx::frontend::ShaderParser::parse(reinterpret_cast<const char*>(resVS.data), resVS.size);
+    fragDesc.type = gfx::SHADER_TYPE_PIXEL;
+    fragDesc.module = gfx::frontend::ShaderParser::parse(reinterpret_cast<const char*>(resPS.data), resPS.size);
     auto* vertShader = graphics->createShader(vertDesc);
     auto* fragShader = graphics->createShader(fragDesc);
 
@@ -45,7 +51,8 @@ void UI::task() {
         { 0, gfx::FORMAT_R32G32B32A32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
         { 1, gfx::FORMAT_R32G32B32A32, 0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
     };
-    pipelineDesc.cbState.colorTarget[0] = { true, false,
+    pipelineDesc.cbState.colorTarget[0] = {
+        true, false,
         gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
         gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
         gfx::LOGIC_OP_NOOP,

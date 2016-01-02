@@ -5,18 +5,43 @@
 
 #pragma once
 
-#include "nucleus/common.h"
+#include "nucleus/graphics/hir/hir.h"
+
+#include <vector>
 
 namespace gfx {
 namespace hir {
 
-enum Type {
+/*enum Type {
     TYPE_VOID,
     TYPE_I16,
     TYPE_I32,
     TYPE_F16,
     TYPE_F32,
     TYPE_V128,
+};*/
+
+struct Type {
+    Literal id = 0;
+};
+
+struct TypeInt : Type {
+    Literal width;
+    Literal signedness;
+};
+
+struct TypeVector : Type {
+    Type* componentType;
+    Literal componentCount;
+};
+
+struct TypeStruct : Type {
+    std::vector<Type*> members;
+};
+
+struct TypeFunction : Type {
+    Type* returnType;
+    std::vector<Type*> parameterTypes;
 };
 
 }  // namespace hir

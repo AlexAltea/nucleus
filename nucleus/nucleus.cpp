@@ -70,10 +70,11 @@ int nucleusInitialize(int argc, char **argv) {
  * Events
  */
 void nucleusOnResize(unsigned int w, unsigned int h, unsigned int dpi, unsigned int hz) {
-    /*ui.surfaceWidth = w;
-    ui.surfaceHeight = h;
-    ui.surfaceDpi = dpi;
-    ui.surfaceHz = hz;
-    ui.surfaceProportion = float(w) / float(h);
-    ui.surfaceChanged = true;*/
+    if (nucleus.ui) {
+        nucleus.ui->surfaceWidth = w;
+        nucleus.ui->surfaceHeight = h;
+        nucleus.ui->surfaceDpi = dpi;
+        nucleus.ui->surfaceHz = hz;
+        nucleus.ui->surfaceProportion = float(w) / float(h);
+    }
 }

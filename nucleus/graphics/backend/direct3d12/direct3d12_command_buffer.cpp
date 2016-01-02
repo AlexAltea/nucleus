@@ -53,8 +53,8 @@ void Direct3D12CommandBuffer::cmdBindPipeline(Pipeline* pipeline) {
         logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdBindPipeline: Invalid pipeline specified");
         return;
     }
-    list->SetGraphicsRootSignature(d3dPipeline->rootSignature);
     list->SetPipelineState(d3dPipeline->state);
+    list->SetGraphicsRootSignature(d3dPipeline->rootSignature);
 }
 
 void Direct3D12CommandBuffer::cmdClearColor(ColorTarget* target, const F32* colorValue) {
@@ -90,7 +90,7 @@ void Direct3D12CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount,
         auto* d3dVertexBuffer = static_cast<Direct3D12VertexBuffer*>(vtxBuffer[i]);
         vtxBufferView[i].BufferLocation = d3dVertexBuffer->resource->GetGPUVirtualAddress();
         vtxBufferView[i].StrideInBytes = strides[i];
-        vtxBufferView[i].SizeInBytes = 0xC; // TODO
+        vtxBufferView[i].SizeInBytes = 3 * 0x20; // TODO
     }
     UINT startSlot = index;
     UINT numViews = vtxBufferCount;
