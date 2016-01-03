@@ -11,15 +11,4 @@
   <ItemGroup>
     <ResourceCompile Include="nucleus-windows.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\resources\icons\resource.bin" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\resources\icons\nucleus-opaque.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\..\resources\languages\de_DE.xml" />
-    <Xml Include="..\..\resources\languages\en_US.xml" />
-    <Xml Include="..\..\resources\languages\es_ES.xml" />
-  </ItemGroup>
 </Project>
