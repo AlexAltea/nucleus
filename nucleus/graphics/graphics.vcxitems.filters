@@ -109,6 +109,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\shader_parser.cpp">
       <Filter>frontend</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.tab.cpp">
+      <Filter>frontend\opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">
@@ -244,6 +247,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\shader_parser.h">
       <Filter>frontend</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.tab.hpp">
+      <Filter>frontend\opengl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl">
@@ -254,6 +260,9 @@
     </None>
     <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl">
       <Filter>hir</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.ypp">
+      <Filter>frontend\opengl</Filter>
     </None>
   </ItemGroup>
 </Project>

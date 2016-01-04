@@ -42,7 +42,7 @@ Resource::Resource(ResourceName name) {
     fread(data, size, 1, file);
 
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
-    HRSRC hRes = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(resourceMap[name]), "LANGUAGE");
+    HRSRC hRes = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(resourceMap[name]), "RESOURCE");
     HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRes);
     DWORD resSize = SizeofResource(GetModuleHandle(NULL), hRes);
     LPVOID resData = LockResource(hGlob);

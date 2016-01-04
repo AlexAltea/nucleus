@@ -1,0 +1,90 @@
+/**
+ * (c) 2014-2016 Alexandro Sanchez Bach. All rights reserved.
+ * Released under GPL v2 license. Read LICENSE for more details.
+ *
+ * Based on:
+ *  - GLSLang:
+ *    - 3Dlabs Inc. Ltd. (2002-2005)
+ *    - LunarG, Inc. (2012-2013)
+ *  - ANSI C Yacc grammar:
+ *    - Jeff Lee (1985)
+ *    - Jutta Degener (1995)
+ */
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace { gfx::frontend::opengl }
+%define parser_class_name { GLSLParser }
+
+%lex-param   { OpenGLShaderParser  &parser  }
+%parse-param { OpenGLShaderParser  &parser  }
+
+%code requires {
+	namespace gfx {
+    namespace frontend {
+    namespace opengl {
+
+    class OpenGLShaderParser;
+
+	}  // namespace opengl
+	}  // namespace frontend
+	}  // namespace gfx
+}
+
+%code{
+    #include <iostream>
+    #include <cstdlib>
+    #include <fstream>
+   
+    #include "opengl_shader_parser.h"
+  
+    namespace gfx {
+    namespace frontend {
+    namespace opengl {
+
+    extern int yylex(const GLSLParser::semantic_type* token, OpenGLShaderParser& parser);
+
+	}  // namespace opengl
+	}  // namespace frontend
+	}  // namespace gfx
+}
+
+// Bison declarations
+%union {
+   std::string *sval;
+}
+
+// Keywords
+%token <lex> ATTRIBUTE VARYING CONST
+%token <lex> WHILE BREAK CONTINUE DO ELSE FOR IF RETURN SWITCH CASE DEFAULT DISCARD SUBROUTINE
+%token <lex> STRUCT
+%token <lex> CENTROID IN OUT INOUT
+%token <lex> UNIFORM PATCH SAMPLE BUFFER SHARED
+%token <lex> COHERENT VOLATILE RESTRICT READONLY WRITEONLY
+%token <lex> NOPERSPECTIVE FLAT SMOOTH LAYOUT
+
+// Primitive types
+%token <lex> VOID BOOL INT UINT FLOAT DOUBLE
+%token <lex> BVEC2 BVEC3 BVEC4 IVEC2 IVEC3 IVEC4 UVEC2 UVEC3 UVEC4 VEC2 VEC3 VEC4 DVEC2 DVEC3 DVEC4
+%token <lex> MAT2 MAT3 MAT4 DMAT2 DMAT3 DMAT4
+%token <lex> MAT2X2 MAT2X3 MAT2X4 DMAT2X2 DMAT2X3 DMAT2X4
+%token <lex> MAT3X2 MAT3X3 MAT3X4 DMAT3X2 DMAT3X3 DMAT3X4
+%token <lex> MAT4X2 MAT4X3 MAT4X4 DMAT4X2 DMAT4X3 DMAT4X4
+%token <lex> ATOMIC_UINT
+
+%% // Grammar rules
+
+unary_operator
+	: '+'
+	| '-'
+	| '!'
+	| '~'
+	;
+
+%% // Additional C code
+
+void gfx::frontend::opengl::GLSLParser::error(const std::string &error) {
+	std::cerr << "Error: " << error << "\n";
+}

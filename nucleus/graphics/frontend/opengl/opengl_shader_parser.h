@@ -7,7 +7,7 @@
 
 #include "nucleus/common.h"
 
-#include <regex>
+//#include <regex>
 #include <string>
 #include <unordered_map>
 
@@ -31,13 +31,23 @@ namespace opengl {
  * the High-level Intermediate Representation of the given shader.
  */
 class OpenGLShaderParser {
-    static std::regex regexFloat;
+    static std::unordered_map<std::string, int> keywordMap;
+
+    /*static std::regex patAccepted;
+    static std::regex patIgnored;
+    static std::regex patSkip;
+    static std::regex patSymbol;
+    static std::regex patFloat;
+    static std::regex patInt;*/
+    static void initialize();
 
     // Preprocessor
     std::unordered_map<std::string, std::string> defines;
-    std::string preprocessedSource;
+    std::string preprocess(const std::string& source);
 
 public:
+    int nextToken();
+
     hir::Module* parse(const std::string& source);
 };
 
