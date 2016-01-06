@@ -23,5 +23,11 @@ namespace hir {
 
 using Literal = U32;
 
+enum StorageClass {
+    INPUT = 1,
+    UNIFORM = 2,
+    OUTPUT = 3,
+};
+
 }  // namespace hir
 }  // namespace gfx

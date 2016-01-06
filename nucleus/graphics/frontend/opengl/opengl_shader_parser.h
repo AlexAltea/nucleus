@@ -14,9 +14,12 @@
 // Forward declarations
 namespace gfx {
 namespace hir {
+
 class Block;
 class Function;
 class Module;
+class Type;
+
 }  // namespace hir
 }  // namespace gfx
 
@@ -40,6 +43,9 @@ class OpenGLShaderParser {
     static std::regex patFloat;
     static std::regex patInt;*/
     static void initialize();
+
+    // Types
+    static std::unordered_map<std::string, hir::Type*> types;
 
     // Preprocessor
     std::unordered_map<std::string, std::string> defines;
