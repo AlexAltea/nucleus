@@ -6,19 +6,19 @@
 #pragma once
 
 #include "nucleus/graphics/shader.h"
-#include "nucleus/graphics/backend/opengl/opengl.h"
-#include "nucleus/graphics/hir/type.h"
-#include "nucleus/graphics/hir/value.h"
+#include "nucleus/graphics/backend/vulkan/vulkan.h"
 
 #include <vector>
 
 // Forward declarations
 namespace gfx {
 namespace hir {
+
 class Instruction;
 class Block;
 class Function;
 class Module;
+
 }  // namespace hir
 }  // namespace gfx
 
@@ -26,7 +26,11 @@ namespace gfx {
 namespace vulkan {
 
 class VulkanShader : public Shader {
+    std::vector<U32> binary;
+
 public:
+
+    bool initialize(const ShaderDesc& desc);
 };
 
 }  // namespace vulkan

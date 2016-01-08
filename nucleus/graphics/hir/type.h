@@ -12,15 +12,6 @@
 namespace gfx {
 namespace hir {
 
-/*enum Type {
-    TYPE_VOID,
-    TYPE_I16,
-    TYPE_I32,
-    TYPE_F16,
-    TYPE_F32,
-    TYPE_V128,
-};*/
-
 struct Type {
     Literal id = 0;
 };
@@ -33,6 +24,11 @@ struct TypeInt : Type {
 struct TypeVector : Type {
     Type* componentType;
     Literal componentCount;
+};
+
+struct TypeMatrix : Type {
+    Type* columnType;
+    Literal columnCount;
 };
 
 struct TypeStruct : Type {

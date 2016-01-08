@@ -13,5 +13,13 @@ namespace vulkan {
 
 using namespace gfx::hir;
 
+bool VulkanShader::initialize(const ShaderDesc& desc) {
+    binary.insert(binary.end(), {
+        spv::MagicNumber,
+        spv::Version,
+        0, 0, 0,
+    });
+}
+
 }  // namespace vulkan
 }  // namespace gfx

@@ -4,6 +4,7 @@
  */
 
 #include "opengl_shader_parser.h"
+#include "nucleus/graphics/hir/builder.h"
 #include "nucleus/graphics/hir/module.h"
 #include "nucleus/graphics/frontend/opengl/glsl_parser.tab.hpp"
 
@@ -114,6 +115,34 @@ void OpenGLShaderParser::initialize() {
     initialized = true;
 }
 
+Type* OpenGLShaderParser::getOrInsertType(const std::string& typeName) {
+    // Reuse type if possible
+    Type* type;
+    if (types.find(typeName) != types.end()) {
+        return types.at(typeName);
+    }
+
+    // Basic types
+    if (typeName == "void") {
+        type = builder.opTypeVoid();
+    } else if (typeName == "bool") {
+        type = builder.opTypeBool();
+    } else if (typeName == "int") {
+        type = builder.opTypeInt(32, true);
+    } else if (typeName == "uint") {
+        type = builder.opTypeInt(32, false);
+    } else if (typeName == "float") {
+        type = builder.opTypeFloat(32);
+    } else if (typeName == "double") {
+        type = builder.opTypeFloat(64);
+    }
+
+    // Vector types
+    if (typeName.compare(0, 4, "bvec") {
+        type = builder.opTypeVector(32, true);
+    }
+}
+
 std::string OpenGLShaderParser::preprocess(const std::string& source) {
     // TODO: Pre-processor not supported
     return source;
@@ -124,6 +153,10 @@ int OpenGLShaderParser::nextToken() {
 }
 
 Module* OpenGLShaderParser::parse(const std::string& source) {
+    module = new Module();
+    builder.setModule(module);
+
+
     std::string code = preprocess(source);
     
     GLSLParser parser(*this);

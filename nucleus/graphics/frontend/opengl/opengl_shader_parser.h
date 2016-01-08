@@ -16,6 +16,7 @@ namespace gfx {
 namespace hir {
 
 class Block;
+class Builder;
 class Function;
 class Module;
 class Type;
@@ -34,6 +35,9 @@ namespace opengl {
  * the High-level Intermediate Representation of the given shader.
  */
 class OpenGLShaderParser {
+    hir::Builder builder;
+
+private:
     static std::unordered_map<std::string, int> keywordMap;
 
     /*static std::regex patAccepted;
@@ -44,8 +48,11 @@ class OpenGLShaderParser {
     static std::regex patInt;*/
     static void initialize();
 
+    hir::Module* module;
+
     // Types
     static std::unordered_map<std::string, hir::Type*> types;
+    hir::Type* getOrInsertType(const std::string& typeName);
 
     // Preprocessor
     std::unordered_map<std::string, std::string> defines;
