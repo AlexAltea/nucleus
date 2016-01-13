@@ -6,8 +6,9 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/graphics/hir/builder.h"
+#include "nucleus/graphics/hir/hir.h"
 
-//#include <regex>
 #include <string>
 #include <unordered_map>
 
@@ -16,10 +17,8 @@ namespace gfx {
 namespace hir {
 
 class Block;
-class Builder;
 class Function;
 class Module;
-class Type;
 
 }  // namespace hir
 }  // namespace gfx
@@ -38,21 +37,11 @@ class OpenGLShaderParser {
     hir::Builder builder;
 
 private:
-    static std::unordered_map<std::string, int> keywordMap;
-
-    /*static std::regex patAccepted;
-    static std::regex patIgnored;
-    static std::regex patSkip;
-    static std::regex patSymbol;
-    static std::regex patFloat;
-    static std::regex patInt;*/
-    static void initialize();
-
     hir::Module* module;
 
     // Types
-    static std::unordered_map<std::string, hir::Type*> types;
-    hir::Type* getOrInsertType(const std::string& typeName);
+    static std::unordered_map<std::string, hir::Literal> types;
+    hir::Literal getOrInsertType(const std::string& typeName);
 
     // Preprocessor
     std::unordered_map<std::string, std::string> defines;

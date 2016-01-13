@@ -3,7 +3,7 @@ Building
 
 ## General
 
-If you want to modify the shader parsers of the graphics library frontends you will need to modify the `*.ypp` files and compile them back to `*.cpp` files with [Bison](https://www.gnu.org/software/bison/).
+If you want to modify the shader parsers of the graphics library frontends you will need to modify the `*.l` and `*.y` files and compile them back to the `*.cpp` files with [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/) respectively.
 
 
 ## Platforms

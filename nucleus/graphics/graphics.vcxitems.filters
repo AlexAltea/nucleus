@@ -73,12 +73,6 @@
       <Filter>backend\opengl</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)graphics.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\opcodes.cpp">
-      <Filter>hir</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\value.cpp">
-      <Filter>hir</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp">
       <Filter>hir</Filter>
     </ClCompile>
@@ -109,7 +103,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\shader_parser.cpp">
       <Filter>frontend</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.tab.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.cpp">
+      <Filter>backend\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y.cpp">
+      <Filter>frontend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.l.cpp">
       <Filter>frontend\opengl</Filter>
     </ClCompile>
   </ItemGroup>
@@ -208,15 +208,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h">
       <Filter>hir</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\opcodes.h">
-      <Filter>hir</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\type.h">
-      <Filter>hir</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\value.h">
-      <Filter>hir</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h">
       <Filter>hir</Filter>
     </ClInclude>
@@ -247,7 +238,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\shader_parser.h">
       <Filter>frontend</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.tab.hpp">
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.h">
+      <Filter>backend\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y.hpp">
       <Filter>frontend\opengl</Filter>
     </ClInclude>
   </ItemGroup>
@@ -258,10 +252,10 @@
     <None Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.inl">
       <Filter>backend\opengl</Filter>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl">
-      <Filter>hir</Filter>
+    <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y">
+      <Filter>frontend\opengl</Filter>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.ypp">
+    <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.l">
       <Filter>frontend\opengl</Filter>
     </None>
   </ItemGroup>

@@ -11,49 +11,53 @@
  *    - Jutta Degener (1995)
  */
 
-%skeleton "lalr1.cc"
+%output   "glsl_parser.y.cpp"
 %require  "3.0"
 %debug 
-%defines 
-%define api.namespace { gfx::frontend::opengl }
-%define parser_class_name { GLSLParser }
+%defines
 
-%lex-param   { OpenGLShaderParser  &parser  }
-%parse-param { OpenGLShaderParser  &parser  }
+%lex-param   { gfx::frontend::opengl::OpenGLShaderParser  &parser  }
+%parse-param { gfx::frontend::opengl::OpenGLShaderParser  &parser  }
 
+%{
+#include "nucleus/common.h"
+#include "nucleus/graphics/frontend/opengl/opengl_shader_parser.h"
+
+#include <iostream>
+#include <cstdlib>
+#include <fstream>
+
+extern int yylex(gfx::frontend::opengl::OpenGLShaderParser& parser);
+void yyerror(gfx::frontend::opengl::OpenGLShaderParser& parser, const std::string &error);
+%}
+
+// Bison dependencies
 %code requires {
-    namespace gfx {
-    namespace frontend {
-    namespace opengl {
+	#include <string>
 
-    class OpenGLShaderParser;
+	namespace gfx {
+	namespace frontend {
+	namespace opengl {
 
-    }  // namespace opengl
-    }  // namespace frontend
-    }  // namespace gfx
-}
+	class OpenGLShaderParser;
 
-%code {
-    #include <iostream>
-    #include <cstdlib>
-    #include <fstream>
-   
-    #include "opengl_shader_parser.h"
-  
-    namespace gfx {
-    namespace frontend {
-    namespace opengl {
-
-    extern int yylex(const GLSLParser::semantic_type* token, OpenGLShaderParser& parser);
-
-    }  // namespace opengl
-    }  // namespace frontend
-    }  // namespace gfx
+	}  // namespace opengl
+	}  // namespace frontend
+	}  // namespace gfx
 }
 
 // Bison declarations
 %union {
-   std::string *sval;
+	union {
+		bool b;
+		int i;
+		unsigned int u;
+		float f;
+		double d;
+	} lex;
+	union {
+		int test;
+	} interm;
 }
 
 // Symbols
@@ -82,7 +86,7 @@
 %token <lex> BOOLCONSTANT INTCONSTANT UINTCONSTANT FLOATCONSTANT DOUBLECONSTANT
 
 %% // Grammar rules
-
+/*
 variable_identifier
     : IDENTIFIER {
         $$ = parseContext.handleVariable($1.loc, $1.symbol, $1.string);
@@ -538,7 +542,7 @@ constant_expression
 
 declaration
     : function_prototype SEMICOLON {
-        parseContext.handleFunctionDeclarator($1.loc, *$1.function, true /* prototype */);
+        parseContext.handleFunctionDeclarator($1.loc, *$1.function, true /* prototype *//*);
         $$ = 0;
         // TODO: 4.0 functionality: subroutines: make the identifier a user type for this signature
     }
@@ -907,16 +911,20 @@ single_type_qualifier
     | precision_qualifier
     | storage_qualifier
     ;
-
+*/
 unary_operator
     : PLUS
     | DASH
     | BANG
     | TILDE
     ;
-
+	
 %% // Additional C code
 
-void gfx::frontend::opengl::GLSLParser::error(const std::string &error) {
+void yyerror(const std::string &error) {
     std::cerr << "Error: " << error << "\n";
 }
+
+}  // namespace opengl
+}  // namespace frontend
+}  // namespace gfx
