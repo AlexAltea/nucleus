@@ -9,32 +9,6 @@
 namespace gfx {
 namespace hir {
 
-bool Module::setInputs(std::vector<Type> inputTypes) {
-    S32 index = 0;
-    inputs.clear();
-    for (auto& type : inputTypes) {
-        auto* value = new Value();
-        value->flags |= VALUE_IS_INPUT;
-        value->type = type;
-        value->setId(index++);
-        inputs.push_back(value);
-    }
-    return true;
-}
-
-bool Module::setOutputs(std::vector<Type> outputTypes) {
-    S32 index = 0;
-    outputs.clear();
-    for (auto& type : outputTypes) {
-        auto* value = new Value();
-        value->flags |= VALUE_IS_OUTPUT;
-        value->type = type;
-        value->setId(index++);
-        outputs.push_back(value);
-    }
-    return true;
-}
-
 bool Module::addFunction(Function* function) {
     functions.push_back(function);
     return true;

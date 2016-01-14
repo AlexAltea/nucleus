@@ -6,9 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/graphics/hir/instruction.h"
-#include "nucleus/graphics/hir/type.h"
-#include "nucleus/graphics/hir/value.h"
+#include "nucleus/graphics/hir/hir.h"
 
 #include <list>
 #include <vector>
@@ -17,48 +15,37 @@ namespace gfx {
 namespace hir {
 
 // Forward declarations
+class Instruction;
 class Block;
-class Value;
+class Module;
 
 class Builder {
+    Module* module;
     Block* ib;
     std::list<Instruction*>::iterator ip;
 
+    // HIR instruction generation
+    Instruction* appendInstr(Opcode opcode, bool hasResultId);
+
 public:
-    /**
-     * HIR insertion
-     */
+    // Insertion
+    void setModule(Module* module);
     void setInsertPoint(Block* block);
     void setInsertPoint(Block* block, std::list<Instruction*>::iterator ip);
 
-    // HIR values
-    Value* allocValue(Type type);
-    Value* cloneValue(Value* source);
+    // HIR types
+    Literal opTypeVoid();
+    Literal opTypeBool();
+    Literal opTypeInt(Literal width, bool signedness);
+    Literal opTypeFloat(Literal width);
+    Literal opTypeVector(Literal componentType, Literal componentCount);
+    Literal opTypeMatrix(Literal columnType, Literal columnCount);
 
-    // HIR constants
-    Value* getConstantI16(U16 c);
-    Value* getConstantI32(U32 c);
-    Value* getConstantF16(F32 c); // TODO
-    Value* getConstantF32(F32 c);
-    Value* getConstantV128(V128 c);
-
-    // HIR builtins
-    Value* getBuiltinValue(ValueBuiltin builtin);
-
-    /**
-     * HIR instruction generation
-     */
-    Instruction* appendInstr(Opcode opcode, OpcodeFlags flags, Value* dest = nullptr);
-
-    // Arithmetic operations
-    Value* createAdd(Value* lhs, Value* rhs, VectorFlags flags);
-    Value* createSub(Value* lhs, Value* rhs, VectorFlags flags);
-    Value* createMul(Value* lhs, Value* rhs, VectorFlags flags);
-    Value* createDiv(Value* lhs, Value* rhs, VectorFlags flags);
-
-    // Variable operations
-    Value* createLoad(Value* variable);
-    void createStore(Value* variable, Value* value);
+    // HIR operations
+    Literal opIAdd(Literal lhs, Literal rhs);
+    Literal opISub(Literal lhs, Literal rhs);
+    Literal opIMul(Literal lhs, Literal rhs);
+    Literal opIDiv(Literal lhs, Literal rhs);
 };
 
 }  // namespace hir

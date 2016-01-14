@@ -33,6 +33,7 @@
  */
 
 #include "nucleus/common.h"
+#include "nucleus/assert.h"
 #include "nucleus/graphics/frontend/opengl/glsl_parser.y.hpp"
 
 // Ignore errors in auto-generated code
@@ -51,14 +52,9 @@
 #pragma warning(disable: 4701)
 #pragma warning(disable: 4702)
 #endif
-
 }
 
 %{
-	namespace gfx {
-	namespace frontend {
-	namespace opengl {
-
 	struct YYLTYPE {
         int first_file;
         int first_line;
@@ -83,10 +79,10 @@
 	static yy_size_t string_input(char* buf, yy_size_t max_size, yyscan_t yyscanner);
 	static int check_type(yyscan_t yyscanner);
 	static int reserved_word(yyscan_t yyscanner);
-	static int uint_constant();
-	static int int_constant();
+	static int uint_constant(void* context);
+	static int int_constant(void* context);
 	static int float_constant(yyscan_t yyscanner);
-	static int floatsuffix_check();
+	static int floatsuffix_check(void* context);
 %}
 
 %x FIELDS
@@ -100,20 +96,22 @@ O           [0-7]
 %%
 
 %{
-    //TParseContext* context = yyextra;
+    void* context = yyextra;
 %}
 
-"invariant"    { return INVARIANT; }
-"highp"        { return HIGH_PRECISION; }
-"mediump"      { return MEDIUM_PRECISION; }
-"lowp"         { return LOW_PRECISION; }
-"precision"    { return PRECISION; }
-
+"in"           { return IN; }
+"out"          { return OUT; }
+"inout"        { return INOUT; }
 "attribute"    { return ATTRIBUTE; }
-"const"        { return CONST_QUAL; }
 "uniform"      { return UNIFORM; }
 "varying"      { return VARYING; }
+"centroid"     { return CENTROID; }
+"flat"         { return FLAT; }
+"smooth"       { return SMOOTH; }
+"discard"      { return DISCARD; }
+"layout"       { return LAYOUT; }
 
+"const"        { return CONST; }
 "break"        { return BREAK; }
 "continue"     { return CONTINUE; }
 "do"           { return DO; }
@@ -125,25 +123,15 @@ O           [0-7]
 "case"         { return CASE; }
 "default"      { return DEFAULT; }
 "struct"       { return STRUCT; }
+"return"       { return RETURN; }
 
-"centroid"     { return CENTROID; }
-"flat"         { return FLAT; }
-"smooth"       { return SMOOTH; }
-
-"in"           { return IN_QUAL; }
-"out"          { return OUT_QUAL; }
-"inout"        { return INOUT_QUAL; }
-
-"float"        { return FLOAT_TYPE; }
-"int"          { return INT_TYPE; }
-"uint"         { return UINT_TYPE; }
-"void"         { return VOID_TYPE; }
-"bool"         { return BOOL_TYPE; }
+"float"        { return FLOAT; }
+"int"          { return INT; }
+"uint"         { return UINT; }
+"void"         { return VOID; }
+"bool"         { return BOOL; }
 "true"         { yylval->lex.b = true;  return BOOLCONSTANT; }
 "false"        { yylval->lex.b = false; return BOOLCONSTANT; }
-
-"discard"      { return DISCARD; }
-"return"       { return RETURN; }
 
 "bvec2"        { return BVEC2; }
 "bvec3"        { return BVEC3; }
@@ -164,25 +152,23 @@ O           [0-7]
 "mat2"         { return MAT2; }
 "mat3"         { return MAT3; }
 "mat4"         { return MAT4; }
-"mat2x2"       { return MAT2x2; }
-"mat2x3"       { return MAT2x3; }
-"mat2x4"       { return MAT2x4; }
-"mat3x2"       { return MAT3x2; }
-"mat3x3"       { return MAT3x3; }
-"mat3x4"       { return MAT3x4; }
-"mat4x2"       { return MAT4x2; }
-"mat4x3"       { return MAT4x3; }
-"mat4x4"       { return MAT4x4; }
-
-"layout"  { return LAYOUT; }
+"mat2x2"       { return MAT2X2; }
+"mat2x3"       { return MAT2X3; }
+"mat2x4"       { return MAT2X4; }
+"mat3x2"       { return MAT3X2; }
+"mat3x3"       { return MAT3X3; }
+"mat3x4"       { return MAT3X4; }
+"mat4x2"       { return MAT4X2; }
+"mat4x3"       { return MAT4X3; }
+"mat4x4"       { return MAT4X4; }
 
     /* Reserved keywords in GLSL ES 1.00 that are not reserved in GLSL ES 3.00 */
 "packed"  {
-    if (context->getShaderVersion() >= 300)
+    /*if (context->getShaderVersion() >= 300)
     {
         yylval->lex.string = NewPoolTString(yytext);
         return check_type(yyscanner);
-    }
+    }*/
 
     return reserved_word(yyscanner);
 }
@@ -237,7 +223,7 @@ O           [0-7]
 "using"        { return reserved_word(yyscanner); }
 
 {L}({L}|{D})*       {
-   yylval->lex.string = NewPoolTString(yytext); 
+   //yylval->lex.string = NewPoolTString(yytext); 
    return check_type(yyscanner);
 }
 
@@ -304,21 +290,16 @@ O           [0-7]
 "&"             { return AMPERSAND; }
 "?"             { return QUESTION; }
 
-<FIELDS>{L}({L}|{D})* {
-    BEGIN(INITIAL);
-    yylval->lex.string = NewPoolTString(yytext);
-    return FIELD_SELECTION;
-}
 <FIELDS>[ \t\v\f\r] {}
 
 [ \t\v\n\f\r] { }
 <*><<EOF>>    { yyterminate(); }
-<*>.          { assert(false); return 0; }
+<*>.          { assert_always("Unexpected byte sequence"); return 0; }
 
 %%
 
 yy_size_t string_input(char* buf, yy_size_t max_size, yyscan_t yyscanner) {
-    pp::Token token;
+    /*pp::Token token;
     yyget_extra(yyscanner)->getPreprocessor().lex(&token);
     yy_size_t len = token.type == pp::Token::LAST ? 0 : token.text.size();
     if (len < max_size)
@@ -330,35 +311,35 @@ yy_size_t string_input(char* buf, yy_size_t max_size, yyscan_t yyscanner) {
         YY_FATAL_ERROR("Input buffer overflow");
     else if (len > 0)
         buf[len++] = ' ';
-    return len;
+    return len;*/return 0;
 }
 
 int check_type(yyscan_t yyscanner) {
     struct yyguts_t* yyg = (struct yyguts_t*) yyscanner;
     
     int token = IDENTIFIER;
-    TSymbol* symbol = yyextra->symbolTable.find(yytext, yyextra->getShaderVersion());
+    /*TSymbol* symbol = yyextra->symbolTable.find(yytext, yyextra->getShaderVersion());
     if (symbol && symbol->isVariable()) {
         TVariable* variable = static_cast<TVariable*>(symbol);
         if (variable->isUserType()) {
             token = TYPE_NAME;
         }
     }
-    yylval->lex.symbol = symbol;
+    yylval->lex.symbol = symbol;*/
     return token;
 }
 
 int reserved_word(yyscan_t yyscanner) {
     struct yyguts_t* yyg = (struct yyguts_t*) yyscanner;
 
-    yyextra->error(*yylloc, "Illegal use of reserved word", yytext, "");
-    yyextra->recover();
+    /*yyextra->error(*yylloc, "Illegal use of reserved word", yytext, "");
+    yyextra->recover();*/
     return 0;
 }
 
-int uint_constant(TParseContext *context)
+int uint_constant(void *context)
 {
-    struct yyguts_t* yyg = (struct yyguts_t*) context->getScanner();
+    /*struct yyguts_t* yyg = (struct yyguts_t*) context->getScanner();
 
     if (context->getShaderVersion() < 300)
     {
@@ -368,14 +349,14 @@ int uint_constant(TParseContext *context)
     }
 
     if (!atoi_clamp(yytext, &(yylval->lex.u)))
-        yyextra->error(*yylloc, "Integer overflow", yytext, "");
+        yyextra->error(*yylloc, "Integer overflow", yytext, "");*/
 
     return UINTCONSTANT;
 }
 
-int floatsuffix_check(TParseContext* context)
+int floatsuffix_check(void* context)
 {
-    struct yyguts_t* yyg = (struct yyguts_t*) context->getScanner();
+    /*struct yyguts_t* yyg = (struct yyguts_t*) context->getScanner();
 
     if (context->getShaderVersion() < 300)
     {
@@ -387,19 +368,19 @@ int floatsuffix_check(TParseContext* context)
     std::string text = yytext;
     text.resize(text.size() - 1);
     if (!strtof_clamp(text, &(yylval->lex.f)))
-        yyextra->warning(*yylloc, "Float overflow", yytext, "");
+        yyextra->warning(*yylloc, "Float overflow", yytext, "");*/
 
     return(FLOATCONSTANT);
 }
 
-void yyerror(YYLTYPE* lloc, TParseContext* context, void *scanner, const char* reason) {
-    context->error(*lloc, reason, yyget_text(scanner));
-    context->recover();
+void yyerror(YYLTYPE* lloc, void* context, void *scanner, const char* reason) {
+    /*context->error(*lloc, reason, yyget_text(scanner));
+    context->recover();*/
 }
 
-int int_constant(TParseContext *context) {
-    struct yyguts_t* yyg = (struct yyguts_t*) context->getScanner();
-
+int int_constant(void *context) {
+    /*struct yyguts_t* yyg = (struct yyguts_t*) context->getScanner();
+	
     unsigned int u;
     if (!atoi_clamp(yytext, &u))
     {
@@ -408,40 +389,39 @@ int int_constant(TParseContext *context) {
         else
             yyextra->warning(*yylloc, "Integer overflow", yytext, "");
     }
-    yylval->lex.i = static_cast<int>(u);
+    yylval->lex.i = static_cast<int>(u);*/
     return INTCONSTANT;
 }
 
 int float_constant(yyscan_t yyscanner) {
-    struct yyguts_t* yyg = (struct yyguts_t*) yyscanner;
+    /*struct yyguts_t* yyg = (struct yyguts_t*) yyscanner;
 
     if (!strtof_clamp(yytext, &(yylval->lex.f)))
-        yyextra->warning(*yylloc, "Float overflow", yytext, "");
+        yyextra->warning(*yylloc, "Float overflow", yytext, "");*/
     return FLOATCONSTANT;
 }
 
-int glslang_initialize(TParseContext* context) {
-    yyscan_t scanner = NULL;
+int glslang_initialize(void* context) {
+    /*yyscan_t scanner = NULL;
     if (yylex_init_extra(context, &scanner))
         return 1;
-
-    context->setScanner(scanner);
+	*/
+    //context->setScanner(scanner);
     return 0;
 }
 
-int glslang_finalize(TParseContext* context) {
-    yyscan_t scanner = context->getScanner();
+int glslang_finalize(void* context) {
+    /*yyscan_t scanner = context->getScanner();
     if (scanner == NULL) return 0;
     
     context->setScanner(NULL);
     yylex_destroy(scanner);
-
+	*/
     return 0;
 }
 
-int glslang_scan(size_t count, const char* const string[], const int length[],
-                 TParseContext* context) {
-    yyrestart(NULL, context->getScanner());
+int glslang_scan(size_t count, const char* const string[], const int length[], void* context) {
+    /*yyrestart(NULL, context->getScanner());
     yyset_column(0, context->getScanner());
     yyset_lineno(1, context->getScanner());
 
@@ -461,10 +441,6 @@ int glslang_scan(size_t count, const char* const string[], const int length[],
         preprocessor->predefineMacro("GL_FRAGMENT_PRECISION_HIGH", 1);
 
     preprocessor->setMaxTokenSize(GetGlobalMaxTokenSize(context->getShaderSpec()));
-
+	*/
     return 0;
 }
-
-}  // namespace opengl
-}  // namespace frontend
-}  // namespace gfx

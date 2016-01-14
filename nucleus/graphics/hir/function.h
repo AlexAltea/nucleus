@@ -6,8 +6,6 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/graphics/hir/type.h"
-#include "nucleus/graphics/hir/value.h"
 
 #include <vector>
 
@@ -27,27 +25,19 @@ enum FunctionFlags {
 };
 
 class Function {
-    using TypeOut = Type;
-    using TypeIn = std::vector<Type>;
-
     // Value ID used in human-readable HIR representations
     S32 id = -1;
 
 public:
     std::vector<Block*> blocks;
-    std::vector<Value*> args;
 
     Module* parent;
 
     // Function flags
     U32 flags;
 
-    // Return and argument types
-    TypeOut typeOut;
-    TypeIn typeIn;
-
     // Constructor
-    Function(Module* parent, TypeOut tOut, TypeIn tIn = {});
+    Function(Module* parent);
     ~Function();
 
     // Get ID of this function (dumping related)

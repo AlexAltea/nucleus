@@ -35,7 +35,7 @@ std::string Block::dump() {
     output += "  b" + std::to_string(getId());
     output += (flags & BLOCK_IS_ENTRY) ? " (entry):\n" : ":\n";
     for (const auto& instruction : instructions) {
-        output += instruction->dump();
+        //output += instruction->dump();
     }
     return output;
 }

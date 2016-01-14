@@ -29,5 +29,21 @@ enum StorageClass {
     OUTPUT = 3,
 };
 
+enum Opcode {
+    OP_TYPE_VOID = 19,
+    OP_TYPE_BOOL = 20,
+    OP_TYPE_INT = 21,
+    OP_TYPE_FLOAT = 22,
+    OP_TYPE_VECTOR = 23,
+    OP_TYPE_MATRIX = 24,
+    OP_TYPE_IMAGE = 25,
+    OP_TYPE_SAMPLER = 26,
+    OP_TYPE_SAMPLED_IMAGE = 27,
+    OP_TYPE_ARRAY = 28,
+    OP_TYPE_STRUCT = 30,
+    OP_TYPE_POINTER = 32,
+    OP_TYPE_FUNCTION = 33,
+};
+
 }  // namespace hir
 }  // namespace gfx

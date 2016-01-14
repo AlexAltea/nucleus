@@ -28,6 +28,8 @@ namespace vulkan {
 class VulkanShader : public Shader {
     std::vector<U32> binary;
 
+    void dump(const hir::Instruction& i);
+
 public:
 
     bool initialize(const ShaderDesc& desc);

@@ -11,13 +11,13 @@
 
 using namespace gfx::hir;
 
+int yylex(gfx::frontend::opengl::OpenGLShaderParser& parser) {
+    return 0;
+}
+
 namespace gfx {
 namespace frontend {
 namespace opengl {
-
-int yylex(const YYSTYPE* token, OpenGLShaderParser& parser) {
-    return parser.nextToken();
-}
 
 Literal OpenGLShaderParser::getOrInsertType(const std::string& typeName) {
     // Reuse type if possible

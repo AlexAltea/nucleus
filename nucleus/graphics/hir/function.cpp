@@ -10,20 +10,10 @@
 namespace gfx {
 namespace hir {
 
-Function::Function(Module* parent, TypeOut tOut, TypeIn tIn)
-    : parent(parent), typeOut(tOut), typeIn(tIn), flags(0)  {
+Function::Function(Module* parent)
+    : parent(parent), flags(0)  {
     // Set flags
     flags |= FUNCTION_IS_DECLARED;
-
-    // Set arguments
-    S32 index = 0;
-    for (auto& type : tIn) {
-        auto* value = new Value();
-        value->flags |= VALUE_IS_ARGUMENT;
-        value->type = type;
-        value->setId(index++);
-        args.push_back(value);
-    }
 
     // Add function to parent module
     parent->addFunction(this);
@@ -36,9 +26,6 @@ Function::~Function() {
 }
 
 S32 Function::getId() {
-    if (id < 0) {
-        id = parent->functionIdCounter++;
-    }
     return id;
 }
 

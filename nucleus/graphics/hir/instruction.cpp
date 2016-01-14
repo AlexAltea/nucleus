@@ -4,7 +4,6 @@
  */
 
 #include "instruction.h"
-#include "nucleus/graphics/hir/block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/assert.h"
 #include "nucleus/format.h"
@@ -14,78 +13,7 @@
 namespace gfx {
 namespace hir {
 
-std::string Instruction::Operand::dump(U8 sigType) const {
-    std::string output;
-    if (sigType == OPCODE_SIG_TYPE_V || (sigType == OPCODE_SIG_TYPE_M && value != nullptr)) {
-        if (value->isConstant()) {
-            switch (value->type) {
-            case TYPE_I16:  output = format("0x%X", value->constant.i16);   break;
-            case TYPE_I32:  output = format("0x%X", value->constant.i32);   break;
-            case TYPE_F32:  output = format("%f", value->constant.f32);     break;
-            default:
-                assert_always("Unimplemented case");
-            }
-        } else {
-            switch (value->type) {
-            case TYPE_I16:  output = "v" + std::to_string(value->getId()) + ".i16";  break;
-            case TYPE_I32:  output = "v" + std::to_string(value->getId()) + ".i32";  break;
-            case TYPE_F16:  output = "v" + std::to_string(value->getId()) + ".f16";  break;
-            case TYPE_F32:  output = "v" + std::to_string(value->getId()) + ".f32";  break;
-            case TYPE_V128: output = "v" + std::to_string(value->getId()) + ".v128"; break;
-            default:
-                assert_always("Unimplemented case");
-            }
-        }
-    }
-    if (sigType == OPCODE_SIG_TYPE_I) {
-        output = std::to_string(immediate);
-    }
-    if (sigType == OPCODE_SIG_TYPE_B) {
-        output = "b" + std::to_string(block->getId());
-    }
-    if (sigType == OPCODE_SIG_TYPE_F) {
-        output = "f" + std::to_string(function->getId());
-    }
-    return output;
-}
 
-std::string Instruction::dump() const {
-    std::string output;
-    const auto& opInfo = opcodeInfo[opcode];
-
-    // Destination
-    auto sigTypeDest = opInfo.getSignatureDest();
-    if (opInfo.getSignatureDest() == OPCODE_SIG_TYPE_V || (opInfo.getSignatureDest() == OPCODE_SIG_TYPE_M && dest != nullptr)) {
-        output += "    v" + std::to_string(dest->getId()) + " = ";
-    } else {
-        output += "    ";
-    }
-
-    // Opcode name
-    output += opInfo.name;
-
-    // Flags
-    if (flags != 0) {
-        output += " TODO";
-    }
-
-    // Sources
-    auto sigTypeSrc1 = opInfo.getSignatureSrc1();
-    if (sigTypeSrc1 == OPCODE_SIG_TYPE_I || src1.value != nullptr) {
-        output += " " + src1.dump(sigTypeSrc1);
-    }
-    auto sigTypeSrc2 = opInfo.getSignatureSrc2();
-    if (sigTypeSrc2 == OPCODE_SIG_TYPE_I || src2.value != nullptr) {
-        output += ", " + src2.dump(sigTypeSrc2);
-    }
-    auto sigTypeSrc3 = opInfo.getSignatureSrc3();
-    if (sigTypeSrc3 == OPCODE_SIG_TYPE_I || src3.value != nullptr) {
-        output += ", " + src3.dump(sigTypeSrc3);
-    }
-
-    output += ";\n";
-    return output;
-}
 
 }  // namespace hir
 }  // namespace gfx

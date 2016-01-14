@@ -40,7 +40,7 @@ private:
     hir::Module* module;
 
     // Types
-    static std::unordered_map<std::string, hir::Literal> types;
+    std::unordered_map<std::string, hir::Literal> types;
     hir::Literal getOrInsertType(const std::string& typeName);
 
     // Preprocessor

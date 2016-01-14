@@ -7,20 +7,32 @@
 #include "nucleus/graphics/hir/block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/graphics/hir/instruction.h"
+#include "nucleus/graphics/hir/module.h"
 #include "nucleus/assert.h"
-
-#define ASSERT_TYPE_EQUAL(value1, value2) \
-    assert_true(value1->type == value2->type)
-
-#define ASSERT_TYPE_INTEGER(value) \
-    assert_true(value->isTypeInteger())
-#define ASSERT_TYPE_FLOAT(value) \
-    assert_true(value->isTypeFloat())
-#define ASSERT_TYPE_VECTOR(value) \
-    assert_true(value->isTypeVector())
 
 namespace gfx {
 namespace hir {
+
+// HIR instruction generation
+Instruction* Builder::appendInstr(Opcode opcode, bool hasResultId) {
+    Instruction* instr = new Instruction();
+    instr->opcode = opcode;
+    instr->typeId = 0;
+
+    if (hasResultId) {
+        Literal resultId = module->instructions.size();
+        module->instructions.push_back(instr);
+        instr->resultId = resultId;
+    } else {
+        instr->resultId = 0;
+    }
+    return instr;
+}
+
+// Insertion
+void Builder::setModule(Module* m) {
+    module = m;
+}
 
 void Builder::setInsertPoint(Block* block) {
     ib = block;
@@ -32,117 +44,37 @@ void Builder::setInsertPoint(Block* block, std::list<Instruction*>::iterator ins
     ip = insertPoint;
 }
 
-// HIR values
-Value* Builder::allocValue(Type type) {
-    Value* value = new Value();
-    value->type = type;
-    value->flags = 0;
-    value->usage = 0;
-    return value;
+// HIR types
+Literal Builder::opTypeVoid() {
+    Instruction* i = appendInstr(OP_TYPE_VOID, true);
+    return i->resultId;
 }
-
-Value* Builder::cloneValue(Value* source) {
-    assert_true(source->isConstant(), "Builder only supports cloning constants");
-
-    Value* value = new Value();
-    value->type = source->type;
-    value->flags = source->flags;
-
-    if (source->isConstant()) {
-        switch (source->type) {
-        case TYPE_I16: value->constant.i16 = source->constant.i16; break;
-        case TYPE_I32: value->constant.i32 = source->constant.i32; break;
-        case TYPE_F16: value->constant.f16 = source->constant.f16; break;
-        case TYPE_F32: value->constant.f32 = source->constant.f32; break;
-        }
-    }
-    return value;
+Literal Builder::opTypeBool() {
+    Instruction* i = appendInstr(OP_TYPE_BOOL, true);
+    return i->resultId;
 }
-
-// HIR constants
-Value* Builder::getConstantI16(U16 c) {
-    Value* value = allocValue(TYPE_I16);
-    value->setConstantI16(c);
-    return value;
+Literal Builder::opTypeInt(Literal width, bool signedness) {
+    Instruction* i = appendInstr(OP_TYPE_INT, true);
+    i->operands.push_back(width);
+    i->operands.push_back(signedness);
+    return i->resultId;
 }
-Value* Builder::getConstantI32(U32 c) {
-    Value* value = allocValue(TYPE_I32);
-    value->setConstantI32(c);
-    return value;
+Literal Builder::opTypeFloat(Literal width) {
+    Instruction* i = appendInstr(OP_TYPE_FLOAT, true);
+    i->operands.push_back(width);
+    return i->resultId;
 }
-Value* Builder::getConstantF16(F32 c) {
-    // TODO
-    return nullptr;
+Literal Builder::opTypeVector(Literal componentType, Literal componentCount) {
+    Instruction* i = appendInstr(OP_TYPE_VECTOR, true);
+    i->operands.push_back(componentType);
+    i->operands.push_back(componentCount);
+    return i->resultId;
 }
-Value* Builder::getConstantF32(F32 c) {
-    Value* value = allocValue(TYPE_F32);
-    value->setConstantF32(c);
-    return value;
-}
-Value* Builder::getConstantV128(V128 c) {
-    Value* value = allocValue(TYPE_V128);
-    value->setConstantV128(c);
-    return value;
-}
-
-// HIR builtins
-Value* Builder::getBuiltinValue(ValueBuiltin builtin) {
-    hir::Function* parFunction = ib->parent;
-    hir::Module* parModule = parFunction->parent;
-
-    Value* value = allocValue(TYPE_V128);
-    value->parent.module = parModule;
-    value->flags |= VALUE_IS_BUILTIN;
-    value->builtin = builtin;
-    return value;
-}
-
-// Instruction generation
-Instruction* Builder::appendInstr(Opcode opcode, OpcodeFlags flags, Value* dest) {
-    Instruction* instr = new Instruction();
-    instr->parent = ib;
-    instr->opcode = opcode;
-    instr->flags = flags;
-    instr->dest = dest;
-    instr->src1.value = nullptr;
-    instr->src2.value = nullptr;
-    instr->src3.value = nullptr;
-
-    if (dest && dest->parent.instruction == nullptr) {
-        dest->parent.instruction = instr;
-    }
-
-    ib->instructions.insert(ip, instr);
-    return instr;
-}
-
-// Arithmetic operations
-Value* Builder::createAdd(Value* lhs, Value* rhs, VectorFlags flags) {
-    ASSERT_TYPE_INTEGER(lhs);
-    ASSERT_TYPE_EQUAL(lhs, rhs);
-
-    if (lhs->isConstantZero()) {
-        return rhs;
-    } else if (rhs->isConstantZero()) {
-        return lhs;
-    }
-
-    Instruction* i = appendInstr(OPCODE_ADD, flags, allocValue(lhs->type));
-    i->src1.setValue(lhs);
-    i->src2.setValue(rhs);
-    return i->dest;
-}
-
-Value* Builder::createLoad(Value* variable) {
-    Instruction* i = appendInstr(OPCODE_LOAD, 0, allocValue(variable->type));
-    i->src1.setValue(variable);
-    return i->dest;
-}
-
-void Builder::createStore(Value* variable, Value* value) {
-    Instruction* i = appendInstr(OPCODE_STORE, 0, nullptr);
-    i->src1.setValue(variable);
-    i->src2.setValue(value);
+Literal Builder::opTypeMatrix(Literal columnType, Literal columnCount) {
+    Instruction* i = appendInstr(OP_TYPE_MATRIX, true);
+    i->operands.push_back(columnType);
+    i->operands.push_back(columnCount);
+    return i->resultId;
 }
 
 }  // namespace hir

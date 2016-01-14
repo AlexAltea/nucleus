@@ -61,7 +61,8 @@ void yyerror(gfx::frontend::opengl::OpenGLShaderParser& parser, const std::strin
 }
 
 // Symbols
-%token <lex> PLUS DASH BANG TILDE COMMA COLON EQUAL SEMICOLON STAR SLASH PERCENT VERTICAL_BAR CARET AMPERSAND QUESTION
+%token <lex> PLUS DASH BANG TILDE COMMA COLON EQUAL SEMICOLON STAR SLASH PERCENT VERTICAL_BAR CARET AMPERSAND QUESTION DOT
+%token <lex> INC_OP DEC_OP LE_OP GE_OP EQ_OP NE_OP LEFT_OP RIGHT_OP AND_OP OR_OP XOR_OP
 %token <lex> ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN OR_ASSIGN XOR_ASSIGN
 %token <lex> LEFT_PAREN RIGHT_PAREN LEFT_BRACKET RIGHT_BRACKET LEFT_BRACE RIGHT_BRACE LEFT_ANGLE RIGHT_ANGLE
 
@@ -84,6 +85,9 @@ void yyerror(gfx::frontend::opengl::OpenGLShaderParser& parser, const std::strin
 
 // Constants
 %token <lex> BOOLCONSTANT INTCONSTANT UINTCONSTANT FLOATCONSTANT DOUBLECONSTANT
+
+// Other
+%token <lex> IDENTIFIER TYPENAME
 
 %% // Grammar rules
 /*
@@ -921,10 +925,6 @@ unary_operator
 	
 %% // Additional C code
 
-void yyerror(const std::string &error) {
+void yyerror(gfx::frontend::opengl::OpenGLShaderParser& parser, const std::string &error) {
     std::cerr << "Error: " << error << "\n";
 }
-
-}  // namespace opengl
-}  // namespace frontend
-}  // namespace gfx
