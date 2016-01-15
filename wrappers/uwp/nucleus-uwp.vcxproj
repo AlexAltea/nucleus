@@ -211,8 +211,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="..\..\resources\shaders\ui_widget_ps.glsl" />
-    <None Include="..\..\resources\shaders\ui_widget_vs.glsl" />
+    <None Include="..\..\resources\shaders\ui_widget_ps.spv" />
+    <None Include="..\..\resources\shaders\ui_widget_vs.spv" />
     <None Include="nucleus-uwp_TemporaryKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>

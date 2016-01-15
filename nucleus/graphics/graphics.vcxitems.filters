@@ -22,6 +22,9 @@
     <Filter Include="frontend\opengl">
       <UniqueIdentifier>{d6879cf1-cc5b-4f64-b6a9-349f9119146a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="frontend\vulkan">
+      <UniqueIdentifier>{8fc5d072-09e7-40de-9a5b-5dbcb07ac0e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.cpp">
@@ -111,6 +114,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.l.cpp">
       <Filter>frontend\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan_shader_parser.cpp">
+      <Filter>frontend\vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +249,12 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y.hpp">
       <Filter>frontend\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan_shader_parser.h">
+      <Filter>frontend\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan.h">
+      <Filter>frontend\vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

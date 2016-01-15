@@ -12,7 +12,6 @@
 #include "nucleus/graphics/hir/block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/graphics/hir/instruction.h"
-#include "nucleus/graphics/hir/opcodes.h"
 
 #include <iostream>
 
@@ -22,7 +21,7 @@ namespace opengl {
 using namespace gfx::hir;
 
 // Conversion
-const char* OpenGLShader::getType(Type type) {
+/*const char* OpenGLShader::getType(Type type) {
     switch (type) {
     case TYPE_VOID: return "void";
     case TYPE_I16:  return "int";
@@ -216,10 +215,10 @@ std::string OpenGLShader::compile(Module* module) {
         source += compile(function);
     }
     return source;
-}
+}*/
 
 bool OpenGLShader::initialize(const ShaderDesc& desc) {
-    const std::string source = compile(desc.module);
+    const std::string source;// = compile(desc.module);
 
     // Compile shader
     const GLchar* sourceString = source.data();

@@ -7,18 +7,19 @@
 
 #include "nucleus/graphics/shader.h"
 #include "nucleus/graphics/backend/opengl/opengl.h"
-#include "nucleus/graphics/hir/type.h"
-#include "nucleus/graphics/hir/value.h"
+#include "nucleus/graphics/hir/hir.h"
 
 #include <vector>
 
 // Forward declarations
 namespace gfx {
 namespace hir {
+
 class Instruction;
 class Block;
 class Function;
 class Module;
+
 }  // namespace hir
 }  // namespace gfx
 
@@ -27,7 +28,7 @@ namespace opengl {
 
 class OpenGLShader : public Shader {
     // Conversion
-    const char* getType(hir::Type type);
+    /*const char* getType(hir::Type type);
     const char* getBuiltin(hir::ValueBuiltin builtin);
 
     // Emitters
@@ -49,7 +50,7 @@ class OpenGLShader : public Shader {
     std::string compile(hir::Instruction* i);
     std::string compile(hir::Block* block);
     std::string compile(hir::Function* function);
-    std::string compile(hir::Module* module);
+    std::string compile(hir::Module* module);*/
 
 public:
     GLuint id;

@@ -51,6 +51,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\opengl\opengl_shader_parser.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\shader_parser.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan_shader_parser.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)graphics.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)heap.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h" />
@@ -94,6 +96,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\opengl_shader_parser.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\shader_parser.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan_shader_parser.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)graphics.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\builder.cpp" />

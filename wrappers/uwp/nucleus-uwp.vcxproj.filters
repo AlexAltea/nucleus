@@ -53,10 +53,10 @@
   <ItemGroup>
     <None Include="nucleus-uwp_TemporaryKey.pfx" />
     <None Include="packages.config" />
-    <None Include="..\..\resources\shaders\ui_widget_vs.glsl">
+    <None Include="..\..\resources\shaders\ui_widget_ps.spv">
       <Filter>resources\shaders</Filter>
     </None>
-    <None Include="..\..\resources\shaders\ui_widget_ps.glsl">
+    <None Include="..\..\resources\shaders\ui_widget_vs.spv">
       <Filter>resources\shaders</Filter>
     </None>
   </ItemGroup>
