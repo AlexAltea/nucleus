@@ -6,15 +6,32 @@
 #include "block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/graphics/hir/instruction.h"
+#include "nucleus/graphics/hir/module.h"
 
 namespace gfx {
 namespace hir {
 
-Block::Block(Function* parent) : parent(parent), flags(0) {
-    if (parent->flags & FUNCTION_IS_DECLARED) {
-        parent->flags |= FUNCTION_IS_DEFINING;
-    }
-    parent->blocks.push_back(this);
+Block::Block(Function& parent) : parent(parent) {
+    Module& module = parent.getParent();
+    parent.blocks.push_back(this);
+
+    Literal id = module.idInstructions.size();
+    Instruction* label = new Instruction(OP_LABEL, 0, id);
+    instructions.push_back(label);
+
+    // Update result ID table
+    module.idInstructions.push_back(label);
+}
+
+Block::Block(Function& parent, Literal id) : parent(parent) {
+    Module& module = parent.getParent();
+    parent.blocks.push_back(this);
+
+    Instruction* label = new Instruction(OP_LABEL, 0, id);
+    instructions.push_back(label);
+
+    // Update result ID table
+    module.idInstructions.push_back(label);
 }
 
 Block::~Block() {
@@ -23,17 +40,13 @@ Block::~Block() {
     }
 }
 
-S32 Block::getId() {
-    if (id < 0) {
-        id = parent->blockIdCounter++;
-    }
-    return id;
+Literal Block::getId() {
+    return instructions.front()->resultId;
 }
 
 std::string Block::dump() {
     std::string output;
-    output += "  b" + std::to_string(getId());
-    output += (flags & BLOCK_IS_ENTRY) ? " (entry):\n" : ":\n";
+    output += "  b" + std::to_string(getId()) + ":\n";
     for (const auto& instruction : instructions) {
         //output += instruction->dump();
     }

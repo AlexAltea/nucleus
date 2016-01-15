@@ -4,16 +4,20 @@
  */
 
 #include "instruction.h"
-#include "nucleus/graphics/hir/function.h"
-#include "nucleus/assert.h"
-#include "nucleus/format.h"
-
-#include <string>
 
 namespace gfx {
 namespace hir {
 
+Instruction::Instruction() {
+}
 
+Instruction::Instruction(int opcode, Literal typeId, Literal resultId) :
+    opcode(opcode), typeId(typeId), resultId(resultId) {
+}
+
+std::string Instruction::dump() {
+    return std::string{}; // TODO
+}
 
 }  // namespace hir
 }  // namespace gfx

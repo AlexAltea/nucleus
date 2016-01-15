@@ -20,7 +20,7 @@ namespace frontend {
 /**
  * Shader Parser
  * =============
- * Takes an arbitrary shader source code as input  and translates it to a module containing
+ * Takes an arbitrary shader source code as input and translates it to a module containing
  * the High-level Intermediate Representation, inferring the appropriate frontend to use.
  */
 class ShaderParser {

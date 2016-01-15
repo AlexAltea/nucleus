@@ -20,11 +20,23 @@ Instruction* Builder::appendInstr(Opcode opcode, bool hasResultId) {
     instr->typeId = 0;
 
     if (hasResultId) {
-        Literal resultId = module->instructions.size();
-        module->instructions.push_back(instr);
+        Literal resultId = module->idInstructions.size();
+        module->idInstructions.push_back(instr);
         instr->resultId = resultId;
     } else {
         instr->resultId = 0;
+    }
+    return instr;
+}
+
+Instruction* Builder::appendInstr(U16 opcode, Literal typeId, Literal resultId) {
+    Instruction* instr = new Instruction();
+    instr->opcode = opcode;
+    instr->typeId = typeId;
+    instr->resultId = resultId;
+
+    if (resultId != 0) {
+        module->idInstructions[resultId] = instr;
     }
     return instr;
 }
@@ -36,12 +48,6 @@ void Builder::setModule(Module* m) {
 
 void Builder::setInsertPoint(Block* block) {
     ib = block;
-    ip = block->instructions.end();
-}
-
-void Builder::setInsertPoint(Block* block, std::list<Instruction*>::iterator insertPoint) {
-    ib = block;
-    ip = insertPoint;
 }
 
 // HIR types

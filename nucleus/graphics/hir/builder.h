@@ -24,14 +24,14 @@ class Builder {
     Block* ib;
     std::list<Instruction*>::iterator ip;
 
-    // HIR instruction generation
-    Instruction* appendInstr(Opcode opcode, bool hasResultId);
-
 public:
     // Insertion
     void setModule(Module* module);
     void setInsertPoint(Block* block);
-    void setInsertPoint(Block* block, std::list<Instruction*>::iterator ip);
+
+    // HIR instruction generation
+    Instruction* appendInstr(Opcode opcode, bool hasResultId);
+    Instruction* appendInstr(U16 opcode, Literal idType, Literal idResult);
 
     // HIR types
     Literal opTypeVoid();

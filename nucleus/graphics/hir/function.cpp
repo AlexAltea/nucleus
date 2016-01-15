@@ -5,28 +5,39 @@
 
 #include "function.h"
 #include "nucleus/graphics/hir/block.h"
+#include "nucleus/graphics/hir/instruction.h"
 #include "nucleus/graphics/hir/module.h"
 
 namespace gfx {
 namespace hir {
 
-Function::Function(Module* parent)
-    : parent(parent), flags(0)  {
-    // Set flags
-    flags |= FUNCTION_IS_DECLARED;
+Function::Function(Module& parent, Literal type) : parent(parent) {
+    Module& module = parent;
+    module.addFunction(this);
 
-    // Add function to parent module
-    parent->addFunction(this);
+    Literal id = module.idInstructions.size();
+    function = new Instruction(OP_FUNCTION, type, id);
+
+    // Update result ID table
+    module.idInstructions.push_back(function);
 }
 
-Function::~Function() {
-    for (auto block : blocks) {
-        delete block;
-    }
+Function::Function(Module& parent, Literal type, Literal id) : parent(parent) {
+    Module& module = parent;
+    module.addFunction(this);
+
+    function = new Instruction(OP_FUNCTION, type, id);
+
+    // Update result ID table
+    module.idInstructions.push_back(function);
 }
 
-S32 Function::getId() {
-    return id;
+Literal Function::getId() const {
+    return function->resultId;
+}
+
+Module& Function::getParent() const {
+    return parent;
 }
 
 std::string Function::dump() {

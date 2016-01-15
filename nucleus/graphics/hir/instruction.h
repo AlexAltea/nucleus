@@ -16,11 +16,20 @@ namespace hir {
 
 class Instruction {
 public:
-    Literal resultId;
+    int opcode;
     Literal typeId;
-    Literal opcode;
+    Literal resultId;
     std::vector<Literal> operands;
     std::string comment;
+
+    Instruction();
+    Instruction(int opcode, Literal typeId, Literal resultId);
+
+    /**
+     * Save a human-readable version of this HIR instruction
+     * @return  String containing the readable version of this HIR block
+     */
+    std::string dump();
 };
 
 }  // namespace hir
