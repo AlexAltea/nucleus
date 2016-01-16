@@ -31,8 +31,6 @@ namespace vulkan {
  * the High-level Intermediate Representation of the given shader.
  */
 class VulkanShaderParser {
-    hir::Builder builder;
-
 private:
     struct OpcodeInfo {
         bool hasTypeId;
@@ -40,7 +38,7 @@ private:
 
         OpcodeInfo() :
             hasTypeId(true), hasResultId(true) {}
-        OpcodeInfo(bool hasTypeId, bool hasReturnId) :
+        OpcodeInfo(bool hasTypeId, bool hasResultId) :
             hasTypeId(hasTypeId), hasResultId(hasResultId) {}
     };
 

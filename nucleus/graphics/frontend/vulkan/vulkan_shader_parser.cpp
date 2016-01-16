@@ -36,43 +36,43 @@ void VulkanShaderParser::initialize() {
     opcodeInfo[spv::OpSourceContinued] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpSourceExtension] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpExtension] = OpcodeInfo(false, false);
-    opcodeInfo[spv::OpExtInstImport] = OpcodeInfo(true, false);
+    opcodeInfo[spv::OpExtInstImport] = OpcodeInfo(false, true);
     opcodeInfo[spv::OpCapability] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpMemoryModel] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpEntryPoint] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpExecutionMode] = OpcodeInfo(false, false);
-    opcodeInfo[spv::OpTypeVoid] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeBool] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeInt] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeFloat] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeVector] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeMatrix] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeImage] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeSampler] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeSampledImage] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeArray] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeRuntimeArray] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeStruct] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeOpaque] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypePointer] = OpcodeInfo(true, false);
+    opcodeInfo[spv::OpTypeVoid] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeBool] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeInt] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeFloat] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeVector] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeMatrix] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeImage] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeSampler] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeSampledImage] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeArray] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeRuntimeArray] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeStruct] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeOpaque] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypePointer] = OpcodeInfo(false, true);
     opcodeInfo[spv::OpTypeForwardPointer] = OpcodeInfo(false, false);
-    opcodeInfo[spv::OpTypeFunction] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeEvent] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeDeviceEvent] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeReserveId] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypeQueue] = OpcodeInfo(true, false);
-    opcodeInfo[spv::OpTypePipe] = OpcodeInfo(true, false);
+    opcodeInfo[spv::OpTypeFunction] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeEvent] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeDeviceEvent] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeReserveId] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypeQueue] = OpcodeInfo(false, true);
+    opcodeInfo[spv::OpTypePipe] = OpcodeInfo(false, true);
     opcodeInfo[spv::OpFunctionEnd] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpStore] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpImageWrite] = OpcodeInfo(false, false);
-    opcodeInfo[spv::OpDecorationGroup] = OpcodeInfo(true, false);
+    opcodeInfo[spv::OpDecorationGroup] = OpcodeInfo(false, true);
     opcodeInfo[spv::OpDecorate] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpMemberDecorate] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpGroupDecorate] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpGroupMemberDecorate] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpName] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpMemberName] = OpcodeInfo(false, false);
-    opcodeInfo[spv::OpString] = OpcodeInfo(true, false);
+    opcodeInfo[spv::OpString] = OpcodeInfo(false, true);
     opcodeInfo[spv::OpLine] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpNoLine] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpCopyMemory] = OpcodeInfo(false, false);
@@ -86,7 +86,7 @@ void VulkanShaderParser::initialize() {
     opcodeInfo[spv::OpAtomicStore] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpLoopMerge] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpSelectionMerge] = OpcodeInfo(false, false);
-    opcodeInfo[spv::OpLabel] = OpcodeInfo(true, false);
+    opcodeInfo[spv::OpLabel] = OpcodeInfo(false, true);
     opcodeInfo[spv::OpBranch] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpBranchConditional] = OpcodeInfo(false, false);
     opcodeInfo[spv::OpSwitch] = OpcodeInfo(false, false);
@@ -155,9 +155,10 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
         return nullptr;
     }
     
-    const U32 bound = words[3];
+    block = nullptr;
+    function = nullptr;
     module = new Module();
-    module->idInstructions.resize(bound);
+    module->idInstructions.resize(words[3]);
 
     // Parse instruction stream
     size_t i = 5;
@@ -194,9 +195,17 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
         }
 
         // Create instruction and push operands
-        Instruction* instruction = builder.appendInstr(opcode, typeId, resultId);
+        Instruction* instruction = new Instruction(opcode, typeId, resultId);
         for (size_t operandIndex = 0; operandIndex < operandCount; operandIndex++) {
             instruction->operands.push_back(words[i++]);
+        }
+        module->idInstructions[resultId] = instruction;
+        if (block) {
+            block->instructions.push_back(instruction);
+        } else if (function) {
+            function->parameters.push_back(instruction);
+        } else if (module) {
+            module->header.push_back(instruction);
         }
 
         // Special instructions
@@ -214,6 +223,7 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
             break;
         }
     }
+    return module;
 }
 
 }  // namespace vulkan

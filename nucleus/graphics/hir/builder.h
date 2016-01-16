@@ -22,7 +22,6 @@ class Module;
 class Builder {
     Module* module;
     Block* ib;
-    std::list<Instruction*>::iterator ip;
 
 public:
     // Insertion
