@@ -12,7 +12,6 @@
 #include "nucleus/graphics/hir/block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/graphics/hir/instruction.h"
-#include "nucleus/graphics/hir/opcodes.h"
 
 #include <iostream>
 
@@ -22,21 +21,104 @@ namespace direct3d12 {
 using namespace gfx::hir;
 
 // Conversion
-const char* Direct3D12Shader::getType(Type type) {
-    switch (type) {
-    case TYPE_VOID: return "void";
-    case TYPE_I16:  return "int";
-    case TYPE_I32:  return "int";
-    case TYPE_F16:  return "float";
-    case TYPE_F32:  return "float";
-    case TYPE_V128: return "float4";
-    default:
-        assert_always("Unimplemented case");
-        return "UNIMPLEMENTED";
+std::string Direct3D12Shader::getType(Literal instrId) {
+    if (!idCache[instrId].empty()) {
+        return idCache[instrId];
     }
+
+    std::string typeName;
+    Instruction* instr = module->idInstructions[instrId];
+
+    // Pointer
+    if (instr->opcode == OP_TYPE_POINTER) {
+        Literal storageClass = instr->operands[0];
+        Literal type = instr->operands[1];
+        return getType(type);
+    }
+
+    // Basic types
+    else if (instr->opcode == OP_TYPE_BOOL) {
+        typeName = "bool";
+    }
+    else if (instr->opcode == OP_TYPE_INT) {
+        Literal width = instr->operands[0];
+        Literal signedness = instr->operands[1];
+        assert_true(width == 32, "HLSL 5.0 only supports integer widths of 32");
+        typeName = !signedness ? "uint" : "int";
+    }
+    else if (instr->opcode == OP_TYPE_FLOAT) {
+        Literal width = instr->operands[0];
+        switch (width) {
+        case 16:  typeName = "half"; break;
+        case 32:  typeName = "float"; break;
+        case 64:  typeName = "double"; break;
+        default:
+            assert_true(width == 32, "HLSL 5.0 only supports floating-point widths of 16, 32 or 64");
+        }
+    }
+
+    // Vectors
+    else if (instr->opcode == OP_TYPE_VECTOR) {
+        Literal componentType = instr->operands[0];
+        Literal componentCount = instr->operands[1];
+        assert_true(1 <= componentCount && componentCount <= 4, "HLSL 5.0 only supports between 1 and 4 vector components");
+        std::string componentTypeName = getType(componentType);
+        typeName = format("%s%d", componentTypeName.c_str(), componentCount);
+    }
+
+    // Arrays
+    else if (instr->opcode == OP_TYPE_ARRAY) {
+        typeName = format("t%d", instr->resultId);
+        std::string type = getType(instr->operands[0]);
+        std::string length = getConstant(instr->operands[1]);
+        sourceTypes += format("typedef %s %s[%s];\n", type.c_str(), typeName.c_str(), length.c_str());
+    }
+
+    // Structs
+    else if (instr->opcode == OP_TYPE_STRUCT) {
+        std::string members;
+        typeName = format("t%d", instr->resultId);
+        for (size_t i = 0; i < instr->operands.size(); i++) {
+            Literal operand = instr->operands[i];
+            std::string memberType = getType(operand);
+            members += format("  %s m%d;\n", memberType.c_str(), i);
+        }
+        sourceTypes += format("struct %s {\n%s};\n", typeName.c_str(), members.c_str());
+    }
+
+    // Save type
+    idCache[instrId] = typeName;
+    return typeName;
 }
 
-const char* Direct3D12Shader::getBuiltin(ValueBuiltin builtin) {
+std::string Direct3D12Shader::getConstant(Literal instrId) {
+    if (!idCache[instrId].empty()) {
+        return idCache[instrId];
+    }
+
+    std::string constantString;
+    Instruction* instr = module->idInstructions[instrId];
+
+    Instruction* type = module->idInstructions[instr->typeId];
+    if (type->opcode == OP_TYPE_INT) {
+        Literal width = type->operands[0];
+        Literal signedness = type->operands[1];
+        assert_true(width <= 32, "Support for integer constants bigger than 32-bits is not implemented");
+        S32 constant = (S32&)(instr->operands[0]);
+        constantString = format("%d%c", constant, !signedness ? 'U' : 0);
+    }
+    if (type->opcode == OP_TYPE_FLOAT) {
+        Literal width = instr->operands[0];
+        assert_true(width <= 32, "Support for floating-point constants different than 32-bits is not implemented");
+        F32 constant = (F32&)(instr->operands[0]);
+        constantString = format("%f", constant);
+    }
+
+    idCache[instrId] = constantString;
+    return constantString;
+}
+
+/*const char* Direct3D12Shader::getBuiltin(ValueBuiltin builtin) {
     return "UNIMPLEMENTED";
 }
 
@@ -142,27 +224,54 @@ std::string Direct3D12Shader::getDeclaration(Function* function) {
     }
     source += ")";
     return source;
+}*/
+
+std::string Direct3D12Shader::emitBinaryOp(hir::Literal lhs, hir::Literal rhs, hir::Opcode type, char symbol) {
+#if defined(NUCLEUS_BUILD_DEBUG)
+    Instruction* lhsType = module->idInstructions[module->idInstructions[lhs]->typeId];
+    Instruction* rhsType = module->idInstructions[module->idInstructions[rhs]->typeId];
+    assert(lhsType->opcode == rhsType->opcode);
+    if (lhsType->opcode != OP_TYPE_VECTOR) {
+        assert(type == module->idInstructions[lhsType->operands[0]]->opcode);
+    } else {
+        assert(type == lhsType->opcode);
+    }
+#endif
+
+    return format(" %s = %s %c %s;\n", "TODO", "TODO", symbol, "TODO");
 }
 
 std::string Direct3D12Shader::compile(Instruction* i) {
     std::string source;
     switch (i->opcode) {
-    case OPCODE_ADD:
-        source = emitOp("%s = %s + %s", i->dest, i->src1.value, i->src2.value); break;
-    case OPCODE_SUB:
-        source = emitOp("%s = %s - %s", i->dest, i->src1.value, i->src2.value); break;
-    case OPCODE_MUL:
-        source = emitOp("%s = %s * %s", i->dest, i->src1.value, i->src2.value); break;
-    case OPCODE_DIV:
-        source = emitOp("%s = %s / %s", i->dest, i->src1.value, i->src2.value); break;
-    case OPCODE_COS:
-        source = emitOp("%s = cos(%s)", i->dest, i->src1.value); break;
-    case OPCODE_SIN:
-        source = emitOp("%s = sin(%s)", i->dest, i->src1.value); break;
-    case OPCODE_LOAD:
-        source = emitOp("%s = %s", i->dest, i->src1.value); break;
-    case OPCODE_STORE:
-        source = emitOp("%s = %s", i->src1.value, i->src2.value); break;
+    case OP_FADD:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '+');
+    case OP_FSUB:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '-');
+    case OP_FMUL:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '*');
+    case OP_FDIV:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '/');
+    case OP_FMOD:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '%'); // TODO: Is this correct?
+    case OP_FREM:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '%'); // TODO: Is this correct?
+    case OP_IADD:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '+');
+    case OP_ISUB:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '-');
+    case OP_IMUL:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '*');
+    case OP_SDIV:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '/');
+    case OP_UDIV:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '/');
+    case OP_SMOD:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '%'); // TODO: Is this correct?
+    case OP_UMOD:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '%'); // TODO: Is this correct?
+    case OP_SREM:
+        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '%'); // TODO: Is this correct?
     }
     return source;
 }
@@ -171,7 +280,6 @@ std::string Direct3D12Shader::compile(Block* block) {
     std::string source;
     for (auto* instruction : block->instructions) {
         source += compile(instruction);
-        source += ";\n";
     }
     return source;
 }
@@ -180,12 +288,12 @@ std::string Direct3D12Shader::compile(Function* function) {
     std::string source;
 
     // Function declaration
-    source += getDeclaration(function);
+    Literal funcId = function->function->resultId;
+    if (idCache[funcId].empty()) {
 
-    source += " {\n";
-    if (function->flags & FUNCTION_IS_ENTRY) {
-        source += "TOutput output;\n";
     }
+
+    source += idCache[funcId] + " {\n";
     for (auto* block : function->blocks) {
         source += compile(block);
     }
@@ -196,27 +304,51 @@ std::string Direct3D12Shader::compile(Function* function) {
 std::string Direct3D12Shader::compile(Module* module) {
     std::string source;
 
-    // Shader input and outputs
-    source += "struct TInput {";
-    for (auto* value : module->inputs) {
-        source += format("%s i%d : TODO;\n", getType(value->type), value->getId());
+    // Compile module header
+    for (Instruction* i : module->header) {
+        if (i->opcode == OP_ENTRY_POINT) {
+            Literal funcId = i->operands[1];
+            idCache[funcId] = "TOutput main(TInput input)";
+        }
+        if (i->opcode == OP_VARIABLE) {
+            Literal storageClass = i->operands[0];
+            std::string type = getType(i->typeId);
+            switch (storageClass) {
+            case StorageClass::INPUT:
+                sourceInput += format("  %s v%d : INPUT0;\n", type.c_str(), i->resultId);
+                break;
+            case StorageClass::OUTPUT:
+                sourceOutput += format("  %s v%d : OUTPUT0;\n", type.c_str(), i->resultId);
+                break;
+            default:
+                assert_always("Unimplemented");
+            }
+        }
     }
-    source += "};\n";
-    source += "struct TOutput {";
-    for (auto* value : module->outputs) {
-        source += format("%s o%d : TODO;\n", getType(value->type), value->getId());
-    }
-    source += "};\n";
+    source = format("%s\nstruct TInput {\n%s};\nstruct TOutput {\n%s};\n\n",
+        sourceTypes.c_str(), sourceInput.c_str(), sourceOutput.c_str());
 
     // Compile functions
     for (auto* function : module->functions) {
         source += compile(function);
     }
+
     return source;
 }
 
 bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
-    const std::string source = compile(desc.module);
+    // Initialization
+    module = desc.module;
+    idCache.resize(module->idInstructions.size());
+
+    std::string source = compile(module);
+    std::cout << source << std::endl;
+    if (desc.type == SHADER_TYPE_VERTEX) {
+        source = "struct TInput { float4 i0 : INPUT0; float4 i1 : INPUT1; }; struct TOutput { float4 o0 : SV_POSITION; float4 o1: COLOR; }; TOutput main(TInput input) { TOutput output; output.o0 = input.i0; output.o1 = input.i1; return output; }";
+    }
+    if (desc.type == SHADER_TYPE_PIXEL) {
+        source = "struct TInput { float4 i0 : SV_POSITION; float4 i1: COLOR; }; float4 main(TInput input) : SV_TARGET { return input.i1; }";
+    }
 
     LPCSTR target;
     switch (desc.type) {

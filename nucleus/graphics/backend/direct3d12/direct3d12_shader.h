@@ -7,18 +7,20 @@
 
 #include "nucleus/graphics/shader.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
-#include "nucleus/graphics/hir/type.h"
-#include "nucleus/graphics/hir/value.h"
+#include "nucleus/graphics/hir/hir.h"
 
 #include <vector>
+#include <unordered_map>
 
 // Forward declarations
 namespace gfx {
 namespace hir {
+
 class Instruction;
 class Block;
 class Function;
 class Module;
+
 }  // namespace hir
 }  // namespace gfx
 
@@ -26,9 +28,18 @@ namespace gfx {
 namespace direct3d12 {
 
 class Direct3D12Shader : public Shader {
+    hir::Module* module;
+
+    // Source
+    std::vector<std::string> idCache;
+    std::string sourceTypes;
+    std::string sourceInput;
+    std::string sourceOutput;
+
     // Conversion
-    const char* getType(hir::Type type);
-    const char* getBuiltin(hir::ValueBuiltin builtin);
+    std::string getType(hir::Literal typeId);
+    std::string getConstant(hir::Literal constantId);
+    /*const char* getBuiltin(hir::ValueBuiltin builtin);
 
     // Emitters
     std::string getDst(hir::Value* value);
@@ -36,14 +47,16 @@ class Direct3D12Shader : public Shader {
     std::string emitOp(const char* fmt);
     std::string emitOp(const char* fmt, hir::Value* v0);
     std::string emitOp(const char* fmt, hir::Value* v0, hir::Value* v1);
-    std::string emitOp(const char* fmt, hir::Value* v0, hir::Value* v1, hir::Value* v2);
+    std::string emitOp(const char* fmt, hir::Value* v0, hir::Value* v1, hir::Value* v2);*/
+    std::string emitBinaryOp(hir::Literal lhs, hir::Literal rhs, hir::Opcode type, char symbol);
+    /*
 
     // Utilities
     std::string getConstant(hir::Value* constant);
     std::string getName(hir::Value* value);
     std::string getName(hir::Function* function);
     std::string getDeclaration(hir::Value* value);
-    std::string getDeclaration(hir::Function* function);
+    std::string getDeclaration(hir::Function* function);*/
 
     // Compile HIR components into GLSL
     std::string compile(hir::Instruction* i);

@@ -216,6 +216,7 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
         case spv::OpKill:
         case spv::OpReturn:
         case spv::OpReturnValue:
+        case spv::OpUnreachable:
             block = nullptr;
             break;
         case spv::OpFunctionEnd:
