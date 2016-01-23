@@ -39,21 +39,18 @@ class Direct3D12Shader : public Shader {
     // Conversion
     std::string getType(hir::Literal typeId);
     std::string getConstant(hir::Literal constantId);
-    /*const char* getBuiltin(hir::ValueBuiltin builtin);
+    std::string getPointer(hir::Literal pointerId);
+    //const char* getBuiltin(hir::ValueBuiltin builtin);
 
     // Emitters
-    std::string getDst(hir::Value* value);
-    std::string getSrc(hir::Value* value);
-    std::string emitOp(const char* fmt);
-    std::string emitOp(const char* fmt, hir::Value* v0);
-    std::string emitOp(const char* fmt, hir::Value* v0, hir::Value* v1);
-    std::string emitOp(const char* fmt, hir::Value* v0, hir::Value* v1, hir::Value* v2);*/
-    std::string emitBinaryOp(hir::Literal lhs, hir::Literal rhs, hir::Opcode type, char symbol);
-    /*
+    std::string emitBinaryOp(hir::Instruction* i, hir::Opcode type, char symbol);
+    std::string emitOpCompositeConstruct(hir::Instruction* i);
+    std::string emitOpCompositeExtract(hir::Instruction* i);
+    std::string emitOpLoad(hir::Instruction* i);
+    std::string emitOpStore(hir::Instruction* i);
 
     // Utilities
-    std::string getConstant(hir::Value* constant);
-    std::string getName(hir::Value* value);
+    /*std::string getName(hir::Value* value);
     std::string getName(hir::Function* function);
     std::string getDeclaration(hir::Value* value);
     std::string getDeclaration(hir::Function* function);*/

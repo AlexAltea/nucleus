@@ -20,6 +20,9 @@ namespace direct3d12 {
 
 using namespace gfx::hir;
 
+// Defines
+#define PADDING "  "
+
 // Conversion
 std::string Direct3D12Shader::getType(Literal instrId) {
     if (!idCache[instrId].empty()) {
@@ -81,7 +84,7 @@ std::string Direct3D12Shader::getType(Literal instrId) {
         for (size_t i = 0; i < instr->operands.size(); i++) {
             Literal operand = instr->operands[i];
             std::string memberType = getType(operand);
-            members += format("  %s m%d;\n", memberType.c_str(), i);
+            members += format(PADDING "%s m%d;\n", memberType.c_str(), i);
         }
         sourceTypes += format("struct %s {\n%s};\n", typeName.c_str(), members.c_str());
     }
@@ -116,6 +119,40 @@ std::string Direct3D12Shader::getConstant(Literal instrId) {
 
     idCache[instrId] = constantString;
     return constantString;
+}
+
+std::string Direct3D12Shader::getPointer(Literal pointerId) {
+    if (!idCache[pointerId].empty()) {
+        return idCache[pointerId];
+    }
+
+    std::string pointerString;
+    Instruction* pointerInstr = module->idInstructions[pointerId];
+    Instruction* typeInstr = module->idInstructions[pointerInstr->typeId];
+    assert(typeInstr->opcode == OP_TYPE_POINTER);
+
+    std::string pointerStr;
+    switch (typeInstr->operands[0]) {
+    case StorageClass::INPUT:    pointerString = "input.";   break;
+    case StorageClass::UNIFORM:  pointerString = "uniform."; break;
+    case StorageClass::OUTPUT:   pointerString = "output.";  break;
+    default:
+        assert_always("Unimplemented");
+    }
+
+    if (pointerInstr->opcode == OP_VARIABLE) {
+        pointerString += format("v%d", pointerInstr->resultId);
+    }
+    if (pointerInstr->opcode == OP_ACCESS_CHAIN) {
+        pointerString += format("v%d", pointerInstr->operands[0]);
+        for (size_t i = 1; i < pointerInstr->operands.size(); i++) {
+            std::string constant = getConstant(pointerInstr->operands[i]);
+            pointerString += format(".m%s", constant.c_str());
+        }
+    }
+
+    idCache[pointerId] = pointerString;
+    return pointerString;
 }
 
 /*const char* Direct3D12Shader::getBuiltin(ValueBuiltin builtin) {
@@ -226,7 +263,11 @@ std::string Direct3D12Shader::getDeclaration(Function* function) {
     return source;
 }*/
 
-std::string Direct3D12Shader::emitBinaryOp(hir::Literal lhs, hir::Literal rhs, hir::Opcode type, char symbol) {
+std::string Direct3D12Shader::emitBinaryOp(Instruction* i, hir::Opcode type, char symbol) {
+    hir::Literal result = i->resultId;
+    hir::Literal lhs = i->operands[0];
+    hir::Literal rhs = i->operands[1];
+
 #if defined(NUCLEUS_BUILD_DEBUG)
     Instruction* lhsType = module->idInstructions[module->idInstructions[lhs]->typeId];
     Instruction* rhsType = module->idInstructions[module->idInstructions[rhs]->typeId];
@@ -238,40 +279,96 @@ std::string Direct3D12Shader::emitBinaryOp(hir::Literal lhs, hir::Literal rhs, h
     }
 #endif
 
-    return format(" %s = %s %c %s;\n", "TODO", "TODO", symbol, "TODO");
+    std::string typeStr = getType(i->typeId);
+    return format(PADDING "%s v%d = v%d %c v%d;\n", typeStr.c_str(), result, lhs, symbol, rhs);
+}
+
+std::string Direct3D12Shader::emitOpCompositeConstruct(Instruction* i) {
+#if defined(NUCLEUS_BUILD_DEBUG)
+    assert(i->operands.size() >= 2);
+    assert(module->idInstructions[i->typeId]->opcode == OP_TYPE_VECTOR);
+#endif
+
+    std::string type = getType(i->typeId);
+    std::string constitutents = "TODO";
+    for (size_t idx = 1; idx < i->operands.size(); idx++) {
+        constitutents += format(", TODO");
+    }
+    hir::Literal result = i->resultId;
+    return format(PADDING "%s v%d = %s(%s);\n", type.c_str(), result, type.c_str(), constitutents.c_str());
+}
+
+std::string Direct3D12Shader::emitOpCompositeExtract(Instruction* i) {
+#if defined(NUCLEUS_BUILD_DEBUG)
+    assert(i->operands.size() >= 2);
+#endif
+
+    hir::Literal result = i->resultId;
+    hir::Literal composite = i->operands[0];
+    std::string type = getType(i->typeId);
+    return format(PADDING "%s v%d = v%d[%d];\n", type.c_str(), result, composite, i->operands[1]);
+}
+
+std::string Direct3D12Shader::emitOpLoad(Instruction* i) {
+#if defined(NUCLEUS_BUILD_DEBUG)
+    assert(i->operands.size() >= 1);
+#endif
+
+    hir::Literal result = i->resultId;
+    std::string type = getType(i->typeId);
+    std::string pointerStr = getPointer(i->operands[0]);
+    return format(PADDING "%s v%d = %s;\n", type.c_str(), result, pointerStr.c_str());
+}
+
+std::string Direct3D12Shader::emitOpStore(Instruction* i) {
+#if defined(NUCLEUS_BUILD_DEBUG)
+    assert(i->operands.size() >= 2);
+#endif
+
+    Literal object = i->operands[1];
+    std::string pointerStr = getPointer(i->operands[0]);
+    return format(PADDING "%s = %s;\n", pointerStr.c_str(), "TODO");
 }
 
 std::string Direct3D12Shader::compile(Instruction* i) {
     std::string source;
     switch (i->opcode) {
     case OP_FADD:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '+');
+        return emitBinaryOp(i, OP_TYPE_FLOAT, '+');
     case OP_FSUB:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '-');
+        return emitBinaryOp(i, OP_TYPE_FLOAT, '-');
     case OP_FMUL:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '*');
+        return emitBinaryOp(i, OP_TYPE_FLOAT, '*');
     case OP_FDIV:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '/');
+        return emitBinaryOp(i, OP_TYPE_FLOAT, '/');
     case OP_FMOD:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '%'); // TODO: Is this correct?
+        return emitBinaryOp(i, OP_TYPE_FLOAT, '%'); // TODO: Is this correct?
     case OP_FREM:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_FLOAT, '%'); // TODO: Is this correct?
+        return emitBinaryOp(i, OP_TYPE_FLOAT, '%'); // TODO: Is this correct?
     case OP_IADD:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '+');
+        return emitBinaryOp(i, OP_TYPE_INT, '+');
     case OP_ISUB:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '-');
+        return emitBinaryOp(i, OP_TYPE_INT, '-');
     case OP_IMUL:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '*');
+        return emitBinaryOp(i, OP_TYPE_INT, '*');
     case OP_SDIV:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '/');
+        return emitBinaryOp(i, OP_TYPE_INT, '/');
     case OP_UDIV:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '/');
+        return emitBinaryOp(i, OP_TYPE_INT, '/');
     case OP_SMOD:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '%'); // TODO: Is this correct?
+        return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
     case OP_UMOD:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '%'); // TODO: Is this correct?
+        return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
     case OP_SREM:
-        return emitBinaryOp(i->operands[0], i->operands[1], OP_TYPE_INT, '%'); // TODO: Is this correct?
+        return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
+    case OP_COMPOSITE_EXTRACT:
+        return emitOpCompositeExtract(i);
+    case OP_COMPOSITE_CONSTRUCT:
+        return emitOpCompositeConstruct(i);
+    case OP_LOAD:
+        return emitOpLoad(i);
+    case OP_STORE:
+        return emitOpStore(i);
     }
     return source;
 }
@@ -315,10 +412,10 @@ std::string Direct3D12Shader::compile(Module* module) {
             std::string type = getType(i->typeId);
             switch (storageClass) {
             case StorageClass::INPUT:
-                sourceInput += format("  %s v%d : INPUT0;\n", type.c_str(), i->resultId);
+                sourceInput += format(PADDING "%s v%d : INPUT0;\n", type.c_str(), i->resultId);
                 break;
             case StorageClass::OUTPUT:
-                sourceOutput += format("  %s v%d : OUTPUT0;\n", type.c_str(), i->resultId);
+                sourceOutput += format(PADDING "%s v%d : OUTPUT0;\n", type.c_str(), i->resultId);
                 break;
             default:
                 assert_always("Unimplemented");
