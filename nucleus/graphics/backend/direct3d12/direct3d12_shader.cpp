@@ -111,7 +111,7 @@ std::string Direct3D12Shader::getConstant(Literal instrId) {
         constantString = format("%d%c", constant, !signedness ? 'U' : 0);
     }
     if (type->opcode == OP_TYPE_FLOAT) {
-        Literal width = instr->operands[0];
+        Literal width = type->operands[0];
         assert_true(width <= 32, "Support for floating-point constants different than 32-bits is not implemented");
         F32 constant = (F32&)(instr->operands[0]);
         constantString = format("%f", constant);
@@ -155,113 +155,29 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
     return pointerString;
 }
 
-/*const char* Direct3D12Shader::getBuiltin(ValueBuiltin builtin) {
-    return "UNIMPLEMENTED";
-}
+const char* Direct3D12Shader::getBuiltin(hir::Literal builtinDecoration) {
+    switch (builtinDecoration) {
+    case BUILTIN_POSITION:      return "SV_Position";
+    case BUILTIN_POINTSIZE:     return "PSIZE";
+    case BUILTIN_CLIPDISTANCE:  return "SV_ClipDistance";
+    case BUILTIN_CULLDISTANCE:  return "SV_CullDistance";
+    case BUILTIN_VERTEXID:      return "SV_VertexID";
+    case BUILTIN_INSTANCEID:    return "SV_InstanceID";
+    case BUILTIN_PRIMITIVEID:   return "SV_PrimitiveID";
+    case BUILTIN_FRAGCOORD:     return "SV_Position";
+    case BUILTIN_POINTCOORD:    return "SV_Position";
+    case BUILTIN_FRONTFACING:   return "SV_IsFrontFace";
+    case BUILTIN_FRAGDEPTH:     return "SV_Depth";
 
-// Emitters
-std::string Direct3D12Shader::getDst(Value* value) {
-    if (value->flags & (VALUE_IS_INPUT | VALUE_IS_OUTPUT | VALUE_IS_BUILTIN)) {
-        return getName(value);
-    } else {
-        return getDeclaration(value);
-    }
-}
+    case BUILTIN_INVOCATIONID:
+        assert_always("Unavailable");
+        return nullptr;
 
-std::string Direct3D12Shader::getSrc(Value* value) {
-    if (value->flags & VALUE_IS_CONSTANT) {
-        return getConstant(value);
-    } else {
-        return getName(value);
-    }
-}
-
-std::string Direct3D12Shader::emitOp(const char* fmt) {
-    return fmt;
-}
-
-std::string Direct3D12Shader::emitOp(const char* fmt, hir::Value* v0) {
-    std::string v0Name = getDst(v0);
-    return format(fmt, v0Name.c_str());
-}
-
-std::string Direct3D12Shader::emitOp(const char* fmt, hir::Value* v0, hir::Value* v1) {
-    std::string v0Name = getDst(v0);
-    std::string v1Name = getSrc(v1);
-    return format(fmt, v0Name.c_str(), v1Name.c_str());
-}
-
-std::string Direct3D12Shader::emitOp(const char* fmt, hir::Value* v0, hir::Value* v1, hir::Value* v2) {
-    std::string v0Name = getDst(v0);
-    std::string v1Name = getSrc(v1);
-    std::string v2Name = getSrc(v2);
-    return format(fmt, v0Name.c_str(), v1Name.c_str(), v2Name.c_str());
-}
-
-// Utilities
-std::string Direct3D12Shader::getConstant(Value* value) {
-    Value::Constant& c = value->constant;
-    switch (value->type) {
-    case TYPE_F32:
-        return format("float(%f)", c.f32);
-    case TYPE_V128:
-        return format("float4(%f, %f, %f, %f)", c.v128.f32[0], c.v128.f32[1], c.v128.f32[2], c.v128.f32[3]);
     default:
-        assert_always("Unimplemented case");
-        return "UNIMPLEMENTED";
+        assert_always("Unimplemented");
+        return nullptr;
     }
 }
-
-std::string Direct3D12Shader::getName(hir::Value* value) {
-    const S32 valueId = value->getId();
-    if (value->flags & VALUE_IS_ARGUMENT) {
-        return format("a%d", valueId);
-    } else if (value->flags & VALUE_IS_INPUT) {
-        return format("input.i%d", valueId);
-    } else if (value->flags & VALUE_IS_OUTPUT) {
-        return format("output.o%d", valueId);
-    } else if (value->flags & VALUE_IS_BUILTIN) {
-        return getBuiltin(value->builtin);
-    } else {
-        return format("v%d", valueId);
-    }
-}
-
-std::string Direct3D12Shader::getName(hir::Function* function) {
-    if (function->flags & FUNCTION_IS_ENTRY) {
-        return "main";
-    } else {
-        return format("func%d", function->getId());
-    }
-}
-
-std::string Direct3D12Shader::getDeclaration(Value* value) {
-    std::string valueType = getType(value->type);
-    std::string valueName = getName(value);
-    return format("%s %s", valueType.c_str(), valueName.c_str());
-}
-
-std::string Direct3D12Shader::getDeclaration(Function* function) {
-    std::string source;
-
-    if (function->flags & FUNCTION_IS_ENTRY) {
-        return "TOutput main(TInput input)";
-    }
-
-    // Function name
-    std::string funcName = getName(function);
-    source += format("%s %s(", getType(function->typeOut), funcName.c_str());
-
-    // Function arguments
-    for (auto* value : function->args) {
-        source += getDeclaration(value);
-        if (value->getId() != function->args.size() - 1) {
-            source += format(", ");
-        }
-    }
-    source += ")";
-    return source;
-}*/
 
 std::string Direct3D12Shader::emitBinaryOp(Instruction* i, hir::Opcode type, char symbol) {
     hir::Literal result = i->resultId;
@@ -290,9 +206,9 @@ std::string Direct3D12Shader::emitOpCompositeConstruct(Instruction* i) {
 #endif
 
     std::string type = getType(i->typeId);
-    std::string constitutents = "TODO";
+    std::string constitutents = format("v%d", i->operands[0]);
     for (size_t idx = 1; idx < i->operands.size(); idx++) {
-        constitutents += format(", TODO");
+        constitutents += format(", v%d", i->operands[idx]);
     }
     hir::Literal result = i->resultId;
     return format(PADDING "%s v%d = %s(%s);\n", type.c_str(), result, type.c_str(), constitutents.c_str());
@@ -407,6 +323,11 @@ std::string Direct3D12Shader::compile(Module* module) {
             Literal funcId = i->operands[1];
             idCache[funcId] = "TOutput main(TInput input)";
         }
+        if (i->opcode == OP_CONSTANT) {
+            std::string type = getType(i->typeId);
+            std::string constant = getConstant(i->resultId);
+            sourceConstants += format("%s v%d = %s;\n", type.c_str(), i->resultId, constant.c_str());
+        }
         if (i->opcode == OP_VARIABLE) {
             Literal storageClass = i->operands[0];
             std::string type = getType(i->typeId);
@@ -422,8 +343,8 @@ std::string Direct3D12Shader::compile(Module* module) {
             }
         }
     }
-    source = format("%s\nstruct TInput {\n%s};\nstruct TOutput {\n%s};\n\n",
-        sourceTypes.c_str(), sourceInput.c_str(), sourceOutput.c_str());
+    source = format("%s\nstruct TInput {\n%s};\nstruct TOutput {\n%s};\n\n%s\n",
+        sourceTypes.c_str(), sourceInput.c_str(), sourceOutput.c_str(), sourceConstants.c_str());
 
     // Compile functions
     for (auto* function : module->functions) {

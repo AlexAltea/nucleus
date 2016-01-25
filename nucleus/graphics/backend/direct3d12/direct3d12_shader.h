@@ -35,12 +35,13 @@ class Direct3D12Shader : public Shader {
     std::string sourceTypes;
     std::string sourceInput;
     std::string sourceOutput;
+    std::string sourceConstants;
 
     // Conversion
     std::string getType(hir::Literal typeId);
     std::string getConstant(hir::Literal constantId);
     std::string getPointer(hir::Literal pointerId);
-    //const char* getBuiltin(hir::ValueBuiltin builtin);
+    const char* getBuiltin(hir::Literal builtinDecoration);
 
     // Emitters
     std::string emitBinaryOp(hir::Instruction* i, hir::Opcode type, char symbol);
