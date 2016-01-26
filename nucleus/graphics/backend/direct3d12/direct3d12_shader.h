@@ -30,6 +30,13 @@ namespace direct3d12 {
 class Direct3D12Shader : public Shader {
     hir::Module* module;
 
+    // Header
+    int countArbitraryInput;
+    int countArbitraryOutput;
+    hir::Literal idEntryPoint;
+    std::unordered_map<hir::Literal, std::vector<hir::Instruction*>> idDecoration;
+    const char* getBuiltin(hir::Literal builtinDecoration);
+
     // Source
     std::vector<std::string> idCache;
     std::string sourceTypes;
@@ -41,7 +48,6 @@ class Direct3D12Shader : public Shader {
     std::string getType(hir::Literal typeId);
     std::string getConstant(hir::Literal constantId);
     std::string getPointer(hir::Literal pointerId);
-    const char* getBuiltin(hir::Literal builtinDecoration);
 
     // Emitters
     std::string emitBinaryOp(hir::Instruction* i, hir::Opcode type, char symbol);

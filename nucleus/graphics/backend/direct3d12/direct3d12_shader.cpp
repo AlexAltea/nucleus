@@ -23,6 +23,31 @@ using namespace gfx::hir;
 // Defines
 #define PADDING "  "
 
+// Decoration
+const char* Direct3D12Shader::getBuiltin(hir::Literal builtinDecoration) {
+    switch (builtinDecoration) {
+    case BUILTIN_POSITION:      return "SV_Position";
+    case BUILTIN_POINTSIZE:     return "PSIZE";
+    case BUILTIN_CLIPDISTANCE:  return "SV_ClipDistance";
+    case BUILTIN_CULLDISTANCE:  return "SV_CullDistance";
+    case BUILTIN_VERTEXID:      return "SV_VertexID";
+    case BUILTIN_INSTANCEID:    return "SV_InstanceID";
+    case BUILTIN_PRIMITIVEID:   return "SV_PrimitiveID";
+    case BUILTIN_FRAGCOORD:     return "SV_Position";
+    case BUILTIN_POINTCOORD:    return "SV_Position";
+    case BUILTIN_FRONTFACING:   return "SV_IsFrontFace";
+    case BUILTIN_FRAGDEPTH:     return "SV_Depth";
+
+    case BUILTIN_INVOCATIONID:
+        assert_always("Unavailable");
+        return nullptr;
+
+    default:
+        assert_always("Unimplemented");
+        return nullptr;
+    }
+}
+
 // Conversion
 std::string Direct3D12Shader::getType(Literal instrId) {
     if (!idCache[instrId].empty()) {
@@ -79,13 +104,25 @@ std::string Direct3D12Shader::getType(Literal instrId) {
 
     // Structs
     else if (instr->opcode == OP_TYPE_STRUCT) {
+        hir::Instruction** decorations = nullptr;
+        if (idDecoration.find(instrId) != idDecoration.end()) {
+            decorations = idDecoration[instrId].data();
+        }
         std::string members;
-        typeName = format("t%d", instr->resultId);
         for (size_t i = 0; i < instr->operands.size(); i++) {
             Literal operand = instr->operands[i];
             std::string memberType = getType(operand);
-            members += format(PADDING "%s m%d;\n", memberType.c_str(), i);
+            if (decorations && decorations[i]) {
+                hir::Literal builtinType = decorations[i]->operands[3];
+                if (builtinType == BUILTIN_CLIPDISTANCE) {
+                    members += "//";
+                }
+                members += format(PADDING "%s m%d : %s;\n", memberType.c_str(), i, getBuiltin(builtinType));
+            } else {
+                members += format(PADDING "%s m%d;\n", memberType.c_str(), i);
+            }
         }
+        typeName = format("t%d", instr->resultId);
         sourceTypes += format("struct %s {\n%s};\n", typeName.c_str(), members.c_str());
     }
 
@@ -155,30 +192,6 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
     return pointerString;
 }
 
-const char* Direct3D12Shader::getBuiltin(hir::Literal builtinDecoration) {
-    switch (builtinDecoration) {
-    case BUILTIN_POSITION:      return "SV_Position";
-    case BUILTIN_POINTSIZE:     return "PSIZE";
-    case BUILTIN_CLIPDISTANCE:  return "SV_ClipDistance";
-    case BUILTIN_CULLDISTANCE:  return "SV_CullDistance";
-    case BUILTIN_VERTEXID:      return "SV_VertexID";
-    case BUILTIN_INSTANCEID:    return "SV_InstanceID";
-    case BUILTIN_PRIMITIVEID:   return "SV_PrimitiveID";
-    case BUILTIN_FRAGCOORD:     return "SV_Position";
-    case BUILTIN_POINTCOORD:    return "SV_Position";
-    case BUILTIN_FRONTFACING:   return "SV_IsFrontFace";
-    case BUILTIN_FRAGDEPTH:     return "SV_Depth";
-
-    case BUILTIN_INVOCATIONID:
-        assert_always("Unavailable");
-        return nullptr;
-
-    default:
-        assert_always("Unimplemented");
-        return nullptr;
-    }
-}
-
 std::string Direct3D12Shader::emitBinaryOp(Instruction* i, hir::Opcode type, char symbol) {
     hir::Literal result = i->resultId;
     hir::Literal lhs = i->operands[0];
@@ -243,7 +256,7 @@ std::string Direct3D12Shader::emitOpStore(Instruction* i) {
 
     Literal object = i->operands[1];
     std::string pointerStr = getPointer(i->operands[0]);
-    return format(PADDING "%s = %s;\n", pointerStr.c_str(), "TODO");
+    return format(PADDING "%s = v%d;\n", pointerStr.c_str(), object);
 }
 
 std::string Direct3D12Shader::compile(Instruction* i) {
@@ -303,12 +316,18 @@ std::string Direct3D12Shader::compile(Function* function) {
     // Function declaration
     Literal funcId = function->function->resultId;
     if (idCache[funcId].empty()) {
-
+        assert_always("Unimplemented");
     }
 
     source += idCache[funcId] + " {\n";
+    if (idEntryPoint == funcId) {
+        source += PADDING "TOutput output;\n";
+    }
     for (auto* block : function->blocks) {
         source += compile(block);
+    }
+    if (idEntryPoint == funcId) {
+        source += PADDING "return output;\n";
     }
     source += "}\n\n";
     return source;
@@ -317,11 +336,30 @@ std::string Direct3D12Shader::compile(Function* function) {
 std::string Direct3D12Shader::compile(Module* module) {
     std::string source;
 
+    countArbitraryInput = 0;
+    countArbitraryOutput = 0;
+
     // Compile module header
     for (Instruction* i : module->header) {
         if (i->opcode == OP_ENTRY_POINT) {
             Literal funcId = i->operands[1];
             idCache[funcId] = "TOutput main(TInput input)";
+            idEntryPoint = funcId;
+        }
+        if (i->opcode == OP_DECORATE && i->operands[1] == DECORATION_BUILTIN) {
+            Literal decoratedId = i->operands[0];
+            idDecoration[decoratedId] = { i };
+        }
+        if (i->opcode == OP_MEMBER_DECORATE && i->operands[2] == DECORATION_BUILTIN) {
+            Literal decoratedId = i->operands[0];
+            Literal decoratedMember = i->operands[1];
+            if (idDecoration.find(decoratedId) == idDecoration.end()) {
+                idDecoration[decoratedId] = {};
+            }
+            if (idDecoration[decoratedId].size() <= decoratedMember) {
+                idDecoration[decoratedId].resize(decoratedMember + 1);
+            }
+            idDecoration[decoratedId][decoratedMember] = i;
         }
         if (i->opcode == OP_CONSTANT) {
             std::string type = getType(i->typeId);
@@ -333,10 +371,26 @@ std::string Direct3D12Shader::compile(Module* module) {
             std::string type = getType(i->typeId);
             switch (storageClass) {
             case StorageClass::INPUT:
-                sourceInput += format(PADDING "%s v%d : INPUT0;\n", type.c_str(), i->resultId);
+                if (idDecoration.find(i->resultId) != idDecoration.end()) {
+                    hir::Literal builtinType = idDecoration[i->resultId][0]->operands[2];
+                    if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
+                        type = "uint";
+                    }
+                    sourceInput += format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType));
+                } else {
+                    sourceInput += format(PADDING "%s v%d : INPUT%d;\n", type.c_str(), i->resultId, countArbitraryInput++);
+                }
                 break;
             case StorageClass::OUTPUT:
-                sourceOutput += format(PADDING "%s v%d : OUTPUT0;\n", type.c_str(), i->resultId);
+                if (idDecoration.find(i->resultId) != idDecoration.end()) {
+                    hir::Literal builtinType = idDecoration[i->resultId][0]->operands[2];
+                    if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
+                        type = "uint";
+                    }
+                    sourceOutput += format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType));
+                } else {
+                    sourceOutput += format(PADDING "%s v%d;\n", type.c_str(), i->resultId);
+                }
                 break;
             default:
                 assert_always("Unimplemented");
@@ -361,9 +415,9 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
 
     std::string source = compile(module);
     std::cout << source << std::endl;
-    if (desc.type == SHADER_TYPE_VERTEX) {
+    /*if (desc.type == SHADER_TYPE_VERTEX) {
         source = "struct TInput { float4 i0 : INPUT0; float4 i1 : INPUT1; }; struct TOutput { float4 o0 : SV_POSITION; float4 o1: COLOR; }; TOutput main(TInput input) { TOutput output; output.o0 = input.i0; output.o1 = input.i1; return output; }";
-    }
+    }*/
     if (desc.type == SHADER_TYPE_PIXEL) {
         source = "struct TInput { float4 i0 : SV_POSITION; float4 i1: COLOR; }; float4 main(TInput input) : SV_TARGET { return input.i1; }";
     }
