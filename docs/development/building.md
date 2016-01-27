@@ -3,7 +3,9 @@ Building
 
 ## General
 
-If you want to modify the shader parsers of the graphics library frontends you will need to modify the `*.l` and `*.y` files and compile them back to the `*.cpp` files with [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/) respectively.
+If you want to modify the shader parsers of the *graphics* library frontends you will need to modify the `*.l` and `*.y` files and compile them back to the `*.cpp` files with [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/) respectively.
+
+If you want to modify the shaders used by the *ui* library you will need to modify the `*.glsl` files and compile them to `*.spv` binaries using [Glslang](https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/). Choose the proper shader type based on the filename suffix.
 
 
 ## Platforms

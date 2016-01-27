@@ -1,7 +1,10 @@
 #version 150
 
-in vec3 vert;
+in vec4 i0; // Vertex
+in vec4 i1; // Color
+out vec4 o0;  // Color
 
 void main() {
-    gl_Position = vec4(vert, 1);
+    gl_Position = i0;
+    o0 = i1;
 }

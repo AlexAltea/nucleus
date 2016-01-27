@@ -114,7 +114,7 @@ std::string Direct3D12Shader::getType(Literal instrId) {
             std::string memberType = getType(operand);
             if (decorations && decorations[i]) {
                 hir::Literal builtinType = decorations[i]->operands[3];
-                if (builtinType == BUILTIN_CLIPDISTANCE) {
+                if (builtinType == BUILTIN_CLIPDISTANCE || builtinType == BUILTIN_POINTSIZE) {
                     members += "//";
                 }
                 members += format(PADDING "%s m%d : %s;\n", memberType.c_str(), i, getBuiltin(builtinType));
@@ -371,25 +371,44 @@ std::string Direct3D12Shader::compile(Module* module) {
             std::string type = getType(i->typeId);
             switch (storageClass) {
             case StorageClass::INPUT:
-                if (idDecoration.find(i->resultId) != idDecoration.end()) {
+                if (module->idInstructions[module->idInstructions[i->typeId]->operands[1]]->opcode == OP_TYPE_STRUCT) {
+                    sourceInput += format(PADDING "%s v%d;\n", type.c_str(), i->resultId);
+                }
+                else if (idDecoration.find(i->resultId) != idDecoration.end()) {
                     hir::Literal builtinType = idDecoration[i->resultId][0]->operands[2];
                     if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
                         type = "uint";
                     }
-                    sourceInput += format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType));
+                    if (shaderType == SHADER_TYPE_PIXEL) {
+                        // NOTE: This is a workaround for Glslang-emitted shaders. Prepend to ensure that SV_Position appears on top and linking succeeds.
+                        sourceInput = format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType)) + sourceInput;
+                    } else {
+                        sourceInput += format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType));
+                    }
                 } else {
-                    sourceInput += format(PADDING "%s v%d : INPUT%d;\n", type.c_str(), i->resultId, countArbitraryInput++);
+                    if (shaderType == SHADER_TYPE_PIXEL) {
+                        sourceInput += format(PADDING "%s v%d : COLOR;\n", type.c_str(), i->resultId);
+                    } else {
+                        sourceInput += format(PADDING "%s v%d : INPUT%d;\n", type.c_str(), i->resultId, countArbitraryInput++);
+                    }
                 }
                 break;
             case StorageClass::OUTPUT:
-                if (idDecoration.find(i->resultId) != idDecoration.end()) {
+                if (module->idInstructions[module->idInstructions[i->typeId]->operands[1]]->opcode == OP_TYPE_STRUCT) {
+                    sourceOutput += format(PADDING "%s v%d;\n", type.c_str(), i->resultId);
+                }
+                else if (idDecoration.find(i->resultId) != idDecoration.end()) {
                     hir::Literal builtinType = idDecoration[i->resultId][0]->operands[2];
                     if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
                         type = "uint";
                     }
                     sourceOutput += format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType));
                 } else {
-                    sourceOutput += format(PADDING "%s v%d;\n", type.c_str(), i->resultId);
+                    if (shaderType == SHADER_TYPE_PIXEL) {
+                        sourceOutput += format(PADDING "%s v%d : SV_Target%d;\n", type.c_str(), i->resultId, countArbitraryOutput++);
+                    } else {
+                        sourceOutput += format(PADDING "%s v%d : COLOR;\n", type.c_str(), i->resultId);
+                    }
                 }
                 break;
             default:
@@ -411,16 +430,11 @@ std::string Direct3D12Shader::compile(Module* module) {
 bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
     // Initialization
     module = desc.module;
+    shaderType = desc.type;
     idCache.resize(module->idInstructions.size());
 
     std::string source = compile(module);
-    std::cout << source << std::endl;
-    /*if (desc.type == SHADER_TYPE_VERTEX) {
-        source = "struct TInput { float4 i0 : INPUT0; float4 i1 : INPUT1; }; struct TOutput { float4 o0 : SV_POSITION; float4 o1: COLOR; }; TOutput main(TInput input) { TOutput output; output.o0 = input.i0; output.o1 = input.i1; return output; }";
-    }*/
-    if (desc.type == SHADER_TYPE_PIXEL) {
-        source = "struct TInput { float4 i0 : SV_POSITION; float4 i1: COLOR; }; float4 main(TInput input) : SV_TARGET { return input.i1; }";
-    }
+    //std::cout << source << std::endl;
 
     LPCSTR target;
     switch (desc.type) {

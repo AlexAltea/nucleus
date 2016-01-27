@@ -1,7 +1,9 @@
 #version 150
 
-out vec4 finalColor;
+in vec4 gl_FragCoord;
+in vec4 color;
+out vec4 result;
 
 void main() {
-    finalColor = vec4(1.0, 1.0, 1.0, 1.0);
+    result = color;
 }

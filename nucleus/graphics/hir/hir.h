@@ -30,6 +30,7 @@ enum StorageClass {
 };
 
 enum Decoration {
+    DECORATION_BLOCK = 2,
     DECORATION_BUILTIN = 11,
 };
 

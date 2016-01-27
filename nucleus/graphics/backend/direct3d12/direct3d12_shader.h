@@ -29,6 +29,7 @@ namespace direct3d12 {
 
 class Direct3D12Shader : public Shader {
     hir::Module* module;
+    ShaderType shaderType;
 
     // Header
     int countArbitraryInput;
