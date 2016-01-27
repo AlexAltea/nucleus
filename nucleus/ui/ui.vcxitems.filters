@@ -43,6 +43,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)transitions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ui.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widget.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)surface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_texture.cpp">
@@ -71,5 +72,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)transitions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ui.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widget.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)surface.cpp" />
   </ItemGroup>
 </Project>

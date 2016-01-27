@@ -9,6 +9,7 @@
 #include "nucleus/graphics/graphics.h"
 #include "nucleus/ui/language.h"
 #include "nucleus/ui/screen.h"
+#include "nucleus/ui/surface.h"
 
 #include <queue>
 #include <thread>
@@ -27,17 +28,14 @@ class UI {
     std::queue<std::unique_ptr<Screen>> newScreens;
 
 public:
+    // Holds the message translation database
     Language language;
 
-    // Surface properties
-    unsigned int surfaceWidth = 0;
-    unsigned int surfaceHeight = 0;
-    unsigned int surfaceDpi = 100;
-    unsigned int surfaceHz = 60;
-    float surfaceProportion = 1.0;
+    // Holds the properties of the global window
+    Surface surface;
 
     // Constructor
-    UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue);
+    UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue, Size width, Size height);
 
     // RSX connection
     bool rsxChanged = false;

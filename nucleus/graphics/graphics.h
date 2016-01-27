@@ -129,6 +129,12 @@ public:
     virtual VertexBuffer* createVertexBuffer(const VertexBufferDesc& desc) = 0;
 
     /**
+     * Resizes both the back buffer and front buffer
+     * @return  True on success
+     */
+    virtual bool doResizeBuffers(int width, int height) = 0;
+
+    /**
      * Swaps the back buffer and front buffer
      * @return  True on success
      */

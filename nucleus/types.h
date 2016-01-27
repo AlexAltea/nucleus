@@ -18,6 +18,7 @@ using U64 = unsigned long long;
 using F32 = float;
 using F64 = double;
 
+using Size = size_t;
 
 struct U128 {
     U64 lo, hi;

@@ -63,6 +63,7 @@ public:
     virtual Shader* createShader(const ShaderDesc& desc) override;
     virtual Texture* createTexture(const TextureDesc& desc) override;
     virtual VertexBuffer* createVertexBuffer(const VertexBufferDesc& desc) override;
+    virtual bool doResizeBuffers(int width, int height) override;
     virtual bool doSwapBuffers() override;
 };
 

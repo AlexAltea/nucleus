@@ -11,8 +11,8 @@
 
 namespace ui {
 
-UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue) :
-    graphics(std::move(graphics)), cmdQueue(queue), language() {
+UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue, Size width, Size height) :
+    graphics(std::move(graphics)), cmdQueue(queue), language(), surface(width, height) {
 }
 
 bool UI::initialize() {
@@ -68,8 +68,9 @@ void UI::task() {
 #endif
 
     while (true) {
-        const gfx::Viewport viewport = { 0, 0, 960, 544 /*surfaceWidth, surfaceHeight*/ };
-        const gfx::Rectangle scissor = { 0, 0, 960, 544 /*surfaceWidth, surfaceHeight*/ };
+        surface.update(graphics.get());
+        const gfx::Viewport viewport = { 0, 0, surface.getWidth(), surface.getHeight() };
+        const gfx::Rectangle scissor = { 0, 0, surface.getWidth(), surface.getHeight() };
 
         cmdBuffer->reset();
         cmdBuffer->cmdBindPipeline(pipeline);

@@ -229,6 +229,10 @@ VertexBuffer* OpenGLBackend::createVertexBuffer(const VertexBufferDesc& desc) {
     return vtxBuffer;
 }
 
+bool OpenGLBackend::doResizeBuffers(int width, int height) {
+    return true;
+}
+
 bool OpenGLBackend::doSwapBuffers() {
 #if defined(NUCLEUS_PLATFORM_WINDOWS)
     SwapBuffers(parameters.hdc);

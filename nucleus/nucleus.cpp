@@ -66,15 +66,11 @@ int nucleusInitialize(int argc, char **argv) {
     return 0;
 }
 
-/**
- * Events
- */
-void nucleusOnResize(unsigned int w, unsigned int h, unsigned int dpi, unsigned int hz) {
+// Events
+void nucleusOnResize(unsigned int width, unsigned int height) {
     if (nucleus.ui) {
-        nucleus.ui->surfaceWidth = w;
-        nucleus.ui->surfaceHeight = h;
-        nucleus.ui->surfaceDpi = dpi;
-        nucleus.ui->surfaceHz = hz;
-        nucleus.ui->surfaceProportion = float(w) / float(h);
+        ui::Surface& surface = nucleus.ui->surface;
+        surface.setWidth(width);
+        surface.setHeight(height);
     }
 }

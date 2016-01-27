@@ -27,4 +27,4 @@ void nucleusPrepare(Display* display);
 int nucleusInitialize(int argc, char **argv);
 
 // Events
-void nucleusOnResize(unsigned int w, unsigned int h, unsigned int dpi, unsigned int hz);
+void nucleusOnResize(unsigned int width, unsigned int height);

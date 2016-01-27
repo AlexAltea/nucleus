@@ -383,6 +383,17 @@ VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc
     return vtxBuffer;
 }
 
+bool Direct3D12Backend::doResizeBuffers(int width, int height) {
+    UINT w = static_cast<UINT>(width);
+    UINT h = static_cast<UINT>(height);
+    HRESULT hr = swapChain->ResizeBuffers(2, w, h, DXGI_FORMAT_UNKNOWN, 0);
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::doResizeBuffers: swapChain->ResizeBuffers failed (0x%X)", hr);
+        return false;
+    }
+    return true;
+}
+
 bool Direct3D12Backend::doSwapBuffers() {
 #if defined(NUCLEUS_BUILD_DEBUG)
     debug.printMessages();

@@ -29,15 +29,14 @@ static const PIXELFORMATDESCRIPTOR pfd = {
     0, 0, 0                         // Layer masks ignored
 };
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
     case WM_CLOSE:
         DestroyWindow(hwnd);
         //nucleus.task(NUCLEUS_EVENT_CLOSE);
         break;
     case WM_SIZE:
-        nucleusOnResize(LOWORD(lParam), HIWORD(lParam), 100, 60);
+        nucleusOnResize(LOWORD(lParam), HIWORD(lParam));
         break;
     case WM_DESTROY:
         PostQuitMessage(0);

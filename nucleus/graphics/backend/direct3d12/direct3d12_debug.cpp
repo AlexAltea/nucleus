@@ -133,7 +133,7 @@ void Direct3D12Debug::printMessages() {
         hr = d3dInfoQueue->GetMessage(i, nullptr, &msgSize);
         
         std::vector<byte> buffer(msgSize);
-        D3D12_MESSAGE* msg = reinterpret_cast<D3D12_MESSAGE*>(buffer.data());
+        auto* msg = reinterpret_cast<D3D12_MESSAGE*>(buffer.data());
         hr = d3dInfoQueue->GetMessage(i, msg, &msgSize);
         print(msg);
     }
@@ -143,11 +143,11 @@ void Direct3D12Debug::printMessages() {
     UINT64 dxgiCount = dxgiInfoQueue->GetNumStoredMessagesAllowedByRetrievalFilters(DXGI_DEBUG_ALL);
     for (UINT64 i = 0; i < dxgiCount; i++) {
         SIZE_T msgSize = 0;
-        hr = d3dInfoQueue->GetMessage(i, nullptr, &msgSize);
+        hr = dxgiInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, nullptr, &msgSize);
         
         std::vector<byte> buffer(msgSize);
-        D3D12_MESSAGE* msg = reinterpret_cast<D3D12_MESSAGE*>(buffer.data());
-        hr = d3dInfoQueue->GetMessage(i, msg, &msgSize);
+        auto* msg = reinterpret_cast<DXGI_INFO_QUEUE_MESSAGE*>(buffer.data());
+        hr = dxgiInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, msg, &msgSize);
         print(msg);
     }
     dxgiInfoQueue->ClearStoredMessages(DXGI_DEBUG_ALL);

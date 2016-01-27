@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)screens\screen_logo.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)screens\screen_main.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)style.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)surface.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)transitions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ui.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widget.h" />
@@ -37,6 +38,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)screens\screen_emulator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)screens\screen_logo.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)screens\screen_main.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)surface.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)transitions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ui.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widget.cpp" />

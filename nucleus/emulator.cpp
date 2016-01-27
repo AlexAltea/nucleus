@@ -47,7 +47,7 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
     }
 
     if (!config.console) {
-        ui = std::make_shared<ui::UI>(graphics, queue);
+        ui = std::make_shared<ui::UI>(graphics, queue, params.width, params.height);
         if (!ui->initialize()) {
             logger.warning(LOG_COMMON, "Could not initialize user interface");
             return false;
