@@ -90,7 +90,7 @@ void Direct3D12CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount,
         auto* d3dVertexBuffer = static_cast<Direct3D12VertexBuffer*>(vtxBuffer[i]);
         vtxBufferView[i].BufferLocation = d3dVertexBuffer->resource->GetGPUVirtualAddress();
         vtxBufferView[i].StrideInBytes = strides[i];
-        vtxBufferView[i].SizeInBytes = 3 * 0x20; // TODO
+        vtxBufferView[i].SizeInBytes = d3dVertexBuffer->resource->GetDesc().Width;
     }
     UINT startSlot = index;
     UINT numViews = vtxBufferCount;

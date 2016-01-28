@@ -19,8 +19,9 @@ class UI;
 
 struct WidgetInput {
     struct WidgetVertex {
-        F32 position[2];
-    } vertex[4];
+        F32 position[4];
+        F32 color[4];
+    } vertex[3];
 };
 
 class Widget {

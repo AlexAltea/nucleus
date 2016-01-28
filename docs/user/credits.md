@@ -11,3 +11,5 @@ Project created by Alexandro Sánchez Bach at around `2014-08-01T00:00:00+00:00`
 
 * _Michael Putters_: Donated many brilliant ideas. And an icon.
 * _Billy Rabishaw_: Donated a PlayStation 3.
+* _Picard_: Donated knowledge.
+* _Zecoxao_: Donated determination.

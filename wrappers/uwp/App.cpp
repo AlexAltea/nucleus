@@ -80,11 +80,13 @@ void NucleusApp::SetWindow(CoreWindow^ window) {
 }
 
 void NucleusApp::Load(Platform::String^ entryPoint) {
+    CoreWindow^ window = CoreWindow::GetForCurrentThread();
+
     // Initialize Nucleus UI
-    IUnknown* window = reinterpret_cast<IUnknown*>(CoreWindow::GetForCurrentThread());
-    unsigned int width = 960;
-    unsigned int height = 544;
-    nucleusPrepare(window, width, height);
+    IUnknown* windowPtr = reinterpret_cast<IUnknown*>(window);
+    auto width = static_cast<unsigned int>(window->Bounds.Width);
+    auto height = static_cast<unsigned int>(window->Bounds.Height);
+    nucleusPrepare(windowPtr, width, height);
 }
 
 void NucleusApp::Run() {

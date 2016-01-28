@@ -23,17 +23,17 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
 }
 
 void ScreenLogo::update() {
-    /*if (dtime > 2000.0) {
-        logo.style.opacity = 1.0f - transition::easeOut((dtime - 2000.0f) / 1000.0f);
+    if (dtime > 2000ms) {
+        //logo->style.opacity = 1.0f - transition::easeOut((dtime - 2000ms) / 1000ms);
     }
-    if (dtime > 3000.0) {
+    if (dtime > 3000ms) {
         if (!config.boot.empty()) {
-            parent->pushScreen(std::make_unique<ScreenEmulator>(parent));
+            manager->pushScreen(std::make_unique<ScreenEmulator>(manager));
         } else {
-            parent->pushScreen(std::make_unique<ScreenMain>(parent));
+            manager->pushScreen(std::make_unique<ScreenMain>(manager));
         }
         finished = true;
-    }*/
+    }
 }
 
 }  // namespace ui

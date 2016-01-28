@@ -10,6 +10,8 @@
 
 #include <chrono>
 
+using namespace std::literals::chrono_literals;
+
 namespace ui {
 
 // Forward declarations

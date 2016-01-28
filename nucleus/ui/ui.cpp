@@ -103,19 +103,21 @@ void UI::task() {
         }
 
         // Render widgets
-        gfx::VertexBufferDesc vtxBufferDesc = {};
-        vtxBufferDesc.size = widgetVtxBuffer.size() * sizeof(WidgetInput);
-        gfx::VertexBuffer* vtxBuffer = graphics->createVertexBuffer(vtxBufferDesc);
+        if (!widgetVtxBuffer.empty()) {
+            gfx::VertexBufferDesc vtxBufferDesc = {};
+            vtxBufferDesc.size = widgetVtxBuffer.size() * sizeof(WidgetInput);
+            gfx::VertexBuffer* vtxBuffer = graphics->createVertexBuffer(vtxBufferDesc);
 
-        void* bufferAddr = vtxBuffer->map();
-        memcpy(bufferAddr, widgetVtxBuffer.data(), vtxBufferDesc.size);
-        vtxBuffer->unmap();
+            void* bufferAddr = vtxBuffer->map();
+            memcpy(bufferAddr, widgetVtxBuffer.data(), vtxBufferDesc.size);
+            vtxBuffer->unmap();
 
-        U32 offsets[] = {0};
-        U32 strides[] = {16};
-        cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
-        cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
-        cmdBuffer->cmdDraw(0, 3 * widgetVtxBuffer.size(), 0, 1);
+            U32 offsets[] = {0};
+            U32 strides[] = { sizeof(WidgetInput) / 3 };
+            cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
+            cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
+            cmdBuffer->cmdDraw(0, widgetVtxBuffer.size() * 3, 0, 1);
+        }
 
         // Add new screens
         while (!newScreens.empty()) {
@@ -145,7 +147,19 @@ void UI::pushScreen(std::unique_ptr<Screen>&& screen) {
 // Rendering
 void UI::renderWidget(const WidgetInput& input) {
     const U32 offset = sizeof(WidgetInput) * widgetVtxBuffer.size();
-    widgetVtxBuffer.push_back(input);
+    //widgetVtxBuffer.push_back(input);
+    WidgetInput newInput = {
+        +0.00f,  0.25f, 0.00f, 1.00f,   1.0f, 0.0f, 0.0f, 1.0f, 
+        +0.25f, -0.25f, 0.00f, 1.00f,   0.0f, 1.0f, 0.0f, 1.0f, 
+        -0.25f, -0.25f, 0.00f, 1.00f,   0.0f, 0.0f, 1.0f, 1.0f,
+    };
+    WidgetInput newInput2 = {
+        +0.50f,  0.75f, 0.00f, 1.00f,   1.0f, 0.0f, 0.0f, 1.0f, 
+        +0.75f, +0.25f, 0.00f, 1.00f,   0.0f, 1.0f, 0.0f, 1.0f, 
+        +0.25f, +0.25f, 0.00f, 1.00f,   0.0f, 0.0f, 1.0f, 1.0f
+    };
+    widgetVtxBuffer.push_back(newInput);
+    widgetVtxBuffer.push_back(newInput2);
 }
 
 }  // namespace ui
