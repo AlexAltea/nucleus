@@ -38,6 +38,7 @@ namespace direct3d12 {
 #define _D3DDisassemble               D3DDisassemble
 #define _D3DPreprocess                D3DPreprocess
 #define _DXGIGetDebugInterface        DXGIGetDebugInterface
+#define _DXGIGetDebugInterface1       DXGIGetDebugInterface1
 
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
 #define DECLARE_FUNCTION(type, module, function) extern type _##function;

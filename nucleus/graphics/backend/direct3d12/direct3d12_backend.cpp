@@ -19,6 +19,7 @@
 #include "nucleus/graphics/backend/direct3d12/direct3d12_texture.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_vertex_buffer.h"
 
+#include <thread>
 #include <vector>
 
 namespace gfx {
@@ -384,12 +385,40 @@ VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc
 }
 
 bool Direct3D12Backend::doResizeBuffers(int width, int height) {
+    // Release resources
+    swapChainRenderBuffer[0]->Release();
+    swapChainRenderBuffer[1]->Release();
+
     UINT w = static_cast<UINT>(width);
     UINT h = static_cast<UINT>(height);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10)); // FIXME: Removing this causes swapChain->ResizeBuffers to crash.
     HRESULT hr = swapChain->ResizeBuffers(2, w, h, DXGI_FORMAT_UNKNOWN, 0);
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::doResizeBuffers: swapChain->ResizeBuffers failed (0x%X)", hr);
         return false;
+    }
+
+    // Get resources
+    // TODO: The following lines appear on Direct3D12Backend::initialize too. Remove both occurences and call a new method instead.
+    Direct3D12ColorTarget swapChainColorTargets[2];
+    D3D12_CPU_DESCRIPTOR_HANDLE swapChainRTVHeapStart = swapChainRTVHeap->GetCPUDescriptorHandleForHeapStart();
+    unsigned int rtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    for (UINT i = 0; i < 2; i++) {
+        swapChainColorTargets[i].handle.ptr = swapChainRTVHeapStart.ptr + (i * rtvDescriptorSize);
+        swapChain->GetBuffer(i, IID_PPV_ARGS(&swapChainRenderBuffer[i]));
+        device->CreateRenderTargetView(swapChainRenderBuffer[i], NULL, swapChainColorTargets[i].handle);
+    }
+
+    if (swapChain->GetCurrentBackBufferIndex() == 0) {
+        screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
+        screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
+        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
+        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
+    } else {
+        screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
+        screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
+        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
+        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
     }
     return true;
 }

@@ -24,8 +24,13 @@ bool Direct3D12Debug::enable() {
 bool Direct3D12Debug::initialize(ID3D12Device* device) {
     HRESULT hr;
     hr = device->QueryInterface(IID_PPV_ARGS(&d3dInfoQueue));
+#if defined(NUCLEUS_PLATFORM_WINDOWS)
     hr = _DXGIGetDebugInterface(IID_PPV_ARGS(&dxgiDebugController));
     hr = _DXGIGetDebugInterface(IID_PPV_ARGS(&dxgiInfoQueue));
+#elif defined(NUCLEUS_PLATFORM_UWP)
+    hr = _DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebugController));
+    hr = _DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiInfoQueue));
+#endif
     return true;
 }
 

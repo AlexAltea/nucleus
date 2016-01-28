@@ -211,8 +211,14 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="..\..\resources\shaders\ui_widget_ps.spv" />
-    <None Include="..\..\resources\shaders\ui_widget_vs.spv" />
+    <None Include="..\..\resources\shaders\ui_widget_ps.spv">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
+    <None Include="..\..\resources\shaders\ui_widget_vs.spv">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </None>
     <None Include="nucleus-uwp_TemporaryKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
