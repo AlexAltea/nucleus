@@ -7,9 +7,11 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
+#include "nucleus/ui/event.h"
 #include "nucleus/ui/length.h"
 #include "nucleus/ui/style.h"
 
+#include <functional>
 #include <string>
 
 namespace ui {
@@ -57,6 +59,13 @@ public:
 
     static float getCoordinateX(Length x);
     static float getCoordinateY(Length y);
+
+    // Event handling
+    void onMouseMove(std::function<void(MouseEvent&)>);
+    void onMouseClick(std::function<void(MouseEvent&)>);
+    void onMouseWheel(std::function<void(MouseEvent&)>);
+    void onKeyDown(std::function<void(KeyEvent&)>);
+    void onKeyUp(std::function<void(KeyEvent&)>);
 };
 
 }  // namespace ui

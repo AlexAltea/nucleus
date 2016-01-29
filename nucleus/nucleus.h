@@ -25,6 +25,12 @@ void nucleusPrepare(Display* display);
 #endif
 
 int nucleusInitialize(int argc, char **argv);
+void nucleusFinalize();
 
 // Events
-void nucleusOnResize(unsigned int width, unsigned int height);
+void nucleusOnWindowSizeChanged(unsigned int width, unsigned int height);
+void nucleusOnMouseClick(int x, int y);
+void nucleusOnMouseDoubleClick(int x, int y);
+void nucleusOnMouseMove(int x, int y);
+void nucleusOnKeyDown(int keycode);
+void nucleusOnKeyUp(int keycode);

@@ -8,10 +8,13 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/ui/ui.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "externals/stb/stb_image.h"
+
 namespace ui {
 
 WidgetImage::~WidgetImage() {
-    delete image.buffer;
+    stbi_image_free(imBuffer);
 }
 
 void WidgetImage::init(const std::string& pngfile) {
@@ -24,21 +27,21 @@ void WidgetImage::init(const std::string& pngfile) {
     }
 
     fseek(file, 0, SEEK_END);
-    size_t size = ftell(file);
-    auto* pngbuffer = new unsigned char[size + 1];
+    Size size = ftell(file);
+    std::vector<Byte> pngBuffer(size + 1);
     fseek(file, 0, SEEK_SET);
-    fread(pngbuffer, size, 1, file);
+    fread(pngBuffer.data(), size, 1, file);
     fclose(file);
 
-    init(pngbuffer, size);
+    init(pngBuffer.data(), size);
 }
 
-void WidgetImage::init(const unsigned char* pngbuffer, size_t size) {
+void WidgetImage::init(const Byte* pngbuffer, Size size) {
     /**
-     * NOTE: STB generates stores the image rows in reverse order with respect to the format OpenGL expects.
+     * NOTE: STB generates stores the image rows in reverse order with respect to the format nucleus::gfx expects.
      * Vertical quad coordinates are swapped on rendering to make sure the image shows up properly.
      */
-    //image.buffer = stbi_load_from_memory(pngbuffer, size, &image.width, &image.height, &image.components, 4);
+    imBuffer = stbi_load_from_memory(pngbuffer, size, &imWidth, &imHeight, &imComponents, 4);
 }
 
 void WidgetImage::render() {
@@ -46,10 +49,10 @@ void WidgetImage::render() {
     Length height = style.height;
 
     if (style.sizeMode == PROPORTION_AUTOWIDTH) {
-        width = height * float(image.width) / float(image.height);
+        width = height * float(imWidth) / float(imHeight);
     }
     if (style.sizeMode == PROPORTION_AUTOHEIGHT) {
-        height = width * float(image.height) / float(image.width);
+        height = width * float(imHeight) / float(imWidth);
     }
     height = Widget::correctHeight(height);
 

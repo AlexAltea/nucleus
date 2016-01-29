@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "nucleus/common.h"
 #include "nucleus/ui/widget.h"
 
 #include <string>
@@ -12,12 +13,11 @@
 namespace ui {
 
 class WidgetImage : public Widget {
-    struct Image {
-        unsigned char* buffer = nullptr;
-        int width;
-        int height;
-        int components;
-    } image;
+    // Image
+    unsigned char* imBuffer;
+    int imWidth;
+    int imHeight;
+    int imComponents;
 
 public:
     ~WidgetImage();
@@ -26,7 +26,7 @@ public:
     void init(const std::string& pngfile);
 
     // Read PNG from buffer
-    void init(const unsigned char* pngbuffer, size_t size);
+    void init(const Byte* pngbuffer, Size size);
 
     // Render the image
     virtual void render() override;

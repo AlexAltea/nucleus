@@ -19,4 +19,6 @@ FUNCTION(pD3DDisassemble, d3dcompiler_47, D3DDisassemble);
 FUNCTION(pD3DPreprocess, d3dcompiler_47, D3DPreprocess);
 
 // Functions: dxgidebug.dll
+#ifdef NUCLEUS_BUILD_DEBUG
 FUNCTION(PFN_DXGIGetDebugInterface, dxgidebug, DXGIGetDebugInterface);
+#endif

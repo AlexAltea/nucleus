@@ -12,6 +12,8 @@
 namespace gfx {
 namespace direct3d12 {
 
+#ifdef NUCLEUS_BUILD_DEBUG
+
 bool Direct3D12Debug::enable() {
     HRESULT hr = _D3D12GetDebugInterface(IID_PPV_ARGS(&d3dDebugController));
     if (FAILED(hr)) {
@@ -157,6 +159,8 @@ void Direct3D12Debug::printMessages() {
     }
     dxgiInfoQueue->ClearStoredMessages(DXGI_DEBUG_ALL);
 }
+
+#endif
 
 }  // namespace direct3d12
 }  // namespace gfx

@@ -66,11 +66,30 @@ int nucleusInitialize(int argc, char **argv) {
     return 0;
 }
 
+void nucleusFinalize() {
+    //nucleus.task(NUCLEUS_EVENT_CLOSE);
+}
+
 // Events
-void nucleusOnResize(unsigned int width, unsigned int height) {
+void nucleusOnWindowSizeChanged(unsigned int width, unsigned int height) {
     if (nucleus.ui) {
         ui::Surface& surface = nucleus.ui->surface;
         surface.setWidth(width);
         surface.setHeight(height);
     }
+}
+
+void nucleusOnMouseClick(int x, int y) {
+}
+
+void nucleusOnMouseDoubleClick(int x, int y) {
+}
+
+void nucleusOnMouseMove(int x, int y) {
+}
+
+void nucleusOnKeyDown(int keycode) {
+}
+
+void nucleusOnKeyUp(int keycode) {
 }

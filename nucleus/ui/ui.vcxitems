@@ -14,6 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)language.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)length.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)screen.h" />

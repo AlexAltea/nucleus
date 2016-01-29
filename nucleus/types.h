@@ -19,6 +19,7 @@ using F32 = float;
 using F64 = double;
 
 using Size = size_t;
+using Byte = U8;
 
 struct U128 {
     U64 lo, hi;

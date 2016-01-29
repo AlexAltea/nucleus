@@ -44,6 +44,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ui.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widget.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)surface.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)event.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_texture.cpp">

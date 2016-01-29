@@ -22,6 +22,4 @@ public:
     Window(const std::string& title, int width, int height);
 
     void loop();
-
-    void swapBuffers();
 };

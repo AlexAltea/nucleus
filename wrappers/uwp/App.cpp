@@ -124,7 +124,7 @@ void NucleusApp::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventA
 void NucleusApp::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args) {
     auto width = static_cast<unsigned int>(args->Size.Width);
     auto height = static_cast<unsigned int>(args->Size.Height);
-    nucleusOnResize(width, height);
+    nucleusOnWindowSizeChanged(width, height);
 }
 
 void NucleusApp::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args) {

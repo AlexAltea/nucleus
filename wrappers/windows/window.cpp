@@ -8,6 +8,8 @@
 
 #include "nucleus/nucleus.h"
 
+#include <Windowsx.h>
+
 static const PIXELFORMATDESCRIPTOR pfd = {
     sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
     1,                              // Version
@@ -30,17 +32,40 @@ static const PIXELFORMATDESCRIPTOR pfd = {
 };
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    switch(msg) {
+    switch (msg) {
+    // Lifecycle
     case WM_CLOSE:
         DestroyWindow(hwnd);
-        //nucleus.task(NUCLEUS_EVENT_CLOSE);
-        break;
-    case WM_SIZE:
-        nucleusOnResize(LOWORD(lParam), HIWORD(lParam));
         break;
     case WM_DESTROY:
+        nucleusFinalize();
         PostQuitMessage(0);
         break;
+
+    // Window events
+    case WM_SIZE:
+        nucleusOnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));    
+        break;
+
+    // Mouse events
+    case WM_LBUTTONDOWN:
+        nucleusOnMouseClick(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        break;
+    case WM_LBUTTONDBLCLK:
+        nucleusOnMouseDoubleClick(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        break;
+    case WM_MOUSEMOVE:
+        nucleusOnMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        break;
+
+    // Keyboard events
+    case WM_KEYDOWN:
+        nucleusOnKeyDown(wParam);
+        break;
+    case WM_KEYUP:
+        nucleusOnKeyDown(wParam);
+        break;
+
     default:
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
@@ -116,12 +141,8 @@ Window::Window(const std::string& title, int width, int height) :
 
 void Window::loop() {
     MSG msg;
-    while(GetMessage(&msg, NULL, 0, 0) > 0) {
+    while (GetMessage(&msg, NULL, 0, 0) != 0) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-}
-
-void Window::swapBuffers() {
-    SwapBuffers(hdc);
 }
