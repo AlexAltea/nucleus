@@ -13,7 +13,7 @@
 namespace gfx {
 namespace hir {
 
-// HIR instruction generation
+// Instruction utilities
 Instruction* Builder::appendInstr(Opcode opcode, bool hasResultId) {
     Instruction* instr = new Instruction();
     instr->opcode = opcode;
@@ -39,6 +39,13 @@ Instruction* Builder::appendInstr(U16 opcode, Literal typeId, Literal resultId) 
         module->idInstructions[resultId] = instr;
     }
     return instr;
+}
+
+Instruction* Builder::getInstr(Literal instrId) {
+    if (instrId >= module->idInstructions.size()) {
+        return nullptr;
+    }
+    return module->idInstructions[instrId];
 }
 
 // Insertion
@@ -80,6 +87,22 @@ Literal Builder::opTypeMatrix(Literal columnType, Literal columnCount) {
     Instruction* i = appendInstr(OP_TYPE_MATRIX, true);
     i->operands.push_back(columnType);
     i->operands.push_back(columnCount);
+    return i->resultId;
+}
+
+// HIR operations
+Literal Builder::opFNegate(Literal value) {
+    Instruction* i = appendInstr(OP_FNEGATE, true);
+    i->typeId = getInstr(value)->typeId;
+    return i->resultId;
+}
+
+Literal Builder::opVectorShuffle(Literal resType, Literal vec1, Literal vec2, std::vector<Literal> components) {
+    Instruction* i = appendInstr(OP_VECTOR_SHUFFLE, true);
+    i->typeId = resType;
+    i->operands.push_back(vec1);
+    i->operands.push_back(vec2);
+    i->operands.insert(i->operands.end(), components.begin(), components.end());
     return i->resultId;
 }
 

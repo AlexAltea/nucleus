@@ -16,13 +16,11 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> graphics) :
     graphics(std::move(graphics)) {
 }
 
-U64 PGRAPH::HashTexture()
-{
+U64 PGRAPH::HashTexture() {
     return 0;
 }
 
-U64 PGRAPH::HashVertexProgram(rsx_vp_instruction_t* program)
-{
+U64 PGRAPH::HashVertexProgram(rsx_vp_instruction_t* program) {
     // 64-bit Fowler/Noll/Vo FNV-1a hash code
     U64 hash = 0xCBF29CE484222325ULL;
     do {
@@ -34,8 +32,7 @@ U64 PGRAPH::HashVertexProgram(rsx_vp_instruction_t* program)
     return hash;
 }
 
-U64 PGRAPH::HashFragmentProgram(rsx_fp_instruction_t* program)
-{
+U64 PGRAPH::HashFragmentProgram(rsx_fp_instruction_t* program) {
     // 64-bit Fowler/Noll/Vo FNV-1a hash code
     bool end = false;
     U64 hash = 0xCBF29CE484222325ULL;
@@ -49,8 +46,7 @@ U64 PGRAPH::HashFragmentProgram(rsx_fp_instruction_t* program)
     return hash;
 }
 
-void PGRAPH::LoadVertexAttributes(U32 first, U32 count)
-{
+void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
     // Bytes per vertex coordinate. Index is given by attribute::type.
     static const U32 vertexTypeSize[] = {
         0, 2, 4, 2, 1, 2, 4, 1
@@ -99,20 +95,17 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count)
 }
 
 /*
-PGRAPH::PGRAPH()
-{
+PGRAPH::PGRAPH() {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
 
-PGRAPH::~PGRAPH()
-{
+PGRAPH::~PGRAPH() {
     glDeleteFramebuffers(1, &framebuffer);
 }
 */
 
-void PGRAPH::SetColorTarget(U32 address, U8 attachment)
-{
+void PGRAPH::SetColorTarget(U32 address, U8 attachment) {
     /*// Generate a texture to hold the color buffer
     if (colorTargets.find(address) == colorTargets.end()) {
         GLuint colorTexture;
@@ -127,8 +120,7 @@ void PGRAPH::SetColorTarget(U32 address, U8 attachment)
     checkRendererError("SetColorTarget");*/
 }
 
-void PGRAPH::SetDepthTarget(U32 address)
-{
+void PGRAPH::SetDepthTarget(U32 address) {
     /*// Generate a texture to hold the depth buffer
     if (depthTargets.find(address) == depthTargets.end()) {
         GLuint depthTexture;
@@ -143,8 +135,7 @@ void PGRAPH::SetDepthTarget(U32 address)
     checkRendererError("SetDepthTarget");*/
 }
 
-/*GLuint PGRAPH::GetColorTarget(U32 address)
-{
+/*GLuint PGRAPH::GetColorTarget(U32 address) {
     if (colorTargets.find(address) == colorTargets.end()) {
         return 0;
     }
@@ -154,17 +145,14 @@ void PGRAPH::SetDepthTarget(U32 address)
 /**
  * PGRAPH methods
  */
-
-void PGRAPH::AlphaFunc(U32 func, F32 ref)
-{
+void PGRAPH::AlphaFunc(U32 func, F32 ref) {
     /*glAlphaFunc(func, ref);
     checkRendererError("AlphaFunc");*/
 }
 
 // NOTE: RSX doesn't know how big the vertex buffer is, but OpenGL requires this information
 // to copy the data to the host GPU. Therefore, LoadVertexAttributes needs to be called.
-void PGRAPH::BindVertexAttributes()
-{
+void PGRAPH::BindVertexAttributes() {
     /*// Indices are attr.type
     static const GLenum vertexType[] = {
         0, GL_SHORT, GL_FLOAT, GL_HALF_FLOAT, GL_UNSIGNED_BYTE, GL_SHORT, GL_FLOAT, GL_UNSIGNED_BYTE
@@ -190,31 +178,26 @@ void PGRAPH::BindVertexAttributes()
     }*/
 }
 
-void PGRAPH::Begin(U32 mode)
-{
+void PGRAPH::Begin(U32 mode) {
     vertex_primitive = mode;
 }
 
-void PGRAPH::ClearColor(U8 a, U8 r, U8 g, U8 b)
-{
+void PGRAPH::ClearColor(U8 a, U8 r, U8 g, U8 b) {
     /*glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
     checkRendererError("ClearColor");*/
 }
 
-void PGRAPH::ClearDepth(U32 value)
-{
+void PGRAPH::ClearDepth(U32 value) {
     /*glClearDepth(value / (float)0xFFFFFF);
     checkRendererError("ClearDepth");*/
 }
 
-void PGRAPH::ClearStencil(U32 value)
-{
+void PGRAPH::ClearStencil(U32 value) {
     /*glClearStencil(value);
     checkRendererError("ClearStencil");*/
 }
 
-void PGRAPH::ClearSurface(U32 mask)
-{
+void PGRAPH::ClearSurface(U32 mask) {
     /*// Set mask
     GLbitfield clearMask = 0;
     if (mask & 0x01) clearMask |= GL_DEPTH_BUFFER_BIT;
@@ -225,20 +208,17 @@ void PGRAPH::ClearSurface(U32 mask)
     checkRendererError("ClearSurface");*/
 }
 
-void PGRAPH::ColorMask(bool a, bool r, bool g, bool b)
-{
+void PGRAPH::ColorMask(bool a, bool r, bool g, bool b) {
     /*glColorMask(r, g, b, a);
     checkRendererError("ColorMask");*/
 }
 
-void PGRAPH::DepthFunc(U32 func)
-{
+void PGRAPH::DepthFunc(U32 func) {
     /*glDepthFunc(func);
     checkRendererError("DepthFunc");*/
 }
 
-void PGRAPH::DrawArrays(U32 first, U32 count)
-{
+void PGRAPH::DrawArrays(U32 first, U32 count) {
     /*// State
     glBlendFuncSeparate(blend_sfactor_rgb, blend_dfactor_rgb, blend_sfactor_alpha, blend_dfactor_alpha);
 
@@ -370,8 +350,7 @@ void PGRAPH::DrawArrays(U32 first, U32 count)
     checkRendererError("DrawArrays");*/
 }
 
-void PGRAPH::Enable(U32 prop, U32 enabled)
-{
+void PGRAPH::Enable(U32 prop, U32 enabled) {
     /*switch (prop) {
     case NV4097_SET_DITHER_ENABLE:
         enabled ? glEnable(GL_DITHER) : glDisable(GL_DITHER);
@@ -430,17 +409,14 @@ void PGRAPH::Enable(U32 prop, U32 enabled)
     checkRendererError("Enable");*/
 }
 
-void PGRAPH::End()
-{
+void PGRAPH::End() {
     vertex_primitive = 0;
 }
 
-void PGRAPH::Flip()
-{
+void PGRAPH::Flip() {
 }
 
-void PGRAPH::SurfaceColorTarget(U32 target)
-{
+void PGRAPH::SurfaceColorTarget(U32 target) {
     /*GLenum bufs[4];
     switch (target) {
     case RSX_SURFACE_TARGET_NONE:
@@ -481,8 +457,7 @@ void PGRAPH::SurfaceColorTarget(U32 target)
     checkRendererError("SurfaceColorTarget");*/
 }
 
-void PGRAPH::UnbindVertexAttributes()
-{
+void PGRAPH::UnbindVertexAttributes() {
     /*for (int index = 0; index < 16; index++) {
         glDisableVertexAttribArray(index);
         checkRendererError("UnbindVertexAttributes");

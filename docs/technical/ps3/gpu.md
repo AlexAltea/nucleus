@@ -99,26 +99,30 @@ Vertex shaders are run in the *Vertex Processing Engine* (**VPE**). It reads 128
 
 The vertex shaders can access following resources:
 
+* 16 input registers `v[0]`-`v[15]` (*vector*)
+* 16 output registers `o[0]`-`o[15]` (*vector*)
+* 16 data registers `r[0]`-`r[15]` (*vector*)
+
 #### Input/Output registers
 
-| Input reg. | Description    | . | Output reg. | Description            |
-|------------|----------------|---|-------------|------------------------|
-| `v[0]`     | Position       |   | `o[0]`      | Position               |
-| `v[1]`     | Skin weights   |   | `o[1]`      | Back diffuse color     |
-| `v[2]`     | Normal         |   | `o[2]`      | Back specular color    |
-| `v[3]`     | Diffuse color  |   | `o[3]`      | Front diffuse color    |
-| `v[4]`     | Specular color |   | `o[4]`      | Front specular color   |
-| `v[5]`     | Fog            |   | `o[5]`      | Fog                    |
-| `v[6]`     | Point size     |   | `o[6]`      | Point size / Texture 9 |
-| `v[7]`     | (*???*)        |   | `o[7]`      | Texture 0              |
-| `v[8]`     | Texture 0      |   | `o[8]`      | Texture 1              |
-| `v[9]`     | Texture 1      |   | `o[9]`      | Texture 2              |
-| `v[10]`    | Texture 2      |   | `o[10]`     | Texture 3              |
-| `v[11]`    | Texture 3      |   | `o[11]`     | Texture 4              |
-| `v[12]`    | Texture 4      |   | `o[12]`     | Texture 5              |
-| `v[13]`    | Texture 5      |   | `o[13]`     | Texture 6              |
-| `v[14]`    | Texture 6      |   | `o[14]`     | Texture 7              |
-| `v[15]`    | Texture 7      |   | `o[15]`     | Texture 8              |
+| Input reg. | Description    |   | Output reg. | Description                             |
+|------------|----------------|---|-------------|-----------------------------------------|
+| `v[0]`     | Position       |   | `o[0]`      | Position                                |
+| `v[1]`     | Skin weights   |   | `o[1]`      | Back diffuse color                      |
+| `v[2]`     | Normal         |   | `o[2]`      | Back specular color                     |
+| `v[3]`     | Diffuse color  |   | `o[3]`      | Front diffuse color                     |
+| `v[4]`     | Specular color |   | `o[4]`      | Front specular color                    |
+| `v[5]`     | Fog            |   | `o[5]`      | Fog, Clip planes 0-2                    |
+| `v[6]`     | Point size     |   | `o[6]`      | Point size, Clip planes 3-5 / Texture 9 |
+| `v[7]`     | (*???*)        |   | `o[7]`      | Texture 0                               |
+| `v[8]`     | Texture 0      |   | `o[8]`      | Texture 1                               |
+| `v[9]`     | Texture 1      |   | `o[9]`      | Texture 2                               |
+| `v[10]`    | Texture 2      |   | `o[10]`     | Texture 3                               |
+| `v[11]`    | Texture 3      |   | `o[11]`     | Texture 4                               |
+| `v[12]`    | Texture 4      |   | `o[12]`     | Texture 5                               |
+| `v[13]`    | Texture 5      |   | `o[13]`     | Texture 6                               |
+| `v[14]`    | Texture 6      |   | `o[14]`     | Texture 7                               |
+| `v[15]`    | Texture 7      |   | `o[15]`     | Texture 8                               |
 
 #### Constant registers:
 

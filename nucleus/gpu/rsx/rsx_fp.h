@@ -6,8 +6,10 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/graphics/hir/builder.h"
+#include "nucleus/graphics/hir/hir.h"
 
-#include <string>
+#include <bitset>
 
 namespace gpu {
 
@@ -82,6 +84,13 @@ enum {
     RSX_FP_OPCODE_RET        = 0x45, // Return
 };
 
+// RSX Fragment Program register types
+enum {
+    RSX_FP_REGISTER_TYPE_TEMP = 0,
+    RSX_FP_REGISTER_TYPE_INPUT = 1,
+    RSX_FP_REGISTER_TYPE_CONSTANT = 2,
+};
+
 // RSX Fragment Program inlined vector constant
 struct rsx_fp_constant_t {
     union {
@@ -130,39 +139,72 @@ union rsx_fp_instruction_t
 #undef FIELD
 };
 
-union rsx_fp_instruction_source_t
-{
+union rsx_fp_instruction_source_t {
     U32 value;
-
     struct {
-        U32 type      : 2; // Register type: { 0: Data, 1: Input, 2: Constant }
+        U32 type      : 2; // Register type
         U32 index     : 6; // Register input
         U32 half      : 1; // Half precision (f16)
-        U32 swizzle_x : 2; // Swizzling mask on the component x
-        U32 swizzle_y : 2; // Swizzling mask on the component y
-        U32 swizzle_z : 2; // Swizzling mask on the component z
-        U32 swizzle_w : 2; // Swizzling mask on the component w
+        U32 swizzling : 8; // Swizzling mask
         U32 neg       : 1; // Negated value
     };
 };
 
 class RSXFragmentProgram {
+    using Builder = gfx::hir::Builder;
+    using Literal = gfx::hir::Literal;
+
+private:
+    // HIR information
+    Builder builder;
+    Literal vecTypeId;
+
     // Input/Output/Sampler registers used in the program
-    U32 usedInputs;
-    U64 usedOutputs;
-    U32 usedSamplers;
+    std::bitset<32> usedInputs;
+    std::bitset<64> usedOutputs;
+    std::bitset<32> usedSamplers;
 
     // Current instruction being processed and pointer to the next instruction
     rsx_fp_instruction_t instr;
-    rsx_fp_instruction_t* instr_ptr;
+    const rsx_fp_instruction_t* instr_ptr;
+
+    /**
+     * Get the vector resulting from updating a component subset specified by a mask with the contents of another vector
+     * @param[in]  dest     Output vector ID whose component-subset will be written 
+     * @param[in]  source   Input vector ID whose components will be copied to output
+     * @param[in]  mask     Byte containing the 4-bit mask that enable/disable the 4 components (x,y,z,w) to write.
+     */
+    Literal getMaskedValue(Literal dest, Literal source, U8 mask);
+
+    /**
+     * Get the vector resulting from swizzling/shuffling its components according to a swizzle argument
+     * @param[in]  vector   Input vector ID whose components are going to be swizzled/shuffled.
+     * @param[in]  swizzle  Byte containing the 2-bit swizzle masks for each of the 4 components (x,y,z,w) to read.
+     * @return              Swizzled vector ID
+     */
+    Literal getSwizzledValue(Literal vector, U8 swizzle);
+
+    /**
+     * Get the source vector for the instruction, applying the corresponding modifiers
+     * @param[in]  index   Index of the source value
+     * @return             Resulting ID of requested value
+     */
+    Literal getSourceVector(int index);
+
+    /**
+     * Get the source sampler for the current instruction
+     * @return             Resulting ID of requested value
+     */
+    Literal getSourceSampler();
+
+    /**
+     * Store the given value in the destination variable specified by the current instruction
+     * @param[in]  value   Value to be stored
+     */
+    void setDestVector(Literal value);
 
     // Generate the GLSL header and register declarations based on the decompilation
     std::string get_header();
-
-    // Get the source, destination and sampler registers of the current instruction
-    std::string get_src(U32 n);
-    std::string get_dst();
-    std::string get_tex();
 
     // Get 32-bit of data reversing its byte and half-word endianness
     template <typename T>
@@ -172,14 +214,11 @@ class RSXFragmentProgram {
     }
 
 public:
-    // OpenGL shader ID
-    U32 id = 0;
-
-    // Generate a GLSL fragment shader equivalent to the given buffer
-    void decompile(rsx_fp_instruction_t* buffer);
-
-    // Compile the generated GLSL code for the host GPU
-    bool compile();
+    /**
+     * Decompile a RSX fragment program to a gfx::hir::Module
+     * @param[in]  buffer  Entry point instruction of the shader
+     */
+    void decompile(const rsx_fp_instruction_t* buffer);
 };
 
 }  // namespace gpu

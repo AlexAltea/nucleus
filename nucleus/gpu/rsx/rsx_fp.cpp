@@ -7,6 +7,8 @@
 #include "nucleus/format.h"
 #include "nucleus/logger/logger.h"
 
+using namespace gfx::hir;
+
 namespace gpu {
 
 // Input register
@@ -51,28 +53,32 @@ const fp_output_register_t output_regs[] = {
     { "rsx_COL3",  4,  8 },
 };
 
-// Transform the 4-bit mask of the [x,y,z,w] values into the GLSL equivalent
-const char* get_fp_mask(U8 maskValue)
-{
-    static const char* maskString[] = {
-        "",     //  0 -> 0000 [....]
-        ".x",   //  1 -> 0001 [...x]
-        ".y",   //  2 -> 0010 [..y.]
-        ".xy",  //  3 -> 0011 [..yx]
-        ".z",   //  4 -> 0100 [.z..]
-        ".xz",  //  5 -> 0101 [.z.x]
-        ".yz",  //  6 -> 0110 [.zy.]
-        ".xyz", //  7 -> 0111 [.zyx]
-        ".w",   //  8 -> 1000 [w...]
-        ".xw",  //  9 -> 1001 [w..x]
-        ".yw",  // 10 -> 1010 [w.y.]
-        ".xyw", // 11 -> 1011 [w.yx]
-        ".zw",  // 12 -> 1100 [wz..]
-        ".xzw", // 13 -> 1101 [wz.x]
-        ".yzw", // 14 -> 1110 [wzy.]
-        ""      // 15 -> 1111 [wzyx]
-    };
-    return maskString[maskValue % 16];
+Literal RSXFragmentProgram::getMaskedValue(Literal dest, Literal source, U8 mask) {
+    // Check if mask enables all components
+    if (mask == 0b1111) {
+        return source;
+    }
+    // Check if mask disables all components
+    if (mask == 0b0000) {
+        return dest;
+    }
+    Literal x = (mask >> 3) ? 4 : 0;
+    Literal y = (mask >> 2) ? 5 : 1;
+    Literal z = (mask >> 1) ? 6 : 2;
+    Literal w = (mask >> 0) ? 7 : 3;
+    return builder.opVectorShuffle(vecTypeId, dest, source, {x,y,z,w});
+}
+
+Literal RSXFragmentProgram::getSwizzledValue(Literal vector, U8 swizzle) {
+    // Check if swizzling is required. Note that: [00,01,10,11] -> [0,1,2,3] -> [x,y,z,w].
+    if (swizzle == 0b00011011) {
+        return vector;
+    }
+    Literal x = (swizzle >> 6) & 0b11;
+    Literal y = (swizzle >> 4) & 0b11;
+    Literal z = (swizzle >> 2) & 0b11;
+    Literal w = (swizzle >> 0) & 0b11;
+    return builder.opVectorShuffle(vecTypeId, vector, vector, {x,y,z,w});
 }
 
 std::string RSXFragmentProgram::get_header()
@@ -81,21 +87,21 @@ std::string RSXFragmentProgram::get_header()
 
     // Input registers
     for (const auto& reg : input_regs) {
-        if (usedInputs & (1ULL << reg.rsxIndex) && !reg.predefined) {
+        if (usedInputs[reg.rsxIndex] && !reg.predefined) {
             header += format("in vec4 %s;", reg.glReg);
         }
     }
 
     // Output registers
     for (const auto& reg : output_regs) {
-        if (usedOutputs & (1ULL << reg.rsxRegIndex32)) {
+        if (usedOutputs[reg.rsxRegIndex32]) {
             header += format("layout (location = %d) out vec4 %s;", reg.rsxRegIndex32, reg.glReg);
         }
     }
 
     // Sampler registers
     for (int i = 0; i < 16; i++) {
-        if (usedSamplers & (1ULL << i)) {
+        if (usedSamplers[i]) {
             header += format("layout (binding = %d) uniform sampler2D tex%d;", i, i);
         }
     }
@@ -106,75 +112,60 @@ std::string RSXFragmentProgram::get_header()
     return header;
 }
 
-std::string RSXFragmentProgram::get_src(U32 n)
-{
-    std::string src;
-    const rsx_fp_instruction_source_t source = { instr.word[n+1] & 0x3FFFF };
+Literal RSXFragmentProgram::getSourceVector(int index) {
+    // Get source descriptor
+    const rsx_fp_instruction_source_t source = { instr.word[index+1] & 0x3FFFF };
 
+    // Get source value
+    Literal sourceId = 0;
     switch (source.type) {
-    case 0: // Temporary register
-        src = format("%s[%d]", source.half ? "h" : "r", source.index);
+    case RSX_FP_REGISTER_TYPE_TEMP:
+        //src = format("%s[%d]", source.half ? "h" : "r", source.index);
         break;
-
-    case 1: // Input register
-        usedInputs |= (1 << instr.input_index);
-        src = format("f[%d]", instr.input_index);
+    case RSX_FP_REGISTER_TYPE_INPUT:
+        usedInputs[instr.input_index] = true;
+        //src = format("f[%d]", instr.input_index);
         break;
-
-    case 2: // Constant register
-        src = format("vec4(%f, %f, %f, %f)",
+    case RSX_FP_REGISTER_TYPE_CONSTANT:
+        /*src = format("vec4(%f, %f, %f, %f)",
             get_word<F32>(instr_ptr->word[0]),
             get_word<F32>(instr_ptr->word[1]),
             get_word<F32>(instr_ptr->word[2]),
-            get_word<F32>(instr_ptr->word[3]));
+            get_word<F32>(instr_ptr->word[3]));*/
         instr_ptr++;
         break;
     }
 
     // Swizzling
-    static const char* swizzleString[] = { "x", "y", "z", "w" };
-    src += ".";
-    src += swizzleString[source.swizzle_x];
-    src += swizzleString[source.swizzle_y];
-    src += swizzleString[source.swizzle_z];
-    src += swizzleString[source.swizzle_w];
+    sourceId = getSwizzledValue(sourceId, source.swizzling);
 
     // Absolute value
     // TODO
 
     // Negated value
     if (source.neg) {
-        src = "-" + src;
+        sourceId = builder.opFNegate(sourceId);
     }
-
-    return src;
+    return sourceId;
 }
 
-std::string RSXFragmentProgram::get_dst()
-{
+Literal RSXFragmentProgram::getSourceSampler() {
+    usedSamplers[instr.tex] = true;
+    return 0;// TODO: format("tex%d", instr.tex);
+}
+
+void RSXFragmentProgram::setDestVector(Literal value) {
     if (instr.dst_index >= 48) {
         logger.error(LOG_GPU, "Fragment program: Destination register out of range");
     }
-    usedOutputs |= (1ULL << instr.dst_index);
-    return format("%s[%d]%s", instr.dst_half ? "h" : "r", instr.dst_index, get_fp_mask(instr.dst_mask));
+    usedOutputs[instr.dst_index] = true;
+    //return format("%s[%d]%s", instr.dst_half ? "h" : "r", instr.dst_index, get_fp_mask(instr.dst_mask));
 }
 
-std::string RSXFragmentProgram::get_tex()
-{
-    usedSamplers |= (1ULL << instr.tex);
-    return format("tex%d", instr.tex);
-}
-
-void RSXFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
-{
-#define DST()  get_dst().c_str()
-#define SRC(n) get_src(n).c_str()
-#define TEX()  get_tex().c_str()
-
-    std::string source = "";
-    usedInputs = 0;
-    usedOutputs = 0;
-    usedSamplers = 0;
+void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
+    usedInputs.reset();
+    usedOutputs.reset();
+    usedSamplers.reset();
 
     // Set pointer to current instruction
     instr_ptr = buffer;
@@ -191,7 +182,7 @@ void RSXFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
         switch (instr.opcode) {
         case RSX_FP_OPCODE_NOP:
             break;
-        case RSX_FP_OPCODE_MOV:
+        /*case RSX_FP_OPCODE_MOV:
             source += format("%s = %s%s;", DST(), SRC(0), get_fp_mask(instr.dst_mask));
             break;
         case RSX_FP_OPCODE_MUL:
@@ -201,7 +192,7 @@ void RSXFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
             source += format("%s = texture(%s, %s.xy)%s;", DST(), TEX(), SRC(0), get_fp_mask(instr.dst_mask));
             break;
         case RSX_FP_OPCODE_FENCB:
-            break;
+            break;*/
         default:
             logger.error(LOG_GPU, "Fragment program: Unknown opcode (%d)", instr.opcode);
         }
@@ -212,55 +203,22 @@ void RSXFragmentProgram::decompile(rsx_fp_instruction_t* buffer)
         }
     }
 
-    // Map OpenGL input attributes to RSX input registers
+    /*// Map OpenGL input attributes to RSX input registers
     for (const auto& reg : input_regs) {
-        if (usedInputs & (1ULL << reg.rsxIndex)) {
+        if (usedInputs[reg.rsxIndex]) {
             source = format("%s = %s;", reg.rsxReg, reg.glReg) + source;
         }
     }
 
     // Map RSX output registers to OpenGL output attributes
     for (const auto& reg : output_regs) {
-        if (usedOutputs & (1ULL << reg.rsxRegIndex32)) {
+        if (usedOutputs[reg.rsxRegIndex32]) {
             source += format("%s = r[%d];", reg.glReg, reg.rsxRegIndex32);
         }
     }
 
     // Merge header and body
-    source = get_header() + "void main() { " + source + "}";
-
-#undef DST
-#undef SRC
-#undef TEX
-}
-
-bool RSXFragmentProgram::compile()
-{
-    /*TODO*//*// Check if the shader was already compiled
-    if (id != 0) {
-        glDeleteShader(id);
-    }
-
-    id = glCreateShader(GL_FRAGMENT_SHADER);
-
-    // Compile shader
-    const GLchar* sourceString = source.data();
-    const GLint sourceLength = source.length();
-    glShaderSource(id, 1, &sourceString, &sourceLength);
-    glCompileShader(id);
-
-    // Check if shader compiled succesfully
-    GLint status;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &status);
-    if (status != GL_TRUE) {
-        GLsizei infoLenght;
-        char infoBuffer[4096];
-        glGetShaderInfoLog(id, sizeof(infoBuffer), &infoLenght, infoBuffer);
-        logger.error(LOG_GPU, "OpenGLFragmentProgram::compile: Can't compile shader. Reason:\n%s", infoBuffer);
-        return false;
-    }
-    */
-    return true;
+    source = get_header() + "void main() { " + source + "}";*/
 }
 
 }  // namespace gpu

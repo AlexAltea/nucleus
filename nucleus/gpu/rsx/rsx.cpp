@@ -14,11 +14,8 @@
 #include "nucleus/gpu/rsx/rsx_methods.h"
 #include "nucleus/gpu/rsx/rsx_vp.h"
 
-// Platform specific drawing contexts
 #ifdef NUCLEUS_PLATFORM_WINDOWS
 #include <Windows.h>
-#include "wrappers/windows/window.h"
-extern Window* window;
 #endif
 
 // Method matching
@@ -114,8 +111,7 @@ void RSX::task()
     }
 }
 
-void RSX::method(U32 offset, U32 parameter)
-{
+void RSX::method(U32 offset, U32 parameter) {
     // Slot used on multiple-register methods
     U32 index;
 

@@ -6,8 +6,10 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/graphics/hir/builder.h"
+#include "nucleus/graphics/hir/hir.h"
 
-#include <string>
+#include <bitset>
 
 namespace gpu {
 
@@ -61,6 +63,13 @@ enum {
     RSX_VP_OPCODE_SCA_CLB = 0x12, // Subroutine call by Boolean constant
     RSX_VP_OPCODE_SCA_PSH = 0x13, // Push onto stack
     RSX_VP_OPCODE_SCA_POP = 0x14, // Pop from stack
+};
+
+// RSX Vertex Program register types
+enum {
+    RSX_VP_REGISTER_TYPE_DATA = 1,
+    RSX_VP_REGISTER_TYPE_INPUT = 2,
+    RSX_VP_REGISTER_TYPE_CONSTANT = 3,
 };
 
 // RSX Vertex Program vector register
@@ -117,10 +126,8 @@ union rsx_vp_instruction_t
 #undef FIELD
 };
 
-union rsx_vp_instruction_source_t
-{
+union rsx_vp_instruction_source_t {
     U32 value;
-
     struct {
         U32 type      : 2;
         U32 index     : 6;
@@ -130,29 +137,63 @@ union rsx_vp_instruction_source_t
 };
 
 class RSXVertexProgram {
-    // Input/Output registers used in the program
-    U32 usedInputs;
-    U32 usedOutputs;
+    using Builder = gfx::hir::Builder;
+    using Literal = gfx::hir::Literal;
+
+private:
+    // HIR information
+    Builder builder;
+    Literal vecTypeId;
+
+    // Input/Output registers used in the shader
+    std::bitset<32> usedInputs;
+    std::bitset<32> usedOutputs;
 
     // Current instruction being processed
     rsx_vp_instruction_t instr;
 
-    // Generate the GLSL header and register declarations based on the decompilation
-    std::string get_header();
+    /**
+     * Get the vector resulting from updating a component subset specified by a mask with the contents of another vector
+     * @param[in]  dest     Output vector ID whose component-subset will be written 
+     * @param[in]  source   Input vector ID whose components will be copied to output
+     * @param[in]  mask     Byte containing the 4-bit mask that enable/disable the 4 components (x,y,z,w) to write.
+     */
+    Literal getMaskedValue(Literal dest, Literal source, U8 mask);
 
-    // Get the source and destination registers of the current instruction
-    std::string get_src(U32 n);
-    std::string get_dst();
+    /**
+     * Get the vector resulting from swizzling/shuffling its components according to a swizzle argument
+     * @param[in]  vector   Input vector ID whose components are going to be swizzled/shuffled.
+     * @param[in]  swizzle  Byte containing the 2-bit swizzle masks for each of the 4 components (x,y,z,w) to read.
+     * @return              Swizzled vector ID
+     */
+    Literal getSwizzledValue(Literal vector, U8 swizzle);
+
+    /**
+     * Get the source vector for the instruction, applying the corresponding modifiers
+     * @param[in]  index   Index of the source value
+     * @return             Resulting ID of requested value
+     */
+    Literal getSourceVector(int index);
+
+    /**
+     * Store the given value in the destination variable specified by the current instruction
+     * @param[in]  value   Value to be stored
+     */
+    void setDestVector(Literal value);
+
+    // Emitters
+    void emitVecAdd();
+    void emitVecMov();
+
+    // Generate the GLSL header and register declarations based on the decompilation
+    std::string getHeader();
 
 public:
-    // OpenGL shader ID
-    U32 id = 0;
-
-    // Generate a GLSL vertex shader equivalent to the VPE instruction buffer at the given start offset
-    void decompile(rsx_vp_instruction_t* buffer);
-
-    // Compile the generated GLSL code for the host GPU
-    bool compile();
+    /**
+     * Decompile a RSX VPE program to a gfx::hir::Module
+     * @param[in]  buffer  Entry point instruction of the shader
+     */
+    void decompile(const rsx_vp_instruction_t* buffer);
 };
 
 }  // namespace gpu

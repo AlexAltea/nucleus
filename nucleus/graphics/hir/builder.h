@@ -28,9 +28,11 @@ public:
     void setModule(Module* module);
     void setInsertPoint(Block* block);
 
-    // HIR instruction generation
+    // Instruction utilities
     Instruction* appendInstr(Opcode opcode, bool hasResultId);
     Instruction* appendInstr(U16 opcode, Literal idType, Literal idResult);
+    Instruction* getInstr(Literal instrId);
+
 
     // HIR types
     Literal opTypeVoid();
@@ -45,6 +47,13 @@ public:
     Literal opISub(Literal lhs, Literal rhs);
     Literal opIMul(Literal lhs, Literal rhs);
     Literal opIDiv(Literal lhs, Literal rhs);
+    Literal opFAdd(Literal lhs, Literal rhs);
+    Literal opFSub(Literal lhs, Literal rhs);
+    Literal opFMul(Literal lhs, Literal rhs);
+    Literal opFDiv(Literal lhs, Literal rhs);
+    Literal opFNegate(Literal value);
+
+    Literal opVectorShuffle(Literal resType, Literal vec1, Literal vec2, std::vector<Literal> components);
 };
 
 }  // namespace hir
