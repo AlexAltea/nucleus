@@ -15,8 +15,8 @@ namespace ui {
 class WidgetImage : public Widget {
     // Image
     unsigned char* imBuffer;
-    int imWidth;
-    int imHeight;
+    int imWidth = 0;
+    int imHeight = 0;
     int imComponents;
 
 public:
@@ -28,7 +28,7 @@ public:
     // Read PNG from buffer
     void init(const Byte* pngbuffer, Size size);
 
-    // Render the image
+    virtual void dimensionalize() override;
     virtual void render() override;
 };
 

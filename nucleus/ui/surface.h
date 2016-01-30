@@ -30,6 +30,8 @@ public:
     // Getters
     Size getWidth() const;
     Size getHeight() const;
+    unsigned int getHz() const;
+    unsigned int getDpi() const;
 
     // Setters
     void setWidth(Size w);

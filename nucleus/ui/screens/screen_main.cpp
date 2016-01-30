@@ -8,13 +8,18 @@
 namespace ui {
 
 ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
-    auto* header = new WidgetContainer();
+    body.layout = WidgetContainer::LAYOUT_VERTICAL;
+    
+    auto* header = new WidgetContainer("header");
     header->style.top = 25.0_pct;
     header->style.left = 25.0_pct;
     header->style.width = 100.0_pct;
     header->style.sizeMode = PROPORTION_AUTOHEIGHT;
 
+    auto* content = new WidgetContainer("content");
+
     body.addElement(header);
+    body.addElement(content);
 }
 
 void ScreenMain::update() {

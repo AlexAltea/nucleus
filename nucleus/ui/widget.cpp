@@ -4,9 +4,20 @@
  */
 
 #include "widget.h"
+#include "nucleus/assert.h"
 #include "nucleus/ui/ui.h"
 
 namespace ui {
+
+Widget::Widget() {
+    style.width.type = Length::TYPE_UNDEFINED;
+    style.height.type = Length::TYPE_UNDEFINED;
+}
+
+Widget::Widget(const std::string& id) : id(id) {
+    style.width.type = Length::TYPE_UNDEFINED;
+    style.height.type = Length::TYPE_UNDEFINED;
+}
 
 Widget* Widget::find(const std::string& query) {
     if (id == query) {
@@ -15,30 +26,33 @@ Widget* Widget::find(const std::string& query) {
     return nullptr;
 }
 
-float Widget::getCoordinateX(Length x) {
-    float coordinate;
-    switch (x.type) {
-    case Length::TYPE_PCT:
-        coordinate = (x.value * 2.0f) - 1.0f;
-        break;
+float Widget::getCoord(Length length, float pixels) {
+    constexpr auto meterToInch = 39.3701;
+    const Surface& surface = manager->surface;
+
+    switch (length.type) {
+    case Length::TYPE_PX:
+        return (length.value) / pixels;
+    case Length::TYPE_IN:
+        return (length.value * surface.dpi) / pixels;
+    case Length::TYPE_CM:
+        return (length.value * surface.dpi * meterToInch * 0.01) / pixels;
+    case Length::TYPE_MM:
+        return (length.value * surface.dpi * meterToInch * 0.001) / pixels;
+    default:
+        assert_always("Unimplemented");
+        return 0.0;
     }
-    return coordinate;
 }
 
-float Widget::getCoordinateY(Length y) {
-    float coordinate;
-    switch (y.type) {
-    case Length::TYPE_PCT:
-        coordinate = 1.0f - (y.value * 2.0f);
-        break;
-    }
-
-    return coordinate;
+float Widget::getCoordX(Length x) {
+    const Surface& surface = manager->surface;
+    return getCoord(x, surface.width);
 }
 
-Length Widget::correctHeight(Length height) {
-    //height.value *= ui.surfaceProportion;
-    return height;
+float Widget::getCoordY(Length y) {
+    const Surface& surface = manager->surface;
+    return getCoord(y, surface.height);
 }
 
 }  // namespace ui

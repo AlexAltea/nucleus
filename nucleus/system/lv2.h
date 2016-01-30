@@ -16,6 +16,7 @@
 
 #include "lv2/sys_process.h"
 #include "lv2/sys_prx.h"
+#include "lv2/sys_rsx.h"
 
 namespace sys {
 
@@ -112,8 +113,10 @@ public:
 
     std::shared_ptr<mem::Memory> memory;
 
-    // Process information
+    // Kernel information
     sys_process_t proc;
+    sys_rsx_device_t rsx_device[16];
+    sys_rsx_context_t rsx_context[4];
 
     LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type);
 

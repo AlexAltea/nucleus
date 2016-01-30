@@ -17,6 +17,24 @@ namespace ui {
 // Forward declarations
 class UI;
 
+/**
+ * Screen
+ * ======
+ * Represents the document containing the Widget tree to be rendered.
+ *
+ * ## Rendering
+ * Consist of multiple stages described below:
+ *  1. The widget tree is traversed bottom-up, computing the Widget sizes based on their own style
+ *     and the dimensions computed in the child nodes. Relevant style properties are:
+ *     Width, Height, Margin, Padding  
+ *  2. The widget tree is traversed up-bottom, doing following operations:
+ *      a. Computing the Widget positions relative to the window coordinates based on their own style
+ *         and the positions computed in the parent node. Relevant style properties are:
+ *         Top, Left, Bottom, Right
+ *      b. Verify whether the Widget is visible on the screen with the computed size and position.
+ *         If it is, generate and append its vertex attributes to the global UI vertex buffer.
+ *  3. Render the generated vertex buffer.
+ */
 class Screen {
     // Timing
     using Clock = std::chrono::high_resolution_clock;

@@ -22,6 +22,7 @@ void Screen::prologue() {
 }
 
 void Screen::render() {
+    body.dimensionalize();
     body.render();
 }
 

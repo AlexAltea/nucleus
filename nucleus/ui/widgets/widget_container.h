@@ -16,6 +16,14 @@ class WidgetContainer : public Widget {
     std::vector<Widget*> children;
 
 public:
+    enum Layout {
+        LAYOUT_VERTICAL,
+        LAYOUT_HORIZONTAL,
+    } layout;
+
+    WidgetContainer() {}
+    WidgetContainer(const std::string& id) : Widget(id) {}
+
     /**
      * Add an element to this container
      * @param[in]  widget  Widget to be added
@@ -31,6 +39,7 @@ public:
     bool removeElement(const std::string& target);
 
     virtual Widget* find(const std::string& query) override;
+    virtual void dimensionalize() override;
     virtual void render() override;
 };
 

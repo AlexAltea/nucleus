@@ -5,6 +5,7 @@
 
 #include "widget_container.h"
 #include "nucleus/assert.h"
+#include "nucleus/ui/ui.h"
 
 namespace ui {
 
@@ -39,6 +40,21 @@ Widget* WidgetContainer::find(const std::string& query) {
         }
     }
     return nullptr;
+}
+
+void WidgetContainer::dimensionalize() {
+    float width = 0.0;
+    float height = 0.0;
+
+    if (layout == LAYOUT_VERTICAL) {
+        for (auto& child : children) {
+            child->dimensionalize();
+        }
+    } else {
+        for (auto& child : children) {
+            child->dimensionalize();
+        }
+    }
 }
 
 void WidgetContainer::render() {

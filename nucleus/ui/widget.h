@@ -26,10 +26,23 @@ struct WidgetInput {
     } vertex[3];
 };
 
+/**
+ * Widget
+ * ======
+ * The Widget base class represents an arbitrary component that is rendered to the user interface.
+ * Usually, they are found on Screen objects as part of their Widget tree.
+ */
 class Widget {
 protected:
     // Texture produced after rendering the contents of this widget
     gfx::Texture* texture;
+
+    // Vertices to be rendered
+    WidgetInput input;
+
+    float getCoord(Length length, float proportion);
+    float getCoordX(Length x);
+    float getCoordY(Length y);
 
 public:
     // UI Manager
@@ -42,6 +55,9 @@ public:
 
     Style style;
 
+    Widget();
+    Widget(const std::string& id);
+
     /**
      * Search children nodes for a particular identifier
      * @param[in]  query  Identifier to search for
@@ -50,15 +66,15 @@ public:
     virtual Widget* find(const std::string& query);
 
     /**
+     * Fill information about dimensions in the WidgetInput structure
+     */
+    virtual void dimensionalize() = 0;
+
+    /**
      * Pass the rendering commands to the UI command buffer
      * @param[in]  cmdBuffer  Command buffer to store the rendering commands in
      */
     virtual void render() = 0;
-
-    static Length correctHeight(Length height);
-
-    static float getCoordinateX(Length x);
-    static float getCoordinateY(Length y);
 
     // Event handling
     void onMouseMove(std::function<void(MouseEvent&)>);

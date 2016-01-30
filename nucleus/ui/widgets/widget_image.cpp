@@ -44,19 +44,23 @@ void WidgetImage::init(const Byte* pngbuffer, Size size) {
     imBuffer = stbi_load_from_memory(pngbuffer, size, &imWidth, &imHeight, &imComponents, 4);
 }
 
+void WidgetImage::dimensionalize() {
+    float width = 0.0;
+    float height = 0.0;
+
+    if (style.width.type == Length::TYPE_UNDEFINED) {
+        width = getCoordX(Length{ double(imWidth), Length::TYPE_PX });
+    } else {
+        width = getCoordX(style.width);
+    }
+    if (style.height.type == Length::TYPE_UNDEFINED) {
+        height = getCoordY(Length{ double(imHeight), Length::TYPE_PX });
+    } else {
+        height = getCoordY(style.height);
+    }
+}
+
 void WidgetImage::render() {
-    Length width = style.width;
-    Length height = style.height;
-
-    if (style.sizeMode == PROPORTION_AUTOWIDTH) {
-        width = height * float(imWidth) / float(imHeight);
-    }
-    if (style.sizeMode == PROPORTION_AUTOHEIGHT) {
-        height = width * float(imHeight) / float(imWidth);
-    }
-    height = Widget::correctHeight(height);
-
-    WidgetInput input;
     manager->renderWidget(input);
 }
 

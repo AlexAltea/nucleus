@@ -8,9 +8,12 @@
 namespace ui {
 
 class Length {
+    using Amount = double;
+
 public:
-    double value;
+    Amount value;
     enum Type {
+        TYPE_UNDEFINED = 0,  
         TYPE_CM,  // Centimeter
         TYPE_IN,  // Inch
         TYPE_MM,  // Millimeter
@@ -21,10 +24,10 @@ public:
     } type;
 
     // Scalar operations
-    Length operator+ (float rhs) { return Length{value + rhs, type}; }
-    Length operator- (float rhs) { return Length{value - rhs, type}; }
-    Length operator* (float rhs) { return Length{value * rhs, type}; }
-    Length operator/ (float rhs) { return Length{value / rhs, type}; }
+    Length operator+ (Amount rhs) { return Length{value + rhs, type}; }
+    Length operator- (Amount rhs) { return Length{value - rhs, type}; }
+    Length operator* (Amount rhs) { return Length{value * rhs, type}; }
+    Length operator/ (Amount rhs) { return Length{value / rhs, type}; }
 
     // Length operations // TODO: Check unit used
     Length operator+ (const Length& rhs) { return Length{value + rhs.value, type}; }

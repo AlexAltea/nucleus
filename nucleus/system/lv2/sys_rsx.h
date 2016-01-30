@@ -9,6 +9,40 @@
 
 namespace sys {
 
+// Kernel structures
+struct sys_rsx_device_t {
+    S8 init_flag;
+    S8 pad[7];
+    BE<S64> lpar_size;
+    BE<S64> lpar_addr;
+    BE<S32> ctx_count;
+    BE<S32> unk2;
+};
+
+struct sys_rsx_context_t {
+    BE<S32> initialized;
+    BE<U32> id;
+    BE<U32> mem_ctx_id;
+    BE<U32> unk;
+    BE<U64> system_mode;
+    BE<S64> dma_control_unk;
+    BE<S64> dma_control_ea;
+    BE<S64> driver_info_unk;
+    BE<S64> driver_info_ea;
+    BE<S64> reports_unk;
+    BE<S64> reports_ea;
+    BE<U64> unk2;
+    BE<U64> addr_unk;
+    BE<S64> equeue_addr;
+    BE<S64> irq_tag;
+    BE<S64> irq_handler;
+    BE<U32> equeue_id;
+    BE<U32> unk3;
+    BE<U64> unk4;
+    BE<S64> unk5;
+    BE<U16> pages[0x200];
+};
+
 // SysCalls
 S32 sys_rsx_device_open();
 S32 sys_rsx_device_close();
