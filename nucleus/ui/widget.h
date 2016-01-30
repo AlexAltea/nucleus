@@ -23,7 +23,7 @@ struct WidgetInput {
     struct WidgetVertex {
         F32 position[4];
         F32 color[4];
-    } vertex[3];
+    } vertex[4];
 };
 
 /**
@@ -39,6 +39,11 @@ protected:
 
     // Vertices to be rendered
     WidgetInput input;
+
+    float vertWidth;
+    float vertHeight;
+    float vertTop;
+    float vertLeft;
 
     float getCoord(Length length, float proportion);
     float getCoordX(Length x);
@@ -75,6 +80,14 @@ public:
      * @param[in]  cmdBuffer  Command buffer to store the rendering commands in
      */
     virtual void render() = 0;
+
+    // Get dimensions in our rendering coordinate space
+    float getOuterWidth();
+    float getOuterHeight();
+
+    // Get absolute position in our rendering coordinate space
+    float getOffsetX();
+    float getOffsetY();
 
     // Event handling
     void onMouseMove(std::function<void(MouseEvent&)>);

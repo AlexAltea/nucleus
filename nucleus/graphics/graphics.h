@@ -16,8 +16,10 @@
 #include "nucleus/graphics/vertex_buffer.h"
 
 #if defined(NUCLEUS_PLATFORM_UWP)
+#define NOMINMAX
 #include <Windows.h>
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#define NOMINMAX
 #include <Windows.h>
 #endif
 

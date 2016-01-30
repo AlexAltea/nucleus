@@ -31,6 +31,8 @@ float Widget::getCoord(Length length, float pixels) {
     const Surface& surface = manager->surface;
 
     switch (length.type) {
+    case Length::TYPE_PCT:
+        return (length.value) / 100;
     case Length::TYPE_PX:
         return (length.value) / pixels;
     case Length::TYPE_IN:
@@ -53,6 +55,18 @@ float Widget::getCoordX(Length x) {
 float Widget::getCoordY(Length y) {
     const Surface& surface = manager->surface;
     return getCoord(y, surface.height);
+}
+
+float Widget::getOuterWidth() {
+    auto marginLeft = getCoordX(style.margin.left);
+    auto marginRight = getCoordX(style.margin.right);
+    return vertWidth + marginLeft + marginRight;
+}
+
+float Widget::getOuterHeight() {
+    auto marginTop = getCoordX(style.margin.top);
+    auto marginBottom = getCoordX(style.margin.bottom);
+    return vertHeight + marginTop + marginBottom;
 }
 
 }  // namespace ui

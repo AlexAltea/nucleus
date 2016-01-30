@@ -46,7 +46,7 @@ void UI::task() {
     gfx::PipelineDesc pipelineDesc = {};
     pipelineDesc.vs = vertShader;
     pipelineDesc.ps = fragShader;
-    pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_LIST;
+    pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_STRIP;
     pipelineDesc.iaState.inputLayout = {
         { 0, gfx::FORMAT_R32G32B32A32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
         { 1, gfx::FORMAT_R32G32B32A32, 0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
@@ -113,10 +113,12 @@ void UI::task() {
             vtxBuffer->unmap();
 
             U32 offsets[] = {0};
-            U32 strides[] = { sizeof(WidgetInput) / 3 };
-            cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_LIST);
+            U32 strides[] = { sizeof(WidgetInput) / 4 };
+            cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_STRIP);
             cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
-            cmdBuffer->cmdDraw(0, widgetVtxBuffer.size() * 3, 0, 1);
+            for (size_t i = 0; i < widgetVtxBuffer.size(); i++) {
+                cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
+            }
         }
 
         // Add new screens

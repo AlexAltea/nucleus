@@ -7,6 +7,8 @@
 #include "nucleus/assert.h"
 #include "nucleus/ui/ui.h"
 
+#include <algorithm>
+
 namespace ui {
 
 bool WidgetContainer::addElement(Widget* widget) {
@@ -43,21 +45,38 @@ Widget* WidgetContainer::find(const std::string& query) {
 }
 
 void WidgetContainer::dimensionalize() {
-    float width = 0.0;
-    float height = 0.0;
+    vertWidth = 0.0;
+    vertWidth += getCoordX(style.padding.left);
+    vertWidth += getCoordX(style.padding.right);
+    vertWidth += getCoordX(style.border.left);
+    vertWidth += getCoordX(style.border.right);
+    vertHeight = 0.0;
+    vertHeight += getCoordY(style.padding.top);
+    vertHeight += getCoordY(style.padding.bottom);
+    vertHeight += getCoordY(style.border.top);
+    vertHeight += getCoordY(style.border.bottom);
 
     if (layout == LAYOUT_VERTICAL) {
         for (auto& child : children) {
             child->dimensionalize();
+            auto ow = child->getOuterWidth();
+            auto oh = child->getOuterHeight();
+            vertWidth = std::max(ow, vertWidth);
+            vertHeight += oh;
         }
     } else {
         for (auto& child : children) {
             child->dimensionalize();
+            auto ow = child->getOuterWidth();
+            auto oh = child->getOuterHeight();
+            vertHeight = std::max(oh, vertHeight);
+            vertWidth += ow;
         }
     }
 }
 
 void WidgetContainer::render() {
+    manager->renderWidget(input);
     for (auto& child : children) {
         child->render();
     }
