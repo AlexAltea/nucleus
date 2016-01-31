@@ -25,7 +25,7 @@ class Resource {
 #endif
 
 public:
-    size_t size;
+    Size size;
     void* data;
 
     Resource(ResourceName name);

@@ -73,12 +73,77 @@ void WidgetContainer::dimensionalize() {
             vertWidth += ow;
         }
     }
+
+    // Override dimensions
+    if (style.width.type != Length::TYPE_UNDEFINED) {
+        vertWidth = getCoordX(style.width);
+    }
+    if (style.height.type != Length::TYPE_UNDEFINED) {
+        vertHeight = getCoordY(style.height);
+    }
 }
 
 void WidgetContainer::render() {
+    auto offsetTop = getOffsetTop() + getCoordY(style.margin.top);
+    auto offsetLeft = getOffsetLeft() + getCoordX(style.margin.top);
+
+    // Preparing vertex input
+    auto x1 = -1.0 + 2 * (offsetLeft);
+    auto x2 = -1.0 + 2 * (offsetLeft + getOuterWidth());
+    auto y1 = +1.0 - 2 * (offsetTop + getOuterHeight());
+    auto y2 = +1.0 - 2 * (offsetTop);
+
+    /**
+     * Screen
+     * ======
+     *  (0,1)                              (1,1)
+     *  +--------------------------------------+
+     *  |   V1 = (x1,y2)       V3 = (x2,y2)    |
+     *  |     + - - - - - - - +                |
+     *  |     : \             :                |
+     *  |     :    \          :                |
+     *  |     :       \       : h              |
+     *  |     :          \    :                |
+     *  |     :       w     \ :                |
+     *  |     + - - - - - - - +                |
+     *  |   V0 = (x1,y1)       V2 = (x2,y1)    |
+     *  +--------------------------------------+
+     *  (0,0)                              (1,0)
+     */
+    auto& V0 = input.vertex[0];
+    auto& V1 = input.vertex[1];
+    auto& V2 = input.vertex[2];
+    auto& V3 = input.vertex[3];
+
+    V0.position[0] = V1.position[0] = x1;
+    V2.position[0] = V3.position[0] = x2;
+    V0.position[1] = V2.position[1] = y1;
+    V1.position[1] = V3.position[1] = y2;
+    V0.position[2] = V1.position[2] = V2.position[2] = V3.position[2] = 0.0;
+    V0.position[3] = V1.position[3] = V2.position[3] = V3.position[3] = 1.0;
+    V0.background = style.background;
+    V1.background = style.background;
+    V2.background = style.background;
+    V3.background = style.background;
+
     manager->renderWidget(input);
-    for (auto& child : children) {
-        child->render();
+
+    auto childOffsetTop = offsetTop + getCoordY(style.padding.top);
+    auto childOffsetLeft = offsetLeft + getCoordX(style.padding.left);
+    if (layout == LAYOUT_VERTICAL) {
+        for (auto& child : children) {
+            child->setOffsetTop(childOffsetTop);
+            child->setOffsetLeft(childOffsetLeft);
+            child->render();
+            childOffsetTop += child->getOuterHeight();
+        }
+    } else {
+        for (auto& child : children) {
+            child->setOffsetTop(childOffsetTop);
+            child->setOffsetLeft(childOffsetLeft);
+            child->render();
+            childOffsetLeft += child->getOuterWidth();
+        }
     }
 }
 

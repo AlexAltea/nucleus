@@ -11,12 +11,12 @@ ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
     body.layout = WidgetContainer::LAYOUT_VERTICAL;
     
     auto* header = new WidgetContainer("header");
-    header->style.top = 25.0_pct;
-    header->style.left = 25.0_pct;
-    header->style.width = 100.0_pct;
-    header->style.sizeMode = PROPORTION_AUTOHEIGHT;
+    header->style.width = 100_pct;
+    header->style.padding = 100_px;
+    header->style.background = Color{0.7f, 0.7f, 0.2f, 1.0f};
 
     auto* content = new WidgetContainer("content");
+    content->style.padding = 100_px;
 
     body.addElement(header);
     body.addElement(content);

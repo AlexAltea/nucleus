@@ -21,8 +21,8 @@ class UI;
 
 struct WidgetInput {
     struct WidgetVertex {
-        F32 position[4];
-        F32 color[4];
+        float position[4];
+        Color background;
     } vertex[4];
 };
 
@@ -45,9 +45,9 @@ protected:
     float vertTop;
     float vertLeft;
 
-    float getCoord(Length length, float proportion);
-    float getCoordX(Length x);
-    float getCoordY(Length y);
+    float getCoord(const Length& length, float proportion);
+    float getCoordX(const Length& length);
+    float getCoordY(const Length& length);
 
 public:
     // UI Manager
@@ -81,13 +81,15 @@ public:
      */
     virtual void render() = 0;
 
-    // Get dimensions in our rendering coordinate space
+    // Get dimensions in our rendering coordinate space, including margins
     float getOuterWidth();
     float getOuterHeight();
 
-    // Get absolute position in our rendering coordinate space
-    float getOffsetX();
-    float getOffsetY();
+    // Absolute position in our rendering coordinate space, including margins
+    float getOffsetTop();
+    float getOffsetLeft();
+    void setOffsetTop(float value);
+    void setOffsetLeft(float value);
 
     // Event handling
     void onMouseMove(std::function<void(MouseEvent&)>);

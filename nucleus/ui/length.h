@@ -36,7 +36,30 @@ public:
     Length operator/ (const Length& rhs) { return Length{value / rhs.value, type}; }
 };
 
-// Literals
+// Literals (fixed-point)
+constexpr Length operator"" _cm(unsigned long long int value) {
+    return Length{ double(value), Length::TYPE_CM };
+}
+constexpr Length operator"" _in(unsigned long long int value) {
+    return Length{ double(value), Length::TYPE_IN };
+}
+constexpr Length operator"" _mm(unsigned long long int value) {
+    return Length{ double(value), Length::TYPE_MM };
+}
+constexpr Length operator"" _pc(unsigned long long int value) {
+    return Length{ double(value), Length::TYPE_PC };
+}
+constexpr Length operator"" _pct(unsigned long long int value) {
+    return Length{ double(value), Length::TYPE_PCT };
+}
+constexpr Length operator"" _pt(unsigned long long int value) {
+    return Length{ double(value), Length::TYPE_PT };
+}
+constexpr Length operator"" _px(unsigned long long int value) {
+    return Length{ double(value), Length::TYPE_PX };
+}
+
+// Literals (floating-point)
 constexpr Length operator"" _cm(long double value) {
     return Length{ double(value), Length::TYPE_CM };
 }

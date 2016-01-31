@@ -6,5 +6,6 @@
 RESOURCE(LANGUAGE_EN_US,       "en_US.xml")
 RESOURCE(LANGUAGE_DE_DE,       "de_DE.xml")
 RESOURCE(LANGUAGE_ES_ES,       "es_ES.xml")
+RESOURCE(IMAGE_NUCLEUS_LOGO,   "nucleus-logo.png")
 RESOURCE(SHADER_UI_WIDGET_PS,  "ui_widget_ps.spv")
 RESOURCE(SHADER_UI_WIDGET_VS,  "ui_widget_vs.spv")

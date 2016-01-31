@@ -6,8 +6,9 @@
 #define IDR_LANGUAGE_DE_DE              102
 #define IDR_LANGUAGE_EN_US              103
 #define IDR_LANGUAGE_ES_ES              104
-#define IDR_SHADER_UI_WIDGET_PS         105
-#define IDR_SHADER_UI_WIDGET_VS         106
+#define IDR_IMAGE_NUCLEUS_LOGO          105
+#define IDR_SHADER_UI_WIDGET_PS         106
+#define IDR_SHADER_UI_WIDGET_VS         107
 
 // Next default values for new objects
 // 

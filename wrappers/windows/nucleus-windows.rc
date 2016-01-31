@@ -63,6 +63,8 @@ IDR_LANGUAGE_DE_DE          RESOURCE            "..\\..\\resources\\languages\\d
 IDR_LANGUAGE_EN_US          RESOURCE            "..\\..\\resources\\languages\\en_US.xml"
 IDR_LANGUAGE_ES_ES          RESOURCE            "..\\..\\resources\\languages\\es_ES.xml"
 
+IDR_IMAGE_NUCLEUS_LOGO      RESOURCE            "..\\..\\resources\\images\\nucleus-logo.png"
+
 IDR_SHADER_UI_WIDGET_PS     RESOURCE            "..\\..\\resources\\shaders\\ui_widget_ps.spv"
 IDR_SHADER_UI_WIDGET_VS     RESOURCE            "..\\..\\resources\\shaders\\ui_widget_vs.spv"
 

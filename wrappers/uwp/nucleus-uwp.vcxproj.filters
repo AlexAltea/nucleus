@@ -14,6 +14,9 @@
     <Filter Include="resources\shaders">
       <UniqueIdentifier>{ddbfa608-0be3-4658-b863-bff446e600a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\images">
+      <UniqueIdentifier>{eccccb96-dcca-4fba-8aac-467cd27b16f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -42,6 +45,9 @@
     </Image>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
+    </Image>
+    <Image Include="..\..\resources\images\nucleus-logo.png">
+      <Filter>resources\images</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

@@ -148,20 +148,7 @@ void UI::pushScreen(std::unique_ptr<Screen>&& screen) {
 
 // Rendering
 void UI::renderWidget(const WidgetInput& input) {
-    const U32 offset = sizeof(WidgetInput) * widgetVtxBuffer.size();
-    //widgetVtxBuffer.push_back(input);
-    WidgetInput newInput = {
-        +0.00f,  0.25f, 0.00f, 1.00f,   1.0f, 0.0f, 0.0f, 1.0f, 
-        +0.25f, -0.25f, 0.00f, 1.00f,   0.0f, 1.0f, 0.0f, 1.0f, 
-        -0.25f, -0.25f, 0.00f, 1.00f,   0.0f, 0.0f, 1.0f, 1.0f,
-    };
-    WidgetInput newInput2 = {
-        +0.50f,  0.75f, 0.00f, 1.00f,   1.0f, 0.0f, 0.0f, 1.0f, 
-        +0.75f, +0.25f, 0.00f, 1.00f,   0.0f, 1.0f, 0.0f, 1.0f, 
-        +0.25f, +0.25f, 0.00f, 1.00f,   0.0f, 0.0f, 1.0f, 1.0f
-    };
-    widgetVtxBuffer.push_back(newInput);
-    widgetVtxBuffer.push_back(newInput2);
+    widgetVtxBuffer.push_back(input);
 }
 
 }  // namespace ui

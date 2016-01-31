@@ -16,30 +16,38 @@ enum ProportionMode {
     PROPORTION_AUTO,       // Calculate width and height
 };
 
+struct Color {
+    float r;
+    float g;
+    float b;
+    float a;
+};
+
 class Style {
 private:
-    struct Color {
-        float r;
-        float g;
-        float b;
-        float a;
+    struct Box {
+        Length top;
+        Length right;
+        Length bottom;
+        Length left;
+
+        Box& operator= (const Length& length) {
+            top = length;
+            right = length;
+            bottom = length;
+            left = length;
+            return *this;
+        }
     };
 
 public:
     Length top;
     Length left;
-
-    ProportionMode sizeMode = PROPORTION_AUTO;
     Length width;
     Length height;
 
-    struct Padding {
-        Length top;
-        Length right;
-        Length bottom;
-        Length left;
-    } padding;
-
+    Box padding;
+    Box margin;
     struct Border {
         Length top;
         Length right;
@@ -48,12 +56,10 @@ public:
         Color color;
     } border;
 
-    struct Margin {
-        Length top;
-        Length right;
-        Length bottom;
-        Length left;
-    } margin;
+    Color color;
+    Color background;
+
+    ProportionMode sizeMode = PROPORTION_AUTO;
 
     float opacity = 1.0;
 };

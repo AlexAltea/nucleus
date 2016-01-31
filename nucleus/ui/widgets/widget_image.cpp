@@ -17,31 +17,35 @@ WidgetImage::~WidgetImage() {
     stbi_image_free(imBuffer);
 }
 
-void WidgetImage::init(const std::string& pngfile) {
-    // Get file contents
+void WidgetImage::init(core::ResourceName resName) {
+    // Open resource
+    core::Resource res(resName);
+    const Byte* data = reinterpret_cast<Byte*>(res.data);
+    init(data, res.size);
+}
+
+void WidgetImage::init(const std::string& filepath) {
+    // Open file
     std::FILE* file;
-    fopen_s(&file, pngfile.c_str(), "rb");
+    fopen_s(&file, filepath.c_str(), "rb");
     if (!file) {
-        logger.error(LOG_UI, "Image not found: %s", pngfile.c_str());
+        logger.error(LOG_UI, "Image not found: %s", filepath.c_str());
         return;
     }
 
+    // Read file
     fseek(file, 0, SEEK_END);
     Size size = ftell(file);
-    std::vector<Byte> pngBuffer(size + 1);
+    std::vector<Byte> buffer(size + 1);
     fseek(file, 0, SEEK_SET);
-    fread(pngBuffer.data(), size, 1, file);
+    fread(buffer.data(), size, 1, file);
     fclose(file);
 
-    init(pngBuffer.data(), size);
+    init(buffer.data(), size);
 }
 
-void WidgetImage::init(const Byte* pngbuffer, Size size) {
-    /**
-     * NOTE: STB generates stores the image rows in reverse order with respect to the format nucleus::gfx expects.
-     * Vertical quad coordinates are swapped on rendering to make sure the image shows up properly.
-     */
-    imBuffer = stbi_load_from_memory(pngbuffer, size, &imWidth, &imHeight, &imComponents, 4);
+void WidgetImage::init(const Byte* buffer, Size size) {
+    imBuffer = stbi_load_from_memory(buffer, size, &imWidth, &imHeight, &imComponents, 4);
 }
 
 void WidgetImage::dimensionalize() {

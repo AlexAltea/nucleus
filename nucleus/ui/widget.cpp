@@ -9,14 +9,10 @@
 
 namespace ui {
 
-Widget::Widget() {
-    style.width.type = Length::TYPE_UNDEFINED;
-    style.height.type = Length::TYPE_UNDEFINED;
+Widget::Widget() : style({}) {
 }
 
-Widget::Widget(const std::string& id) : id(id) {
-    style.width.type = Length::TYPE_UNDEFINED;
-    style.height.type = Length::TYPE_UNDEFINED;
+Widget::Widget(const std::string& id) : id(id), style({}) {
 }
 
 Widget* Widget::find(const std::string& query) {
@@ -26,11 +22,13 @@ Widget* Widget::find(const std::string& query) {
     return nullptr;
 }
 
-float Widget::getCoord(Length length, float pixels) {
+float Widget::getCoord(const Length& length, float pixels) {
     constexpr auto meterToInch = 39.3701;
     const Surface& surface = manager->surface;
 
     switch (length.type) {
+    case Length::TYPE_UNDEFINED:
+        return 0;
     case Length::TYPE_PCT:
         return (length.value) / 100;
     case Length::TYPE_PX:
@@ -47,14 +45,14 @@ float Widget::getCoord(Length length, float pixels) {
     }
 }
 
-float Widget::getCoordX(Length x) {
+float Widget::getCoordX(const Length& length) {
     const Surface& surface = manager->surface;
-    return getCoord(x, surface.width);
+    return getCoord(length, surface.width);
 }
 
-float Widget::getCoordY(Length y) {
+float Widget::getCoordY(const Length& length) {
     const Surface& surface = manager->surface;
-    return getCoord(y, surface.height);
+    return getCoord(length, surface.height);
 }
 
 float Widget::getOuterWidth() {
@@ -67,6 +65,22 @@ float Widget::getOuterHeight() {
     auto marginTop = getCoordX(style.margin.top);
     auto marginBottom = getCoordX(style.margin.bottom);
     return vertHeight + marginTop + marginBottom;
+}
+
+float Widget::getOffsetTop() {
+    return vertTop;
+}
+
+float Widget::getOffsetLeft() {
+    return vertLeft;
+}
+
+void Widget::setOffsetTop(float value) {
+    vertTop = value;
+}
+
+void Widget::setOffsetLeft(float value) {
+    vertLeft = value;
 }
 
 }  // namespace ui

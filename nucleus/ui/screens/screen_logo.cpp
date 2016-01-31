@@ -12,12 +12,11 @@
 namespace ui {
 
 ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
-    auto* logo = new WidgetImage();
-    logo->init("..\\resources\\images\\nucleus-logo.png");
-    logo->style.top = 25.0_pct;
-    logo->style.left = 25.0_pct;
-    logo->style.width = 50.0_pct;
-    logo->style.sizeMode = PROPORTION_AUTOHEIGHT;
+    auto* logo = new WidgetImage("logo");
+    logo->init(core::RES_IMAGE_NUCLEUS_LOGO);
+    logo->style.top = 25_pct;
+    logo->style.left = 25_pct;
+    logo->style.width = 50_pct;
 
     body.addElement(logo);
 }

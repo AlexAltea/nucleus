@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/core/resource.h"
 #include "nucleus/ui/widget.h"
 
 #include <string>
@@ -20,13 +21,28 @@ class WidgetImage : public Widget {
     int imComponents;
 
 public:
+    WidgetImage() {}
+    WidgetImage(const std::string& id) : Widget(id) {}
     ~WidgetImage();
 
-    // Read PNG from file
-    void init(const std::string& pngfile);
+    /**
+     * Read image from resource
+     * @param[in]  resName   Resource identifier
+     */
+    void init(core::ResourceName resName);
 
-    // Read PNG from buffer
-    void init(const Byte* pngbuffer, Size size);
+    /**
+     * Read image from file
+     * @param[in]  filepath  Path to the image file
+     */
+    void init(const std::string& filepath);
+
+    /**
+     * Read image from buffer
+     * @param[in]  buffer    Buffer holding the image
+     * @param[in]  size      Size in bytes of the buffer
+     */
+    void init(const Byte* buffer, Size size);
 
     virtual void dimensionalize() override;
     virtual void render() override;
