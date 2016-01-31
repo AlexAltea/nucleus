@@ -45,52 +45,56 @@ Widget* WidgetContainer::find(const std::string& query) {
 }
 
 void WidgetContainer::dimensionalize() {
-    vertWidth = 0.0;
-    vertWidth += getCoordX(style.padding.left);
-    vertWidth += getCoordX(style.padding.right);
-    vertWidth += getCoordX(style.border.left);
-    vertWidth += getCoordX(style.border.right);
-    vertHeight = 0.0;
-    vertHeight += getCoordY(style.padding.top);
-    vertHeight += getCoordY(style.padding.bottom);
-    vertHeight += getCoordY(style.border.top);
-    vertHeight += getCoordY(style.border.bottom);
+    compWidth = 0.0;
+    compWidth += getCoordX(style.padding.left);
+    compWidth += getCoordX(style.padding.right);
+    compWidth += getCoordX(style.border.left);
+    compWidth += getCoordX(style.border.right);
+    compHeight = 0.0;
+    compHeight += getCoordY(style.padding.top);
+    compHeight += getCoordY(style.padding.bottom);
+    compHeight += getCoordY(style.border.top);
+    compHeight += getCoordY(style.border.bottom);
 
     if (layout == LAYOUT_VERTICAL) {
         for (auto& child : children) {
             child->dimensionalize();
-            auto ow = child->getOuterWidth();
-            auto oh = child->getOuterHeight();
-            vertWidth = std::max(ow, vertWidth);
-            vertHeight += oh;
+            auto cw = child->getMarginWidth();
+            auto ch = child->getMarginHeight();
+            compWidth = std::max(cw, compWidth);
+            compHeight += ch;
         }
     } else {
         for (auto& child : children) {
             child->dimensionalize();
-            auto ow = child->getOuterWidth();
-            auto oh = child->getOuterHeight();
-            vertHeight = std::max(oh, vertHeight);
-            vertWidth += ow;
+            auto cw = child->getMarginWidth();
+            auto ch = child->getMarginHeight();
+            compWidth = std::max(ch, compWidth);
+            vertWidth += cw;
         }
     }
 
-    // Override dimensions
+    // Set final dimensions
     if (style.width.type != Length::TYPE_UNDEFINED) {
         vertWidth = getCoordX(style.width);
+    } else {
+        vertWidth = compWidth;
     }
     if (style.height.type != Length::TYPE_UNDEFINED) {
         vertHeight = getCoordY(style.height);
+    } else {
+        vertHeight = compHeight;
     }
 }
 
 void WidgetContainer::render() {
     auto offsetTop = getOffsetTop() + getCoordY(style.margin.top);
-    auto offsetLeft = getOffsetLeft() + getCoordX(style.margin.top);
+    auto offsetLeft = getOffsetLeft() + getCoordX(style.margin.left);
 
     // Preparing vertex input
     auto x1 = -1.0 + 2 * (offsetLeft);
-    auto x2 = -1.0 + 2 * (offsetLeft + getOuterWidth());
-    auto y1 = +1.0 - 2 * (offsetTop + getOuterHeight());
+    auto x2 = -1.0 + 2 * (offsetLeft + getPaddingWidth());
+    auto y1 = +1.0 - 2 * (offsetTop + getPaddingHeight());
     auto y2 = +1.0 - 2 * (offsetTop);
 
     /**
@@ -130,19 +134,54 @@ void WidgetContainer::render() {
 
     auto childOffsetTop = offsetTop + getCoordY(style.padding.top);
     auto childOffsetLeft = offsetLeft + getCoordX(style.padding.left);
+
+    // Render children widgets vertically
     if (layout == LAYOUT_VERTICAL) {
-        for (auto& child : children) {
-            child->setOffsetTop(childOffsetTop);
-            child->setOffsetLeft(childOffsetLeft);
-            child->render();
-            childOffsetTop += child->getOuterHeight();
+        if (style.alignV == ALIGN_VERTICAL_CENTER) {
+            childOffsetTop += (vertHeight - compHeight) / 2.0;
         }
-    } else {
+        if (style.alignV == ALIGN_VERTICAL_BOTTOM) {
+            childOffsetTop += (vertHeight - compHeight);
+        }
+
         for (auto& child : children) {
+            // Correct horizontal alignment
+            switch (style.alignH) {
+            case ALIGN_HORIZONTAL_LEFT:
+                child->setOffsetLeft(childOffsetLeft); break;
+            case ALIGN_HORIZONTAL_CENTER:
+                child->setOffsetLeft(childOffsetLeft + (getContentWidth() - child->getBorderWidth()) / 2.0); break;
+            case ALIGN_HORIZONTAL_RIGHT:
+                child->setOffsetLeft(childOffsetLeft + (getContentWidth() - child->getBorderWidth())); break;
+            }
             child->setOffsetTop(childOffsetTop);
+            child->render();
+            childOffsetTop += child->getMarginHeight();
+        }
+    }
+
+    // Render children widgets horizontally
+    if (layout == LAYOUT_HORIZONTAL) {
+        if (style.alignH == ALIGN_HORIZONTAL_CENTER) {
+            childOffsetLeft += (vertWidth - compWidth) / 2.0;
+        }
+        if (style.alignH == ALIGN_HORIZONTAL_RIGHT) {
+            childOffsetLeft += (vertWidth - compWidth);
+        }
+
+        for (auto& child : children) {
+            // Correct vertical alignment
+            switch (style.alignH) {
+            case ALIGN_HORIZONTAL_LEFT:
+                child->setOffsetTop(childOffsetTop); break;
+            case ALIGN_HORIZONTAL_CENTER:
+                child->setOffsetTop(childOffsetTop + (getContentHeight() - child->getBorderHeight()) / 2.0); break;
+            case ALIGN_HORIZONTAL_RIGHT:
+                child->setOffsetTop(childOffsetTop + (getContentHeight() - child->getBorderHeight())); break;
+            }
             child->setOffsetLeft(childOffsetLeft);
             child->render();
-            childOffsetLeft += child->getOuterWidth();
+            childOffsetLeft += child->getMarginWidth();
         }
     }
 }

@@ -31,7 +31,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_container.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_image.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_text.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)language.cpp" />
@@ -46,6 +45,5 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_container.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_image.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_text.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_texture.cpp" />
   </ItemGroup>
 </Project>

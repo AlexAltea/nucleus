@@ -12,11 +12,20 @@
 namespace ui {
 
 class WidgetText : public Widget {
+    // Image
+    unsigned char* imBuffer;
+    int imWidth = 0;
+    int imHeight = 0;
+    int imComponents;
+
 public:
+    WidgetText() {}
+    WidgetText(const std::string& id) : Widget(id) {}
+
     // Update the texture given a text string
     void update(const std::string& text);
 
-    // Render the image
+    virtual void dimensionalize() override;
     virtual void render() override;
 };
 

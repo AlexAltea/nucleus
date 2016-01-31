@@ -31,6 +31,22 @@ struct WidgetInput {
  * ======
  * The Widget base class represents an arbitrary component that is rendered to the user interface.
  * Usually, they are found on Screen objects as part of their Widget tree.
+ * 
+ * ## Style
+ * Each Widget has four nested boxes: Margin > Border > Padding > Content.
+ *  - Content: The actual content of the Widget, such as text, images or other Widgets.
+ *  - Padding: Clears a transparent area around the content.
+ *  - Border:  Border that goes around the padding.
+ *  - Margin:  Clears a transparent area around the border.
+ *
+ * Based on this, there are four different ways per axis to measure a Widget length.
+ *
+ *  | Dimensions | Width              | Height              |
+ *  +------------+--------------------+---------------------+
+ *  | Content    | getContentWidth()  | getContentHeight()  |
+ *  | Padding    | getPaddingWidth()  | getPaddingHeight()  |
+ *  | Border     | getBorderWidth()   | getBorderHeight()   |
+ *  | Margin     | getMarginWidth()   | getMarginHeight()   |
  */
 class Widget {
 protected:
@@ -40,10 +56,15 @@ protected:
     // Vertices to be rendered
     WidgetInput input;
 
+    // Final dimension and size
     float vertWidth;
     float vertHeight;
     float vertTop;
     float vertLeft;
+
+    // Computed dimension and size
+    float compWidth;
+    float compHeight;
 
     float getCoord(const Length& length, float proportion);
     float getCoordX(const Length& length);
@@ -81,9 +102,15 @@ public:
      */
     virtual void render() = 0;
 
-    // Get dimensions in our rendering coordinate space, including margins
-    float getOuterWidth();
-    float getOuterHeight();
+    // Dimensions in rendering coordinate space
+    float getContentWidth();
+    float getContentHeight();
+    float getPaddingWidth();
+    float getPaddingHeight();
+    float getBorderWidth();
+    float getBorderHeight();
+    float getMarginWidth();
+    float getMarginHeight();
 
     // Absolute position in our rendering coordinate space, including margins
     float getOffsetTop();

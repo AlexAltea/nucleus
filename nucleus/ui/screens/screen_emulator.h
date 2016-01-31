@@ -7,8 +7,6 @@
 
 #include "nucleus/ui/screen.h"
 
-#include "nucleus/ui/widgets/widget_texture.h"
-
 namespace ui {
 
 class ScreenEmulator : public Screen {

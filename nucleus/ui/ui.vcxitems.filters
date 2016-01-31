@@ -12,9 +12,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_text.h">
       <Filter>widgets</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_texture.h">
-      <Filter>widgets</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\list.h">
       <Filter>widgets</Filter>
     </ClInclude>
@@ -47,9 +44,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)event.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_texture.cpp">
-      <Filter>widgets</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_container.cpp">
       <Filter>widgets</Filter>
     </ClCompile>

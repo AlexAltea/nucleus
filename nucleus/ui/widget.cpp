@@ -55,15 +55,41 @@ float Widget::getCoordY(const Length& length) {
     return getCoord(length, surface.height);
 }
 
-float Widget::getOuterWidth() {
+// Dimensions in rendering coordinate space
+float Widget::getContentWidth() {
+    return vertWidth;
+}
+float Widget::getContentHeight() {
+    return vertHeight;
+}
+float Widget::getPaddingWidth() {
+    auto paddingLeft = getCoordX(style.padding.left);
+    auto paddingRight = getCoordX(style.padding.right);
+    return getContentWidth() + paddingLeft + paddingRight;
+}
+float Widget::getPaddingHeight() {
+    auto paddingTop = getCoordY(style.padding.top);
+    auto paddingBottom = getCoordY(style.padding.bottom);
+    return getContentHeight() + paddingTop + paddingBottom;
+}
+float Widget::getBorderWidth() {
+    auto borderLeft = getCoordX(style.border.left);
+    auto borderRight = getCoordX(style.border.right);
+    return vertWidth + borderLeft + borderRight;
+}
+float Widget::getBorderHeight() {
+    auto borderTop = getCoordY(style.border.top);
+    auto borderBottom = getCoordY(style.border.bottom);
+    return vertHeight + borderTop + borderBottom;
+}
+float Widget::getMarginWidth() {
     auto marginLeft = getCoordX(style.margin.left);
     auto marginRight = getCoordX(style.margin.right);
     return vertWidth + marginLeft + marginRight;
 }
-
-float Widget::getOuterHeight() {
-    auto marginTop = getCoordX(style.margin.top);
-    auto marginBottom = getCoordX(style.margin.bottom);
+float Widget::getMarginHeight() {
+    auto marginTop = getCoordY(style.margin.top);
+    auto marginBottom = getCoordY(style.margin.bottom);
     return vertHeight + marginTop + marginBottom;
 }
 

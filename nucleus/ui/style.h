@@ -9,6 +9,18 @@
 
 namespace ui {
 
+enum AlignHorizontal {
+    ALIGN_HORIZONTAL_LEFT = 0,
+    ALIGN_HORIZONTAL_CENTER,
+    ALIGN_HORIZONTAL_RIGHT,
+};
+
+enum AlignVertical {
+    ALIGN_VERTICAL_TOP = 0,
+    ALIGN_VERTICAL_CENTER,
+    ALIGN_VERTICAL_BOTTOM,
+};
+
 enum ProportionMode {
     PROPORTION_FIXED,      // Use the provided width/height dimensions
     PROPORTION_AUTOWIDTH,  // Calculate width based on the given height
@@ -45,6 +57,9 @@ public:
     Length left;
     Length width;
     Length height;
+
+    AlignHorizontal alignH;
+    AlignVertical alignV;
 
     Box padding;
     Box margin;

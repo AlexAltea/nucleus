@@ -7,8 +7,6 @@
 
 #include "nucleus/ui/screen.h"
 
-#include "nucleus/ui/widgets/widget_image.h"
-
 namespace ui {
 
 class ScreenLogo : public Screen {
