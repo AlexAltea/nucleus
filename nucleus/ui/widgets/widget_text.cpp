@@ -12,7 +12,46 @@
 
 namespace ui {
 
-void WidgetText::update(const std::string& text) {
+void WidgetText::update(const Font* fontFamily, const Length& fontSize, const std::string& text) {
+    const auto* fontInfo = &fontFamily->fontinfo;
+    auto lineHeight = getCoordY(fontSize) * manager->surface.getHeight();
+
+    // Font properties
+    int ascent, descent, lineGap;
+    float scale = stbtt_ScaleForPixelHeight(fontInfo, lineHeight);
+    stbtt_GetFontVMetrics(fontInfo, &ascent, &descent, &lineGap);
+    ascent *= scale;
+    descent *= scale;
+
+    // Compute texture size
+    txWidth = 0;
+    txHeight = ascent - descent;
+    for (Size i = 0; i < text.length(); i++) {
+        int dx;
+        int dy = (ascent - descent) + lineGap;
+        int kern = stbtt_GetCodepointKernAdvance(fontInfo, text[i], text[i+1]);
+        stbtt_GetCodepointHMetrics(fontInfo, text[i], &dx, 0);
+        txWidth += (dx + kern) * scale;
+    }
+
+    // Render characters
+    Size x = 0;
+    Size y = 0;
+    txBuffer.clear();
+    txBuffer.resize(txWidth * txHeight);
+    for (Size i = 0; i < text.length(); i++) {
+        int dx;
+        int dy = (ascent - descent) + lineGap;
+        int kern = stbtt_GetCodepointKernAdvance(fontInfo, text[i], text[i+1]);
+        stbtt_GetCodepointHMetrics(fontInfo, text[i], &dx, 0);
+
+        int x1, y1, x2, y2;
+        stbtt_GetCodepointBitmapBox(fontInfo, text[i], scale, scale, &x1, &y1, &x2, &y2);
+
+        Size offset = x + ((y + ascent + y1) * txWidth);
+        stbtt_MakeCodepointBitmap(fontInfo, &txBuffer[offset], x2 - x1, y2 - y1, txWidth, scale, scale, text[i]);
+        x += (dx + kern) * scale;
+    }
 }
 
 void WidgetText::dimensionalize() {
@@ -20,12 +59,12 @@ void WidgetText::dimensionalize() {
     vertHeight = 0.0;
 
     if (style.width.type == Length::TYPE_UNDEFINED) {
-        vertWidth = getCoordX(Length{ double(imWidth), Length::TYPE_PX });
+        vertWidth = getCoordX(Length{ double(txWidth), Length::TYPE_PX });
     } else {
         vertWidth = getCoordX(style.width);
     }
     if (style.height.type == Length::TYPE_UNDEFINED) {
-        vertHeight = getCoordY(Length{ double(imHeight), Length::TYPE_PX });
+        vertHeight = getCoordY(Length{ double(txHeight), Length::TYPE_PX });
     } else {
         vertHeight = getCoordY(style.height);
     }

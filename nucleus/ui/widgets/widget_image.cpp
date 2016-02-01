@@ -16,14 +16,14 @@ WidgetImage::~WidgetImage() {
     stbi_image_free(imBuffer);
 }
 
-void WidgetImage::init(core::ResourceName resName) {
+void WidgetImage::update(core::ResourceName resName) {
     // Open resource
     core::Resource res(resName);
     const Byte* data = reinterpret_cast<Byte*>(res.data);
-    init(data, res.size);
+    update(data, res.size);
 }
 
-void WidgetImage::init(const std::string& filepath) {
+void WidgetImage::update(const std::string& filepath) {
     // Open file
     std::FILE* file;
     fopen_s(&file, filepath.c_str(), "rb");
@@ -40,10 +40,10 @@ void WidgetImage::init(const std::string& filepath) {
     fread(buffer.data(), size, 1, file);
     fclose(file);
 
-    init(buffer.data(), size);
+    update(buffer.data(), size);
 }
 
-void WidgetImage::init(const Byte* buffer, Size size) {
+void WidgetImage::update(const Byte* buffer, Size size) {
     imBuffer = stbi_load_from_memory(buffer, size, &imWidth, &imHeight, &imComponents, 4);
 }
 

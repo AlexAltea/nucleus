@@ -17,6 +17,9 @@
     <Filter Include="resources\images">
       <UniqueIdentifier>{eccccb96-dcca-4fba-8aac-467cd27b16f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\fonts">
+      <UniqueIdentifier>{5b3f130c-e3be-44c2-afcd-8b582a4dce39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -73,5 +76,16 @@
     <Xml Include="..\..\resources\languages\de_DE.xml">
       <Filter>resources\languages</Filter>
     </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\resources\fonts\SourceSansPro-Light.otf">
+      <Filter>resources\fonts</Filter>
+    </Font>
+    <Font Include="..\..\resources\fonts\SourceSansPro-Regular.otf">
+      <Filter>resources\fonts</Filter>
+    </Font>
+    <Font Include="..\..\resources\fonts\SourceSansPro-Bold.otf">
+      <Filter>resources\fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

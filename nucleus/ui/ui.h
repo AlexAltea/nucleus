@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
+#include "nucleus/ui/font.h"
 #include "nucleus/ui/language.h"
 #include "nucleus/ui/screen.h"
 #include "nucleus/ui/surface.h"
@@ -28,11 +29,16 @@ class UI {
     std::queue<std::unique_ptr<Screen>> newScreens;
 
 public:
-    // Holds the message translation database
+    // Message translation database
     Language language;
 
-    // Holds the properties of the global window
+    // Properties of the global window
     Surface surface;
+
+    // Fonts
+    std::unique_ptr<Font> fontRegular;
+    std::unique_ptr<Font> fontBold;
+    std::unique_ptr<Font> fontLight;
 
     // Constructor
     UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue, Size width, Size height);

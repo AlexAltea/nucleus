@@ -59,14 +59,18 @@ IDI_NUCLEUS             ICON                    "..\\..\\resources\\icons\\nucle
 // RESOURCE
 //
 
-IDR_LANGUAGE_DE_DE          RESOURCE            "..\\..\\resources\\languages\\de_DE.xml"
-IDR_LANGUAGE_EN_US          RESOURCE            "..\\..\\resources\\languages\\en_US.xml"
-IDR_LANGUAGE_ES_ES          RESOURCE            "..\\..\\resources\\languages\\es_ES.xml"
+IDR_LANGUAGE_DE_DE                 RESOURCE     "..\\..\\resources\\languages\\de_DE.xml"
+IDR_LANGUAGE_EN_US                 RESOURCE     "..\\..\\resources\\languages\\en_US.xml"
+IDR_LANGUAGE_ES_ES                 RESOURCE     "..\\..\\resources\\languages\\es_ES.xml"
 
-IDR_IMAGE_NUCLEUS_LOGO      RESOURCE            "..\\..\\resources\\images\\nucleus-logo.png"
+IDR_IMAGE_NUCLEUS_LOGO             RESOURCE     "..\\..\\resources\\images\\nucleus-logo.png"
 
-IDR_SHADER_UI_WIDGET_PS     RESOURCE            "..\\..\\resources\\shaders\\ui_widget_ps.spv"
-IDR_SHADER_UI_WIDGET_VS     RESOURCE            "..\\..\\resources\\shaders\\ui_widget_vs.spv"
+IDR_SHADER_UI_WIDGET_PS            RESOURCE     "..\\..\\resources\\shaders\\ui_widget_ps.spv"
+IDR_SHADER_UI_WIDGET_VS            RESOURCE     "..\\..\\resources\\shaders\\ui_widget_vs.spv"
+
+IDR_FONT_SOURCESANSPRO_REGULAR     RESOURCE     "..\\..\\resources\\fonts\\SourceSansPro-Regular.ttf"
+IDR_FONT_SOURCESANSPRO_BOLD        RESOURCE     "..\\..\\resources\\fonts\\SourceSansPro-Bold.ttf"
+IDR_FONT_SOURCESANSPRO_LIGHT       RESOURCE     "..\\..\\resources\\fonts\\SourceSansPro-Light.ttf"
 
 #endif    // Neutral (Default) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -46,8 +46,8 @@ Resource::Resource(ResourceName name) {
     HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRes);
     DWORD resSize = SizeofResource(GetModuleHandle(NULL), hRes);
     LPVOID resData = LockResource(hGlob);
-    size = static_cast<size_t>(resSize);
-    data = static_cast<void*>(resData);
+    size = static_cast<Size>(resSize);
+    data = static_cast<Byte*>(resData);
 #endif
 }
 

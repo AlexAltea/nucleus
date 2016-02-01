@@ -29,20 +29,20 @@ public:
      * Read image from resource
      * @param[in]  resName   Resource identifier
      */
-    void init(core::ResourceName resName);
+    void update(core::ResourceName resName);
 
     /**
      * Read image from file
      * @param[in]  filepath  Path to the image file
      */
-    void init(const std::string& filepath);
+    void update(const std::string& filepath);
 
     /**
      * Read image from buffer
      * @param[in]  buffer    Buffer holding the image
      * @param[in]  size      Size in bytes of the buffer
      */
-    void init(const Byte* buffer, Size size);
+    void update(const Byte* buffer, Size size);
 
     virtual void dimensionalize() override;
     virtual void render() override;

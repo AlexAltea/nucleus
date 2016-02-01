@@ -21,12 +21,12 @@ enum ResourceName {
 class Resource {
 #if defined(NUCLEUS_PLATFORM_UWP)
     std::FILE* file;
-    std::vector<char> buffer;
+    std::vector<Byte> buffer;
 #endif
 
 public:
     Size size;
-    void* data;
+    Byte* data;
 
     Resource(ResourceName name);
     ~Resource();

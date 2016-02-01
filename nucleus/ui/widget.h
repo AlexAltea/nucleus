@@ -66,7 +66,7 @@ protected:
     float compWidth;
     float compHeight;
 
-    float getCoord(const Length& length, float proportion);
+    float getCoord(const Length& length, float pixels);
     float getCoordX(const Length& length);
     float getCoordY(const Length& length);
 

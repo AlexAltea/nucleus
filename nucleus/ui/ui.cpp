@@ -18,6 +18,10 @@ UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue, Size w
 bool UI::initialize() {
     language.open(config.language);
 
+    fontRegular = std::make_unique<Font>(core::RES_FONT_SOURCESANSPRO_REGULAR);
+    fontBold = std::make_unique<Font>(core::RES_FONT_SOURCESANSPRO_BOLD);
+    fontLight = std::make_unique<Font>(core::RES_FONT_SOURCESANSPRO_LIGHT);
+
     thread = std::thread([this]{
         task();
     });

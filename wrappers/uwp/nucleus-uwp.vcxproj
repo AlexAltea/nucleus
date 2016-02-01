@@ -261,6 +261,11 @@
     <Xml Include="..\..\resources\languages\en_US.xml" />
     <Xml Include="..\..\resources\languages\es_ES.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\resources\fonts\SourceSansPro-Bold.otf" />
+    <Font Include="..\..\resources\fonts\SourceSansPro-Light.otf" />
+    <Font Include="..\..\resources\fonts\SourceSansPro-Regular.otf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\..\packages\ANGLE.WindowsStore.2.1.6\build\native\ANGLE.WindowsStore.targets" Condition="Exists('..\..\packages\ANGLE.WindowsStore.2.1.6\build\native\ANGLE.WindowsStore.targets')" />

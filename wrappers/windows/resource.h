@@ -9,6 +9,9 @@
 #define IDR_IMAGE_NUCLEUS_LOGO          105
 #define IDR_SHADER_UI_WIDGET_PS         106
 #define IDR_SHADER_UI_WIDGET_VS         107
+#define IDR_FONT_SOURCESANSPRO_REGULAR  108
+#define IDR_FONT_SOURCESANSPRO_BOLD     109
+#define IDR_FONT_SOURCESANSPRO_LIGHT    110
 
 // Next default values for new objects
 // 
