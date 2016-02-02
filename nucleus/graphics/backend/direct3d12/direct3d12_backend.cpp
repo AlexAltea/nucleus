@@ -223,28 +223,59 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     auto* pipeline = new Direct3D12Pipeline();
 
     // Root signature parameters
-    D3D12_DESCRIPTOR_RANGE range;
-    range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-    range.NumDescriptors = 1;
-    range.BaseShaderRegister = 0;
-    range.RegisterSpace = 0;
-    range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    D3D12_DESCRIPTOR_RANGE ranges[2] = {};
+    ranges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+    ranges[0].NumDescriptors = 1;
+    ranges[0].BaseShaderRegister = 0;
+    ranges[0].RegisterSpace = 0;
+    ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    D3D12_ROOT_PARAMETER parameter = {};
-    parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    parameter.DescriptorTable.NumDescriptorRanges = 1;
-    parameter.DescriptorTable.pDescriptorRanges = &range;
-    parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+    ranges[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    ranges[1].NumDescriptors = 1;
+    ranges[1].BaseShaderRegister = 0;
+    ranges[1].RegisterSpace = 0;
+    ranges[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    D3D12_ROOT_PARAMETER parameters[2] = {};
+    parameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    parameters[0].DescriptorTable.NumDescriptorRanges = 1;
+    parameters[0].DescriptorTable.pDescriptorRanges = &ranges[0];
+    parameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+
+    parameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    parameters[1].DescriptorTable.NumDescriptorRanges = 1;
+    parameters[1].DescriptorTable.pDescriptorRanges = &ranges[1];
+    parameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+    // Samplers
+    std::vector<D3D12_STATIC_SAMPLER_DESC> d3dSamplers(desc.samplers.size());
+    for (Size i = 0; i < desc.samplers.size(); i++) {
+        const auto& sampler = desc.samplers[i];
+        d3dSamplers[i].Filter = convertFilter(sampler.filter);
+        d3dSamplers[i].AddressU = convertTextureAddressMode(sampler.addressU);
+        d3dSamplers[i].AddressV = convertTextureAddressMode(sampler.addressV);
+        d3dSamplers[i].AddressW = convertTextureAddressMode(sampler.addressW);
+        d3dSamplers[i].MipLODBias = 0;
+        d3dSamplers[i].MaxAnisotropy = 0;
+        d3dSamplers[i].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+        d3dSamplers[i].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+        d3dSamplers[i].MinLOD = 0.0f;
+        d3dSamplers[i].MaxLOD = D3D12_FLOAT32_MAX;
+        d3dSamplers[i].ShaderRegister = 0;
+        d3dSamplers[i].RegisterSpace = 0;
+        d3dSamplers[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    }
 
     // Root signature
     D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-    rootSignatureDesc.NumParameters = 1;
-    rootSignatureDesc.pParameters = &parameter;
+    rootSignatureDesc.NumParameters = 2;
+    rootSignatureDesc.pParameters = parameters;
+    rootSignatureDesc.NumStaticSamplers = d3dSamplers.size();
+    rootSignatureDesc.pStaticSamplers = d3dSamplers.data();
     rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
         D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
         D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-        D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-        D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+        D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
 
     ID3DBlob* signature;
     ID3DBlob* error;
@@ -346,34 +377,9 @@ Shader* Direct3D12Backend::createShader(const ShaderDesc& desc) {
 }
 
 Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
-    auto* texture = new Direct3D12Texture();
-
-    // Create resource description
-    D3D12_RESOURCE_DESC d3dDesc = {};
-    d3dDesc.Alignment = desc.alignment;
-    d3dDesc.Height = desc.height;
-    d3dDesc.Width = desc.width;
-    d3dDesc.MipLevels = desc.mipmapLevels;
-
-    // Pick appropriate format
-    switch (desc.format) {
-    case FORMAT_R8G8B8A8:
-        d3dDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT; break;
-    default:
-        logger.error(LOG_GRAPHICS, "Unimplemented texture format");
-    }
-
-    D3D12_HEAP_PROPERTIES heapProps = {};
-    heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
-    heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-    heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-    heapProps.CreationNodeMask = 1;
-    heapProps.VisibleNodeMask = 1;
-
-    HRESULT hr = device->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &d3dDesc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&texture->resource));
-    if (FAILED(hr)) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createTexture: device->CreateCommittedResource failed (0x%X)", hr);
-        return nullptr;
+    auto* texture = new Direct3D12Texture(device, desc);
+    if (desc.data) {
+        texture->upload(device, queue, desc.data, desc.size);
     }
     return texture;
 }

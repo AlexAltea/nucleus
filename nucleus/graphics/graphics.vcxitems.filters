@@ -118,6 +118,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan_shader_parser.cpp">
       <Filter>frontend\vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_texture.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">

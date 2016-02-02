@@ -114,7 +114,9 @@ std::string Direct3D12Shader::getType(Literal instrId) {
             std::string memberType = getType(operand);
             if (decorations && decorations[i]) {
                 hir::Literal builtinType = decorations[i]->operands[3];
-                if (builtinType == BUILTIN_CLIPDISTANCE || builtinType == BUILTIN_POINTSIZE) {
+                if (builtinType == BUILTIN_POINTSIZE ||
+                    builtinType == BUILTIN_CLIPDISTANCE || 
+                    builtinType == BUILTIN_CULLDISTANCE) {
                     members += "//";
                 }
                 members += format(PADDING "%s m%d : %s;\n", memberType.c_str(), i, getBuiltin(builtinType));
@@ -170,9 +172,12 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
 
     std::string pointerStr;
     switch (typeInstr->operands[0]) {
-    case StorageClass::INPUT:    pointerString = "input.";   break;
-    case StorageClass::UNIFORM:  pointerString = "uniform."; break;
-    case StorageClass::OUTPUT:   pointerString = "output.";  break;
+    case StorageClass::UNIFORM_CONSTANT:
+        pointerString = "uniform."; break;
+    case StorageClass::INPUT:
+        pointerString = "input."; break;
+    case StorageClass::OUTPUT:
+        pointerString = "output."; break;
     default:
         assert_always("Unimplemented");
     }
@@ -364,12 +369,14 @@ std::string Direct3D12Shader::compile(Module* module) {
         if (i->opcode == OP_CONSTANT) {
             std::string type = getType(i->typeId);
             std::string constant = getConstant(i->resultId);
-            sourceConstants += format("%s v%d = %s;\n", type.c_str(), i->resultId, constant.c_str());
+            sourceConstants += format("static %s v%d = %s;\n", type.c_str(), i->resultId, constant.c_str());
         }
         if (i->opcode == OP_VARIABLE) {
             Literal storageClass = i->operands[0];
             std::string type = getType(i->typeId);
             switch (storageClass) {
+            case StorageClass::UNIFORM_CONSTANT:
+                break;
             case StorageClass::INPUT:
                 if (module->idInstructions[module->idInstructions[i->typeId]->operands[1]]->opcode == OP_TYPE_STRUCT) {
                     sourceInput += format(PADDING "%s v%d;\n", type.c_str(), i->resultId);
@@ -434,7 +441,30 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
     idCache.resize(module->idInstructions.size());
 
     std::string source = compile(module);
-    //std::cout << source << std::endl;
+    if (desc.type == SHADER_TYPE_PIXEL) {
+        source = R"(struct TInput {
+  float4 v16 : SV_Position;
+  float4 v21 : COLOR;
+};
+struct TOutput {
+  float4 v9 : SV_Target0;
+};
+
+Texture2D g_texture : register(t0); // DELETEME
+SamplerState g_sampler : register(s0); // DELETEME
+
+TOutput main(TInput input) {
+  TOutput output;
+  // v14 = uniform.v13;
+  float4 v20 = input.v21; // DELETEME
+  float4 v18 = input.v16;
+  //output.v9 = v20; // UNCOMMENTME
+  output.v9 = g_texture.Sample(g_sampler, v18.xy); // DELETEME
+  return output;
+}
+)";
+    }
+    std::cout << source << std::endl;
 
     LPCSTR target;
     switch (desc.type) {
@@ -448,9 +478,14 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
         return false;
     }
 
+    UINT compileFlags = 0;
+#ifdef NUCLEUS_BUILD_DEBUG
+    compileFlags = 0;//D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
     ID3DBlob* bytecode;
     ID3DBlob* errors;
-    HRESULT hr = _D3DCompile(source.data(), source.size(), "shader", nullptr, nullptr, "main", target, 0, 0, &bytecode, &errors);
+    HRESULT hr = _D3DCompile(source.data(), source.size(), "shader", nullptr, nullptr, "main", target, compileFlags, 0, &bytecode, &errors);
     if (FAILED(hr)) {
         LPVOID errorString = errors->GetBufferPointer();
         logger.error(LOG_GPU, "Direct3D12Shader::initialize: Cannot compile shader (0x%X):\n%s", hr, errorString);

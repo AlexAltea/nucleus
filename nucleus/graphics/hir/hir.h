@@ -24,8 +24,8 @@ namespace hir {
 using Literal = U32;
 
 enum StorageClass {
+    UNIFORM_CONSTANT = 0,
     INPUT = 1,
-    UNIFORM = 2,
     OUTPUT = 3,
 };
 

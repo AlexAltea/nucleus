@@ -52,8 +52,8 @@ void UI::task() {
     pipelineDesc.ps = fragShader;
     pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_STRIP;
     pipelineDesc.iaState.inputLayout = {
-        { 0, gfx::FORMAT_R32G32B32A32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
-        { 1, gfx::FORMAT_R32G32B32A32, 0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+        { 0, gfx::FORMAT_R32G32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+        { 1, gfx::FORMAT_R32G32B32A32, 0, 8, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
     };
     pipelineDesc.cbState.colorTarget[0] = {
         true, false,
@@ -61,6 +61,13 @@ void UI::task() {
         gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
         gfx::LOGIC_OP_NOOP,
         gfx::COLOR_WRITE_ENABLE_ALL
+    };
+    pipelineDesc.samplers.resize(1);
+    pipelineDesc.samplers[0] = {
+        gfx::FILTER_MIN_MAG_MIP_POINT,
+        gfx::TEXTURE_ADDRESS_MIRROR,
+        gfx::TEXTURE_ADDRESS_MIRROR,
+        gfx::TEXTURE_ADDRESS_MIRROR,
     };
     gfx::Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
 

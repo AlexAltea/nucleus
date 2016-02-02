@@ -9,6 +9,7 @@
 #include "nucleus/graphics/format.h"
 #include "nucleus/graphics/primitive.h"
 #include "nucleus/graphics/shader.h"
+#include "nucleus/graphics/texture.h"
 
 namespace gfx {
 
@@ -142,6 +143,8 @@ public:
     RSState rsState;      // Rasterizer static pipeline state
     CBState cbState;      // Color blender and output static pipeline state
     DBState dbState;      // Depth-stencil static pipeline state
+
+    std::vector<Sampler> samplers;
 };
 
 class Pipeline {

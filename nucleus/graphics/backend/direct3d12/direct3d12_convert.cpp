@@ -47,12 +47,37 @@ D3D12_BLEND_OP convertBlendOp(gfx::BlendOp blendOp) {
     }
 }
 
+D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc) {
+    switch (comparisonFunc) {
+    case COMPARISON_FUNC_NEVER:          return D3D12_COMPARISON_FUNC_NEVER;
+    case COMPARISON_FUNC_LESS:           return D3D12_COMPARISON_FUNC_LESS;
+    case COMPARISON_FUNC_EQUAL:          return D3D12_COMPARISON_FUNC_EQUAL;
+    case COMPARISON_FUNC_LESS_EQUAL:     return D3D12_COMPARISON_FUNC_LESS_EQUAL;
+    case COMPARISON_FUNC_GREATER:        return D3D12_COMPARISON_FUNC_GREATER;
+    case COMPARISON_FUNC_NOT_EQUAL:      return D3D12_COMPARISON_FUNC_NOT_EQUAL;
+    case COMPARISON_FUNC_GREATER_EQUAL:  return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+    case COMPARISON_FUNC_ALWAYS:         return D3D12_COMPARISON_FUNC_ALWAYS;
+    default:
+        assert_always("Unimplemented case");
+        return D3D12_COMPARISON_FUNC_NEVER;
+    }
+}
+
+D3D12_FILTER convertFilter(gfx::Filter filter) {
+    switch (filter) {
+    case FILTER_MIN_MAG_MIP_POINT:  return D3D12_FILTER_MIN_MAG_MIP_POINT;
+    default:
+        assert_always("Unimplemented case");
+        return D3D12_FILTER_MIN_MAG_MIP_POINT;
+    }
+}
+
 DXGI_FORMAT convertFormat(gfx::Format format) {
     switch (format) {
-    case FORMAT_R8G8B8A8:      return DXGI_FORMAT_R8G8B8A8_UINT;
-    case FORMAT_R32G32:        return DXGI_FORMAT_R32G32_FLOAT;
-    case FORMAT_R32G32B32:     return DXGI_FORMAT_R32G32B32_FLOAT;
-    case FORMAT_R32G32B32A32:  return DXGI_FORMAT_R32G32B32A32_FLOAT;
+    case FORMAT_R32G32:          return DXGI_FORMAT_R32G32_FLOAT;
+    case FORMAT_R32G32B32:       return DXGI_FORMAT_R32G32B32_FLOAT;
+    case FORMAT_R32G32B32A32:    return DXGI_FORMAT_R32G32B32A32_FLOAT;
+    case FORMAT_R8G8B8A8_UNORM:  return DXGI_FORMAT_R8G8B8A8_UNORM;
     default:
         assert_always("Unimplemented case");
         return DXGI_FORMAT_UNKNOWN;
@@ -115,6 +140,19 @@ D3D12_RESOURCE_STATES convertResourceState(gfx::ResourceState resourceState) {
     default:
         assert_always("Unimplemented case");
         return D3D12_RESOURCE_STATE_COMMON;
+    }
+}
+
+D3D12_TEXTURE_ADDRESS_MODE convertTextureAddressMode(gfx::TextureAddress address) {
+    switch (address) {
+    case TEXTURE_ADDRESS_WRAP:         return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    case TEXTURE_ADDRESS_MIRROR:       return D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
+    case TEXTURE_ADDRESS_CLAMP:        return D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    case TEXTURE_ADDRESS_BORDER:       return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+    case TEXTURE_ADDRESS_MIRROR_ONCE:  return D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
+    default:
+        assert_always("Unimplemented case");
+        return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     }
 }
 

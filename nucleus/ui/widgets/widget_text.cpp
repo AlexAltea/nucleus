@@ -52,6 +52,17 @@ void WidgetText::update(const Font* fontFamily, const Length& fontSize, const st
         stbtt_MakeCodepointBitmap(fontInfo, &txBuffer[offset], x2 - x1, y2 - y1, txWidth, scale, scale, text[i]);
         x += (dx + kern) * scale;
     }
+
+    // Create texture
+    gfx::TextureDesc textureDesc;
+    textureDesc.width = txWidth;
+    textureDesc.height = txHeight;
+    textureDesc.mipmapLevels = 1;
+    textureDesc.format = gfx::FORMAT_R8G8B8A8_UNORM;
+    textureDesc.data = txBuffer.data();
+    textureDesc.size = txBuffer.size();
+
+    texture = manager->graphics->createTexture(textureDesc);
 }
 
 void WidgetText::dimensionalize() {

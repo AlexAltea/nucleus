@@ -21,7 +21,7 @@ class UI;
 
 struct WidgetInput {
     struct WidgetVertex {
-        float position[4];
+        float position[2];
         Color background;
     } vertex[4];
 };

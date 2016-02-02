@@ -20,7 +20,6 @@ namespace ui {
 
 class UI {
     // Graphics
-    std::shared_ptr<gfx::IBackend> graphics;
     gfx::CommandQueue* cmdQueue;
     gfx::CommandBuffer* cmdBuffer;
 
@@ -29,6 +28,8 @@ class UI {
     std::queue<std::unique_ptr<Screen>> newScreens;
 
 public:
+    std::shared_ptr<gfx::IBackend> graphics;
+
     // Message translation database
     Language language;
 

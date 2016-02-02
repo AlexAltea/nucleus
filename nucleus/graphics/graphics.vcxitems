@@ -80,6 +80,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_debug.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_fence.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_shader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_texture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_backend.cpp" />
