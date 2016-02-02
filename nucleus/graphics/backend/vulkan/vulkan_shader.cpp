@@ -41,7 +41,7 @@ bool VulkanShader::initialize(const ShaderDesc& desc) {
         0, 0, 0,
     });
 
-    // Module 
+    // Module
     Module* module = desc.module;
     for (const auto* instruction : module->header) {
         dump(*instruction);

@@ -38,10 +38,10 @@ void Direct3D12Fence::wait() {
     UINT64 fenceToWaitFor = fenceValue - 1;
     if (fence->GetCompletedValue() < fenceToWaitFor) {
         HRESULT hr = fence->SetEventOnCompletion(fenceToWaitFor, fenceEvent);
-		if(FAILED(hr)) {
+        if(FAILED(hr)) {
             logger.error(LOG_GRAPHICS, "Direct3D12Fence::wait: SetEventOnCompletion failed");
-			return;
-		}
+            return;
+        }
         WaitForSingleObject(fenceEvent, INFINITE);
     }
 }
@@ -51,10 +51,10 @@ void Direct3D12Fence::wait(Clock::duration timeout) {
     DWORD ms = std::chrono::duration_cast<std::chrono::milliseconds>(timeout).count();
     if (fence->GetCompletedValue() < fenceToWaitFor) {
         HRESULT hr = fence->SetEventOnCompletion(fenceToWaitFor, fenceEvent);
-		if(FAILED(hr)) {
+        if(FAILED(hr)) {
             logger.error(LOG_GRAPHICS, "Direct3D12Fence::wait: SetEventOnCompletion failed");
-			return;
-		}
+            return;
+        }
         WaitForSingleObject(fenceEvent, ms);
     }
 }

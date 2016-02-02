@@ -170,7 +170,7 @@ private:
 
     /**
      * Get the vector resulting from updating a component subset specified by a mask with the contents of another vector
-     * @param[in]  dest     Output vector ID whose component-subset will be written 
+     * @param[in]  dest     Output vector ID whose component-subset will be written
      * @param[in]  source   Input vector ID whose components will be copied to output
      * @param[in]  mask     Byte containing the 4-bit mask that enable/disable the 4 components (x,y,z,w) to write.
      */

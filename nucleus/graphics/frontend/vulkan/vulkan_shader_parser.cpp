@@ -148,13 +148,13 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
     initialize();
     assert_true(size % 4 == 0, "SPIR-V binary size should be a multiple of 4");
     assert_true(size > 0x30, "SPIR-V binary size should be at least 0x30");
-    
+
     const U32 totalWordCount = size / 4;
     const U32* words = reinterpret_cast<const U32*>(data);
     if (!checkHeader(&words[0])) {
         return nullptr;
     }
-    
+
     block = nullptr;
     function = nullptr;
     module = new Module();

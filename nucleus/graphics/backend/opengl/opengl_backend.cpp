@@ -154,8 +154,8 @@ Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
     glGetProgramiv(program, GL_LINK_STATUS, &status);
     if (status != GL_TRUE) {
         GLint length;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
-        
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+
         std::vector<GLchar> infoLog(length);
         glGetProgramInfoLog(program, infoLog.size(), nullptr, infoLog.data());
         logger.error(LOG_GPU, "OpenGLBackend::createPipeline: Cannot link program:\n%s", infoLog.data());
@@ -164,8 +164,8 @@ Pipeline* OpenGLBackend::createPipeline(const PipelineDesc& desc) {
     glGetProgramiv(program, GL_VALIDATE_STATUS, &status);
     if (status != GL_TRUE) {
         GLint length;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
-        
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length);
+
         std::vector<GLchar> infoLog(length);
         glGetProgramInfoLog(program, infoLog.size(), nullptr, infoLog.data());
         logger.error(LOG_GPU, "OpenGLBackend::createPipeline: Cannot validate program:\n%s", infoLog.data());

@@ -13,7 +13,7 @@ class Length {
 public:
     Amount value;
     enum Type {
-        TYPE_UNDEFINED = 0,  
+        TYPE_UNDEFINED = 0,
         TYPE_CM,  // Centimeter
         TYPE_IN,  // Inch
         TYPE_MM,  // Millimeter

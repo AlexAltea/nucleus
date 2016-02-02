@@ -26,7 +26,7 @@ class UI;
  * Consist of multiple stages described below:
  *  1. The widget tree is traversed bottom-up, computing the Widget sizes based on their own style
  *     and the dimensions computed in the child nodes. Relevant style properties are:
- *     Width, Height, Margin, Padding  
+ *     Width, Height, Margin, Padding
  *  2. The widget tree is traversed up-bottom, doing following operations:
  *      a. Computing the Widget positions relative to the window coordinates based on their own style
  *         and the positions computed in the parent node. Relevant style properties are:

@@ -23,7 +23,7 @@ public:
 
     /**
      * Release the mapping of this buffer from the user address space
-     * @return  True on success 
+     * @return  True on success
      */
     virtual bool unmap() = 0;
 };

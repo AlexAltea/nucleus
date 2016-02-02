@@ -9,7 +9,7 @@ namespace ui {
 
 ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
     body.layout = WidgetContainer::LAYOUT_VERTICAL;
-    
+
     auto* header = new WidgetContainer("header");
     header->style.width = 100_pct;
     header->style.padding = 100_px;

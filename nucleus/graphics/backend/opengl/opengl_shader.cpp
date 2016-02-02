@@ -231,8 +231,8 @@ bool OpenGLShader::initialize(const ShaderDesc& desc) {
     glGetShaderiv(id, GL_COMPILE_STATUS, &status);
     if (status != GL_TRUE) {
         GLint length;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+
         std::vector<GLchar> infoLog(length);
         glGetShaderInfoLog(id, infoLog.size(), nullptr, infoLog.data());
         logger.error(LOG_GPU, "OpenGLShader::initialize: Cannot compile shader:\n%s", infoLog.data());

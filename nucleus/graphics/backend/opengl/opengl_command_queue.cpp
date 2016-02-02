@@ -165,7 +165,7 @@ void OpenGLCommandQueue::execute(const OpenGLCommandClearColor& cmd) {
     GLuint framebuffer;
     GLint drawbuffer;
     GLfloat value[4] = { cmd.r, cmd.g, cmd.b, cmd.a };
-    
+
     const auto& target = cmd.target;
     if (target->attached) {
         framebuffer = target->framebuffer;

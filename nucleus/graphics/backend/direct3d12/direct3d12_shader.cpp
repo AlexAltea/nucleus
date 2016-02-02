@@ -115,7 +115,7 @@ std::string Direct3D12Shader::getType(Literal instrId) {
             if (decorations && decorations[i]) {
                 hir::Literal builtinType = decorations[i]->operands[3];
                 if (builtinType == BUILTIN_POINTSIZE ||
-                    builtinType == BUILTIN_CLIPDISTANCE || 
+                    builtinType == BUILTIN_CLIPDISTANCE ||
                     builtinType == BUILTIN_CULLDISTANCE) {
                     members += "//";
                 }

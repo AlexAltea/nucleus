@@ -31,7 +31,7 @@ struct WidgetInput {
  * ======
  * The Widget base class represents an arbitrary component that is rendered to the user interface.
  * Usually, they are found on Screen objects as part of their Widget tree.
- * 
+ *
  * ## Style
  * Each Widget has four nested boxes: Margin > Border > Padding > Content.
  *  - Content: The actual content of the Widget, such as text, images or other Widgets.

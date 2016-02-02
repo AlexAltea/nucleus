@@ -134,7 +134,7 @@ void RSXVertexProgram::setDestVector(Literal value) {
     }
     //return dst + get_vp_mask(instr.masc_vec);
 }
-                       
+
 /*std::string RSXVertexProgram::get_header()
 {
     std::string header = "#version 330\n";
