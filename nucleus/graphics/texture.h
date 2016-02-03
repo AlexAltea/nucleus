@@ -47,7 +47,6 @@ struct Sampler {
 struct TextureDesc {
     const Byte* data;    // Pointer to the texture data (optional)
     Size size;           // Size of the texture data (optional)
-    U64 alignment;       // Alignment of the texture in bytes
     U32 width;           // Width of the texture
     U32 height;          // Width of the texture
     U16 mipmapLevels;    // Maximum number of mipmap levels in the texture

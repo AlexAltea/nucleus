@@ -54,7 +54,7 @@ void WidgetText::update(const Font* fontFamily, const Length& fontSize, const st
     }
 
     // Create texture
-    gfx::TextureDesc textureDesc;
+    gfx::TextureDesc textureDesc = {};
     textureDesc.width = txWidth;
     textureDesc.height = txHeight;
     textureDesc.mipmapLevels = 1;

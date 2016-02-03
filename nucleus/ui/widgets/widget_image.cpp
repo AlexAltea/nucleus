@@ -47,13 +47,13 @@ void WidgetImage::update(const Byte* buffer, Size size) {
     imBuffer = stbi_load_from_memory(buffer, size, &imWidth, &imHeight, &imComponents, 4);
 
     // Create texture
-    gfx::TextureDesc textureDesc;
+    gfx::TextureDesc textureDesc = {};
     textureDesc.width = imWidth;
     textureDesc.height = imHeight;
     textureDesc.mipmapLevels = 1;
     textureDesc.format = gfx::FORMAT_R8G8B8A8_UNORM;
-    textureDesc.data = buffer;
-    textureDesc.size = size;
+    textureDesc.data = imBuffer;
+    textureDesc.size = imWidth * imHeight * imComponents;
 
     texture = manager->graphics->createTexture(textureDesc);
 }

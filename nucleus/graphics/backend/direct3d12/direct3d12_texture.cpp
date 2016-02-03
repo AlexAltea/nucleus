@@ -14,6 +14,7 @@ namespace gfx {
 namespace direct3d12 {
 
 Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& desc) {
+    // Create texture
     D3D12_HEAP_PROPERTIES heapProperties = {};
     heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
     heapProperties.CreationNodeMask = 1;
@@ -23,7 +24,6 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
 
     D3D12_RESOURCE_DESC resourceDesc = {};
     resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-    resourceDesc.Alignment = static_cast<UINT64>(desc.alignment);
     resourceDesc.Width = static_cast<UINT64>(desc.width);
     resourceDesc.Height = static_cast<UINT>(desc.height);
     resourceDesc.DepthOrArraySize = 1;
@@ -31,13 +31,12 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
     resourceDesc.Format = convertFormat(desc.format);
     resourceDesc.SampleDesc.Count = 1;
     resourceDesc.SampleDesc.Quality = 0;
-    resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
     HRESULT hr;
     hr = device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&resource));
     if (FAILED(hr)) {
-        logger.error(LOG_GRAPHICS, "Direct3D12VertexBuffer::Direct3D12VertexBuffer: Could not create resource");
+        logger.error(LOG_GRAPHICS, "Direct3D12Texture::Direct3D12Texture: Could not create resource (0x%X)", hr);
     }
 
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
