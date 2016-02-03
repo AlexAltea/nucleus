@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+
 namespace gfx {
 
 enum Format {
@@ -12,6 +14,15 @@ enum Format {
     FORMAT_R32G32B32,
     FORMAT_R32G32B32A32,
     FORMAT_R8G8B8A8_UNORM,
+
+    _FORMAT_COUNT,
 };
+
+struct FormatInfo {
+    Format format;
+    Size bytesPerPixel;
+};
+
+extern const FormatInfo formatInfo[_FORMAT_COUNT];
 
 }  // namespace gfx

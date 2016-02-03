@@ -379,7 +379,7 @@ Shader* Direct3D12Backend::createShader(const ShaderDesc& desc) {
 Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
     auto* texture = new Direct3D12Texture(device, desc);
     if (desc.data) {
-        texture->upload(device, queue, desc.data, desc.size);
+        texture->upload(device, queue, desc);
     }
     return texture;
 }

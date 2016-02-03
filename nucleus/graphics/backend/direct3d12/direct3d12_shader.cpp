@@ -24,7 +24,7 @@ using namespace gfx::hir;
 #define PADDING "  "
 
 // Decoration
-const char* Direct3D12Shader::getBuiltin(hir::Literal builtinDecoration) {
+const char* Direct3D12Shader::getBuiltin(Literal builtinDecoration) {
     switch (builtinDecoration) {
     case BUILTIN_POSITION:      return "SV_Position";
     case BUILTIN_POINTSIZE:     return "PSIZE";
@@ -45,6 +45,108 @@ const char* Direct3D12Shader::getBuiltin(hir::Literal builtinDecoration) {
     default:
         assert_always("Unimplemented");
         return nullptr;
+    }
+}
+
+void Direct3D12Shader::appendUniform(Literal typeId, Literal resultId) {
+    Instruction* underlyingType = module->idInstructions[module->idInstructions[typeId]->operands[1]];
+    if (underlyingType->opcode == OP_TYPE_SAMPLED_IMAGE) {
+        Instruction* imageType = module->idInstructions[underlyingType->operands[0]];
+        Literal dimension = imageType->operands[1];
+        std::string texture;
+        std::string sampler = format("SamplerState v%ds", resultId);
+        switch (dimension) {
+        case DIMENSION_1D: texture = format("Texture1D v%d", resultId); break;
+        case DIMENSION_2D: texture = format("Texture2D v%d", resultId); break;
+        case DIMENSION_3D: texture = format("Texture3D v%d", resultId); break;
+        }
+        if (idDecoration.find(resultId) != idDecoration.end()) {
+            Literal binding = idDecoration[resultId][0]->operands[2];
+            texture += format(" : register(t%d)", binding);
+            sampler += format(" : register(s%d)", binding);
+        }
+        sourceUniforms += format("%s;\n%s;\n", texture.c_str(), sampler.c_str());
+    }
+}
+
+void Direct3D12Shader::appendInput(Literal typeId, Literal resultId) {
+    Literal location;
+    bool definedLocation = false;
+
+    std::string type = getType(typeId);
+    if (module->idInstructions[module->idInstructions[typeId]->operands[1]]->opcode == OP_TYPE_STRUCT) {
+        sourceInput += format(PADDING "%s v%d;\n", type.c_str(), resultId);
+        return;
+    } else if (idDecoration.find(resultId) != idDecoration.end()) {
+        Literal decorationType = idDecoration[resultId][0]->operands[1];
+        if (decorationType == DECORATION_BUILTIN) {
+            Literal builtinType = idDecoration[resultId][0]->operands[2];
+            if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
+                type = "uint";
+            }
+            if (shaderType == SHADER_TYPE_PIXEL) {
+                // NOTE: This is a workaround for Glslang-emitted shaders. Prepend to ensure that SV_Position appears on top and linking succeeds.
+                sourceInput = format(PADDING "%s v%d : %s;\n", type.c_str(), resultId, getBuiltin(builtinType)) + sourceInput;
+            } else {
+                sourceInput += format(PADDING "%s v%d : %s;\n", type.c_str(), resultId, getBuiltin(builtinType));
+            }
+            return;
+        }
+        if (decorationType == DECORATION_LOCATION) {
+            location = idDecoration[resultId][0]->operands[2];
+            definedLocation = true;
+        }
+    }
+
+    if (!definedLocation) {
+        location = countArbitraryInput++;
+    }
+    if (location >= userInputs.size()) {
+        userInputs.resize(location + 1);
+    }
+    assert_true(userInputs[location].empty());
+    if (shaderType == SHADER_TYPE_VERTEX) {
+        userInputs[location] = format(PADDING "%s v%d : INPUT%d;\n", type.c_str(), resultId, location);
+    } else {
+        userInputs[location] = format(PADDING "%s v%d : LINK%d;\n", type.c_str(), resultId, location);
+    }
+}
+
+void Direct3D12Shader::appendOutput(Literal typeId, Literal resultId) {
+    Literal location;
+    bool definedLocation = false;
+
+    std::string type = getType(typeId);
+    if (module->idInstructions[module->idInstructions[typeId]->operands[1]]->opcode == OP_TYPE_STRUCT) {
+        sourceOutput += format(PADDING "%s v%d;\n", type.c_str(), resultId);
+        return;
+    } else if (idDecoration.find(resultId) != idDecoration.end()) {
+        Literal decorationType = idDecoration[resultId][0]->operands[1];
+        if (decorationType == DECORATION_BUILTIN) {
+            Literal builtinType = idDecoration[resultId][0]->operands[2];
+            if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
+                type = "uint";
+            }
+            sourceOutput += format(PADDING "%s v%d : %s;\n", type.c_str(), resultId, getBuiltin(builtinType));
+            return;
+        }
+        if (decorationType == DECORATION_LOCATION) {
+            location = idDecoration[resultId][0]->operands[2];
+            definedLocation = true;
+        }
+    }
+
+    if (!definedLocation) {
+        location = countArbitraryOutput++;
+    }
+    if (location >= userOutputs.size()) {
+        userOutputs.resize(location + 1);
+    }
+    assert_true(userOutputs[location].empty());
+    if (shaderType == SHADER_TYPE_PIXEL) {
+        userOutputs[location] = format(PADDING "%s v%d : SV_Target%d;\n", type.c_str(), resultId, location);
+    } else {
+        userOutputs[location] = format(PADDING "%s v%d : LINK%d;\n", type.c_str(), resultId, location);
     }
 }
 
@@ -104,7 +206,7 @@ std::string Direct3D12Shader::getType(Literal instrId) {
 
     // Structs
     else if (instr->opcode == OP_TYPE_STRUCT) {
-        hir::Instruction** decorations = nullptr;
+        Instruction** decorations = nullptr;
         if (idDecoration.find(instrId) != idDecoration.end()) {
             decorations = idDecoration[instrId].data();
         }
@@ -113,7 +215,7 @@ std::string Direct3D12Shader::getType(Literal instrId) {
             Literal operand = instr->operands[i];
             std::string memberType = getType(operand);
             if (decorations && decorations[i]) {
-                hir::Literal builtinType = decorations[i]->operands[3];
+                Literal builtinType = decorations[i]->operands[3];
                 if (builtinType == BUILTIN_POINTSIZE ||
                     builtinType == BUILTIN_CLIPDISTANCE ||
                     builtinType == BUILTIN_CULLDISTANCE) {
@@ -197,10 +299,10 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
     return pointerString;
 }
 
-std::string Direct3D12Shader::emitBinaryOp(Instruction* i, hir::Opcode type, char symbol) {
-    hir::Literal result = i->resultId;
-    hir::Literal lhs = i->operands[0];
-    hir::Literal rhs = i->operands[1];
+std::string Direct3D12Shader::emitBinaryOp(Instruction* i, Opcode type, char symbol) {
+    Literal result = i->resultId;
+    Literal lhs = i->operands[0];
+    Literal rhs = i->operands[1];
 
 #if defined(NUCLEUS_BUILD_DEBUG)
     Instruction* lhsType = module->idInstructions[module->idInstructions[lhs]->typeId];
@@ -218,46 +320,60 @@ std::string Direct3D12Shader::emitBinaryOp(Instruction* i, hir::Opcode type, cha
 }
 
 std::string Direct3D12Shader::emitOpCompositeConstruct(Instruction* i) {
-#if defined(NUCLEUS_BUILD_DEBUG)
-    assert(i->operands.size() >= 2);
-    assert(module->idInstructions[i->typeId]->opcode == OP_TYPE_VECTOR);
-#endif
+    assert_true(i->operands.size() >= 2);
+    assert_true(module->idInstructions[i->typeId]->opcode == OP_TYPE_VECTOR);
 
     std::string type = getType(i->typeId);
     std::string constitutents = format("v%d", i->operands[0]);
     for (size_t idx = 1; idx < i->operands.size(); idx++) {
         constitutents += format(", v%d", i->operands[idx]);
     }
-    hir::Literal result = i->resultId;
+    Literal result = i->resultId;
     return format(PADDING "%s v%d = %s(%s);\n", type.c_str(), result, type.c_str(), constitutents.c_str());
 }
 
 std::string Direct3D12Shader::emitOpCompositeExtract(Instruction* i) {
-#if defined(NUCLEUS_BUILD_DEBUG)
-    assert(i->operands.size() >= 2);
-#endif
+    assert_true(i->operands.size() >= 2);
 
-    hir::Literal result = i->resultId;
-    hir::Literal composite = i->operands[0];
+    Literal result = i->resultId;
+    Literal composite = i->operands[0];
     std::string type = getType(i->typeId);
     return format(PADDING "%s v%d = v%d[%d];\n", type.c_str(), result, composite, i->operands[1]);
 }
 
-std::string Direct3D12Shader::emitOpLoad(Instruction* i) {
-#if defined(NUCLEUS_BUILD_DEBUG)
-    assert(i->operands.size() >= 1);
-#endif
+std::string Direct3D12Shader::emitOpImageSample(Instruction* i) {
+    assert_true(i->operands.size() >= 2);
 
-    hir::Literal result = i->resultId;
+    hir::Instruction* target = module->idInstructions[i->operands[0]];
+    while (target->opcode != OP_VARIABLE) {
+        switch (target->opcode) {
+        case OP_LOAD:
+            target = module->idInstructions[target->operands[0]]; break;
+        default:
+            assert_always("Unexpected opcode");
+        }
+    }
+    std::string type = getType(i->typeId);
+    Literal result = i->resultId;
+    Literal image = target->resultId;
+    Literal coord = i->operands[1];
+    return format(PADDING "%s v%d = v%d.Sample(v%ds, v%d);\n", type.c_str(), result, image, image, coord);
+}
+
+std::string Direct3D12Shader::emitOpLoad(Instruction* i) {
+    assert_true(i->operands.size() >= 1);
+
+    Literal result = i->resultId;
     std::string type = getType(i->typeId);
     std::string pointerStr = getPointer(i->operands[0]);
+    if (type.empty()) {
+        return "";
+    }
     return format(PADDING "%s v%d = %s;\n", type.c_str(), result, pointerStr.c_str());
 }
 
 std::string Direct3D12Shader::emitOpStore(Instruction* i) {
-#if defined(NUCLEUS_BUILD_DEBUG)
-    assert(i->operands.size() >= 2);
-#endif
+    assert_true(i->operands.size() >= 2);
 
     Literal object = i->operands[1];
     std::string pointerStr = getPointer(i->operands[0]);
@@ -299,6 +415,8 @@ std::string Direct3D12Shader::compile(Instruction* i) {
         return emitOpCompositeExtract(i);
     case OP_COMPOSITE_CONSTRUCT:
         return emitOpCompositeConstruct(i);
+    case OP_IMAGE_SAMPLE_IMPLICIT_LOD:
+        return emitOpImageSample(i);
     case OP_LOAD:
         return emitOpLoad(i);
     case OP_STORE:
@@ -351,9 +469,11 @@ std::string Direct3D12Shader::compile(Module* module) {
             idCache[funcId] = "TOutput main(TInput input)";
             idEntryPoint = funcId;
         }
-        if (i->opcode == OP_DECORATE && i->operands[1] == DECORATION_BUILTIN) {
+        if (i->opcode == OP_DECORATE) {
             Literal decoratedId = i->operands[0];
-            idDecoration[decoratedId] = { i };
+            if (idDecoration[decoratedId].empty()) {
+                idDecoration[decoratedId] = { i };
+            }
         }
         if (i->opcode == OP_MEMBER_DECORATE && i->operands[2] == DECORATION_BUILTIN) {
             Literal decoratedId = i->operands[0];
@@ -373,58 +493,31 @@ std::string Direct3D12Shader::compile(Module* module) {
         }
         if (i->opcode == OP_VARIABLE) {
             Literal storageClass = i->operands[0];
-            std::string type = getType(i->typeId);
             switch (storageClass) {
             case StorageClass::UNIFORM_CONSTANT:
+                appendUniform(i->typeId, i->resultId);
                 break;
             case StorageClass::INPUT:
-                if (module->idInstructions[module->idInstructions[i->typeId]->operands[1]]->opcode == OP_TYPE_STRUCT) {
-                    sourceInput += format(PADDING "%s v%d;\n", type.c_str(), i->resultId);
-                }
-                else if (idDecoration.find(i->resultId) != idDecoration.end()) {
-                    hir::Literal builtinType = idDecoration[i->resultId][0]->operands[2];
-                    if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
-                        type = "uint";
-                    }
-                    if (shaderType == SHADER_TYPE_PIXEL) {
-                        // NOTE: This is a workaround for Glslang-emitted shaders. Prepend to ensure that SV_Position appears on top and linking succeeds.
-                        sourceInput = format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType)) + sourceInput;
-                    } else {
-                        sourceInput += format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType));
-                    }
-                } else {
-                    if (shaderType == SHADER_TYPE_PIXEL) {
-                        sourceInput += format(PADDING "%s v%d : COLOR;\n", type.c_str(), i->resultId);
-                    } else {
-                        sourceInput += format(PADDING "%s v%d : INPUT%d;\n", type.c_str(), i->resultId, countArbitraryInput++);
-                    }
-                }
+                appendInput(i->typeId, i->resultId);
                 break;
             case StorageClass::OUTPUT:
-                if (module->idInstructions[module->idInstructions[i->typeId]->operands[1]]->opcode == OP_TYPE_STRUCT) {
-                    sourceOutput += format(PADDING "%s v%d;\n", type.c_str(), i->resultId);
-                }
-                else if (idDecoration.find(i->resultId) != idDecoration.end()) {
-                    hir::Literal builtinType = idDecoration[i->resultId][0]->operands[2];
-                    if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
-                        type = "uint";
-                    }
-                    sourceOutput += format(PADDING "%s v%d : %s;\n", type.c_str(), i->resultId, getBuiltin(builtinType));
-                } else {
-                    if (shaderType == SHADER_TYPE_PIXEL) {
-                        sourceOutput += format(PADDING "%s v%d : SV_Target%d;\n", type.c_str(), i->resultId, countArbitraryOutput++);
-                    } else {
-                        sourceOutput += format(PADDING "%s v%d : COLOR;\n", type.c_str(), i->resultId);
-                    }
-                }
+                appendOutput(i->typeId, i->resultId);
                 break;
             default:
                 assert_always("Unimplemented");
             }
         }
     }
-    source = format("%s\nstruct TInput {\n%s};\nstruct TOutput {\n%s};\n\n%s\n",
-        sourceTypes.c_str(), sourceInput.c_str(), sourceOutput.c_str(), sourceConstants.c_str());
+
+    // Append remaining Input+Output variables
+    for (const auto& var : userInputs) {
+        sourceInput += var;
+    }
+    for (const auto& var : userOutputs) {
+        sourceOutput += var;
+    }
+    source = format("%s\nstruct TInput {\n%s};\nstruct TOutput {\n%s};\n%s\n%s\n",
+        sourceTypes.c_str(), sourceInput.c_str(), sourceOutput.c_str(), sourceUniforms.c_str(), sourceConstants.c_str());
 
     // Compile functions
     for (auto* function : module->functions) {
@@ -441,30 +534,7 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
     idCache.resize(module->idInstructions.size());
 
     std::string source = compile(module);
-    if (desc.type == SHADER_TYPE_PIXEL) {
-        source = R"(struct TInput {
-  float4 v16 : SV_Position;
-  float4 v21 : COLOR;
-};
-struct TOutput {
-  float4 v9 : SV_Target0;
-};
-
-Texture2D g_texture : register(t0); // DELETEME
-SamplerState g_sampler : register(s0); // DELETEME
-
-TOutput main(TInput input) {
-  TOutput output;
-  // v14 = uniform.v13;
-  float4 v20 = input.v21; // DELETEME
-  float4 v18 = input.v16;
-  //output.v9 = v20; // UNCOMMENTME
-  output.v9 = g_texture.Sample(g_sampler, v18.xy); // DELETEME
-  return output;
-}
-)";
-    }
-    std::cout << source << std::endl;
+    //std::cout << source << std::endl;
 
     LPCSTR target;
     switch (desc.type) {
@@ -480,7 +550,7 @@ TOutput main(TInput input) {
 
     UINT compileFlags = 0;
 #ifdef NUCLEUS_BUILD_DEBUG
-    compileFlags = 0;//D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+    compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
     ID3DBlob* bytecode;

@@ -40,10 +40,17 @@ class Direct3D12Shader : public Shader {
 
     // Source
     std::vector<std::string> idCache;
+    std::vector<std::string> userInputs;
+    std::vector<std::string> userOutputs;
     std::string sourceTypes;
     std::string sourceInput;
     std::string sourceOutput;
     std::string sourceConstants;
+    std::string sourceUniforms;
+
+    void appendUniform(hir::Literal typeId, hir::Literal resultId);
+    void appendInput(hir::Literal typeId, hir::Literal resultId);
+    void appendOutput(hir::Literal typeId, hir::Literal resultId);
 
     // Conversion
     std::string getType(hir::Literal typeId);
@@ -54,16 +61,11 @@ class Direct3D12Shader : public Shader {
     std::string emitBinaryOp(hir::Instruction* i, hir::Opcode type, char symbol);
     std::string emitOpCompositeConstruct(hir::Instruction* i);
     std::string emitOpCompositeExtract(hir::Instruction* i);
+    std::string emitOpImageSample(hir::Instruction* i);
     std::string emitOpLoad(hir::Instruction* i);
     std::string emitOpStore(hir::Instruction* i);
 
-    // Utilities
-    /*std::string getName(hir::Value* value);
-    std::string getName(hir::Function* function);
-    std::string getDeclaration(hir::Value* value);
-    std::string getDeclaration(hir::Function* function);*/
-
-    // Compile HIR components into GLSL
+    // Compile HIR components into HLSL
     std::string compile(hir::Instruction* i);
     std::string compile(hir::Block* block);
     std::string compile(hir::Function* function);

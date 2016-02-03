@@ -29,9 +29,17 @@ enum StorageClass {
     OUTPUT = 3,
 };
 
+enum Dimension {
+    DIMENSION_1D = 0,
+    DIMENSION_2D = 1,
+    DIMENSION_3D = 2,
+};
+
 enum Decoration {
     DECORATION_BLOCK = 2,
     DECORATION_BUILTIN = 11,
+    DECORATION_LOCATION = 30,
+    DECORATION_BINDING = 33,
 };
 
 enum BuiltIn {

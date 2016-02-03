@@ -14,6 +14,7 @@ namespace direct3d12 {
 class Direct3D12Texture : public Texture {
 public:
     ID3D12Resource* resource;
+    ID3D12DescriptorHeap* srvHeap;
 
     Direct3D12Texture(ID3D12Device* device, const TextureDesc& desc);
     ~Direct3D12Texture();
@@ -22,10 +23,9 @@ public:
      * Upload texture data
      * @param[in]  device  Device that will receive the texture data
      * @param[in]  queue   Command queue to that will transfer the data
-     * @param[in]  data    Pointer to the texture data
-     * @param[in]  size    Size of the texture data
+     * @param[in]  desc    Texture description with valid data and size parameters
      */
-    bool upload(ID3D12Device* device, ID3D12CommandQueue* queue, const Byte* data, Size size);
+    bool upload(ID3D12Device* device, ID3D12CommandQueue* queue, const TextureDesc& desc);
 };
 
 }  // namespace direct3d12

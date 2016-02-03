@@ -1,10 +1,14 @@
 #version 450
 
-in vec2 i0; // Vertex
-in vec4 i1; // Color
-out vec4 o0;  // Color
+layout(location = 0) in vec2 iPosition;
+layout(location = 1) in vec4 iColor;
+layout(location = 2) in vec2 iTexcoord;
+
+layout(location = 0) out vec4 oColor;
+layout(location = 1) out vec2 oTexcoord;
 
 void main() {
-    gl_Position = vec4(i0, 0.0, 1.0);
-    o0 = i1;
+    gl_Position = vec4(iPosition, 0.0, 1.0);
+    oColor = iColor;
+    oTexcoord = iTexcoord;
 }
