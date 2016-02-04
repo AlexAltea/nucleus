@@ -4,13 +4,52 @@
  */
 
 #include "widget_text.h"
-#include "nucleus/logger/logger.h"
+#include "nucleus/core/resource.h"
+#include "nucleus/graphics/frontend/shader_parser.h"
 #include "nucleus/ui/ui.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "externals/stb/stb_truetype.h"
 
 namespace ui {
+
+gfx::Pipeline* WidgetContainer::createPipeline(gfx::IBackend& backend) {
+    gfx::ShaderDesc vertDesc = {};
+    gfx::ShaderDesc fragDesc = {};
+    core::Resource resVS(core::RES_SHADER_UI_WIDGET_TEXT_VS);
+    core::Resource resPS(core::RES_SHADER_UI_WIDGET_TEXT_PS);
+    vertDesc.type = gfx::SHADER_TYPE_VERTEX;
+    vertDesc.module = gfx::frontend::ShaderParser::parse(reinterpret_cast<const char*>(resVS.data), resVS.size);
+    fragDesc.type = gfx::SHADER_TYPE_PIXEL;
+    fragDesc.module = gfx::frontend::ShaderParser::parse(reinterpret_cast<const char*>(resPS.data), resPS.size);
+
+    gfx::PipelineDesc pipelineDesc = {};
+    pipelineDesc.vs = backend.createShader(vertDesc);
+    pipelineDesc.ps = backend.createShader(fragDesc);
+    pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_STRIP;
+    pipelineDesc.iaState.inputLayout = {
+        { 0, gfx::FORMAT_R32G32_FLOAT,       0,  0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Position
+        { 1, gfx::FORMAT_R32G32_FLOAT,       0,  8, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // TexCoord
+        { 2, gfx::FORMAT_R32G32B32A32_FLOAT, 0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Color
+        { 3, gfx::FORMAT_R32_FLOAT,          0, 32, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Z-Index
+        { 4, gfx::FORMAT_R32_FLOAT,          0, 36, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Opacity
+    };
+    pipelineDesc.cbState.colorTarget[0] = {
+        true, false,
+        gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
+        gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
+        gfx::LOGIC_OP_NOOP,
+        gfx::COLOR_WRITE_ENABLE_ALL
+    };
+    pipelineDesc.samplers.resize(1);
+    pipelineDesc.samplers[0] = {
+        gfx::FILTER_MIN_MAG_MIP_POINT,
+        gfx::TEXTURE_ADDRESS_MIRROR,
+        gfx::TEXTURE_ADDRESS_MIRROR,
+        gfx::TEXTURE_ADDRESS_MIRROR,
+    };
+    return backend.createPipeline(pipelineDesc);
+}
 
 void WidgetText::update(const Font* fontFamily, const Length& fontSize, const std::string& text) {
     const auto* fontInfo = &fontFamily->fontinfo;

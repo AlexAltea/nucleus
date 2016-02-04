@@ -25,6 +25,12 @@ public:
     WidgetContainer(const std::string& id) : Widget(id) {}
 
     /**
+     * Create a pipeline to process this kind of widgets
+     * @param[in]  backend  Graphics backend where the pipeline state object will be created
+     */
+    static gfx::Pipeline* createPipeline(gfx::IBackend& backend);
+
+    /**
      * Add an element to this container
      * @param[in]  widget  Widget to be added
      * @return             True on success

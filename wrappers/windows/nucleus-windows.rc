@@ -67,6 +67,12 @@ IDR_IMAGE_NUCLEUS_LOGO             RESOURCE     "..\\..\\resources\\images\\nucl
 
 IDR_SHADER_UI_WIDGET_PS            RESOURCE     "..\\..\\resources\\shaders\\ui_widget_ps.spv"
 IDR_SHADER_UI_WIDGET_VS            RESOURCE     "..\\..\\resources\\shaders\\ui_widget_vs.spv"
+IDR_SHADER_UI_WIDGET_CONTAINER_PS  RESOURCE     "..\\..\\resources\\shaders\\ui_widget_container_ps.spv"
+IDR_SHADER_UI_WIDGET_CONTAINER_VS  RESOURCE     "..\\..\\resources\\shaders\\ui_widget_container_vs.spv"
+IDR_SHADER_UI_WIDGET_IMAGE_PS      RESOURCE     "..\\..\\resources\\shaders\\ui_widget_image_ps.spv"
+IDR_SHADER_UI_WIDGET_IMAGE_VS      RESOURCE     "..\\..\\resources\\shaders\\ui_widget_image_vs.spv"
+IDR_SHADER_UI_WIDGET_TEXT_PS       RESOURCE     "..\\..\\resources\\shaders\\ui_widget_text_ps.spv"
+IDR_SHADER_UI_WIDGET_TEXT_VS       RESOURCE     "..\\..\\resources\\shaders\\ui_widget_text_vs.spv"
 
 IDR_FONT_SOURCESANSPRO_REGULAR     RESOURCE     "..\\..\\resources\\fonts\\SourceSansPro-Regular.ttf"
 IDR_FONT_SOURCESANSPRO_BOLD        RESOURCE     "..\\..\\resources\\fonts\\SourceSansPro-Bold.ttf"

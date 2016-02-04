@@ -25,6 +25,12 @@ public:
     WidgetText(const std::string& id) : Widget(id) {}
 
     /**
+     * Create a pipeline to process this kind of widgets
+     * @param[in]  backend  Graphics backend where the pipeline state object will be created
+     */
+    static gfx::Pipeline* createPipeline(gfx::IBackend& backend);
+
+    /**
      * Update the Widget texture given a text string to render and a font family and size to use
      * @param[in]  fontFamily  Font family to render the text with
      * @param[in]  fontSize    Line height to render the text with

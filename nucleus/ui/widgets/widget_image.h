@@ -26,6 +26,12 @@ public:
     ~WidgetImage();
 
     /**
+     * Create a pipeline to process this kind of widgets
+     * @param[in]  backend  Graphics backend where the pipeline state object will be created
+     */
+    static gfx::Pipeline* createPipeline(gfx::IBackend& backend);
+
+    /**
      * Read image from resource
      * @param[in]  resName   Resource identifier
      */

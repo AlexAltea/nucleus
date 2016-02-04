@@ -65,6 +65,24 @@
     <None Include="..\..\resources\shaders\ui_widget_vs.spv">
       <Filter>resources\shaders</Filter>
     </None>
+    <None Include="..\..\resources\shaders\ui_widget_container_vs.spv">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="..\..\resources\shaders\ui_widget_image_ps.spv">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="..\..\resources\shaders\ui_widget_image_vs.spv">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="..\..\resources\shaders\ui_widget_text_ps.spv">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="..\..\resources\shaders\ui_widget_text_vs.spv">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="..\..\resources\shaders\ui_widget_container_ps.spv">
+      <Filter>resources\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\resources\languages\en_US.xml">
@@ -78,13 +96,13 @@
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\..\resources\fonts\SourceSansPro-Light.otf">
+    <Font Include="..\..\resources\fonts\SourceSansPro-Regular.ttf">
       <Filter>resources\fonts</Filter>
     </Font>
-    <Font Include="..\..\resources\fonts\SourceSansPro-Regular.otf">
+    <Font Include="..\..\resources\fonts\SourceSansPro-Bold.ttf">
       <Filter>resources\fonts</Filter>
     </Font>
-    <Font Include="..\..\resources\fonts\SourceSansPro-Bold.otf">
+    <Font Include="..\..\resources\fonts\SourceSansPro-Light.ttf">
       <Filter>resources\fonts</Filter>
     </Font>
   </ItemGroup>

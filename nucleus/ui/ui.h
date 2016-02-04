@@ -60,6 +60,10 @@ public:
 public:
     // Rendering methods
     std::vector<WidgetInput> widgetVtxBuffer;
+    // Pipelines
+    gfx::Pipeline* pipelineContainers;
+    gfx::Pipeline* pipelineImages;
+    gfx::Pipeline* pipelineText;
 
     /**
      * Pushes a new screen to the back of the screen array

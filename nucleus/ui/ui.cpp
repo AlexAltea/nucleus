@@ -8,6 +8,7 @@
 #include "nucleus/core/resource.h"
 #include "nucleus/graphics/frontend/shader_parser.h"
 #include "nucleus/ui/screens/list.h"
+#include "nucleus/ui/widgets/list.h"
 
 namespace ui {
 
@@ -71,6 +72,9 @@ void UI::task() {
         gfx::TEXTURE_ADDRESS_MIRROR,
     };
     gfx::Pipeline* pipeline = graphics->createPipeline(pipelineDesc);
+    pipelineContainers = WidgetContainer::createPipeline(*graphics);
+    pipelineImages = WidgetImage::createPipeline(*graphics);
+    pipelineText = WidgetText::createPipeline(*graphics);
 
     // Initial screen
 #if defined(NUCLEUS_PLATFORM_UWP)

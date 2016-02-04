@@ -214,6 +214,10 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="..\..\resources\shaders\ui_widget_container_ps.spv" />
+    <None Include="..\..\resources\shaders\ui_widget_container_vs.spv" />
+    <None Include="..\..\resources\shaders\ui_widget_image_ps.spv" />
+    <None Include="..\..\resources\shaders\ui_widget_image_vs.spv" />
     <None Include="..\..\resources\shaders\ui_widget_ps.spv">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
@@ -222,6 +226,8 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</DeploymentContent>
     </None>
+    <None Include="..\..\resources\shaders\ui_widget_text_ps.spv" />
+    <None Include="..\..\resources\shaders\ui_widget_text_vs.spv" />
     <None Include="..\..\resources\shaders\ui_widget_vs.spv">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
@@ -262,9 +268,9 @@
     <Xml Include="..\..\resources\languages\es_ES.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\..\resources\fonts\SourceSansPro-Bold.otf" />
-    <Font Include="..\..\resources\fonts\SourceSansPro-Light.otf" />
-    <Font Include="..\..\resources\fonts\SourceSansPro-Regular.otf" />
+    <Font Include="..\..\resources\fonts\SourceSansPro-Bold.ttf" />
+    <Font Include="..\..\resources\fonts\SourceSansPro-Light.ttf" />
+    <Font Include="..\..\resources\fonts\SourceSansPro-Regular.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
