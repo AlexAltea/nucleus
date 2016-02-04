@@ -66,6 +66,11 @@ public:
      * @param[in]  screen  Widget vertices to include in the buffer
      */
     void renderWidget(const WidgetInput& input);
+
+    /**
+     * TODO
+     */
+    void bindImage(const gfx::Texture* texture);
 };
 
 }  // namespace ui

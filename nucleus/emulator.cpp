@@ -28,7 +28,7 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
         graphics = std::make_shared<gfx::Direct3D12Backend>();
         break;
     case GRAPHICS_BACKEND_OPENGL:
-        graphics = std::make_shared<gfx::OpenGLBackend>();
+        //graphics = std::make_shared<gfx::OpenGLBackend>();
         break;
     default:
         logger.warning(LOG_COMMON, "Unsupported graphics backend");

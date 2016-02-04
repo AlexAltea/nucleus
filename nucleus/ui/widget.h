@@ -23,6 +23,7 @@ struct WidgetInput {
     struct WidgetVertex {
         float position[2];
         Color background;
+        float texcoord[2];
     } vertex[4];
 };
 

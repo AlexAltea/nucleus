@@ -4,11 +4,13 @@
  */
 
 #include "direct3d12_command_buffer.h"
+#include "nucleus/assert.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_convert.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_resource.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_pipeline.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_target.h"
+#include "nucleus/graphics/backend/direct3d12/direct3d12_texture.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12_vertex_buffer.h"
 
 namespace gfx {
@@ -82,6 +84,15 @@ void Direct3D12CommandBuffer::cmdDraw(U32 firstVertex, U32 vertexCount, U32 firs
 
 void Direct3D12CommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) {
     list->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
+}
+
+void Direct3D12CommandBuffer::cmdSetTexture(U32 index, const Texture* texture) {
+    const auto* d3dTexture = static_cast<const Direct3D12Texture*>(texture);
+    assert_true(d3dTexture != nullptr, "Direct3D12CommandBuffer::cmdSetTexture: Invalid texture specified");
+
+    ID3D12DescriptorHeap* heap = d3dTexture->srvHeap;
+    list->SetDescriptorHeaps(1, &heap);
+    list->SetGraphicsRootDescriptorTable(index, heap->GetGPUDescriptorHandleForHeapStart());
 }
 
 void Direct3D12CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) {

@@ -29,21 +29,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_target.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_texture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_backend.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_buffer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_queue.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_convert.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_debug.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_fence.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_heap.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_pipeline.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_shader.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_target.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_texture.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_vertex_buffer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)command_buffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)command_queue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)fence.h" />
@@ -82,17 +67,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_shader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_texture.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_backend.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_buffer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_command_queue.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_convert.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_debug.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_fence.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_shader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\opengl\opengl_vertex_buffer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)format.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.l.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\opengl_shader_parser.cpp" />
@@ -107,7 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl" />
-    <None Include="$(MSBuildThisFileDirectory)backend\opengl\opengl.inl" />
     <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.l" />
     <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y" />
   </ItemGroup>

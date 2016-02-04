@@ -71,6 +71,13 @@ public:
     virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) = 0;
 
     /**
+     * Bind a texture to a pipeline sampler
+     * @param[in]  index    Index of the sampler
+     * @param[in]  texture  Texture to bind
+     */
+    virtual void cmdSetTexture(U32 index, const Texture* texture) = 0;
+
+    /**
      * Pushes a command to set the vertex buffer for an input slots
      * @param[in]  index           Slot index
      * @param[in]  vtxBufferCount  Amount of slot indices to set

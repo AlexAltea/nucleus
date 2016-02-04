@@ -54,6 +54,7 @@ void UI::task() {
     pipelineDesc.iaState.inputLayout = {
         { 0, gfx::FORMAT_R32G32, 0, 0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
         { 1, gfx::FORMAT_R32G32B32A32, 0, 8, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
+        { 2, gfx::FORMAT_R32G32, 0, 24, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 },
     };
     pipelineDesc.cbState.colorTarget[0] = {
         true, false,
@@ -160,6 +161,10 @@ void UI::pushScreen(std::unique_ptr<Screen>&& screen) {
 // Rendering
 void UI::renderWidget(const WidgetInput& input) {
     widgetVtxBuffer.push_back(input);
+}
+
+void UI::bindImage(const gfx::Texture* texture) {
+    cmdBuffer->cmdSetTexture(0, texture);
 }
 
 }  // namespace ui

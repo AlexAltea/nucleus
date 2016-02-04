@@ -223,29 +223,18 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     auto* pipeline = new Direct3D12Pipeline();
 
     // Root signature parameters
-    D3D12_DESCRIPTOR_RANGE ranges[2] = {};
-    ranges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-    ranges[0].NumDescriptors = 1;
-    ranges[0].BaseShaderRegister = 0;
-    ranges[0].RegisterSpace = 0;
-    ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    D3D12_DESCRIPTOR_RANGE range = {};
+    range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    range.NumDescriptors = 1;
+    range.BaseShaderRegister = 0;
+    range.RegisterSpace = 0;
+    range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    ranges[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    ranges[1].NumDescriptors = 1;
-    ranges[1].BaseShaderRegister = 0;
-    ranges[1].RegisterSpace = 0;
-    ranges[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-    D3D12_ROOT_PARAMETER parameters[2] = {};
-    parameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    parameters[0].DescriptorTable.NumDescriptorRanges = 1;
-    parameters[0].DescriptorTable.pDescriptorRanges = &ranges[0];
-    parameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-
-    parameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    parameters[1].DescriptorTable.NumDescriptorRanges = 1;
-    parameters[1].DescriptorTable.pDescriptorRanges = &ranges[1];
-    parameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    D3D12_ROOT_PARAMETER parameter;
+    parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    parameter.DescriptorTable.NumDescriptorRanges = 1;
+    parameter.DescriptorTable.pDescriptorRanges = &range;
+    parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
     // Samplers
     std::vector<D3D12_STATIC_SAMPLER_DESC> d3dSamplers(desc.samplers.size());
@@ -268,8 +257,8 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
 
     // Root signature
     D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-    rootSignatureDesc.NumParameters = 2;
-    rootSignatureDesc.pParameters = parameters;
+    rootSignatureDesc.NumParameters = 1;
+    rootSignatureDesc.pParameters = &parameter;
     rootSignatureDesc.NumStaticSamplers = d3dSamplers.size();
     rootSignatureDesc.pStaticSamplers = d3dSamplers.data();
     rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -279,7 +268,11 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
 
     ID3DBlob* signature;
     ID3DBlob* error;
-    _D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
+    hr = _D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
+    if (FAILED(hr)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createPipeline: D3D12SerializeRootSignature failed (0x%X)", hr);
+        return nullptr;
+    }
 
     hr = device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&pipeline->rootSignature));
     if (FAILED(hr)) {

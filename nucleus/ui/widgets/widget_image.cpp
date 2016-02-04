@@ -59,18 +59,23 @@ void WidgetImage::update(const Byte* buffer, Size size) {
 }
 
 void WidgetImage::dimensionalize() {
-    vertWidth = 0.0;
-    vertHeight = 0.0;
+    auto compWidth = getCoordX(Length{ double(imWidth), Length::TYPE_PX });
+    auto compHeight = getCoordY(Length{ double(imHeight), Length::TYPE_PX });
 
-    if (style.width.type == Length::TYPE_UNDEFINED) {
-        vertWidth = getCoordX(Length{ double(imWidth), Length::TYPE_PX });
-    } else {
+    if (style.width.type != Length::TYPE_UNDEFINED) {
         vertWidth = getCoordX(style.width);
-    }
-    if (style.height.type == Length::TYPE_UNDEFINED) {
-        vertHeight = getCoordY(Length{ double(imHeight), Length::TYPE_PX });
+    } else if (style.height.type != Length::TYPE_UNDEFINED) {
+        vertWidth = compWidth * getCoordY(style.height) / compHeight;
     } else {
+        vertWidth = compWidth;
+    }
+
+    if (style.height.type != Length::TYPE_UNDEFINED) {
         vertHeight = getCoordY(style.height);
+    } else if (style.width.type != Length::TYPE_UNDEFINED) {
+        vertHeight = compHeight * getCoordX(style.width) / compWidth;
+    } else {
+        vertHeight = compHeight;
     }
 }
 
@@ -112,11 +117,19 @@ void WidgetImage::render() {
     V1.position[1] = V3.position[1] = y2;
     V0.position[2] = V1.position[2] = V2.position[2] = V3.position[2] = 0.0;
     V0.position[3] = V1.position[3] = V2.position[3] = V3.position[3] = 1.0;
+
     V0.background = style.background;
     V1.background = style.background;
     V2.background = style.background;
     V3.background = style.background;
 
+    // Texture coordinates assume top-left is (0,0) and bottom-right is (1,1)
+    V0.texcoord[0] = 0.0; V0.texcoord[1] = 1.0;
+    V1.texcoord[0] = 0.0; V1.texcoord[1] = 0.0;
+    V2.texcoord[0] = 1.0; V2.texcoord[1] = 1.0;
+    V3.texcoord[0] = 1.0; V3.texcoord[1] = 0.0;
+
+    manager->bindImage(texture);
     manager->renderWidget(input);
 }
 

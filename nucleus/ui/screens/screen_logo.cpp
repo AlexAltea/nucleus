@@ -23,11 +23,10 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     auto* logo = new WidgetImage("logo");
     logo->manager = manager;
     logo->update(core::RES_IMAGE_NUCLEUS_LOGO);
-    logo->style.width = 600_px;
-    logo->style.height = 200_px;
+    logo->style.width = 50_pct;
     logo->style.background = Color{1,0,1,1};
 
-    auto* version = new WidgetText("version");
+    /*auto* version = new WidgetText("version");
     version->manager = manager;
     version->update(defaultFont, 12_px, "Version v0.1.0 from 2016-04-01");
     version->style.margin.top = 10_px;
@@ -49,20 +48,20 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     license->style.margin.top = 10_px;
     license->style.width = 300_px;
     license->style.height = 30_px;
-    license->style.background = Color{1,1,0,1};
+    license->style.background = Color{1,1,0,1};*/
 
     // Add widgets
     body.addElement(logo);
-    body.addElement(version);
+    /*body.addElement(version);
     body.addElement(author);
-    body.addElement(license);
+    body.addElement(license);*/
 }
 
 void ScreenLogo::update() {
     if (dtime > 2000ms) {
         //logo->style.opacity = 1.0f - transition::easeOut((dtime - 2000ms) / 1000ms);
     }
-    if (dtime > 3000ms) {
+    if (dtime > 3000s) {
         if (!config.boot.empty()) {
             manager->pushScreen(std::make_unique<ScreenEmulator>(manager));
         } else {
