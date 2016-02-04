@@ -33,10 +33,10 @@ gfx::Pipeline* WidgetImage::createPipeline(gfx::IBackend& backend) {
     pipelineDesc.ps = backend.createShader(fragDesc);
     pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_STRIP;
     pipelineDesc.iaState.inputLayout = {
-        { 0, gfx::FORMAT_R32G32_FLOAT,       0,  0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Position
-        { 1, gfx::FORMAT_R32G32_FLOAT,       0,  8, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // TexCoord
-        { 2, gfx::FORMAT_R32_FLOAT,          0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Z-Index
-        { 3, gfx::FORMAT_R32_FLOAT,          0, 20, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Opacity
+        { 0, gfx::FORMAT_R32G32_FLOAT,  0,  0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Position
+        { 1, gfx::FORMAT_R32G32_FLOAT,  0,  8, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // TexCoord
+        { 2, gfx::FORMAT_R32_FLOAT,     0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Z-Index
+        { 3, gfx::FORMAT_R32_FLOAT,     0, 20, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Opacity
     };
     pipelineDesc.cbState.colorTarget[0] = {
         true, false,
@@ -139,6 +139,10 @@ void WidgetImage::render() {
     V1.position[1] = V3.position[1] = y2;
     V0.position[2] = V1.position[2] = V2.position[2] = V3.position[2] = 0.0;
     V0.position[3] = V1.position[3] = V2.position[3] = V3.position[3] = 1.0;
+    V0.opacity = style.opacity;
+    V1.opacity = style.opacity;
+    V2.opacity = style.opacity;
+    V3.opacity = style.opacity;
 
     // Texture coordinates assume top-left is (0,0) and bottom-right is (1,1)
     V0.texcoord[0] = 0.0; V0.texcoord[1] = 1.0;

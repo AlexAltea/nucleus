@@ -6,10 +6,16 @@
 #pragma once
 
 #include "nucleus/ui/screen.h"
+#include "nucleus/ui/widgets/list.h"
 
 namespace ui {
 
 class ScreenLogo : public Screen {
+    WidgetImage* logo;
+    WidgetText* version;
+    WidgetText* author;
+    WidgetText* license;
+
 public:
     ScreenLogo(UI* manager);
 

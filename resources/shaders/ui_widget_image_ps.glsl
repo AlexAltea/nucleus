@@ -14,5 +14,5 @@ layout (binding = 0) uniform sampler2D s;
 
 void main() {
     result = texture(s, iTexcoord.xy);
-    //result *= opacity;
+    result.a *= iOpacity;
 }

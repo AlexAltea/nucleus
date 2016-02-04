@@ -317,7 +317,7 @@ std::string Direct3D12Shader::emitBinaryOp(Instruction* i, Opcode type, char sym
     Instruction* lhsType = module->idInstructions[module->idInstructions[lhs]->typeId];
     Instruction* rhsType = module->idInstructions[module->idInstructions[rhs]->typeId];
     assert(lhsType->opcode == rhsType->opcode);
-    if (lhsType->opcode != OP_TYPE_VECTOR) {
+    if (lhsType->opcode == OP_TYPE_VECTOR) {
         assert(type == module->idInstructions[lhsType->operands[0]]->opcode);
     } else {
         assert(type == lhsType->opcode);

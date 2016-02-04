@@ -46,7 +46,6 @@ void UI::task() {
 #else
     screens.push_back(std::make_unique<ScreenLogo>(this));
 #endif
-
     while (true) {
         surface.update(graphics.get());
         const gfx::Viewport viewport = { 0, 0, surface.getWidth(), surface.getHeight() };

@@ -152,6 +152,10 @@ void WidgetText::render() {
     V1.color = style.color;
     V2.color = style.color;
     V3.color = style.color;
+    V0.opacity = style.opacity;
+    V1.opacity = style.opacity;
+    V2.opacity = style.opacity;
+    V3.opacity = style.opacity;
 
     // Texture coordinates assume top-left is (0,0) and bottom-right is (1,1)
     V0.texcoord[0] = 0.0; V0.texcoord[1] = 1.0;

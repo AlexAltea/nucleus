@@ -37,6 +37,7 @@ Direct3D12VertexBuffer::Direct3D12VertexBuffer(ID3D12Device* device, UINT64 size
 }
 
 Direct3D12VertexBuffer::~Direct3D12VertexBuffer() {
+    resource->Release();
 }
 
 void* Direct3D12VertexBuffer::map() {

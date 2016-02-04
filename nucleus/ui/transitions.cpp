@@ -8,12 +8,18 @@
 namespace ui {
 namespace transition {
 
-double easeIn(double t) {
-    return 0.0;
+double apply(std::function<double(double)> func, Duration time, Duration start, Duration end) {
+    double elapsed = (time - start).count();
+    double duration = (end - start).count();
+    return func(elapsed / duration);
 }
 
-double easeOut(double t) {
-    return -1.0 * t * (t - 2.0);
+double easeIn(double x) {
+    return x * x;
+}
+
+double easeOut(double x) {
+    return -x * (x - 2.0);
 }
 
 }  // namespace transition

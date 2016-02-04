@@ -15,6 +15,8 @@ struct VertexBufferDesc {
 
 class VertexBuffer {
 public:
+    virtual ~VertexBuffer() = default;
+
     /**
      * Map this buffer into the user address space
      * @return  Address where this vertex buffer was mapped into

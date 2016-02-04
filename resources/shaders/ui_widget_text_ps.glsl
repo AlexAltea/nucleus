@@ -19,5 +19,5 @@ void main() {
     float b = iColor.z;
     float a = texture(s, iTexcoord.xy).x;
     result = vec4(r, g, b, a);
-    //result *= opacity;
+    result.a *= iOpacity;
 }
