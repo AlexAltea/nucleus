@@ -65,7 +65,14 @@ D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc) 
 
 D3D12_FILTER convertFilter(gfx::Filter filter) {
     switch (filter) {
-    case FILTER_MIN_MAG_MIP_POINT:  return D3D12_FILTER_MIN_MAG_MIP_POINT;
+    case FILTER_MIN_MAG_MIP_POINT:                return D3D12_FILTER_MIN_MAG_MIP_POINT;
+    case FILTER_MIN_MAG_POINT_MIP_LINEAR:         return D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR;
+    case FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT:   return D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+    case FILTER_MIN_POINT_MAG_MIP_LINEAR:         return D3D12_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+    case FILTER_MIN_LINEAR_MAG_MIP_POINT:         return D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+    case FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR:  return D3D12_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+    case FILTER_MIN_MAG_LINEAR_MIP_POINT:         return D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+    case FILTER_MIN_MAG_MIP_LINEAR:               return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
     default:
         assert_always("Unimplemented case");
         return D3D12_FILTER_MIN_MAG_MIP_POINT;
@@ -74,10 +81,12 @@ D3D12_FILTER convertFilter(gfx::Filter filter) {
 
 DXGI_FORMAT convertFormat(gfx::Format format) {
     switch (format) {
-    case FORMAT_R32G32:          return DXGI_FORMAT_R32G32_FLOAT;
-    case FORMAT_R32G32B32:       return DXGI_FORMAT_R32G32B32_FLOAT;
-    case FORMAT_R32G32B32A32:    return DXGI_FORMAT_R32G32B32A32_FLOAT;
-    case FORMAT_R8G8B8A8_UNORM:  return DXGI_FORMAT_R8G8B8A8_UNORM;
+    case FORMAT_R32_FLOAT:           return DXGI_FORMAT_R32_FLOAT;
+    case FORMAT_R32G32_FLOAT:        return DXGI_FORMAT_R32G32_FLOAT;
+    case FORMAT_R32G32B32_FLOAT:     return DXGI_FORMAT_R32G32B32_FLOAT;
+    case FORMAT_R32G32B32A32_FLOAT:  return DXGI_FORMAT_R32G32B32A32_FLOAT;
+    case FORMAT_R8_UNORM:            return DXGI_FORMAT_R8_UNORM;
+    case FORMAT_R8G8B8A8_UNORM:      return DXGI_FORMAT_R8G8B8A8_UNORM;
     default:
         assert_always("Unimplemented case");
         return DXGI_FORMAT_UNKNOWN;

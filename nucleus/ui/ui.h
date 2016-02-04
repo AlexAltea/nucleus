@@ -58,23 +58,50 @@ public:
     void pushScreen(std::unique_ptr<Screen>&& screen);
 
 public:
-    // Rendering methods
-    std::vector<WidgetInput> widgetVtxBuffer;
     // Pipelines
     gfx::Pipeline* pipelineContainers;
     gfx::Pipeline* pipelineImages;
     gfx::Pipeline* pipelineText;
 
-    /**
-     * Pushes a new screen to the back of the screen array
-     * @param[in]  screen  Widget vertices to include in the buffer
-     */
-    void renderWidget(const WidgetInput& input);
+    // Inputs
+    std::vector<WidgetContainerInput> dataContainers;
+    std::vector<WidgetImageInput> dataImages;
+    std::vector<WidgetTextInput> dataText;
+    std::vector<gfx::Texture*> textureImages;
+    std::vector<gfx::Texture*> textureText;
+
+    // Vertex buffers
+    std::unique_ptr<gfx::VertexBuffer> vtxBufferContainers;
+    std::unique_ptr<gfx::VertexBuffer> vtxBufferImages;
+    std::unique_ptr<gfx::VertexBuffer> vtxBufferText;
+
+    // Clears all UI-related vertex and texture buffers
+    void clearVtxBuffers();
+
+    // Rendering methods
+    void renderContainers();
+    void renderImages();
+    void renderText();
 
     /**
-     * TODO
+     * Pushes a new WidgetContainer input data to the buffer
+     * @param[in]  input  WidgetContainer vertex data
      */
-    void bindImage(const gfx::Texture* texture);
+    void pushWidgetContainer(const WidgetContainerInput& input);
+
+    /**
+     * Pushes a new WidgetImage input data to the buffer
+     * @param[in]  input    WidgetImage vertex data
+     * @param[in]  texture  WidgetImage texture
+     */
+    void pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture);
+
+    /**
+     * Pushes a new WidgetText input data to the buffer
+     * @param[in]  input    WidgetText vertex data
+     * @param[in]  texture  WidgetText texture
+     */
+    void pushWidgetText(const WidgetTextInput& input, gfx::Texture* texture);
 };
 
 }  // namespace ui

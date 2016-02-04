@@ -18,7 +18,7 @@ WidgetImage::~WidgetImage() {
     stbi_image_free(imBuffer);
 }
 
-gfx::Pipeline* WidgetContainer::createPipeline(gfx::IBackend& backend) {
+gfx::Pipeline* WidgetImage::createPipeline(gfx::IBackend& backend) {
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
     core::Resource resVS(core::RES_SHADER_UI_WIDGET_IMAGE_VS);
@@ -47,7 +47,7 @@ gfx::Pipeline* WidgetContainer::createPipeline(gfx::IBackend& backend) {
     };
     pipelineDesc.samplers.resize(1);
     pipelineDesc.samplers[0] = {
-        gfx::FILTER_MIN_MAG_MIP_POINT,
+        gfx::FILTER_MIN_MAG_MIP_LINEAR,
         gfx::TEXTURE_ADDRESS_MIRROR,
         gfx::TEXTURE_ADDRESS_MIRROR,
         gfx::TEXTURE_ADDRESS_MIRROR,
@@ -128,23 +128,6 @@ void WidgetImage::render() {
     auto y1 = +1.0 - 2 * (offsetTop + getPaddingHeight());
     auto y2 = +1.0 - 2 * (offsetTop);
 
-    /**
-     * Screen
-     * ======
-     *  (0,1)                              (1,1)
-     *  +--------------------------------------+
-     *  |   V1 = (x1,y2)       V3 = (x2,y2)    |
-     *  |     + - - - - - - - +                |
-     *  |     : \             :                |
-     *  |     :    \          :                |
-     *  |     :       \       : h              |
-     *  |     :          \    :                |
-     *  |     :       w     \ :                |
-     *  |     + - - - - - - - +                |
-     *  |   V0 = (x1,y1)       V2 = (x2,y1)    |
-     *  +--------------------------------------+
-     *  (0,0)                              (1,0)
-     */
     auto& V0 = input.vertex[0];
     auto& V1 = input.vertex[1];
     auto& V2 = input.vertex[2];
@@ -157,19 +140,13 @@ void WidgetImage::render() {
     V0.position[2] = V1.position[2] = V2.position[2] = V3.position[2] = 0.0;
     V0.position[3] = V1.position[3] = V2.position[3] = V3.position[3] = 1.0;
 
-    V0.background = style.background;
-    V1.background = style.background;
-    V2.background = style.background;
-    V3.background = style.background;
-
     // Texture coordinates assume top-left is (0,0) and bottom-right is (1,1)
     V0.texcoord[0] = 0.0; V0.texcoord[1] = 1.0;
     V1.texcoord[0] = 0.0; V1.texcoord[1] = 0.0;
     V2.texcoord[0] = 1.0; V2.texcoord[1] = 1.0;
     V3.texcoord[0] = 1.0; V3.texcoord[1] = 0.0;
 
-    manager->bindImage(texture);
-    manager->renderWidget(input);
+    manager->pushWidgetImage(input, texture);
 }
 
 }  // namespace ui

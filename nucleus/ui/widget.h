@@ -19,11 +19,42 @@ namespace ui {
 // Forward declarations
 class UI;
 
+// Single-pipeline inputs
 struct WidgetInput {
-    struct WidgetVertex {
+    struct Vertex {
+        float position[2];
+        float texcoord[2];
+        Color color0;
+        float type;
+        float zindex;
+        float opacity;
+    };
+};
+
+// Multi-pipeline inputs
+struct WidgetContainerInput {
+    struct Vertex {
         float position[2];
         Color background;
+        float zindex;
+        float opacity;
+    } vertex[4];
+};
+struct WidgetImageInput {
+    struct Vertex {
+        float position[2];
         float texcoord[2];
+        float zindex;
+        float opacity;
+    } vertex[4];
+};
+struct WidgetTextInput {
+    struct Vertex {
+        float position[2];
+        float texcoord[2];
+        Color color;
+        float zindex;
+        float opacity;
     } vertex[4];
 };
 
@@ -48,15 +79,29 @@ struct WidgetInput {
  *  | Padding    | getPaddingWidth()  | getPaddingHeight()  |
  *  | Border     | getBorderWidth()   | getBorderHeight()   |
  *  | Margin     | getMarginWidth()   | getMarginHeight()   |
+ *
+ * ## Input
+ * The vertex data input for any Widget consists at least of four vertices (V0, V1, V2, V3)
+ * each provided with a 2D position attribute such that a rectangle is formed.
+ * The standard coordinate system for position-like attributes goes from 0 to 1 in both axis
+ * with the origin starting in the bottom-left corner of the screen.
+ *
+ *  (0,1)                              (1,1)
+ *  +--------------------------------------+
+ *  |   V1 = (x1,y2)       V3 = (x2,y2)    |
+ *  |     + - - - - - - - +                |
+ *  |     : \             :                |
+ *  |     :    \          :                |
+ *  |     :       \       : h              |
+ *  |     :          \    :                |
+ *  |     :       w     \ :                |
+ *  |     + - - - - - - - +                |
+ *  |   V0 = (x1,y1)       V2 = (x2,y1)    |
+ *  +--------------------------------------+
+ *  (0,0)                              (1,0)
  */
 class Widget {
 protected:
-    // Texture produced after rendering the contents of this widget
-    gfx::Texture* texture;
-
-    // Vertices to be rendered
-    WidgetInput input;
-
     // Final dimension and size
     float vertWidth;
     float vertHeight;
@@ -67,6 +112,7 @@ protected:
     float compWidth;
     float compHeight;
 
+    // Transform lengths to our standard coordinate system
     float getCoord(const Length& length, float pixels);
     float getCoordX(const Length& length);
     float getCoordY(const Length& length);

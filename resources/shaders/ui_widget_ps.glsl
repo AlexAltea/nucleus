@@ -20,14 +20,14 @@ layout (binding = 0) uniform sampler2D s;
 
 void main() {
     if (iType == TYPE_CONTAINER) {
-    	result = iColor;
+        result = iColor;
     }
     else if (iType == TYPE_IMAGE) {
-    	result = texture(s, iTexcoord.xy);
+        result = texture(s, iTexcoord.xy);
     }
     else if (iType == TYPE_TEXT) {
-    	result = iColor;
-    	result.w = texture(s, iTexcoord.xy).r;
+        result = iColor;
+        result.w = texture(s, iTexcoord.xy).r;
     }
     //result *= opacity;
 }

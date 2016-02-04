@@ -14,7 +14,10 @@ layout (location = 0) out vec4 result;
 layout (binding = 0) uniform sampler2D s;
 
 void main() {
-	result = iColor;
-    result.w = texture(s, iTexcoord.xy).x;
+    float r = iColor.x;
+    float g = iColor.y;
+    float b = iColor.z;
+    float a = texture(s, iTexcoord.xy).x;
+    result = vec4(r, g, b, a);
     //result *= opacity;
 }

@@ -14,6 +14,11 @@
 namespace ui {
 
 class WidgetImage : public Widget {
+private:
+    // Input
+    WidgetImageInput input;
+    gfx::Texture* texture;
+
     // Image
     unsigned char* imBuffer;
     int imWidth = 0;

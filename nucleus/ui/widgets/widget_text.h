@@ -15,6 +15,11 @@
 namespace ui {
 
 class WidgetText : public Widget {
+private:
+    // Input
+    WidgetTextInput input;
+    gfx::Texture* texture;
+
     // Text
     std::vector<Byte> txBuffer;
     Size txWidth = 0;

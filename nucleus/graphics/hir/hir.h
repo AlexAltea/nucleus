@@ -27,6 +27,7 @@ enum StorageClass {
     UNIFORM_CONSTANT = 0,
     INPUT = 1,
     OUTPUT = 3,
+    FUNCTION = 7,
 };
 
 enum Dimension {

@@ -6,6 +6,7 @@ import re
 # Directories
 NUCLEUS_DIR = os.path.abspath("..")
 NUCLEUS_PROJECT = os.path.join(NUCLEUS_DIR, "nucleus")
+NUCLEUS_SHADERS = os.path.join(NUCLEUS_DIR, "resources", "shaders")
 NUCLEUS_TESTS = os.path.join(NUCLEUS_DIR, "tests", "unit")
 
 
@@ -26,10 +27,14 @@ def formatGeneric(codeInput):
 
 # Search and edit files of the Nucleus project
 def main():
-    for path in [NUCLEUS_PROJECT, NUCLEUS_TESTS]:
+    included = (".c", ".cc", ".cpp", ".h", ".hpp", ".glsl")
+    excluded = (".l.cpp", ".y.cpp", ".y.hpp")
+    for path in [NUCLEUS_PROJECT, NUCLEUS_SHADERS, NUCLEUS_TESTS]:
         for root, dirs, files in os.walk(path):
             for filename in files:
-                if not filename.endswith((".c",".cc",".cpp",".h",".hpp")):
+                if not filename.endswith(included):
+                    continue
+                if filename.endswith(excluded):
                     continue
 
                 # Read and format the code

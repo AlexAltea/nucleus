@@ -5,11 +5,43 @@
 
 #include "widget_container.h"
 #include "nucleus/assert.h"
+#include "nucleus/core/resource.h"
+#include "nucleus/graphics/frontend/shader_parser.h"
 #include "nucleus/ui/ui.h"
 
 #include <algorithm>
 
 namespace ui {
+
+gfx::Pipeline* WidgetContainer::createPipeline(gfx::IBackend& backend) {
+    gfx::ShaderDesc vertDesc = {};
+    gfx::ShaderDesc fragDesc = {};
+    core::Resource resVS(core::RES_SHADER_UI_WIDGET_CONTAINER_VS);
+    core::Resource resPS(core::RES_SHADER_UI_WIDGET_CONTAINER_PS);
+    vertDesc.type = gfx::SHADER_TYPE_VERTEX;
+    vertDesc.module = gfx::frontend::ShaderParser::parse(reinterpret_cast<const char*>(resVS.data), resVS.size);
+    fragDesc.type = gfx::SHADER_TYPE_PIXEL;
+    fragDesc.module = gfx::frontend::ShaderParser::parse(reinterpret_cast<const char*>(resPS.data), resPS.size);
+
+    gfx::PipelineDesc pipelineDesc = {};
+    pipelineDesc.vs = backend.createShader(vertDesc);
+    pipelineDesc.ps = backend.createShader(fragDesc);
+    pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_STRIP;
+    pipelineDesc.iaState.inputLayout = {
+        { 0, gfx::FORMAT_R32G32_FLOAT,       0,  0, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Position
+        { 1, gfx::FORMAT_R32G32B32A32_FLOAT, 0,  8, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Color
+        { 2, gfx::FORMAT_R32_FLOAT,          0, 24, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Z-Index
+        { 3, gfx::FORMAT_R32_FLOAT,          0, 28, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Opacity
+    };
+    pipelineDesc.cbState.colorTarget[0] = {
+        true, false,
+        gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
+        gfx::BLEND_SRC_ALPHA, gfx::BLEND_INV_SRC_ALPHA, gfx::BLEND_OP_ADD,
+        gfx::LOGIC_OP_NOOP,
+        gfx::COLOR_WRITE_ENABLE_ALL
+    };
+    return backend.createPipeline(pipelineDesc);
+}
 
 bool WidgetContainer::addElement(Widget* widget) {
     assert_true(widget->parent == nullptr, "Widget already has a parent");
@@ -97,23 +129,6 @@ void WidgetContainer::render() {
     auto y1 = +1.0 - 2 * (offsetTop + getPaddingHeight());
     auto y2 = +1.0 - 2 * (offsetTop);
 
-    /**
-     * Screen
-     * ======
-     *  (0,1)                              (1,1)
-     *  +--------------------------------------+
-     *  |   V1 = (x1,y2)       V3 = (x2,y2)    |
-     *  |     + - - - - - - - +                |
-     *  |     : \             :                |
-     *  |     :    \          :                |
-     *  |     :       \       : h              |
-     *  |     :          \    :                |
-     *  |     :       w     \ :                |
-     *  |     + - - - - - - - +                |
-     *  |   V0 = (x1,y1)       V2 = (x2,y1)    |
-     *  +--------------------------------------+
-     *  (0,0)                              (1,0)
-     */
     auto& V0 = input.vertex[0];
     auto& V1 = input.vertex[1];
     auto& V2 = input.vertex[2];
@@ -130,7 +145,7 @@ void WidgetContainer::render() {
     V2.background = style.background;
     V3.background = style.background;
 
-    manager->renderWidget(input);
+    manager->pushWidgetContainer(input);
 
     auto childOffsetTop = offsetTop + getCoordY(style.padding.top);
     auto childOffsetLeft = offsetLeft + getCoordX(style.padding.left);

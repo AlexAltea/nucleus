@@ -267,12 +267,11 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
         return idCache[pointerId];
     }
 
-    std::string pointerString;
     Instruction* pointerInstr = module->idInstructions[pointerId];
     Instruction* typeInstr = module->idInstructions[pointerInstr->typeId];
     assert(typeInstr->opcode == OP_TYPE_POINTER);
 
-    std::string pointerStr;
+    std::string pointerString;
     switch (typeInstr->operands[0]) {
     case StorageClass::UNIFORM_CONSTANT:
         pointerString = "uniform."; break;
@@ -280,6 +279,8 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
         pointerString = "input."; break;
     case StorageClass::OUTPUT:
         pointerString = "output."; break;
+    case StorageClass::FUNCTION:
+        break;
     default:
         assert_always("Unimplemented");
     }
@@ -289,9 +290,17 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
     }
     if (pointerInstr->opcode == OP_ACCESS_CHAIN) {
         pointerString += format("v%d", pointerInstr->operands[0]);
-        for (size_t i = 1; i < pointerInstr->operands.size(); i++) {
-            std::string constant = getConstant(pointerInstr->operands[i]);
-            pointerString += format(".m%s", constant.c_str());
+        Instruction* varType = module->idInstructions[pointerInstr->operands[0]];
+        Instruction* ptrType = module->idInstructions[varType->typeId];
+        Instruction* underlyingType = module->idInstructions[ptrType->operands[1]];
+        if (underlyingType->opcode == OP_TYPE_STRUCT) {
+            for (size_t i = 1; i < pointerInstr->operands.size(); i++) {
+                std::string constant = getConstant(pointerInstr->operands[i]);
+                pointerString += format(".m%s", constant.c_str());
+            }
+        } else if (underlyingType->opcode == OP_TYPE_VECTOR) {
+            std::string constant = getConstant(pointerInstr->operands[1]);
+            pointerString += format("[%s]", constant.c_str());
         }
     }
 
@@ -380,6 +389,21 @@ std::string Direct3D12Shader::emitOpStore(Instruction* i) {
     return format(PADDING "%s = v%d;\n", pointerStr.c_str(), object);
 }
 
+std::string Direct3D12Shader::emitOpVariable(hir::Instruction* i) {
+    assert_true(i->operands.size() >= 1);
+    assert_true(i->operands[0] == StorageClass::FUNCTION);
+
+    Literal result = i->resultId;
+    std::string type = getType(i->typeId);
+    return format(PADDING "%s v%d;\n", type.c_str(), result);
+}
+
+std::string Direct3D12Shader::emitOpVectorShuffle(hir::Instruction* i) {
+    assert_true(i->operands.size() >= 2);
+    assert_always("Unimplemented");
+    return "";
+}
+
 std::string Direct3D12Shader::compile(Instruction* i) {
     std::string source;
     switch (i->opcode) {
@@ -411,12 +435,16 @@ std::string Direct3D12Shader::compile(Instruction* i) {
         return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
     case OP_SREM:
         return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
+    case OP_VECTOR_SHUFFLE:
+        return emitOpVectorShuffle(i);
     case OP_COMPOSITE_EXTRACT:
         return emitOpCompositeExtract(i);
     case OP_COMPOSITE_CONSTRUCT:
         return emitOpCompositeConstruct(i);
     case OP_IMAGE_SAMPLE_IMPLICIT_LOD:
         return emitOpImageSample(i);
+    case OP_VARIABLE:
+        return emitOpVariable(i);
     case OP_LOAD:
         return emitOpLoad(i);
     case OP_STORE:

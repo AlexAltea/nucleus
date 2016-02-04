@@ -12,6 +12,10 @@
 namespace ui {
 
 class WidgetContainer : public Widget {
+private:
+    // Input
+    WidgetContainerInput input;
+
     // Elements of the widget
     std::vector<Widget*> children;
 

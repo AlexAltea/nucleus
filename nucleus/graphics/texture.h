@@ -22,7 +22,14 @@ enum ComparisonFunc {
 };
 
 enum Filter {
-    FILTER_MIN_MAG_MIP_POINT,
+    FILTER_MIN_MAG_MIP_POINT                 = 0,
+    FILTER_MIN_MAG_POINT_MIP_LINEAR          = 0x1,
+    FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT    = 0x4,
+    FILTER_MIN_POINT_MAG_MIP_LINEAR          = 0x5,
+    FILTER_MIN_LINEAR_MAG_MIP_POINT          = 0x10,
+    FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR   = 0x11,
+    FILTER_MIN_MAG_LINEAR_MIP_POINT          = 0x14,
+    FILTER_MIN_MAG_MIP_LINEAR                = 0x15,
 };
 
 enum TextureAddress {

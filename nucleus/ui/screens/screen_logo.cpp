@@ -26,35 +26,32 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     logo->style.width = 50_pct;
     logo->style.background = Color{1,0,1,1};
 
-    /*auto* version = new WidgetText("version");
+    auto* version = new WidgetText("version");
     version->manager = manager;
-    version->update(defaultFont, 12_px, "Version v0.1.0 from 2016-04-01");
-    version->style.margin.top = 10_px;
-    version->style.width = 240_px;
-    version->style.height = 20_px;
-    version->style.background = Color{1,1,0,1};
+    version->update(defaultFont, 30_px, "Version v0.1.0 from 2016-04-01");
+    version->style.margin.top = 0_px;
+    version->style.width = 25_pct;
+    version->style.color = Color{1,1,1,1};
 
     auto* author = new WidgetText("author");
     author->manager = manager;
-    author->update(defaultFont, 20_px, "Created by Alexandro Sanchez Bach");
+    author->update(defaultFont, 60_px, "Created by Alexandro Sanchez Bach");
     author->style.margin.top = 40_px;
-    author->style.width = 400_px;
-    author->style.height = 30_px;
-    author->style.background = Color{1,1,0,1};
+    author->style.width = 40_pct;
+    author->style.color = Color{1,1,1,1};
 
     auto* license = new WidgetText("license");
     license->manager = manager;
-    license->update(defaultFont, 20_px, "Licensed under GPL v2.0");
-    license->style.margin.top = 10_px;
-    license->style.width = 300_px;
-    license->style.height = 30_px;
-    license->style.background = Color{1,1,0,1};*/
+    license->update(defaultFont, 60_px, "Licensed under GPL v2.0");
+    license->style.margin.top = 0_px;
+    license->style.width = 30_pct;
+    license->style.color = Color{1,1,1,1};
 
     // Add widgets
     body.addElement(logo);
-    /*body.addElement(version);
+    body.addElement(version);
     body.addElement(author);
-    body.addElement(license);*/
+    body.addElement(license);
 }
 
 void ScreenLogo::update() {

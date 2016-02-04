@@ -13,6 +13,6 @@ layout (location = 0) out vec4 result;
 layout (binding = 0) uniform sampler2D s;
 
 void main() {
-	result = texture(s, iTexcoord.xy);
+    result = texture(s, iTexcoord.xy);
     //result *= opacity;
 }

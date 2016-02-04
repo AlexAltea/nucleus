@@ -13,7 +13,7 @@
 
 namespace ui {
 
-gfx::Pipeline* WidgetContainer::createPipeline(gfx::IBackend& backend) {
+gfx::Pipeline* WidgetText::createPipeline(gfx::IBackend& backend) {
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
     core::Resource resVS(core::RES_SHADER_UI_WIDGET_TEXT_VS);
@@ -43,7 +43,7 @@ gfx::Pipeline* WidgetContainer::createPipeline(gfx::IBackend& backend) {
     };
     pipelineDesc.samplers.resize(1);
     pipelineDesc.samplers[0] = {
-        gfx::FILTER_MIN_MAG_MIP_POINT,
+        gfx::FILTER_MIN_MAG_MIP_LINEAR,
         gfx::TEXTURE_ADDRESS_MIRROR,
         gfx::TEXTURE_ADDRESS_MIRROR,
         gfx::TEXTURE_ADDRESS_MIRROR,
@@ -73,9 +73,11 @@ void WidgetText::update(const Font* fontFamily, const Length& fontSize, const st
         txWidth += (dx + kern) * scale;
     }
 
-    // Render characters
-    Size x = 0;
-    Size y = 0;
+    // Render characters leaving a 1-pixel margin
+    Size x = 1;
+    Size y = 1;
+    txWidth += 2;
+    txHeight += 2;
     txBuffer.clear();
     txBuffer.resize(txWidth * txHeight);
     for (Size i = 0; i < text.length(); i++) {
@@ -97,7 +99,7 @@ void WidgetText::update(const Font* fontFamily, const Length& fontSize, const st
     textureDesc.width = txWidth;
     textureDesc.height = txHeight;
     textureDesc.mipmapLevels = 1;
-    textureDesc.format = gfx::FORMAT_R8G8B8A8_UNORM;
+    textureDesc.format = gfx::FORMAT_R8_UNORM;
     textureDesc.data = txBuffer.data();
     textureDesc.size = txBuffer.size();
 
@@ -105,18 +107,23 @@ void WidgetText::update(const Font* fontFamily, const Length& fontSize, const st
 }
 
 void WidgetText::dimensionalize() {
-    vertWidth = 0.0;
-    vertHeight = 0.0;
+    auto compWidth = getCoordX(Length{ double(txWidth), Length::TYPE_PX });
+    auto compHeight = getCoordY(Length{ double(txHeight), Length::TYPE_PX });
 
-    if (style.width.type == Length::TYPE_UNDEFINED) {
-        vertWidth = getCoordX(Length{ double(txWidth), Length::TYPE_PX });
-    } else {
+    if (style.width.type != Length::TYPE_UNDEFINED) {
         vertWidth = getCoordX(style.width);
-    }
-    if (style.height.type == Length::TYPE_UNDEFINED) {
-        vertHeight = getCoordY(Length{ double(txHeight), Length::TYPE_PX });
+    } else if (style.height.type != Length::TYPE_UNDEFINED) {
+        vertWidth = compWidth * getCoordY(style.height) / compHeight;
     } else {
+        vertWidth = compWidth;
+    }
+
+    if (style.height.type != Length::TYPE_UNDEFINED) {
         vertHeight = getCoordY(style.height);
+    } else if (style.width.type != Length::TYPE_UNDEFINED) {
+        vertHeight = compHeight * getCoordX(style.width) / compWidth;
+    } else {
+        vertHeight = compHeight;
     }
 }
 
@@ -130,23 +137,6 @@ void WidgetText::render() {
     auto y1 = +1.0 - 2 * (offsetTop + getPaddingHeight());
     auto y2 = +1.0 - 2 * (offsetTop);
 
-    /**
-     * Screen
-     * ======
-     *  (0,1)                              (1,1)
-     *  +--------------------------------------+
-     *  |   V1 = (x1,y2)       V3 = (x2,y2)    |
-     *  |     + - - - - - - - +                |
-     *  |     : \             :                |
-     *  |     :    \          :                |
-     *  |     :       \       : h              |
-     *  |     :          \    :                |
-     *  |     :       w     \ :                |
-     *  |     + - - - - - - - +                |
-     *  |   V0 = (x1,y1)       V2 = (x2,y1)    |
-     *  +--------------------------------------+
-     *  (0,0)                              (1,0)
-     */
     auto& V0 = input.vertex[0];
     auto& V1 = input.vertex[1];
     auto& V2 = input.vertex[2];
@@ -158,12 +148,18 @@ void WidgetText::render() {
     V1.position[1] = V3.position[1] = y2;
     V0.position[2] = V1.position[2] = V2.position[2] = V3.position[2] = 0.0;
     V0.position[3] = V1.position[3] = V2.position[3] = V3.position[3] = 1.0;
-    V0.background = style.background;
-    V1.background = style.background;
-    V2.background = style.background;
-    V3.background = style.background;
+    V0.color = style.color;
+    V1.color = style.color;
+    V2.color = style.color;
+    V3.color = style.color;
 
-    manager->renderWidget(input);
+    // Texture coordinates assume top-left is (0,0) and bottom-right is (1,1)
+    V0.texcoord[0] = 0.0; V0.texcoord[1] = 1.0;
+    V1.texcoord[0] = 0.0; V1.texcoord[1] = 0.0;
+    V2.texcoord[0] = 1.0; V2.texcoord[1] = 1.0;
+    V3.texcoord[0] = 1.0; V3.texcoord[1] = 0.0;
+
+    manager->pushWidgetText(input, texture);
 }
 
 }  // namespace ui

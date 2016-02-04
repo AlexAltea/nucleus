@@ -21,13 +21,6 @@ enum AlignVertical {
     ALIGN_VERTICAL_BOTTOM,
 };
 
-enum ProportionMode {
-    PROPORTION_FIXED,      // Use the provided width/height dimensions
-    PROPORTION_AUTOWIDTH,  // Calculate width based on the given height
-    PROPORTION_AUTOHEIGHT, // Calculate height based on the given width
-    PROPORTION_AUTO,       // Calculate width and height
-};
-
 struct Color {
     float r;
     float g;
@@ -35,6 +28,22 @@ struct Color {
     float a;
 };
 
+/**
+ * Style
+ * =====
+ * ## Box Model
+ * There are four nested boxes: Margin > Border > Padding > Content.
+ *  - Content: The actual contents of the object,
+ *  - Padding: Clears a transparent area around the content.
+ *  - Border:  Border that goes around the padding.
+ *  - Margin:  Clears a transparent area around the border.
+ *
+ * ## Z-Index
+ * Depth index to render an object with. Greater values imply nearer objects and
+ * lower values imply farther objects. This is used to compute object occlusion.
+ *  - Valid values are 1 to 255.
+ *  - Specify 0 to automatically assign Z-Index based on the object render tree position.
+ */
 class Style {
 private:
     struct Box {
@@ -63,18 +72,13 @@ public:
 
     Box padding;
     Box margin;
-    struct Border {
-        Length top;
-        Length right;
-        Length bottom;
-        Length left;
+    struct Border : Box {
         Color color;
     } border;
 
     Color color;
     Color background;
-
-    ProportionMode sizeMode = PROPORTION_AUTO;
+    Size zindex = 0;
 
     float opacity = 1.0;
 };

@@ -64,6 +64,8 @@ class Direct3D12Shader : public Shader {
     std::string emitOpImageSample(hir::Instruction* i);
     std::string emitOpLoad(hir::Instruction* i);
     std::string emitOpStore(hir::Instruction* i);
+    std::string emitOpVariable(hir::Instruction* i);
+    std::string emitOpVectorShuffle(hir::Instruction* i);
 
     // Compile HIR components into HLSL
     std::string compile(hir::Instruction* i);

@@ -1,10 +1,10 @@
 #version 450
 
 layout (location = 0) in vec2 iPosition;
-layout (location = 0) in vec2 iTexcoord;
-layout (location = 1) in vec4 iColor;
-layout (location = 2) in float iZindex;
-layout (location = 3) in float iOpacity;
+layout (location = 1) in vec2 iTexcoord;
+layout (location = 2) in vec4 iColor;
+layout (location = 3) in float iZindex;
+layout (location = 4) in float iOpacity;
 
 layout (location = 0) out vec2 oTexcoord;
 layout (location = 1) out vec4 oColor;
