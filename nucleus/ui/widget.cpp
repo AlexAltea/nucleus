@@ -12,7 +12,12 @@ namespace ui {
 Widget::Widget() : style({}) {
 }
 
-Widget::Widget(const std::string& id) : id(id), style({}) {
+Widget::Widget(const std::string& id) : id(id), style() {
+}
+
+Widget::Widget(Widget* parent, const std::string& id) : id(id), style() {
+    auto* container = static_cast<WidgetContainer*>(parent);
+    container->addElement(this);
 }
 
 Widget* Widget::find(const std::string& query) {

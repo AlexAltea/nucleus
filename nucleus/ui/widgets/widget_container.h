@@ -27,6 +27,7 @@ public:
 
     WidgetContainer() {}
     WidgetContainer(const std::string& id) : Widget(id) {}
+    WidgetContainer(Widget* parent, const std::string& id = "") : Widget(parent, id) {}
 
     /**
      * Create a pipeline to process this kind of widgets

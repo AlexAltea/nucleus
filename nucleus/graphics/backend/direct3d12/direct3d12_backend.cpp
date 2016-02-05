@@ -426,7 +426,7 @@ bool Direct3D12Backend::doSwapBuffers() {
 #if defined(NUCLEUS_BUILD_DEBUG)
     debug.printMessages();
 #endif
-    HRESULT hr = swapChain->Present(0, 0);
+    HRESULT hr = swapChain->Present(1, 0);
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::doSwapBuffers: swapChain->Present failed (0x%X)", hr);
         return false;

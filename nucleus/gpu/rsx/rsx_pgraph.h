@@ -91,7 +91,6 @@ class PGRAPH {
     mem::Memory* memory;
     RSX* rsx;
 
-
     gfx::CommandBuffer* cmdBuffer;
 
     // Cache

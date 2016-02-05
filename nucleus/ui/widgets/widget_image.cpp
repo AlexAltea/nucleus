@@ -93,8 +93,13 @@ void WidgetImage::update(const Byte* buffer, Size size) {
     textureDesc.format = gfx::FORMAT_R8G8B8A8_UNORM;
     textureDesc.data = imBuffer;
     textureDesc.size = imWidth * imHeight * imComponents;
+    auto* texture = manager->graphics->createTexture(textureDesc);
 
-    texture = manager->graphics->createTexture(textureDesc);
+    update(texture);
+}
+
+void WidgetImage::update(gfx::Texture* newTexture) {
+    texture = newTexture;
 }
 
 void WidgetImage::dimensionalize() {
@@ -150,7 +155,30 @@ void WidgetImage::render() {
     V2.texcoord[0] = 1.0; V2.texcoord[1] = 1.0;
     V3.texcoord[0] = 1.0; V3.texcoord[1] = 0.0;
 
-    manager->pushWidgetImage(input, texture);
+    if (texture) {
+        // Render texture if possible
+        manager->pushWidgetImage(input, texture);
+    } else {
+        // Otherwise placeholder container
+        WidgetContainerInput containerInput;
+        auto& cV0 = containerInput.vertex[0];
+        auto& cV1 = containerInput.vertex[1];
+        auto& cV2 = containerInput.vertex[2];
+        auto& cV3 = containerInput.vertex[3];
+
+        cV0.position[0] = cV1.position[0] = x1;
+        cV2.position[0] = cV3.position[0] = x2;
+        cV0.position[1] = cV2.position[1] = y1;
+        cV1.position[1] = cV3.position[1] = y2;
+        cV0.position[2] = cV1.position[2] = cV2.position[2] = cV3.position[2] = 0.0;
+        cV0.position[3] = cV1.position[3] = cV2.position[3] = cV3.position[3] = 1.0;
+        cV0.background = Color{0,0,0,1};
+        cV1.background = Color{0,0,0,1};
+        cV2.background = Color{0,0,0,1};
+        cV3.background = Color{0,0,0,1};
+        
+        manager->pushWidgetContainer(containerInput);
+    }
 }
 
 }  // namespace ui

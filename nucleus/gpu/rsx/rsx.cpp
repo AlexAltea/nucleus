@@ -496,10 +496,11 @@ U32 RSX::get_ea(U32 offset) {
     return 0;
 }
 
-/*GLuint RSX::get_display() {
-    U32 displayAddr = display[queued_display].offset;
-    return pgraph.GetColorTarget(displayAddr);
-}*/
+gfx::Texture* RSX::getFrontBuffer() {
+    /*U32 displayAddr = display[queued_display].offset;
+    return pgraph.GetColorTarget(displayAddr);*/
+    return nullptr;
+}
 
 }  // namespace rsx
 }  // namespace gpu

@@ -166,6 +166,8 @@ public:
     void task();
 
     void method(U32 offset, U32 parameter);
+
+    virtual gfx::Texture* getFrontBuffer() override;
 };
 
 }  // namespace rsx

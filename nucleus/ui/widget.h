@@ -130,6 +130,7 @@ public:
 
     Widget();
     Widget(const std::string& id);
+    Widget(Widget* parent, const std::string& id);
 
     /**
      * Search children nodes for a particular identifier

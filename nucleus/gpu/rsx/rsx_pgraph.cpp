@@ -271,7 +271,7 @@ void PGRAPH::Begin(U32 mode) {
 
 void PGRAPH::ClearSurface(U32 mask) {
     // Avoid clearing empty surfaces
-    if (surface.width == 0 || surface.height == 0 || surface.colorFormat == 0) {
+    if (surface.width == 0 || surface.height == 0) {
         return;
     }
     const F32 color[4] = {

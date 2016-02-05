@@ -14,7 +14,7 @@ namespace ui {
 
 ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     const auto* defaultFont = manager->fontRegular.get();
-    const auto* lightFont = manager->fontRegular.get();
+    const auto* lightFont = manager->fontLight.get();
 
     // Centered
     body.style.alignH = ALIGN_HORIZONTAL_CENTER;
@@ -25,7 +25,6 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     logo->manager = manager;
     logo->update(core::RES_IMAGE_NUCLEUS_LOGO);
     logo->style.width = 50_pct;
-    logo->style.background = Color{1,0,1,1};
 
     version = new WidgetText("version");
     version->manager = manager;

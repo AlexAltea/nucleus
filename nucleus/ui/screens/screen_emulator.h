@@ -6,10 +6,13 @@
 #pragma once
 
 #include "nucleus/ui/screen.h"
+#include "nucleus/ui/widgets/list.h"
 
 namespace ui {
 
 class ScreenEmulator : public Screen {
+    WidgetImage* app;
+
 public:
     ScreenEmulator(UI* manager);
 

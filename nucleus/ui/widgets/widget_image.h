@@ -28,6 +28,7 @@ private:
 public:
     WidgetImage() {}
     WidgetImage(const std::string& id) : Widget(id) {}
+    WidgetImage(Widget* parent, const std::string& id = "") : Widget(parent, id) {}
     ~WidgetImage();
 
     /**
@@ -47,6 +48,12 @@ public:
      * @param[in]  filepath  Path to the image file
      */
     void update(const std::string& filepath);
+
+    /**
+     * Use the given texture to render the widget
+     * @param[in]  texture  Texture
+     */
+    void update(gfx::Texture* texture);
 
     /**
      * Read image from buffer

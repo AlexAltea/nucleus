@@ -28,6 +28,7 @@ private:
 public:
     WidgetText() {}
     WidgetText(const std::string& id) : Widget(id) {}
+    WidgetText(Widget* parent, const std::string& id = "") : Widget(parent, id) {}
 
     /**
      * Create a pipeline to process this kind of widgets

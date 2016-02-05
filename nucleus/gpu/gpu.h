@@ -5,11 +5,18 @@
 
 #pragma once
 
-#include "nucleus/common.h"
+// Forward declarations
+namespace gfx { class Texture; }
 
 namespace gpu {
 
 class GPU {
+public:
+    /**
+     * Get the framebuffer that the device wants to output to the screen
+     * @return  Texture of the framebuffer to be displayed
+     */
+    virtual gfx::Texture* getFrontBuffer() = 0;
 };
 
 }  // namespace gpu

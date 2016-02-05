@@ -4,19 +4,35 @@
  */
 
 #include "screen_main.h"
+#include "nucleus/ui/widgets/list.h"
+#include "nucleus/ui/ui.h"
 
 namespace ui {
 
 ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
+    const auto* defaultFont = manager->fontRegular.get();
+    const auto* lightFont = manager->fontLight.get();
+
     body.layout = WidgetContainer::LAYOUT_VERTICAL;
 
-    auto* header = new WidgetContainer("header");
+    auto* header = new WidgetContainer(&body, "header");
     header->style.width = 100_pct;
-    header->style.padding = 100_px;
-    header->style.background = Color{0.7f, 0.7f, 0.2f, 1.0f};
+    header->style.height = 100_px;
+    header->style.background = Color{0.282f, 0.282f, 0.500f, 1.0f};
 
-    auto* content = new WidgetContainer("content");
-    content->style.padding = 100_px;
+    auto* content = new WidgetContainer(&body, "content");
+    content->layout == WidgetContainer::LAYOUT_HORIZONTAL;
+
+    auto* home = new WidgetContainer(content, "home");
+    home->layout == WidgetContainer::LAYOUT_HORIZONTAL;
+    home->style.alignH == ALIGN_HORIZONTAL_CENTER;
+
+    auto* current = new WidgetContainer(home, "current");
+    current->layout == WidgetContainer::LAYOUT_VERTICAL;
+    auto* currentHeader = new WidgetText(current);
+    currentHeader->update(lightFont, 80_px, "Current");
+    currentHeader->style.color = Color{1,1,1,1};
+
 
     // content->home (@from=header)
     // content->home->current
@@ -42,9 +58,6 @@ ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
 
     // content->help (@from=header)
     // content->help->?
-
-    body.addElement(header);
-    body.addElement(content);
 }
 
 void ScreenMain::update() {

@@ -5,13 +5,25 @@
 
 #include "screen_emulator.h"
 #include "nucleus/emulator.h"
+#include "nucleus/gpu/gpu.h"
 
 namespace ui {
 
 ScreenEmulator::ScreenEmulator(UI* manager) : Screen(manager) {
+    body.style.alignH = ALIGN_HORIZONTAL_CENTER;
+    body.style.alignV = ALIGN_VERTICAL_CENTER;
+    //body.style.background = Color{0,0,0,1};
+
+    app = new WidgetImage("app");
+    app->manager = manager;
+    app->style.width = 90_pct;
+    app->style.height = 90_pct;
+    body.addElement(app);
 }
 
 void ScreenEmulator::update() {
+    auto* appTexture = nucleus.gpu->getFrontBuffer();
+    app->update(appTexture);
 }
 
 }  // namespace ui
