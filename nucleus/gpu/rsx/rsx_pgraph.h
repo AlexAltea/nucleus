@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/gpu/rsx/rsx_enum.h"
 #include "nucleus/gpu/rsx/rsx_vp.h"
 #include "nucleus/gpu/rsx/rsx_fp.h"
@@ -17,6 +18,9 @@
 #include <vector>
 
 namespace gpu {
+
+// Forward declarations
+class RSX;
 
 // RSX Vertex Program attribute
 struct rsx_vp_attribute_t {
@@ -62,19 +66,30 @@ struct rsx_viewport_t {
 // RSX's PGRAPH engine (Curie)
 class PGRAPH {
     std::shared_ptr<gfx::IBackend> graphics;
+    mem::Memory* memory;
+    RSX* rsx;
+
+
+    gfx::CommandBuffer* cmdBuffer;
 
     // Cache
-    std::unordered_map<U64, RSXVertexProgram> cache_vp;
-    std::unordered_map<U64, RSXFragmentProgram> cache_fp;
+    std::unordered_map<U64, RSXVertexProgram> cacheVP;
+    std::unordered_map<U64, RSXFragmentProgram> cacheFP;
 
     // Surface
+    std::unordered_map<U32, gfx::ColorTarget*> colorTargets;
+    std::unordered_map<U32, gfx::DepthStencilTarget*> depthStencilTargets;
     /*GLuint framebuffer;
     std::unordered_map<U32, GLuint> colorTargets;
     std::unordered_map<U32, GLuint> depthTargets;*/
 
     // Auxiliary methods
-    void SetColorTarget(U32 address, U8 attachment);
-    void SetDepthTarget(U32 address);
+    gfx::ColorTarget* getColorTarget(U32 address);
+    gfx::DepthStencilTarget* getDepthTarget(U32 address);
+
+    void setSurface();
+    void setViewport();
+    void setPipeline();
 
 public:
     // Registers
@@ -116,7 +131,8 @@ public:
     U32 fp_control;                      // Control the performance of the program
 
     // Constructor
-    PGRAPH(std::shared_ptr<gfx::IBackend> graphics);
+    PGRAPH(std::shared_ptr<gfx::IBackend> graphics, RSX* rsx, mem::Memory* memory);
+    ~PGRAPH();
 
     // Hashing methods
     U64 HashTexture();

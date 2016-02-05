@@ -11,6 +11,13 @@
 
 #include <bitset>
 
+// Forward declarations
+namespace gfx {
+
+class Shader;
+
+}  // namespace gfx
+
 namespace gpu {
 
 // RSX Fragment Program opcodes
@@ -153,9 +160,11 @@ union rsx_fp_instruction_source_t {
 class RSXFragmentProgram {
     using Builder = gfx::hir::Builder;
     using Literal = gfx::hir::Literal;
+    using Module = gfx::hir::Module;
 
 private:
     // HIR information
+    Module* module;
     Builder builder;
     Literal vecTypeId;
 
@@ -214,11 +223,19 @@ private:
     }
 
 public:
+    gfx::Shader* shader;
+
     /**
      * Decompile a RSX fragment program to a gfx::hir::Module
      * @param[in]  buffer  Entry point instruction of the shader
      */
     void decompile(const rsx_fp_instruction_t* buffer);
+
+    /**
+     * Compile gfx::hir::Module to gfx::Shader
+     * @return  Non-zero shader pointer on success, otherwise nullptr
+     */
+    void compile();
 };
 
 }  // namespace gpu

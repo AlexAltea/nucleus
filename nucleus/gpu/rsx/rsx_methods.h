@@ -303,7 +303,7 @@ enum {
     NV3089_IMAGE_IN                          = 0x0000C40C,
 
     // SCE DRIVER
-    // These methods are executed by the LV1 Hypervisor, not by the RSX.
+    // These methods are executed by the CellOS-LV1 Hypervisor, not by the RSX.
     SCE_DRIVER_SET_OBJECT                    = 0x0000E000,
     SCE_DRIVER_FLIP                          = 0x0000E920, // Head is specified by the 2 possible indices [0xE920:0E924]
     SCE_DRIVER_QUEUE                         = 0x0000E940, // Head is specified by the 8 possible indices [0xE940:0E95C]

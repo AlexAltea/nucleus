@@ -5,21 +5,17 @@
 
 #include "keys.h"
 #include "nucleus/format.h"
-#include "nucleus/filesystem/utils.h"
+#include "nucleus/filesystem/filesystem_application.h"
 #include "nucleus/logger/logger.h"
 
 #include "externals/rapidxml/rapidxml.hpp"
 
-#include <map>
-
-#if defined(NUCLEUS_COMPILER_MSVC)
-#define fseeko64 _fseeki64
-#define ftello64 _ftelli64
-#endif
+#include <unordered_map>
+#include <vector>
 
 #define KEYVAULT_FILE "keys.xml"
 
-static const std::map<U32, const char*> keyType = {
+static const std::unordered_map<U32, const char*> keyType = {
     { KEY_LV0,   "LV0"   },
     { KEY_LV1,   "LV1"   },
     { KEY_LV2,   "LV2"   },
@@ -32,26 +28,15 @@ static const std::map<U32, const char*> keyType = {
 
 static struct KeyvaultHandler {
     // Holds the parsed XML file
-    char* buffer;
+    std::vector<char> buffer;
     rapidxml::xml_document<> doc;
 
     KeyvaultHandler() {
-        // Access the Keyvault file and get its size
-        /*std::string path = fs::getEmulatorPath() + KEYVAULT_FILE;
-        std::FILE* file;
-        fopen_s(&file, path.c_str(), "rb");
-        fseeko64(file, 0, SEEK_END);
-        const U64 kvSize = ftello64(file);
-
-        // Copy and parse its contents
-        buffer = new char[kvSize+1]();
-        fseeko64(file, 0, SEEK_SET);
-        fread(buffer, 1, kvSize, file);
-        fclose(file);
-        doc.parse<0>(buffer);*/
-    }
-    ~KeyvaultHandler() {
-        delete[] buffer;
+        auto file = fs::ApplicationFileSystem::openFile(fs::APPLICATION_LOCATION_ROAMING, KEYVAULT_FILE, fs::Read);
+        auto size = file->attributes().size;
+        buffer.resize(size + 1);
+        file->read(buffer.data(), size);
+        doc.parse<0>(buffer.data());
     }
 } keyvault;
 

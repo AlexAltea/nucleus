@@ -457,9 +457,9 @@ inline Reg8 Reg::cvt8() const
 {
     const int idx = getIdx();
     if (isBit(8)) return Reg8(idx, isExt8bit());
-//#ifdef XBYAK32
+#ifdef XBYAK32
     if (idx >= 4) throw Error(ERR_CANT_CONVERT);
-//#endif
+#endif
     return Reg8(idx, 4 <= idx && idx < 8);
 }
 

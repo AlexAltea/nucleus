@@ -11,6 +11,13 @@
 
 #include <bitset>
 
+// Forward declarations
+namespace gfx {
+
+class Shader;
+
+}  // namespace gfx
+
 namespace gpu {
 
 // RSX Vertex Program opcodes
@@ -139,9 +146,11 @@ union rsx_vp_instruction_source_t {
 class RSXVertexProgram {
     using Builder = gfx::hir::Builder;
     using Literal = gfx::hir::Literal;
+    using Module = gfx::hir::Module;
 
 private:
     // HIR information
+    Module* module;
     Builder builder;
     Literal vecTypeId;
 
@@ -189,11 +198,19 @@ private:
     std::string getHeader();
 
 public:
+    gfx::Shader* shader;
+
     /**
      * Decompile a RSX VPE program to a gfx::hir::Module
      * @param[in]  buffer  Entry point instruction of the shader
      */
     void decompile(const rsx_vp_instruction_t* buffer);
+
+    /**
+     * Compile gfx::hir::Module to gfx::Shader
+     * @return  Non-zero shader pointer on success, otherwise nullptr
+     */
+    void compile();
 };
 
 }  // namespace gpu

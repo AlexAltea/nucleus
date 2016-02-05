@@ -213,4 +213,7 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     source = get_header() + "void main() { " + source + "}";*/
 }
 
+void RSXVertexProgram::compile() {
+}
+
 }  // namespace gpu

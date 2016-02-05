@@ -41,7 +41,7 @@
 namespace gpu {
 
 RSX::RSX(std::shared_ptr<mem::Memory> mem, std::shared_ptr<gfx::IBackend> graphics) :
-    memory(std::move(mem)), pgraph(std::move(graphics)) {
+    memory(std::move(mem)), pgraph(std::move(graphics), this, memory.get()) {
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
     memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40000000, 0x1000);
     memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40100000, 0x1000);
@@ -444,8 +444,7 @@ void RSX::method(U32 offset, U32 parameter) {
     }
 }
 
-U64 RSX::ptimer_gettime()
-{
+U64 RSX::ptimer_gettime() {
 #ifdef NUCLEUS_PLATFORM_WINDOWS
     static struct PerformanceFreqHolder {
         U64 value;
@@ -466,8 +465,7 @@ U64 RSX::ptimer_gettime()
 #endif
 }
 
-U32 RSX::io_read32(U32 offset)
-{
+U32 RSX::io_read32(U32 offset) {
     for (const auto& map : iomaps) {
         if (map.io <= offset && (offset & ~0x3) < map.io + map.size) {
             return memory->read32(map.ea + (offset - map.io));
@@ -477,8 +475,7 @@ U32 RSX::io_read32(U32 offset)
     return 0;
 }
 
-void RSX::io_write32(U32 offset, U32 value)
-{
+void RSX::io_write32(U32 offset, U32 value) {
     for (const auto& map : iomaps) {
         if (map.io <= offset && (offset & ~0x3) <= map.io + map.size) {
             memory->write32(map.ea + (offset - map.io), value);
@@ -487,8 +484,7 @@ void RSX::io_write32(U32 offset, U32 value)
     logger.error(LOG_GPU, "Illegal IO 32-bit write");
 }
 
-U32 RSX::get_ea(U32 offset)
-{
+U32 RSX::get_ea(U32 offset) {
     for (const auto& map : iomaps) {
         if (map.io <= offset && offset < map.io + map.size) {
             return map.ea + (offset - map.io);
@@ -498,8 +494,7 @@ U32 RSX::get_ea(U32 offset)
     return 0;
 }
 
-/*GLuint RSX::get_display()
-{
+/*GLuint RSX::get_display() {
     U32 displayAddr = display[queued_display].offset;
     return pgraph.GetColorTarget(displayAddr);
 }*/

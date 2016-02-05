@@ -14,7 +14,19 @@ namespace fs {
 Path ApplicationFileSystem::getPath(Location location) {
     Path path;
 
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_PLATFORM_LINUX)
+    switch (location) {
+    case APPLICATION_LOCATION_LOCAL:
+        path = "./"; break;
+    case APPLICATION_LOCATION_ROAMING:
+        path = "./"; break;
+    case APPLICATION_LOCATION_TEMP:
+        path = "/tmp/"; break;
+    default:
+        assert_always("Unexpected");
+    }
+
+#elif defined(NUCLEUS_PLATFORM_UWP)
     Windows::Storage::StorageFolder^ folder;
     switch (location) {
     case APPLICATION_LOCATION_LOCAL:
@@ -27,9 +39,18 @@ Path ApplicationFileSystem::getPath(Location location) {
     std::wstring widePath = folder->Path->Data();
     std::string narrowPath(widePath.begin(), widePath.end()); // HACK: Implement proper Path class
     path = narrowPath;
+
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
-    assert_always("Unimplemented");
-    path = "%temp%";
+    switch (location) {
+    case APPLICATION_LOCATION_LOCAL:
+        path = "./"; break;
+    case APPLICATION_LOCATION_ROAMING:
+        path = "./"; break;
+    case APPLICATION_LOCATION_TEMP:
+        path = "%TEMP%/"; break;
+    default:
+        assert_always("Unexpected");
+    }
 #endif
     return path;
 }

@@ -221,4 +221,7 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
     source = get_header() + "void main() { " + source + "}";*/
 }
 
+void RSXFragmentProgram::compile() {
+}
+
 }  // namespace gpu

@@ -4,6 +4,7 @@
  */
 
 #include "rsx_pgraph.h"
+#include "nucleus/assert.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/gpu/rsx/rsx.h"
@@ -12,8 +13,11 @@
 
 namespace gpu {
 
-PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> graphics) :
-    graphics(std::move(graphics)) {
+PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> graphics, RSX* rsx, mem::Memory* memory) :
+    graphics(std::move(graphics)), rsx(rsx), memory(memory) {
+}
+
+PGRAPH::~PGRAPH() {
 }
 
 U64 PGRAPH::HashTexture() {
@@ -94,46 +98,123 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
     }
 }
 
-/*
-PGRAPH::PGRAPH() {
-    glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-}
-
-PGRAPH::~PGRAPH() {
-    glDeleteFramebuffers(1, &framebuffer);
-}
-*/
-
-void PGRAPH::SetColorTarget(U32 address, U8 attachment) {
-    /*// Generate a texture to hold the color buffer
-    if (colorTargets.find(address) == colorTargets.end()) {
-        GLuint colorTexture;
-        glGenTextures(1, &colorTexture);
-        glBindTexture(GL_TEXTURE_2D, colorTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface.width, surface.height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        colorTargets[address] = colorTexture;
+gfx::ColorTarget* PGRAPH::getColorTarget(U32 address) {
+    if (colorTargets.find(address) != colorTargets.end()) {
+        return colorTargets[address];
     }
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachment, colorTargets[address], 0);
-    checkRendererError("SetColorTarget");*/
+    // Generate a texture to hold the color buffer
+    /*GLuint colorTexture;
+    glGenTextures(1, &colorTexture);
+    glBindTexture(GL_TEXTURE_2D, colorTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface.width, surface.height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    colorTargets[address] = colorTexture;*/
+    return colorTargets[address];
 }
 
-void PGRAPH::SetDepthTarget(U32 address) {
-    /*// Generate a texture to hold the depth buffer
-    if (depthTargets.find(address) == depthTargets.end()) {
-        GLuint depthTexture;
-        glGenTextures(1, &depthTexture);
-        glBindTexture(GL_TEXTURE_2D, depthTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, surface.width, surface.height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        depthTargets[address] = depthTexture;
+gfx::DepthStencilTarget* PGRAPH::getDepthTarget(U32 address) {
+    if (depthStencilTargets.find(address) != depthStencilTargets.end()) {
+        return depthStencilTargets[address];
     }
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTargets[address], 0);
-    checkRendererError("SetDepthTarget");*/
+    // Generate a texture to hold the depth buffer
+    /*GLuint depthTexture;
+    glGenTextures(1, &depthTexture);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, surface.width, surface.height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    depthTargets[address] = depthTexture;*/
+    return depthStencilTargets[address];
 }
+
+void PGRAPH::setSurface() {
+    if (!surface.dirty) {
+        return;
+    }    
+    Size colorCount = 0;
+    gfx::ColorTarget* colors[4];
+    gfx::DepthStencilTarget* depth = getDepthTarget(surface.depthOffset);
+
+    switch (surface.colorTarget) {
+    case RSX_SURFACE_TARGET_NONE:
+        colorCount = 0;
+        break;
+    case RSX_SURFACE_TARGET_0:
+        colors[0] = getColorTarget(surface.colorOffset[0]);
+        colorCount = 1;
+        break;
+    case RSX_SURFACE_TARGET_1:
+        colors[1] = getColorTarget(surface.colorOffset[1]);
+        colorCount = 1;
+        break;
+    case RSX_SURFACE_TARGET_MRT1:
+        colors[0] = getColorTarget(surface.colorOffset[0]);
+        colors[1] = getColorTarget(surface.colorOffset[1]);
+        colorCount = 2;
+        break;
+    case RSX_SURFACE_TARGET_MRT2:
+        colors[0] = getColorTarget(surface.colorOffset[0]);
+        colors[1] = getColorTarget(surface.colorOffset[1]);
+        colors[2] = getColorTarget(surface.colorOffset[2]);
+        colorCount = 3;
+        break;
+    case RSX_SURFACE_TARGET_MRT3:
+        colors[0] = getColorTarget(surface.colorOffset[0]);
+        colors[1] = getColorTarget(surface.colorOffset[1]);
+        colors[2] = getColorTarget(surface.colorOffset[2]);
+        colors[3] = getColorTarget(surface.colorOffset[3]);
+        colorCount = 4;
+        break;
+    default:
+        assert_always("Unexpected");
+    }
+    cmdBuffer->cmdSetTargets(colorCount, colors, depth);
+    surface.dirty = false;
+}
+
+void PGRAPH::setViewport() {
+    if (!viewport.dirty) {
+        return;
+    }
+    gfx::Viewport rectangle = { viewport.x, viewport.y, viewport.width, viewport.height };
+    cmdBuffer->cmdSetViewports(1, &rectangle);
+    viewport.dirty = false;
+}
+
+void PGRAPH::setPipeline() {
+    // TODO: Hash pipeline and retrieve it from cache
+    if (0) {
+        cmdBuffer->cmdBindPipeline(nullptr);
+    }
+
+    auto vpData = &vpe.data[vpe.start];
+    auto vpHash = HashVertexProgram(vpData);
+    if (cacheVP.find(vpHash) == cacheVP.end()) {
+        RSXVertexProgram vp;
+        vp.decompile(vpData);
+        vp.compile();
+        cacheVP[vpHash] = vp;
+    }
+    auto fpData = memory->ptr<rsx_fp_instruction_t>((fp_location ? rsx->get_ea(0x0) : 0xC0000000) + fp_offset);
+    auto fpHash = HashFragmentProgram(fpData);
+    if (cacheFP.find(fpHash) == cacheFP.end()) {
+        RSXFragmentProgram fp;
+        fp.decompile(fpData);
+        fp.compile();
+        cacheFP[fpHash] = fp;
+    }
+
+    // Shaders
+    gfx::PipelineDesc pipelineDesc = {};
+    pipelineDesc.vs = cacheVP[vpHash].shader;
+    pipelineDesc.ps = cacheFP[fpHash].shader;
+
+    auto* pipeline = graphics->createPipeline(pipelineDesc);
+    cmdBuffer->cmdBindPipeline(pipeline);
+}
+
+
 
 /*GLuint PGRAPH::GetColorTarget(U32 address) {
     if (colorTargets.find(address) == colorTargets.end()) {
@@ -219,103 +300,27 @@ void PGRAPH::DepthFunc(U32 func) {
 }
 
 void PGRAPH::DrawArrays(U32 first, U32 count) {
-    /*// State
-    glBlendFuncSeparate(blend_sfactor_rgb, blend_dfactor_rgb, blend_sfactor_alpha, blend_dfactor_alpha);
-
-    // Surface
-    if (surface.dirty) {
-        surface.dirty = false;
-        switch (surface.colorTarget) {
-        case RSX_SURFACE_TARGET_NONE:
-            break;
-
-        case RSX_SURFACE_TARGET_0:
-            SetColorTarget(surface.colorOffset[0], 0);
-            break;
-
-        case RSX_SURFACE_TARGET_1:
-            SetColorTarget(surface.colorOffset[1], 1);
-            break;
-
-        case RSX_SURFACE_TARGET_MRT1:
-            SetColorTarget(surface.colorOffset[0], 0);
-            SetColorTarget(surface.colorOffset[1], 1);
-            break;
-
-        case RSX_SURFACE_TARGET_MRT2:
-            SetColorTarget(surface.colorOffset[0], 0);
-            SetColorTarget(surface.colorOffset[1], 1);
-            SetColorTarget(surface.colorOffset[2], 2);
-            break;
-
-        case RSX_SURFACE_TARGET_MRT3:
-            SetColorTarget(surface.colorOffset[0], 0);
-            SetColorTarget(surface.colorOffset[1], 1);
-            SetColorTarget(surface.colorOffset[2], 2);
-            SetColorTarget(surface.colorOffset[3], 3);
-            break;
-        }
-        SetDepthTarget(surface.depthOffset);
-
-        GLuint fbStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (fbStatus != GL_FRAMEBUFFER_COMPLETE) {
-            logger.error(LOG_GPU, "PGRAPH::DrawArrays: Framebuffer is not complete (0x%X)", fbStatus);
-        }
-    }
+    // State
+    //glBlendFuncSeparate(blend_sfactor_rgb, blend_dfactor_rgb, blend_sfactor_alpha, blend_dfactor_alpha);
+    setPipeline();
+    setSurface();
+    setViewport();
 
     // Viewport
-    if (viewport.dirty) {
-        viewport.dirty = false;
-        glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-    }
-
-    // Shaders
-    auto vp_data = &vpe.data[vpe.start];
-    auto vp_hash = HashVertexProgram(vp_data);
-    if (cache_vp.find(vp_hash) == cache_vp.end()) {
-        OpenGLVertexProgram vp;
-        vp.decompile(vp_data);
-        vp.compile();
-        cache_vp[vp_hash] = vp;
-    }
-
-    auto fp_data = memory->ptr<rsx_fp_instruction_t>((fp_location ? nucleus.rsx.get_ea(0x0) : 0xC0000000) + fp_offset);
-    auto fp_hash = HashFragmentProgram(fp_data);
-    if (cache_fp.find(fp_hash) == cache_fp.end()) {
-        OpenGLFragmentProgram fp;
-        fp.decompile(fp_data);
-        fp.compile();
-        cache_fp[fp_hash] = fp;
-    }
-
-    // Link, validate and use program
-    GLuint id = glCreateProgram();
-    glAttachShader(id, cache_vp[vp_hash].id);
-    glAttachShader(id, cache_fp[fp_hash].id);
-    glLinkProgram(id);
-    GLint status;
-    glGetProgramiv(id, GL_LINK_STATUS, &status);
-    if (status != GL_TRUE) {
-        logger.error(LOG_GPU, "PGRAPH::DrawArrays: Can't link program");
-    }
-    glGetProgramiv(id, GL_VALIDATE_STATUS, &status);
-    if (status != GL_TRUE) {
-        logger.error(LOG_GPU, "PGRAPH::DrawArrays: Can't validate program");
-    }
-    glUseProgram(id);
+    /**/
 
     // Upload VP constants
-    for (U32 i = 0; i < 468; i++) {
+    /*for (U32 i = 0; i < 468; i++) {
         auto& constant = vpe.constant[i];
         if (constant.dirty) {
             GLint loc = glGetUniformLocation(id, format("c[%d]", i).c_str());
             glUniform4f(loc, constant.x, constant.y, constant.z, constant.w);
             constant.dirty = false;
         }
-    }
+    }*/
 
     // Bind textures
-    for (U32 i = 0; i < RSX_MAX_TEXTURES; i++) {
+    /*for (U32 i = 0; i < RSX_MAX_TEXTURES; i++) {
         const auto& tex = texture[i];
         if (tex.enable) {
             GLuint tid;
@@ -343,9 +348,9 @@ void PGRAPH::DrawArrays(U32 first, U32 count) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         }
-    }
+    }*/
 
-    GLenum mode = vertex_primitive - 1;
+    /*GLenum mode = vertex_primitive - 1;
     glDrawArrays(mode, first, count);
     checkRendererError("DrawArrays");*/
 }
