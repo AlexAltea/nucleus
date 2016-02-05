@@ -10,12 +10,9 @@
 namespace gfx {
 
 enum Format {
-    FORMAT_R32_FLOAT,
-    FORMAT_R32G32_FLOAT,
-    FORMAT_R32G32B32_FLOAT,
-    FORMAT_R32G32B32A32_FLOAT,
-    FORMAT_R8_UNORM,
-    FORMAT_R8G8B8A8_UNORM,
+#define FORMAT(name, ...) FORMAT_##name,
+#include "format.inl"
+#undef RESOURCE
 
     _FORMAT_COUNT,
 };

@@ -102,13 +102,13 @@ S32 sys_rsx_context_free(U32 context_id) {
 S32 sys_rsx_context_iomap(U32 context_id, U32 io, U32 ea, U32 size, U64 flags) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
-    gpu::rsx_iomap_t iomap;
+    gpu::rsx::rsx_iomap_t iomap;
     iomap.io = io;
     iomap.ea = ea;
     iomap.size = size;
 
     // TODO: Implement flags
-    static_cast<gpu::RSX*>(nucleus.gpu.get())->iomaps.push_back(iomap);
+    static_cast<gpu::rsx::RSX*>(nucleus.gpu.get())->iomaps.push_back(iomap);
     return CELL_OK;
 }
 

@@ -8,13 +8,15 @@
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/gpu/rsx/rsx.h"
+#include "nucleus/gpu/rsx/rsx_convert.h"
 #include "nucleus/gpu/rsx/rsx_enum.h"
 #include "nucleus/gpu/rsx/rsx_methods.h"
 
 namespace gpu {
+namespace rsx {
 
 PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> graphics, RSX* rsx, mem::Memory* memory) :
-    graphics(std::move(graphics)), rsx(rsx), memory(memory) {
+    graphics(std::move(graphics)), rsx(rsx), memory(memory), surface() {
 }
 
 PGRAPH::~PGRAPH() {
@@ -66,7 +68,7 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
         if (attr.location == RSX_LOCATION_LOCAL) {
             addr = nucleus.memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).getBaseAddr() + attr.offset;
         } else {
-            addr = static_cast<RSX*>(nucleus.gpu.get())->get_ea(attr.offset);
+            addr = rsx->get_ea(attr.offset);
         }
 
         const U32 typeSize = vertexTypeSize[attr.type];
@@ -103,29 +105,33 @@ gfx::ColorTarget* PGRAPH::getColorTarget(U32 address) {
         return colorTargets[address];
     }
     // Generate a texture to hold the color buffer
-    /*GLuint colorTexture;
-    glGenTextures(1, &colorTexture);
-    glBindTexture(GL_TEXTURE_2D, colorTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface.width, surface.height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    colorTargets[address] = colorTexture;*/
-    return colorTargets[address];
+    gfx::TextureDesc desc = {};
+    desc.mipmapLevels = 1;
+    desc.width = surface.width;
+    desc.height = surface.height;
+    desc.format = convertFormat(surface.colorFormat);
+    auto* texture = graphics->createTexture(desc);
+
+    auto* target = graphics->createColorTarget(texture);
+    colorTargets[address] = target;
+    return target;
 }
 
-gfx::DepthStencilTarget* PGRAPH::getDepthTarget(U32 address) {
+gfx::DepthStencilTarget* PGRAPH::getDepthStencilTarget(U32 address) {
     if (depthStencilTargets.find(address) != depthStencilTargets.end()) {
         return depthStencilTargets[address];
     }
     // Generate a texture to hold the depth buffer
-    /*GLuint depthTexture;
-    glGenTextures(1, &depthTexture);
-    glBindTexture(GL_TEXTURE_2D, depthTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, surface.width, surface.height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    depthTargets[address] = depthTexture;*/
-    return depthStencilTargets[address];
+    gfx::TextureDesc desc = {};
+    desc.mipmapLevels = 1;
+    desc.width = surface.width;
+    desc.height = surface.height;
+    desc.format = convertFormat(surface.depthFormat);
+    auto* texture = graphics->createTexture(desc);
+
+    auto* target = graphics->createDepthStencilTarget(texture);
+    depthStencilTargets[address] = target;
+    return target;
 }
 
 void PGRAPH::setSurface() {
@@ -134,7 +140,7 @@ void PGRAPH::setSurface() {
     }    
     Size colorCount = 0;
     gfx::ColorTarget* colors[4];
-    gfx::DepthStencilTarget* depth = getDepthTarget(surface.depthOffset);
+    gfx::DepthStencilTarget* depth = getDepthStencilTarget(surface.depthOffset);
 
     switch (surface.colorTarget) {
     case RSX_SURFACE_TARGET_NONE:
@@ -263,30 +269,32 @@ void PGRAPH::Begin(U32 mode) {
     vertex_primitive = mode;
 }
 
-void PGRAPH::ClearColor(U8 a, U8 r, U8 g, U8 b) {
-    /*glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
-    checkRendererError("ClearColor");*/
-}
-
-void PGRAPH::ClearDepth(U32 value) {
-    /*glClearDepth(value / (float)0xFFFFFF);
-    checkRendererError("ClearDepth");*/
-}
-
-void PGRAPH::ClearStencil(U32 value) {
-    /*glClearStencil(value);
-    checkRendererError("ClearStencil");*/
-}
-
 void PGRAPH::ClearSurface(U32 mask) {
-    /*// Set mask
-    GLbitfield clearMask = 0;
-    if (mask & 0x01) clearMask |= GL_DEPTH_BUFFER_BIT;
-    if (mask & 0x02) clearMask |= GL_STENCIL_BUFFER_BIT;
-    if (mask & 0xF0) clearMask |= GL_COLOR_BUFFER_BIT;
+    // Avoid clearing empty surfaces
+    if (surface.width == 0 || surface.height == 0 || surface.colorFormat == 0) {
+        return;
+    }
+    const F32 color[4] = {
+        ((clear_color >> 24) & 0xFF) / 255.0f, // Red
+        ((clear_color >> 16) & 0xFF) / 255.0f, // Green
+        ((clear_color >>  8) & 0xFF) / 255.0f, // Blue
+        ((clear_color >>  0) & 0xFF) / 255.0f, // Alpha
+    };
+    const F32 depth = clear_depth / F32(0xFFFFFF);
+    const U8 stencil = clear_stencil;
 
-    glClear(clearMask);
-    checkRendererError("ClearSurface");*/
+    auto* colorTarget = getColorTarget(surface.colorOffset[0]);
+    if (mask & RSX_CLEAR_BIT_COLOR) {
+        cmdBuffer->cmdClearColor(colorTarget, color);
+    }
+
+    auto* depthTarget = getDepthStencilTarget(surface.depthOffset);
+    if (mask & (RSX_CLEAR_BIT_DEPTH | RSX_CLEAR_BIT_STENCIL)) {
+        cmdBuffer->cmdClearDepthStencil(depthTarget, depth, stencil);
+    } else {
+        assert_true((mask & RSX_CLEAR_BIT_DEPTH) == 0, "Unimplemented depth-exclusive clear");
+        assert_true((mask & RSX_CLEAR_BIT_STENCIL) == 0, "Unimplemented depth-exclusive clear");
+    }
 }
 
 void PGRAPH::ColorMask(bool a, bool r, bool g, bool b) {
@@ -421,47 +429,6 @@ void PGRAPH::End() {
 void PGRAPH::Flip() {
 }
 
-void PGRAPH::SurfaceColorTarget(U32 target) {
-    /*GLenum bufs[4];
-    switch (target) {
-    case RSX_SURFACE_TARGET_NONE:
-        glDrawBuffers(0, nullptr);
-        break;
-
-    case RSX_SURFACE_TARGET_0:
-        bufs[0] = GL_COLOR_ATTACHMENT0;
-        glDrawBuffers(1, bufs);
-        break;
-
-    case RSX_SURFACE_TARGET_1:
-        bufs[0] = GL_COLOR_ATTACHMENT1;
-        glDrawBuffers(1, bufs);
-        break;
-
-    case RSX_SURFACE_TARGET_MRT1:
-        bufs[0] = GL_COLOR_ATTACHMENT0;
-        bufs[1] = GL_COLOR_ATTACHMENT1;
-        glDrawBuffers(2, bufs);
-        break;
-
-    case RSX_SURFACE_TARGET_MRT2:
-        bufs[0] = GL_COLOR_ATTACHMENT0;
-        bufs[1] = GL_COLOR_ATTACHMENT1;
-        bufs[2] = GL_COLOR_ATTACHMENT2;
-        glDrawBuffers(3, bufs);
-        break;
-
-    case RSX_SURFACE_TARGET_MRT3:
-        bufs[0] = GL_COLOR_ATTACHMENT0;
-        bufs[1] = GL_COLOR_ATTACHMENT1;
-        bufs[2] = GL_COLOR_ATTACHMENT2;
-        bufs[3] = GL_COLOR_ATTACHMENT3;
-        glDrawBuffers(4, bufs);
-        break;
-    }
-    checkRendererError("SurfaceColorTarget");*/
-}
-
 void PGRAPH::UnbindVertexAttributes() {
     /*for (int index = 0; index < 16; index++) {
         glDisableVertexAttribArray(index);
@@ -470,4 +437,5 @@ void PGRAPH::UnbindVertexAttributes() {
     glBindVertexArray(0);*/
 }
 
+}  // namespace rsx
 }  // namespace gpu

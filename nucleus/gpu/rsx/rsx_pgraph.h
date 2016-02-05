@@ -18,6 +18,7 @@
 #include <vector>
 
 namespace gpu {
+namespace rsx {
 
 // Forward declarations
 class RSX;
@@ -34,17 +35,38 @@ struct rsx_vp_attribute_t {
     U32 offset;            // Offset at the specified location.
 };
 
-struct rsx_surface_t {
+struct Surface {
+    enum ColorFormat : U8 {
+        FORMAT_X1R5G5B5_Z1R5G5B5  = 1,
+        FORMAT_X1R5G5B5_O1R5G5B5  = 2,
+        FORMAT_R5G6B5             = 3,
+        FORMAT_X8R8G8B8_Z8R8G8B8  = 4,
+        FORMAT_X8R8G8B8_O8R8G8B8  = 5,
+        FORMAT_A8R8G8B8           = 8,
+        FORMAT_B8                 = 9,
+        FORMAT_G8B8               = 10,
+        FORMAT_F_W16Z16Y16X16     = 11,
+        FORMAT_F_W32Z32Y32X32     = 12,
+        FORMAT_F_X32              = 13,
+        FORMAT_X8B8G8R8_Z8B8G8R8  = 14,
+        FORMAT_X8B8G8R8_O8B8G8R8  = 15,
+        FORMAT_A8B8G8R8           = 16,
+    };
+    enum DepthStencilFormat : U8 {
+        FORMAT_Z16    = 1,
+        FORMAT_Z24S8  = 2,
+    };
+
     bool dirty;
 
     U8 type;
     U8 antialias;
-    U8 colorFormat;
+    ColorFormat colorFormat;
     U8 colorTarget;
     U8 colorLocation[4];
     U32 colorOffset[4];
     U32 colorPitch[4];
-    U8 depthFormat;
+    DepthStencilFormat depthFormat;
     U8 depthLocation;
     U32 depthOffset;
     U32 depthPitch;
@@ -79,13 +101,10 @@ class PGRAPH {
     // Surface
     std::unordered_map<U32, gfx::ColorTarget*> colorTargets;
     std::unordered_map<U32, gfx::DepthStencilTarget*> depthStencilTargets;
-    /*GLuint framebuffer;
-    std::unordered_map<U32, GLuint> colorTargets;
-    std::unordered_map<U32, GLuint> depthTargets;*/
 
     // Auxiliary methods
     gfx::ColorTarget* getColorTarget(U32 address);
-    gfx::DepthStencilTarget* getDepthTarget(U32 address);
+    gfx::DepthStencilTarget* getDepthStencilTarget(U32 address);
 
     void setSurface();
     void setViewport();
@@ -99,19 +118,22 @@ public:
     U16 blend_sfactor_alpha;
     U16 blend_dfactor_rgb;
     U16 blend_dfactor_alpha;
+    U32 clear_color;
+    U32 clear_depth;
+    U8 clear_stencil;
     U32 semaphore_index;
     U32 vertex_data_base_offset;
     U32 vertex_data_base_index;
     U32 vertex_primitive;
 
-    rsx_surface_t surface;
+    Surface surface;
     rsx_viewport_t viewport;
 
     // DMA
     U32 dma_report;
 
     // Textures
-    rsx_texture_t texture[RSX_MAX_TEXTURES];
+    rsx_texture_t texture[rsx::RSX_MAX_TEXTURES];
 
     // Vertex Processing Engine
     struct VPE {
@@ -147,9 +169,6 @@ public:
     void AlphaFunc(U32 func, F32 ref);
     void Begin(U32 mode);
     void BindVertexAttributes();
-    void ClearColor(U8 a, U8 r, U8 g, U8 b);
-    void ClearDepth(U32 value);
-    void ClearStencil(U32 value);
     void ClearSurface(U32 mask);
     void ColorMask(bool a, bool r, bool g, bool b);
     void DepthFunc(U32 func);
@@ -157,8 +176,8 @@ public:
     void Enable(U32 prop, U32 enabled);
     void End();
     void Flip();
-    void SurfaceColorTarget(U32 target);
     void UnbindVertexAttributes();
 };
 
+}  // namespace rsx
 }  // namespace gpu

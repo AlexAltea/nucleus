@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 
 namespace gpu {
+namespace rsx {
 
 enum {
     // NV40_CHANNEL_DMA (NV406E)
@@ -310,4 +311,5 @@ enum {
     SCE_DRIVER_INTERRUPT                     = 0x0000EB00,
 };
 
+}  // namespace rsx
 }  // namespace gpu

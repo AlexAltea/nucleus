@@ -10,6 +10,7 @@
 using namespace gfx::hir;
 
 namespace gpu {
+namespace rsx {
 
 // Input register
 struct fp_input_register_t {
@@ -224,4 +225,5 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
 void RSXFragmentProgram::compile() {
 }
 
+}  // namespace rsx
 }  // namespace gpu

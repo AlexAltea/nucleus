@@ -5,7 +5,7 @@
 
 #include "lv1_gpu.h"
 #include "nucleus/emulator.h"
-#include "nucleus/gpu/rsx/rsx.h"
+#include "nucleus/gpu/list.h"
 #include "nucleus/system/lv2/sys_event.h"
 
 namespace sys {
@@ -15,7 +15,7 @@ BE<U32> eport_handlers;
 
 // LV1 Syscall 217 (0xD9)
 S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode) {
-    gpu::RSX& rsx = static_cast<gpu::RSX&>(*nucleus.gpu.get());
+    auto& rsx = static_cast<gpu::RSX&>(*nucleus.gpu.get());
 
     // HACK: We already store data in the memory on RSX initialization, mapping is not necessary
     *lpar_dma_control = 0x40100000;

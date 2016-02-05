@@ -14,6 +14,7 @@
 #include <thread>
 
 namespace gpu {
+namespace rsx {
 
 struct rsx_device_t {
 };
@@ -167,4 +168,5 @@ public:
     void method(U32 offset, U32 parameter);
 };
 
+}  // namespace rsx
 }  // namespace gpu

@@ -39,6 +39,7 @@
     index = (offset - baseOffset) / step;
 
 namespace gpu {
+namespace rsx {
 
 RSX::RSX(std::shared_ptr<mem::Memory> mem, std::shared_ptr<gfx::IBackend> graphics) :
     memory(std::move(mem)), pgraph(std::move(graphics), this, memory.get()) {
@@ -204,16 +205,12 @@ void RSX::method(U32 offset, U32 parameter) {
         break;
 
     case NV4097_SET_COLOR_CLEAR_VALUE:
-        pgraph.ClearColor(
-            (parameter >> 24) & 0xFF,
-            (parameter >> 16) & 0xFF,
-            (parameter >>  8) & 0xFF,
-            (parameter & 0xFF));
+        pgraph.clear_color = parameter;
         break;
 
     case NV4097_SET_ZSTENCIL_CLEAR_VALUE:
-        pgraph.ClearDepth(parameter >> 8);
-        pgraph.ClearStencil(parameter & 0xFF);
+        pgraph.clear_depth = parameter >> 8;
+        pgraph.clear_stencil = parameter & 0xFF;
         break;
 
     case NV4097_CLEAR_SURFACE:
@@ -226,6 +223,12 @@ void RSX::method(U32 offset, U32 parameter) {
 
     case NV4097_SET_CONTEXT_DMA_REPORT:
         pgraph.dma_report = parameter;
+        break;
+
+    case NV4097_SET_SURFACE_FORMAT:
+        pgraph.surface.dirty = true;
+        pgraph.surface.depthFormat = static_cast<Surface::DepthStencilFormat>((parameter >> 5) & 0b111);
+        pgraph.surface.colorFormat = static_cast<Surface::ColorFormat>((parameter >> 0) & 0b11111);
         break;
 
     case NV4097_SET_SURFACE_COLOR_AOFFSET:
@@ -268,7 +271,6 @@ void RSX::method(U32 offset, U32 parameter) {
     case NV4097_SET_SURFACE_COLOR_TARGET:
         pgraph.surface.dirty = true;
         pgraph.surface.colorTarget = parameter;
-        pgraph.SurfaceColorTarget(parameter);
         break;
 
     case NV4097_SET_VIEWPORT_HORIZONTAL:
@@ -499,4 +501,5 @@ U32 RSX::get_ea(U32 offset) {
     return pgraph.GetColorTarget(displayAddr);
 }*/
 
+}  // namespace rsx
 }  // namespace gpu

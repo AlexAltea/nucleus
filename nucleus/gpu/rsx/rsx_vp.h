@@ -19,6 +19,7 @@ class Shader;
 }  // namespace gfx
 
 namespace gpu {
+namespace rsx {
 
 // RSX Vertex Program opcodes
 enum {
@@ -213,4 +214,5 @@ public:
     void compile();
 };
 
+}  // namespace rsx
 }  // namespace gpu

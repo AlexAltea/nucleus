@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 
 namespace gpu {
+namespace rsx {
 
 // Properties
 enum {
@@ -23,9 +24,7 @@ enum {
     RSX_OBJECT_CAFEBABE                         = 0xCAFEBABE,
 };
 
-// RSX Constants
-enum {
-    // Primitives
+enum Primitive {
     RSX_PRIMITIVE_POINTS          = 1,
     RSX_PRIMITIVE_LINES           = 2,
     RSX_PRIMITIVE_LINE_LOOP       = 3,
@@ -36,6 +35,13 @@ enum {
     RSX_PRIMITIVE_QUADS           = 8,
     RSX_PRIMITIVE_QUAD_STRIP      = 9,
     RSX_PRIMITIVE_POLYGON         = 10,
+};
+
+// RSX Constants
+enum {
+    RSX_CLEAR_BIT_DEPTH   = 0x01,
+    RSX_CLEAR_BIT_STENCIL = 0x02,
+    RSX_CLEAR_BIT_COLOR   = 0xF0,
 
     // Vertex data type
     RSX_VERTEX_S1     = 1,
@@ -66,4 +72,5 @@ enum {
     RSX_SURFACE_TARGET_MRT3     = 0x10 | 0xF,
 };
 
+}  // namespace rsx
 }  // namespace gpu

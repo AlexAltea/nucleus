@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl" />
+    <None Include="$(MSBuildThisFileDirectory)format.inl" />
     <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.l" />
     <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y" />
   </ItemGroup>

@@ -10,6 +10,7 @@
 using namespace gfx::hir;
 
 namespace gpu {
+namespace rsx {
 
 // Output register
 struct vp_output_register_t {
@@ -216,4 +217,5 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
 void RSXVertexProgram::compile() {
 }
 
+}  // namespace rsx
 }  // namespace gpu

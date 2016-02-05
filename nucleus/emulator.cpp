@@ -10,7 +10,7 @@
 #include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/ui/ui.h"
 #include "nucleus/cpu/cell.h"
-#include "nucleus/gpu/rsx/rsx.h"
+#include "nucleus/gpu/list.h"
 #include "nucleus/filesystem/utils.h"
 #include "nucleus/loader/self.h"
 #include "nucleus/logger/logger.h"

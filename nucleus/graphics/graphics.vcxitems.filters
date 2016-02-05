@@ -187,5 +187,6 @@
     <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.l">
       <Filter>frontend\opengl</Filter>
     </None>
+    <None Include="$(MSBuildThisFileDirectory)format.inl" />
   </ItemGroup>
 </Project>

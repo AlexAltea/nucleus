@@ -9,6 +9,7 @@
 #include "nucleus/platform.h"
 #include "nucleus/compiler.h"
 #include "nucleus/endianness.h"
+#include "nucleus/target.h"
 #include "nucleus/types.h"
 
 /**
