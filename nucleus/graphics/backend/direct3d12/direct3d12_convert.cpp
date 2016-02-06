@@ -87,6 +87,8 @@ DXGI_FORMAT convertFormat(gfx::Format format) {
     case FORMAT_R32G32B32A32_FLOAT:  return DXGI_FORMAT_R32G32B32A32_FLOAT;
     case FORMAT_R8_UNORM:            return DXGI_FORMAT_R8_UNORM;
     case FORMAT_R8G8B8A8_UNORM:      return DXGI_FORMAT_R8G8B8A8_UNORM;
+    case FORMAT_D16_UNORM:           return DXGI_FORMAT_D16_UNORM;
+    case FORMAT_D24_UNORM_S8_UINT:   return DXGI_FORMAT_D24_UNORM_S8_UINT;
     default:
         assert_always("Unimplemented case");
         return DXGI_FORMAT_UNKNOWN;
@@ -163,6 +165,13 @@ D3D12_TEXTURE_ADDRESS_MODE convertTextureAddressMode(gfx::TextureAddress address
         assert_always("Unimplemented case");
         return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     }
+}
+
+D3D12_RESOURCE_FLAGS convertTextureFlags(gfx::TextureFlags flags) {
+    D3D12_RESOURCE_FLAGS d3dFlags = D3D12_RESOURCE_FLAG_NONE;
+    if (flags & TEXTURE_FLAG_COLOR_TARGET)         d3dFlags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+    if (flags & TEXTURE_FLAG_DEPTHSTENCIL_TARGET)  d3dFlags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+    return d3dFlags;
 }
 
 }  // namespace direct3d12

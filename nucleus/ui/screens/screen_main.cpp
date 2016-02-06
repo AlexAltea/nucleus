@@ -21,17 +21,35 @@ ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
     header->style.background = Color{0.282f, 0.282f, 0.500f, 1.0f};
 
     auto* content = new WidgetContainer(&body, "content");
-    content->layout == WidgetContainer::LAYOUT_HORIZONTAL;
+    content->layout = WidgetContainer::LAYOUT_HORIZONTAL;
+    content->style.background = Color{0.882f, 0.882f, 0.100f, 1.0f};
 
     auto* home = new WidgetContainer(content, "home");
-    home->layout == WidgetContainer::LAYOUT_HORIZONTAL;
-    home->style.alignH == ALIGN_HORIZONTAL_CENTER;
+    home->layout = WidgetContainer::LAYOUT_VERTICAL;
+    home->style.width = 100_pct;
+    home->style.alignH = ALIGN_HORIZONTAL_CENTER;
 
     auto* current = new WidgetContainer(home, "current");
-    current->layout == WidgetContainer::LAYOUT_VERTICAL;
+    current->layout = WidgetContainer::LAYOUT_VERTICAL;
+    current->style.width = 30_pct;
     auto* currentHeader = new WidgetText(current);
-    currentHeader->update(lightFont, 80_px, "Current");
+    currentHeader->update(lightFont, 60_px, "Current");
     currentHeader->style.color = Color{1,1,1,1};
+
+    auto* recent = new WidgetContainer(home, "recent");
+    recent->layout = WidgetContainer::LAYOUT_VERTICAL;
+    recent->style.width = 30_pct;
+    auto* recentHeader = new WidgetText(recent);
+    recentHeader->update(lightFont, 60_px, "Recent");
+    recentHeader->style.color = Color{1,1,1,1};
+
+    auto* platforms = new WidgetContainer(home, "platforms");
+    platforms->layout = WidgetContainer::LAYOUT_VERTICAL;
+    platforms->style.width = 30_pct;
+    auto* platformsHeader = new WidgetText(platforms);
+    platformsHeader->update(lightFont, 60_px, "Platforms");
+    platformsHeader->style.color = Color{1,1,1,1};
+
 
 
     // content->home (@from=header)

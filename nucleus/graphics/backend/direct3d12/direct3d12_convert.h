@@ -25,6 +25,7 @@ D3D12_LOGIC_OP convertLogicOp(gfx::LogicOp logicOp);
 D3D12_PRIMITIVE_TOPOLOGY_TYPE convertPrimitiveTopologyType(gfx::PrimitiveTopology primitiveTopology);
 D3D12_RESOURCE_STATES convertResourceState(gfx::ResourceState resourceState);
 D3D12_TEXTURE_ADDRESS_MODE convertTextureAddressMode(gfx::TextureAddress address);
+D3D12_RESOURCE_FLAGS convertTextureFlags(gfx::TextureFlags flags);
 
 }  // namespace direct3d12
 }  // namespace gfx

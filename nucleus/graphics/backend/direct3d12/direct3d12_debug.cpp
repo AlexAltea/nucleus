@@ -142,6 +142,11 @@ void Direct3D12Debug::printMessages() {
         std::vector<byte> buffer(msgSize);
         auto* msg = reinterpret_cast<D3D12_MESSAGE*>(buffer.data());
         hr = d3dInfoQueue->GetMessage(i, msg, &msgSize);
+
+        if (msg->ID == 820 || // TODO: SRV resource should be cleared on creation, but CreateCommittedResource resource fails if we do.
+            msg->ID == 821) { // TODO: DSV resource should be cleared on creation, but CreateCommittedResource resource fails if we do.
+            continue;
+        }
         print(msg);
     }
     d3dInfoQueue->ClearStoredMessages();

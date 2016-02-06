@@ -13,11 +13,13 @@ namespace direct3d12 {
 
 class Direct3D12ColorTarget : public ColorTarget {
 public:
+    ID3D12DescriptorHeap* rtvHeap;
     D3D12_CPU_DESCRIPTOR_HANDLE handle;
 };
 
 class Direct3D12DepthStencilTarget : public DepthStencilTarget {
 public:
+    ID3D12DescriptorHeap* dsvHeap;
     D3D12_CPU_DESCRIPTOR_HANDLE handle;
 };
 

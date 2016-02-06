@@ -208,14 +208,45 @@ ColorTarget* Direct3D12Backend::createColorTarget(Texture* texture) {
         logger.error(LOG_GRAPHICS, "Direct3D12Backend::createColorTarget: Invalid texture specified");
         return nullptr;
     }
-
     auto* target = new Direct3D12ColorTarget();
-    device->CreateRenderTargetView(d3dTexture->resource, NULL, target->handle);
+
+    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
+    rtvHeapDesc.NumDescriptors = 1;
+    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&target->rtvHeap));
+
+    D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	rtvDesc.Format = d3dTexture->resource->GetDesc().Format;
+
+    target->handle = target->rtvHeap->GetCPUDescriptorHandleForHeapStart();
+    device->CreateRenderTargetView(d3dTexture->resource, &rtvDesc, target->handle);
     return target;
 }
 
 DepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(Texture* texture) {
-    return nullptr;
+    auto d3dTexture = static_cast<Direct3D12Texture*>(texture);
+    if (!d3dTexture) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createColorTarget: Invalid texture specified");
+        return nullptr;
+    }
+    auto* target = new Direct3D12DepthStencilTarget();
+
+    D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
+    dsvHeapDesc.NumDescriptors = 1;
+    dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+    dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&target->dsvHeap));
+
+    D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	dsvDesc.Format = d3dTexture->resource->GetDesc().Format;
+    dsvDesc.Texture2D.MipSlice = 0;
+
+    target->handle = target->dsvHeap->GetCPUDescriptorHandleForHeapStart();
+    device->CreateDepthStencilView(d3dTexture->resource, &dsvDesc, target->handle);
+    return target;
 }
 
 Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {

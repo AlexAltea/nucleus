@@ -31,7 +31,7 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
     resourceDesc.Format = convertFormat(desc.format);
     resourceDesc.SampleDesc.Count = 1;
     resourceDesc.SampleDesc.Quality = 0;
-    resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+    resourceDesc.Flags = convertTextureFlags(desc.flags);
 
     HRESULT hr;
     hr = device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&resource));
@@ -39,22 +39,24 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
         logger.error(LOG_GRAPHICS, "Direct3D12Texture::Direct3D12Texture: Could not create resource (0x%X)", hr);
     }
 
-    // Create description heap
-    D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-    srvHeapDesc.NumDescriptors = 1;
-    srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-    srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    hr = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
-    if (FAILED(hr)) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Texture::Direct3D12Texture: Could not create descriptor heap (0x%X)", hr);
-    }
+    // Create SRV description heap for non-depth-stencil textures
+    if (!(desc.flags & TEXTURE_FLAG_DEPTHSTENCIL_TARGET)) {
+        D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+        srvHeapDesc.NumDescriptors = 1;
+        srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+        srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+        hr = device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+        if (FAILED(hr)) {
+            logger.error(LOG_GRAPHICS, "Direct3D12Texture::Direct3D12Texture: Could not create descriptor heap (0x%X)", hr);
+        }
 
-    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.Format = resourceDesc.Format;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-    srvDesc.Texture2D.MipLevels = 1;
-    device->CreateShaderResourceView(resource, &srvDesc, srvHeap->GetCPUDescriptorHandleForHeapStart());
+        D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        srvDesc.Format = resourceDesc.Format;
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MipLevels = 1;
+        device->CreateShaderResourceView(resource, &srvDesc, srvHeap->GetCPUDescriptorHandleForHeapStart());
+    }
 }
 
 Direct3D12Texture::~Direct3D12Texture() {

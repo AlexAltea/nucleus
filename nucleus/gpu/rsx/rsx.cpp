@@ -410,7 +410,7 @@ void RSX::method(U32 offset, U32 parameter) {
         const U32 count = (parameter >> 24) + 1;
         pgraph.LoadVertexAttributes(first, count);
         pgraph.BindVertexAttributes();
-        pgraph.DrawArrays(first, count);
+        //pgraph.DrawArrays(first, count);
         pgraph.UnbindVertexAttributes();
         break;
     }
@@ -497,8 +497,8 @@ U32 RSX::get_ea(U32 offset) {
 }
 
 gfx::Texture* RSX::getFrontBuffer() {
-    /*U32 displayAddr = display[queued_display].offset;
-    return pgraph.GetColorTarget(displayAddr);*/
+    U32 displayAddr = display[queued_display].offset;
+    //return pgraph.getColorTarget(displayAddr);
     return nullptr;
 }
 

@@ -32,10 +32,6 @@ bool Direct3D12CommandBuffer::initialize(ID3D12Device* device) {
     if (FAILED(hr)) {
         return false;
     }
-    hr = list->Close();
-    if (FAILED(hr)) {
-        return false;
-    }
     return true;
 }
 

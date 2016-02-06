@@ -15,8 +15,9 @@
 namespace gpu {
 namespace rsx {
 
-PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> graphics, RSX* rsx, mem::Memory* memory) :
-    graphics(std::move(graphics)), rsx(rsx), memory(memory), surface() {
+PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* memory) :
+    graphics(std::move(backend)), rsx(rsx), memory(memory), surface() {
+    cmdBuffer = graphics->createCommandBuffer();
 }
 
 PGRAPH::~PGRAPH() {
@@ -110,6 +111,7 @@ gfx::ColorTarget* PGRAPH::getColorTarget(U32 address) {
     desc.width = surface.width;
     desc.height = surface.height;
     desc.format = convertFormat(surface.colorFormat);
+    desc.flags = gfx::TEXTURE_FLAG_COLOR_TARGET;
     auto* texture = graphics->createTexture(desc);
 
     auto* target = graphics->createColorTarget(texture);
@@ -127,6 +129,7 @@ gfx::DepthStencilTarget* PGRAPH::getDepthStencilTarget(U32 address) {
     desc.width = surface.width;
     desc.height = surface.height;
     desc.format = convertFormat(surface.depthFormat);
+    desc.flags = gfx::TEXTURE_FLAG_DEPTHSTENCIL_TARGET;
     auto* texture = graphics->createTexture(desc);
 
     auto* target = graphics->createDepthStencilTarget(texture);
@@ -283,17 +286,15 @@ void PGRAPH::ClearSurface(U32 mask) {
     const F32 depth = clear_depth / F32(0xFFFFFF);
     const U8 stencil = clear_stencil;
 
-    auto* colorTarget = getColorTarget(surface.colorOffset[0]);
     if (mask & RSX_CLEAR_BIT_COLOR) {
+        auto* colorTarget = getColorTarget(surface.colorOffset[0]);
         cmdBuffer->cmdClearColor(colorTarget, color);
     }
 
-    auto* depthTarget = getDepthStencilTarget(surface.depthOffset);
     if (mask & (RSX_CLEAR_BIT_DEPTH | RSX_CLEAR_BIT_STENCIL)) {
+        // TODO: Depth-exclusive or stencil-exclusive clears are unimplemented
+        auto* depthTarget = getDepthStencilTarget(surface.depthOffset);
         cmdBuffer->cmdClearDepthStencil(depthTarget, depth, stencil);
-    } else {
-        assert_true((mask & RSX_CLEAR_BIT_DEPTH) == 0, "Unimplemented depth-exclusive clear");
-        assert_true((mask & RSX_CLEAR_BIT_STENCIL) == 0, "Unimplemented depth-exclusive clear");
     }
 }
 

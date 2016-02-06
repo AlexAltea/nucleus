@@ -41,7 +41,9 @@ enum TextureAddress {
 };
 
 enum TextureFlags {
-    TEXTURE_FLAGS_NONE = 0,
+    TEXTURE_FLAG_NONE = 0,
+    TEXTURE_FLAG_COLOR_TARGET         = (1 << 0),
+    TEXTURE_FLAG_DEPTHSTENCIL_TARGET  = (1 << 1),
 };
 
 struct Sampler {

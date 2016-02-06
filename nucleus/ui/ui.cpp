@@ -51,8 +51,6 @@ void UI::task() {
         const gfx::Viewport viewport = { 0, 0, surface.getWidth(), surface.getHeight() };
         const gfx::Rectangle scissor = { 0, 0, surface.getWidth(), surface.getHeight() };
 
-        cmdBuffer->reset();
-
         gfx::ResourceBarrier barrierBegin;
         barrierBegin.transition.resource = graphics->screenBackBuffer;
         barrierBegin.transition.before = gfx::RESOURCE_STATE_PRESENT;
@@ -100,6 +98,7 @@ void UI::task() {
         fence->wait();
 
         graphics->doSwapBuffers();
+        cmdBuffer->reset();
     }
 }
 
@@ -112,6 +111,8 @@ void UI::clearVtxBuffers() {
     dataContainers.clear();
     dataImages.clear();
     dataText.clear();
+    textureImages.clear();
+    textureText.clear();
 }
 
 void UI::renderContainers() {
