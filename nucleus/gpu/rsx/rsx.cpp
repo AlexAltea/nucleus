@@ -498,8 +498,7 @@ U32 RSX::get_ea(U32 offset) {
 
 gfx::Texture* RSX::getFrontBuffer() {
     U32 displayAddr = display[queued_display].offset;
-    //return pgraph.getColorTarget(displayAddr);
-    return nullptr;
+    return pgraph.getTexture(displayAddr);
 }
 
 }  // namespace rsx

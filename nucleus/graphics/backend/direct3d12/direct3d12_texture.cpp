@@ -33,8 +33,24 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
     resourceDesc.SampleDesc.Quality = 0;
     resourceDesc.Flags = convertTextureFlags(desc.flags);
 
+    D3D12_CLEAR_VALUE clearValue = {};
+    D3D12_CLEAR_VALUE* clearValuePtr = nullptr;
+    D3D12_RESOURCE_STATES resourceState;
+    if (desc.data) {
+        resourceState = D3D12_RESOURCE_STATE_COPY_DEST;
+    } else {
+        clearValuePtr = &clearValue;
+        clearValue.Format = resourceDesc.Format;
+        if (desc.flags & TEXTURE_FLAG_COLOR_TARGET) {
+            resourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
+        }
+        if (desc.flags & TEXTURE_FLAG_DEPTHSTENCIL_TARGET) {
+            resourceState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+        }
+    }
+
     HRESULT hr;
-    hr = device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&resource));
+    hr = device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, resourceState, clearValuePtr, IID_PPV_ARGS(&resource));
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12Texture::Direct3D12Texture: Could not create resource (0x%X)", hr);
     }

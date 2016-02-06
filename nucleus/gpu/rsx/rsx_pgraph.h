@@ -98,6 +98,7 @@ class PGRAPH {
     std::unordered_map<U64, RSXFragmentProgram> cacheFP;
 
     // Surface
+    std::unordered_map<U32, gfx::Texture*> textures;
     std::unordered_map<U32, gfx::ColorTarget*> colorTargets;
     std::unordered_map<U32, gfx::DepthStencilTarget*> depthStencilTargets;
 
@@ -161,6 +162,7 @@ public:
     U64 HashFragmentProgram(rsx_fp_instruction_t* program);
 
     // Auxiliary methods
+    gfx::Texture* getTexture(U32 address);
     void LoadVertexAttributes(U32 first, U32 count);
     //virtual GLuint GetColorTarget(U32 address);
 

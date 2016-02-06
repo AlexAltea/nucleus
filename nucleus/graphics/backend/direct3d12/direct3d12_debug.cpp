@@ -33,6 +33,19 @@ bool Direct3D12Debug::initialize(ID3D12Device* device) {
     hr = _DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebugController));
     hr = _DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiInfoQueue));
 #endif
+
+    // Filter warnings
+    D3D12_MESSAGE_ID disabledIDs[] = {
+        D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE, // TODO: Implement optimized RTV clears (and remove filter?)
+        D3D12_MESSAGE_ID_CLEARDEPTHSTENCILVIEW_MISMATCHINGCLEARVALUE, // TODO: Implement optimized DSV clears (and remove filter?)
+    };
+    D3D12_INFO_QUEUE_FILTER filter = {};
+    filter.DenyList.NumIDs = 2;
+    filter.DenyList.pIDList = disabledIDs;
+    hr = d3dInfoQueue->AddStorageFilterEntries(&filter);
+    if (FAILED(hr)) {
+        logger.warning(LOG_GRAPHICS, "Could not set the filters of the Direct3D12 info queue");
+    }
     return true;
 }
 
@@ -142,11 +155,6 @@ void Direct3D12Debug::printMessages() {
         std::vector<byte> buffer(msgSize);
         auto* msg = reinterpret_cast<D3D12_MESSAGE*>(buffer.data());
         hr = d3dInfoQueue->GetMessage(i, msg, &msgSize);
-
-        if (msg->ID == 820 || // TODO: SRV resource should be cleared on creation, but CreateCommittedResource resource fails if we do.
-            msg->ID == 821) { // TODO: DSV resource should be cleared on creation, but CreateCommittedResource resource fails if we do.
-            continue;
-        }
         print(msg);
     }
     d3dInfoQueue->ClearStoredMessages();

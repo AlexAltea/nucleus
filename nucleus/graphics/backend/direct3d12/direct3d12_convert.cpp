@@ -148,6 +148,7 @@ D3D12_RESOURCE_STATES convertResourceState(gfx::ResourceState resourceState) {
     switch (resourceState) {
     case RESOURCE_STATE_PRESENT:       return D3D12_RESOURCE_STATE_PRESENT;
     case RESOURCE_STATE_COLOR_TARGET:  return D3D12_RESOURCE_STATE_RENDER_TARGET;
+    case RESOURCE_STATE_GENERIC_READ:  return D3D12_RESOURCE_STATE_GENERIC_READ;
     default:
         assert_always("Unimplemented case");
         return D3D12_RESOURCE_STATE_COMMON;

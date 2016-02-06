@@ -14,7 +14,8 @@ class Resource;
 
 enum ResourceState {
     RESOURCE_STATE_PRESENT = 0,
-    RESOURCE_STATE_COLOR_TARGET = (1 << 0),
+    RESOURCE_STATE_COLOR_TARGET  = (1 << 0),
+    RESOURCE_STATE_GENERIC_READ  = (1 << 1),
 };
 
 struct ResourceBarrier {

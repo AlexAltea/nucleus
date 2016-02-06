@@ -101,6 +101,14 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
     }
 }
 
+gfx::Texture* PGRAPH::getTexture(U32 address) {
+    if (textures.find(address) != textures.end()) {
+        return textures[address];
+    } else {
+        return nullptr;
+    }
+}
+
 gfx::ColorTarget* PGRAPH::getColorTarget(U32 address) {
     if (colorTargets.find(address) != colorTargets.end()) {
         return colorTargets[address];
@@ -113,6 +121,7 @@ gfx::ColorTarget* PGRAPH::getColorTarget(U32 address) {
     desc.format = convertFormat(surface.colorFormat);
     desc.flags = gfx::TEXTURE_FLAG_COLOR_TARGET;
     auto* texture = graphics->createTexture(desc);
+    textures[address] = texture;
 
     auto* target = graphics->createColorTarget(texture);
     colorTargets[address] = target;
@@ -131,6 +140,7 @@ gfx::DepthStencilTarget* PGRAPH::getDepthStencilTarget(U32 address) {
     desc.format = convertFormat(surface.depthFormat);
     desc.flags = gfx::TEXTURE_FLAG_DEPTHSTENCIL_TARGET;
     auto* texture = graphics->createTexture(desc);
+    textures[address] = texture;
 
     auto* target = graphics->createDepthStencilTarget(texture);
     depthStencilTargets[address] = target;

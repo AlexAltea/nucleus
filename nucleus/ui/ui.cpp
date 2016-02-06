@@ -160,9 +160,24 @@ void UI::renderImages() {
     cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
     gfx::Texture* texture = nullptr;
     for (size_t i = 0; i < dataImages.size(); i++) {
+        static bool isColorTarget = false;
+        if (isColorTarget) {
+            gfx::ResourceBarrier barrierBegin;
+            barrierBegin.transition.resource = graphics->screenBackBuffer;
+            barrierBegin.transition.before = gfx::RESOURCE_STATE_COLOR_TARGET;
+            barrierBegin.transition.after = gfx::RESOURCE_STATE_GENERIC_READ;
+            cmdBuffer->cmdResourceBarrier(1, &barrierBegin);
+        }
         if (texture != textureImages[i]) {
             texture = textureImages[i];
             cmdBuffer->cmdSetTexture(0, texture);
+        }
+        if (isColorTarget) {
+            gfx::ResourceBarrier barrierBegin;
+            barrierBegin.transition.resource = graphics->screenBackBuffer;
+            barrierBegin.transition.before = gfx::RESOURCE_STATE_GENERIC_READ;
+            barrierBegin.transition.after = gfx::RESOURCE_STATE_COLOR_TARGET;
+            cmdBuffer->cmdResourceBarrier(1, &barrierBegin);
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
     }
