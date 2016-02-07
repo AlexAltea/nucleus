@@ -217,8 +217,8 @@ ColorTarget* Direct3D12Backend::createColorTarget(Texture* texture) {
     device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&target->rtvHeap));
 
     D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	rtvDesc.Format = d3dTexture->resource->GetDesc().Format;
+    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+    rtvDesc.Format = d3dTexture->resource->GetDesc().Format;
 
     target->handle = target->rtvHeap->GetCPUDescriptorHandleForHeapStart();
     device->CreateRenderTargetView(d3dTexture->resource, &rtvDesc, target->handle);
@@ -240,8 +240,8 @@ DepthStencilTarget* Direct3D12Backend::createDepthStencilTarget(Texture* texture
     device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&target->dsvHeap));
 
     D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	dsvDesc.Format = d3dTexture->resource->GetDesc().Format;
+    dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+    dsvDesc.Format = d3dTexture->resource->GetDesc().Format;
     dsvDesc.Texture2D.MipSlice = 0;
 
     target->handle = target->dsvHeap->GetCPUDescriptorHandleForHeapStart();

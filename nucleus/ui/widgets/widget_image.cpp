@@ -176,7 +176,7 @@ void WidgetImage::render() {
         cV1.background = Color{0,0,0,1};
         cV2.background = Color{0,0,0,1};
         cV3.background = Color{0,0,0,1};
-        
+
         manager->pushWidgetContainer(containerInput);
     }
 }

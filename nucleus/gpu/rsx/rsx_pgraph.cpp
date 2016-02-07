@@ -150,7 +150,7 @@ gfx::DepthStencilTarget* PGRAPH::getDepthStencilTarget(U32 address) {
 void PGRAPH::setSurface() {
     if (!surface.dirty) {
         return;
-    }    
+    }
     Size colorCount = 0;
     gfx::ColorTarget* colors[4];
     gfx::DepthStencilTarget* depth = getDepthStencilTarget(surface.depthOffset);

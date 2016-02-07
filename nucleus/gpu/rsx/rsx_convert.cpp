@@ -53,7 +53,7 @@ gfx::Format convertFormat(Surface::ColorFormat format) {
     case Surface::FORMAT_F_W32Z32Y32X32:  return gfx::FORMAT_R32G32B32A32_FLOAT;
     case Surface::FORMAT_F_X32:           return gfx::FORMAT_R32_FLOAT;
     case Surface::FORMAT_A8B8G8R8:        return gfx::FORMAT_R8G8B8A8_UNORM;
-    
+
     case Surface::FORMAT_X1R5G5B5_Z1R5G5B5:
     case Surface::FORMAT_X1R5G5B5_O1R5G5B5:
     case Surface::FORMAT_X8R8G8B8_Z8R8G8B8:
