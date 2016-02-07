@@ -13,6 +13,9 @@
 namespace gfx {
 namespace direct3d12 {
 
+Direct3D12Texture::Direct3D12Texture(ID3D12Resource* resource) :
+    Direct3D12Resource(resource) {}
+
 Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& desc) {
     // Create texture
     D3D12_HEAP_PROPERTIES heapProperties = {};

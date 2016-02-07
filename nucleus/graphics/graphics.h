@@ -52,8 +52,8 @@ protected:
     BackendParameters parameters;
 
 public:
-    Resource* screenBackBuffer;
-    Resource* screenFrontBuffer;
+    Texture* screenBackBuffer;
+    Texture* screenFrontBuffer;
     ColorTarget* screenBackTarget;
     ColorTarget* screenFrontTarget;
 

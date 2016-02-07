@@ -135,13 +135,13 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     if (swapChain->GetCurrentBackBufferIndex() == 0) {
         screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
         screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
-        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
-        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
+        screenBackBuffer = new Direct3D12Texture(swapChainRenderBuffer[0]);
+        screenFrontBuffer = new Direct3D12Texture(swapChainRenderBuffer[1]);
     } else {
         screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
         screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
-        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
-        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
+        screenBackBuffer = new Direct3D12Texture(swapChainRenderBuffer[1]);
+        screenFrontBuffer = new Direct3D12Texture(swapChainRenderBuffer[0]);
     }
 
     return true;
@@ -442,13 +442,13 @@ bool Direct3D12Backend::doResizeBuffers(int width, int height) {
     if (swapChain->GetCurrentBackBufferIndex() == 0) {
         screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
         screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
-        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
-        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
+        screenBackBuffer = new Direct3D12Texture(swapChainRenderBuffer[0]);
+        screenFrontBuffer = new Direct3D12Texture(swapChainRenderBuffer[1]);
     } else {
         screenBackTarget = new Direct3D12ColorTarget(swapChainColorTargets[1]);
         screenFrontTarget = new Direct3D12ColorTarget(swapChainColorTargets[0]);
-        screenBackBuffer = new Direct3D12Resource(swapChainRenderBuffer[1]);
-        screenFrontBuffer = new Direct3D12Resource(swapChainRenderBuffer[0]);
+        screenBackBuffer = new Direct3D12Texture(swapChainRenderBuffer[1]);
+        screenFrontBuffer = new Direct3D12Texture(swapChainRenderBuffer[0]);
     }
     return true;
 }

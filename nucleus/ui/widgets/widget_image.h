@@ -26,6 +26,8 @@ private:
     int imComponents;
 
 public:
+    bool isColorTarget = false;
+
     WidgetImage() {}
     WidgetImage(const std::string& id) : Widget(id) {}
     WidgetImage(Widget* parent, const std::string& id = "") : Widget(parent, id) {}

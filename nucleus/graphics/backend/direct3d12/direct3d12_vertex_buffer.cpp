@@ -40,20 +40,5 @@ Direct3D12VertexBuffer::~Direct3D12VertexBuffer() {
     resource->Release();
 }
 
-void* Direct3D12VertexBuffer::map() {
-    void* address = nullptr;
-    D3D12_RANGE readRange = {};
-    readRange.Begin = 0;
-    readRange.End = 0;
-
-    resource->Map(0, &readRange, &address);
-    return address;
-}
-
-bool Direct3D12VertexBuffer::unmap() {
-    resource->Unmap(0, nullptr);
-    return true;
-}
-
 }  // namespace direct3d12
 }  // namespace gfx

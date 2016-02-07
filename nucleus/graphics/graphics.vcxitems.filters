@@ -83,6 +83,9 @@
       <Filter>backend\direct3d12</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)format.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_resource.cpp">
+      <Filter>backend\direct3d12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">

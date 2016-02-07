@@ -15,6 +15,7 @@ ScreenEmulator::ScreenEmulator(UI* manager) : Screen(manager) {
     //body.style.background = Color{0,0,0,1};
 
     app = new WidgetImage("app");
+    app->isColorTarget = true;
     app->manager = manager;
     app->style.width = 90_pct;
     app->style.height = 90_pct;

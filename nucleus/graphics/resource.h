@@ -27,6 +27,18 @@ struct ResourceBarrier {
 };
 
 class Resource {
+public:
+    /**
+     * Map this resource into the user address space
+     * @return  Address where this resource was mapped into
+     */
+    virtual void* map() = 0;
+
+    /**
+     * Release the mapping of this resource from the user address space
+     * @return  True on success
+     */
+    virtual bool unmap() = 0;
 };
 
 }  // namespace gfx

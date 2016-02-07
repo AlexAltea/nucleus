@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/graphics/format.h"
 
 namespace gfx {
 
@@ -13,21 +14,9 @@ struct VertexBufferDesc {
     U64 size;
 };
 
-class VertexBuffer {
+class VertexBuffer : public virtual Resource {
 public:
     virtual ~VertexBuffer() = default;
-
-    /**
-     * Map this buffer into the user address space
-     * @return  Address where this vertex buffer was mapped into
-     */
-    virtual void* map() = 0;
-
-    /**
-     * Release the mapping of this buffer from the user address space
-     * @return  True on success
-     */
-    virtual bool unmap() = 0;
 };
 
 }  // namespace gfx

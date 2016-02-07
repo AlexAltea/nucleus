@@ -163,15 +163,16 @@ void UI::renderImages() {
         static bool isColorTarget = false;
         if (isColorTarget) {
             gfx::ResourceBarrier barrierBegin;
-            barrierBegin.transition.resource = graphics->screenBackBuffer;
+            barrierBegin.transition.resource = textureImages[i].first;
             barrierBegin.transition.before = gfx::RESOURCE_STATE_COLOR_TARGET;
             barrierBegin.transition.after = gfx::RESOURCE_STATE_GENERIC_READ;
             cmdBuffer->cmdResourceBarrier(1, &barrierBegin);
         }
-        if (texture != textureImages[i]) {
-            texture = textureImages[i];
+        if (texture != textureImages[i].first) {
+            texture = textureImages[i].first;
             cmdBuffer->cmdSetTexture(0, texture);
         }
+        cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
         if (isColorTarget) {
             gfx::ResourceBarrier barrierBegin;
             barrierBegin.transition.resource = graphics->screenBackBuffer;
@@ -179,7 +180,6 @@ void UI::renderImages() {
             barrierBegin.transition.after = gfx::RESOURCE_STATE_COLOR_TARGET;
             cmdBuffer->cmdResourceBarrier(1, &barrierBegin);
         }
-        cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
     }
 }
 
@@ -204,8 +204,8 @@ void UI::renderText() {
     cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
     gfx::Texture* texture = nullptr;
     for (size_t i = 0; i < dataText.size(); i++) {
-        if (texture != textureText[i]) {
-            texture = textureText[i];
+        if (texture != textureText[i].first) {
+            texture = textureText[i].first;
             cmdBuffer->cmdSetTexture(0, texture);
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
@@ -215,13 +215,13 @@ void UI::renderText() {
 void UI::pushWidgetContainer(const WidgetContainerInput& input) {
     dataContainers.push_back(input);
 }
-void UI::pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture) {
+void UI::pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture, bool isColorTarget) {
     dataImages.push_back(input);
-    textureImages.push_back(texture);
+    textureImages.push_back({texture, isColorTarget});
 }
 void UI::pushWidgetText(const WidgetTextInput& input, gfx::Texture* texture) {
     dataText.push_back(input);
-    textureText.push_back(texture);
+    textureText.push_back({texture, false});
 }
 
 }  // namespace ui

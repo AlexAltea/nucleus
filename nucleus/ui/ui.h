@@ -67,8 +67,8 @@ public:
     std::vector<WidgetContainerInput> dataContainers;
     std::vector<WidgetImageInput> dataImages;
     std::vector<WidgetTextInput> dataText;
-    std::vector<gfx::Texture*> textureImages;
-    std::vector<gfx::Texture*> textureText;
+    std::vector<std::pair<gfx::Texture*, bool>> textureImages;
+    std::vector<std::pair<gfx::Texture*, bool>> textureText;
 
     // Vertex buffers
     std::unique_ptr<gfx::VertexBuffer> vtxBufferContainers;
@@ -91,10 +91,11 @@ public:
 
     /**
      * Pushes a new WidgetImage input data to the buffer
-     * @param[in]  input    WidgetImage vertex data
-     * @param[in]  texture  WidgetImage texture
+     * @param[in]  input          WidgetImage vertex data
+     * @param[in]  texture        WidgetImage texture
+     * @param[in]  isColorTarget  True if the specified texture is a color target
      */
-    void pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture);
+    void pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture, bool isColorTarget);
 
     /**
      * Pushes a new WidgetText input data to the buffer

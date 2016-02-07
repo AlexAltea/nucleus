@@ -157,7 +157,7 @@ void WidgetImage::render() {
 
     if (texture) {
         // Render texture if possible
-        manager->pushWidgetImage(input, texture);
+        manager->pushWidgetImage(input, texture, isColorTarget);
     } else {
         // Otherwise placeholder container
         WidgetContainerInput containerInput;

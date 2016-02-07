@@ -11,12 +11,15 @@
 namespace gfx {
 namespace direct3d12 {
 
-class Direct3D12Resource : public Resource {
+class Direct3D12Resource : public virtual Resource {
 public:
-    ID3D12Resource* handle;
+    ID3D12Resource* resource;
 
-    Direct3D12Resource(ID3D12Resource* handle) : handle(handle) {
-    }
+    Direct3D12Resource() : resource(nullptr) {}
+    Direct3D12Resource(ID3D12Resource* resource) : resource(resource) {};
+
+    virtual void* map() override;
+    virtual bool unmap() override;
 };
 
 }  // namespace direct3d12
