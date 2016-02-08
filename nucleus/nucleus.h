@@ -34,3 +34,9 @@ void nucleusOnMouseDoubleClick(int x, int y);
 void nucleusOnMouseMove(int x, int y);
 void nucleusOnKeyDown(int keycode);
 void nucleusOnKeyUp(int keycode);
+
+// Drag-and-Drop events
+void nucleusOnDragEnter();
+void nucleusOnDragOver();
+void nucleusOnDragLeave();
+void nucleusOnDrop();

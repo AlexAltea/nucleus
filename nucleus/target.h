@@ -14,6 +14,9 @@
 #if defined(_NUCLEUS_TARGET_ALL) || defined(_NUCLEUS_TARGET_PS4)
 #define NUCLEUS_TARGET_PS4
 #endif
+#if defined(_NUCLEUS_TARGET_ALL) || defined(_NUCLEUS_TARGET_PSP)
+#define NUCLEUS_TARGET_PSP
+#endif
 #if defined(_NUCLEUS_TARGET_ALL) || defined(_NUCLEUS_TARGET_PSVITA)
 #define NUCLEUS_TARGET_PSVITA
 #endif
@@ -23,6 +26,7 @@ namespace core {
 enum Target {
     TARGET_PS3,
     TARGET_PS4,
+    TARGET_PSP,
     TARGET_PSVITA,
 };
 

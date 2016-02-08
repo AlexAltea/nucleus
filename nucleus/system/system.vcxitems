@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)callback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)common\scei\pkg.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lv1.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lv1\lv1_gpu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)lv2.h" />
@@ -47,6 +48,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)system.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)common\scei\pkg.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv1\lv1_gpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_cond.cpp" />

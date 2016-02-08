@@ -11,6 +11,7 @@
 
 class Window {
 private:
+    IDropTarget* dropTarget;
     std::string title;
     int width;
     int height;
@@ -20,6 +21,7 @@ public:
     HDC hdc;
 
     Window(const std::string& title, int width, int height);
+    ~Window();
 
     void loop();
 };

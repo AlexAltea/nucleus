@@ -5,6 +5,7 @@
 
 #include "window.h"
 #include "resource.h"
+#include "drop_target.h"
 
 // Nucleus
 #include "nucleus/nucleus.h"
@@ -102,12 +103,23 @@ Window::Window(const std::string& title, int width, int height) :
     ShowWindow(hwnd, SW_SHOWNORMAL);
     UpdateWindow(hwnd);
 
+    // Drag-and-Drop support
+    OleInitialize(NULL);
+    dropTarget = new DropTarget();
+    HRESULT hr = RegisterDragDrop(hwnd, dropTarget);
+    if (FAILED(hr)) {
+        MessageBox(hwnd, "Failed to register drag-and-drop events", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+    }
+
     // Get device context
     hdc = GetDC(hwnd);
     if (!hdc) {
         MessageBox(hwnd, "Failed to get a device context", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return;
     }
+}
+
+Window::~Window() {
+    delete dropTarget;
 }
 
 void Window::loop() {

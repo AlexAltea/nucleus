@@ -3,10 +3,12 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="window.cpp" />
+    <ClCompile Include="drop_target.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="drop_target.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="nucleus-windows.rc" />

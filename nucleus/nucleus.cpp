@@ -93,3 +93,13 @@ void nucleusOnKeyDown(int keycode) {
 
 void nucleusOnKeyUp(int keycode) {
 }
+
+// Drag-and-Drop events
+void nucleusOnDragEnter() {
+}
+void nucleusOnDragOver() {
+}
+void nucleusOnDragLeave() {
+}
+void nucleusOnDrop() {
+}

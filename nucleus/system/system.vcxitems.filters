@@ -10,6 +10,12 @@
     <Filter Include="modules">
       <UniqueIdentifier>{c38224e4-da9c-48b2-9354-1170605406c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{7b707aea-d370-492e-aeb6-779b89123d5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\scei">
+      <UniqueIdentifier>{71c18430-66f5-46f4-9a31-a6cc5a563ea0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)callback.h" />
@@ -91,6 +97,9 @@
       <Filter>modules</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)module.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)common\scei\pkg.h">
+      <Filter>common\scei</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2.cpp" />
@@ -164,5 +173,8 @@
       <Filter>modules</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)module.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)common\scei\pkg.cpp">
+      <Filter>common\scei</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

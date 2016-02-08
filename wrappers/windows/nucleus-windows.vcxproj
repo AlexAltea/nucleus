@@ -94,10 +94,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="drop_target.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="drop_target.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
