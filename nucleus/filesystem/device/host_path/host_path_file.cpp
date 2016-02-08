@@ -4,6 +4,7 @@
  */
 
 #include "host_path_file.h"
+#include "nucleus/assert.h"
 
 #if defined(NUCLEUS_COMPILER_MSVC)
 #define fseeko64 _fseeki64
@@ -13,8 +14,7 @@
 namespace fs {
 
 // Transform Nucleus filesystem open mode into POSIX open mode
-const char* getOpenMode(OpenMode mode)
-{
+const char* getOpenMode(OpenMode mode) {
     switch (mode) {
     case Read:
         return "rb";
@@ -22,14 +22,14 @@ const char* getOpenMode(OpenMode mode)
         return "wb";
     case ReadWrite:
         return "r+b";
+    default:
+        assert_always("Unexpected");
+        return "r";
     }
-
-    return "r";
 }
 
 // Transform Nucleus filesystem seek mode into POSIX seek mode
-const int getSeekMode(SeekMode mode)
-{
+const int getSeekMode(SeekMode mode) {
     switch (mode) {
     case SeekSet:
         return SEEK_SET;
@@ -37,13 +37,13 @@ const int getSeekMode(SeekMode mode)
         return SEEK_CUR;
     case SeekEnd:
         return SEEK_END;
+    default:
+        assert_always("Unexpected");
+        return SEEK_SET;
     }
-
-    return SEEK_SET;
 }
 
-HostPathFile::HostPathFile(const Path& path, OpenMode mode)
-{
+HostPathFile::HostPathFile(const Path& path, OpenMode mode) {
 #if defined(NUCLEUS_COMPILER_MSVC)
     fopen_s(&handle, path.c_str(), getOpenMode(mode));
 #else
@@ -51,33 +51,27 @@ HostPathFile::HostPathFile(const Path& path, OpenMode mode)
 #endif
 }
 
-HostPathFile::~HostPathFile()
-{
+HostPathFile::~HostPathFile() {
     std::fclose(handle);
 }
 
-Size HostPathFile::read(void* dst, Size size)
-{
+Size HostPathFile::read(void* dst, Size size) {
     return std::fread(dst, 1, size, handle);
 }
 
-Size HostPathFile::write(const void* src, Size size)
-{
+Size HostPathFile::write(const void* src, Size size) {
     return std::fwrite(src, 1, size, handle);
 }
 
-Position HostPathFile::seek(Position pos, SeekMode mode)
-{
+Position HostPathFile::seek(Position pos, SeekMode mode) {
     return fseeko64(handle, pos, getSeekMode(mode));
 }
 
-Position HostPathFile::tell()
-{
+Position HostPathFile::tell() {
     return ftello64(handle);
 }
 
-File::Attributes HostPathFile::attributes()
-{
+File::Attributes HostPathFile::attributes() {
     // TODO
     File::Attributes attr;
     attr.timestamp_access = 0;
@@ -93,8 +87,7 @@ File::Attributes HostPathFile::attributes()
     return attr;
 }
 
-bool HostPathFile::isOpen()
-{
+bool HostPathFile::isOpen() {
     return handle != nullptr;
 }
 

@@ -12,9 +12,10 @@ The PlayStation 3 GPU is the *Reality Synthesizer* (**RSX**), designed by Sony a
 
 Shared by all RSX contexts.
 
-| ID | Size   | Description | Usage       |
-|----|--------|-------------|-------------|
-|  8 | 0x1000 | Video RAM   | cellGcmInit |
+| ID | Size   | Name    | Description    | Usage       |
+|----|--------|---------|----------------|-------------|
+|  1 | *???*  | *???*   | Audio          | *???*       |
+|  8 | 0x1000 | *???*   | Video RAM      | cellGcmInit |
 
 ## Memory
 

@@ -21,6 +21,29 @@ namespace opengl {
 
 thread_local OpenGLContext gCurrentContext = 0;
 
+#if defined(GRAPHICS_OPENGL_API_WGL)
+static const PIXELFORMATDESCRIPTOR pixelFormatDesc = {
+    sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
+    1,                              // Version
+    PFD_DRAW_TO_WINDOW |            // Format must support Window
+    PFD_SUPPORT_OPENGL |            // Format must support OpenGL
+    PFD_DOUBLEBUFFER,               // Format must support double buffering
+    PFD_TYPE_RGBA,                  // Request an RGBA format
+    24,                             // Select our color depth
+    0, 0, 0, 0, 0, 0,               // Color bits ignored
+    8,                              // No alpha buffer
+    0,                              // Shift bit ignored
+    0,                              // No accumulation Buffer
+    0, 0, 0, 0,                     // Accumulation bits Ignored
+    16,                             // At least a 16-bit Z-buffer (depth buffer)
+    8,                              // 8-bit stencil buffer
+    0,                              // No auxiliary buffer
+    PFD_MAIN_PLANE,                 // Main drawing layer
+    0,                              // Reserved
+    0, 0, 0                         // Layer masks ignored
+};
+#endif
+
 OpenGLBackend::OpenGLBackend() : IBackend() {
 }
 
@@ -57,6 +80,16 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
     parameters = params;
 
 #if defined(GRAPHICS_OPENGL_API_WGL)
+    // Setting up pixel format
+    int pixelFormat = ChoosePixelFormat(params.hdc, &pixelFormatDesc);
+    if (!pixelFormat) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not find a suitable PixelFormat");
+        return;
+    }
+    if (!SetPixelFormat(params.hdc, pixelFormat, &pixelFormatDesc)) {
+        logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not set the PixelFormat");
+        return;
+    }
     // Retrieving OpenGL extension pointers requires in Windows owning a context
     HGLRC dummyRc = wglCreateContext(params.hdc);
     wglMakeCurrent(params.hdc, dummyRc);

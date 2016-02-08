@@ -5,13 +5,13 @@
 
 #include "window.h"
 
-#include "nucleus/core/config.h"
+// Nucleus
 #include "nucleus/nucleus.h"
+#include "nucleus/core/config.h"
 
 #include <thread>
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     // Load configuration
     nucleusConfigure(argc, argv);
 

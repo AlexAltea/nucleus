@@ -6,30 +6,10 @@
 #include "window.h"
 #include "resource.h"
 
+// Nucleus
 #include "nucleus/nucleus.h"
 
 #include <Windowsx.h>
-
-static const PIXELFORMATDESCRIPTOR pfd = {
-    sizeof(PIXELFORMATDESCRIPTOR),  // Size of this Pixel Format Descriptor
-    1,                              // Version
-    PFD_DRAW_TO_WINDOW |            // Format must support Window
-    PFD_SUPPORT_OPENGL |            // Format must support OpenGL
-    PFD_DOUBLEBUFFER,               // Format must support double buffering
-    PFD_TYPE_RGBA,                  // Request an RGBA format
-    24,                             // Select our color depth
-    0, 0, 0, 0, 0, 0,               // Color bits ignored
-    8,                              // No alpha buffer
-    0,                              // Shift bit ignored
-    0,                              // No accumulation Buffer
-    0, 0, 0, 0,                     // Accumulation bits Ignored
-    16,                             // At least a 16-bit Z-buffer (depth buffer)
-    8,                              // 8-bit stencil buffer
-    0,                              // No auxiliary buffer
-    PFD_MAIN_PLANE,                 // Main drawing layer
-    0,                              // Reserved
-    0, 0, 0                         // Layer masks ignored
-};
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
@@ -115,26 +95,17 @@ Window::Window(const std::string& title, int width, int height) :
         NULL);
 
     if (!hwnd) {
-        MessageBox(NULL, "Window Creation Failed!", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        MessageBox(NULL, "Window creation failed!", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
 
     ShowWindow(hwnd, SW_SHOWNORMAL);
     UpdateWindow(hwnd);
 
-    // Setting up device context
+    // Get device context
     hdc = GetDC(hwnd);
     if (!hdc) {
-        MessageBox(hwnd, "Failed to get a device context.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return;
-    }
-    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
-    if (!pixelFormat) {
-        MessageBox(hwnd, "Can't find a suitable PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
-        return;
-    }
-    if (!SetPixelFormat(hdc, pixelFormat, &pfd)) {
-        MessageBox(hwnd, "Can't set the PixelFormat.", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
+        MessageBox(hwnd, "Failed to get a device context", "Nucleus", MB_ICONEXCLAMATION | MB_OK);
         return;
     }
 }

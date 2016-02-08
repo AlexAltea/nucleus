@@ -16,8 +16,8 @@ private:
     int height;
 
 public:
-    HDC hdc;
     HWND hwnd;
+    HDC hdc;
 
     Window(const std::string& title, int width, int height);
 

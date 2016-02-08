@@ -173,7 +173,7 @@ bool LV2::init(U32 entry) {
 }
 
 void LV2::call(cpu::frontend::ppu::PPUState& state) {
-    const U32 id = state.r[11];
+    const U32 id = static_cast<U32>(state.r[11]);
 
     if (!syscalls[id].func) {
         logger.warning(LOG_HLE, "LV2 Syscall %d (0x%x) called", id, id);
