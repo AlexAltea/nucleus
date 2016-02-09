@@ -17,6 +17,7 @@ namespace rsx {
 
 PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* memory) :
     graphics(std::move(backend)), rsx(rsx), memory(memory), surface() {
+    cmdQueue = graphics->getGraphicsCommandQueue();
     cmdBuffer = graphics->createCommandBuffer();
 }
 
@@ -148,9 +149,9 @@ gfx::DepthStencilTarget* PGRAPH::getDepthStencilTarget(U32 address) {
 }
 
 void PGRAPH::setSurface() {
-    if (!surface.dirty) {
+    /*if (!surface.dirty) {
         return;
-    }
+    }*/
     Size colorCount = 0;
     gfx::ColorTarget* colors[4];
     gfx::DepthStencilTarget* depth = getDepthStencilTarget(surface.depthOffset);
@@ -192,56 +193,6 @@ void PGRAPH::setSurface() {
     surface.dirty = false;
 }
 
-void PGRAPH::setViewport() {
-    if (!viewport.dirty) {
-        return;
-    }
-    gfx::Viewport rectangle = { viewport.x, viewport.y, viewport.width, viewport.height };
-    cmdBuffer->cmdSetViewports(1, &rectangle);
-    viewport.dirty = false;
-}
-
-void PGRAPH::setPipeline() {
-    // TODO: Hash pipeline and retrieve it from cache
-    if (0) {
-        cmdBuffer->cmdBindPipeline(nullptr);
-    }
-
-    auto vpData = &vpe.data[vpe.start];
-    auto vpHash = HashVertexProgram(vpData);
-    if (cacheVP.find(vpHash) == cacheVP.end()) {
-        RSXVertexProgram vp;
-        vp.decompile(vpData);
-        vp.compile();
-        cacheVP[vpHash] = vp;
-    }
-    auto fpData = memory->ptr<rsx_fp_instruction_t>((fp_location ? rsx->get_ea(0x0) : 0xC0000000) + fp_offset);
-    auto fpHash = HashFragmentProgram(fpData);
-    if (cacheFP.find(fpHash) == cacheFP.end()) {
-        RSXFragmentProgram fp;
-        fp.decompile(fpData);
-        fp.compile();
-        cacheFP[fpHash] = fp;
-    }
-
-    // Shaders
-    gfx::PipelineDesc pipelineDesc = {};
-    pipelineDesc.vs = cacheVP[vpHash].shader;
-    pipelineDesc.ps = cacheFP[fpHash].shader;
-
-    auto* pipeline = graphics->createPipeline(pipelineDesc);
-    cmdBuffer->cmdBindPipeline(pipeline);
-}
-
-
-
-/*GLuint PGRAPH::GetColorTarget(U32 address) {
-    if (colorTargets.find(address) == colorTargets.end()) {
-        return 0;
-    }
-    return colorTargets[address];
-}*/
-
 /**
  * PGRAPH methods
  */
@@ -278,9 +229,54 @@ void PGRAPH::BindVertexAttributes() {
     }*/
 }
 
-void PGRAPH::Begin(U32 mode) {
-    vertex_primitive = mode;
+void PGRAPH::Begin(Primitive primitive) {
+    return; // TODO
+    // Set surface
+    setSurface();
+
+    // Set viewport
+    gfx::Viewport rectangle = { viewport.x, viewport.y, viewport.width, viewport.height };
+    cmdBuffer->cmdSetViewports(1, &rectangle);
+
+    // Set pipeline
+    gfx::Pipeline* pipeline;
+    if (1) { // TODO: Hash pipeline and retrieve it from cache
+        auto vpData = &vpe.data[vpe.start];
+        auto vpHash = HashVertexProgram(vpData);
+        if (cacheVP.find(vpHash) == cacheVP.end()) {
+            RSXVertexProgram vp;
+            vp.decompile(vpData);
+            vp.compile();
+            cacheVP[vpHash] = vp;
+        }
+        auto fpData = memory->ptr<rsx_fp_instruction_t>((fp_location ? rsx->get_ea(0x0) : 0xC0000000) + fp_offset);
+        auto fpHash = HashFragmentProgram(fpData);
+        if (cacheFP.find(fpHash) == cacheFP.end()) {
+            RSXFragmentProgram fp;
+            fp.decompile(fpData);
+            fp.compile();
+            cacheFP[fpHash] = fp;
+        }
+
+        gfx::PipelineDesc pipelineDesc = {};
+        pipelineDesc.vs = cacheVP[vpHash].shader;
+        pipelineDesc.ps = cacheFP[fpHash].shader;
+        pipelineDesc.iaState.topology = convertPrimitiveTopology(primitive);
+        pipelineDesc.cbState.colorTarget[0].srcBlend = convertBlend(blend_sfactor_rgb);
+        pipelineDesc.cbState.colorTarget[0].destBlend = convertBlend(blend_dfactor_rgb);
+        pipelineDesc.cbState.colorTarget[0].srcBlendAlpha = convertBlend(blend_sfactor_alpha);
+        pipelineDesc.cbState.colorTarget[0].destBlendAlpha = convertBlend(blend_dfactor_alpha);
+        pipelineDesc.cbState.colorTarget[0].colorWriteEnable = convertColorMask(color_mask);
+        pipeline = graphics->createPipeline(pipelineDesc);
+    }
+    cmdBuffer->cmdBindPipeline(pipeline);
 }
+
+void PGRAPH::End() {
+    return; // TODO
+    cmdQueue->submit(cmdBuffer, nullptr);
+}
+
 
 void PGRAPH::ClearSurface(U32 mask) {
     // Avoid clearing empty surfaces
@@ -300,17 +296,16 @@ void PGRAPH::ClearSurface(U32 mask) {
         auto* colorTarget = getColorTarget(surface.colorOffset[0]);
         cmdBuffer->cmdClearColor(colorTarget, color);
     }
-
     if (mask & (RSX_CLEAR_BIT_DEPTH | RSX_CLEAR_BIT_STENCIL)) {
         // TODO: Depth-exclusive or stencil-exclusive clears are unimplemented
         auto* depthTarget = getDepthStencilTarget(surface.depthOffset);
         cmdBuffer->cmdClearDepthStencil(depthTarget, depth, stencil);
     }
-}
 
-void PGRAPH::ColorMask(bool a, bool r, bool g, bool b) {
-    /*glColorMask(r, g, b, a);
-    checkRendererError("ColorMask");*/
+    // TODO: Check if cmdBuffer is empty
+    cmdBuffer->finalize();
+    cmdQueue->submit(cmdBuffer, nullptr);
+    cmdBuffer->reset();
 }
 
 void PGRAPH::DepthFunc(U32 func) {
@@ -319,15 +314,6 @@ void PGRAPH::DepthFunc(U32 func) {
 }
 
 void PGRAPH::DrawArrays(U32 first, U32 count) {
-    // State
-    //glBlendFuncSeparate(blend_sfactor_rgb, blend_dfactor_rgb, blend_sfactor_alpha, blend_dfactor_alpha);
-    setPipeline();
-    setSurface();
-    setViewport();
-
-    // Viewport
-    /**/
-
     // Upload VP constants
     /*for (U32 i = 0; i < 468; i++) {
         auto& constant = vpe.constant[i];
@@ -431,10 +417,6 @@ void PGRAPH::Enable(U32 prop, U32 enabled) {
         break;
     }
     checkRendererError("Enable");*/
-}
-
-void PGRAPH::End() {
-    vertex_primitive = 0;
 }
 
 void PGRAPH::Flip() {

@@ -63,12 +63,6 @@ public:
     virtual bool initialize(const BackendParameters& params) = 0;
 
     /**
-     * Creates a new command queue
-     * @return Command queue
-     */
-    virtual CommandQueue* createCommandQueue() = 0;
-
-    /**
      * Creates a new command buffer
      * @return Command buffer
      */
@@ -129,6 +123,12 @@ public:
      * @return           Vertex buffer
      */
     virtual VertexBuffer* createVertexBuffer(const VertexBufferDesc& desc) = 0;
+
+    /**
+     * Gets a graphics command queue, or creates a new one if none exists
+     * @return Command queue
+     */
+    virtual CommandQueue* getGraphicsCommandQueue() = 0;
 
     /**
      * Resizes both the back buffer and front buffer

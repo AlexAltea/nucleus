@@ -24,6 +24,31 @@ enum {
     RSX_OBJECT_CAFEBABE                         = 0xCAFEBABE,
 };
 
+enum Blend : U16 {
+    RSX_BLEND_ZERO                      = 0,
+    RSX_BLEND_ONE                       = 1,
+    RSX_BLEND_SRC_COLOR                 = 0x0300,
+    RSX_BLEND_ONE_MINUS_SRC_COLOR       = 0x0301,
+    RSX_BLEND_SRC_ALPHA                 = 0x0302,
+    RSX_BLEND_ONE_MINUS_SRC_ALPHA       = 0x0303,
+    RSX_BLEND_DST_ALPHA                 = 0x0304,
+    RSX_BLEND_ONE_MINUS_DST_ALPHA       = 0x0305,
+    RSX_BLEND_DST_COLOR                 = 0x0306,
+    RSX_BLEND_ONE_MINUS_DST_COLOR       = 0x0307,
+    RSX_BLEND_SRC_ALPHA_SATURATE        = 0x0308,
+    RSX_BLEND_CONSTANT_COLOR            = 0x8001,
+    RSX_BLEND_ONE_MINUS_CONSTANT_COLOR  = 0x8002,
+    RSX_BLEND_CONSTANT_ALPHA            = 0x8003,
+    RSX_BLEND_ONE_MINUS_CONSTANT_ALPHA  = 0x8004,
+};
+
+enum ColorMask : U32 {
+    RSX_COLOR_MASK_R  = (1 << (0 * 8)),
+    RSX_COLOR_MASK_G  = (1 << (1 * 8)),
+    RSX_COLOR_MASK_B  = (1 << (2 * 8)),
+    RSX_COLOR_MASK_A  = (1 << (3 * 8)),
+};
+
 enum Primitive {
     RSX_PRIMITIVE_POINTS          = 1,
     RSX_PRIMITIVE_LINES           = 2,

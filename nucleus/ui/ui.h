@@ -42,7 +42,7 @@ public:
     std::unique_ptr<Font> fontLight;
 
     // Constructor
-    UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue, Size width, Size height);
+    UI(std::shared_ptr<gfx::IBackend> graphics, Size width, Size height);
 
     // RSX connection
     bool rsxChanged = false;

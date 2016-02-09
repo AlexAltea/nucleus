@@ -147,16 +147,6 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     return true;
 }
 
-CommandQueue* Direct3D12Backend::createCommandQueue() {
-    auto* commandQueue = new Direct3D12CommandQueue();
-
-    if (!commandQueue->initialize(queue)) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createCommandQueue: Could not initialize Direct3D12CommandQueue");
-        return nullptr;
-    }
-    return commandQueue;
-}
-
 CommandBuffer* Direct3D12Backend::createCommandBuffer() {
     auto* commandBuffer = new Direct3D12CommandBuffer();
 
@@ -412,6 +402,16 @@ VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc
     UINT64 size = desc.size;
     auto* vtxBuffer = new Direct3D12VertexBuffer(device, size);
     return vtxBuffer;
+}
+
+CommandQueue* Direct3D12Backend::getGraphicsCommandQueue() {
+    auto* commandQueue = new Direct3D12CommandQueue();
+
+    if (!commandQueue->initialize(queue)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createCommandQueue: Could not initialize Direct3D12CommandQueue");
+        return nullptr;
+    }
+    return commandQueue;
 }
 
 bool Direct3D12Backend::doResizeBuffers(int width, int height) {

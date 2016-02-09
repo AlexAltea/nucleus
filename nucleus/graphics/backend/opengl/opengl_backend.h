@@ -53,7 +53,6 @@ public:
 
     virtual bool initialize(const BackendParameters& params) override;
 
-    virtual CommandQueue* createCommandQueue() override;
     virtual CommandBuffer* createCommandBuffer() override;
     virtual Fence* createFence(const FenceDesc& desc) override;
     virtual Heap* createHeap(const HeapDesc& desc) override;

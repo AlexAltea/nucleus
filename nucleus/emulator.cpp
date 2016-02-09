@@ -40,14 +40,8 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
         return false;
     }
 
-    auto* queue = graphics->createCommandQueue();
-    if (!queue) {
-        logger.warning(LOG_COMMON, "Could not initialize main graphics queue");
-        return false;
-    }
-
     if (!config.console) {
-        ui = std::make_shared<ui::UI>(graphics, queue, params.width, params.height);
+        ui = std::make_shared<ui::UI>(graphics, params.width, params.height);
         if (!ui->initialize()) {
             logger.warning(LOG_COMMON, "Could not initialize user interface");
             return false;

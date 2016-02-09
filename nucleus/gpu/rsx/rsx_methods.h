@@ -154,7 +154,7 @@ enum {
     NV4097_SET_ZPASS_PIXEL_COUNT_ENABLE      = 0x000017CC,
     NV4097_GET_REPORT                        = 0x00001800,
     NV4097_SET_ZCULL_STATS_ENABLE            = 0x00001804,
-    NV4097_SET_BEGIN_END                     = 0x00001808,
+    NV4097_SET_BEGIN_END                     = 0x00001808, // Locks or unlocks PGRAPH state while submitting vertex/index/inlined data to draw
     NV4097_ARRAY_ELEMENT16                   = 0x0000180C,
     NV4097_ARRAY_ELEMENT32                   = 0x00001810,
     NV4097_DRAW_ARRAYS                       = 0x00001814,

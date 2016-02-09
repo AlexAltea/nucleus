@@ -12,7 +12,7 @@ namespace ui {
 ScreenEmulator::ScreenEmulator(UI* manager) : Screen(manager) {
     body.style.alignH = ALIGN_HORIZONTAL_CENTER;
     body.style.alignV = ALIGN_VERTICAL_CENTER;
-    //body.style.background = Color{0,0,0,1};
+    body.style.background = Color{0,0,0,1};
 
     app = new WidgetImage("app");
     app->isColorTarget = true;

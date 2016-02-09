@@ -91,6 +91,7 @@ class PGRAPH {
     mem::Memory* memory;
     RSX* rsx;
 
+    gfx::CommandQueue* cmdQueue;
     gfx::CommandBuffer* cmdBuffer;
 
     // Cache
@@ -107,24 +108,22 @@ class PGRAPH {
     gfx::DepthStencilTarget* getDepthStencilTarget(U32 address);
 
     void setSurface();
-    void setViewport();
-    void setPipeline();
 
 public:
     // Registers
     U32 alpha_func;
     F32 alpha_ref;
-    U16 blend_sfactor_rgb;
-    U16 blend_sfactor_alpha;
-    U16 blend_dfactor_rgb;
-    U16 blend_dfactor_alpha;
+    Blend blend_sfactor_rgb;
+    Blend blend_sfactor_alpha;
+    Blend blend_dfactor_rgb;
+    Blend blend_dfactor_alpha;
     U32 clear_color;
     U32 clear_depth;
     U8 clear_stencil;
+    ColorMask color_mask;
     U32 semaphore_index;
     U32 vertex_data_base_offset;
     U32 vertex_data_base_index;
-    U32 vertex_primitive;
 
     Surface surface;
     rsx_viewport_t viewport;
@@ -168,14 +167,13 @@ public:
 
     // Rendering methods
     void AlphaFunc(U32 func, F32 ref);
-    void Begin(U32 mode);
+    void Begin(Primitive mode);
+    void End();
     void BindVertexAttributes();
     void ClearSurface(U32 mask);
-    void ColorMask(bool a, bool r, bool g, bool b);
     void DepthFunc(U32 func);
     void DrawArrays(U32 first, U32 count);
     void Enable(U32 prop, U32 enabled);
-    void End();
     void Flip();
     void UnbindVertexAttributes();
 };

@@ -11,8 +11,9 @@
 
 namespace ui {
 
-UI::UI(std::shared_ptr<gfx::IBackend> graphics, gfx::CommandQueue* queue, Size width, Size height) :
-    graphics(std::move(graphics)), cmdQueue(queue), language(), surface(width, height) {
+UI::UI(std::shared_ptr<gfx::IBackend> backend, Size width, Size height) :
+    graphics(std::move(backend)), language(), surface(width, height) {
+    cmdQueue = graphics->getGraphicsCommandQueue();
 }
 
 bool UI::initialize() {

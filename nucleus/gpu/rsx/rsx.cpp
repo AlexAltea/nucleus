@@ -187,21 +187,17 @@ void RSX::method(U32 offset, U32 parameter) {
         break;
 
     case NV4097_SET_BLEND_FUNC_SFACTOR:
-        pgraph.blend_sfactor_rgb = parameter & 0xFFFF;
-        pgraph.blend_sfactor_alpha = parameter >> 16;
+        pgraph.blend_sfactor_rgb = static_cast<Blend>(parameter & 0xFFFF);
+        pgraph.blend_sfactor_alpha = static_cast<Blend>(parameter >> 16);
         break;
 
     case NV4097_SET_BLEND_FUNC_DFACTOR:
-        pgraph.blend_dfactor_rgb = parameter & 0xFFFF;
-        pgraph.blend_dfactor_alpha = parameter >> 16;
+        pgraph.blend_dfactor_rgb = static_cast<Blend>(parameter & 0xFFFF);
+        pgraph.blend_dfactor_alpha = static_cast<Blend>(parameter >> 16);
         break;
 
     case NV4097_SET_COLOR_MASK:
-        pgraph.ColorMask(
-            (parameter & 0x1000000),
-            (parameter & 0x0010000),
-            (parameter & 0x0000100),
-            (parameter & 0x0000001));
+        pgraph.color_mask = static_cast<ColorMask>(parameter);
         break;
 
     case NV4097_SET_COLOR_CLEAR_VALUE:
@@ -399,7 +395,7 @@ void RSX::method(U32 offset, U32 parameter) {
 
     case NV4097_SET_BEGIN_END:
         if (parameter) {
-            pgraph.Begin(parameter);
+            pgraph.Begin(static_cast<Primitive>(parameter));
         } else {
             pgraph.End();
         }

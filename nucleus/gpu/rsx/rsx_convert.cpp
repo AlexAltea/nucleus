@@ -9,6 +9,40 @@
 namespace gpu {
 namespace rsx {
 
+gfx::Blend convertBlend(Blend func) {
+    switch (func) {
+    case RSX_BLEND_ZERO:                      return gfx::BLEND_ZERO;
+    case RSX_BLEND_ONE:                       return gfx::BLEND_ONE;
+    case RSX_BLEND_SRC_COLOR:                 return gfx::BLEND_SRC_COLOR;
+    case RSX_BLEND_ONE_MINUS_SRC_COLOR:       return gfx::BLEND_INV_SRC_COLOR;
+    case RSX_BLEND_SRC_ALPHA:                 return gfx::BLEND_SRC_ALPHA;
+    case RSX_BLEND_ONE_MINUS_SRC_ALPHA:       return gfx::BLEND_INV_SRC_ALPHA;
+    case RSX_BLEND_DST_ALPHA:                 return gfx::BLEND_DEST_ALPHA;
+    case RSX_BLEND_ONE_MINUS_DST_ALPHA:       return gfx::BLEND_INV_DEST_ALPHA;
+    case RSX_BLEND_DST_COLOR:                 return gfx::BLEND_DEST_COLOR;
+    case RSX_BLEND_ONE_MINUS_DST_COLOR:       return gfx::BLEND_INV_DEST_COLOR;
+    case RSX_BLEND_SRC_ALPHA_SATURATE:        return gfx::BLEND_SRC_ALPHA_SAT;
+    case RSX_BLEND_CONSTANT_COLOR:            return gfx::BLEND_DEST_COLOR;
+    case RSX_BLEND_ONE_MINUS_CONSTANT_COLOR:  return gfx::BLEND_INV_DEST_COLOR;
+
+    case RSX_BLEND_CONSTANT_ALPHA:
+    case RSX_BLEND_ONE_MINUS_CONSTANT_ALPHA:
+        assert_always("Unimplemented");
+
+    default:
+        assert_always("Unexpected");
+    }
+}
+
+gfx::ColorWriteEnable convertColorMask(ColorMask mask) {
+    int colorWriteEnable;
+    if (mask & RSX_COLOR_MASK_R)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_RED;
+    if (mask & RSX_COLOR_MASK_G)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_GREEN;
+    if (mask & RSX_COLOR_MASK_B)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_BLUE;
+    if (mask & RSX_COLOR_MASK_A)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_ALPHA;
+    return static_cast<gfx::ColorWriteEnable>(colorWriteEnable);
+}
+
 gfx::PrimitiveTopology convertPrimitiveTopology(Primitive primitive) {
     switch (primitive) {
     case RSX_PRIMITIVE_POINTS:          return gfx::TOPOLOGY_POINT_LIST;
@@ -21,6 +55,7 @@ gfx::PrimitiveTopology convertPrimitiveTopology(Primitive primitive) {
     case RSX_PRIMITIVE_QUADS:           return gfx::TOPOLOGY_TRIANGLE_LIST;  // TODO: Is this correct?
     case RSX_PRIMITIVE_QUAD_STRIP:      return gfx::TOPOLOGY_TRIANGLE_STRIP; // TODO: Is this correct?
     case RSX_PRIMITIVE_POLYGON:         return gfx::TOPOLOGY_TRIANGLE_LIST;  // TODO: Is this correct?
+
     default:
         assert_always("Unexpected");
     }
@@ -38,6 +73,7 @@ gfx::PrimitiveTopologyType convertPrimitiveTopologyType(Primitive primitive) {
     case RSX_PRIMITIVE_QUADS:           return gfx::TOPOLOGY_TYPE_TRIANGLE; // TODO: Is this correct?
     case RSX_PRIMITIVE_QUAD_STRIP:      return gfx::TOPOLOGY_TYPE_TRIANGLE; // TODO: Is this correct?
     case RSX_PRIMITIVE_POLYGON:         return gfx::TOPOLOGY_TYPE_TRIANGLE; // TODO: Is this correct?
+
     default:
         assert_always("Unexpected");
     }
