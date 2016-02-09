@@ -29,7 +29,7 @@ D3D12_BLEND convertBlend(gfx::Blend blend) {
     case BLEND_SRC1_ALPHA:        return D3D12_BLEND_SRC1_ALPHA;
     case BLEND_INV_SRC1_ALPHA:    return D3D12_BLEND_INV_SRC1_ALPHA;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_BLEND_ZERO;
     }
 }
@@ -42,7 +42,7 @@ D3D12_BLEND_OP convertBlendOp(gfx::BlendOp blendOp) {
     case BLEND_OP_MIN:           return D3D12_BLEND_OP_MIN;
     case BLEND_OP_MAX:           return D3D12_BLEND_OP_MAX;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_BLEND_OP_ADD;
     }
 }
@@ -58,7 +58,7 @@ D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc) 
     case COMPARISON_FUNC_GREATER_EQUAL:  return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
     case COMPARISON_FUNC_ALWAYS:         return D3D12_COMPARISON_FUNC_ALWAYS;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_COMPARISON_FUNC_NEVER;
     }
 }
@@ -74,7 +74,7 @@ D3D12_FILTER convertFilter(gfx::Filter filter) {
     case FILTER_MIN_MAG_LINEAR_MIP_POINT:         return D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT;
     case FILTER_MIN_MAG_MIP_LINEAR:               return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_FILTER_MIN_MAG_MIP_POINT;
     }
 }
@@ -90,7 +90,7 @@ DXGI_FORMAT convertFormat(gfx::Format format) {
     case FORMAT_D16_UNORM:           return DXGI_FORMAT_D16_UNORM;
     case FORMAT_D24_UNORM_S8_UINT:   return DXGI_FORMAT_D24_UNORM_S8_UINT;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return DXGI_FORMAT_UNKNOWN;
     }
 }
@@ -100,7 +100,7 @@ D3D12_INPUT_CLASSIFICATION convertInputClassification(gfx::InputClassification i
     case INPUT_CLASSIFICATION_PER_VERTEX:    return D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
     case INPUT_CLASSIFICATION_PER_INSTANCE:  return D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
     }
 }
@@ -124,7 +124,7 @@ D3D12_LOGIC_OP convertLogicOp(gfx::LogicOp logicOp) {
     case LOGIC_OP_NAND:           return D3D12_LOGIC_OP_NAND;
     case LOGIC_OP_SET:            return D3D12_LOGIC_OP_SET;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_LOGIC_OP_NOOP;
     }
 }
@@ -139,7 +139,7 @@ D3D12_PRIMITIVE_TOPOLOGY_TYPE convertPrimitiveTopologyType(gfx::PrimitiveTopolog
     case TOPOLOGY_QUAD_LIST:       return D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
     case TOPOLOGY_QUAD_STRIP:      return D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED;
     }
 }
@@ -150,8 +150,24 @@ D3D12_RESOURCE_STATES convertResourceState(gfx::ResourceState resourceState) {
     case RESOURCE_STATE_COLOR_TARGET:  return D3D12_RESOURCE_STATE_RENDER_TARGET;
     case RESOURCE_STATE_GENERIC_READ:  return D3D12_RESOURCE_STATE_GENERIC_READ;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_RESOURCE_STATE_COMMON;
+    }
+}
+
+D3D12_STENCIL_OP convertStencilOp(gfx::StencilOp stencilOp) {
+    switch (stencilOp) {
+    case gfx::STENCIL_OP_KEEP:      return D3D12_STENCIL_OP_KEEP;
+    case gfx::STENCIL_OP_ZERO:      return D3D12_STENCIL_OP_ZERO;
+    case gfx::STENCIL_OP_REPLACE:   return D3D12_STENCIL_OP_REPLACE;
+    case gfx::STENCIL_OP_INCR_SAT:  return D3D12_STENCIL_OP_INCR_SAT;
+    case gfx::STENCIL_OP_DECR_SAT:  return D3D12_STENCIL_OP_DECR_SAT;
+    case gfx::STENCIL_OP_INVERT:    return D3D12_STENCIL_OP_INVERT;
+    case gfx::STENCIL_OP_INCR:      return D3D12_STENCIL_OP_INCR;
+    case gfx::STENCIL_OP_DECR:      return D3D12_STENCIL_OP_DECR;
+    default:
+        assert_always("Unimplemented");
+        return D3D12_STENCIL_OP_KEEP;
     }
 }
 
@@ -163,7 +179,7 @@ D3D12_TEXTURE_ADDRESS_MODE convertTextureAddressMode(gfx::TextureAddress address
     case TEXTURE_ADDRESS_BORDER:       return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
     case TEXTURE_ADDRESS_MIRROR_ONCE:  return D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
     default:
-        assert_always("Unimplemented case");
+        assert_always("Unimplemented");
         return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     }
 }

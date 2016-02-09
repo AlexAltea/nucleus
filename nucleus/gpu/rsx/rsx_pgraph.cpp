@@ -262,19 +262,25 @@ void PGRAPH::Begin(Primitive primitive) {
         pipelineDesc.vs = cacheVP[vpHash].shader;
         pipelineDesc.ps = cacheFP[fpHash].shader;
         pipelineDesc.iaState.topology = convertPrimitiveTopology(primitive);
+        pipelineDesc.cbState.colorTarget[0].enableBlend = blend_enable;
+        pipelineDesc.cbState.colorTarget[0].enableLogicOp = logic_op_enable;
+        pipelineDesc.cbState.colorTarget[0].blendOp = convertBlendOp(blend_equation_rgb);
+        pipelineDesc.cbState.colorTarget[0].blendOpAlpha = convertBlendOp(blend_equation_alpha);
         pipelineDesc.cbState.colorTarget[0].srcBlend = convertBlend(blend_sfactor_rgb);
         pipelineDesc.cbState.colorTarget[0].destBlend = convertBlend(blend_dfactor_rgb);
         pipelineDesc.cbState.colorTarget[0].srcBlendAlpha = convertBlend(blend_sfactor_alpha);
         pipelineDesc.cbState.colorTarget[0].destBlendAlpha = convertBlend(blend_dfactor_alpha);
         pipelineDesc.cbState.colorTarget[0].colorWriteEnable = convertColorMask(color_mask);
+        pipelineDesc.cbState.colorTarget[0].logicOp = convertLogicOp(logic_op);
         pipeline = graphics->createPipeline(pipelineDesc);
     }
     cmdBuffer->cmdBindPipeline(pipeline);
 }
 
 void PGRAPH::End() {
-    return; // TODO
+    cmdBuffer->finalize();
     cmdQueue->submit(cmdBuffer, nullptr);
+    cmdBuffer->reset();
 }
 
 

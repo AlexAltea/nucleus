@@ -34,6 +34,24 @@ gfx::Blend convertBlend(Blend func) {
     }
 }
 
+gfx::BlendOp convertBlendOp(BlendEquation equation) {
+    switch (equation) {
+    case RSX_BLEND_EQUATION_FUNC_ADD:               return gfx::BLEND_OP_ADD;
+    case RSX_BLEND_EQUATION_MIN:                    return gfx::BLEND_OP_MIN;
+    case RSX_BLEND_EQUATION_MAX:                    return gfx::BLEND_OP_MAX;
+    case RSX_BLEND_EQUATION_FUNC_SUBTRACT:          return gfx::BLEND_OP_SUBTRACT;
+    case RSX_BLEND_EQUATION_FUNC_REVERSE_SUBTRACT:  return gfx::BLEND_OP_REV_SUBTRACT;
+
+    case RSX_BLEND_EQUATION_FUNC_REVERSE_SUBTRACT_SIGNED:
+    case RSX_BLEND_EQUATION_FUNC_ADD_SIGNED:
+    case RSX_BLEND_EQUATION_FUNC_REVERSE_ADD_SIGNED:
+        assert_always("Unimplemented");
+
+    default:
+        assert_always("Unexpected");
+    }
+}
+
 gfx::ColorWriteEnable convertColorMask(ColorMask mask) {
     int colorWriteEnable;
     if (mask & RSX_COLOR_MASK_R)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_RED;
@@ -41,6 +59,29 @@ gfx::ColorWriteEnable convertColorMask(ColorMask mask) {
     if (mask & RSX_COLOR_MASK_B)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_BLUE;
     if (mask & RSX_COLOR_MASK_A)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_ALPHA;
     return static_cast<gfx::ColorWriteEnable>(colorWriteEnable);
+}
+
+gfx::LogicOp convertLogicOp(LogicOp op) {
+    switch (op) {
+    case RSX_LOGIC_OP_CLEAR:          return gfx::LOGIC_OP_CLEAR;
+    case RSX_LOGIC_OP_AND:            return gfx::LOGIC_OP_AND;
+    case RSX_LOGIC_OP_AND_REVERSE:    return gfx::LOGIC_OP_AND_REVERSE;
+    case RSX_LOGIC_OP_COPY:           return gfx::LOGIC_OP_COPY;
+    case RSX_LOGIC_OP_AND_INVERTED:   return gfx::LOGIC_OP_AND_INVERTED;
+    case RSX_LOGIC_OP_NOOP:           return gfx::LOGIC_OP_NOOP;
+    case RSX_LOGIC_OP_XOR:            return gfx::LOGIC_OP_XOR;
+    case RSX_LOGIC_OP_OR:             return gfx::LOGIC_OP_OR;
+    case RSX_LOGIC_OP_NOR:            return gfx::LOGIC_OP_NOR;
+    case RSX_LOGIC_OP_EQUIV:          return gfx::LOGIC_OP_EQUIV;
+    case RSX_LOGIC_OP_INVERT:         return gfx::LOGIC_OP_INVERT;
+    case RSX_LOGIC_OP_OR_REVERSE:     return gfx::LOGIC_OP_OR_REVERSE;
+    case RSX_LOGIC_OP_COPY_INVERTED:  return gfx::LOGIC_OP_COPY_INVERTED;
+    case RSX_LOGIC_OP_OR_INVERTED:    return gfx::LOGIC_OP_OR_INVERTED;
+    case RSX_LOGIC_OP_NAND:           return gfx::LOGIC_OP_NAND;
+    case RSX_LOGIC_OP_SET:            return gfx::LOGIC_OP_SET;
+    default:
+        assert_always("Unexpected");
+    }
 }
 
 gfx::PrimitiveTopology convertPrimitiveTopology(Primitive primitive) {
@@ -55,7 +96,6 @@ gfx::PrimitiveTopology convertPrimitiveTopology(Primitive primitive) {
     case RSX_PRIMITIVE_QUADS:           return gfx::TOPOLOGY_TRIANGLE_LIST;  // TODO: Is this correct?
     case RSX_PRIMITIVE_QUAD_STRIP:      return gfx::TOPOLOGY_TRIANGLE_STRIP; // TODO: Is this correct?
     case RSX_PRIMITIVE_POLYGON:         return gfx::TOPOLOGY_TRIANGLE_LIST;  // TODO: Is this correct?
-
     default:
         assert_always("Unexpected");
     }
@@ -73,7 +113,19 @@ gfx::PrimitiveTopologyType convertPrimitiveTopologyType(Primitive primitive) {
     case RSX_PRIMITIVE_QUADS:           return gfx::TOPOLOGY_TYPE_TRIANGLE; // TODO: Is this correct?
     case RSX_PRIMITIVE_QUAD_STRIP:      return gfx::TOPOLOGY_TYPE_TRIANGLE; // TODO: Is this correct?
     case RSX_PRIMITIVE_POLYGON:         return gfx::TOPOLOGY_TYPE_TRIANGLE; // TODO: Is this correct?
+    default:
+        assert_always("Unexpected");
+    }
+}
 
+gfx::StencilOp convertStencilOp(StencilOp op) {
+    switch (op) {
+    case RSX_STENCIL_OP_KEEP:       return gfx::STENCIL_OP_KEEP;
+    case RSX_STENCIL_OP_REPLACE:    return gfx::STENCIL_OP_REPLACE;
+    case RSX_STENCIL_OP_INCR:       return gfx::STENCIL_OP_INCR;
+    case RSX_STENCIL_OP_DECR:       return gfx::STENCIL_OP_DECR;
+    case RSX_STENCIL_OP_INCR_WRAP:  return gfx::STENCIL_OP_INCR_SAT;
+    case RSX_STENCIL_OP_DECR_WRAP:  return gfx::STENCIL_OP_DECR_SAT;
     default:
         assert_always("Unexpected");
     }

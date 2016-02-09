@@ -147,11 +147,9 @@ void RSX::method(U32 offset, U32 parameter) {
     case NV4097_SET_STENCIL_TEST_ENABLE:
     case NV4097_SET_DEPTH_TEST_ENABLE:
     case NV4097_SET_CULL_FACE_ENABLE:
-    case NV4097_SET_BLEND_ENABLE:
     case NV4097_SET_POLY_OFFSET_FILL_ENABLE:
     case NV4097_SET_POLY_OFFSET_LINE_ENABLE:
     case NV4097_SET_POLY_OFFSET_POINT_ENABLE:
-    case NV4097_SET_LOGIC_OP_ENABLE:
     case NV4097_SET_SPECULAR_ENABLE:
     case NV4097_SET_LINE_SMOOTH_ENABLE:
     case NV4097_SET_POLY_SMOOTH_ENABLE:
@@ -186,6 +184,15 @@ void RSX::method(U32 offset, U32 parameter) {
         pgraph.AlphaFunc(pgraph.alpha_func, pgraph.alpha_ref);
         break;
 
+    case NV4097_SET_BLEND_ENABLE:
+        pgraph.blend_enable = parameter;
+        break;
+
+    case NV4097_SET_BLEND_EQUATION:
+        pgraph.blend_equation_rgb = static_cast<BlendEquation>(parameter & 0xFFFF);
+        pgraph.blend_equation_alpha = static_cast<BlendEquation>(parameter >> 16);
+        break;
+
     case NV4097_SET_BLEND_FUNC_SFACTOR:
         pgraph.blend_sfactor_rgb = static_cast<Blend>(parameter & 0xFFFF);
         pgraph.blend_sfactor_alpha = static_cast<Blend>(parameter >> 16);
@@ -194,6 +201,14 @@ void RSX::method(U32 offset, U32 parameter) {
     case NV4097_SET_BLEND_FUNC_DFACTOR:
         pgraph.blend_dfactor_rgb = static_cast<Blend>(parameter & 0xFFFF);
         pgraph.blend_dfactor_alpha = static_cast<Blend>(parameter >> 16);
+        break;
+
+    case NV4097_SET_LOGIC_OP_ENABLE:
+        pgraph.logic_op_enable = parameter;
+        break;
+
+    case NV4097_SET_LOGIC_OP:
+        pgraph.logic_op = static_cast<LogicOp>(parameter);
         break;
 
     case NV4097_SET_COLOR_MASK:

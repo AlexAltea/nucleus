@@ -42,11 +42,41 @@ enum Blend : U16 {
     RSX_BLEND_ONE_MINUS_CONSTANT_ALPHA  = 0x8004,
 };
 
+enum BlendEquation : U16 {
+    RSX_BLEND_EQUATION_FUNC_ADD                      = 0x8006,
+    RSX_BLEND_EQUATION_MIN                           = 0x8007,
+    RSX_BLEND_EQUATION_MAX                           = 0x8008,
+    RSX_BLEND_EQUATION_FUNC_SUBTRACT                 = 0x800A,
+    RSX_BLEND_EQUATION_FUNC_REVERSE_SUBTRACT         = 0x800B,
+    RSX_BLEND_EQUATION_FUNC_REVERSE_SUBTRACT_SIGNED  = 0xF005,
+    RSX_BLEND_EQUATION_FUNC_ADD_SIGNED               = 0xF006,
+    RSX_BLEND_EQUATION_FUNC_REVERSE_ADD_SIGNED       = 0xF007,
+};
+
 enum ColorMask : U32 {
     RSX_COLOR_MASK_R  = (1 << (0 * 8)),
     RSX_COLOR_MASK_G  = (1 << (1 * 8)),
     RSX_COLOR_MASK_B  = (1 << (2 * 8)),
     RSX_COLOR_MASK_A  = (1 << (3 * 8)),
+};
+
+enum LogicOp : U32 {
+    RSX_LOGIC_OP_CLEAR          = 0x1500,
+    RSX_LOGIC_OP_AND            = 0x1501,
+    RSX_LOGIC_OP_AND_REVERSE    = 0x1502,
+    RSX_LOGIC_OP_COPY           = 0x1503,
+    RSX_LOGIC_OP_AND_INVERTED   = 0x1504,
+    RSX_LOGIC_OP_NOOP           = 0x1505,
+    RSX_LOGIC_OP_XOR            = 0x1506,
+    RSX_LOGIC_OP_OR             = 0x1507,
+    RSX_LOGIC_OP_NOR            = 0x1508,
+    RSX_LOGIC_OP_EQUIV          = 0x1509,
+    RSX_LOGIC_OP_INVERT         = 0x150A,
+    RSX_LOGIC_OP_OR_REVERSE     = 0x150B,
+    RSX_LOGIC_OP_COPY_INVERTED  = 0x150C,
+    RSX_LOGIC_OP_OR_INVERTED    = 0x150D,
+    RSX_LOGIC_OP_NAND           = 0x150E,
+    RSX_LOGIC_OP_SET            = 0x150F,
 };
 
 enum Primitive {
@@ -60,6 +90,15 @@ enum Primitive {
     RSX_PRIMITIVE_QUADS           = 8,
     RSX_PRIMITIVE_QUAD_STRIP      = 9,
     RSX_PRIMITIVE_POLYGON         = 10,
+};
+
+enum StencilOp {
+    RSX_STENCIL_OP_KEEP       = 0x1E00,
+    RSX_STENCIL_OP_REPLACE    = 0x1E01,
+    RSX_STENCIL_OP_INCR       = 0x1E02,
+    RSX_STENCIL_OP_DECR       = 0x1E03,
+    RSX_STENCIL_OP_INCR_WRAP  = 0x8507,
+    RSX_STENCIL_OP_DECR_WRAP  = 0x8508,
 };
 
 // RSX Constants

@@ -25,7 +25,7 @@ class RSX;
 
 // RSX Vertex Program attribute
 struct rsx_vp_attribute_t {
-    bool dirty;             // Flag: Needs to be reloaded and rebinded.
+    bool dirty;            // Flag: Needs to be reloaded and rebinded.
     std::vector<U8> data;  // Holds the loaded and converted data.
     U16 frequency;         // Access frequency of vertex data.
     U8 stride;             // Offset between two consecutive vertices.
@@ -113,10 +113,6 @@ public:
     // Registers
     U32 alpha_func;
     F32 alpha_ref;
-    Blend blend_sfactor_rgb;
-    Blend blend_sfactor_alpha;
-    Blend blend_dfactor_rgb;
-    Blend blend_dfactor_alpha;
     U32 clear_color;
     U32 clear_depth;
     U8 clear_stencil;
@@ -124,6 +120,19 @@ public:
     U32 semaphore_index;
     U32 vertex_data_base_offset;
     U32 vertex_data_base_index;
+
+    // Blending
+    bool blend_enable;
+    BlendEquation blend_equation_rgb;
+    BlendEquation blend_equation_alpha;
+    Blend blend_sfactor_rgb;
+    Blend blend_sfactor_alpha;
+    Blend blend_dfactor_rgb;
+    Blend blend_dfactor_alpha;
+
+    // Logic Op
+    bool logic_op_enable;
+    LogicOp logic_op;
 
     Surface surface;
     rsx_viewport_t viewport;

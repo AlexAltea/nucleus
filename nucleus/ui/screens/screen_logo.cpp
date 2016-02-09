@@ -16,9 +16,10 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     const auto* defaultFont = manager->fontRegular.get();
     const auto* lightFont = manager->fontLight.get();
 
-    // Centered
+    // Body
     body.style.alignH = ALIGN_HORIZONTAL_CENTER;
     body.style.alignV = ALIGN_VERTICAL_CENTER;
+    body.style.background = {0.157f, 0.157f, 0.360f, 1.0f};
 
     // Create widgets
     logo = new WidgetImage("logo");
@@ -55,15 +56,23 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
 }
 
 void ScreenLogo::update() {
-    if (dtime > 2s) {
-        auto opacity = 1.0f - transition::apply(transition::easeOut, dtime, 2s, 3s);
+    bool bootApp = !config.boot.empty();
+    // Logo and text fade out
+    if (dtime > 2000ms) {
+        auto opacity = 1.0f - transition::apply(transition::easeOut, dtime, 2000ms, 3000ms);
         logo->style.opacity = opacity;
         version->style.opacity = opacity;
         author->style.opacity = opacity;
         license->style.opacity = opacity;
     }
-    if (dtime > 3s) {
-        if (!config.boot.empty()) {
+    // Background goes black if an application is loaded
+    if (dtime > 2700ms && bootApp) {
+        float clarity = 1.0f - transition::apply(transition::easeOut, dtime, 2700ms, 3000ms);
+        body.style.background = {0.157f * clarity, 0.157f * clarity, 0.360f * clarity, 1.0f};
+    }
+    // Next screen is loaded
+    if (dtime > 3000ms) {
+        if (bootApp) {
             manager->pushScreen(std::make_unique<ScreenEmulator>(manager));
         } else {
             manager->pushScreen(std::make_unique<ScreenMain>(manager));

@@ -91,6 +91,17 @@ enum LogicOp {
     LOGIC_OP_SET,
 };
 
+enum StencilOp {
+    STENCIL_OP_KEEP,
+    STENCIL_OP_ZERO,
+    STENCIL_OP_REPLACE,
+    STENCIL_OP_INCR_SAT,
+    STENCIL_OP_DECR_SAT,
+    STENCIL_OP_INVERT,
+    STENCIL_OP_INCR,
+    STENCIL_OP_DECR,
+};
+
 enum ColorWriteEnable {
     COLOR_WRITE_ENABLE_RED    = (1 << 0),
     COLOR_WRITE_ENABLE_GREEN  = (1 << 1),

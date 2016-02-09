@@ -16,9 +16,12 @@ namespace gpu {
 namespace rsx {
 
 gfx::Blend convertBlend(Blend func);
+gfx::BlendOp convertBlendOp(BlendEquation equation);
 gfx::ColorWriteEnable convertColorMask(ColorMask mask);
+gfx::LogicOp convertLogicOp(LogicOp op);
 gfx::PrimitiveTopology convertPrimitiveTopology(Primitive primitive);
 gfx::PrimitiveTopologyType convertPrimitiveTopologyType(Primitive primitive);
+gfx::StencilOp convertStencilOp(StencilOp op);
 gfx::Format convertFormat(Surface::ColorFormat format);
 gfx::Format convertFormat(Surface::DepthStencilFormat format);
 gfx::Format convertFormat(TextureFormat format);
