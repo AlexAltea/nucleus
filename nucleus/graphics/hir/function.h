@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/graphics/hir/hir.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -43,6 +44,12 @@ public:
      * @return  Parent module
      */
     Module& getParent() const;
+
+    /**
+     * Add a local variable to the scope of this function
+     * @param[in]  instr  Pointer to the Instruction defining the variable
+     */
+    void addLocalVariable(Instruction* instr);
 
     /**
      * Save a human-readable version of this HIR function

@@ -21,11 +21,16 @@ class Module {
 public:
     std::vector<Function*> functions;
 
-    // Instructions
+    // Header
     std::vector<Instruction*> header;
+
+    std::vector<Instruction*> entryPoints;
+    std::vector<Instruction*> constantsTypesGlobals;
 
     // Mapping each result ID to the instruction with that result ID
     std::vector<Instruction*> idInstructions;
+
+    Module();
 
     /**
      * Add an existing function to the module

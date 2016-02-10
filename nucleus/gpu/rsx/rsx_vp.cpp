@@ -6,6 +6,9 @@
 #include "rsx_vp.h"
 #include "nucleus/assert.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/graphics/hir/block.h"
+#include "nucleus/graphics/hir/function.h"
+#include "nucleus/graphics/hir/module.h"
 
 using namespace gfx::hir;
 
@@ -49,6 +52,43 @@ const vp_output_register_t output_regs[] = {
     { "rsx_TEX9",               "o[6]",    6, false },
 };
 
+RSXVertexProgram::RSXVertexProgram() {
+    module = std::make_unique<Module>();
+    builder.setModule(module.get());
+}
+
+Literal RSXVertexProgram::getDataReg(int index) {
+    Literal& dataReg = data[index];
+    if (!dataReg) {
+        dataReg = builder.opVariable(PRIVATE, vecTypeId);
+    }
+    return dataReg;
+}
+
+Literal RSXVertexProgram::getInputReg(int index) {
+    Literal& inputReg = inputs[index];
+    if (!inputReg) {
+        inputReg = builder.opVariable(INPUT, vecTypeId);
+        //builder.opDecoration(); location
+    }
+    return inputReg;
+}
+
+Literal RSXVertexProgram::getOutputReg(int index) {
+    Literal& outputReg = outputs[index];
+    if (!outputReg) {
+        outputReg = builder.opVariable(OUTPUT, vecTypeId);
+        //builder.opDecoration(); location
+        //builder.opDecoration(); builtin
+    }
+    return outputReg;
+}
+
+Literal RSXVertexProgram::getConstantReg(int index) {
+    //Literal constantReg = builder.opAccessChain();
+    return 0;
+}
+
 Literal RSXVertexProgram::getMaskedValue(Literal dest, Literal source, U8 mask) {
     // Check if mask enables all components
     if (mask == 0b1111) {
@@ -90,14 +130,13 @@ Literal RSXVertexProgram::getSourceVector(int index) {
     Literal sourceId = 0;
     switch (source.type) {
     case RSX_VP_REGISTER_TYPE_DATA:
-        //src = format("r[%d]", source.index);
+        sourceId = builder.opLoad(getDataReg(source.index));
         break;
     case RSX_VP_REGISTER_TYPE_INPUT:
-        usedInputs[instr.src_input] = true;
-        //src = format("v%d", instr.src_input);
+        sourceId = builder.opLoad(getInputReg(instr.src_input));
         break;
     case RSX_VP_REGISTER_TYPE_CONSTANT:
-        //src = format("c[%d]", instr.src_const);
+        sourceId = builder.opLoad(getConstantReg(instr.src_input));
         break;
     }
 
@@ -106,10 +145,9 @@ Literal RSXVertexProgram::getSourceVector(int index) {
 
     // Absolute value
     switch (index) {
-    case 0: //src = instr.abs_src0 ? "abs(" + src + ")" : src;
-    case 1: //src = instr.abs_src1 ? "abs(" + src + ")" : src;
-    case 2: //src = instr.abs_src2 ? "abs(" + src + ")" : src;
-        break;
+    case 0: sourceId = instr.abs_src0 ? builder.opExtFAbs(sourceId) : sourceId; break;
+    case 1: sourceId = instr.abs_src1 ? builder.opExtFAbs(sourceId) : sourceId; break;
+    case 2: sourceId = instr.abs_src2 ? builder.opExtFAbs(sourceId) : sourceId; break;
     }
 
     // Negated value
@@ -123,46 +161,36 @@ Literal RSXVertexProgram::getSourceVector(int index) {
 void RSXVertexProgram::setDestVector(Literal value) {
     // Data register
     if (instr.dst == 0x1F) {
-        //dst = format("r[%d]", instr.dst_data);
+        Literal pointer = getDataReg(instr.dst_data);
+        builder.opStore(pointer, value);
     }
     // Output register
     else {
         if (instr.dst >= 16) {
             logger.error(LOG_GPU, "VPE: Destination register out of range");
         }
-        usedOutputs[instr.dst] = true;
-        //dst = format("o[%d]", instr.dst);
+        Literal pointer = getOutputReg(instr.dst);
+        builder.opStore(pointer, value);
     }
-    //return dst + get_vp_mask(instr.masc_vec);
+    // TODO: getMaskedValue. // return dst + get_vp_mask(instr.masc_vec);
 }
 
-/*std::string RSXVertexProgram::get_header()
-{
-    std::string header = "#version 330\n";
-
-    // Input registers
-    for (U32 i = 0; i < 16; i++) {
-        if (usedInputs[i]) {
-            header += format("layout (location = %d) in vec4 v%d;", i, i);
-        }
-    }
-
-    // Output registers
-    for (const auto& reg : output_regs) {
-        if (usedOutputs[reg.rsxIndex] && !reg.predefined) {
-            header += format("out vec4 %s;", reg.glReg);
-        }
-    }
-
-    header += "vec4 o[16];";           // Output registers
-    header += "vec4 r[48];";           // Data registers
-    header += "uniform vec4 c[468];";  // Constant registers
-    return header;
-}*/
-
 void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
-    usedInputs.reset();
-    usedOutputs.reset();
+    // Basic types
+    Literal floatType = builder.opTypeFloat(32);
+    vecTypeId = builder.opTypeVector(floatType, 4);
+
+    Function* function = new Function(*module.get(), builder.opTypeFunction(builder.opTypeVoid()));
+    Block* block = new Block(*function);
+    builder.setInsertionBlock(block);
+    builder.opEntryPoint(EXECUTION_MODEL_VERTEX, function);
+
+    data.resize(48);
+    inputs.resize(16);
+    outputs.resize(16);
+
+    // Temporary variables
+    Literal src0, src1, src2;
 
     // Shader body
     do {
@@ -180,38 +208,37 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
         switch (instr.opcode_vec) {
         case RSX_VP_OPCODE_VEC_NOP:
             break;
-        /*case RSX_VP_OPCODE_VEC_MOV:
-            source += format("%s = %s%s;\n", DST(), SRC(0), get_vp_mask(instr.masc_vec));
+        case RSX_VP_OPCODE_VEC_MOV:
+            src0 = getSourceVector(0);
+            setDestVector(src0);
             break;
         case RSX_VP_OPCODE_VEC_MUL:
-            source += format("%s = (%s * %s)%s;\n", DST(), SRC(0), SRC(1), get_vp_mask(instr.masc_vec));
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFMul(src0, src1));
             break;
         case RSX_VP_OPCODE_VEC_MAD:
-            source += format("%s = ((%s * %s) + %s)%s;\n", DST(), SRC(0), SRC(1), SRC(2), get_vp_mask(instr.masc_vec));
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            src2 = getSourceVector(2);
+            setDestVector(builder.opFAdd(builder.opFMul(src0, src1), src2));
             break;
         case RSX_VP_OPCODE_VEC_FRC:
-            source += format("%s = fract(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
+            assert_always("Unimplemented");
+            //source += format("%s = fract(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
             break;
         case RSX_VP_OPCODE_VEC_FLR:
-            source += format("%s = floor(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
+            assert_always("Unimplemented");
+            //source += format("%s = floor(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
             break;
         case RSX_VP_OPCODE_VEC_DP4:
-            source += format("%s = vec4(dot(%s, %s))%s;\n", DST(), SRC(0), SRC(1), get_vp_mask(instr.masc_vec));
-            break;*/
+            assert_always("Unimplemented");
+            //source += format("%s = vec4(dot(%s, %s))%s;\n", DST(), SRC(0), SRC(1), get_vp_mask(instr.masc_vec));
+            break;
         default:
             logger.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
         }
     } while (!(buffer++)->end);
-
-    // Map RSX output registers to shader output vectors
-    /*for (const auto& reg : output_regs) {
-        if (usedOutputs[reg.rsxIndex]) {
-            source += format("%s = %s;", reg.glReg, reg.rsxReg);
-        }
-    }
-
-    // Merge header and body
-    source = get_header() + "void main() { " + source + "}";*/
 }
 
 void RSXVertexProgram::compile() {

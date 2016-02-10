@@ -44,6 +44,10 @@ Literal Block::getId() {
     return instructions.front()->resultId;
 }
 
+Function& Block::getParent() const {
+    return parent;
+}
+
 std::string Block::dump() {
     std::string output;
     output += "  b" + std::to_string(getId()) + ":\n";

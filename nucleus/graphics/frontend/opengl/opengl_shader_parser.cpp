@@ -56,7 +56,6 @@ Module* OpenGLShaderParser::parse(const std::string& source) {
     module = new Module();
     builder.setModule(module);
 
-
     std::string code = preprocess(source);
     yyparse(*this);
 

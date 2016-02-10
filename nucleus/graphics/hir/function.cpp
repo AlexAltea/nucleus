@@ -40,6 +40,10 @@ Module& Function::getParent() const {
     return parent;
 }
 
+void Function::addLocalVariable(Instruction* instr) {
+    blocks[0]->variables.push_back(instr);
+}
+
 std::string Function::dump() {
     std::string output;
     output += "f" + std::to_string(getId()) + "() {\n";

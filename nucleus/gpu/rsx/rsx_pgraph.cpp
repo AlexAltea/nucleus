@@ -230,7 +230,6 @@ void PGRAPH::BindVertexAttributes() {
 }
 
 void PGRAPH::Begin(Primitive primitive) {
-    return; // TODO
     // Set surface
     setSurface();
 
@@ -244,23 +243,24 @@ void PGRAPH::Begin(Primitive primitive) {
         auto vpData = &vpe.data[vpe.start];
         auto vpHash = HashVertexProgram(vpData);
         if (cacheVP.find(vpHash) == cacheVP.end()) {
-            RSXVertexProgram vp;
-            vp.decompile(vpData);
-            vp.compile();
-            cacheVP[vpHash] = vp;
+            auto vp = std::make_unique<RSXVertexProgram>();
+            vp->decompile(vpData);
+            vp->compile();
+            cacheVP[vpHash] = std::move(vp);
         }
+        return; // TODO
         auto fpData = memory->ptr<rsx_fp_instruction_t>((fp_location ? rsx->get_ea(0x0) : 0xC0000000) + fp_offset);
         auto fpHash = HashFragmentProgram(fpData);
         if (cacheFP.find(fpHash) == cacheFP.end()) {
-            RSXFragmentProgram fp;
-            fp.decompile(fpData);
-            fp.compile();
-            cacheFP[fpHash] = fp;
+            auto fp = std::make_unique<RSXFragmentProgram>();
+            fp->decompile(fpData);
+            fp->compile();
+            cacheFP[fpHash] = std::move(fp);
         }
 
         gfx::PipelineDesc pipelineDesc = {};
-        pipelineDesc.vs = cacheVP[vpHash].shader;
-        pipelineDesc.ps = cacheFP[fpHash].shader;
+        pipelineDesc.vs = cacheVP[vpHash]->shader;
+        pipelineDesc.ps = cacheFP[fpHash]->shader;
         pipelineDesc.iaState.topology = convertPrimitiveTopology(primitive);
         pipelineDesc.cbState.colorTarget[0].enableBlend = blend_enable;
         pipelineDesc.cbState.colorTarget[0].enableLogicOp = logic_op_enable;

@@ -9,12 +9,13 @@
 #include "nucleus/graphics/hir/builder.h"
 #include "nucleus/graphics/hir/hir.h"
 
-#include <bitset>
+#include <memory>
 
 // Forward declarations
 namespace gfx {
 
 class Shader;
+class Module;
 
 }  // namespace gfx
 
@@ -151,13 +152,18 @@ class RSXVertexProgram {
 
 private:
     // HIR information
-    Module* module;
+    std::unique_ptr<Module> module;
     Builder builder;
     Literal vecTypeId;
 
-    // Input/Output registers used in the shader
-    std::bitset<32> usedInputs;
-    std::bitset<32> usedOutputs;
+    std::vector<Literal> data;
+    std::vector<Literal> inputs;
+    std::vector<Literal> outputs;
+
+    Literal getDataReg(int index);
+    Literal getInputReg(int index);
+    Literal getOutputReg(int index);
+    Literal getConstantReg(int index);
 
     // Current instruction being processed
     rsx_vp_instruction_t instr;
@@ -191,15 +197,10 @@ private:
      */
     void setDestVector(Literal value);
 
-    // Emitters
-    void emitVecAdd();
-    void emitVecMov();
-
-    // Generate the GLSL header and register declarations based on the decompilation
-    std::string getHeader();
-
 public:
     gfx::Shader* shader;
+
+    RSXVertexProgram();
 
     /**
      * Decompile a RSX VPE program to a gfx::hir::Module

@@ -9,6 +9,9 @@
 namespace gfx {
 namespace hir {
 
+Module::Module() : idInstructions({ nullptr }) {
+}
+
 bool Module::addFunction(Function* function) {
     functions.push_back(function);
     return true;

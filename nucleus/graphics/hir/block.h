@@ -22,6 +22,7 @@ class Block {
     Function& parent;
 
 public:
+    std::vector<Instruction*> variables;
     std::vector<Instruction*> instructions;
 
     // Constructor
@@ -34,6 +35,12 @@ public:
      * @return  Block ID
      */
     Literal getId();
+
+    /**
+     * Get the parent function of this block
+     * @return  Parent function
+     */
+    Function& getParent() const;
 
     /**
      * Save a human-readable version of this HIR block

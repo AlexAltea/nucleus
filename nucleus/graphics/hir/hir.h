@@ -27,6 +27,7 @@ enum StorageClass {
     UNIFORM_CONSTANT = 0,
     INPUT = 1,
     OUTPUT = 3,
+    PRIVATE = 6,
     FUNCTION = 7,
 };
 
@@ -41,6 +42,14 @@ enum Decoration {
     DECORATION_BUILTIN = 11,
     DECORATION_LOCATION = 30,
     DECORATION_BINDING = 33,
+};
+
+enum ExecutionModel {
+    EXECUTION_MODEL_VERTEX = 0,
+    EXECUTION_MODEL_DOMAIN = 1,
+    EXECUTION_MODEL_HULL = 2,
+    EXECUTION_MODEL_GEOMETRY = 3,
+    EXECUTION_MODEL_PIXEL = 4,
 };
 
 enum BuiltIn {

@@ -95,8 +95,8 @@ class PGRAPH {
     gfx::CommandBuffer* cmdBuffer;
 
     // Cache
-    std::unordered_map<U64, RSXVertexProgram> cacheVP;
-    std::unordered_map<U64, RSXFragmentProgram> cacheFP;
+    std::unordered_map<U64, std::unique_ptr<RSXVertexProgram>> cacheVP;
+    std::unordered_map<U64, std::unique_ptr<RSXFragmentProgram>> cacheFP;
 
     // Surface
     std::unordered_map<U32, gfx::Texture*> textures;

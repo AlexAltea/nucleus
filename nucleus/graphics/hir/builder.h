@@ -17,22 +17,72 @@ namespace hir {
 // Forward declarations
 class Instruction;
 class Block;
+class Function;
 class Module;
 
 class Builder {
     Module* module;
-    Block* ib;
+    Function* curFunction;
+    Block* curBlock;
+
+    // Return the opcode of an instruction given its result ID
+    Literal getOpcode(Literal resultId) const;
+
+    // Return the type of a member in a composite
+    Literal getContainedType(Literal typeId, int member = 0) const;
+
+    Literal getType(Literal resultId) const;
+    Literal getDerefType(Literal resultId);
+
+    // Constants
+    Literal getConstantScalar(Literal resultId) const;
+
+    // Type checks given a type ID
+    bool isTypeBool(Literal typeId)         const { return getOpcode(typeId) == OP_TYPE_BOOL; }
+    bool isTypePointer(Literal typeId)      const { return getOpcode(typeId) == OP_TYPE_POINTER; }
+    bool isTypeVector(Literal typeId)       const { return getOpcode(typeId) == OP_TYPE_VECTOR; }
+    bool isTypeMatrix(Literal typeId)       const { return getOpcode(typeId) == OP_TYPE_MATRIX; }
+    bool isTypeStruct(Literal typeId)       const { return getOpcode(typeId) == OP_TYPE_STRUCT; }
+    bool isTypeArray(Literal typeId)        const { return getOpcode(typeId) == OP_TYPE_ARRAY; }
+    bool isTypeImage(Literal typeId)        const { return getOpcode(typeId) == OP_TYPE_IMAGE; }
+    bool isTypeSampler(Literal typeId)      const { return getOpcode(typeId) == OP_TYPE_SAMPLER; }
+    bool isTypeSampledImage(Literal typeId) const { return getOpcode(typeId) == OP_TYPE_SAMPLED_IMAGE; }
+
+    // Type checks given a value ID
+    bool isValuePointer(Literal resultId)   const { return isTypePointer(getType(resultId)); }
+    bool isValueVector(Literal resultId)    const { return isTypeVector(getType(resultId)); }
+    bool isValueMatrix(Literal resultId)    const { return isTypeMatrix(getType(resultId)); }
+
+private:
+    // Instruction to be cached
+    enum Cache {
+        CACHE_OP_TYPE_VOID = 0,
+        CACHE_OP_TYPE_BOOL,
+        CACHE_OP_TYPE_INT,
+        CACHE_OP_TYPE_FLOAT,
+        CACHE_OP_TYPE_VECTOR,
+        CACHE_OP_TYPE_MATRIX,
+        CACHE_OP_TYPE_ARRAY,
+        CACHE_OP_TYPE_STRUCT,
+        CACHE_OP_TYPE_POINTER,
+        CACHE_OP_TYPE_FUNCTION,
+        _CACHE_COUNT,
+    };
+    // Database of created types to ensure unique creation
+    std::vector<Instruction*> cache[_CACHE_COUNT];
 
 public:
     // Insertion
     void setModule(Module* module);
-    void setInsertPoint(Block* block);
+    void setInsertionBlock(Block* block);
 
     // Instruction utilities
-    Instruction* appendInstr(Opcode opcode, bool hasResultId);
+    Instruction* createInstr(Opcode opcode, bool hasResultId);
     Instruction* appendInstr(U16 opcode, Literal idType, Literal idResult);
     Instruction* getInstr(Literal instrId);
 
+    // HIR header
+    void opEntryPoint(ExecutionModel model, Function* function);
 
     // HIR types
     Literal opTypeVoid();
@@ -41,19 +91,33 @@ public:
     Literal opTypeFloat(Literal width);
     Literal opTypeVector(Literal componentType, Literal componentCount);
     Literal opTypeMatrix(Literal columnType, Literal columnCount);
+    Literal opTypePointer(StorageClass storageClass, Literal type);
+    Literal opTypeFunction(Literal returnType, const std::vector<Literal>& parameters = {});
+
+    // HIR variables
+    Literal opVariable(StorageClass storage, Literal type);
 
     // HIR operations
-    Literal opIAdd(Literal lhs, Literal rhs);
-    Literal opISub(Literal lhs, Literal rhs);
-    Literal opIMul(Literal lhs, Literal rhs);
-    Literal opIDiv(Literal lhs, Literal rhs);
-    Literal opFAdd(Literal lhs, Literal rhs);
-    Literal opFSub(Literal lhs, Literal rhs);
-    Literal opFMul(Literal lhs, Literal rhs);
-    Literal opFDiv(Literal lhs, Literal rhs);
+    Literal emitUnaryOp(Opcode opcode, Literal value);
+    Literal emitBinaryOp(Opcode opcode, Literal lhs, Literal rhs);
+    Literal opIAdd(Literal lhs, Literal rhs) { return emitBinaryOp(OP_IADD, lhs, rhs); }
+    Literal opISub(Literal lhs, Literal rhs) { return emitBinaryOp(OP_ISUB, lhs, rhs); }
+    Literal opIMul(Literal lhs, Literal rhs) { return emitBinaryOp(OP_IMUL, lhs, rhs); }
+    Literal opUDiv(Literal lhs, Literal rhs) { return emitBinaryOp(OP_UDIV, lhs, rhs); }
+    Literal opSDiv(Literal lhs, Literal rhs) { return emitBinaryOp(OP_SDIV, lhs, rhs); }
+    Literal opFAdd(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FADD, lhs, rhs); }
+    Literal opFSub(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FSUB, lhs, rhs); }
+    Literal opFMul(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FMUL, lhs, rhs); }
+    Literal opFDiv(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FDIV, lhs, rhs); }
     Literal opFNegate(Literal value);
 
-    Literal opVectorShuffle(Literal resType, Literal vec1, Literal vec2, std::vector<Literal> components);
+    Literal opAccessChain(Literal base, const std::vector<Literal>& indexes);
+    Literal opLoad(Literal pointer);
+    void opStore(Literal pointer, Literal object);
+    Literal opVectorShuffle(Literal resType, Literal vec1, Literal vec2, const std::vector<Literal>& components);
+
+    // GLSL extensions
+    Literal opExtFAbs(Literal value);
 };
 
 }  // namespace hir
