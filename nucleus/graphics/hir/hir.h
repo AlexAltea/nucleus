@@ -24,11 +24,11 @@ namespace hir {
 using Literal = U32;
 
 enum StorageClass {
-    UNIFORM_CONSTANT = 0,
-    INPUT = 1,
-    OUTPUT = 3,
-    PRIVATE = 6,
-    FUNCTION = 7,
+    STORAGE_CLASS_UNIFORM_CONSTANT = 0,
+    STORAGE_CLASS_INPUT = 1,
+    STORAGE_CLASS_OUTPUT = 3,
+    STORAGE_CLASS_PRIVATE = 6,
+    STORAGE_CLASS_FUNCTION = 7,
 };
 
 enum Dimension {

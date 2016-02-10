@@ -25,6 +25,7 @@ public:
     std::vector<Instruction*> header;
 
     std::vector<Instruction*> entryPoints;
+    std::vector<Instruction*> decorations;
     std::vector<Instruction*> constantsTypesGlobals;
 
     // Mapping each result ID to the instruction with that result ID

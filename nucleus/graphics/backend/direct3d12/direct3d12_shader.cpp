@@ -273,13 +273,13 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
 
     std::string pointerString;
     switch (typeInstr->operands[0]) {
-    case StorageClass::UNIFORM_CONSTANT:
+    case STORAGE_CLASS_UNIFORM_CONSTANT:
         pointerString = "uniform."; break;
-    case StorageClass::INPUT:
+    case STORAGE_CLASS_INPUT:
         pointerString = "input."; break;
-    case StorageClass::OUTPUT:
+    case STORAGE_CLASS_OUTPUT:
         pointerString = "output."; break;
-    case StorageClass::FUNCTION:
+    case STORAGE_CLASS_FUNCTION:
         break;
     default:
         assert_always("Unimplemented");
@@ -326,6 +326,15 @@ std::string Direct3D12Shader::emitBinaryOp(Instruction* i, Opcode type, char sym
 
     std::string typeStr = getType(i->typeId);
     return format(PADDING "%s v%d = v%d %c v%d;\n", typeStr.c_str(), result, lhs, symbol, rhs);
+}
+
+std::string Direct3D12Shader::emitBinaryFunctionOp(Instruction* i, Opcode type, const char* function) {
+    Literal result = i->resultId;
+    Literal lhs = i->operands[0];
+    Literal rhs = i->operands[1];
+
+    std::string typeStr = getType(i->typeId);
+    return format(PADDING "%s v%d = %s(v%d, v%d);\n", typeStr.c_str(), result, function, lhs, rhs);
 }
 
 std::string Direct3D12Shader::emitOpCompositeConstruct(Instruction* i) {
@@ -391,7 +400,7 @@ std::string Direct3D12Shader::emitOpStore(Instruction* i) {
 
 std::string Direct3D12Shader::emitOpVariable(hir::Instruction* i) {
     assert_true(i->operands.size() >= 1);
-    assert_true(i->operands[0] == StorageClass::FUNCTION);
+    assert_true(i->operands[0] == STORAGE_CLASS_FUNCTION);
 
     Literal result = i->resultId;
     std::string type = getType(i->typeId);
@@ -435,6 +444,8 @@ std::string Direct3D12Shader::compile(Instruction* i) {
         return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
     case OP_SREM:
         return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
+    case OP_DOT:
+        return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "dot");
     case OP_VECTOR_SHUFFLE:
         return emitOpVectorShuffle(i);
     case OP_COMPOSITE_EXTRACT:
@@ -522,13 +533,13 @@ std::string Direct3D12Shader::compile(Module* module) {
         if (i->opcode == OP_VARIABLE) {
             Literal storageClass = i->operands[0];
             switch (storageClass) {
-            case StorageClass::UNIFORM_CONSTANT:
+            case STORAGE_CLASS_UNIFORM_CONSTANT:
                 appendUniform(i->typeId, i->resultId);
                 break;
-            case StorageClass::INPUT:
+            case STORAGE_CLASS_INPUT:
                 appendInput(i->typeId, i->resultId);
                 break;
-            case StorageClass::OUTPUT:
+            case STORAGE_CLASS_OUTPUT:
                 appendOutput(i->typeId, i->resultId);
                 break;
             default:
@@ -562,7 +573,7 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
     idCache.resize(module->idInstructions.size());
 
     std::string source = compile(module);
-    //std::cout << source << std::endl;
+    std::cout << source << std::endl;
 
     LPCSTR target;
     switch (desc.type) {

@@ -30,7 +30,7 @@ Literal Builder::getContainedType(Literal typeId, int member) const {
     case OP_TYPE_STRUCT:
         return instr->operands[member];
     default:
-        assert("Unexpected");
+        assert_always("Unexpected");
         return 0;
     }
 }
@@ -96,7 +96,7 @@ void Builder::setInsertionBlock(Block* block) {
 
 // HIR header
 void Builder::opEntryPoint(ExecutionModel model, Function* function) {
-    Instruction* i = createInstr(OP_TYPE_VOID, true);
+    Instruction* i = createInstr(OP_ENTRY_POINT, true);
     i->operands.push_back(model);
     i->operands.push_back(function->getId());
     module->entryPoints.push_back(i);
@@ -146,6 +146,23 @@ Literal Builder::opTypeMatrix(Literal columnType, Literal columnCount) {
     return i->resultId;
 }
 
+Literal Builder::opTypeArray(Literal elementType, int length) {
+    Literal lengthId = makeConstantUInt(length);
+    // Search in cache
+    for (const auto* t : cache[CACHE_OP_TYPE_POINTER]) {
+        if (t->operands[0] == elementType && t->operands[1] == lengthId) {
+            return t->resultId;
+        }
+    }
+    // Make it
+    Instruction* i = createInstr(OP_TYPE_ARRAY, true);
+    i->operands.push_back(elementType);
+    i->operands.push_back(lengthId);
+    cache[CACHE_OP_TYPE_ARRAY].push_back(i);
+    module->constantsTypesGlobals.push_back(i);
+    return i->resultId;
+}
+
 Literal Builder::opTypePointer(StorageClass storageClass, Literal type) {
     // Search in cache
     for (const auto* t : cache[CACHE_OP_TYPE_POINTER]) {
@@ -190,12 +207,41 @@ Literal Builder::opTypeFunction(Literal returnType, const std::vector<Literal>& 
     return i->resultId;
 }
 
+// HIR constants
+Literal Builder::makeConstantInt(S32 c) {
+    Literal typeId = opTypeInt(32, 1);
+    /*TODO Literal existingId = findScalarConstant(OP_TYPE_INT, OP_CONSTANT, typeId);
+    if (existingId) {
+        return existingId;
+    }*/
+    Instruction* i = createInstr(OP_CONSTANT, true);
+    i->typeId = typeId;
+    i->operands.push_back(c);
+    cache[CACHE_CONSTANT_INT].push_back(i);
+    module->constantsTypesGlobals.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::makeConstantUInt(U32 c) {
+    Literal typeId = opTypeInt(32, 0);
+    /*TODO Literal existingId = findScalarConstant(OP_TYPE_INT, OP_CONSTANT, typeId);
+    if (existingId) {
+        return existingId;
+    }*/
+    Instruction* i = createInstr(OP_CONSTANT, true);
+    i->typeId = typeId;
+    i->operands.push_back(c);
+    cache[CACHE_CONSTANT_INT].push_back(i);
+    module->constantsTypesGlobals.push_back(i);
+    return i->resultId;
+}
+
 // HIR variables
 Literal Builder::opVariable(StorageClass storage, Literal type) {
     Instruction* i = createInstr(OP_VARIABLE, true);
     i->typeId = opTypePointer(storage, type);
     i->operands.push_back(storage);
-    if (storage == FUNCTION) {
+    if (storage == STORAGE_CLASS_FUNCTION) {
         curFunction->addLocalVariable(i);
     } else {
         module->constantsTypesGlobals.push_back(i);
@@ -209,12 +255,33 @@ Literal Builder::emitBinaryOp(Opcode opcode, Literal lhs, Literal rhs) {
     i->typeId = getType(lhs);
     i->operands.push_back(lhs);
     i->operands.push_back(rhs);
+    curBlock->instructions.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::opDot(Literal lhs, Literal rhs) {
+    Instruction* i = createInstr(OP_DOT, true);
+    i->typeId = getContainedType(getType(lhs));
+    i->operands.push_back(lhs);
+    i->operands.push_back(rhs);
+    curBlock->instructions.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opFNegate(Literal value) {
     Instruction* i = createInstr(OP_FNEGATE, true);
     i->typeId = getType(value);
+    curBlock->instructions.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::opCompositeConstruct(Literal typeId, const std::vector<Literal>& constituents) {
+    assert(constituents.size() > 1);
+    Instruction* i = createInstr(OP_COMPOSITE_CONSTRUCT, true);
+    i->typeId = typeId;
+    for (const auto& c : constituents) {
+        i->operands.push_back(c);
+    }
     curBlock->instructions.push_back(i);
     return i->resultId;
 }
@@ -237,8 +304,8 @@ Literal Builder::opAccessChain(Literal base, const std::vector<Literal>& indexes
     typeId = opTypePointer(static_cast<StorageClass>(storageClass), typeId);
 
     Instruction* i = createInstr(OP_ACCESS_CHAIN, true);
-    i->operands.push_back(base);
     i->typeId = typeId;
+    i->operands.push_back(base);
     for (const auto& index : indexes) {
         i->operands.push_back(index);
     }

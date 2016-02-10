@@ -15,7 +15,7 @@
 namespace gfx {
 
 class Shader;
-class Module;
+class IBackend;
 
 }  // namespace gfx
 
@@ -155,6 +155,7 @@ private:
     std::unique_ptr<Module> module;
     Builder builder;
     Literal vecTypeId;
+    Literal constMemoryId;
 
     std::vector<Literal> data;
     std::vector<Literal> inputs;
@@ -210,9 +211,10 @@ public:
 
     /**
      * Compile gfx::hir::Module to gfx::Shader
-     * @return  Non-zero shader pointer on success, otherwise nullptr
+     * @param[in]  backend  Graphics backend to compile the module with
+     * @return              Non-zero shader pointer on success, otherwise nullptr
      */
-    void compile();
+    void compile(gfx::IBackend* backend);
 };
 
 }  // namespace rsx

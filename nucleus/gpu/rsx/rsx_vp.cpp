@@ -6,6 +6,7 @@
 #include "rsx_vp.h"
 #include "nucleus/assert.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/graphics/graphics.h"
 #include "nucleus/graphics/hir/block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/graphics/hir/module.h"
@@ -60,7 +61,7 @@ RSXVertexProgram::RSXVertexProgram() {
 Literal RSXVertexProgram::getDataReg(int index) {
     Literal& dataReg = data[index];
     if (!dataReg) {
-        dataReg = builder.opVariable(PRIVATE, vecTypeId);
+        dataReg = builder.opVariable(STORAGE_CLASS_PRIVATE, vecTypeId);
     }
     return dataReg;
 }
@@ -68,7 +69,7 @@ Literal RSXVertexProgram::getDataReg(int index) {
 Literal RSXVertexProgram::getInputReg(int index) {
     Literal& inputReg = inputs[index];
     if (!inputReg) {
-        inputReg = builder.opVariable(INPUT, vecTypeId);
+        inputReg = builder.opVariable(STORAGE_CLASS_INPUT, vecTypeId);
         //builder.opDecoration(); location
     }
     return inputReg;
@@ -77,7 +78,7 @@ Literal RSXVertexProgram::getInputReg(int index) {
 Literal RSXVertexProgram::getOutputReg(int index) {
     Literal& outputReg = outputs[index];
     if (!outputReg) {
-        outputReg = builder.opVariable(OUTPUT, vecTypeId);
+        outputReg = builder.opVariable(STORAGE_CLASS_OUTPUT, vecTypeId);
         //builder.opDecoration(); location
         //builder.opDecoration(); builtin
     }
@@ -85,8 +86,8 @@ Literal RSXVertexProgram::getOutputReg(int index) {
 }
 
 Literal RSXVertexProgram::getConstantReg(int index) {
-    //Literal constantReg = builder.opAccessChain();
-    return 0;
+    Literal offsetId = builder.makeConstantInt(index);
+    return builder.opAccessChain(constMemoryId, {offsetId});
 }
 
 Literal RSXVertexProgram::getMaskedValue(Literal dest, Literal source, U8 mask) {
@@ -136,7 +137,7 @@ Literal RSXVertexProgram::getSourceVector(int index) {
         sourceId = builder.opLoad(getInputReg(instr.src_input));
         break;
     case RSX_VP_REGISTER_TYPE_CONSTANT:
-        sourceId = builder.opLoad(getConstantReg(instr.src_input));
+        sourceId = builder.opLoad(getConstantReg(instr.src_const));
         break;
     }
 
@@ -179,6 +180,7 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     // Basic types
     Literal floatType = builder.opTypeFloat(32);
     vecTypeId = builder.opTypeVector(floatType, 4);
+    constMemoryId = builder.opVariable(STORAGE_CLASS_UNIFORM_CONSTANT, builder.opTypeArray(vecTypeId, 468));
 
     Function* function = new Function(*module.get(), builder.opTypeFunction(builder.opTypeVoid()));
     Block* block = new Block(*function);
@@ -191,6 +193,7 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
 
     // Temporary variables
     Literal src0, src1, src2;
+    Literal tmp0, tmp1, tmp2;
 
     // Shader body
     do {
@@ -232,8 +235,10 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
             //source += format("%s = floor(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
             break;
         case RSX_VP_OPCODE_VEC_DP4:
-            assert_always("Unimplemented");
-            //source += format("%s = vec4(dot(%s, %s))%s;\n", DST(), SRC(0), SRC(1), get_vp_mask(instr.masc_vec));
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            tmp0 = builder.opDot(src0, src1);
+            setDestVector(builder.opCompositeConstruct(vecTypeId, {tmp0, tmp0, tmp0, tmp0}));
             break;
         default:
             logger.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
@@ -241,7 +246,22 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     } while (!(buffer++)->end);
 }
 
-void RSXVertexProgram::compile() {
+void RSXVertexProgram::compile(gfx::IBackend* backend) {
+    // TODO: Remove this
+    for (auto* i : module->entryPoints) {
+        module->header.push_back(i);
+    }
+    for (auto* i : module->decorations) {
+        module->header.push_back(i);
+    }
+    for (auto* i : module->constantsTypesGlobals) {
+        module->header.push_back(i);
+    }
+
+    gfx::ShaderDesc desc = {};
+    desc.type = gfx::SHADER_TYPE_VERTEX;
+    desc.module = module.get();
+    shader = backend->createShader(desc);
 }
 
 }  // namespace rsx

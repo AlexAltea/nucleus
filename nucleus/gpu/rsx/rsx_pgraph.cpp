@@ -245,7 +245,7 @@ void PGRAPH::Begin(Primitive primitive) {
         if (cacheVP.find(vpHash) == cacheVP.end()) {
             auto vp = std::make_unique<RSXVertexProgram>();
             vp->decompile(vpData);
-            vp->compile();
+            vp->compile(graphics.get());
             cacheVP[vpHash] = std::move(vp);
         }
         return; // TODO

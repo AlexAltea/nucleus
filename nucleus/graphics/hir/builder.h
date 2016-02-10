@@ -66,6 +66,11 @@ private:
         CACHE_OP_TYPE_STRUCT,
         CACHE_OP_TYPE_POINTER,
         CACHE_OP_TYPE_FUNCTION,
+
+        CACHE_CONSTANT_BOOL,
+        CACHE_CONSTANT_INT,
+        CACHE_CONSTANT_FLOAT,
+
         _CACHE_COUNT,
     };
     // Database of created types to ensure unique creation
@@ -91,8 +96,17 @@ public:
     Literal opTypeFloat(Literal width);
     Literal opTypeVector(Literal componentType, Literal componentCount);
     Literal opTypeMatrix(Literal columnType, Literal columnCount);
+    Literal opTypeArray(Literal elementType, int length);
     Literal opTypePointer(StorageClass storageClass, Literal type);
     Literal opTypeFunction(Literal returnType, const std::vector<Literal>& parameters = {});
+
+    // HIR constants
+    Literal findScalarConstant(Opcode opcode);
+    Literal makeConstantBool(bool c);
+    Literal makeConstantInt(S32 c);
+    Literal makeConstantUInt(U32 c);
+    Literal makeConstantFloat(F32 c);
+    Literal makeConstantDouble(F64 c);
 
     // HIR variables
     Literal opVariable(StorageClass storage, Literal type);
@@ -109,8 +123,10 @@ public:
     Literal opFSub(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FSUB, lhs, rhs); }
     Literal opFMul(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FMUL, lhs, rhs); }
     Literal opFDiv(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FDIV, lhs, rhs); }
+    Literal opDot(Literal lhs, Literal rhs);
     Literal opFNegate(Literal value);
 
+    Literal opCompositeConstruct(Literal typeId, const std::vector<Literal>& constituents);
     Literal opAccessChain(Literal base, const std::vector<Literal>& indexes);
     Literal opLoad(Literal pointer);
     void opStore(Literal pointer, Literal object);
