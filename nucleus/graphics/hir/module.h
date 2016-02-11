@@ -24,9 +24,15 @@ public:
     // Header
     std::vector<Instruction*> header;
 
-    std::vector<Instruction*> entryPoints;
-    std::vector<Instruction*> decorations;
-    std::vector<Instruction*> constantsTypesGlobals;
+    std::vector<Instruction*> hCapabilities;      // 1. All OpCapability
+    std::vector<Instruction*> hExtensions;        // 2. All OpExtension
+    std::vector<Instruction*> hImports;           // 3. All OpExtInstImport (at least one required)
+    std::vector<Instruction*> hMemoryModel;       // 4. Single OpMemoryModel (exactly one required, member type is vector for consistency)
+    std::vector<Instruction*> hEntryPoints;       // 5. All OpEntryPoint
+    std::vector<Instruction*> hExecutions;        // 6. All OpExecutionMode
+    std::vector<Instruction*> hDebugs;            // 7. All debug instructions: {OpString, OpSource*, Op*Name}
+    std::vector<Instruction*> hAnnotation;        // 8. All annonation instructions: {Op*Decorate}
+    std::vector<Instruction*> hConstsTypesGlobs;  // 9. All constant, type, global, declarations.
 
     // Mapping each result ID to the instruction with that result ID
     std::vector<Instruction*> idInstructions;

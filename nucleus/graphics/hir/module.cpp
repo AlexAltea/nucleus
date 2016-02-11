@@ -5,6 +5,7 @@
 
 #include "module.h"
 #include "nucleus/graphics/hir/function.h"
+#include "nucleus/graphics/hir/instruction.h"
 
 namespace gfx {
 namespace hir {
@@ -19,6 +20,19 @@ bool Module::addFunction(Function* function) {
 
 std::string Module::dump() const {
     std::string output;
+
+    // Header
+    for (const auto& i : hCapabilities)     { i->dump(); }
+    for (const auto& i : hExtensions)       { i->dump(); }
+    for (const auto& i : hImports)          { i->dump(); }
+    for (const auto& i : hMemoryModel)      { i->dump(); }
+    for (const auto& i : hEntryPoints)      { i->dump(); }
+    for (const auto& i : hExecutions)       { i->dump(); }
+    for (const auto& i : hDebugs)           { i->dump(); }
+    for (const auto& i : hAnnotation)       { i->dump(); }
+    for (const auto& i : hConstsTypesGlobs) { i->dump(); }
+
+    // Functions
     for (const auto& function : functions) {
         output += function->dump();
     }

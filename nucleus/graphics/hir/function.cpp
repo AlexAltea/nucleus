@@ -46,11 +46,13 @@ void Function::addLocalVariable(Instruction* instr) {
 
 std::string Function::dump() {
     std::string output;
-    output += "f" + std::to_string(getId()) + "() {\n";
+    output += function->dump();
+    for (const auto& param : parameters) {
+        output += param->dump();
+    }
     for (const auto& block : blocks) {
         output += block->dump();
     }
-    output += "}\n\n";
     return output;
 }
 

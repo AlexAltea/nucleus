@@ -25,6 +25,12 @@ public:
     Instruction();
     Instruction(int opcode, Literal typeId, Literal resultId);
 
+    // Operand management
+    void addOperandLiteral(Literal id);
+    void addOperandImmediate(unsigned int imm);
+    void addOperandString(const char* str);
+    void addOperandArray(const std::vector<Literal>& arr);
+
     /**
      * Save a human-readable version of this HIR instruction
      * @return  String containing the readable version of this HIR block

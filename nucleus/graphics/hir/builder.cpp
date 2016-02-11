@@ -95,23 +95,38 @@ void Builder::setInsertionBlock(Block* block) {
 }
 
 // HIR header
-void Builder::opEntryPoint(ExecutionModel model, Function* function) {
-    Instruction* i = createInstr(OP_ENTRY_POINT, true);
+void Builder::addCapability(Capability capability) {
+    Instruction* i = createInstr(OP_CAPABILITY, false);
+    i->addOperandImmediate(capability);
+    module->hCapabilities.push_back(i);
+}
+
+void Builder::addEntryPoint(ExecutionModel model, Function* function, const char* name, const std::vector<Literal>& io) {
+    Instruction* i = createInstr(OP_ENTRY_POINT, false);
     i->operands.push_back(model);
-    i->operands.push_back(function->getId());
-    module->entryPoints.push_back(i);
+    i->addOperandLiteral(function->getId());
+    i->addOperandString(name);
+    i->addOperandArray(io);
+    module->hEntryPoints.push_back(i);
+}
+
+void Builder::addMemoryModel(AddressingModel addressingModel, MemoryModel memoryModel) {
+    Instruction* i = createInstr(OP_MEMORY_MODEL, false);
+    i->addOperandImmediate(addressingModel);
+    i->addOperandImmediate(memoryModel);
+    module->hMemoryModel.push_back(i);
 }
 
 // HIR types
 Literal Builder::opTypeVoid() {
     Instruction* i = createInstr(OP_TYPE_VOID, true);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opTypeBool() {
     Instruction* i = createInstr(OP_TYPE_BOOL, true);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -119,14 +134,14 @@ Literal Builder::opTypeInt(Literal width, bool signedness) {
     Instruction* i = createInstr(OP_TYPE_INT, true);
     i->operands.push_back(width);
     i->operands.push_back(signedness);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opTypeFloat(Literal width) {
     Instruction* i = createInstr(OP_TYPE_FLOAT, true);
     i->operands.push_back(width);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -134,7 +149,7 @@ Literal Builder::opTypeVector(Literal componentType, Literal componentCount) {
     Instruction* i = createInstr(OP_TYPE_VECTOR, true);
     i->operands.push_back(componentType);
     i->operands.push_back(componentCount);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -142,7 +157,7 @@ Literal Builder::opTypeMatrix(Literal columnType, Literal columnCount) {
     Instruction* i = createInstr(OP_TYPE_MATRIX, true);
     i->operands.push_back(columnType);
     i->operands.push_back(columnCount);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -159,7 +174,7 @@ Literal Builder::opTypeArray(Literal elementType, int length) {
     i->operands.push_back(elementType);
     i->operands.push_back(lengthId);
     cache[CACHE_OP_TYPE_ARRAY].push_back(i);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -173,9 +188,9 @@ Literal Builder::opTypePointer(StorageClass storageClass, Literal type) {
     // Make it
     Instruction* i = createInstr(OP_TYPE_POINTER, true);
     i->operands.push_back(storageClass);
-    i->operands.push_back(type);
+    i->addOperandLiteral(type);
     cache[CACHE_OP_TYPE_POINTER].push_back(i);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -198,12 +213,12 @@ Literal Builder::opTypeFunction(Literal returnType, const std::vector<Literal>& 
     }
     // Make it
     Instruction* i = createInstr(OP_TYPE_FUNCTION, true);
-    i->operands.push_back(returnType);
+    i->addOperandLiteral(returnType);
     for (const auto& param : parameters) {
-        i->operands.push_back(param);
+        i->addOperandLiteral(param);
     }
     cache[CACHE_OP_TYPE_FUNCTION].push_back(i);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -218,7 +233,7 @@ Literal Builder::makeConstantInt(S32 c) {
     i->typeId = typeId;
     i->operands.push_back(c);
     cache[CACHE_CONSTANT_INT].push_back(i);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -232,7 +247,7 @@ Literal Builder::makeConstantUInt(U32 c) {
     i->typeId = typeId;
     i->operands.push_back(c);
     cache[CACHE_CONSTANT_INT].push_back(i);
-    module->constantsTypesGlobals.push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
@@ -244,7 +259,7 @@ Literal Builder::opVariable(StorageClass storage, Literal type) {
     if (storage == STORAGE_CLASS_FUNCTION) {
         curFunction->addLocalVariable(i);
     } else {
-        module->constantsTypesGlobals.push_back(i);
+        module->hConstsTypesGlobs.push_back(i);
     }
     return i->resultId;
 }
@@ -253,8 +268,8 @@ Literal Builder::opVariable(StorageClass storage, Literal type) {
 Literal Builder::emitBinaryOp(Opcode opcode, Literal lhs, Literal rhs) {
     Instruction* i = createInstr(opcode, true);
     i->typeId = getType(lhs);
-    i->operands.push_back(lhs);
-    i->operands.push_back(rhs);
+    i->addOperandLiteral(lhs);
+    i->addOperandLiteral(rhs);
     curBlock->instructions.push_back(i);
     return i->resultId;
 }
@@ -262,8 +277,8 @@ Literal Builder::emitBinaryOp(Opcode opcode, Literal lhs, Literal rhs) {
 Literal Builder::opDot(Literal lhs, Literal rhs) {
     Instruction* i = createInstr(OP_DOT, true);
     i->typeId = getContainedType(getType(lhs));
-    i->operands.push_back(lhs);
-    i->operands.push_back(rhs);
+    i->addOperandLiteral(lhs);
+    i->addOperandLiteral(rhs);
     curBlock->instructions.push_back(i);
     return i->resultId;
 }
@@ -316,24 +331,24 @@ Literal Builder::opAccessChain(Literal base, const std::vector<Literal>& indexes
 Literal Builder::opLoad(Literal pointer) {
     Instruction* i = createInstr(OP_LOAD, true);
     i->typeId = getDerefType(pointer);
-    i->operands.push_back(pointer);
+    i->addOperandLiteral(pointer);
     curBlock->instructions.push_back(i);
     return i->resultId;
 }
 
 void Builder::opStore(Literal pointer, Literal object) {
     Instruction* i = createInstr(OP_STORE, false);
-    i->operands.push_back(pointer);
-    i->operands.push_back(object);
+    i->addOperandLiteral(pointer);
+    i->addOperandLiteral(object);
     curBlock->instructions.push_back(i);
 }
 
 Literal Builder::opVectorShuffle(Literal resType, Literal vec1, Literal vec2, const std::vector<Literal>& components) {
     Instruction* i = createInstr(OP_VECTOR_SHUFFLE, true);
     i->typeId = resType;
-    i->operands.push_back(vec1);
-    i->operands.push_back(vec2);
-    i->operands.insert(i->operands.end(), components.begin(), components.end());
+    i->addOperandLiteral(vec1);
+    i->addOperandLiteral(vec2);
+    i->addOperandArray(components);
     curBlock->instructions.push_back(i);
     return i->resultId;
 }

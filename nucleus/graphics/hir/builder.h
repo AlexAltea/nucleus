@@ -87,7 +87,9 @@ public:
     Instruction* getInstr(Literal instrId);
 
     // HIR header
-    void opEntryPoint(ExecutionModel model, Function* function);
+    void addCapability(Capability capability);
+    void addEntryPoint(ExecutionModel model, Function* function, const char* name, const std::vector<Literal>& io);
+    void addMemoryModel(AddressingModel addressingModel, MemoryModel memoryModel);
 
     // HIR types
     Literal opTypeVoid();

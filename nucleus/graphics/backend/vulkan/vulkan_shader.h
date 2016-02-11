@@ -26,11 +26,15 @@ namespace gfx {
 namespace vulkan {
 
 class VulkanShader : public Shader {
-    std::vector<U32> binary;
-
+private:
+    // Compile HIR components into SPIR-V bytecode
     void dump(const hir::Instruction& i);
+    void dump(const hir::Block& block);
+    void dump(const hir::Function& function);
+    void dump(const hir::Module& module);
 
 public:
+    std::vector<U32> binary;
 
     bool initialize(const ShaderDesc& desc);
 };

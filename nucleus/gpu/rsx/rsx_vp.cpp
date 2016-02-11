@@ -70,6 +70,7 @@ Literal RSXVertexProgram::getInputReg(int index) {
     Literal& inputReg = inputs[index];
     if (!inputReg) {
         inputReg = builder.opVariable(STORAGE_CLASS_INPUT, vecTypeId);
+        entryPointInterface.push_back(inputReg);
         //builder.opDecoration(); location
     }
     return inputReg;
@@ -79,6 +80,7 @@ Literal RSXVertexProgram::getOutputReg(int index) {
     Literal& outputReg = outputs[index];
     if (!outputReg) {
         outputReg = builder.opVariable(STORAGE_CLASS_OUTPUT, vecTypeId);
+        entryPointInterface.push_back(outputReg);
         //builder.opDecoration(); location
         //builder.opDecoration(); builtin
     }
@@ -185,7 +187,6 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     Function* function = new Function(*module.get(), builder.opTypeFunction(builder.opTypeVoid()));
     Block* block = new Block(*function);
     builder.setInsertionBlock(block);
-    builder.opEntryPoint(EXECUTION_MODEL_VERTEX, function);
 
     data.resize(48);
     inputs.resize(16);
@@ -244,19 +245,24 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
             logger.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
         }
     } while (!(buffer++)->end);
+
+    // Header
+    builder.addCapability(CAPABILITY_SHADER);
+    builder.addEntryPoint(EXECUTION_MODEL_VERTEX, function, "main", entryPointInterface);
+    builder.addMemoryModel(ADDRESSING_MODEL_LOGICAL, MEMORY_MODEL_GLSL450);
 }
 
 void RSXVertexProgram::compile(gfx::IBackend* backend) {
     // TODO: Remove this
-    for (auto* i : module->entryPoints) {
-        module->header.push_back(i);
-    }
-    for (auto* i : module->decorations) {
-        module->header.push_back(i);
-    }
-    for (auto* i : module->constantsTypesGlobals) {
-        module->header.push_back(i);
-    }
+    for (const auto& i : module->hCapabilities)     { module->header.push_back(i); }
+    for (const auto& i : module->hExtensions)       { module->header.push_back(i); }
+    for (const auto& i : module->hImports)          { module->header.push_back(i); }
+    for (const auto& i : module->hMemoryModel)      { module->header.push_back(i); }
+    for (const auto& i : module->hEntryPoints)      { module->header.push_back(i); }
+    for (const auto& i : module->hExecutions)       { module->header.push_back(i); }
+    for (const auto& i : module->hDebugs)           { module->header.push_back(i); }
+    for (const auto& i : module->hAnnotation)       { module->header.push_back(i); }
+    for (const auto& i : module->hConstsTypesGlobs) { module->header.push_back(i); }
 
     gfx::ShaderDesc desc = {};
     desc.type = gfx::SHADER_TYPE_VERTEX;

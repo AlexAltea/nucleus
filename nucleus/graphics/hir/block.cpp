@@ -50,9 +50,12 @@ Function& Block::getParent() const {
 
 std::string Block::dump() {
     std::string output;
-    output += "  b" + std::to_string(getId()) + ":\n";
-    for (const auto& instruction : instructions) {
-        //output += instruction->dump();
+    output += instructions[0]->dump();
+    for (const auto& var : variables) {
+        output += var->dump();
+    }
+    for (Size i = 1; i < instructions.size(); i++) {
+        output += instructions[i]->dump();
     }
     return output;
 }

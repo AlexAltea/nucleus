@@ -156,6 +156,7 @@ private:
     Builder builder;
     Literal vecTypeId;
     Literal constMemoryId;
+    std::vector<Literal> entryPointInterface;
 
     std::vector<Literal> data;
     std::vector<Literal> inputs;

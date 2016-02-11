@@ -19,6 +19,9 @@
     <Filter Include="frontend\vulkan">
       <UniqueIdentifier>{8fc5d072-09e7-40de-9a5b-5dbcb07ac0e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backend\vulkan">
+      <UniqueIdentifier>{afff366d-337a-45b1-97fb-ae2a40010517}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.cpp">
@@ -85,6 +88,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)format.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_resource.cpp">
       <Filter>backend\direct3d12</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.cpp">
+      <Filter>backend\vulkan</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan.h">
       <Filter>frontend\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.h">
+      <Filter>backend\vulkan</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

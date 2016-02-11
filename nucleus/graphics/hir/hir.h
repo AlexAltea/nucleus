@@ -31,6 +31,16 @@ enum StorageClass {
     STORAGE_CLASS_FUNCTION = 7,
 };
 
+enum AddressingModel {
+    ADDRESSING_MODEL_LOGICAL = 0,
+    ADDRESSING_MODEL_PHYSICAL32 = 1,
+    ADDRESSING_MODEL_PHYSICAL64 = 2,
+};
+
+enum Capability {
+    CAPABILITY_SHADER = 1,
+};
+
 enum Dimension {
     DIMENSION_1D = 0,
     DIMENSION_2D = 1,
@@ -50,6 +60,12 @@ enum ExecutionModel {
     EXECUTION_MODEL_HULL = 2,
     EXECUTION_MODEL_GEOMETRY = 3,
     EXECUTION_MODEL_PIXEL = 4,
+};
+
+enum MemoryModel {
+    MEMORY_MODEL_SIMPLE = 0,
+    MEMORY_MODEL_GLSL450 = 1,
+    MEMORY_MODEL_OPENGL = 2,
 };
 
 enum BuiltIn {

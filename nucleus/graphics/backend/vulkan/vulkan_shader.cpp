@@ -22,6 +22,7 @@ void VulkanShader::dump(const Instruction& i) {
         wordCount += 1;
     if (i.resultId)
         wordCount += 1;
+    wordCount += i.operands.size();
 
     Literal header = (wordCount << spv::WordCountShift) | i.opcode;
     binary.push_back(header);
@@ -34,26 +35,57 @@ void VulkanShader::dump(const Instruction& i) {
     }
 }
 
+void VulkanShader::dump(const Block& block) {
+    dump(*block.instructions[0]);
+    for (const auto& var : block.variables) {
+        dump(*var);
+    }
+    for (Size i = 1; i < block.instructions.size(); i++) {
+        dump(*block.instructions[i]);
+    }
+}
+
+void VulkanShader::dump(const Function& function) {
+    dump(*function.function);
+    for (const auto& param : function.parameters) {
+        dump(*param);
+    }
+    for (const auto& block : function.blocks) {
+        dump(*block);
+    }
+    dump(Instruction(OP_FUNCTION_END, 0, 0));
+}
+
+void VulkanShader::dump(const Module& module) {
+    // Header
+    for (const auto& i : module.hCapabilities)     { dump(*i); }
+    for (const auto& i : module.hExtensions)       { dump(*i); }
+    for (const auto& i : module.hImports)          { dump(*i); }
+    for (const auto& i : module.hMemoryModel)      { dump(*i); }
+    for (const auto& i : module.hEntryPoints)      { dump(*i); }
+    for (const auto& i : module.hExecutions)       { dump(*i); }
+    for (const auto& i : module.hDebugs)           { dump(*i); }
+    for (const auto& i : module.hAnnotation)       { dump(*i); }
+    for (const auto& i : module.hConstsTypesGlobs) { dump(*i); }
+
+    // Functions
+    for (const auto& function : module.functions) {
+        dump(*function);
+    }
+}
+
 bool VulkanShader::initialize(const ShaderDesc& desc) {
+    const Module& module = *desc.module;
+
+    // Binary header
+    auto bound = static_cast<U32>(module.idInstructions.size());
     binary.insert(binary.end(), {
         spv::MagicNumber,
         spv::Version,
-        0, 0, 0,
+        0, bound, 0,
     });
-
-    // Module
-    Module* module = desc.module;
-    for (const auto* instruction : module->header) {
-        dump(*instruction);
-    }
-    for (const auto* function : module->functions) {
-        for (const auto* block : function->blocks) {
-            for (const auto* instruction : block->instructions) {
-                dump(*instruction);
-            }
-        }
-    }
-
+    
+    dump(module);
     return true;
 }
 
