@@ -119,44 +119,88 @@ void Builder::addMemoryModel(AddressingModel addressingModel, MemoryModel memory
 
 // HIR types
 Literal Builder::opTypeVoid() {
+    // Search in cache
+    if (!cache[CACHE_OP_TYPE_VOID].empty()) {
+        return cache[CACHE_OP_TYPE_VOID][0]->resultId;
+    }
+    // Make type
     Instruction* i = createInstr(OP_TYPE_VOID, true);
+    cache[CACHE_OP_TYPE_VOID].push_back(i);
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opTypeBool() {
+    // Search in cache
+    if (!cache[CACHE_OP_TYPE_BOOL].empty()) {
+        return cache[CACHE_OP_TYPE_BOOL][0]->resultId;
+    }
+    // Make type
     Instruction* i = createInstr(OP_TYPE_BOOL, true);
+    cache[CACHE_OP_TYPE_BOOL].push_back(i);
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opTypeInt(Literal width, bool signedness) {
+    // Search in cache
+    for (const auto* t : cache[CACHE_OP_TYPE_INT]) {
+        if (t->operands[0] == width && t->operands[1] == signedness) {
+            return t->resultId;
+        }
+    }
+    // Make type
     Instruction* i = createInstr(OP_TYPE_INT, true);
     i->operands.push_back(width);
     i->operands.push_back(signedness);
+    cache[CACHE_OP_TYPE_INT].push_back(i);
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opTypeFloat(Literal width) {
+    // Search in cache
+    for (const auto* t : cache[CACHE_OP_TYPE_FLOAT]) {
+        if (t->operands[0] == width) {
+            return t->resultId;
+        }
+    }
+    // Make type
     Instruction* i = createInstr(OP_TYPE_FLOAT, true);
     i->operands.push_back(width);
+    cache[CACHE_OP_TYPE_FLOAT].push_back(i);
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opTypeVector(Literal componentType, Literal componentCount) {
+    // Search in cache
+    for (const auto* t : cache[CACHE_OP_TYPE_VECTOR]) {
+        if (t->operands[0] == componentType && t->operands[1] == componentCount) {
+            return t->resultId;
+        }
+    }
+    // Make type
     Instruction* i = createInstr(OP_TYPE_VECTOR, true);
     i->operands.push_back(componentType);
     i->operands.push_back(componentCount);
+    cache[CACHE_OP_TYPE_VECTOR].push_back(i);
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
 
 Literal Builder::opTypeMatrix(Literal columnType, Literal columnCount) {
+    // Search in cache
+    for (const auto* t : cache[CACHE_OP_TYPE_MATRIX]) {
+        if (t->operands[0] == columnType && t->operands[1] == columnCount) {
+            return t->resultId;
+        }
+    }
+    // Make type
     Instruction* i = createInstr(OP_TYPE_MATRIX, true);
     i->operands.push_back(columnType);
     i->operands.push_back(columnCount);
+    cache[CACHE_OP_TYPE_MATRIX].push_back(i);
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
@@ -169,7 +213,7 @@ Literal Builder::opTypeArray(Literal elementType, int length) {
             return t->resultId;
         }
     }
-    // Make it
+    // Make type
     Instruction* i = createInstr(OP_TYPE_ARRAY, true);
     i->operands.push_back(elementType);
     i->operands.push_back(lengthId);
@@ -185,7 +229,7 @@ Literal Builder::opTypePointer(StorageClass storageClass, Literal type) {
             return t->resultId;
         }
     }
-    // Make it
+    // Make type
     Instruction* i = createInstr(OP_TYPE_POINTER, true);
     i->operands.push_back(storageClass);
     i->addOperandLiteral(type);
@@ -211,7 +255,7 @@ Literal Builder::opTypeFunction(Literal returnType, const std::vector<Literal>& 
             return t->resultId;
         }
     }
-    // Make it
+    // Make type
     Instruction* i = createInstr(OP_TYPE_FUNCTION, true);
     i->addOperandLiteral(returnType);
     for (const auto& param : parameters) {

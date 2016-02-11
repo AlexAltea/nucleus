@@ -15,8 +15,11 @@ Function::Function(Module& parent, Literal type) : parent(parent) {
     Module& module = parent;
     module.addFunction(this);
 
-    Literal id = module.idInstructions.size();
-    function = new Instruction(OP_FUNCTION, type, id);
+    Literal typeId = module.idInstructions[type]->operands[0];
+    Literal resultId = module.idInstructions.size();
+    function = new Instruction(OP_FUNCTION, typeId, resultId);
+    function->addOperandImmediate(FUNCTION_CONTROL_NONE);
+    function->addOperandLiteral(type);
 
     // Update result ID table
     module.idInstructions.push_back(function);

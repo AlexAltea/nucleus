@@ -67,6 +67,10 @@ void Direct3D12Shader::appendUniform(Literal typeId, Literal resultId) {
         }
         sourceUniforms += format("%s;\n%s;\n", texture.c_str(), sampler.c_str());
     }
+    else {
+        std::string type = getType(underlyingType->resultId);
+        sourceUniforms += format("%s v%d : register(b%d);\n", type.c_str(), resultId, countArbitraryCBV++);
+    }
 }
 
 void Direct3D12Shader::appendInput(Literal typeId, Literal resultId) {
@@ -273,12 +277,11 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
 
     std::string pointerString;
     switch (typeInstr->operands[0]) {
-    case STORAGE_CLASS_UNIFORM_CONSTANT:
-        pointerString = "uniform."; break;
     case STORAGE_CLASS_INPUT:
         pointerString = "input."; break;
     case STORAGE_CLASS_OUTPUT:
         pointerString = "output."; break;
+    case STORAGE_CLASS_UNIFORM_CONSTANT:
     case STORAGE_CLASS_FUNCTION:
         break;
     default:
@@ -298,7 +301,7 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
                 std::string constant = getConstant(pointerInstr->operands[i]);
                 pointerString += format(".m%s", constant.c_str());
             }
-        } else if (underlyingType->opcode == OP_TYPE_VECTOR) {
+        } else if (underlyingType->opcode == OP_TYPE_ARRAY || underlyingType->opcode == OP_TYPE_VECTOR) {
             std::string constant = getConstant(pointerInstr->operands[1]);
             pointerString += format("[%s]", constant.c_str());
         }

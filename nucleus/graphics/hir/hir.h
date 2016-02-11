@@ -68,6 +68,14 @@ enum MemoryModel {
     MEMORY_MODEL_OPENGL = 2,
 };
 
+enum FunctionControl {
+    FUNCTION_CONTROL_NONE = 0,
+    FUNCTION_CONTROL_INLINE       = (1 << 0),
+    FUNCTION_CONTROL_DONT_INLINE  = (1 << 1),
+    FUNCTION_CONTROL_PURE         = (1 << 2),
+    FUNCTION_CONTROL_CONST        = (1 << 3),
+};
+
 enum BuiltIn {
     BUILTIN_POSITION = 0,
     BUILTIN_POINTSIZE = 1,
