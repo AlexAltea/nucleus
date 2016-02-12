@@ -52,13 +52,13 @@ gfx::BlendOp convertBlendOp(BlendEquation equation) {
     }
 }
 
-gfx::ColorWriteEnable convertColorMask(ColorMask mask) {
-    int colorWriteEnable;
-    if (mask & RSX_COLOR_MASK_R)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_RED;
-    if (mask & RSX_COLOR_MASK_G)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_GREEN;
-    if (mask & RSX_COLOR_MASK_B)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_BLUE;
-    if (mask & RSX_COLOR_MASK_A)  colorWriteEnable |= gfx::COLOR_WRITE_ENABLE_ALPHA;
-    return static_cast<gfx::ColorWriteEnable>(colorWriteEnable);
+gfx::ColorWriteMask convertColorMask(ColorMask mask) {
+    gfx::ColorWriteMask colorWriteMask;
+    if (mask & RSX_COLOR_MASK_R)  colorWriteMask |= gfx::COLOR_WRITE_ENABLE_RED;
+    if (mask & RSX_COLOR_MASK_G)  colorWriteMask |= gfx::COLOR_WRITE_ENABLE_GREEN;
+    if (mask & RSX_COLOR_MASK_B)  colorWriteMask |= gfx::COLOR_WRITE_ENABLE_BLUE;
+    if (mask & RSX_COLOR_MASK_A)  colorWriteMask |= gfx::COLOR_WRITE_ENABLE_ALPHA;
+    return colorWriteMask;
 }
 
 gfx::LogicOp convertLogicOp(LogicOp op) {

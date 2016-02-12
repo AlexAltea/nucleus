@@ -17,6 +17,7 @@ namespace direct3d12 {
 
 D3D12_BLEND convertBlend(gfx::Blend blend);
 D3D12_BLEND_OP convertBlendOp(gfx::BlendOp blendOp);
+UINT8 convertColorWriteMask(gfx::ColorWriteMask mask);
 D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc);
 D3D12_FILTER convertFilter(gfx::Filter filter);
 DXGI_FORMAT convertFormat(gfx::Format format);

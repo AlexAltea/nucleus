@@ -196,11 +196,6 @@ void PGRAPH::setSurface() {
 /**
  * PGRAPH methods
  */
-void PGRAPH::AlphaFunc(U32 func, F32 ref) {
-    /*glAlphaFunc(func, ref);
-    checkRendererError("AlphaFunc");*/
-}
-
 // NOTE: RSX doesn't know how big the vertex buffer is, but OpenGL requires this information
 // to copy the data to the host GPU. Therefore, LoadVertexAttributes needs to be called.
 void PGRAPH::BindVertexAttributes() {
@@ -237,19 +232,21 @@ void PGRAPH::Begin(Primitive primitive) {
     gfx::Viewport rectangle = { viewport.x, viewport.y, viewport.width, viewport.height };
     cmdBuffer->cmdSetViewports(1, &rectangle);
 
-    // Set pipeline
-    gfx::Pipeline* pipeline;
-    if (1) { // TODO: Hash pipeline and retrieve it from cache
-        auto vpData = &vpe.data[vpe.start];
-        auto vpHash = HashVertexProgram(vpData);
+    // Hashing
+    auto vpData = &vpe.data[vpe.start];
+    auto vpHash = HashVertexProgram(vpData);
+    auto fpData = memory->ptr<rsx_fp_instruction_t>((fp_location ? rsx->get_ea(0x0) : 0xC0000000) + fp_offset);
+    auto fpHash = HashFragmentProgram(fpData);
+    auto pipelineHash = hashStruct(pipeline) ^ vpHash ^ fpHash;
+
+    if (cachePipeline.find(pipelineHash) == cachePipeline.end()) {
+        const auto& p = pipeline;
         if (cacheVP.find(vpHash) == cacheVP.end()) {
             auto vp = std::make_unique<RSXVertexProgram>();
             vp->decompile(vpData);
             vp->compile(graphics.get());
             cacheVP[vpHash] = std::move(vp);
         }
-        auto fpData = memory->ptr<rsx_fp_instruction_t>((fp_location ? rsx->get_ea(0x0) : 0xC0000000) + fp_offset);
-        auto fpHash = HashFragmentProgram(fpData);
         if (cacheFP.find(fpHash) == cacheFP.end()) {
             auto fp = std::make_unique<RSXFragmentProgram>();
             fp->decompile(fpData);
@@ -261,19 +258,19 @@ void PGRAPH::Begin(Primitive primitive) {
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
         pipelineDesc.iaState.topology = convertPrimitiveTopology(primitive);
-        pipelineDesc.cbState.colorTarget[0].enableBlend = blend_enable;
-        pipelineDesc.cbState.colorTarget[0].enableLogicOp = logic_op_enable;
-        pipelineDesc.cbState.colorTarget[0].blendOp = convertBlendOp(blend_equation_rgb);
-        pipelineDesc.cbState.colorTarget[0].blendOpAlpha = convertBlendOp(blend_equation_alpha);
-        pipelineDesc.cbState.colorTarget[0].srcBlend = convertBlend(blend_sfactor_rgb);
-        pipelineDesc.cbState.colorTarget[0].destBlend = convertBlend(blend_dfactor_rgb);
-        pipelineDesc.cbState.colorTarget[0].srcBlendAlpha = convertBlend(blend_sfactor_alpha);
-        pipelineDesc.cbState.colorTarget[0].destBlendAlpha = convertBlend(blend_dfactor_alpha);
-        pipelineDesc.cbState.colorTarget[0].colorWriteEnable = convertColorMask(color_mask);
-        pipelineDesc.cbState.colorTarget[0].logicOp = convertLogicOp(logic_op);
-        pipeline = graphics->createPipeline(pipelineDesc);
+        pipelineDesc.cbState.colorTarget[0].enableBlend = p.blend_enable;
+        pipelineDesc.cbState.colorTarget[0].enableLogicOp = p.logic_op_enable;
+        pipelineDesc.cbState.colorTarget[0].blendOp = convertBlendOp(p.blend_equation_rgb);
+        pipelineDesc.cbState.colorTarget[0].blendOpAlpha = convertBlendOp(p.blend_equation_alpha);
+        pipelineDesc.cbState.colorTarget[0].srcBlend = convertBlend(p.blend_sfactor_rgb);
+        pipelineDesc.cbState.colorTarget[0].destBlend = convertBlend(p.blend_dfactor_rgb);
+        pipelineDesc.cbState.colorTarget[0].srcBlendAlpha = convertBlend(p.blend_sfactor_alpha);
+        pipelineDesc.cbState.colorTarget[0].destBlendAlpha = convertBlend(p.blend_dfactor_alpha);
+        pipelineDesc.cbState.colorTarget[0].colorWriteMask = convertColorMask(p.color_mask);
+        pipelineDesc.cbState.colorTarget[0].logicOp = convertLogicOp(p.logic_op);
+        cachePipeline[pipelineHash] = std::unique_ptr<gfx::Pipeline>(graphics->createPipeline(pipelineDesc));
     }
-    cmdBuffer->cmdBindPipeline(pipeline);
+    cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());
 }
 
 void PGRAPH::End() {

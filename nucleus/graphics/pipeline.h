@@ -102,7 +102,8 @@ enum StencilOp {
     STENCIL_OP_DECR,
 };
 
-enum ColorWriteEnable {
+using ColorWriteMask = U8;
+enum : ColorWriteMask {
     COLOR_WRITE_ENABLE_RED    = (1 << 0),
     COLOR_WRITE_ENABLE_GREEN  = (1 << 1),
     COLOR_WRITE_ENABLE_BLUE   = (1 << 2),
@@ -123,7 +124,7 @@ struct CBState {
         Blend destBlendAlpha;
         BlendOp blendOpAlpha;
         LogicOp logicOp;
-        ColorWriteEnable colorWriteEnable;
+        ColorWriteMask colorWriteMask;
     } colorTarget[8];
 };
 

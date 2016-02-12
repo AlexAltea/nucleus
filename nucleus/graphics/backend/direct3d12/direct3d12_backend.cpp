@@ -373,7 +373,7 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
         d3dTarget.DestBlendAlpha = convertBlend(source.destBlendAlpha);
         d3dTarget.BlendOpAlpha = convertBlendOp(source.blendOpAlpha);
         d3dTarget.LogicOp = convertLogicOp(source.logicOp);
-        d3dTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL; // TODO
+        d3dTarget.RenderTargetWriteMask = convertColorWriteMask(source.colorWriteMask);
     }
 
     hr = device->CreateGraphicsPipelineState(&d3dDesc, IID_PPV_ARGS(&pipeline->state));

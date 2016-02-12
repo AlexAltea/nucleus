@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
 #include "nucleus/memory/memory.h"
+#include "nucleus/gpu/gpu_hash.h"
 #include "nucleus/gpu/rsx/rsx_enum.h"
 #include "nucleus/gpu/rsx/rsx_vp.h"
 #include "nucleus/gpu/rsx/rsx_fp.h"
@@ -85,41 +86,16 @@ struct rsx_viewport_t {
     U16 y;
 };
 
-// RSX's PGRAPH engine (Curie)
-class PGRAPH {
-    std::shared_ptr<gfx::IBackend> graphics;
-    mem::Memory* memory;
-    RSX* rsx;
-
-    gfx::CommandQueue* cmdQueue;
-    gfx::CommandBuffer* cmdBuffer;
-
-    // Cache
-    std::unordered_map<U64, std::unique_ptr<RSXVertexProgram>> cacheVP;
-    std::unordered_map<U64, std::unique_ptr<RSXFragmentProgram>> cacheFP;
-
-    // Surface
-    std::unordered_map<U32, gfx::Texture*> textures;
-    std::unordered_map<U32, gfx::ColorTarget*> colorTargets;
-    std::unordered_map<U32, gfx::DepthStencilTarget*> depthStencilTargets;
-
-    // Auxiliary methods
-    gfx::ColorTarget* getColorTarget(U32 address);
-    gfx::DepthStencilTarget* getDepthStencilTarget(U32 address);
-
-    void setSurface();
-
-public:
-    // Registers
+/**
+ * Pipeline
+ * ========
+ * A pipeline represents all the PGRAPH state involved in the creation of a pipeline.
+ * This excludes surface offsets and texture samplers.
+ */
+struct alignas(sizeof(Hash)) Pipeline {
     U32 alpha_func;
     F32 alpha_ref;
-    U32 clear_color;
-    U32 clear_depth;
-    U8 clear_stencil;
     ColorMask color_mask;
-    U32 semaphore_index;
-    U32 vertex_data_base_offset;
-    U32 vertex_data_base_index;
 
     // Blending
     bool blend_enable;
@@ -134,6 +110,49 @@ public:
     bool logic_op_enable;
     LogicOp logic_op;
 
+    U64 hash();
+};
+
+// RSX's PGRAPH engine (Curie)
+class PGRAPH {
+    std::shared_ptr<gfx::IBackend> graphics;
+    mem::Memory* memory;
+    RSX* rsx;
+
+    gfx::CommandQueue* cmdQueue;
+    gfx::CommandBuffer* cmdBuffer;
+
+    // Cache
+    std::unordered_map<Hash, std::unique_ptr<gfx::Pipeline>> cachePipeline;
+    std::unordered_map<Hash, std::unique_ptr<RSXVertexProgram>> cacheVP;
+    std::unordered_map<Hash, std::unique_ptr<RSXFragmentProgram>> cacheFP;
+
+    // Surface
+    std::unordered_map<U32, gfx::Texture*> textures;
+    std::unordered_map<U32, gfx::ColorTarget*> colorTargets;
+    std::unordered_map<U32, gfx::DepthStencilTarget*> depthStencilTargets;
+
+    // Auxiliary methods
+    gfx::ColorTarget* getColorTarget(U32 address);
+    gfx::DepthStencilTarget* getDepthStencilTarget(U32 address);
+
+    U64 HashTexture();
+    U64 HashVertexProgram(rsx_vp_instruction_t* program);
+    U64 HashFragmentProgram(rsx_fp_instruction_t* program);
+
+    void setSurface();
+
+public:
+    Pipeline pipeline;
+
+    // Registers
+    U32 clear_color;
+    U32 clear_depth;
+    U8 clear_stencil;
+    U32 semaphore_index;
+    U32 vertex_data_base_offset;
+    U32 vertex_data_base_index;
+
     Surface surface;
     rsx_viewport_t viewport;
 
@@ -141,7 +160,7 @@ public:
     U32 dma_report;
 
     // Textures
-    rsx_texture_t texture[rsx::RSX_MAX_TEXTURES];
+    Texture texture[rsx::RSX_MAX_TEXTURES];
 
     // Vertex Processing Engine
     struct VPE {
@@ -164,18 +183,12 @@ public:
     PGRAPH(std::shared_ptr<gfx::IBackend> graphics, RSX* rsx, mem::Memory* memory);
     ~PGRAPH();
 
-    // Hashing methods
-    U64 HashTexture();
-    U64 HashVertexProgram(rsx_vp_instruction_t* program);
-    U64 HashFragmentProgram(rsx_fp_instruction_t* program);
-
     // Auxiliary methods
     gfx::Texture* getTexture(U32 address);
     void LoadVertexAttributes(U32 first, U32 count);
     //virtual GLuint GetColorTarget(U32 address);
 
     // Rendering methods
-    void AlphaFunc(U32 func, F32 ref);
     void Begin(Primitive mode);
     void End();
     void BindVertexAttributes();

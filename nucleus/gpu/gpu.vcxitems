@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)gpu.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gpu_hash.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_convert.h" />

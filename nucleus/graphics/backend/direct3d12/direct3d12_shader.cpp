@@ -406,7 +406,8 @@ std::string Direct3D12Shader::emitOpVariable(hir::Instruction* i) {
     assert_true(i->operands[0] == STORAGE_CLASS_FUNCTION);
 
     Literal result = i->resultId;
-    std::string type = getType(i->typeId);
+    Literal derefType = module->idInstructions[i->typeId]->operands[1];
+    std::string type = getType(derefType);
     return format(PADDING "%s v%d;\n", type.c_str(), result);
 }
 
@@ -487,6 +488,9 @@ std::string Direct3D12Shader::compile(Function* function) {
     source += idCache[funcId] + " {\n";
     if (idEntryPoint == funcId) {
         source += PADDING "TOutput output;\n";
+    }
+    for (auto* var : function->blocks[0]->variables) {
+        source += emitOpVariable(var);
     }
     for (auto* block : function->blocks) {
         source += compile(block);

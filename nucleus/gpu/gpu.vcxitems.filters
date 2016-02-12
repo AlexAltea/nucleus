@@ -38,6 +38,7 @@
       <Filter>rsx</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gpu_hash.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.cpp">

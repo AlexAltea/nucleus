@@ -47,6 +47,15 @@ D3D12_BLEND_OP convertBlendOp(gfx::BlendOp blendOp) {
     }
 }
 
+UINT8 convertColorWriteMask(gfx::ColorWriteMask mask) {
+    UINT8 d3dMask = 0;
+    if (mask & COLOR_WRITE_ENABLE_RED)    d3dMask |= D3D12_COLOR_WRITE_ENABLE_RED;
+    if (mask & COLOR_WRITE_ENABLE_GREEN)  d3dMask |= D3D12_COLOR_WRITE_ENABLE_GREEN;
+    if (mask & COLOR_WRITE_ENABLE_BLUE)   d3dMask |= D3D12_COLOR_WRITE_ENABLE_BLUE;
+    if (mask & COLOR_WRITE_ENABLE_ALPHA)  d3dMask |= D3D12_COLOR_WRITE_ENABLE_ALPHA;
+    return d3dMask;
+}
+
 D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc) {
     switch (comparisonFunc) {
     case COMPARISON_FUNC_NEVER:          return D3D12_COMPARISON_FUNC_NEVER;

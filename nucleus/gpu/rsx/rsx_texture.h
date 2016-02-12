@@ -40,7 +40,7 @@ enum TextureFormat {
     RSX_TEXTURE_COMPRESSED_R8B8_R8G8   = 0xAE,
 };
 
-struct rsx_texture_t {
+struct Texture {
     // Offset
     U32 offset;        // Offset at the specified location
 
