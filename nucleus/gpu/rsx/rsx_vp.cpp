@@ -192,7 +192,7 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     inputs.resize(16);
     outputs.resize(16);
 
-    // Temporary variables
+    // Temporary values
     Literal src0, src1, src2;
     Literal tmp0, tmp1, tmp2;
 

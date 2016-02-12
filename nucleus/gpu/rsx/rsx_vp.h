@@ -158,6 +158,7 @@ private:
     Literal constMemoryId;
     std::vector<Literal> entryPointInterface;
 
+    // Registers
     std::vector<Literal> data;
     std::vector<Literal> inputs;
     std::vector<Literal> outputs;

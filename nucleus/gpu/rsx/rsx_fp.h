@@ -9,12 +9,13 @@
 #include "nucleus/graphics/hir/builder.h"
 #include "nucleus/graphics/hir/hir.h"
 
-#include <bitset>
+#include <memory>
 
 // Forward declarations
 namespace gfx {
 
 class Shader;
+class IBackend;
 
 }  // namespace gfx
 
@@ -165,14 +166,22 @@ class RSXFragmentProgram {
 
 private:
     // HIR information
-    Module* module;
+    std::unique_ptr<Module> module;
     Builder builder;
     Literal vecTypeId;
+    std::vector<Literal> entryPointInterface;
 
-    // Input/Output/Sampler registers used in the program
-    std::bitset<32> usedInputs;
-    std::bitset<64> usedOutputs;
-    std::bitset<32> usedSamplers;
+    // Registers
+    std::vector<Literal> inputs;
+    std::vector<Literal> tempsSingle;
+    std::vector<Literal> tempsHalf;
+    std::vector<Literal> samplers;
+
+    Literal getInputReg(int index);
+    Literal getTempReg(int index, bool isHalf);
+    Literal getSamplerReg(int index);
+
+    Literal getConstant(F32 x0, F32 x1, F32 x2, F32 x3);
 
     // Current instruction being processed and pointer to the next instruction
     rsx_fp_instruction_t instr;
@@ -213,9 +222,6 @@ private:
      */
     void setDestVector(Literal value);
 
-    // Generate the GLSL header and register declarations based on the decompilation
-    std::string get_header();
-
     // Get 32-bit of data reversing its byte and half-word endianness
     template <typename T>
     T get_word(U32 word) {
@@ -226,6 +232,8 @@ private:
 public:
     gfx::Shader* shader;
 
+    RSXFragmentProgram();
+
     /**
      * Decompile a RSX fragment program to a gfx::hir::Module
      * @param[in]  buffer  Entry point instruction of the shader
@@ -234,9 +242,10 @@ public:
 
     /**
      * Compile gfx::hir::Module to gfx::Shader
-     * @return  Non-zero shader pointer on success, otherwise nullptr
+     * @param[in]  backend  Graphics backend to compile the module with
+     * @return              Non-zero shader pointer on success, otherwise nullptr
      */
-    void compile();
+    void compile(gfx::IBackend* backend);
 };
 
 }  // namespace rsx

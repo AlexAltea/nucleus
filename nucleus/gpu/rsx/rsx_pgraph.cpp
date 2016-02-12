@@ -248,16 +248,15 @@ void PGRAPH::Begin(Primitive primitive) {
             vp->compile(graphics.get());
             cacheVP[vpHash] = std::move(vp);
         }
-        return; // TODO
         auto fpData = memory->ptr<rsx_fp_instruction_t>((fp_location ? rsx->get_ea(0x0) : 0xC0000000) + fp_offset);
         auto fpHash = HashFragmentProgram(fpData);
         if (cacheFP.find(fpHash) == cacheFP.end()) {
             auto fp = std::make_unique<RSXFragmentProgram>();
             fp->decompile(fpData);
-            fp->compile();
+            fp->compile(graphics.get());
             cacheFP[fpHash] = std::move(fp);
         }
-
+        return; // TODO
         gfx::PipelineDesc pipelineDesc = {};
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
