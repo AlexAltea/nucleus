@@ -90,6 +90,9 @@ public:
     void addCapability(Capability capability);
     void addEntryPoint(ExecutionModel model, Function* function, const char* name, const std::vector<Literal>& io);
     void addMemoryModel(AddressingModel addressingModel, MemoryModel memoryModel);
+    void addDecoration(Literal target, Decoration decoration);
+    void addDecoration(Literal target, Decoration decoration, Literal arg);
+    void addDecoration(Literal target, Decoration decoration, const std::vector<Literal>& args);
 
     // HIR types
     Literal opTypeVoid();

@@ -16,41 +16,28 @@ using namespace gfx::hir;
 namespace gpu {
 namespace rsx {
 
-// Output register
-struct vp_output_register_t {
-    const char* glReg;
-    const char* rsxReg;
-    int rsxIndex;
-    bool predefined;
+// Output registers
+struct RSXVertexProgramOutput {
+    int indexOutput;
+    std::vector<Literal> decorations;
 };
-
-const vp_output_register_t output_regs[] = {
-    // OpenGL predefined outputs
-    { "gl_Position",            "o[0]",    0, true },
-    { "gl_PointSize",           "o[6].x",  6, true },
-    { "gl_ClipDistance[0]",     "o[5].y",  5, true },
-    { "gl_ClipDistance[1]",     "o[5].z",  5, true },
-    { "gl_ClipDistance[2]",     "o[5].w",  5, true },
-    { "gl_ClipDistance[3]",     "o[6].y",  6, true },
-    { "gl_ClipDistance[4]",     "o[6].z",  6, true },
-    { "gl_ClipDistance[5]",     "o[6].w",  6, true },
-
-    // OpenGL custom outputs
-    { "rsx_BackDiffuseColor",   "o[1]",    1, false },
-    { "rsx_BackSpecularColor",  "o[2]",    2, false },
-    { "rsx_FrontDiffuseColor",  "o[3]",    3, false },
-    { "rsx_FrontSpecularColor", "o[4]",    4, false },
-    { "rsx_Fog",                "o[5].x",  5, false },
-    { "rsx_TEX0",               "o[7]",    7, false },
-    { "rsx_TEX1",               "o[8]",    8, false },
-    { "rsx_TEX2",               "o[9]",    9, false },
-    { "rsx_TEX3",               "o[10]",  10, false },
-    { "rsx_TEX4",               "o[11]",  11, false },
-    { "rsx_TEX5",               "o[12]",  12, false },
-    { "rsx_TEX6",               "o[13]",  13, false },
-    { "rsx_TEX7",               "o[14]",  14, false },
-    { "rsx_TEX8",               "o[15]",  15, false },
-    { "rsx_TEX9",               "o[6]",    6, false },
+const RSXVertexProgramOutput rsxOutputs[] = {
+    {  0, { DECORATION_BUILTIN,   BUILTIN_POSITION } },
+    {  1, { DECORATION_LOCATION,  1} },
+    {  2, { DECORATION_LOCATION,  2} },
+    {  3, { DECORATION_LOCATION,  3} },
+    {  4, { DECORATION_LOCATION,  4} },
+    {  5, { DECORATION_LOCATION,  5} }, // TODO: ClipDistance/Fog
+    {  6, { DECORATION_LOCATION,  6} }, // TODO: ClipDistance/PointSize
+    {  7, { DECORATION_LOCATION,  7} },
+    {  8, { DECORATION_LOCATION,  8} },
+    {  9, { DECORATION_LOCATION,  9} },
+    { 10, { DECORATION_LOCATION, 10} },
+    { 11, { DECORATION_LOCATION, 11} },
+    { 12, { DECORATION_LOCATION, 12} },
+    { 13, { DECORATION_LOCATION, 13} },
+    { 14, { DECORATION_LOCATION, 14} },
+    { 15, { DECORATION_LOCATION, 15} },
 };
 
 RSXVertexProgram::RSXVertexProgram() {
@@ -71,7 +58,7 @@ Literal RSXVertexProgram::getInputReg(int index) {
     if (!inputReg) {
         inputReg = builder.opVariable(STORAGE_CLASS_INPUT, vecTypeId);
         entryPointInterface.push_back(inputReg);
-        //builder.opDecoration(); location
+        builder.addDecoration(inputReg, DECORATION_LOCATION, index);
     }
     return inputReg;
 }
@@ -80,9 +67,10 @@ Literal RSXVertexProgram::getOutputReg(int index) {
     Literal& outputReg = outputs[index];
     if (!outputReg) {
         outputReg = builder.opVariable(STORAGE_CLASS_OUTPUT, vecTypeId);
+        const auto decoration = static_cast<Decoration>(rsxOutputs[index].decorations[0]);
+        const auto argument = static_cast<Literal>(rsxOutputs[index].decorations[1]);
+        builder.addDecoration(outputReg, decoration, argument);
         entryPointInterface.push_back(outputReg);
-        //builder.opDecoration(); location
-        //builder.opDecoration(); builtin
     }
     return outputReg;
 }
@@ -90,22 +78,6 @@ Literal RSXVertexProgram::getOutputReg(int index) {
 Literal RSXVertexProgram::getConstantReg(int index) {
     Literal offsetId = builder.makeConstantInt(index);
     return builder.opAccessChain(constMemoryId, {offsetId});
-}
-
-Literal RSXVertexProgram::getMaskedValue(Literal dest, Literal source, U8 mask) {
-    // Check if mask enables all components
-    if (mask == 0b1111) {
-        return source;
-    }
-    // Check if mask disables all components
-    if (mask == 0b0000) {
-        return dest;
-    }
-    Literal x = (mask >> 3) ? 4 : 0;
-    Literal y = (mask >> 2) ? 5 : 1;
-    Literal z = (mask >> 1) ? 6 : 2;
-    Literal w = (mask >> 0) ? 7 : 3;
-    return builder.opVectorShuffle(vecTypeId, dest, source, {x,y,z,w});
 }
 
 Literal RSXVertexProgram::getSwizzledValue(Literal vector, U8 swizzle) {
@@ -162,20 +134,30 @@ Literal RSXVertexProgram::getSourceVector(int index) {
 
 
 void RSXVertexProgram::setDestVector(Literal value) {
-    // Data register
+    // Get destination register pointer
+    Literal pointer;
     if (instr.dst == 0x1F) {
-        Literal pointer = getDataReg(instr.dst_data);
-        builder.opStore(pointer, value);
+        pointer = getDataReg(instr.dst_data);
+    } else {
+        pointer = getOutputReg(instr.dst);
     }
-    // Output register
-    else {
-        if (instr.dst >= 16) {
-            logger.error(LOG_GPU, "VPE: Destination register out of range");
-        }
-        Literal pointer = getOutputReg(instr.dst);
-        builder.opStore(pointer, value);
+    
+    // Masked write
+    U8 mask = instr.masc_vec;
+    if (mask == 0b0000) {  // Check if mask disables all components
+        return; 
     }
-    // TODO: getMaskedValue. // return dst + get_vp_mask(instr.masc_vec);
+    if (mask == 0b1111) {  // Check if mask enables all components
+        builder.opStore(pointer, value);
+        return;
+    }
+    Literal x = ((mask >> 3) & 1) ? 4 : 0;
+    Literal y = ((mask >> 2) & 1) ? 5 : 1;
+    Literal z = ((mask >> 1) & 1) ? 6 : 2;
+    Literal w = ((mask >> 0) & 1) ? 7 : 3;
+    Literal dest = builder.opLoad(pointer);
+    Literal maskVal = builder.opVectorShuffle(vecTypeId, dest, value, {x,y,z,w});
+    builder.opStore(pointer, maskVal);
 }
 
 void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {

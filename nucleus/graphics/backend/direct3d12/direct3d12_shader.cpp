@@ -413,8 +413,27 @@ std::string Direct3D12Shader::emitOpVariable(hir::Instruction* i) {
 
 std::string Direct3D12Shader::emitOpVectorShuffle(hir::Instruction* i) {
     assert_true(i->operands.size() >= 2);
-    assert_always("Unimplemented");
-    return "";
+    Literal v1Id = i->operands[0];
+    Literal v2Id = i->operands[1];
+    Literal v1TypeId = module->idInstructions[v1Id]->typeId;
+    Literal v2TypeId = module->idInstructions[v2Id]->typeId;
+
+    std::string components;
+    std::string v1Str = format("v%d.", v1Id);
+    std::string v2Str = format("v%d.", v2Id);
+    Literal v1CompCount = module->idInstructions[v1TypeId]->operands[1];
+    Literal v2CompCount = module->idInstructions[v2TypeId]->operands[1];
+    for (Size idx = 2; idx < i->operands.size(); idx++) {
+        Literal comp = i->operands[idx];
+        if (comp < v1CompCount) {
+            components += (idx != 2 ? ", " : "") + v1Str + "xyzw"[comp];
+        } else {
+            components += (idx != 2 ? ", " : "") + v2Str + "xyzw"[comp - v1CompCount];
+        }
+    }
+    Literal result = i->resultId;
+    std::string type = getType(i->typeId);
+    return format(PADDING "%s v%d = %s(%s);\n", type.c_str(), result, type.c_str(), components.c_str());
 }
 
 std::string Direct3D12Shader::compile(Instruction* i) {

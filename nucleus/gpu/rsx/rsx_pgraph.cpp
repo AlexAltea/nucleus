@@ -253,7 +253,6 @@ void PGRAPH::Begin(Primitive primitive) {
             fp->compile(graphics.get());
             cacheFP[fpHash] = std::move(fp);
         }
-        return; // TODO
         gfx::PipelineDesc pipelineDesc = {};
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
@@ -308,11 +307,6 @@ void PGRAPH::ClearSurface(U32 mask) {
     cmdBuffer->finalize();
     cmdQueue->submit(cmdBuffer, nullptr);
     cmdBuffer->reset();
-}
-
-void PGRAPH::DepthFunc(U32 func) {
-    /*glDepthFunc(func);
-    checkRendererError("DepthFunc");*/
 }
 
 void PGRAPH::DrawArrays(U32 first, U32 count) {

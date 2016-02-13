@@ -226,7 +226,7 @@ void RSX::method(U32 offset, U32 parameter) {
         break;
 
     case NV4097_SET_DEPTH_FUNC:
-        pgraph.DepthFunc(parameter);
+        pgraph.pipeline.depth_func = parameter;
         break;
 
     case NV4097_SET_CONTEXT_DMA_REPORT:

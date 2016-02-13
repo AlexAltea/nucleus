@@ -95,6 +95,7 @@ struct rsx_viewport_t {
 struct alignas(sizeof(Hash)) Pipeline {
     U32 alpha_func;
     F32 alpha_ref;
+    U32 depth_func;
     ColorMask color_mask;
 
     // Blending
@@ -193,7 +194,6 @@ public:
     void End();
     void BindVertexAttributes();
     void ClearSurface(U32 mask);
-    void DepthFunc(U32 func);
     void DrawArrays(U32 first, U32 count);
     void Enable(U32 prop, U32 enabled);
     void Flip();

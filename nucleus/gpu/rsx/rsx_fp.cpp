@@ -10,6 +10,7 @@
 #include "nucleus/graphics/hir/block.h"
 #include "nucleus/graphics/hir/function.h"
 #include "nucleus/graphics/hir/module.h"
+
 using namespace gfx::hir;
 
 namespace gpu {
@@ -46,7 +47,7 @@ struct RSXFragmentProgramOutput {
 };
 const RSXFragmentProgramOutput rsxOutputs[] = {
     { 0, 0, { DECORATION_LOCATION, 0} },
-    { 1, 2, { DECORATION_BUILTIN,  BUILTIN_FRAGDEPTH} },
+    { 1, 2, { DECORATION_BUILTIN,  BUILTIN_FRAGDEPTH } },
     { 2, 4, { DECORATION_LOCATION, 1} },
     { 3, 6, { DECORATION_LOCATION, 2} },
     { 4, 8, { DECORATION_LOCATION, 3} },
@@ -61,9 +62,10 @@ Literal RSXFragmentProgram::getInputReg(int index) {
     Literal& inputReg = inputs[index];
     if (!inputReg) {
         inputReg = builder.opVariable(STORAGE_CLASS_INPUT, vecTypeId);
+        const auto decoration = static_cast<Decoration>(rsxInputs[index].decorations[0]);
+        const auto argument = static_cast<Literal>(rsxInputs[index].decorations[1]);
+        builder.addDecoration(inputReg, decoration, argument);
         entryPointInterface.push_back(inputReg);
-        //builder.opDecoration(); location
-        //builder.opDecoration(); builtin
     }
     return inputReg;
 }

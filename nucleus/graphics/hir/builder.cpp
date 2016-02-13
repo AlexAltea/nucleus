@@ -117,6 +117,14 @@ void Builder::addMemoryModel(AddressingModel addressingModel, MemoryModel memory
     module->hMemoryModel.push_back(i);
 }
 
+void Builder::addDecoration(Literal target, Decoration decoration, Literal arg) {
+    Instruction* i = createInstr(OP_DECORATE, false);
+    i->addOperandLiteral(target);
+    i->addOperandImmediate(decoration);
+    i->addOperandLiteral(arg);
+    module->hAnnotation.push_back(i);
+}
+
 // HIR types
 Literal Builder::opTypeVoid() {
     // Search in cache
