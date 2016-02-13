@@ -13,6 +13,7 @@ namespace rsx {
 // Properties
 enum {
     RSX_MAX_TEXTURES = 16,
+    RSX_MAX_VERTEX_INPUTS = 16,
 };
 
 // RSX Class handles
@@ -101,13 +102,7 @@ enum StencilOp {
     RSX_STENCIL_OP_DECR_WRAP  = 0x8508,
 };
 
-// RSX Constants
-enum {
-    RSX_CLEAR_BIT_DEPTH   = 0x01,
-    RSX_CLEAR_BIT_STENCIL = 0x02,
-    RSX_CLEAR_BIT_COLOR   = 0xF0,
-
-    // Vertex data type
+enum VertexType : U8 {
     RSX_VERTEX_S1     = 1,
     RSX_VERTEX_F      = 2,
     RSX_VERTEX_SF     = 3,
@@ -115,6 +110,13 @@ enum {
     RSX_VERTEX_S32K   = 5,
     RSX_VERTEX_CMP    = 6,
     RSX_VERTEX_UB256  = 7,
+};
+
+// RSX Constants
+enum {
+    RSX_CLEAR_BIT_DEPTH   = 0x01,
+    RSX_CLEAR_BIT_STENCIL = 0x02,
+    RSX_CLEAR_BIT_COLOR   = 0xF0,
 
     // Data location
     RSX_LOCATION_LOCAL  = 0,

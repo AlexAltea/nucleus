@@ -330,7 +330,7 @@ void RSX::method(U32 offset, U32 parameter) {
         break;
 
     case_range(16, NV4097_SET_VERTEX_DATA_ARRAY_FORMAT, 4)
-        pgraph.vpe.attr[index].type = parameter & 0xF;
+        pgraph.vpe.attr[index].type = static_cast<VertexType>(parameter & 0xF);
         pgraph.vpe.attr[index].size = (parameter >> 4) & 0xF;
         pgraph.vpe.attr[index].stride = (parameter >> 8) & 0xFF;
         pgraph.vpe.attr[index].frequency = (parameter >> 16);

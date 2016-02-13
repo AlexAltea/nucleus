@@ -28,9 +28,11 @@ gfx::Blend convertBlend(Blend func) {
     case RSX_BLEND_CONSTANT_ALPHA:
     case RSX_BLEND_ONE_MINUS_CONSTANT_ALPHA:
         assert_always("Unimplemented");
+        return gfx::BLEND_ZERO;
 
     default:
         assert_always("Unexpected");
+        return gfx::BLEND_ZERO;
     }
 }
 
@@ -46,14 +48,16 @@ gfx::BlendOp convertBlendOp(BlendEquation equation) {
     case RSX_BLEND_EQUATION_FUNC_ADD_SIGNED:
     case RSX_BLEND_EQUATION_FUNC_REVERSE_ADD_SIGNED:
         assert_always("Unimplemented");
+        return gfx::BLEND_OP_ADD;
 
     default:
         assert_always("Unexpected");
+        return gfx::BLEND_OP_ADD;
     }
 }
 
 gfx::ColorWriteMask convertColorMask(ColorMask mask) {
-    gfx::ColorWriteMask colorWriteMask;
+    gfx::ColorWriteMask colorWriteMask = 0;
     if (mask & RSX_COLOR_MASK_R)  colorWriteMask |= gfx::COLOR_WRITE_ENABLE_RED;
     if (mask & RSX_COLOR_MASK_G)  colorWriteMask |= gfx::COLOR_WRITE_ENABLE_GREEN;
     if (mask & RSX_COLOR_MASK_B)  colorWriteMask |= gfx::COLOR_WRITE_ENABLE_BLUE;
@@ -81,6 +85,7 @@ gfx::LogicOp convertLogicOp(LogicOp op) {
     case RSX_LOGIC_OP_SET:            return gfx::LOGIC_OP_SET;
     default:
         assert_always("Unexpected");
+        return gfx::LOGIC_OP_COPY;
     }
 }
 
@@ -98,6 +103,7 @@ gfx::PrimitiveTopology convertPrimitiveTopology(Primitive primitive) {
     case RSX_PRIMITIVE_POLYGON:         return gfx::TOPOLOGY_TRIANGLE_LIST;  // TODO: Is this correct?
     default:
         assert_always("Unexpected");
+        return gfx::TOPOLOGY_POINT_LIST;
     }
 }
 
@@ -115,6 +121,7 @@ gfx::PrimitiveTopologyType convertPrimitiveTopologyType(Primitive primitive) {
     case RSX_PRIMITIVE_POLYGON:         return gfx::TOPOLOGY_TYPE_TRIANGLE; // TODO: Is this correct?
     default:
         assert_always("Unexpected");
+        return gfx::TOPOLOGY_TYPE_TRIANGLE;
     }
 }
 
@@ -128,6 +135,7 @@ gfx::StencilOp convertStencilOp(StencilOp op) {
     case RSX_STENCIL_OP_DECR_WRAP:  return gfx::STENCIL_OP_DECR_SAT;
     default:
         assert_always("Unexpected");
+        return gfx::STENCIL_OP_KEEP;
     }
 }
 
@@ -149,9 +157,11 @@ gfx::Format convertFormat(Surface::ColorFormat format) {
     case Surface::FORMAT_X8B8G8R8_Z8B8G8R8:
     case Surface::FORMAT_X8B8G8R8_O8B8G8R8:
         assert_always("Unimplemented");
+        return gfx::FORMAT_R8G8B8A8_UNORM;
 
     default:
         assert_always("Unexpected");
+        return gfx::FORMAT_R8G8B8A8_UNORM;
     }
 }
 
@@ -162,6 +172,7 @@ gfx::Format convertFormat(Surface::DepthStencilFormat format) {
 
     default:
         assert_always("Unexpected");
+        return gfx::FORMAT_D24_UNORM_S8_UINT;
     }
 }
 
@@ -196,9 +207,82 @@ gfx::Format convertFormat(TextureFormat format) {
     case RSX_TEXTURE_COMPRESSED_HILO_S8:
     case RSX_TEXTURE_Y16_X16_FLOAT:
         assert_always("Unimplemented");
+        return gfx::FORMAT_R8G8B8A8_UNORM;
 
     default:
         assert_always("Unexpected");
+        return gfx::FORMAT_R8G8B8A8_UNORM;
+    }
+}
+
+gfx::Format convertVertexFormat(VertexType type, U8 size) {
+    switch (type) {
+    case RSX_VERTEX_S1:
+        switch (size) {
+        case 1: return gfx::FORMAT_R16_SNORM;
+		case 2: return gfx::FORMAT_R16G16_SNORM;
+		case 3: return gfx::FORMAT_R16G16B16_SNORM; // TODO: Is this correct?
+		case 4: return gfx::FORMAT_R16G16B16A16_SNORM;
+        default:
+            assert_always("Unexpected");
+        }
+        break;
+    case RSX_VERTEX_F:
+        switch (size) {
+        case 1: return gfx::FORMAT_R32_FLOAT;
+		case 2: return gfx::FORMAT_R32G32_FLOAT;
+		case 3: return gfx::FORMAT_R32G32B32_FLOAT;
+		case 4: return gfx::FORMAT_R32G32B32A32_FLOAT;
+        default:
+            assert_always("Unexpected");
+        }
+        break;
+    case RSX_VERTEX_SF:
+        switch (size) {
+        case 1: return gfx::FORMAT_R16_FLOAT;
+		case 2: return gfx::FORMAT_R16G16_FLOAT;
+		case 3: return gfx::FORMAT_R16G16B16_FLOAT; // TODO: Is this correct?
+		case 4: return gfx::FORMAT_R16G16B16A16_FLOAT;
+        default:
+            assert_always("Unexpected");
+        }
+        break;
+    case RSX_VERTEX_UB:
+        switch (size) {
+        case 1: return gfx::FORMAT_R8_UNORM;
+		case 2: return gfx::FORMAT_R8G8_UNORM;
+		case 3: return gfx::FORMAT_R8G8B8_UNORM; // TODO: Is this correct?
+		case 4: return gfx::FORMAT_R8G8B8A8_UNORM;
+        default:
+            assert_always("Unexpected");
+        }
+        break;
+    case RSX_VERTEX_S32K:
+        switch (size) {
+        case 1: return gfx::FORMAT_R16_SINT;
+		case 2: return gfx::FORMAT_R16G16_SINT;
+		case 3: return gfx::FORMAT_R16G16B16_SINT; // TODO: Is this correct?
+		case 4: return gfx::FORMAT_R16G16B16A16_SINT;
+        default:
+            assert_always("Unexpected");
+        }
+        break;
+    case RSX_VERTEX_CMP:
+        assert_always("Unimplemented");
+        break;
+    case RSX_VERTEX_UB256:
+        switch (size) {
+        case 1: return gfx::FORMAT_R8_UINT;
+		case 2: return gfx::FORMAT_R8G8_UINT;
+		case 3: return gfx::FORMAT_R8G8B8_UINT; // TODO: Is this correct?
+		case 4: return gfx::FORMAT_R8G8B8A8_UINT;
+        default:
+            assert_always("Unexpected");
+        }
+        break;
+    default:
+        assert_always("Unexpected");
+        return gfx::FORMAT_R32G32B32A32_FLOAT;
     }
 }
 

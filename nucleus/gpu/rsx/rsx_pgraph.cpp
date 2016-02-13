@@ -256,7 +256,6 @@ void PGRAPH::Begin(Primitive primitive) {
         gfx::PipelineDesc pipelineDesc = {};
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
-        pipelineDesc.iaState.topology = convertPrimitiveTopology(primitive);
         pipelineDesc.cbState.colorTarget[0].enableBlend = p.blend_enable;
         pipelineDesc.cbState.colorTarget[0].enableLogicOp = p.logic_op_enable;
         pipelineDesc.cbState.colorTarget[0].blendOp = convertBlendOp(p.blend_equation_rgb);
@@ -267,6 +266,18 @@ void PGRAPH::Begin(Primitive primitive) {
         pipelineDesc.cbState.colorTarget[0].destBlendAlpha = convertBlend(p.blend_dfactor_alpha);
         pipelineDesc.cbState.colorTarget[0].colorWriteMask = convertColorMask(p.color_mask);
         pipelineDesc.cbState.colorTarget[0].logicOp = convertLogicOp(p.logic_op);
+        pipelineDesc.iaState.topology = convertPrimitiveTopology(primitive);
+        for (U32 index = 0; index < RSX_MAX_VERTEX_INPUTS; index++) {
+            const auto& attr = vpe.attr[index];
+            if (!attr.size) {
+                continue;
+            }
+            gfx::Format format = convertVertexFormat(attr.type, attr.size);
+            U32 stride = attr.stride;
+            pipelineDesc.iaState.inputLayout.push_back({
+                index, format, index, 0, stride, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }
+            );
+        }
         cachePipeline[pipelineHash] = std::unique_ptr<gfx::Pipeline>(graphics->createPipeline(pipelineDesc));
     }
     cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());

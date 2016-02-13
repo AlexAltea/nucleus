@@ -25,6 +25,7 @@ gfx::StencilOp convertStencilOp(StencilOp op);
 gfx::Format convertFormat(Surface::ColorFormat format);
 gfx::Format convertFormat(Surface::DepthStencilFormat format);
 gfx::Format convertFormat(TextureFormat format);
+gfx::Format convertVertexFormat(VertexType type, U8 size);
 
 }  // namespace rsx
 }  // namespace gpu

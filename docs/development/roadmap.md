@@ -1,8 +1,9 @@
 Roadmap
 =======
 
-1. `gfx`: Implement GLSL shader parser.
-2. `ui`: Remove duplicate HLSL / SPIR-V shader resources (depends on 1).
-3. `gpu`: RSX frontend.
-4. `cpu`: SPU frontend.
+Some tasks to be done. Order is irrelevant unless explicitly stated:
 
+* `gfx/frontend/opengl`: Implement GLSL shader parser.
+* `cpu/hir/passes`: More optimization passes.
+* `cpu/frontend/spu`: Take care of unimplemented instructions.
+* `gpu/rsx`: Verify on a real console which PGRAPH commands are allowed between a *begin*-*end* pair of `NV4097_SET_BEGIN_END` commands.

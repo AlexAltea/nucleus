@@ -30,8 +30,8 @@ struct rsx_vp_attribute_t {
     std::vector<U8> data;  // Holds the loaded and converted data.
     U16 frequency;         // Access frequency of vertex data.
     U8 stride;             // Offset between two consecutive vertices.
-    U8 size;               // Coordinates per vertex.
-    U8 type;               // Format (S1, F, SF, UB, S32K, CMP, UB256).
+    U8 size;               // Count of vertex components
+    VertexType type;       // Type of vertex components
     U32 location;          // Location (Local Memory or Main Memory).
     U32 offset;            // Offset at the specified location.
 };
