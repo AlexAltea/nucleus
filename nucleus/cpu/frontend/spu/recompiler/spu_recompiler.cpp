@@ -8,5 +8,14 @@
 namespace cpu {
 namespace spu {
 
+hir::Value* Recompiler::getGPR(int index) {
+    // TODO
+    return nullptr;
+}
+
+void Recompiler::setGPR(int index, hir::Value* value) {
+    // TODO
+}
+
 }  // namespace spu
 }  // namespace cpu

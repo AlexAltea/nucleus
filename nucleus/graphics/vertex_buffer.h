@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/format.h"
+#include "nucleus/graphics/resource.h"
 
 namespace gfx {
 

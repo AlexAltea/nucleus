@@ -104,7 +104,7 @@ bool OpenGLBackend::initialize(const BackendParameters& params) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");
         return false;
     }
-    XVisualInfo* info = glXChooseVisual(display, 0, nullptr/*TODO*/);
+    XVisualInfo* info = glXChooseVisual(params.display, 0, nullptr/*TODO*/);
 #elif defined(GRAPHICS_OPENGL_API_EGL)
     if (!initializeOpenGL()) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: Could not initialize all OpenGL extensions");

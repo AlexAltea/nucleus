@@ -40,7 +40,7 @@ void OpenGLCommandQueue::task(const BackendParameters& params, OpenGLContext con
         return;
     }
 #elif defined(GRAPHICS_OPENGL_API_GLX)
-    if (!glXMakeCurrent(display, 0/*TODO*/, context)) {
+    if (!glXMakeCurrent(params.display, 0/*TODO*/, context)) {
         logger.warning(LOG_GRAPHICS, "OpenGLBackend::initialize: glXMakeCurrent failed");
         return;
     }
@@ -139,11 +139,11 @@ void OpenGLCommandQueue::execute(const OpenGLCommandBindPipeline& cmd) {
             GLenum type;
             GLboolean normalized;
             switch (inputElement.format) {
-            case FORMAT_R32G32:
+            case FORMAT_R32G32_FLOAT:
                 size = 2; type = GL_FLOAT; normalized = GL_FALSE; break;
-            case FORMAT_R32G32B32:
+            case FORMAT_R32G32B32_FLOAT:
                 size = 3; type = GL_FLOAT; normalized = GL_FALSE; break;
-            case FORMAT_R32G32B32A32:
+            case FORMAT_R32G32B32A32_FLOAT:
                 size = 4; type = GL_FLOAT; normalized = GL_FALSE; break;
             }
 
@@ -194,7 +194,7 @@ void OpenGLCommandQueue::execute(const OpenGLCommandClearDepthStencil& cmd) {
     const GLint stencil = cmd.stencil;
 
 #if defined(GRAPHICS_OPENGL_GL45)
-    glClearNamedFramebufferfi(framebuffer, GL_DEPTH_STENCIL, drawbuffer, depth, stencil);
+    glClearNamedFramebufferfi(framebuffer, GL_DEPTH_STENCIL, depth, stencil);
 #elif defined(GRAPHICS_OPENGL_GLES31)
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, stencil);

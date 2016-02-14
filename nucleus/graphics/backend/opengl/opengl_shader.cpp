@@ -3,8 +3,6 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#pragma once
-
 #include "opengl_shader.h"
 #include "nucleus/assert.h"
 #include "nucleus/format.h"

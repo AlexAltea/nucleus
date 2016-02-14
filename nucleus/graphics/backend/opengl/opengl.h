@@ -29,7 +29,8 @@
 #define GRAPHICS_OPENGL_GL45
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include <gl/glxext.h>
+#include <GL/glx.h>
+#include <GL/glxext.h>
 
 #elif defined(NUCLEUS_PLATFORM_OSX)
 #define GRAPHICS_OPENGL_API_GLX
@@ -37,7 +38,7 @@
 #define GRAPHICS_OPENGL_GL41
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include <gl/glxext.h>
+#include <GL/glxext.h>
 
 #elif defined(NUCLEUS_PLATFORM_UWP)
 #define GRAPHICS_OPENGL_API_EGL

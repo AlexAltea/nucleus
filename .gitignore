@@ -38,6 +38,13 @@
 *.suo
 *.user
 
+# Linux
+bin/Nucleus
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
 # Adobe Illustrator files
 *.eps
 

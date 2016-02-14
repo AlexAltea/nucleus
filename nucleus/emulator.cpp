@@ -5,7 +5,7 @@
 
 #include "emulator.h"
 #include "nucleus/core/config.h"
-#include "nucleus/graphics/backends.h"
+#include "nucleus/graphics/backend/list.h"
 #include "nucleus/filesystem/filesystem_host.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/ui/ui.h"
@@ -21,15 +21,21 @@ Emulator nucleus;
 
 bool Emulator::initialize(const gfx::BackendParameters& params) {
     switch (config.graphicsBackend) {
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D11)
     case GRAPHICS_BACKEND_DIRECT3D11:
-        //graphics = std::make_shared<gfx::Direct3D11Backend>();
+        graphics = std::make_shared<gfx::Direct3D11Backend>();
         break;
+#endif
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12)
     case GRAPHICS_BACKEND_DIRECT3D12:
         graphics = std::make_shared<gfx::Direct3D12Backend>();
         break;
+#endif
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_OPENGL)
     case GRAPHICS_BACKEND_OPENGL:
-        //graphics = std::make_shared<gfx::OpenGLBackend>();
+        graphics = std::make_shared<gfx::OpenGLBackend>();
         break;
+#endif
     default:
         logger.warning(LOG_COMMON, "Unsupported graphics backend");
         return false;

@@ -42,6 +42,7 @@ endif()
 set(NUCLEUS_PATH_SOLUTION    ${CMAKE_CURRENT_LIST_DIR})
 set(NUCLEUS_PATH_BINARIES   "${NUCLEUS_PATH_SOLUTION}/bin/")
 set(NUCLEUS_PATH_EXTERNALS  "${NUCLEUS_PATH_SOLUTION}/externals")
+set(NUCLEUS_PATH_LIBRARIES  "${NUCLEUS_PATH_SOLUTION}/libs/")
 set(NUCLEUS_PATH_TESTS      "${NUCLEUS_PATH_SOLUTION}/tests/")
 set(NUCLEUS_PATH_WRAPPERS   "${NUCLEUS_PATH_SOLUTION}/wrappers/")
 
@@ -130,18 +131,23 @@ if (NOT FEATURE_GFX_BACKEND_OPENGL)
     )
 endif()
 
-# Update file list
-if (FILES_APPEND)
-    list(APPEND NUCLEUS_FILES ${FILES_APPEND})
-endif()
-if (FILES_DISCARD)
-    list(REMOVE_ITEM NUCLEUS_FILES ${FILES_DISCARD})
-endif()
-
 # Executable
 add_executable(nucleus ${NUCLEUS_FILES})
+set_target_properties(nucleus PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${NUCLEUS_PATH_BINARIES})
+set_target_properties(nucleus PROPERTIES OUTPUT_NAME "Nucleus")
 set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)
 include_directories(${NUCLEUS_PATH_SOLUTION})
+
+# Set feature definitions
+if (NOT FEATURE_GFX_BACKEND_DIRECT3D11)
+    add_definitions(-D_NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D11)
+endif()
+if (NOT FEATURE_GFX_BACKEND_DIRECT3D12)
+    add_definitions(-D_NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12)
+endif()
+if (NOT FEATURE_GFX_BACKEND_OPENGL)
+    add_definitions(-D_NUCLEUS_FEATURE_GFXBACKEND_OPENGL)
+endif()
 
 # Dependencies
 if (OPENGL_FOUND)
