@@ -9,12 +9,10 @@
 namespace fs {
 
 HostPathDevice::HostPathDevice(const Path& mountPath, const Path& localPath)
-    : Device(mountPath), localPath(localPath)
-{
+    : Device(mountPath), localPath(localPath) {
 }
 
-File* HostPathDevice::openFile(const Path& path, OpenMode mode)
-{
+File* HostPathDevice::openFile(const Path& path, OpenMode mode) {
     auto* file = new HostPathFile(localPath + path, mode);
     if (!file->isOpen()) {
         delete file;
@@ -24,11 +22,15 @@ File* HostPathDevice::openFile(const Path& path, OpenMode mode)
     return file;
 }
 
-bool HostPathDevice::existsFile(const Path& path)
-{
+bool HostPathDevice::existsFile(const Path& path) {
     std::FILE* handle;
     std::string realPath = localPath + path;
+
+#ifdef NUCLEUS_COMPILER_MSVC
     fopen_s(&handle, realPath.c_str(), "r");
+#else
+    handle = fopen(realPath.c_str(), "r");
+#endif
     if (!handle) {
         return false;
     }
@@ -37,8 +39,7 @@ bool HostPathDevice::existsFile(const Path& path)
     return true;
 }
 
-bool HostPathDevice::removeFile(const Path& path)
-{
+bool HostPathDevice::removeFile(const Path& path) {
     std::string realPath = localPath + path;
     int result = remove(realPath.c_str());
     if (!remove) {
@@ -48,8 +49,7 @@ bool HostPathDevice::removeFile(const Path& path)
     return true;
 }
 
-File::Attributes HostPathDevice::getFileAttributes(const Path& path)
-{
+File::Attributes HostPathDevice::getFileAttributes(const Path& path) {
     return File::Attributes{};
 }
 

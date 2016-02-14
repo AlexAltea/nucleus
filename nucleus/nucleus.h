@@ -7,7 +7,9 @@
 
 #include "nucleus/common.h"
 
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_PLATFORM_LINUX)
+#include <X11/Xlib.h>
+#elif defined(NUCLEUS_PLATFORM_UWP)
 #include <Windows.h>
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
 #include <Windows.h>

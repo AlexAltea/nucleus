@@ -1,67 +1,163 @@
 cmake_minimum_required(VERSION 2.8)
 project(nucleus)
 
-# Options
-option(TARGET_ANDROID "Enable to target an Android device")
-option(TARGET_IOS "Enable to target an iOS device")
+# Cross-compiling
+option(TARGET_ANDROID  "Enable to target Android devices")
+option(TARGET_IOS      "Enable to target iOS devices")
+option(TARGET_LINUX    "Enable to target X11-based Linux distributions")
+option(TARGET_OSX      "Enable to target OS X systems")
+option(TARGET_UWP      "Enable to target the Universal Windows Platform")
+option(TARGET_WINDOWS  "Enable to target desktop Windows systems")
+
+# Guest platforms
+option(EMULATE_ANY     "Enable to support emulation in any available platform")
+option(EMULATE_PS3     "Enable to support PlayStation 3 emulation")
+option(EMULATE_PS4     "Enable to support PlayStation 4 emulation")
+option(EMULATE_PSP     "Enable to support PlayStation Portable emulation")
+option(EMULATE_PSVITA  "Enable to support PlayStation Vita emulation")
+
+# Features
+set(FEATURE_CPU_BACKEND_ARM         "False")
+set(FEATURE_CPU_BACKEND_X86         "False")
+set(FEATURE_GFX_BACKEND_DIRECT3D11  "False")
+set(FEATURE_GFX_BACKEND_DIRECT3D12  "False")
+set(FEATURE_GFX_BACKEND_OPENGL      "False")
+set(FEATURE_GFX_BACKEND_VULKAN      "False")
+
+# Compiler platform
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(FEATURE_GFX_BACKEND_OPENGL "True")
+    option (PLATFORM_LINUX, ON)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(FEATURE_GFX_BACKEND_OPENGL "True")
+    option (PLATFORM_OSX, ON)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(FEATURE_GFX_BACKEND_DIRECT3D11 "True")
+    set(FEATURE_GFX_BACKEND_DIRECT3D12 "True")
+    set(FEATURE_GFX_BACKEND_OPENGL "True")
+    option (PLATFORM_WINDOWS, ON)
+endif()
 
 # Paths
-set(NUCLEUS_SOLUTION_DIR ${CMAKE_CURRENT_LIST_DIR})
-set(EXECUTABLE_OUTPUT_PATH "${NUCLEUS_SOLUTION_DIR}/bin/")
-
-# Requirements
-if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message(FATAL_ERROR "Nucleus can only be compiled on 64-bit platforms.")
-endif()
-
-# Dependencies
-find_package(OpenGL REQUIRED)
-find_package(ZLIB)
-if(ZLIB_FOUND)
-    include_directories(${ZLIB_INCLUDE_DIR})
-else()
-    file(GLOB_RECURSE ZLIB_FILES
-        "${NUCLEUS_SOLUTION_DIR}/externals/zlib/*.c"
-        "${NUCLEUS_SOLUTION_DIR}/externals/zlib/*.h"
-    )
-    add_library(zlib STATIC ${ZLIB_FILES})
-    include_directories("${NUCLEUS_SOLUTION_DIR}/externals/zlib")
-    set(ZLIB_LIBRARY zlib)
-endif()
+set(NUCLEUS_PATH_SOLUTION    ${CMAKE_CURRENT_LIST_DIR})
+set(NUCLEUS_PATH_BINARIES   "${NUCLEUS_PATH_SOLUTION}/bin/")
+set(NUCLEUS_PATH_EXTERNALS  "${NUCLEUS_PATH_SOLUTION}/externals")
+set(NUCLEUS_PATH_TESTS      "${NUCLEUS_PATH_SOLUTION}/tests/")
+set(NUCLEUS_PATH_WRAPPERS   "${NUCLEUS_PATH_SOLUTION}/wrappers/")
 
 # Project
 if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fpermissive -pthread")
 endif()
 
-include_directories(
-    ${NUCLEUS_SOLUTION_DIR}
-)
+# Dependencies
+find_package(OpenGL QUIET)
+find_package(ZLIB QUIET)
+
+if (NOT OPENGL_FOUND)
+    message(WARNING "OpenGL not found. Corresponding backend will be disabled")
+    set(FEATURE_GFX_BACKEND_OPENGL "False")
+endif()
 
 file(GLOB_RECURSE NUCLEUS_FILES
-    "${NUCLEUS_SOLUTION_DIR}/externals/mongoose/mongoose.c"
-    "${NUCLEUS_SOLUTION_DIR}/externals/mongoose/mongoose.h"
-    "${NUCLEUS_SOLUTION_DIR}/externals/aes.cpp"
-    "${NUCLEUS_SOLUTION_DIR}/externals/aes.h"
-    "${NUCLEUS_SOLUTION_DIR}/externals/sha1.cpp"
-    "${NUCLEUS_SOLUTION_DIR}/externals/sha1.h"
-    "${NUCLEUS_SOLUTION_DIR}/nucleus/*.cpp"
-    "${NUCLEUS_SOLUTION_DIR}/nucleus/*.h"
+    "${NUCLEUS_PATH_SOLUTION}/externals/mongoose/mongoose.c"
+    "${NUCLEUS_PATH_SOLUTION}/externals/mongoose/mongoose.h"
+    "${NUCLEUS_PATH_SOLUTION}/externals/aes.cpp"
+    "${NUCLEUS_PATH_SOLUTION}/externals/aes.h"
+    "${NUCLEUS_PATH_SOLUTION}/externals/sha1.cpp"
+    "${NUCLEUS_PATH_SOLUTION}/externals/sha1.h"
+    "${NUCLEUS_PATH_SOLUTION}/nucleus/*.cpp"
+    "${NUCLEUS_PATH_SOLUTION}/nucleus/*.h"
 )
 
-# Discard platform-dependent files
-if (NOT WIN32)
-    file(GLOB_RECURSE DISCARD_FILES
-        "${NUCLEUS_SOLUTION_DIR}/nucleus/gpu/direct3d/*.cpp"
-        "${NUCLEUS_SOLUTION_DIR}/nucleus/gpu/direct3d/*.h"
-        "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.cpp"
-        "${NUCLEUS_SOLUTION_DIR}/nucleus/ui/windows/*.h"
+# File specification macro
+macro(NUCLEUS_FILES_APPEND)
+    file(GLOB_RECURSE FILES_APPEND ${ARGV})
+    list(APPEND NUCLEUS_FILES ${FILES_APPEND})
+endmacro()
+macro(NUCLEUS_FILES_REMOVE)
+    file(GLOB_RECURSE FILES_APPEND ${ARGV})
+    list(REMOVE_ITEM NUCLEUS_FILES ${FILES_APPEND})
+endmacro()
+
+# Set platform-dependent files
+if (TARGET_ANDROID)
+    NUCLEUS_FILES_APPEND(
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/android/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/android/*.h"
     )
-    list(REMOVE_ITEM NUCLEUS_FILES ${DISCARD_FILES})
+elseif (TARGET_IOS)
+    NUCLEUS_FILES_APPEND(
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/ios/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/ios/*.h"
+    )
+elseif (TARGET_LINUX)
+    NUCLEUS_FILES_APPEND(
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/linux/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/linux/*.h"
+    )
+elseif (TARGET_OSX)
+    NUCLEUS_FILES_APPEND(
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/osx/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/osx/*.h"
+    )
+elseif (TARGET_UWP)
+    NUCLEUS_FILES_APPEND(
+	"${NUCLEUS_PATH_SOLUTION}/wrappers/uwp/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/uwp/*.h"
+    )
+elseif (TARGET_WINDOWS)
+    NUCLEUS_FILES_APPEND(
+	"${NUCLEUS_PATH_SOLUTION}/wrappers/windows/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/windows/*.h"
+    )
 endif()
 
-# Target
-add_executable(nucleus ${NUCLEUS_FILES})
+# Set feature-dependent files
+if (NOT FEATURE_GFX_BACKEND_DIRECT3D11)
+    NUCLEUS_FILES_REMOVE(
+	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/direct3d11/*"
+    )
+endif()
+if (NOT FEATURE_GFX_BACKEND_DIRECT3D12)
+    NUCLEUS_FILES_REMOVE(
+	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/direct3d12/*"
+    )
+endif()
+if (NOT FEATURE_GFX_BACKEND_OPENGL)
+    NUCLEUS_FILES_REMOVE(
+	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/opengl/*"
+    )
+endif()
 
-target_link_libraries(nucleus ${ZLIB_LIBRARY} ${OPENGL_LIBRARIES})
+# Update file list
+if (FILES_APPEND)
+    list(APPEND NUCLEUS_FILES ${FILES_APPEND})
+endif()
+if (FILES_DISCARD)
+    list(REMOVE_ITEM NUCLEUS_FILES ${FILES_DISCARD})
+endif()
+
+# Executable
+add_executable(nucleus ${NUCLEUS_FILES})
 set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)
+include_directories(${NUCLEUS_PATH_SOLUTION})
+
+# Dependencies
+if (OPENGL_FOUND)
+    target_link_libraries(nucleus ${OPENGL_LIBRARIES})
+endif()
+
+if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIR})
+    target_link_libraries(nucleus ${ZLIB_LIBRARY})
+else()
+    file(GLOB_RECURSE ZLIB_FILES
+        "${NUCLEUS_PATH_EXTERNALS}/zlib/*.c"
+        "${NUCLEUS_PATH_EXTERNALS}/zlib/*.h"
+    )
+    add_library(zlib STATIC ${ZLIB_FILES})
+    include_directories("${NUCLEUS_PATH_EXTERNALS}/zlib")
+    target_link_libraries(nucleus zlib)
+endif()
+

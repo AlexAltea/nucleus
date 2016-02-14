@@ -9,6 +9,7 @@
 #include "nucleus/cpu/hir/type.h"
 #include "nucleus/cpu/hir/value.h"
 
+#include <string>
 #include <vector>
 
 namespace cpu {

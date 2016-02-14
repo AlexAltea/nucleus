@@ -15,7 +15,9 @@
 #include "nucleus/graphics/texture.h"
 #include "nucleus/graphics/vertex_buffer.h"
 
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_PLATFORM_LINUX)
+#include <X11/Xlib.h>
+#elif defined(NUCLEUS_PLATFORM_UWP)
 #define NOMINMAX
 #include <Windows.h>
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
@@ -37,14 +39,12 @@ struct BackendParameters {
     Display* display;
 #elif defined(NUCLEUS_PLATFORM_UWP)
     IUnknown* window;
-    size_t width;
-    size_t height;
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
     HWND hwnd;
     HDC hdc;
-    size_t width;
-    size_t height;
 #endif
+    Size width;
+    Size height;
 };
 
 class IBackend {

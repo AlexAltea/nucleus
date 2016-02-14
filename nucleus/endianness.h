@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include "nucleus/common.h"
+#include "nucleus/compiler.h"
+#include "nucleus/types.h"
 
 #ifdef NUCLEUS_COMPILER_MSVC
 #define SE16(val)  _byteswap_ushort(val)

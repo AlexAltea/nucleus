@@ -12,7 +12,7 @@ namespace gfx {
 enum Format {
 #define FORMAT(name, ...) FORMAT_##name,
 #include "format.inl"
-#undef RESOURCE
+#undef FORMAT
 
     _FORMAT_COUNT,
 };

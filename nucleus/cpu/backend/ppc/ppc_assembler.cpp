@@ -6,6 +6,8 @@
 #include "ppc_assembler.h"
 #include "nucleus/assert.h"
 
+#include <cstdint>
+
 namespace cpu {
 namespace backend {
 namespace ppc {

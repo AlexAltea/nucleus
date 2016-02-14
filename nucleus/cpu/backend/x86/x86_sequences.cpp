@@ -40,6 +40,9 @@ template <> const Xbyak::Reg64 getTempReg<Xbyak::Reg64>(X86Emitter& e) { return 
 // Sequences
 template <typename S, typename I>
 struct Sequence : SequenceBase<S, I> {
+    using InstrType = I;
+
+public:
     static void select(X86Emitter& emitter, const hir::Instruction* instr) {
         S::emit(emitter, I(instr));
     }
@@ -1614,33 +1617,33 @@ struct SELECT_F64 : Sequence<SELECT_F64, I<OPCODE_SELECT, F64Op, I8Op, F64Op, F6
 /**
  * Opcode: CMP
  */
-#define EMIT_COMMUTATIVE_INTEGER_COMPARE(set) \
+#define EMIT_COMMUTATIVE_INTEGER_COMPARE(_set) \
     emitCompareOp(e, i, [](X86Emitter& e, auto dest, auto lhs, auto rhs, bool inverse) { \
         e.cmp(lhs, rhs); \
-        e.##set##(dest); \
+        e._set(dest); \
     });
 
-#define EMIT_ASSOCIATIVE_INTEGER_COMPARE(set, setInv) \
+#define EMIT_ASSOCIATIVE_INTEGER_COMPARE(_set, _setInv) \
     emitCompareOp(e, i, [](X86Emitter& e, auto dest, auto lhs, auto rhs, bool inverse) { \
         e.cmp(lhs, rhs); \
         if (!inverse) { \
-            e.##set##(dest); \
+            e._set(dest); \
         } else { \
-            e.##setInv##(dest); \
+            e._setInv(dest); \
         } \
     });
 
-#define EMIT_FLOAT_COMPARE(cmp, set) \
+#define EMIT_FLOAT_COMPARE(_cmp, _set) \
     if (i.src1.isConstant) { \
         getXmmConstant(e, e.xmm0, i.src1.constant()); \
-        e.##cmp##(e.xmm0, i.src2); \
+        e._cmp(e.xmm0, i.src2); \
     } else if (i.src2.isConstant) {  \
         getXmmConstant(e, e.xmm0, i.src2.constant()); \
-        e.##cmp##(i.src1, e.xmm0); \
+        e._cmp(i.src1, e.xmm0); \
     } else { \
-        e.##cmp##(i.src1, i.src2); \
+        e._cmp(i.src1, i.src2); \
     } \
-    e.##set##(i.dest);
+    e._set(i.dest);
 
 
 struct CMP_I8 : Sequence<CMP_I8, I<OPCODE_CMP, I8Op, I8Op, I8Op>> {
@@ -2089,6 +2092,8 @@ std::unordered_map<InstrKey::Value, X86Sequences::SelectFunction> X86Sequences::
 void X86Sequences::init() {
     // Initialize sequences if necessary
     if (sequences.empty()) {
+        // TODO: Other compilers fail here
+#ifdef NUCLEUS_COMPILER_MSVC
         registerSequence<ADD_I8, ADD_I16, ADD_I32, ADD_I64>();
         registerSequence<SUB_I8, SUB_I16, SUB_I32, SUB_I64>();
         registerSequence<MUL_I8, MUL_I16, MUL_I32, MUL_I64>();
@@ -2127,6 +2132,7 @@ void X86Sequences::init() {
         registerSequence<FMUL_F32, FMUL_F64>();
         registerSequence<FDIV_F32, FDIV_F64>();
         registerSequence<FNEG_F32, FNEG_F64>();
+#endif
     }
 }
 

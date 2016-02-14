@@ -64,6 +64,7 @@ void WidgetImage::update(core::ResourceName resName) {
 
 void WidgetImage::update(const std::string& filepath) {
     // Open file
+    /* TODO: Use nucleus/filesystem
     std::FILE* file;
     fopen_s(&file, filepath.c_str(), "rb");
     if (!file) {
@@ -79,7 +80,7 @@ void WidgetImage::update(const std::string& filepath) {
     fread(buffer.data(), size, 1, file);
     fclose(file);
 
-    update(buffer.data(), size);
+    update(buffer.data(), size);*/
 }
 
 void WidgetImage::update(const Byte* buffer, Size size) {

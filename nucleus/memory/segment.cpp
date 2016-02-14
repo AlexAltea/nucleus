@@ -32,7 +32,7 @@ Block::Block(void* baseAddr, U32 blockAddr, U32 blockSize) {
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
     success = VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr;
 #elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
-    success = ::mprotect(realaddr, block_size, PROT_READ | PROT_WRITE);
+    success = ::mprotect(realaddr, blockSize, PROT_READ | PROT_WRITE);
 #endif
     if (!success) {
         realaddr = nullptr;

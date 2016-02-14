@@ -156,7 +156,7 @@ bool LV2::init(U32 entry) {
 
     BE<U64> thread_id;
     sys_ppu_thread_attr_t attr;
-    attr.entry = startFunc.entry;
+    attr.entry = startFunc.entry.ToLE();
     attr.tls_addr = 0;
     sys_ppu_thread_create(&thread_id, &attr, 0, 0, 500/*TODO*/, 0x10000, 0, "main"/*TODO*/);
 

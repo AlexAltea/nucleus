@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <cstddef>
+
 using S8 = char;
 using S16 = short;
 using S32 = int;

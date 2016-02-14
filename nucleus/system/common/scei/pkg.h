@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 
+#include <string>
 #include <vector>
 
 namespace sys {

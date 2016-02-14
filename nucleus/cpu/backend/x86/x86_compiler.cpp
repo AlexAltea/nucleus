@@ -8,6 +8,7 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
+#include <cstring>
 #include <queue>
 
 namespace cpu {

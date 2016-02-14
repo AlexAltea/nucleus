@@ -15,6 +15,7 @@ git:
   submodules: false
 
 before_install:
+  sudo apt-get install libx11-dev
   # Prepare compilers
   - if [ "$CXX" = "g++" ]; then
       sudo apt-get install g++-4.8 -qq;
@@ -25,7 +26,7 @@ before_install:
     fi
 
 before_script:
-  - cmake .
+  - cmake -DTARGET_LINUX=ON .
 
 script:
   - make -j 4

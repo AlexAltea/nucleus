@@ -9,6 +9,8 @@
 #include "nucleus/ui/screens/list.h"
 #include "nucleus/ui/widgets/list.h"
 
+#include <cstring>
+
 namespace ui {
 
 UI::UI(std::shared_ptr<gfx::IBackend> backend, Size width, Size height) :

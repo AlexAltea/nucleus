@@ -10,7 +10,7 @@ namespace gfx {
 const FormatInfo formatInfo[_FORMAT_COUNT] = {
 #define FORMAT(name, bytesPerPixel) { FORMAT_##name, bytesPerPixel },
 #include "format.inl"
-#undef RESOURCE
+#undef FORMAT
 };
 
 }  // namespace gfx

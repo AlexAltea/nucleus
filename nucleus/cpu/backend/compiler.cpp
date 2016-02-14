@@ -10,6 +10,7 @@
 #include <Windows.h>
 #endif
 #ifdef NUCLEUS_PLATFORM_LINUX
+#include <unistd.h>
 #include <sys/mman.h>
 #endif
 #ifdef NUCLEUS_PLATFORM_OSX
@@ -61,7 +62,7 @@ void* Compiler::allocRWXMemory(size_t size) {
     size_t pageSize = sysconf(_SC_PAGESIZE);
     size_t iaddr = reinterpret_cast<size_t>(addr);
     size_t roundedAddr = iaddr & ~(pageSize - 1);
-    if (!mprotect(reinterpret_cast<void*>(roundAddr), size + (iaddr - roundAddr), PROT_READ | PROT_WRITE | PROT_EXEC)) {
+    if (!mprotect(reinterpret_cast<void*>(roundedAddr), size + (iaddr - roundedAddr), PROT_READ | PROT_WRITE | PROT_EXEC)) {
         logger.error(LOG_CPU, "Could not allocate %d bytes of RWX memory", size);
         return nullptr;
     }

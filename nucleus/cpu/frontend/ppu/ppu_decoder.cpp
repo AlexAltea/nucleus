@@ -110,7 +110,8 @@ bool Function::analyze_cfg()
             }
             // Split block if label (Block B) is inside an existing block (Block A)
             if (block_a.contains(addr)) {
-                blocks[addr] = new Block(block_a.split(addr));
+                auto block_b = block_a.split(addr);
+                blocks[addr] = new Block(block_b);
                 continueLoop = true;
                 break;
             }

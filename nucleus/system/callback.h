@@ -7,8 +7,7 @@
 
 #include "nucleus/common.h"
 
-class Callback
-{
+class Callback {
     U32 m_addr;
 
 public:
@@ -16,6 +15,8 @@ public:
 
     template <typename... T>
     void call(T... args) {
+        // TODO: Why does this even compile under MSVC?
+#ifdef NUCLEUS_COMPILER_MSVC
         const U32 pc = memory->read32(m_addr);
         const U32 rtoc = memory->read32(m_addr + 4);
 
@@ -35,5 +36,6 @@ public:
         state->lr = old_lr;
         state->pc = old_pc;
         state->r[2] = old_rtoc;
+#endif
     }
 };
