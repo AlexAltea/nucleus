@@ -35,6 +35,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\compiler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\emulator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\endianness.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\feature.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\format.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\keys.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\loader.h" />
