@@ -81,20 +81,6 @@ enum {
     RSX_VP_REGISTER_TYPE_CONSTANT = 3,
 };
 
-// RSX Vertex Program vector register
-struct rsx_vp_constant_t {
-    bool dirty = false; // Flag: Needs to be reuploaded
-    union {
-        U32 word[4];
-        struct {
-            F32 x;
-            F32 y;
-            F32 z;
-            F32 w;
-        };
-    };
-};
-
 // RSX Vertex Program instruction
 union rsx_vp_instruction_t
 {

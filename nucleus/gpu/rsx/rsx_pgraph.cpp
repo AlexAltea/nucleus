@@ -19,6 +19,10 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* me
     graphics(std::move(backend)), rsx(rsx), memory(memory), surface() {
     cmdQueue = graphics->getGraphicsCommandQueue();
     cmdBuffer = graphics->createCommandBuffer();
+
+    gfx::VertexBufferDesc vtxBufferDesc;
+    vtxBufferDesc.size = 468 * sizeof(V128);
+    vpeConstantMemory = graphics->createVertexBuffer(vtxBufferDesc);
 }
 
 PGRAPH::~PGRAPH() {
@@ -280,6 +284,12 @@ void PGRAPH::Begin(Primitive primitive) {
         }
         cachePipeline[pipelineHash] = std::unique_ptr<gfx::Pipeline>(graphics->createPipeline(pipelineDesc));
     }
+
+    // Upload VPE constants if necessary
+    void* constantsPtr = vpeConstantMemory->map();
+    memcpy(constantsPtr, &vpe.constant, sizeof(vpe.constant));
+    vpeConstantMemory->unmap();
+
     cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());
 }
 

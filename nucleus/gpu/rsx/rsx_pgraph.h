@@ -122,6 +122,7 @@ class PGRAPH {
 
     gfx::CommandQueue* cmdQueue;
     gfx::CommandBuffer* cmdBuffer;
+    gfx::VertexBuffer* vpeConstantMemory;
 
     // Cache
     std::unordered_map<Hash, std::unique_ptr<gfx::Pipeline>> cachePipeline;
@@ -165,10 +166,11 @@ public:
 
     // Vertex Processing Engine
     struct VPE {
-        bool dirty;                      // Flag: Needs to be recompiled
+        bool dirty_instructions;         // Flag: Instructions need to be recompiled
+        bool dirty_constant;             // Flag: Constants need to be reuploaded
         rsx_vp_attribute_t attr[16];     // 16 Vertex Program attributes
         rsx_vp_instruction_t data[512];  // 512 VPE instructions
-        rsx_vp_constant_t constant[468]; // 468 vector constant registers
+        V128 constant[468];              // 468 vector constant registers
         U32 constant_load;               // Set through NV4097_SET_TRANSFORM_CONSTANT_LOAD
         U32 load;                        // Set through NV4097_SET_TRANSFORM_PROGRAM_LOAD
         U32 start;                       // Set through NV4097_SET_TRANSFORM_PROGRAM_START

@@ -297,6 +297,7 @@ void RSX::method(U32 offset, U32 parameter) {
         pgraph.vpe.data[pgraph.vpe.load].word[index % 4] = parameter;
         if (index % 4 == 3) {
             pgraph.vpe.load += 1;
+            pgraph.vpe.dirty_instructions = true;
         }
         break;
 
@@ -309,10 +310,10 @@ void RSX::method(U32 offset, U32 parameter) {
         break;
 
     case_range(32, NV4097_SET_TRANSFORM_CONSTANT, 4)
-        pgraph.vpe.constant[pgraph.vpe.constant_load].word[index % 4] = parameter;
+        pgraph.vpe.constant[pgraph.vpe.constant_load].u32[index % 4] = parameter;
         if (index % 4 == 3) {
-            pgraph.vpe.constant[pgraph.vpe.constant_load].dirty = true;
             pgraph.vpe.constant_load += 1;
+            pgraph.vpe.dirty_constant = true;
         }
         break;
 
