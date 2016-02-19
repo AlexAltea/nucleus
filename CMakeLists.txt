@@ -35,6 +35,7 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(FEATURE_GFX_BACKEND_DIRECT3D11 "True")
     set(FEATURE_GFX_BACKEND_DIRECT3D12 "True")
     set(FEATURE_GFX_BACKEND_OPENGL "True")
+    set(FEATURE_GFX_BACKEND_VULKAN "True")
     option (PLATFORM_WINDOWS, ON)
 endif()
 
@@ -130,6 +131,11 @@ if (NOT FEATURE_GFX_BACKEND_OPENGL)
 	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/opengl/*"
     )
 endif()
+if (NOT FEATURE_GFX_BACKEND_VULKAN)
+    NUCLEUS_FILES_REMOVE(
+	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/vulkan/*"
+    )
+endif()
 
 # Executable
 add_executable(nucleus ${NUCLEUS_FILES})
@@ -147,6 +153,9 @@ if (FEATURE_GFX_BACKEND_DIRECT3D12)
 endif()
 if (FEATURE_GFX_BACKEND_OPENGL)
     add_definitions(-D_NUCLEUS_FEATURE_GFXBACKEND_OPENGL)
+endif()
+if (FEATURE_GFX_BACKEND_OPENGL)
+    add_definitions(-D_NUCLEUS_FEATURE_GFXBACKEND_VULKAN)
 endif()
 
 # Dependencies

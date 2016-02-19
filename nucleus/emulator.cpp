@@ -36,6 +36,11 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
         graphics = std::make_shared<gfx::OpenGLBackend>();
         break;
 #endif
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_VULKAN)
+    case GRAPHICS_BACKEND_VULKAN:
+        graphics = std::make_shared<gfx::VulkanBackend>();
+        break;
+#endif
     default:
         logger.warning(LOG_COMMON, "Unsupported graphics backend");
         return false;

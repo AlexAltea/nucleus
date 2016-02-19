@@ -15,6 +15,9 @@
 #ifdef NUCLEUS_FEATURE_GFXBACKEND_OPENGL
 #include "nucleus/graphics/backend/opengl/opengl_backend.h"
 #endif
+#ifdef NUCLEUS_FEATURE_GFXBACKEND_VULKAN
+#include "nucleus/graphics/backend/vulkan/vulkan_backend.h"
+#endif
 
 namespace gfx {
 
@@ -27,6 +30,9 @@ using Direct3D12Backend = direct3d12::Direct3D12Backend;
 #endif
 #ifdef NUCLEUS_FEATURE_GFXBACKEND_OPENGL
 using OpenGLBackend = opengl::OpenGLBackend;
+#endif
+#ifdef NUCLEUS_FEATURE_GFXBACKEND_VULKAN
+using VulkanBackend = vulkan::VulkanBackend;
 #endif
 
 }  // namespace gfx
