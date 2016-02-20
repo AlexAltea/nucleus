@@ -40,6 +40,7 @@ struct BackendParameters {
 #elif defined(NUCLEUS_PLATFORM_UWP)
     IUnknown* window;
 #elif defined(NUCLEUS_PLATFORM_WINDOWS)
+    HINSTANCE hinstance;
     HWND hwnd;
     HDC hdc;
 #endif

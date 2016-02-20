@@ -5,8 +5,20 @@
 
 #include "vulkan.h"
 
+#define LOAD_EXTENSION(function) { \
+    function = reinterpret_cast<PFN_##function>(handle, vkGetInstanceProcAddr(#function)); \
+    if (!function) { \
+        logger.error(LOG_GRAPHICS, "Could not load Vulkan extension '%s'", #function); \
+        return false; \
+    } \
+}
+
 namespace gfx {
 namespace vulkan {
+
+bool initializeVulkan() {
+    return true;
+}
 
 }  // namespace vulkan
 }  // namespace gfx

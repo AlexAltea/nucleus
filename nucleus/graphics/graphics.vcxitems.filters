@@ -92,6 +92,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.cpp">
       <Filter>backend\vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_backend.cpp">
+      <Filter>backend\vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.cpp">
+      <Filter>backend\vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">
@@ -130,7 +136,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_queue.h">
       <Filter>backend\direct3d12</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backends.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)command_buffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)command_queue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)fence.h" />
@@ -186,6 +191,15 @@
       <Filter>frontend\vulkan</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.h">
+      <Filter>backend\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\list.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_backend.h">
+      <Filter>backend\vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.h">
       <Filter>backend\vulkan</Filter>
     </ClInclude>
   </ItemGroup>

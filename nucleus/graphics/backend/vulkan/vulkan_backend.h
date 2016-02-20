@@ -7,11 +7,16 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
+#include "nucleus/graphics/backend/vulkan/vulkan.h"
 
 namespace gfx {
 namespace vulkan {
 
 class VulkanBackend : public IBackend {
+    VkInstance instance;
+    VkPhysicalDevice physicalDevice;
+    VkDevice device;
+
 public:
     VulkanBackend();
     ~VulkanBackend();

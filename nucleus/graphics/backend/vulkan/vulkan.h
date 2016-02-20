@@ -7,6 +7,15 @@
 
 #include "nucleus/common.h"
 
+// Platform-specific definitions
+#if defined(NUCLEUS_PLATFORM_ANDROID)
+#define VK_USE_PLATFORM_ANDROID_KHR
+#elif defined(NUCLEUS_PLATFORM_LINUX)
+#define VK_USE_PLATFORM_XLIB_KHR
+#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif
+
 // Vulkan
 #include "externals/vulkan/vulkan.h"
 #include "externals/vulkan/vk_platform.h"
@@ -17,6 +26,9 @@
 
 namespace gfx {
 namespace vulkan {
+
+// Load extensions
+bool initializeVulkan();
 
 }  // namespace vulkan
 }  // namespace gfx
