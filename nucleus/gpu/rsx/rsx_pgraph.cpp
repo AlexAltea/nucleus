@@ -12,6 +12,8 @@
 #include "nucleus/gpu/rsx/rsx_enum.h"
 #include "nucleus/gpu/rsx/rsx_methods.h"
 
+#include <cstring>
+
 namespace gpu {
 namespace rsx {
 

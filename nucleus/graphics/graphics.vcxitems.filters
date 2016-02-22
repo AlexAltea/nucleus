@@ -98,6 +98,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.cpp">
       <Filter>backend\vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_debug.cpp">
+      <Filter>backend\vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">
@@ -202,6 +205,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.h">
       <Filter>backend\vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_debug.h">
+      <Filter>backend\vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl">
@@ -214,5 +220,8 @@
       <Filter>frontend\opengl</Filter>
     </None>
     <None Include="$(MSBuildThisFileDirectory)format.inl" />
+    <None Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.inl">
+      <Filter>backend\vulkan</Filter>
+    </None>
   </ItemGroup>
 </Project>

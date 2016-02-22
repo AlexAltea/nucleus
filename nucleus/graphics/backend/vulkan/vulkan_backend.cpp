@@ -27,13 +27,13 @@ VulkanBackend::VulkanBackend() : IBackend() {
 
 VulkanBackend::~VulkanBackend() {
     if (device) {
-        vkDestroyDevice(device, nullptr);
+        /*vkDestroyDevice(device, nullptr);*/
         device = nullptr;
     }
 }
 
 bool VulkanBackend::initialize(const BackendParameters& params) {
-    VkApplicationInfo applicationInfo;
+    /*VkApplicationInfo applicationInfo;
     applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     applicationInfo.pNext = nullptr;
     applicationInfo.pApplicationName = "Nucleus";
@@ -47,10 +47,10 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     instanceInfo.pNext = nullptr;
     instanceInfo.flags = 0;
     instanceInfo.pApplicationInfo = &applicationInfo;
-    /*instanceInfo.enabledLayerCount = static_cast<uint32_t>(enabledLayers.size());
+    instanceInfo.enabledLayerCount = static_cast<uint32_t>(enabledLayers.size());
     instanceInfo.ppEnabledLayerNames = enabledLayers.data();
     instanceInfo.enabledExtensionCount = static_cast<uint32_t>(enabledExtensions.size());
-    instanceInfo.ppEnabledExtensionNames = enabledExtensions.data();*/
+    instanceInfo.ppEnabledExtensionNames = enabledExtensions.data();
 
     VkResult vkr = vkCreateInstance(&instanceInfo, nullptr, &instance);
     if (vkr != VK_SUCCESS) {
@@ -98,11 +98,11 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     deviceInfo.flags = 0;
     deviceInfo.queueCreateInfoCount = 1;
     deviceInfo.pQueueCreateInfos = &queueInfo;
-    /*deviceInfo.enabledLayerCount = static_cast<uint32_t>(enabledLayers.size());
+    deviceInfo.enabledLayerCount = static_cast<uint32_t>(enabledLayers.size());
     deviceInfo.ppEnabledLayerNames = enabledLayers.data();
     deviceInfo.enabledExtensionCount = static_cast<uint32_t>(enabledExtensions.size());
     deviceInfo.ppEnabledExtensionNames = enabledExtensions.data();
-    deviceInfo.pEnabledFeatures = &enabledFeatures;*/
+    deviceInfo.pEnabledFeatures = &enabledFeatures;
     vkr = vkCreateDevice(physicalDevice, &deviceInfo, nullptr, &device);
     if (vkr != VK_SUCCESS) {
         switch (vkr) {
@@ -116,7 +116,7 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
             logger.error(LOG_GRAPHICS, "vkCreateDevice failed: Unknown reason (%d)", vkr);
         }
         return false;
-    }
+    }*/
     
     return true;
 }

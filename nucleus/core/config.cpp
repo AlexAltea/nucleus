@@ -19,7 +19,7 @@ Config::Config() {
     language = LANGUAGE_DEFAULT;
     ppuTranslator = CPU_TRANSLATOR_FUNCTION;
     spuTranslator = CPU_TRANSLATOR_INSTRUCTION;
-    graphicsBackend = GRAPHICS_BACKEND_VULKAN;
+    graphicsBackend = GRAPHICS_BACKEND_DIRECT3D12;
 }
 
 void Config::parseArguments(int argc, char** argv) {
