@@ -157,6 +157,8 @@ public:
     DBState dbState;      // Depth-stencil static pipeline state
 
     std::vector<Sampler> samplers;
+    Size numCBVs;
+    Size numSRVs;
 };
 
 class Pipeline {

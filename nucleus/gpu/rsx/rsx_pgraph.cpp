@@ -301,7 +301,6 @@ void PGRAPH::End() {
     cmdBuffer->reset();
 }
 
-
 void PGRAPH::ClearSurface(U32 mask) {
     // Avoid clearing empty surfaces
     if (surface.width == 0 || surface.height == 0) {
