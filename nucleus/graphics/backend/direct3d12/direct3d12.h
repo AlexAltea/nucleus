@@ -12,10 +12,14 @@
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>
 
+// Debugging
 #if defined(NUCLEUS_BUILD_DEBUG)
 #include <initguid.h>
 #include <dxgidebug.h>
 #endif
+
+// Helper
+#include "externals/direct3d12/d3dx12.h"
 
 // Function types: dxgi.dll
 typedef HRESULT(WINAPI *PFN_CreateDXGIFactory)(REFIID, void **);

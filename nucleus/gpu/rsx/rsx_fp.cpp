@@ -166,6 +166,9 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
     tempsHalf.resize(48);
     samplers.resize(16);
 
+    // TODO: Always place FragCoord position as input. Do the same with other inputs and outputs in all shader stages
+    getInputReg(0);
+
     // Temporary values
     Literal src0, src1, src2;
     Literal tmp0, tmp1, tmp2;

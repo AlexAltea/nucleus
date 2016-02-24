@@ -14,6 +14,8 @@ namespace direct3d12 {
 
 class Direct3D12VertexBuffer : public Direct3D12Resource, public VertexBuffer {
 public:
+    ID3D12DescriptorHeap* cbvHeap;
+
     Direct3D12VertexBuffer(ID3D12Device* device, UINT64 size);
     ~Direct3D12VertexBuffer();
 };

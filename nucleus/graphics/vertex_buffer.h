@@ -13,6 +13,7 @@ namespace gfx {
 
 struct VertexBufferDesc {
     U64 size;
+    bool cbvCreation;
 };
 
 class VertexBuffer : public virtual Resource {

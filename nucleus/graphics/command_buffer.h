@@ -72,10 +72,10 @@ public:
 
     /**
      * Bind a texture to a pipeline sampler
-     * @param[in]  index    Index of the sampler
-     * @param[in]  texture  Texture to bind
+     * @param[in]  buffers  Uniform buffers to bind
+     * @param[in]  texture  Textures to bind
      */
-    virtual void cmdSetTexture(U32 index, const Texture* texture) = 0;
+    virtual void cmdSetDescriptors(const std::vector<VertexBuffer*>& buffers, const std::vector<Texture*>& textures) = 0;
 
     /**
      * Pushes a command to set the vertex buffer for an input slots

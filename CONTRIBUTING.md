@@ -5,6 +5,7 @@ Looking to contribute something to Nucleus? **Here's how you can help**.
 
 Please take a moment to review this document in order to make the contribution process easy and effective for everyone involved.
 
+
 ## Issues
 
 The [issue tracker](https://github.com/AlexAltea/nucleus/issues) is the preferred channel for [bug reports](#bug-reports) and [features requests](#feature-requests), but please respect the following restrictions:
@@ -29,6 +30,7 @@ A bug is a *demonstrable problem* that is caused by the code in the repository. 
 
 Feature requests are always welcome. Before opening one, please take a moment to find out whether your idea fits with the scope and aims of the project. Please verify that your idea is not already referenced in the [Roadmap](docs/development/roadmap.md).
 
+
 ## Pull requests
 
 **Please ask first** before embarking on any significant pull request (e.g. implementing features, refactoring code, adding new frontends), otherwise you risk spending a lot of time working on something that the might be rejected while reviewing.
@@ -36,5 +38,5 @@ Feature requests are always welcome. Before opening one, please take a moment to
 Check the following documents:
 
 * [Roadmap](docs/development/roadmap.md): Planned tasks that you can contribute to.
-* [Conventions](docs/development/conventions.md): Conding style and conventions to follow.
+* [Conventions](docs/development/conventions.md): Coding style and conventions to follow.
 * [Overview](docs/development/overview.md): Details about how the project is structured.

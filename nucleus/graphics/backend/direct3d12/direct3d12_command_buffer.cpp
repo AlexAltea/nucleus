@@ -82,13 +82,24 @@ void Direct3D12CommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32
     list->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 }
 
-void Direct3D12CommandBuffer::cmdSetTexture(U32 index, const Texture* texture) {
-    const auto* d3dTexture = static_cast<const Direct3D12Texture*>(texture);
-    assert_true(d3dTexture != nullptr, "Direct3D12CommandBuffer::cmdSetTexture: Invalid texture specified");
+void Direct3D12CommandBuffer::cmdSetDescriptors(const std::vector<VertexBuffer*>& buffers, const std::vector<Texture*>& textures) {
+    Size size = buffers.size() + textures.size();
 
-    ID3D12DescriptorHeap* heap = d3dTexture->srvHeap;
-    list->SetDescriptorHeaps(1, &heap);
-    list->SetGraphicsRootDescriptorTable(index, heap->GetGPUDescriptorHandleForHeapStart());
+    std::vector<ID3D12DescriptorHeap*> heaps(size);
+    Size index = 0;
+    for (const auto* buffer : buffers) {
+        const auto* d3dBuffer = static_cast<const Direct3D12VertexBuffer*>(buffer);
+        heaps[index++] = d3dBuffer->cbvHeap;
+    }
+    for (const auto* texture : textures) {
+        const auto* d3dTexture = static_cast<const Direct3D12Texture*>(texture);
+        heaps[index++] = d3dTexture->srvHeap;
+    }
+
+    list->SetDescriptorHeaps(heaps.size(), heaps.data());
+    for (Size i = 0; i < size; i++) {
+        list->SetGraphicsRootDescriptorTable(i, heaps[i]->GetGPUDescriptorHandleForHeapStart());
+    }
 }
 
 void Direct3D12CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) {

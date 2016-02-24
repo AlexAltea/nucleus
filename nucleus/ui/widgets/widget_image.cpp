@@ -29,6 +29,8 @@ gfx::Pipeline* WidgetImage::createPipeline(gfx::IBackend& backend) {
     fragDesc.module = gfx::frontend::ShaderParser::parse(reinterpret_cast<const char*>(resPS.data), resPS.size);
 
     gfx::PipelineDesc pipelineDesc = {};
+    pipelineDesc.numCBVs = 0;
+    pipelineDesc.numSRVs = 1;
     pipelineDesc.vs = backend.createShader(vertDesc);
     pipelineDesc.ps = backend.createShader(fragDesc);
     pipelineDesc.iaState.topology = gfx::TOPOLOGY_TRIANGLE_STRIP;

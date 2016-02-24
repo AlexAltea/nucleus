@@ -173,7 +173,7 @@ void UI::renderImages() {
         }
         if (texture != textureImages[i].first) {
             texture = textureImages[i].first;
-            cmdBuffer->cmdSetTexture(0, texture);
+            cmdBuffer->cmdSetDescriptors({}, {texture});
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
         if (isColorTarget) {
@@ -209,7 +209,7 @@ void UI::renderText() {
     for (size_t i = 0; i < dataText.size(); i++) {
         if (texture != textureText[i].first) {
             texture = textureText[i].first;
-            cmdBuffer->cmdSetTexture(0, texture);
+            cmdBuffer->cmdSetDescriptors({}, {texture});
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
     }

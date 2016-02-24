@@ -24,6 +24,7 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* me
 
     gfx::VertexBufferDesc vtxBufferDesc;
     vtxBufferDesc.size = 468 * sizeof(V128);
+    vtxBufferDesc.cbvCreation = true;
     vpeConstantMemory = graphics->createVertexBuffer(vtxBufferDesc);
 }
 
@@ -260,6 +261,8 @@ void PGRAPH::Begin(Primitive primitive) {
             cacheFP[fpHash] = std::move(fp);
         }
         gfx::PipelineDesc pipelineDesc = {};
+        pipelineDesc.numCBVs = 1;
+        pipelineDesc.numSRVs = 0;
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
         pipelineDesc.cbState.colorTarget[0].enableBlend = p.blend_enable;
@@ -293,6 +296,7 @@ void PGRAPH::Begin(Primitive primitive) {
     vpeConstantMemory->unmap();
 
     cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());
+    cmdBuffer->cmdSetDescriptors({vpeConstantMemory}, {});
 }
 
 void PGRAPH::End() {

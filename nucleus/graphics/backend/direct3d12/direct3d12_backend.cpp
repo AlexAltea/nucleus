@@ -244,18 +244,18 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     auto* pipeline = new Direct3D12Pipeline();
 
     // Root signature parameters
-    D3D12_DESCRIPTOR_RANGE range = {};
-    range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    range.NumDescriptors = 1;
-    range.BaseShaderRegister = 0;
-    range.RegisterSpace = 0;
-    range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    CD3DX12_DESCRIPTOR_RANGE ranges[2];
+    ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-    D3D12_ROOT_PARAMETER parameter;
-    parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    parameter.DescriptorTable.NumDescriptorRanges = 1;
-    parameter.DescriptorTable.pDescriptorRanges = &range;
-    parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    Size index = 0;
+    std::vector<CD3DX12_ROOT_PARAMETER> parameters(desc.numCBVs + desc.numSRVs);
+    for (Size reg = 0; reg < desc.numCBVs; reg++) {
+        parameters[index++].InitAsDescriptorTable(1, &ranges[0], D3D12_SHADER_VISIBILITY_ALL);
+    }
+    for (Size reg = 0; reg < desc.numSRVs; reg++) {
+        parameters[index++].InitAsDescriptorTable(1, &ranges[1], D3D12_SHADER_VISIBILITY_PIXEL);
+    }
 
     // Samplers
     std::vector<D3D12_STATIC_SAMPLER_DESC> d3dSamplers(desc.samplers.size());
@@ -278,8 +278,8 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
 
     // Root signature
     D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-    rootSignatureDesc.NumParameters = 1;
-    rootSignatureDesc.pParameters = &parameter;
+    rootSignatureDesc.NumParameters = parameters.size();
+    rootSignatureDesc.pParameters = parameters.data();
     rootSignatureDesc.NumStaticSamplers = d3dSamplers.size();
     rootSignatureDesc.pStaticSamplers = d3dSamplers.data();
     rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -400,7 +400,24 @@ Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
 
 VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc) {
     UINT64 size = desc.size;
+    if (desc.cbvCreation) {
+        size = (size + 255) & ~255; // CB size is required to be 256-byte aligned
+    }
+
     auto* vtxBuffer = new Direct3D12VertexBuffer(device, size);
+    if (desc.cbvCreation) {
+        HRESULT hr;
+        D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc = {};
+		cbvHeapDesc.NumDescriptors = 1;
+		cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		hr = device->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&vtxBuffer->cbvHeap));
+
+        D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+		cbvDesc.BufferLocation = vtxBuffer->resource->GetGPUVirtualAddress();
+		cbvDesc.SizeInBytes = size;
+		device->CreateConstantBufferView(&cbvDesc, vtxBuffer->cbvHeap->GetCPUDescriptorHandleForHeapStart());
+    }
     return vtxBuffer;
 }
 
