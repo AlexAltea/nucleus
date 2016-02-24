@@ -61,4 +61,9 @@
       <Filter>rsx</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)rsx\rsx_methods.inl">
+      <Filter>rsx</Filter>
+    </None>
+  </ItemGroup>
 </Project>

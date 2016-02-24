@@ -36,4 +36,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_texture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)rsx\rsx_methods.inl" />
+  </ItemGroup>
 </Project>

@@ -82,7 +82,7 @@ void RSX::task() {
         const U32 get = dma_control->get;
         const U32 put = dma_control->put;
 
-        const rsx_method_t cmd = { io_read32(get) };
+        const Method cmd = { io_read32(get) };
 
         // Branching commands
         if (cmd.flag_jump) {

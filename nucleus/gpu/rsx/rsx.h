@@ -96,24 +96,6 @@ struct rsx_display_info_t {
     U32 height;
 };
 
-union rsx_method_t
-{
-#define FIELD(from, to, type) struct{ U32:(32-to-1); type:(to-from+1); U32:from; }
-
-    U32 method;
-
-    FIELD( 1,  1, U32 flag_ni);        // Non-Incrementing method
-    FIELD( 2,  2, U32 flag_jump);      // Jump command
-    FIELD(14, 14, U32 flag_ret);       // Return command
-    FIELD(30, 30, U32 flag_call);      // Call command
-    FIELD( 3, 13, U32 method_count);   // Method arguments count
-    FIELD(16, 29, U32 method_offset);  // Method offset (>> 2)
-    FIELD( 3, 31, U32 jump_offset);    // Jump IO offset
-    FIELD( 0, 29, U32 call_offset);    // Call IO offset (>> 2)
-
-#undef FIELD
-};
-
 class RSX : public GPU {
     // Execution engines
     PGRAPH pgraph;
