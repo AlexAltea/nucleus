@@ -113,6 +113,15 @@
   <ItemGroup>
     <AndroidManifest Include="AndroidManifest.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="nucleus-android-native.vcxproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="build.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AntProjectPropertiesFile Include="project.properties" />
+  </ItemGroup>
   <Import Project="$(AndroidTargetsPath)\Android.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="$(projectname)" default="help">
+  <!-- Ant specific build properties -->
+  <property file="ant.properties" />
+
+  <!-- If sdk.dir was not set from one of the property file, then get it from the ANDROID_HOME environment variable -->
+  <property environment="env" />
+  <condition property="sdk.dir" value="${env.ANDROID_HOME}">
+    <isset property="env.ANDROID_HOME" />
+  </condition>
+
+  <!-- Project specific properties. E.g. project target and library dependencies -->
+  <loadproperties srcFile="project.properties" />
+
+  <!-- Verify if sdk.dir is defined -->
+  <fail
+    message="sdk.dir is missing. Make sure ANDROID_HOME environment variable is correctly set."
+    unless="sdk.dir" />
+
+  <!-- Import per project custom build rules if present at the root of the project (optional) -->
+  <import file="custom_rules.xml" optional="true" />
+
+  <!-- Import the actual build file.
+
+         To customize existing targets, there are two options:
+         - Customize only one target:
+             - copy/paste the target into this file, *before* the
+               <import> task.
+             - customize it to your needs.
+         - Customize the whole content of build.xml
+             - copy/paste the content of the rules files (minus the top node)
+               into this file, replacing the <import> task.
+             - customize to your needs.
+
+         ***********************
+         ****** IMPORTANT ******
+         ***********************
+         In all cases you must update the value of version-tag below to read 'custom' instead of an integer,
+         in order to avoid having your file be overridden by tools such as "android update project"
+    -->
+  <!-- version-tag: 1 -->
+  <import file="${sdk.dir}/tools/ant/build.xml" />
+
+  <target name="-pre-compile">
+    <path id="project.all.jars.path">
+      <path path="${toString:project.all.jars.path}"/>
+      <fileset dir="${jar.libs.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+  </target>
+</project>
