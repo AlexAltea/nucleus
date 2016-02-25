@@ -418,9 +418,7 @@ void RSX::method(U32 offset, U32 parameter) {
         const U32 first = parameter & 0xFFFFFF;
         const U32 count = (parameter >> 24) + 1;
         pgraph.LoadVertexAttributes(first, count);
-        pgraph.BindVertexAttributes();
-        //pgraph.DrawArrays(first, count);
-        pgraph.UnbindVertexAttributes();
+        pgraph.DrawArrays(first, count);
         break;
     }
 

@@ -123,6 +123,7 @@ class PGRAPH {
     gfx::CommandQueue* cmdQueue;
     gfx::CommandBuffer* cmdBuffer;
     gfx::VertexBuffer* vpeConstantMemory;
+    gfx::VertexBuffer* vpeInputs[16];
 
     // Cache
     std::unordered_map<Hash, std::unique_ptr<gfx::Pipeline>> cachePipeline;
@@ -194,12 +195,10 @@ public:
     // Rendering methods
     void Begin(Primitive mode);
     void End();
-    void BindVertexAttributes();
     void ClearSurface(U32 mask);
     void DrawArrays(U32 first, U32 count);
     void Enable(U32 prop, U32 enabled);
     void Flip();
-    void UnbindVertexAttributes();
 };
 
 }  // namespace rsx

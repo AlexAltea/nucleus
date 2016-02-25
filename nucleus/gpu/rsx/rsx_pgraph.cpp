@@ -22,10 +22,18 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* me
     cmdQueue = graphics->getGraphicsCommandQueue();
     cmdBuffer = graphics->createCommandBuffer();
 
-    gfx::VertexBufferDesc vtxBufferDesc;
-    vtxBufferDesc.size = 468 * sizeof(V128);
-    vtxBufferDesc.cbvCreation = true;
-    vpeConstantMemory = graphics->createVertexBuffer(vtxBufferDesc);
+    // Vertex Buffer for VPE constant registers
+    gfx::VertexBufferDesc vtxConstantBufferDesc;
+    vtxConstantBufferDesc.size = 468 * sizeof(V128);
+    vtxConstantBufferDesc.cbvCreation = true;
+    vpeConstantMemory = graphics->createVertexBuffer(vtxConstantBufferDesc);
+
+    // Vertex buffer for VPE input attributes
+    gfx::VertexBufferDesc vtxInputBufferDesc = {};
+    vtxInputBufferDesc.size = 0x100000; // TODO: Could it be bigger? Assuming 0x10000 vertices * 4 coords/vertex * 4 bytes/coord
+    for (Size i = 0; i < 16; i++) {
+        vpeInputs[i] = graphics->createVertexBuffer(vtxInputBufferDesc);
+    }
 }
 
 PGRAPH::~PGRAPH() {
@@ -67,7 +75,8 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
         0, 2, 4, 2, 1, 2, 4, 1
     };
 
-    for (auto& attr : vpe.attr) {
+    for (Size attrIndex = 0; attrIndex < 16; attrIndex++) {
+        auto& attr = vpe.attr[attrIndex];
         if (!attr.size) {
             continue;
         }
@@ -81,12 +90,13 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
         }
 
         const U32 typeSize = vertexTypeSize[attr.type];
-        attr.data.resize(count * attr.size * typeSize);
+        //attr.data.resize(count * attr.size * typeSize);
 
         // Copy data per vertex
+        U8* data = (U8*)vpeInputs[attrIndex]->map();
         for (U32 i = 0; i < count; i++) {
             U32 src = addr + vertex_data_base_offset + attr.stride * (first + i + vertex_data_base_index);
-            void* dst = &attr.data[i * attr.size * typeSize];
+            void* dst = &/*attr.*/data[i * attr.size * typeSize];
 
             switch (typeSize) {
             case 1:
@@ -106,6 +116,11 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
                 break;
             }
         }
+        vpeInputs[attrIndex]->unmap();
+
+        U32 offset = 0;
+        U32 stride = attr.size * typeSize;
+        cmdBuffer->cmdSetVertexBuffers(attrIndex, 1, &vpeInputs[attrIndex], &offset, &stride);
     }
 }
 
@@ -156,9 +171,6 @@ gfx::DepthStencilTarget* PGRAPH::getDepthStencilTarget(U32 address) {
 }
 
 void PGRAPH::setSurface() {
-    /*if (!surface.dirty) {
-        return;
-    }*/
     Size colorCount = 0;
     gfx::ColorTarget* colors[4];
     gfx::DepthStencilTarget* depth = getDepthStencilTarget(surface.depthOffset);
@@ -205,8 +217,8 @@ void PGRAPH::setSurface() {
  */
 // NOTE: RSX doesn't know how big the vertex buffer is, but OpenGL requires this information
 // to copy the data to the host GPU. Therefore, LoadVertexAttributes needs to be called.
-void PGRAPH::BindVertexAttributes() {
-    /*// Indices are attr.type
+/*void PGRAPH::BindVertexAttributes() {
+    // Indices are attr.type
     static const GLenum vertexType[] = {
         0, GL_SHORT, GL_FLOAT, GL_HALF_FLOAT, GL_UNSIGNED_BYTE, GL_SHORT, GL_FLOAT, GL_UNSIGNED_BYTE
     };
@@ -228,8 +240,8 @@ void PGRAPH::BindVertexAttributes() {
             glEnableVertexAttribArray(index);
             glVertexAttribPointer(index, attr.size, vertexType[attr.type], vertexNormalized[attr.type], 0, 0);
         }
-    }*/
-}
+    }
+}*/
 
 void PGRAPH::Begin(Primitive primitive) {
     // Set surface
@@ -297,6 +309,7 @@ void PGRAPH::Begin(Primitive primitive) {
 
     cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());
     cmdBuffer->cmdSetDescriptors({vpeConstantMemory}, {});
+    cmdBuffer->cmdSetPrimitiveTopology(convertPrimitiveTopology(primitive));
 }
 
 void PGRAPH::End() {
@@ -336,16 +349,6 @@ void PGRAPH::ClearSurface(U32 mask) {
 }
 
 void PGRAPH::DrawArrays(U32 first, U32 count) {
-    // Upload VP constants
-    /*for (U32 i = 0; i < 468; i++) {
-        auto& constant = vpe.constant[i];
-        if (constant.dirty) {
-            GLint loc = glGetUniformLocation(id, format("c[%d]", i).c_str());
-            glUniform4f(loc, constant.x, constant.y, constant.z, constant.w);
-            constant.dirty = false;
-        }
-    }*/
-
     // Bind textures
     /*for (U32 i = 0; i < RSX_MAX_TEXTURES; i++) {
         const auto& tex = texture[i];
@@ -376,10 +379,7 @@ void PGRAPH::DrawArrays(U32 first, U32 count) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         }
     }*/
-
-    /*GLenum mode = vertex_primitive - 1;
-    glDrawArrays(mode, first, count);
-    checkRendererError("DrawArrays");*/
+    cmdBuffer->cmdDraw(first, count, 0, 1);
 }
 
 void PGRAPH::Enable(U32 prop, U32 enabled) {
@@ -442,14 +442,6 @@ void PGRAPH::Enable(U32 prop, U32 enabled) {
 }
 
 void PGRAPH::Flip() {
-}
-
-void PGRAPH::UnbindVertexAttributes() {
-    /*for (int index = 0; index < 16; index++) {
-        glDisableVertexAttribArray(index);
-        checkRendererError("UnbindVertexAttributes");
-    }
-    glBindVertexArray(0);*/
 }
 
 }  // namespace rsx
