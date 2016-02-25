@@ -155,6 +155,8 @@
       <ExceptionHandling>Enabled</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir);$(Sysroot)\usr\include;$(StlIncludeDirectories)%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++1y</CppLanguageStandard>
+      <DebugInformationFormat>FullDebug</DebugInformationFormat>
+      <DataLevelLinking>false</DataLevelLinking>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv2;EGL;m</LibraryDependencies>
@@ -166,6 +168,8 @@
       <ExceptionHandling>Enabled</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir);$(Sysroot)\usr\include;$(StlIncludeDirectories)%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++1y</CppLanguageStandard>
+      <DebugInformationFormat>FullDebug</DebugInformationFormat>
+      <DataLevelLinking>false</DataLevelLinking>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv2;EGL;m</LibraryDependencies>

@@ -172,9 +172,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)module.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)common\scei\pkg.cpp">
       <Filter>common\scei</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hle_module.cpp" />
   </ItemGroup>
 </Project>

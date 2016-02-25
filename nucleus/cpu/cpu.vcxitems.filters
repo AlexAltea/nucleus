@@ -138,21 +138,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\value.cpp">
       <Filter>hir</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp">
-      <Filter>hir</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\builder.cpp">
-      <Filter>hir</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\function.cpp">
-      <Filter>hir</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\instruction.cpp">
-      <Filter>hir</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\module.cpp">
-      <Filter>hir</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\opcodes.cpp">
       <Filter>hir</Filter>
     </ClCompile>
@@ -166,6 +151,21 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)cpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)thread.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)util.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_block.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_builder.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_function.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_instruction.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_module.cpp">
+      <Filter>hir</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">
@@ -261,21 +261,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\value.h">
       <Filter>hir</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h">
-      <Filter>hir</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\builder.h">
-      <Filter>hir</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\function.h">
-      <Filter>hir</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\instruction.h">
-      <Filter>hir</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h">
-      <Filter>hir</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\opcodes.h">
       <Filter>hir</Filter>
     </ClInclude>
@@ -291,6 +276,21 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)util.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_assembler.h">
       <Filter>backend\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\builder.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\function.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\instruction.h">
+      <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h">
+      <Filter>hir</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)common\scei\pkg.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hle_module.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv1\lv1_gpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_cond.cpp" />
@@ -71,7 +72,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_time.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_timer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_tty.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)module.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil_avconf_ext.cpp" />
   </ItemGroup>

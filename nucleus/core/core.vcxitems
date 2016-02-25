@@ -17,7 +17,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\aes.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\emulator.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\format.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\fmt.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\keys.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\loader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\psf.cpp" />

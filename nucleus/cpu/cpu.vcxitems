@@ -94,11 +94,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_state.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_tables.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_thread.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\builder.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\function.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\instruction.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)hir\module.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_block.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_builder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_function.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_instruction.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_module.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\opcodes.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\dead_code_elimination_pass.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.cpp" />

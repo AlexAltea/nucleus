@@ -43,7 +43,7 @@ public:
     // Check whether an address is inside any CFG block
     bool contains(TAddr addr) const {
         for (const auto& item : blocks) {
-            const auto& block = block.second;
+            const auto& block = item.second;
             if (block.contains(addr)) {
                 return true;
             }

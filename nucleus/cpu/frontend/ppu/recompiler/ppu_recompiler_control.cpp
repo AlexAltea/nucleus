@@ -105,7 +105,7 @@ void Recompiler::mtspr(Instruction code)
 
 void Recompiler::mftb(Instruction code)
 {
-    hir::Function* timeFunc = builder.getExternFunction(nucleusTime);
+    hir::Function* timeFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusTime));
     hir::Value* timestamp = builder.createCall(timeFunc, {}, CALL_EXTERN);
 
     const U32 tbr = (code.spr >> 5) | ((code.spr & 0x1f) << 5);

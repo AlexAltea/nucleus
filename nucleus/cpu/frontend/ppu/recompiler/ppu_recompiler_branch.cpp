@@ -116,7 +116,7 @@ void Recompiler::bcctrx(Instruction code)
     // Conditional function call
     if (code.lk) {
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
-            hir::Function* proxyFunc = builder.getExternFunction(nucleusCall);
+            hir::Function* proxyFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusCall));
             if (cond_ok) {
                 builder.createCallCond(cond_ok, proxyFunc, {targetAddr}, hir::CALL_EXTERN);
             } else {
@@ -128,7 +128,7 @@ void Recompiler::bcctrx(Instruction code)
     // Simple conditional branch
     else {
         if (config.ppuTranslator & CPU_TRANSLATOR_IS_JIT) {
-            hir::Function* proxyFunc = builder.getExternFunction(nucleusCall);
+            hir::Function* proxyFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusCall));
             if (cond_ok) {
                 builder.createCallCond(cond_ok, proxyFunc, {targetAddr}, hir::CALL_EXTERN);
             } else {
@@ -279,7 +279,7 @@ void Recompiler::mcrf(Instruction code)
 
 void Recompiler::sc(Instruction code)
 {
-    hir::Function* syscallFunc = builder.getExternFunction(nucleusSysCall);
+    hir::Function* syscallFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusSysCall));
 
     // TODO: Use code.lev fields
     builder.createCall(syscallFunc, {}, CALL_EXTERN);

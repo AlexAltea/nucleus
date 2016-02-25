@@ -30,7 +30,6 @@ namespace gfx {
 // Graphics backend parameters
 struct BackendParameters {
 #if defined(NUCLEUS_PLATFORM_ANDROID)
-    Display* display;
 #elif defined(NUCLEUS_PLATFORM_IOS)
     Display* display;
 #elif defined(NUCLEUS_PLATFORM_LINUX)

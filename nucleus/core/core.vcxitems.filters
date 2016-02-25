@@ -21,9 +21,9 @@
       <Filter>loader</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\emulator.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\format.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\nucleus.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)resource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\fmt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />

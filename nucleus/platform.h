@@ -5,13 +5,13 @@
 
 #pragma once
 
-#if defined(__ANDROID_API__)
+#if defined(__ANDROID__)
 #define NUCLEUS_PLATFORM_ANDROID
 #endif
 #if defined(__APPLE__) && defined(TARGET_OS_IPHONE)
 #define NUCLEUS_PLATFORM_IOS
 #endif
-#if defined(__linux__)
+#if defined(__linux__) && !defined(__ANDROID__)
 #define NUCLEUS_PLATFORM_LINUX
 #endif
 #if defined(__APPLE__) && defined(__MACH__)

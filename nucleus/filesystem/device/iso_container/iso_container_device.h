@@ -23,8 +23,8 @@ public:
     ISOContainerDevice(const Path& mountPath, File* isoFile);
 
     File* openFile(const Path& path, OpenMode mode) override;
-    bool existsFile(const Path& path);
-    bool removeFile(const Path& path);
+    bool existsFile(const Path& path) override;
+    bool removeFile(const Path& path) override;
 };
 
 }  // namespace fs

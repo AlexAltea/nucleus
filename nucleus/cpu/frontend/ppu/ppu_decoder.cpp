@@ -274,7 +274,7 @@ void Function::recompile()
         builder.setInsertPoint(recompiler.blocks[block.address]);
 
         // Get function (TODO: This gets loaded multiple times into the module)
-        //hir::Function* logFunc = builder.getExternFunction(nucleusLog);
+        //hir::Function* logFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusLog));
 
         for (U32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
@@ -304,7 +304,7 @@ void Function::createPlaceholder()
     hir::Block* block = new hir::Block(hirFunction);
     builder.setInsertPoint(block);
 
-    hir::Function* translateFunc = builder.getExternFunction(nucleusTranslate);
+    hir::Function* translateFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusTranslate));
     hir::Value* guestFuncValue = builder.getConstantPointer(this);
     hir::Value* guestAddrValue = builder.getConstantI64(address);
     builder.createCall(translateFunc, {guestFuncValue, guestAddrValue}, hir::CALL_EXTERN);
@@ -535,7 +535,7 @@ void Module::hook(U32 funcAddr, U32 fnid) {
     block->flags |= hir::BLOCK_IS_ENTRY;
     builder.setInsertPoint(block);
 
-    hir::Function* hookFunc = builder.getExternFunction(nucleusHook);
+    hir::Function* hookFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusHook));
     builder.createCall(hookFunc, { builder.getConstantI32(fnid) }, hir::CALL_EXTERN);
     builder.createRet();
 
