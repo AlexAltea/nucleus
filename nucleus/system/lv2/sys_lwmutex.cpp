@@ -54,7 +54,12 @@ S32 sys_lwmutex_lock(U32 lwmutex_id, U64 timeout) {
         lwmutex->lwmutex.lock();
     } else {
         auto rel_time = std::chrono::microseconds(timeout);
+#if defined(NUCLEUS_PLATFORM_ANDROID) && defined(NUCLEUS_COMPILER_GCC)
+        // TODO: Reimplement try_lock_for
+        lwmutex->lwmutex.try_lock();
+#else
         lwmutex->lwmutex.try_lock_for(rel_time);
+#endif    
     }
     return CELL_OK;
 }

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{B18A3DA6-6A07-4E2D-88B5-C30E4EE481E3}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)vulkan\vulkan.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)vulkan\vulkan_backend.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)vulkan\vulkan_debug.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)vulkan\vulkan_shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)vulkan\vulkan.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)vulkan\vulkan_backend.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)vulkan\vulkan_debug.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)vulkan\vulkan_shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)vulkan\vulkan.inl" />
+  </ItemGroup>
+</Project>

@@ -4,9 +4,6 @@
     <Filter Include="backend">
       <UniqueIdentifier>{12ef92de-2436-45ef-ad57-95d98ec9a769}</UniqueIdentifier>
     </Filter>
-    <Filter Include="backend\direct3d12">
-      <UniqueIdentifier>{9249b02a-f608-4707-9120-c4a7a18a3aaa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="hir">
       <UniqueIdentifier>{7bff1ef5-f604-4242-8c2a-e0aec6cba531}</UniqueIdentifier>
     </Filter>
@@ -19,32 +16,8 @@
     <Filter Include="frontend\vulkan">
       <UniqueIdentifier>{8fc5d072-09e7-40de-9a5b-5dbcb07ac0e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="backend\vulkan">
-      <UniqueIdentifier>{afff366d-337a-45b1-97fb-ae2a40010517}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_fence.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_shader.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_backend.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_buffer.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_queue.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)graphics.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\block.cpp">
       <Filter>hir</Filter>
@@ -61,12 +34,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\module.cpp">
       <Filter>hir</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_debug.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\opengl\opengl_shader_parser.cpp">
       <Filter>frontend\opengl</Filter>
     </ClCompile>
@@ -82,63 +49,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan_shader_parser.cpp">
       <Filter>frontend\vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_texture.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)format.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_resource.cpp">
-      <Filter>backend\direct3d12</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.cpp">
-      <Filter>backend\vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_backend.cpp">
-      <Filter>backend\vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.cpp">
-      <Filter>backend\vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_debug.cpp">
-      <Filter>backend\vulkan</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_convert.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_fence.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_heap.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_pipeline.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_resource.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_shader.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_target.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_texture.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_backend.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_buffer.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_command_queue.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)command_buffer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)command_queue.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)fence.h" />
@@ -169,12 +82,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\instruction.h">
       <Filter>hir</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_debug.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12_vertex_buffer.h">
-      <Filter>backend\direct3d12</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\hir.h">
       <Filter>hir</Filter>
     </ClInclude>
@@ -193,26 +100,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\vulkan\vulkan.h">
       <Filter>frontend\vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_shader.h">
-      <Filter>backend\vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\list.h">
       <Filter>backend</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_backend.h">
-      <Filter>backend\vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.h">
-      <Filter>backend\vulkan</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan_debug.h">
-      <Filter>backend\vulkan</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)backend\direct3d12\direct3d12.inl">
-      <Filter>backend\direct3d12</Filter>
-    </None>
     <None Include="$(MSBuildThisFileDirectory)frontend\opengl\glsl_parser.y">
       <Filter>frontend\opengl</Filter>
     </None>
@@ -220,8 +112,5 @@
       <Filter>frontend\opengl</Filter>
     </None>
     <None Include="$(MSBuildThisFileDirectory)format.inl" />
-    <None Include="$(MSBuildThisFileDirectory)backend\vulkan\vulkan.inl">
-      <Filter>backend\vulkan</Filter>
-    </None>
   </ItemGroup>
 </Project>

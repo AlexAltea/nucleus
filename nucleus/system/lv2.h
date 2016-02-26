@@ -100,7 +100,7 @@ enum {
 
 struct LV2Syscall {
     Syscall* func;
-    char* name;
+    const char* name;
     U32 flags;
 };
 

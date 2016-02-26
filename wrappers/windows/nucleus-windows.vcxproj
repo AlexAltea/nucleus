@@ -44,6 +44,8 @@
     <Import Project="..\..\nucleus\memory\memory.vcxitems" Label="Shared" />
     <Import Project="..\..\nucleus\system\system.vcxitems" Label="Shared" />
     <Import Project="..\..\nucleus\ui\ui.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\graphics\backend\graphics-direct3d12.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\graphics\backend\graphics-vulkan.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

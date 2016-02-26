@@ -21,7 +21,11 @@ struct sys_lwmutex_attribute_t
 // Auxiliary classes
 struct sys_lwmutex_t
 {
+#if defined(NUCLEUS_PLATFORM_ANDROID) && defined(NUCLEUS_COMPILER_GCC)
+    std::mutex lwmutex;
+#else
     std::timed_mutex lwmutex;
+#endif
     sys_lwmutex_attribute_t attr;
 };
 
