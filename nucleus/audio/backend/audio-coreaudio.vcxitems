@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <ItemsProjectGuid>{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}</ItemsProjectGuid>
+    <ItemsProjectGuid>{DA6CBD2E-D773-4C32-AE56-A75A97C30D11}</ItemsProjectGuid>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -12,9 +12,5 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectCapability Include="SourceItemsFromImports" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)audio.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)backend\list.h" />
   </ItemGroup>
 </Project>

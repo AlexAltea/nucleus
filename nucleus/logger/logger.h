@@ -11,7 +11,9 @@
 #include <iostream>
 
 enum LogType {
-    LOG_COMMON = 0,
+    LOG_UNKNOWN = 0,
+    LOG_AUDIO,
+    LOG_COMMON,
     LOG_CPU,
     LOG_FS,
     LOG_GPU,

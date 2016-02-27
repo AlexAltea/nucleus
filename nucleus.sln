@@ -62,11 +62,19 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "graphics-direct3d12", "nucl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "graphics-vulkan", "nucleus\graphics\backend\graphics-vulkan.vcxitems", "{B18A3DA6-6A07-4E2D-88B5-C30E4EE481E3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-xaudio2", "nucleus\audio\backend\audio-xaudio2.vcxitems", "{623F605F-427F-4B3E-93A1-E644A70543AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-coreaudio", "nucleus\audio\backend\audio-coreaudio.vcxitems", "{DA6CBD2E-D773-4C32-AE56-A75A97C30D11}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio-openal", "nucleus\audio\backend\audio-openal.vcxitems", "{0459360D-8362-4BE8-A6F2-88DC76A03F4E}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		nucleus\debugger\debugger.vcxitems*{30b5f783-76c3-4f96-a9e5-cd221e73b0a2}*SharedItemsImports = 9
 		nucleus\system\system.vcxitems*{2d4b90ed-c848-4d60-bf54-7d660405b653}*SharedItemsImports = 9
+		nucleus\audio\backend\audio-coreaudio.vcxitems*{da6cbd2e-d773-4c32-ae56-a75a97c30d11}*SharedItemsImports = 9
 		nucleus\graphics\graphics.vcxitems*{2d30f46f-665a-4d03-8d33-f2a810e98af2}*SharedItemsImports = 9
+		nucleus\audio\backend\audio-xaudio2.vcxitems*{623f605f-427f-4b3e-93a1-e644a70543aa}*SharedItemsImports = 9
 		nucleus\filesystem\filesystem.vcxitems*{7ec60005-180c-4cc7-ae7c-a0c3058f4f26}*SharedItemsImports = 9
 		nucleus\logger\logger.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
 		nucleus\debugger\debugger.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
@@ -96,6 +104,7 @@ Global
 		nucleus\graphics\backend\graphics-direct3d12.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\graphics\backend\graphics-direct3d12.vcxitems*{f52a48cf-b8cd-473b-915f-a58a3259fe0b}*SharedItemsImports = 9
 		nucleus\ui\ui.vcxitems*{dfcff467-3a2f-4447-9ebd-e57fb23e3e40}*SharedItemsImports = 9
+		nucleus\audio\backend\audio-openal.vcxitems*{0459360d-8362-4be8-a6f2-88dc76a03f4e}*SharedItemsImports = 9
 		nucleus\graphics\backend\graphics-vulkan.vcxitems*{b18a3da6-6a07-4e2d-88b5-c30e4ee481e3}*SharedItemsImports = 9
 		nucleus\logger\logger.vcxitems*{5b8b6a6c-001e-4a74-8fba-6b82cfbf12ab}*SharedItemsImports = 9
 		nucleus\cpu\cpu.vcxitems*{03fb3cc2-2975-49a5-8f6b-6d4d409396bb}*SharedItemsImports = 9
@@ -302,5 +311,8 @@ Global
 		{5ABBEF76-750E-453E-8F40-E3F17FB28224} = {4DDEF118-646F-4D39-BE6C-F17A36F8897D}
 		{F52A48CF-B8CD-473B-915F-A58A3259FE0B} = {A7460D25-D247-4280-A724-C612EF91F823}
 		{B18A3DA6-6A07-4E2D-88B5-C30E4EE481E3} = {A7460D25-D247-4280-A724-C612EF91F823}
+		{623F605F-427F-4B3E-93A1-E644A70543AA} = {A7460D25-D247-4280-A724-C612EF91F823}
+		{DA6CBD2E-D773-4C32-AE56-A75A97C30D11} = {A7460D25-D247-4280-A724-C612EF91F823}
+		{0459360D-8362-4BE8-A6F2-88DC76A03F4E} = {A7460D25-D247-4280-A724-C612EF91F823}
 	EndGlobalSection
 EndGlobal

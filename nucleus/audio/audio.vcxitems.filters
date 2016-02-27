@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="backend">
+      <UniqueIdentifier>{77fc8660-8be7-4162-874d-6daecab2ce0b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\list.h">
+      <Filter>backend</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)audio.h" />
+  </ItemGroup>
+</Project>
