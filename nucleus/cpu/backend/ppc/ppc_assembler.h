@@ -47,9 +47,6 @@ private:
     // Operand
     using Operand = U32;
 
-    // Emit instruction
-    void emit(U32 instruction);
-
     // Emit instruction form
     void emitFormI(U32 instruction, Operand li);
     void emitFormB(U32 instruction, Operand bo, Operand bi, Operand bd);

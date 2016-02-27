@@ -15,63 +15,57 @@ namespace ppc {
 PPCAssembler::PPCAssembler(size_t codeSize, void* codeAddr) : Assembler(codeSize, codeAddr) {
 }
 
-void PPCAssembler::emit(U32 instruction) {
-    *reinterpret_cast<U32*>(curAddr) = instruction;
-    curAddr = reinterpret_cast<void*>(reinterpret_cast<intptr_t>(curAddr) + 4);
-    curSize += 4;
-}
-
 // Emit instruction form
 void PPCAssembler::emitFormI(U32 instruction, Operand li) {
     assert_true(li % 4 == 0, "The destination cannot overwrite the 2 LSb of a I-Form instruction");
-    emit(instruction | li);
+    emit32(instruction | li);
 }
 void PPCAssembler::emitFormB(U32 instruction, Operand bo, Operand bi, Operand bd) {
     assert_true(bd % 4 == 0, "The destination cannot overwrite the 2 LSb of a B-Form instruction");
     const U32 boMask = (bo & 0x1F) << 21;
     const U32 biMask = (bi & 0x1F) << 16;
-    emit(instruction | boMask | biMask | bd);
+    emit32(instruction | boMask | biMask | bd);
 }
 void PPCAssembler::emitFormD(U32 instruction, Operand d, Operand a, U16 imm) {
     const U32 rdMask = (d & 0x1F) << 21;
     const U32 raMask = (a & 0x1F) << 16;
-    emit(instruction | rdMask | raMask | imm);
+    emit32(instruction | rdMask | raMask | imm);
 }
 void PPCAssembler::emitFormDS(U32 instruction, Operand d, Operand a, U16 imm) {
     assert_true(imm % 4 == 0, "The immediate cannot overwrite the 2 LSb of a DS-Form instruction");
     const U32 rdMask = (d & 0x1F) << 21;
     const U32 raMask = (a & 0x1F) << 16;
-    emit(instruction | rdMask | raMask | imm);
+    emit32(instruction | rdMask | raMask | imm);
 }
 void PPCAssembler::emitFormX(U32 instruction, Operand d, Operand a, Operand b) {
     const U32 rdMask = (d & 0x1F) << 21;
     const U32 raMask = (a & 0x1F) << 16;
     const U32 rbMask = (b & 0x1F) << 11;
-    emit(instruction | rdMask | raMask | rbMask);
+    emit32(instruction | rdMask | raMask | rbMask);
 }
 void PPCAssembler::emitFormXL(U32 instruction, Operand d, Operand a, Operand b) {
     const U32 rdMask = (d & 0x1F) << 21;
     const U32 raMask = (a & 0x1F) << 16;
     const U32 rbMask = (b & 0x1F) << 11;
-    emit(instruction | rdMask | raMask | rbMask);
+    emit32(instruction | rdMask | raMask | rbMask);
 }
 void PPCAssembler::emitFormXFX(U32 instruction, Operand d, Operand spr) {
     const U32 rdMask = (d & 0x1F) << 21;
     const U32 sprMask = (spr & 0x3FF) << 11;
-    emit(instruction | rdMask | sprMask);
+    emit32(instruction | rdMask | sprMask);
 }
 void PPCAssembler::emitFormXO(U32 instruction, Operand d, Operand a, Operand b) {
     const U32 rdMask = (d & 0x1F) << 21;
     const U32 raMask = (a & 0x1F) << 16;
     const U32 rbMask = (b & 0x1F) << 11;
-    emit(instruction | rdMask | raMask | rbMask);
+    emit32(instruction | rdMask | raMask | rbMask);
 }
 void PPCAssembler::emitFormA(U32 instruction, Operand d, Operand a, Operand b, Operand c) {
     const U32 dMask = (d & 0x1F) << 21;
     const U32 aMask = (a & 0x1F) << 16;
     const U32 bMask = (b & 0x1F) << 11;
     const U32 cMask = (c & 0x1F) <<  6;
-    emit(instruction | dMask | aMask | bMask | cMask);
+    emit32(instruction | dMask | aMask | bMask | cMask);
 }
 void PPCAssembler::emitFormM(U32 instruction, Operand s, Operand a, Operand b, Operand mb, Operand me) {
     const U32 sMask = (s & 0x1F) << 21;
@@ -79,7 +73,7 @@ void PPCAssembler::emitFormM(U32 instruction, Operand s, Operand a, Operand b, O
     const U32 bMask = (b & 0x1F) << 11;
     const U32 mbMask = (mb & 0x1F) << 6;
     const U32 meMask = (me & 0x1F) << 1;
-    emit(instruction | sMask | aMask | bMask | mbMask | meMask);
+    emit32(instruction | sMask | aMask | bMask | mbMask | meMask);
 }
 
 // PPC instructions
