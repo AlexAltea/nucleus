@@ -4,6 +4,7 @@
  */
 
 #include "rsx.h"
+#include "nucleus/assert.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/memory/memory.h"
 #include "nucleus/core/config.h"
@@ -101,8 +102,27 @@ void RSX::task() {
         }
 
         for (U32 i = 0; i < cmd.method_count; i++) {
-            const U32 offset = (cmd.method_offset << 2) + (cmd.flag_ni ? 0 : 4*i);
+            const U32 offset = (cmd.method_register << 2) + (cmd.flag_ni ? 0 : 4*i);
             const U32 parameter = io_read32(get + 4*(i+1));
+
+#ifdef NUCLEUS_BUILD_DEBUG
+            // Ensure method register correctness by verifying objects to be bound to subchannels
+            if (cmd.method_offset == 0) { 
+                assert_true(cmd.method_count == 1);
+                switch (cmd.method_subchannel) {
+                case 0: assert_true(parameter == 0x31337000); break;
+                case 1: assert_true(parameter == 0x31337303); break;
+                case 3: assert_true(parameter == 0x313371C3); break;
+                case 4: assert_true(parameter == 0x31337A73); break;
+                case 5: assert_true(parameter == 0x31337808); break;
+                case 6: assert_true(parameter == 0x3137AF00); break;
+                case 7: assert_true(parameter == 0xCAFEBABE); break;
+                default:
+                    assert_always("Unexpected subchannel");
+                }
+                continue;
+            }
+#endif
             //logger.notice(LOG_GPU, "METHOD: 0x%X;  IO: 0x%X;  PARAM: 0x%X", offset, get, parameter);
             method(offset, parameter);
         }

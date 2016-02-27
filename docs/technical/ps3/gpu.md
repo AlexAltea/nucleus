@@ -14,6 +14,7 @@ Shared by all RSX contexts.
 
 | ID | Size   | Name    | Description    | Usage       |
 |----|--------|---------|----------------|-------------|
+|  0 | *???*  | *???*   | BAR0           | *???*       |
 |  1 | *???*  | *???*   | Audio          | *???*       |
 |  8 | 0x1000 | *???*   | Video RAM      | cellGcmInit |
 
@@ -71,6 +72,37 @@ Consists of:
 * PFIFO puller state
 * RAMFC/RAMHT contents?
 * (Engine-specific state?)
+
+#### Subchannel
+
+There are 8 subchannels that an be bound  to an object using the 0x0000 method offset. The GCM userland driver sets them to following values:
+
+| ID | Object       | Handle | Name             |
+|----|--------------|--------|------------------|
+| 0  | `0x31337000` | 0x4097 | *curie*          |
+| 1  | `0x31337303` | 0x0039 | *m2mf*           |
+| 3  | `0x313371C3` | 0x3062 | *surf2d* (nv40)  |
+| 4  | `0x31337A73` | 0x309E | *swzsurf* (nv40) |
+| 5  | `0x31337808` | 0x308A | *ifc* (nv40)     |
+| 6  | `0x3137AF00` | 0x3089 | *sifm* (nv40)    |
+| 7  | `0xCAFEBABE` | *???*  | *???*            |
+
+#### Methods
+
+| Bits  | View (MSB:LSB)                        | Description                               |
+|-------|---------------------------------------|-------------------------------------------|
+| 01:01 | `0X000000 00000000 00000000 00000000` |  Flag: Non-increment                      |
+| 02:02 | `00X00000 00000000 00000000 00000000` |  Flag: Jump                               |
+| 14:14 | `00000000 000000X0 00000000 00000000` |  Flag: Return                             |
+| 30:30 | `00000000 00000000 00000000 000000X0` |  Flag: Call                               |
+| 03:13 | `000XXXXX XXXXXX00 00000000 00000000` |  Method count                             |
+| 16:29 | `00000000 00000000 AAABBBBB BBBBBB00` |  Method offset (2 bits right-shifted) [1] |
+| 03:31 | `000XXXXX XXXXXXXX XXXXXXXX XXXXXXXX` |  Jump offset                              |
+| 00:29 | `XXXXXXXX XXXXXXXX XXXXXXXX XXXXXX00` |  Call offset (2 bits right-shifted)       |
+
+Remarks:
+
+1. The *method offset* field consists of two fields: A 3-bit long *subchannel* identifier and a 11-bit long *offset* in that channel. At driver user-level, the whole 14-bit field can be considered as nothing but a 2-bit-rightshifted address where data goes in, optionally triggering an event. This notion is used on Nucleus for performance reasons.
 
 ### PGRAPH
 
