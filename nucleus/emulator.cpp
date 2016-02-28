@@ -5,6 +5,7 @@
 
 #include "emulator.h"
 #include "nucleus/core/config.h"
+#include "nucleus/audio/backend/list.h"
 #include "nucleus/graphics/backend/list.h"
 #include "nucleus/filesystem/filesystem_host.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
@@ -14,12 +15,14 @@
 #include "nucleus/filesystem/utils.h"
 #include "nucleus/loader/self.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/system/lv2.h"
 
 // Global emulator object
 Emulator nucleus;
 
 bool Emulator::initialize(const gfx::BackendParameters& params) {
+    // Select graphics backend
     switch (config.graphicsBackend) {
 #if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D11)
     case GRAPHICS_BACKEND_DIRECT3D11:
@@ -46,8 +49,35 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
         return false;
     }
 
+    // Select audio backend
+    switch (config.audioBackend) {
+#if defined(AUDIO_FEATURE_AUDIOBACKEND_COREAUDIO)
+    case AUDIO_BACKEND_COREAUDIO:
+        audio = std::make_shared<audio::CoreAudioBackend>();
+        break;
+#endif
+#if defined(NUCLEUS_FEATURE_AUDIOBACKEND_OPENAL)
+    case AUDIO_BACKEND_OPENAL:
+        audio = std::make_shared<audio::OpenALBackend>();
+        break;
+#endif
+#if defined(NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2)
+    case AUDIO_BACKEND_XAUDIO2:
+        audio = std::make_shared<audio::XAudio2Backend>();
+        break;
+#endif
+     default:
+        logger.warning(LOG_COMMON, "Unsupported graphics backend");
+        return false;
+    }
+
+    // Initialize backends
     if (!graphics->initialize(params)) {
         logger.warning(LOG_COMMON, "Could not initialize graphics backend");
+        return false;
+    }
+    if (!audio->initialize()) {
+        logger.warning(LOG_COMMON, "Could not initialize audio backend");
         return false;
     }
 

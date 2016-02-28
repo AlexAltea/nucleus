@@ -6,6 +6,7 @@
 #include "rsx_dma.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
+#include "nucleus/memory/memory.h"
 
 namespace gpu {
 

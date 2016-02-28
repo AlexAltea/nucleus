@@ -75,7 +75,7 @@ Consists of:
 
 #### Subchannel
 
-There are 8 subchannels that an be bound  to an object using the 0x0000 method offset. The GCM userland driver sets them to following values:
+There are 8 subchannels that can be bound to an object using the 0x0000 method offset. The GCM userland driver sets them to following values:
 
 | ID | Object       | Handle | Name             |
 |----|--------------|--------|------------------|

@@ -16,7 +16,7 @@
 #include "nucleus/audio/backend/xaudio2/xaudio2_backend.h"
 #endif
 
-namespace gfx {
+namespace audio {
 
 // Shorthands
 #ifdef NUCLEUS_FEATURE_AUDIOBACKEND_COREAUDIO
@@ -29,4 +29,4 @@ using OpenALBackend = openal::OpenALBackend;
 using XAudio2Backend = xaudio2::XAudio2Backend;
 #endif
 
-}  // namespace gfx
+}  // namespace audio

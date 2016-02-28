@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/memory/memory.h"
+#include "nucleus/audio/audio.h"
 #include "nucleus/graphics/graphics.h"
 
 #include <memory>
@@ -18,6 +18,7 @@
 namespace ui  { class UI; }
 namespace cpu { class CPU; }
 namespace gpu { class GPU; }
+namespace mem { class Memory; }
 namespace sys { class System; }
 
 class Emulator {
@@ -27,6 +28,7 @@ class Emulator {
     EmulatorStatus m_status;
 
 public:
+    std::shared_ptr<audio::Backend> audio;
     std::shared_ptr<gfx::IBackend> graphics;
     std::shared_ptr<ui::UI> ui;
 

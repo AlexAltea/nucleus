@@ -20,6 +20,7 @@ Config::Config() {
     ppuTranslator = CPU_TRANSLATOR_FUNCTION;
     spuTranslator = CPU_TRANSLATOR_INSTRUCTION;
     graphicsBackend = GRAPHICS_BACKEND_DIRECT3D12;
+    audioBackend = AUDIO_BACKEND_XAUDIO2;
 }
 
 void Config::parseArguments(int argc, char** argv) {

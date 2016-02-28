@@ -41,6 +41,13 @@ enum ConfigGraphicsBackend {
     GRAPHICS_BACKEND_VULKAN,
 };
 
+// Audio Settings
+enum ConfigAudioBackend {
+    AUDIO_BACKEND_COREAUDIO,
+    AUDIO_BACKEND_OPENAL,
+    AUDIO_BACKEND_XAUDIO2,
+};
+
 class Config {
 public:
     // Immediate settings
@@ -53,6 +60,7 @@ public:
     ConfigCpuTranslator ppuTranslator;
     ConfigCpuTranslator spuTranslator;
     ConfigGraphicsBackend graphicsBackend;
+    ConfigAudioBackend audioBackend;
 
     // Constructor
     Config();

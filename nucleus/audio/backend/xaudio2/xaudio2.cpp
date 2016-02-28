@@ -4,10 +4,11 @@
  */
 
 #include "xaudio2.h"
+#include "nucleus/logger/logger.h"
 
 // Load functions
 #define LOAD_FUNCTION(function) \
-    _##function = reinterpret_cast<type>(GetProcAddress(hmodule, #function)); \
+    _##function = reinterpret_cast<decltype(&function)>(GetProcAddress(hmodule, #function)); \
     if (!_##function) { \
         logger.error(LOG_AUDIO, "Could not load XAudio2 function '%s'", #function); \
         return false; \

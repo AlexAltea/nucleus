@@ -93,6 +93,7 @@ Global
 		nucleus\debugger\debugger.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\memory\memory.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\core\core.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
+		nucleus\audio\backend\audio-xaudio2.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\gpu\gpu.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\ui\ui.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\system\system.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
