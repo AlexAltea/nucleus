@@ -77,32 +77,39 @@ Consists of:
 
 There are 8 subchannels that can be bound to an object using the 0x0000 method offset. The GCM userland driver sets them to following values:
 
-| ID | Object       | Handle | Name             |
-|----|--------------|--------|------------------|
-| 0  | `0x31337000` | 0x4097 | *curie*          |
-| 1  | `0x31337303` | 0x0039 | *m2mf*           |
-| 3  | `0x313371C3` | 0x3062 | *surf2d* (nv40)  |
-| 4  | `0x31337A73` | 0x309E | *swzsurf* (nv40) |
-| 5  | `0x31337808` | 0x308A | *ifc* (nv40)     |
-| 6  | `0x3137AF00` | 0x3089 | *sifm* (nv40)    |
-| 7  | `0xCAFEBABE` | *???*  | *???*            |
+| ID | Handle       | ID     | Name             | Remarks                          |
+|----|--------------|--------|------------------|----------------------------------|
+| 0  | `0x31337000` | 0x4097 | *curie*          |                                  |
+| 1  | `0x31337303` | 0x0039 | *m2mf*           | XDR to DDR.                      |
+| 2  | `0x3137C0DE` | 0x0039 | *m2mf*           | DDR to XDR. Sometimes not bound. |
+| 3  | `0x313371C3` | 0x3062 | *surf2d* (nv40)  |                                  |
+| 4  | `0x31337A73` | 0x309E | *swzsurf* (nv40) |                                  |
+| 5  | `0x31337808` | 0x308A | *ifc* (nv40)     |                                  |
+| 6  | `0x3137AF00` | 0x3089 | *sifm* (nv40)    |                                  |
+| 7  | `0xCAFEBABE` | *???*  | *sofware*        |                                  |
 
 #### Methods
 
-| Bits  | View (MSB:LSB)                        | Description                               |
-|-------|---------------------------------------|-------------------------------------------|
-| 01:01 | `0X000000 00000000 00000000 00000000` |  Flag: Non-increment                      |
-| 02:02 | `00X00000 00000000 00000000 00000000` |  Flag: Jump                               |
-| 14:14 | `00000000 000000X0 00000000 00000000` |  Flag: Return                             |
-| 30:30 | `00000000 00000000 00000000 000000X0` |  Flag: Call                               |
-| 03:13 | `000XXXXX XXXXXX00 00000000 00000000` |  Method count                             |
-| 16:29 | `00000000 00000000 AAABBBBB BBBBBB00` |  Method offset (2 bits right-shifted) [1] |
-| 03:31 | `000XXXXX XXXXXXXX XXXXXXXX XXXXXXXX` |  Jump offset                              |
-| 00:29 | `XXXXXXXX XXXXXXXX XXXXXXXX XXXXXX00` |  Call offset (2 bits right-shifted)       |
+| Bits  | View (MSB:LSB)                        | Description                                 |
+|-------|---------------------------------------|---------------------------------------------|
+| 01:01 | `0X000000 00000000 00000000 00000000` |  Flag: Non-increment                        |
+| 02:02 | `00X00000 00000000 00000000 00000000` |  Flag: Jump                                 |
+| 14:14 | `00000000 000000X0 00000000 00000000` |  Flag: Return                               |
+| 30:30 | `00000000 00000000 00000000 000000X0` |  Flag: Call                                 |
+| 03:13 | `000XXXXX XXXXXX00 00000000 00000000` |  Method count                               |
+| 16:29 | `00000000 00000000 AAABBBBB BBBBBB00` |  Method register (2 bits right-shifted) [1] |
+| 03:31 | `000XXXXX XXXXXXXX XXXXXXXX XXXXXXXX` |  Jump offset                                |
+| 00:29 | `XXXXXXXX XXXXXXXX XXXXXXXX XXXXXX00` |  Call offset (2 bits right-shifted)         |
 
 Remarks:
 
-1. The *method offset* field consists of two fields: A 3-bit long *subchannel* identifier and a 11-bit long *offset* in that channel. At driver user-level, the whole 14-bit field can be considered as nothing but a 2-bit-rightshifted address where data goes in, optionally triggering an event. This notion is used on Nucleus for performance reasons.
+1. The *method register* field consists of two fields: A 3-bit long *subchannel* identifier and a 11-bit long *offset* in that channel. At driver user-level, the whole 14-bit field can be considered as nothing but a 2-bit-rightshifted address where data goes in, optionally triggering an event. This notion is used on Nucleus for performance reasons.
+
+Method offset:
+
+* `0x0000`: Binds the specified object to the *subchannel* specified in the method header.
+* `0x0004`-`0x00FC`: Methods executed by the PFIFO puller, rather than being passed to execution engines.
+* `0x0180`-`0x01FC`: Methods passed to execution engines translating the hash parameter to an instance via RAMHT.
 
 ### PGRAPH
 
