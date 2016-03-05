@@ -21,12 +21,18 @@ enum {
     RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY7   = 0x66604207, // Target: lpar_reports[0x1000 : 0x????]
     RSX_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY8   = 0x66604208, // Target: lpar_reports[0x1000 : 0x????]
     RSX_CONTEXT_DMA_NOTIFY_MAIN_0           = 0x6660420F,
+
     RSX_CONTEXT_DMA_SEMAPHORE_RW            = 0x66606660, // Target: lpar_reports[0x0000 : 0x1000] (Read/Write)
     RSX_CONTEXT_DMA_SEMAPHORE_R             = 0x66616661, // Target: lpar_reports[0x0000 : 0x1000] (Read)
     RSX_CONTEXT_DMA_REPORT_LOCATION_LOCAL   = 0x66626660, // Target: lpar_reports[0x1400 : 0x9400]
     RSX_CONTEXT_DMA_REPORT_LOCATION_MAIN    = 0xBAD68000,
     RSX_CONTEXT_DMA_DEVICE_RW               = 0x56616660,
     RSX_CONTEXT_DMA_DEVICE_R                = 0x56616661,
+
+    RSX_CONTEXT_DMA_HOST_BUFFER             = 0xFEED0000,
+    RSX_CONTEXT_DMA_FRAME_BUFFER            = 0xFEED0001,
+    RSX_CONTEXT_DMA_UNK_FEED0003            = 0xFEED0003,
+    RSX_CONTEXT_DMA_UNK_FEED0004            = 0xFEED0004,
 };
 
 struct DMAObject {

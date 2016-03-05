@@ -11,6 +11,14 @@
 namespace sys {
 
 enum {
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK2    = (1 <<  1),  // Use 64 KB pages for GART memory mapping (otherwise 1 MB)
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK4    = (1 <<  2),  // Create DMA objects: 0xFEED0003, 0xFEED0004
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK20   = (1 <<  5),  // Create DMA objects: 0xBAD68000
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK400  = (1 << 10),  // Use 512 MB of VRAM IO address space (otherwise 256 MB)
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK800  = (1 << 11),  // Set IRQ mask to 0x00000000 (otherwise 0xFFFFFFFF)
+};
+
+enum {
     L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP        = 0x0001,
     L1GPU_CONTEXT_ATTRIBUTE_FIFO_PAUSE        = 0x0002,
     L1GPU_CONTEXT_ATTRIBUTE_FIFO_CONTINUE     = 0x0003,
@@ -52,7 +60,18 @@ enum {
     L1GPU_ATTRIBUTE_UNK403 = 0x0403,
 };
 
+/**
+ * LV1 SysCall 217 (0xD9): lv1_gpu_context_allocate
+ * NOTE: The signature of the function is modified, to make integration with LV2 HLE easier. Original signature below.
+ * @param[in]  r3  Argument #1
+ * @param[in]  r4  Flags
+ * @param[in]  r5  Context
+ */
 S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode);
+
+/**
+ * LV1 SysCall 225 (0xE1): lv1_gpu_context_attribute
+ */
 S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2, U64 p3, U64 p4);
 
 }  // namespace sys

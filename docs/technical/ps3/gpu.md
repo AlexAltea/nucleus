@@ -7,18 +7,62 @@ The PlayStation 3 GPU is the *Reality Synthesizer* (**RSX**), designed by Sony a
 * Reverse engineering of applications and system files (e.g. `libgcm_sys.sprx`, and RSX-related LV1/LV2 syscalls).
 * Lots of tests in the [PS3 Autotests](https://github.com/AlexAltea/ps3autotests/tree/master/tests/gpu) repository.
 * [Nouveau](http://nouveau.freedesktop.org/wiki/) open source drivers and information, specially [envytools](https://github.com/envytools/envytools/)
-           
-## Devices
 
-Shared by all RSX contexts.
+Accurantly emulating RSX results in heavy performance drops. Furthermore, these measures are not required for the vast majority of applications available for the PlayStation 3. For that matter, the following RSX emulation modes exist in Nucleus that will be referred to throughout this document:
 
-| ID | Size   | Name    | Description    | Usage       |
-|----|--------|---------|----------------|-------------|
-|  0 | *???*  | *???*   | BAR0           | *???*       |
-|  1 | *???*  | *???*   | Audio          | *???*       |
-|  8 | 0x1000 | *???*   | Video RAM      | cellGcmInit |
+* __Accurate Emulation__ (*AE*): Worse performance. Compatibility with any hypervisor, regardless of HLE or LLE.
+* __Fast Emulation__ (*FE*): Good performance. Compatibility user-mode applications compiled with the SCEI PS3 SDK, running on top of CellOS-LV1 HLE or CellOS-LV2 HLE.
 
 ## Memory
+
+The RSX exposes 3 Base Address Registers (BARs) detailed below:
+
+| BAR    | Offset        | Size    | Description |
+|--------|---------------|---------|-------------|
+| *BAR0* | 0x28000000000 | 32 MB   | MMIO        |
+| *BAR1* | 0x28080000000 | 256 MB  | VRAM        |
+| *BAR2* | 0x28002000000 | *???*   | PRAMIN      |
+
+Remarks:
+
+* Note that the offset column provides information that concerns CellOS-LV1 exclusively.
+* Nucleus with *AE* will emulate all BARs. Nucleus with *FE* will only superficially emulate BAR1.
+
+## PRAMIN
+
+TODO: Are the ranges below LV1-specific?
+
+| Range               | Entries | Size     | Description    |
+|---------------------|-------- |----------|----------------|
+| `0x00000`-`0x0FFFF` |       1 |    64 KB | VBIOS (*?*)    |
+| `0x40000`-`0x40FFF` |     256 | 16 bytes | DMA objects    |
+| `0x50000`-`0x50FFF` |     128 | 32 bytes | Engine objects |
+
+## Objects
+
+### DMA Objects
+
+TODO: Verify this.
+
+| Class    | Name                      | Description |
+|----------|---------------------------|-------------|
+| `0x0002` | NV01_CONTEXT_DMA          | XDR to DDR  |
+| `0x0003` | NV01_DEVICE               | DDR to XDR  |
+| `0x003D` | NV01_MEMORY_LOCAL_BANKED  | DDR to DDR  |
+
+### Engine Object
+
+| Class    | Name                           |
+|----------|--------------------------------|
+| `0x0000` | NV01_NULL                      |
+| `0x0039` | NV03_MEMORY_TO_MEMORY_FORMAT   |
+| `0x3062` | NV30_CONTEXT_SURFACES_2D		|
+| `0x309E` | NV30_CONTEXT_SURFACE_SWIZZLED	|
+| `0x308A` | NV30_IMAGE_FROM_CPU			|
+| `0x3089` | NV30_SCALED_IMAGE_FROM_MEMORY	|
+| `0x4097` | NV40_CURIE_PRIMITIVE			|
+
+## VRAM
 
 Areas in VRAM
 
@@ -34,7 +78,7 @@ A RAMHT entry is 8-bytes long:
 
 | Bits | Description                               |
 |------|-------------------------------------------|
-| 32   | Object handle (e.g.: `CAFEBABE`)          |
+| 32   | Object handle (e.g.: `0xCAFEBABE`)        |
 | 9    | Channel ID                                |
 | 3    | Engine ID                                 |
 | 20   | Object offset (4 bits right-shifted)      |
@@ -118,6 +162,16 @@ Also referred to as *Curie Graphics Engine*
 #### Curie 3D Objects (NV4097)
 
 TODO
+
+## Devices
+
+Shared by all RSX contexts.
+
+| ID | Size   | Name    | Description    | Usage       |
+|----|--------|---------|----------------|-------------|
+|  0 | *???*  | *???*   | BAR0           | *???*       |
+|  1 | *???*  | *???*   | Audio          | *???*       |
+|  8 | 0x1000 | *???*   | Video RAM      | cellGcmInit |
 
 ## Contexts
 
