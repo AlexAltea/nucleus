@@ -8,9 +8,9 @@ The PlayStation 3 GPU is the *Reality Synthesizer* (**RSX**), designed by Sony a
 * Lots of tests in the [PS3 Autotests](https://github.com/AlexAltea/ps3autotests/tree/master/tests/gpu) repository.
 * [Nouveau](http://nouveau.freedesktop.org/wiki/) open source drivers and information, specially [envytools](https://github.com/envytools/envytools/)
 
-Accurantly emulating RSX results in heavy performance drops. Furthermore, these measures are not required for the vast majority of applications available for the PlayStation 3. For that matter, the following RSX emulation modes exist in Nucleus that will be referred to throughout this document:
+Accurately emulating RSX results in heavy performance drops. Furthermore, these measures are not required for the vast majority of applications available for the PlayStation 3. For that matter, the following RSX emulation modes exist in Nucleus that will be referred to throughout this document:
 
-* __Accurate Emulation__ (*AE*): Worse performance. Compatibility with any hypervisor, regardless of HLE or LLE.
+* __Accurate Emulation__ (*AE*): Poor performance. Compatibility with any hypervisor, regardless of HLE or LLE.
 * __Fast Emulation__ (*FE*): Good performance. Compatibility user-mode applications compiled with the SCEI PS3 SDK, running on top of CellOS-LV1 HLE or CellOS-LV2 HLE.
 
 ## Memory
@@ -56,11 +56,11 @@ TODO: Verify this.
 |----------|--------------------------------|
 | `0x0000` | NV01_NULL                      |
 | `0x0039` | NV03_MEMORY_TO_MEMORY_FORMAT   |
-| `0x3062` | NV30_CONTEXT_SURFACES_2D		|
-| `0x309E` | NV30_CONTEXT_SURFACE_SWIZZLED	|
-| `0x308A` | NV30_IMAGE_FROM_CPU			|
-| `0x3089` | NV30_SCALED_IMAGE_FROM_MEMORY	|
-| `0x4097` | NV40_CURIE_PRIMITIVE			|
+| `0x3062` | NV30_CONTEXT_SURFACES_2D       |
+| `0x309E` | NV30_CONTEXT_SURFACE_SWIZZLED  |
+| `0x308A` | NV30_IMAGE_FROM_CPU            |
+| `0x3089` | NV30_SCALED_IMAGE_FROM_MEMORY  |
+| `0x4097` | NV40_CURIE_PRIMITIVE           |
 
 ## VRAM
 

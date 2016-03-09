@@ -39,6 +39,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)gpu_hash.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_mmio.h">
+      <Filter>rsx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.cpp">

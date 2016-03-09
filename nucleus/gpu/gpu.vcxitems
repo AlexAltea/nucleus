@@ -32,6 +32,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_enum.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_fp.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_methods.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_mmio.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_texture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.h" />

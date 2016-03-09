@@ -25,7 +25,7 @@ namespace frontend {
  */
 class ShaderParser {
 public:
-    static hir::Module* parse(const char* data, size_t size);
+    static hir::Module* parse(const char* data, Size size);
 };
 
 }  // namespace frontend

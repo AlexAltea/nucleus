@@ -13,7 +13,7 @@ using namespace gfx::hir;
 namespace gfx {
 namespace frontend {
 
-Module* ShaderParser::parse(const char* data, size_t size) {
+Module* ShaderParser::parse(const char* data, Size size) {
     // NOTE: Assuming the input shader is designed for the only available frontend
     vulkan::VulkanShaderParser parser;
     return parser.parse(data, size);
