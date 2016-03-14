@@ -29,10 +29,10 @@ enum {
     RSX_CONTEXT_DMA_DEVICE_RW               = 0x56616660,
     RSX_CONTEXT_DMA_DEVICE_R                = 0x56616661,
 
-    RSX_CONTEXT_DMA_HOST_BUFFER             = 0xFEED0000,
-    RSX_CONTEXT_DMA_FRAME_BUFFER            = 0xFEED0001,
-    RSX_CONTEXT_DMA_UNK_FEED0003            = 0xFEED0003,
-    RSX_CONTEXT_DMA_UNK_FEED0004            = 0xFEED0004,
+    RSX_CONTEXT_DMA_FRAME_BUFFER            = 0xFEED0000,
+    RSX_CONTEXT_DMA_HOST_BUFFER             = 0xFEED0001,
+    RSX_CONTEXT_DMA_GSEMU_UNK0              = 0xFEED0003, // Probably related with SCEI's PlayStation 2 emulator
+    RSX_CONTEXT_DMA_GSEMU_UNK1              = 0xFEED0004, // Probably related with SCEI's PlayStation 2 emulator
 };
 
 struct DMAObject {

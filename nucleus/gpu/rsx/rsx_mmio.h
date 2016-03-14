@@ -39,6 +39,7 @@
 #define RSX_PFIFO_DELAY_0                                 0x00002040
 #define RSX_PFIFO_DMA_TIMESLICE                           0x00002044
 #define RSX_PFIFO_UNK2048                                 0x00002048
+#define RSX_PFIFO_UNK204C                                 0x0000204C
 #define RSX_PFIFO_NEXT_CHANNEL                            0x00002050
 #define RSX_PFIFO_UNK2054                                 0x00002054
 #define RSX_PFIFO_UNK2058                                 0x00002058 // NV36 Ch DMA

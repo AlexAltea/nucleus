@@ -10,9 +10,30 @@
 
 namespace sys {
 
+/**
+ * DMA object handles
+ */
+enum {
+    LV1_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY0   = 0x66604200, // 0x66604200 .. 0x66604207
+    LV1_CONTEXT_DMA_TO_MEMORY_GET_NOTIFY8   = 0x66604208, // 0x66604208 .. 0x6660420F
+    LV1_CONTEXT_DMA_SEMAPHORE_RW            = 0x66606660, // Target: lpar_reports[0x0000 : 0x1000] (Read/Write)
+    LV1_CONTEXT_DMA_SEMAPHORE_R             = 0x66616661, // Target: lpar_reports[0x0000 : 0x1000] (Read)
+    LV1_CONTEXT_DMA_REPORT_LOCATION_LOCAL   = 0x66626660, // Target: lpar_reports[0x1400 : 0x9400]
+    LV1_CONTEXT_DMA_REPORT_LOCATION_MAIN    = 0xBAD68000,
+    LV1_CONTEXT_DMA_DEVICE_RW               = 0x56616660,
+    LV1_CONTEXT_DMA_DEVICE_R                = 0x56616661,
+    LV1_CONTEXT_DMA_UNK13378086             = 0x13378086,
+    LV1_CONTEXT_DMA_UNK13378080             = 0x13378080,
+    LV1_CONTEXT_DMA_FRAME_BUFFER            = 0xFEED0000,
+    LV1_CONTEXT_DMA_HOST_BUFFER             = 0xFEED0001,
+    LV1_CONTEXT_DMA_GSEMU_UNK0              = 0xFEED0003, // Probably related with SCEI's PlayStation 2 emulator
+    LV1_CONTEXT_DMA_GSEMU_UNK1              = 0xFEED0004, // Probably related with SCEI's PlayStation 2 emulator
+};
+
+
 enum {
     L1GPU_CONTEXT_ALLOCATE_FLAG_UNK2    = (1 <<  1),  // Use 64 KB pages for GART memory mapping (otherwise 1 MB)
-    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK4    = (1 <<  2),  // Create DMA objects: 0xFEED0003, 0xFEED0004
+    L1GPU_CONTEXT_ALLOCATE_FLAG_GSEMU   = (1 <<  2),  // Create DMA objects: 0xFEED0003, 0xFEED0004
     L1GPU_CONTEXT_ALLOCATE_FLAG_UNK20   = (1 <<  5),  // Create DMA objects: 0xBAD68000
     L1GPU_CONTEXT_ALLOCATE_FLAG_UNK400  = (1 << 10),  // Use 512 MB of VRAM IO address space (otherwise 256 MB)
     L1GPU_CONTEXT_ALLOCATE_FLAG_UNK800  = (1 << 11),  // Set IRQ mask to 0x00000000 (otherwise 0xFFFFFFFF)
