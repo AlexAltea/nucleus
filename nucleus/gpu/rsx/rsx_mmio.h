@@ -61,9 +61,9 @@
 #define     NV_PFIFO_INTR_DMA_PT                            (1 << 16)
 #define     NV_PFIFO_INTR_SEMAPHORE                         (1 << 20)
 #define     NV_PFIFO_INTR_ACQUIRE_TIMEOUT                   (1 << 24)
-#define RSX_PFIFO_RAMHT                                   0x00002210
-#define RSX_PFIFO_RAMFC                                   0x00002214
-#define RSX_PFIFO_RAMRO                                   0x00002218
+#define RSX_PFIFO_RAMHT                                   0x00002210 // Offset must be 4 KB aligned and in range 0x0 to 0x1F000
+#define RSX_PFIFO_UNK2214                                 0x00002214
+#define RSX_PFIFO_RAMRO                                   0x00002218 // Offset must be 512 Byte aligned and in range 0x0 to 0x1FE00
 #define RSX_PFIFO_UNK221C                                 0x0000221C
 #define RSX_PFIFO_RAMFC                                   0x00002220
 #define RSX_PFIFO_UNK2224                                 0x00002224

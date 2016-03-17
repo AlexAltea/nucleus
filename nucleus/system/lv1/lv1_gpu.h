@@ -32,11 +32,13 @@ enum {
 
 
 enum {
-    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK2    = (1 <<  1),  // Use 64 KB pages for GART memory mapping (otherwise 1 MB)
-    L1GPU_CONTEXT_ALLOCATE_FLAG_GSEMU   = (1 <<  2),  // Create DMA objects: 0xFEED0003, 0xFEED0004
-    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK20   = (1 <<  5),  // Create DMA objects: 0xBAD68000
-    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK400  = (1 << 10),  // Use 512 MB of VRAM IO address space (otherwise 256 MB)
-    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK800  = (1 << 11),  // Set IRQ mask to 0x00000000 (otherwise 0xFFFFFFFF)
+    L1GPU_CONTEXT_ALLOCATE_FLAG_SMALL_IO_PAGES  = (1 <<  1),  // Use 64 KB pages for GART memory mapping (otherwise 1 MB)
+    L1GPU_CONTEXT_ALLOCATE_FLAG_GSEMU           = (1 <<  2),  // Create DMA objects: 0xFEED0003, 0xFEED0004
+    L1GPU_CONTEXT_ALLOCATE_FLAG_SYSTEM_SEMA     = (1 <<  3),  // System semaphore
+    L1GPU_CONTEXT_ALLOCATE_FLAG_LOCAL_PB        = (1 <<  4),  // Local PB
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK20           = (1 <<  5),  // Create DMA objects: 0xBAD68000
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK400          = (1 << 10),  // Use 512 MB of VRAM IO address space (otherwise 256 MB)
+    L1GPU_CONTEXT_ALLOCATE_FLAG_UNK800          = (1 << 11),  // Set IRQ mask to 0x00000000 (otherwise 0xFFFFFFFF)
 };
 
 enum {
