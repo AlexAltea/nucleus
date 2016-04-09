@@ -1,0 +1,10 @@
+# PlayStation 3
+ps3/dev_flash/**/*.ttf
+ps3/dev_flash/**/*.pic
+ps3/dev_flash/**/*.sprx
+ps3/dev_hdd0/*
+ps3/dev_hdd1/*
+
+# PlayStation 4
+ps4/system/common/**/*.sprx
+ps4/system/common/**/*.otf
