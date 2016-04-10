@@ -64,7 +64,7 @@ void Direct3D12CommandBuffer::cmdClearColor(ColorTarget* target, const F32* colo
     list->ClearRenderTargetView(d3dTarget->handle, colorValue, 0, nullptr);
 }
 
-void Direct3D12CommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) {
+void Direct3D12CommandBuffer::cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U08 stencilValue) {
     auto d3dTarget = static_cast<Direct3D12DepthStencilTarget*>(target);
     if (!d3dTarget) {
         logger.error(LOG_GRAPHICS, "Direct3D12CommandBuffer::cmdClearDepthStencil: Invalid target specified");

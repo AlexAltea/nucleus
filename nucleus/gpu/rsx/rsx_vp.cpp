@@ -80,7 +80,7 @@ Literal RSXVertexProgram::getConstantReg(int index) {
     return builder.opAccessChain(constMemoryId, {offsetId});
 }
 
-Literal RSXVertexProgram::getSwizzledValue(Literal vector, U8 swizzle) {
+Literal RSXVertexProgram::getSwizzledValue(Literal vector, U08 swizzle) {
     // Check if swizzling is required. Note that: [00,01,10,11] -> [0,1,2,3] -> [x,y,z,w].
     if (swizzle == 0b00011011) {
         return vector;
@@ -143,7 +143,7 @@ void RSXVertexProgram::setDestVector(Literal value) {
     }
     
     // Masked write
-    U8 mask = instr.masc_vec;
+    U08 mask = instr.masc_vec;
     if (mask == 0b0000) {  // Check if mask disables all components
         return; 
     }

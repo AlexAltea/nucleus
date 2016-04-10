@@ -35,7 +35,7 @@ public:
     } parent;
 
     union Constant {
-        S8 i8;
+        S08 i8;
         S16 i16;
         S32 i32;
         S64 i64;
@@ -73,7 +73,7 @@ public:
     bool isConstantEqual(Constant other) const;
 
     // Constants setters
-    void setConstantI8(U8 c);
+    void setConstantI8(U08 c);
     void setConstantI16(U16 c);
     void setConstantI32(U32 c);
     void setConstantI64(U64 c);

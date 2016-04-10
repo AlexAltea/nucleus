@@ -30,7 +30,7 @@ DMAObject dma_address(U32 dma_object)
     }
 }
 
-U8 dma_read8(U32 dma_object, U32 offset)
+U08 dma_read8(U32 dma_object, U32 offset)
 {
     const DMAObject& dma = dma_address(dma_object);
 
@@ -78,7 +78,7 @@ U64 dma_read64(U32 dma_object, U32 offset)
     return 0;
 }
 
-void dma_write8(U32 dma_object, U32 offset, U8 value)
+void dma_write8(U32 dma_object, U32 offset, U08 value)
 {
     const DMAObject& dma = dma_address(dma_object);
 

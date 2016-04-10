@@ -36,7 +36,7 @@ public:
     Value* cloneValue(Value* source);
 
     // HIR constants
-    Value* getConstantI8(U8 c);
+    Value* getConstantI8(U08 c);
     Value* getConstantI16(U16 c);
     Value* getConstantI32(U32 c);
     Value* getConstantI64(U64 c);
@@ -81,11 +81,11 @@ public:
 
     // Shifting operations
     Value* createShl(Value* value, Value* amount);
-    Value* createShl(Value* value, U8 rhs);
+    Value* createShl(Value* value, U08 rhs);
     Value* createShr(Value* value, Value* amount);
-    Value* createShr(Value* value, U8 rhs);
+    Value* createShr(Value* value, U08 rhs);
     Value* createShrA(Value* value, Value* amount);
-    Value* createShrA(Value* value, U8 rhs);
+    Value* createShrA(Value* value, U08 rhs);
 
     // Memory access and context operations
     Value* createLoad(Value* address, Type type, MemoryFlags flags = ENDIAN_DEFAULT);

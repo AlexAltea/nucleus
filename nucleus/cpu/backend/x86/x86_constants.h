@@ -30,7 +30,7 @@ namespace x86 {
  * @param[in]  dest      Destination GPR register
  * @param[in]  constant  Integer constant
  */
-void getReg8Constant(X86Emitter& e, Xbyak::Reg8 dest, const S8 constant);
+void getReg8Constant(X86Emitter& e, Xbyak::Reg8 dest, const S08 constant);
 void getReg16Constant(X86Emitter& e, Xbyak::Reg16 dest, const S16 constant);
 void getReg32Constant(X86Emitter& e, Xbyak::Reg32 dest, const S32 constant);
 void getReg64Constant(X86Emitter& e, Xbyak::Reg64 dest, const S64 constant);

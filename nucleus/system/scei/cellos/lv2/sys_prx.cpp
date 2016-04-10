@@ -14,7 +14,7 @@
 
 namespace sys {
 
-S32 sys_prx_load_module(const S8* path, U64 flags, sys_prx_load_module_option_t* pOpt) {
+S32 sys_prx_load_module(const S08* path, U64 flags, sys_prx_load_module_option_t* pOpt) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     SELFLoader self;
@@ -46,7 +46,7 @@ S32 sys_prx_load_module_list(S32 count, BE<U64>* pathList, U64 flags, void* pOpt
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     for (S32 i = 0; i < count; i++) {
-        auto* path = (S8*)((U64)nucleus.memory->getBaseAddr() + pathList[i]);
+        auto* path = (S08*)((U64)nucleus.memory->getBaseAddr() + pathList[i]);
         auto* pOpt = nucleus.memory->ptr<sys_prx_load_module_option_t>(0);
 
         const S32 ret = sys_prx_load_module(path, flags, pOpt);
@@ -73,7 +73,7 @@ S32 sys_prx_start_module(S32 id, U64 flags, sys_prx_start_module_option_t* pOpt)
         offset += importedLibrary.size;
 
         for (const auto& lib : prx->exported_libs) {
-            if (lib.name != nucleus.memory->ptr<S8>(importedLibrary.name_addr)) {
+            if (lib.name != nucleus.memory->ptr<S08>(importedLibrary.name_addr)) {
                 continue;
             }
             for (U32 i = 0; i < importedLibrary.num_func; i++) {

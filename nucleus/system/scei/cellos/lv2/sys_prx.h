@@ -45,7 +45,7 @@ struct sys_prx_module_info_t
 {
     BE<U16> attributes;
     BE<U16> version;
-    S8 name[28];
+    S08 name[28];
     BE<U32> toc;
     BE<U32> exports_start;
     BE<U32> exports_end;
@@ -56,16 +56,16 @@ struct sys_prx_module_info_t
 // Information about imported or exported libraries in PRX modules
 struct sys_prx_library_info_t
 {
-    U8 size;
-    U8 unk0;
+    U08 size;
+    U08 unk0;
     BE<U16> version;
     BE<U16> attributes;
     BE<U16> num_func;
     BE<U16> num_var;
     BE<U16> num_tlsvar;
-    U8 info_hash;
-    U8 info_tlshash;
-    U8 unk1[2];
+    U08 info_hash;
+    U08 info_tlshash;
+    U08 unk1[2];
     BE<U32> name_addr;
     BE<U32> fnid_addr;
     BE<U32> fstub_addr;
@@ -80,8 +80,8 @@ struct sys_prx_relocation_info_t
 {
     BE<U64> offset;
     BE<U16> unk0;
-    U8 index_value;    // Index of the LOAD segment that updated its base address
-    U8 index_addr;     // Index of the LOAD segment containing the address to patch
+    U08 index_value;    // Index of the LOAD segment that updated its base address
+    U08 index_addr;     // Index of the LOAD segment containing the address to patch
     BE<U32> type;
     BE<U64> ptr;
 };
@@ -145,7 +145,7 @@ struct sys_prx_t
 
 // SysCalls
 S32 sys_prx_0x1CE();
-S32 sys_prx_load_module(const S8* path, U64 flags, sys_prx_load_module_option_t* pOpt);
+S32 sys_prx_load_module(const S08* path, U64 flags, sys_prx_load_module_option_t* pOpt);
 S32 sys_prx_load_module_by_fd();
 S32 sys_prx_load_module_list(S32 count, BE<U64>* pathList, U64 flags, void* pOpt, BE<U32>* idList);
 S32 sys_prx_load_module_on_memcontainer();

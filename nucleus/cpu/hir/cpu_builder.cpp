@@ -64,7 +64,7 @@ Value* Builder::cloneValue(Value* source) {
 }
 
 // HIR constants
-Value* Builder::getConstantI8(U8 c) {
+Value* Builder::getConstantI8(U08 c) {
     Value* value = allocValue(TYPE_I8);
     value->setConstantI8(c);
     return value;
@@ -466,7 +466,7 @@ Value* Builder::createShl(Value* value, Value* amount) {
     return i->dest;
 }
 
-Value* Builder::createShl(Value* value, U8 rhs) {
+Value* Builder::createShl(Value* value, U08 rhs) {
     return createShl(value, getConstantI8(rhs));
 }
 
@@ -492,7 +492,7 @@ Value* Builder::createShr(Value* value, Value* amount) {
     return i->dest;
 }
 
-Value* Builder::createShr(Value* value, U8 rhs) {
+Value* Builder::createShr(Value* value, U08 rhs) {
     return createShr(value, getConstantI8(rhs));
 }
 
@@ -518,7 +518,7 @@ Value* Builder::createShrA(Value* value, Value* amount) {
     return i->dest;
 }
 
-Value* Builder::createShrA(Value* value, U8 rhs) {
+Value* Builder::createShrA(Value* value, U08 rhs) {
     return createShrA(value, getConstantI8(rhs));
 }
 

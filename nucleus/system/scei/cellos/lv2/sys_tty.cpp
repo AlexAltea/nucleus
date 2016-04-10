@@ -10,11 +10,11 @@
 
 namespace sys {
 
-S32 sys_tty_read(S32 ch, S8* buf, S32 len, U32* preadlen) {
+S32 sys_tty_read(S32 ch, S08* buf, S32 len, U32* preadlen) {
     return CELL_OK;
 }
 
-S32 sys_tty_write(S32 ch, S8* buf, S32 len, U32* pwritelen) {
+S32 sys_tty_write(S32 ch, S08* buf, S32 len, U32* pwritelen) {
     if (ch > 15 || len <= 0) {
         return CELL_EINVAL;
     }

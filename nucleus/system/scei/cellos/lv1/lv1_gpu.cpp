@@ -69,7 +69,7 @@ S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2
         break;
 
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_BUFFER: {
-        U8 id = p1 & 0xFF;
+        U08 id = p1 & 0xFF;
         U32 width = (p2 >> 32) & 0xFFFFFFFF;
         U32 height = p2 & 0xFFFFFFFF;
         U32 pitch = (p3 >> 32) & 0xFFFFFFFF;

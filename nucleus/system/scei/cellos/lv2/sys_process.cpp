@@ -28,7 +28,7 @@ S32 sys_process_exit(S32 errorcode) {
     return CELL_OK;
 }
 
-S32 sys_process_get_paramsfo(U8* buffer) {
+S32 sys_process_get_paramsfo(U08* buffer) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     return CELL_OK;

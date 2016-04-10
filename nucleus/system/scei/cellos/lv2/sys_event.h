@@ -43,14 +43,14 @@ struct sys_event_flag_attr_t
     BE<U64> ipc_key;
     BE<S32> flags;
     BE<S32> type;
-    S8 name[8];
+    S08 name[8];
 };
 
 struct sys_event_queue_attr_t
 {
     BE<U32> protocol;
     BE<S32> type;
-    S8 name[8];
+    S08 name[8];
 };
 
 // Auxiliary classes
@@ -75,7 +75,7 @@ struct sys_event_port_t
     sys_event_queue_t* equeue = nullptr;
     U32 type;
     union {
-        S8 name[8];
+        S08 name[8];
         U64 name_value;
     };
 };

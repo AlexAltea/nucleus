@@ -30,7 +30,7 @@ using NativeEndian = T;
  * Swapped endianness
  */
 template <typename T, int size = sizeof(T)> struct se_t;
-template <typename T> struct se_t<T, 1> { static inline void func(T& dst, const T src) { (U8&)dst = (U8&)src; } };
+template <typename T> struct se_t<T, 1> { static inline void func(T& dst, const T src) { (U08&)dst = (U08&)src; } };
 template <typename T> struct se_t<T, 2> { static inline void func(T& dst, const T src) { (U16&)dst = SE16((U16&)src); } };
 template <typename T> struct se_t<T, 4> { static inline void func(T& dst, const T src) { (U32&)dst = SE32((U32&)src); } };
 template <typename T> struct se_t<T, 8> { static inline void func(T& dst, const T src) { (U64&)dst = SE64((U64&)src); } };

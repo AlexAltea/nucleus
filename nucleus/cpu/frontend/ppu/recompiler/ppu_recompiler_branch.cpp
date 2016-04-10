@@ -45,10 +45,10 @@ void Recompiler::bcx(Instruction code)
     const U32 nextAddr = (currentAddress + 4) & ~0x3;
 
     // Check condition
-    const U8 bo0 = (code.bo & 0x10) ? 1 : 0;
-    const U8 bo1 = (code.bo & 0x08) ? 1 : 0;
-    const U8 bo2 = (code.bo & 0x04) ? 1 : 0;
-    const U8 bo3 = (code.bo & 0x02) ? 1 : 0;
+    const U08 bo0 = (code.bo & 0x10) ? 1 : 0;
+    const U08 bo1 = (code.bo & 0x08) ? 1 : 0;
+    const U08 bo2 = (code.bo & 0x04) ? 1 : 0;
+    const U08 bo3 = (code.bo & 0x02) ? 1 : 0;
 
     Value* ctr_ok = nullptr;
     if (!bo2) {
@@ -142,10 +142,10 @@ void Recompiler::bcctrx(Instruction code)
 void Recompiler::bclrx(Instruction code)
 {
     // Check condition
-    const U8 bo0 = (code.bo & 0x10) ? 1 : 0;
-    const U8 bo1 = (code.bo & 0x08) ? 1 : 0;
-    const U8 bo2 = (code.bo & 0x04) ? 1 : 0;
-    const U8 bo3 = (code.bo & 0x02) ? 1 : 0;
+    const U08 bo0 = (code.bo & 0x10) ? 1 : 0;
+    const U08 bo1 = (code.bo & 0x08) ? 1 : 0;
+    const U08 bo2 = (code.bo & 0x04) ? 1 : 0;
+    const U08 bo3 = (code.bo & 0x02) ? 1 : 0;
 
     Value* ctr_ok = nullptr;
     if (!bo2) {

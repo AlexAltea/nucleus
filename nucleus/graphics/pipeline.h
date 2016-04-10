@@ -102,7 +102,7 @@ enum StencilOp {
     STENCIL_OP_DECR,
 };
 
-using ColorWriteMask = U8;
+using ColorWriteMask = U08;
 enum : ColorWriteMask {
     COLOR_WRITE_ENABLE_RED    = (1 << 0),
     COLOR_WRITE_ENABLE_GREEN  = (1 << 1),

@@ -49,9 +49,9 @@ enum {
 // Structs
 struct sys_fs_dirent_t
 {
-    U8 d_type;
-    U8 d_namlen;
-    S8 d_name[CELL_MAX_FS_FILE_NAME_LENGTH + 1];
+    U08 d_type;
+    U08 d_namlen;
+    S08 d_name[CELL_MAX_FS_FILE_NAME_LENGTH + 1];
 };
 
 struct sys_fs_stat_t
@@ -79,20 +79,20 @@ struct sys_fs_t
 };
 
 // SysCalls
-S32 sys_fs_open(const S8* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size);
+S32 sys_fs_open(const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size);
 S32 sys_fs_read(S32 fd, void* buf, U64 nbytes, BE<U64>* nread);
 S32 sys_fs_write(S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite);
 S32 sys_fs_close(S32 fd);
-S32 sys_fs_opendir(const S8* path, S32* fd);
+S32 sys_fs_opendir(const S08* path, S32* fd);
 S32 sys_fs_readdir(S32 fd, sys_fs_dirent_t* dir, BE<U64>* nread);
 S32 sys_fs_closedir(S32 fd);
-S32 sys_fs_stat(const S8* path, sys_fs_stat_t* sb);
+S32 sys_fs_stat(const S08* path, sys_fs_stat_t* sb);
 S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb);
-S32 sys_fs_link(const S8* path, const S8* arg0);
-S32 sys_fs_mkdir(const S8* path, U32 mode);
-S32 sys_fs_rename(const S8* from, const S8* to);
-S32 sys_fs_rmdir(const S8* path);
-S32 sys_fs_unlink(const S8* path);
+S32 sys_fs_link(const S08* path, const S08* arg0);
+S32 sys_fs_mkdir(const S08* path, U32 mode);
+S32 sys_fs_rename(const S08* from, const S08* to);
+S32 sys_fs_rmdir(const S08* path);
+S32 sys_fs_unlink(const S08* path);
 S32 sys_fs_fcntl();
 S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, U64 *pos);
 

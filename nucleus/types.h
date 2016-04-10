@@ -7,12 +7,12 @@
 
 #include <cstddef>
 
-using S8 = char;
+using S08 = char;
 using S16 = short;
 using S32 = int;
 using S64 = long long;
 
-using U8 = unsigned char;
+using U08 = unsigned char;
 using U16 = unsigned short;
 using U32 = unsigned int;
 using U64 = unsigned long long;
@@ -21,7 +21,7 @@ using F32 = float;
 using F64 = double;
 
 using Size = size_t;
-using Byte = U8;
+using Byte = U08;
 
 struct U128 {
     U64 lo, hi;
@@ -73,8 +73,8 @@ union V128 {
     S32 s32[4];
     U16 u16[8];
     S16 s16[8];
-    U8 u8[16];
-    S8 s8[16];
+    U08 u8[16];
+    S08 s8[16];
 
     static V128 from(F32 a0, F32 a1, F32 a2, F32 a3) {
         V128 result;
@@ -100,8 +100,8 @@ union V256 {
     S32 s32[8];
     U16 u16[16];
     S16 s16[16];
-    U8 u8[32];
-    S8 s8[32];
+    U08 u8[32];
+    S08 s8[32];
 
     static V256 from(F64 a0, F64 a1, F64 a2, F64 a3) {
         V256 result;

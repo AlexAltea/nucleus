@@ -10,7 +10,7 @@
 namespace cpu {
 namespace hir {
 
-using OpcodeFlags = U8;
+using OpcodeFlags = U08;
 
 enum ArithmeticFlags : OpcodeFlags {
     ARITHMETIC_SIGNED    = 0 << 0,
@@ -93,16 +93,16 @@ struct OpcodeInfo {
     OpcodeFlags flags;
     OpcodeSignature signature;
 
-    U8 getSignatureDest() const {
+    U08 getSignatureDest() const {
         return ((signature >> 0) & 0b111);
     }
-    U8 getSignatureSrc1() const {
+    U08 getSignatureSrc1() const {
         return ((signature >> 3) & 0b111);
     }
-    U8 getSignatureSrc2() const {
+    U08 getSignatureSrc2() const {
         return ((signature >> 6) & 0b111);
     }
-    U8 getSignatureSrc3() const {
+    U08 getSignatureSrc3() const {
         return ((signature >> 9) & 0b111);
     }
 };

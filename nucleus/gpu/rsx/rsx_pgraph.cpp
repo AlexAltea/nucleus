@@ -93,24 +93,24 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
         //attr.data.resize(count * attr.size * typeSize);
 
         // Copy data per vertex
-        U8* data = (U8*)vpeInputs[attrIndex]->map();
+        U08* data = (U08*)vpeInputs[attrIndex]->map();
         for (U32 i = 0; i < count; i++) {
             U32 src = addr + vertex_data_base_offset + attr.stride * (first + i + vertex_data_base_index);
             void* dst = &/*attr.*/data[i * attr.size * typeSize];
 
             switch (typeSize) {
             case 1:
-                for (U8 j = 0; j < attr.size; j++) {
-                    ((U8*)dst)[j] = nucleus.memory->read8(src + 1*j);
+                for (U08 j = 0; j < attr.size; j++) {
+                    ((U08*)dst)[j] = nucleus.memory->read8(src + 1*j);
                 }
                 break;
             case 2:
-                for (U8 j = 0; j < attr.size; j++) {
+                for (U08 j = 0; j < attr.size; j++) {
                     ((U16*)dst)[j] = nucleus.memory->read16(src + 2*j);
                 }
                 break;
             case 4:
-                for (U8 j = 0; j < attr.size; j++) {
+                for (U08 j = 0; j < attr.size; j++) {
                     ((U32*)dst)[j] = nucleus.memory->read32(src + 4*j);
                 }
                 break;
@@ -330,7 +330,7 @@ void PGRAPH::ClearSurface(U32 mask) {
         ((clear_color >>  0) & 0xFF) / 255.0f, // Alpha
     };
     const F32 depth = clear_depth / F32(0xFFFFFF);
-    const U8 stencil = clear_stencil;
+    const U08 stencil = clear_stencil;
 
     if (mask & RSX_CLEAR_BIT_COLOR) {
         auto* colorTarget = getColorTarget(surface.colorOffset[0]);

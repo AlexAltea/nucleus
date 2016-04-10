@@ -150,9 +150,9 @@ public:
 };
 
 template <typename RegType>
-struct I8OpBase : ValueOp<I8OpBase<RegType>, RegType, S8, hir::TYPE_I8> {
-    using Base = ValueOp<I8OpBase<RegType>, RegType, S8, hir::TYPE_I8>;
-    const S8 constant() const {
+struct I8OpBase : ValueOp<I8OpBase<RegType>, RegType, S08, hir::TYPE_I8> {
+    using Base = ValueOp<I8OpBase<RegType>, RegType, S08, hir::TYPE_I8>;
+    const S08 constant() const {
         return Base::value->constant.i8;
     }
 };

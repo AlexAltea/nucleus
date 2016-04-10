@@ -78,7 +78,7 @@ Literal RSXFragmentProgram::getTempReg(int index, bool isHalf) {
     return tempReg;
 }
 
-Literal RSXFragmentProgram::getMaskedValue(Literal dest, Literal source, U8 mask) {
+Literal RSXFragmentProgram::getMaskedValue(Literal dest, Literal source, U08 mask) {
     // Check if mask enables all components
     if (mask == 0b1111) {
         return source;
@@ -94,7 +94,7 @@ Literal RSXFragmentProgram::getMaskedValue(Literal dest, Literal source, U8 mask
     return builder.opVectorShuffle(vecTypeId, dest, source, {x,y,z,w});
 }
 
-Literal RSXFragmentProgram::getSwizzledValue(Literal vector, U8 swizzle) {
+Literal RSXFragmentProgram::getSwizzledValue(Literal vector, U08 swizzle) {
     // Check if swizzling is required. Note that: [11,10,01,00] -> [x,y,z,w].
     if (swizzle == 0b11100100) {
         return vector;

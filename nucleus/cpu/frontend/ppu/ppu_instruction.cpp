@@ -37,8 +37,8 @@ bool Instruction::is_branch_conditional() const
     }
     // If instruction is {bclr*} with conditions
     if (opcode == 0x13 && op19 == 0x010) {
-        const U8 bo0 = (bo & 0x10);
-        const U8 bo2 = (bo & 0x04);
+        const U08 bo0 = (bo & 0x10);
+        const U08 bo2 = (bo & 0x04);
         if (!bo0 || !bo2) {
             return true;
         }
@@ -78,8 +78,8 @@ bool Instruction::is_return() const
     // If instruction is {bclr*}
     if (opcode == 0x13 && op19 == 0x010) {
         // Discard conditional return
-        const U8 bo0 = (bo & 0x10);
-        const U8 bo2 = (bo & 0x04);
+        const U08 bo0 = (bo & 0x10);
+        const U08 bo2 = (bo & 0x04);
         if (!bo0 || !bo2) {
             return false;
         }
@@ -106,8 +106,8 @@ U32 Instruction::get_target(U32 currentAddr) const
     }
     // If instruction is {bclr*} with conditions
     if (opcode == 0x13 && op19 == 0x010) {
-        const U8 bo0 = (bo & 0x10);
-        const U8 bo2 = (bo & 0x04);
+        const U08 bo0 = (bo & 0x10);
+        const U08 bo2 = (bo & 0x04);
         if (!bo0 || !bo2) {
             return currentAddr + 4;
         }

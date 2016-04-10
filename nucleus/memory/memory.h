@@ -35,21 +35,21 @@ public:
     void free(U32 addr);
     bool check(U32 addr);
 
-    U8 read8(U32 addr);
+    U08 read8(U32 addr);
     U16 read16(U32 addr);
     U32 read32(U32 addr);
     U64 read64(U32 addr);
     U128 read128(U32 addr);
-    void readLeft(U8* dst, U32 src, U32 size);
-    void readRight(U8* dst, U32 src, U32 size);
+    void readLeft(U08* dst, U32 src, U32 size);
+    void readRight(U08* dst, U32 src, U32 size);
 
-    void write8(U32 addr, U8 value);
+    void write8(U32 addr, U08 value);
     void write16(U32 addr, U16 value);
     void write32(U32 addr, U32 value);
     void write64(U32 addr, U64 value);
     void write128(U32 addr, U128 value);
-    void writeLeft(U32 dst, U8* src, U32 size);
-    void writeRight(U32 dst, U8* src, U32 size);
+    void writeLeft(U32 dst, U08* src, U32 size);
+    void writeRight(U32 dst, U08* src, U32 size);
 
     void* getBaseAddr() { return m_base; }
 

@@ -45,12 +45,12 @@ struct Texture {
     U32 offset;        // Offset at the specified location
 
     // Format
-    U8 location;       // Location: Local Memory (0) or Main Memory (1)
-    U8 cubemap;
-    U8 border;
-    U8 dimension;      // Dimension: 1D texture (1), 2D texture (2) or 3D texture (3)
-    U8 format;         // Color format and optional swizzle/normalization flags
-    U8 mipmap;         // Amount of mipmap leves of the texture
+    U08 location;       // Location: Local Memory (0) or Main Memory (1)
+    U08 cubemap;
+    U08 border;
+    U08 dimension;      // Dimension: 1D texture (1), 2D texture (2) or 3D texture (3)
+    U08 format;         // Color format and optional swizzle/normalization flags
+    U08 mipmap;         // Amount of mipmap leves of the texture
 
     // Image rectangle
     U16 width;
@@ -60,14 +60,14 @@ struct Texture {
     U32 border_color;
 
     // Address
-    U8 wrap_r;
-    U8 wrap_s;
-    U8 wrap_t;
-    U8 anisoBias;
-    U8 unsignedRemap;
-    U8 signedRemap;
-    U8 gamma;
-    U8 zfunc;
+    U08 wrap_r;
+    U08 wrap_s;
+    U08 wrap_t;
+    U08 anisoBias;
+    U08 unsignedRemap;
+    U08 signedRemap;
+    U08 gamma;
+    U08 zfunc;
 
     // Filter
     union {
@@ -86,11 +86,11 @@ struct Texture {
     } filter;
 
     // Control 0
-    U8 alphakill;
-    U8 max_aniso;
+    U08 alphakill;
+    U08 max_aniso;
     U16 max_lod;
     U16 min_lod;
-    U8 enable;         // Texture is enabled: True (1) or False (0)
+    U08 enable;         // Texture is enabled: True (1) or False (0)
 
     // Control 1
     U32 remap;

@@ -193,7 +193,7 @@ private:
      * @param[in]  source   Input vector ID whose components will be copied to output
      * @param[in]  mask     Byte containing the 4-bit mask that enable/disable the 4 components (x,y,z,w) to write.
      */
-    Literal getMaskedValue(Literal dest, Literal source, U8 mask);
+    Literal getMaskedValue(Literal dest, Literal source, U08 mask);
 
     /**
      * Get the vector resulting from swizzling/shuffling its components according to a swizzle argument
@@ -201,7 +201,7 @@ private:
      * @param[in]  swizzle  Byte containing the 2-bit swizzle masks for each of the 4 components (x,y,z,w) to read.
      * @return              Swizzled vector ID
      */
-    Literal getSwizzledValue(Literal vector, U8 swizzle);
+    Literal getSwizzledValue(Literal vector, U08 swizzle);
 
     /**
      * Get the source vector for the instruction, applying the corresponding modifiers

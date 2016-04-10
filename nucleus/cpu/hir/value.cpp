@@ -104,7 +104,7 @@ bool Value::isConstantZero() const {
 }
 
 // Constants setters
-void Value::setConstantI8(U8 c) {
+void Value::setConstantI8(U08 c) {
     constant.i8 = c;
     type = TYPE_I8;
     flags |= VALUE_IS_CONSTANT;
@@ -180,7 +180,7 @@ void Value::doMul(Value* rhs, ArithmeticFlags flags) {
         }
     } else {
         switch (type) {
-        case TYPE_I8:   constant.i8  *= U8(rhs->constant.i8);    break;
+        case TYPE_I8:   constant.i8  *= U08(rhs->constant.i8);    break;
         case TYPE_I16:  constant.i16 *= U16(rhs->constant.i16);  break;
         case TYPE_I32:  constant.i32 *= U32(rhs->constant.i32);  break;
         case TYPE_I64:  constant.i64 *= U64(rhs->constant.i64);  break;
@@ -205,7 +205,7 @@ void Value::doDiv(Value* rhs, ArithmeticFlags flags) {
         }
     } else {
         switch (type) {
-        case TYPE_I8:   constant.i8  /= U8(rhs->constant.i8);    break;
+        case TYPE_I8:   constant.i8  /= U08(rhs->constant.i8);    break;
         case TYPE_I16:  constant.i16 /= U16(rhs->constant.i16);  break;
         case TYPE_I32:  constant.i32 /= U32(rhs->constant.i32);  break;
         case TYPE_I64:  constant.i64 /= U64(rhs->constant.i64);  break;
@@ -283,7 +283,7 @@ void Value::doShl(Value* amount) {
 
 void Value::doShr(Value* amount) {
     switch (type) {
-    case TYPE_I8:   constant.i8  = U8(constant.i8)   >> amount->constant.i8;  break;
+    case TYPE_I8:   constant.i8  = U08(constant.i8)   >> amount->constant.i8;  break;
     case TYPE_I16:  constant.i16 = U16(constant.i16) >> amount->constant.i8;  break;
     case TYPE_I32:  constant.i32 = U32(constant.i32) >> amount->constant.i8;  break;
     case TYPE_I64:  constant.i64 = U64(constant.i64) >> amount->constant.i8;  break;
@@ -294,7 +294,7 @@ void Value::doShr(Value* amount) {
 
 void Value::doShrA(Value* amount) {
     switch (type) {
-    case TYPE_I8:   constant.i8  = S8(constant.i8)   >> amount->constant.i8;  break;
+    case TYPE_I8:   constant.i8  = S08(constant.i8)   >> amount->constant.i8;  break;
     case TYPE_I16:  constant.i16 = S16(constant.i16) >> amount->constant.i8;  break;
     case TYPE_I32:  constant.i32 = S32(constant.i32) >> amount->constant.i8;  break;
     case TYPE_I64:  constant.i64 = S64(constant.i64) >> amount->constant.i8;  break;
@@ -390,7 +390,7 @@ void Value::doConvert(Type newType) {
     case TYPE_I32:
         type = newType;
         switch (newType) {
-        case TYPE_I8:  constant.i8  =  S8(constant.i32); return;
+        case TYPE_I8:  constant.i8  =  S08(constant.i32); return;
         case TYPE_I16: constant.i16 = S16(constant.i32); return;
         case TYPE_I32: constant.i32 = S32(constant.i32); return;
         case TYPE_I64: constant.i64 = S64(constant.i32); return;
@@ -403,7 +403,7 @@ void Value::doConvert(Type newType) {
     case TYPE_I64:
         type = newType;
         switch (newType) {
-        case TYPE_I8:  constant.i8  =  S8(constant.i64); return;
+        case TYPE_I8:  constant.i8  =  S08(constant.i64); return;
         case TYPE_I16: constant.i16 = S16(constant.i64); return;
         case TYPE_I32: constant.i32 = S32(constant.i64); return;
         case TYPE_I64: constant.i64 = S64(constant.i64); return;
@@ -416,7 +416,7 @@ void Value::doConvert(Type newType) {
     case TYPE_F32:
         type = newType;
         switch (newType) {
-        case TYPE_I8:  constant.i8  =  S8(constant.f32); return;
+        case TYPE_I8:  constant.i8  =  S08(constant.f32); return;
         case TYPE_I16: constant.i16 = S16(constant.f32); return;
         case TYPE_I32: constant.i32 = S32(constant.f32); return;
         case TYPE_I64: constant.i64 = S64(constant.f32); return;
@@ -429,7 +429,7 @@ void Value::doConvert(Type newType) {
     case TYPE_F64:
         type = newType;
         switch (newType) {
-        case TYPE_I8:  constant.i8  =  S8(constant.f64); return;
+        case TYPE_I8:  constant.i8  =  S08(constant.f64); return;
         case TYPE_I16: constant.i16 = S16(constant.f64); return;
         case TYPE_I32: constant.i32 = S32(constant.f64); return;
         case TYPE_I64: constant.i64 = S64(constant.f64); return;
@@ -455,10 +455,10 @@ void Value::doCompare(Value* rhs, CompareFlags flags) {
         case COMPARE_SLE: constant.i8 = (constant.i8 <= rhs->constant.i8) ? 1 : 0;  break;
         case COMPARE_SGE: constant.i8 = (constant.i8 >= rhs->constant.i8) ? 1 : 0;  break;
         case COMPARE_SGT: constant.i8 = (constant.i8 >  rhs->constant.i8) ? 1 : 0;  break;
-        case COMPARE_ULT: constant.i8 = (U8(constant.i8) <  U8(rhs->constant.i8)) ? 1 : 0;  break;
-        case COMPARE_ULE: constant.i8 = (U8(constant.i8) <= U8(rhs->constant.i8)) ? 1 : 0;  break;
-        case COMPARE_UGE: constant.i8 = (U8(constant.i8) >= U8(rhs->constant.i8)) ? 1 : 0;  break;
-        case COMPARE_UGT: constant.i8 = (U8(constant.i8) >  U8(rhs->constant.i8)) ? 1 : 0;  break;
+        case COMPARE_ULT: constant.i8 = (U08(constant.i8) <  U08(rhs->constant.i8)) ? 1 : 0;  break;
+        case COMPARE_ULE: constant.i8 = (U08(constant.i8) <= U08(rhs->constant.i8)) ? 1 : 0;  break;
+        case COMPARE_UGE: constant.i8 = (U08(constant.i8) >= U08(rhs->constant.i8)) ? 1 : 0;  break;
+        case COMPARE_UGT: constant.i8 = (U08(constant.i8) >  U08(rhs->constant.i8)) ? 1 : 0;  break;
         }
         break;
 

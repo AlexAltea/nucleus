@@ -73,11 +73,11 @@ union PPU_CR {
         CR_SO = 3,
     };
 
-    U8 getBit(U32 bit) { return (CR >> bit) & 1; }
+    U08 getBit(U32 bit) { return (CR >> bit) & 1; }
     void setBit(U32 bit, bool value) { CR = value ? CR | (1 << bit) : CR & ~(1 << bit); }
 
-    U8 getField(U32 field) { return (CR >> field*4) & 0xf; }
-    void setField(U32 field, U8 value) {
+    U08 getField(U32 field) { return (CR >> field*4) & 0xf; }
+    void setField(U32 field, U08 value) {
         U64 maskHigh = ~((1ULL << (field+1)*4)-1);
         U64 maskLow = ((1ULL << field*4)-1);
         CR = (CR & (U32)maskHigh) | (value << field*4) | (CR & (U32)maskLow);
@@ -201,8 +201,8 @@ union PPU_VR {
     S32 s32[4];
     U16 u16[8];
     S16 s16[8];
-    U8 u8[16];
-    U8 s8[16];
+    U08 u8[16];
+    U08 s8[16];
     F32 f32[4];
     F64 f64[2];
 
@@ -245,18 +245,18 @@ public:
     struct CR {
         union Field {
             struct {
-                U8 lt;   // Negative (Bit 0)
-                U8 gt;   // Positive (Bit 1)
-                U8 eq;   // Zero (Bit 2)
-                U8 so;   // Summary overflow (Bit 3)
+                U08 lt;   // Negative (Bit 0)
+                U08 gt;   // Positive (Bit 1)
+                U08 eq;   // Zero (Bit 2)
+                U08 so;   // Summary overflow (Bit 3)
             };
             struct {
-                U8 fx;   // Floating-point exception summary (Bit 0)
-                U8 fex;  // Floating-point enabled exception summary (Bit 1)
-                U8 vx;   // Floating-point invalid operation exception summary (Bit 2)
-                U8 ox;   // Floating-point overflow exception (Bit 3)
+                U08 fx;   // Floating-point exception summary (Bit 0)
+                U08 fex;  // Floating-point enabled exception summary (Bit 1)
+                U08 vx;   // Floating-point invalid operation exception summary (Bit 2)
+                U08 ox;   // Floating-point overflow exception (Bit 3)
             };
-            U8 bit[4];
+            U08 bit[4];
         } field[8];
     } cr;
 
@@ -272,10 +272,10 @@ public:
      *   0             31 32 33 34 35            56 57        63
      */
     struct XER {
-        U8 so;  // Summary overflow (1-bit)
-        U8 ov;  // Overflow (1-bit)
-        U8 ca;  // Carry (1-bit)
-        U8 bc;  // Byte count (7-bits)
+        U08 so;  // Summary overflow (1-bit)
+        U08 ov;  // Overflow (1-bit)
+        U08 ca;  // Carry (1-bit)
+        U08 bc;  // Byte count (7-bits)
     } xer;
 
     PPU_LR lr;

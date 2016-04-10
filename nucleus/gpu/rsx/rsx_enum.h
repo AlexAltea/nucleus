@@ -102,7 +102,7 @@ enum StencilOp {
     RSX_STENCIL_OP_DECR_WRAP  = 0x8508,
 };
 
-enum VertexType : U8 {
+enum VertexType : U08 {
     RSX_VERTEX_S1     = 1,
     RSX_VERTEX_F      = 2,
     RSX_VERTEX_SF     = 3,

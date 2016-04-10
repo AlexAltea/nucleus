@@ -15,7 +15,7 @@ struct sys_lwmutex_attribute_t
 {
     BE<U32> protocol;
     BE<U32> recursive;
-    S8 name[8];
+    S08 name[8];
 };
 
 // Auxiliary classes

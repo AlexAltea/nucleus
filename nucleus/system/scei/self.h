@@ -117,10 +117,10 @@ struct AppInfo
 
 struct MetadataInfo
 {
-    U8 key[0x10];
-    U8 key_pad[0x10];
-    U8 iv[0x10];
-    U8 iv_pad[0x10];
+    U08 key[0x10];
+    U08 key_pad[0x10];
+    U08 iv[0x10];
+    U08 iv_pad[0x10];
 };
 
 struct MetadataHeader
@@ -167,13 +167,13 @@ struct ControlInfo
         } control_flags;
 
         struct {  // Type 2 (0x30 bytes)
-            U8 digest[20];
+            U08 digest[20];
             U64 unknown;
         } file_digest40;
 
         struct {  // Type 2 (0x40 bytes)
-          U8 digest1[20];
-          U8 digest2[20];
+          U08 digest1[20];
+          U08 digest2[20];
           BE<U64> unknown;
         } file_digest30;
 
@@ -182,10 +182,10 @@ struct ControlInfo
             BE<U32> unknown1;
             BE<U32> license;
             BE<U32> type;
-            U8 content_id[48];
-            U8 digest[16];
-            U8 invdigest[16];
-            U8 xordigest[16];
+            U08 content_id[48];
+            U08 digest[16];
+            U08 invdigest[16];
+            U08 xordigest[16];
             BE<U64> unknown2;
             BE<U64> unknown3;
         } npdrm;
@@ -196,10 +196,10 @@ struct ControlInfo
 struct Elf64_Ehdr
 {
     BE<U32> magic;
-    BE<U8>  elf_class;
-    BE<U8>  data;
-    BE<U8>  curver;
-    BE<U8>  os_abi;
+    BE<U08>  elf_class;
+    BE<U08>  data;
+    BE<U08>  curver;
+    BE<U08>  os_abi;
     BE<U64> abi_ver;
     BE<U16> type;
     BE<U16> machine;

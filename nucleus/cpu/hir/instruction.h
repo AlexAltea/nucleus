@@ -48,7 +48,7 @@ public:
          * @param[in]  sigType  Signature type of this HIR operand
          * @return              String containing the readable version of this HIR operand
          */
-        std::string dump(U8 sigType) const;
+        std::string dump(U08 sigType) const;
     };
 
     Opcode opcode;

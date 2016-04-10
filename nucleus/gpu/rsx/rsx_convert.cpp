@@ -215,7 +215,7 @@ gfx::Format convertFormat(TextureFormat format) {
     }
 }
 
-gfx::Format convertVertexFormat(VertexType type, U8 size) {
+gfx::Format convertVertexFormat(VertexType type, U08 size) {
     switch (type) {
     case RSX_VERTEX_S1:
         switch (size) {

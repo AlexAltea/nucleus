@@ -25,8 +25,8 @@ struct sys_mutex_attribute_t
     BE<U32> adaptive;
     BE<U64> ipc_key;
     BE<S32> flags;
-    S8 padding[4];
-    S8 name[8];
+    S08 padding[4];
+    S08 name[8];
 };
 
 struct sys_mutex_t

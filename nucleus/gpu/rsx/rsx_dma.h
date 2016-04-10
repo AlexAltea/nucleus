@@ -50,12 +50,12 @@ struct DMAObject {
 // RSX Direct Memory Access
 DMAObject dma_address(U32 dma_object);
 
-U8 dma_read8(U32 dma_object, U32 offset);
+U08 dma_read8(U32 dma_object, U32 offset);
 U16 dma_read16(U32 dma_object, U32 offset);
 U32 dma_read32(U32 dma_object, U32 offset);
 U64 dma_read64(U32 dma_object, U32 offset);
 
-void dma_write8(U32 dma_object, U32 offset, U8 value);
+void dma_write8(U32 dma_object, U32 offset, U08 value);
 void dma_write16(U32 dma_object, U32 offset, U16 value);
 void dma_write32(U32 dma_object, U32 offset, U32 value);
 void dma_write64(U32 dma_object, U32 offset, U64 value);

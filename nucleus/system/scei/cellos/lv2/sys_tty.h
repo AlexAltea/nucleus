@@ -31,7 +31,7 @@ enum {
 };
 
 // SysCalls
-S32 sys_tty_read(S32 ch, S8* buf, S32 len, U32* preadlen);
-S32 sys_tty_write(S32 ch, S8* buf, S32 len, U32* pwritelen);
+S32 sys_tty_read(S32 ch, S08* buf, S32 len, U32* preadlen);
+S32 sys_tty_write(S32 ch, S08* buf, S32 len, U32* pwritelen);
 
 }  // namespace sys

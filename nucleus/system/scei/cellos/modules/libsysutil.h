@@ -101,26 +101,26 @@ enum CellVideoOutRefreshRate {
 
 // Data types
 struct CellVideoOutDisplayMode {
-    BE<U8> resolutionId;
-    BE<U8> scanMode;
-    BE<U8> conversion;
-    BE<U8> aspect;
-    BE<U8> reserved[2];
+    BE<U08> resolutionId;
+    BE<U08> scanMode;
+    BE<U08> conversion;
+    BE<U08> aspect;
+    BE<U08> reserved[2];
     BE<U16> refreshRates;
 };
 
 struct CellVideoOutState {
-    BE<U8> state;
-    BE<U8> colorSpace;
-    BE<U8> reserved[6];
+    BE<U08> state;
+    BE<U08> colorSpace;
+    BE<U08> reserved[6];
     CellVideoOutDisplayMode displayMode;
 };
 
 struct CellVideoOutConfiguration {
-    BE<U8> resolutionId;
-    BE<U8> format;
-    BE<U8> aspect;
-    BE<U8> reserved[9];
+    BE<U08> resolutionId;
+    BE<U08> format;
+    BE<U08> aspect;
+    BE<U08> reserved[9];
     BE<U32> pitch;
 };
 

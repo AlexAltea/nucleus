@@ -30,7 +30,7 @@ public:
     // Commands
     virtual void cmdBindPipeline(Pipeline* pipeline) override;
     virtual void cmdClearColor(ColorTarget* target, const F32* colorValue) override;
-    virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) override;
+    virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U08 stencilValue) override;
     virtual void cmdDraw(U32 firstVertex, U32 vertexCount, U32 firstInstance, U32 instanceCount) override;
     virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) override;
     virtual void cmdSetDescriptors(const std::vector<VertexBuffer*>& buffers, const std::vector<Texture*>& textures) override;

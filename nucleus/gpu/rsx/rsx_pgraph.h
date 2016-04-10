@@ -27,17 +27,17 @@ class RSX;
 // RSX Vertex Program attribute
 struct rsx_vp_attribute_t {
     bool dirty;            // Flag: Needs to be reloaded and rebinded.
-    std::vector<U8> data;  // Holds the loaded and converted data.
+    std::vector<U08> data;  // Holds the loaded and converted data.
     U16 frequency;         // Access frequency of vertex data.
-    U8 stride;             // Offset between two consecutive vertices.
-    U8 size;               // Count of vertex components
+    U08 stride;             // Offset between two consecutive vertices.
+    U08 size;               // Count of vertex components
     VertexType type;       // Type of vertex components
     U32 location;          // Location (Local Memory or Main Memory).
     U32 offset;            // Offset at the specified location.
 };
 
 struct Surface {
-    enum ColorFormat : U8 {
+    enum ColorFormat : U08 {
         FORMAT_X1R5G5B5_Z1R5G5B5  = 1,
         FORMAT_X1R5G5B5_O1R5G5B5  = 2,
         FORMAT_R5G6B5             = 3,
@@ -53,22 +53,22 @@ struct Surface {
         FORMAT_X8B8G8R8_O8B8G8R8  = 15,
         FORMAT_A8B8G8R8           = 16,
     };
-    enum DepthStencilFormat : U8 {
+    enum DepthStencilFormat : U08 {
         FORMAT_Z16    = 1,
         FORMAT_Z24S8  = 2,
     };
 
     bool dirty;
 
-    U8 type;
-    U8 antialias;
+    U08 type;
+    U08 antialias;
     ColorFormat colorFormat;
-    U8 colorTarget;
-    U8 colorLocation[4];
+    U08 colorTarget;
+    U08 colorLocation[4];
     U32 colorOffset[4];
     U32 colorPitch[4];
     DepthStencilFormat depthFormat;
-    U8 depthLocation;
+    U08 depthLocation;
     U32 depthOffset;
     U32 depthPitch;
     U16 width;
@@ -151,7 +151,7 @@ public:
     // Registers
     U32 clear_color;
     U32 clear_depth;
-    U8 clear_stencil;
+    U08 clear_stencil;
     U32 semaphore_index;
     U32 vertex_data_base_offset;
     U32 vertex_data_base_index;

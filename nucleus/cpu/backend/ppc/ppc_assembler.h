@@ -100,8 +100,8 @@ public:
     void ba(Label label);
     void bl(Label label);
     void bla(Label label);
-    void bc(U8 bo, U8 bi, U16 bd);
-    void bc(U8 bo, U8 bi, Label label);
+    void bc(U08 bo, U08 bi, U16 bd);
+    void bc(U08 bo, U08 bi, Label label);
     void blt(RegCR cr, Label label);
     void ble(RegCR cr, Label label);
     void beq(RegCR cr, Label label);
@@ -109,8 +109,8 @@ public:
     void bgt(RegCR cr, Label label);
     void bne(RegCR cr, Label label);
     void bso(RegCR cr, Label label);
-    void bca(U8 bo, U8 bi, U16 bd);
-    void bca(U8 bo, U8 bi, Label label);
+    void bca(U08 bo, U08 bi, U16 bd);
+    void bca(U08 bo, U08 bi, Label label);
     void blta(RegCR cr, Label label);
     void blea(RegCR cr, Label label);
     void beqa(RegCR cr, Label label);
@@ -118,8 +118,8 @@ public:
     void bgta(RegCR cr, Label label);
     void bnea(RegCR cr, Label label);
     void bsoa(RegCR cr, Label label);
-    void bcl(U8 bo, U8 bi, U16 bd);
-    void bcl(U8 bo, U8 bi, Label label);
+    void bcl(U08 bo, U08 bi, U16 bd);
+    void bcl(U08 bo, U08 bi, Label label);
     void bltl(RegCR cr, Label label);
     void blel(RegCR cr, Label label);
     void beql(RegCR cr, Label label);
@@ -127,8 +127,8 @@ public:
     void bgtl(RegCR cr, Label label);
     void bnel(RegCR cr, Label label);
     void bsol(RegCR cr, Label label);
-    void bcla(U8 bo, U8 bi, U16 bd);
-    void bcla(U8 bo, U8 bi, Label label);
+    void bcla(U08 bo, U08 bi, U16 bd);
+    void bcla(U08 bo, U08 bi, Label label);
     void bltla(RegCR cr, Label label);
     void blela(RegCR cr, Label label);
     void beqla(RegCR cr, Label label);
@@ -136,10 +136,10 @@ public:
     void bgtla(RegCR cr, Label label);
     void bnela(RegCR cr, Label label);
     void bsola(RegCR cr, Label label);
-    void bcctr(U8 bo, U8 bi, U8 bh, Label label);
-    void bcctrl(U8 bo, U8 bi, U8 bh, Label label);
-    void bclr(U8 bo, U8 bi, U8 bh, Label label);
-    void bclrl(U8 bo, U8 bi, U8 bh, Label label);
+    void bcctr(U08 bo, U08 bi, U08 bh, Label label);
+    void bcctrl(U08 bo, U08 bi, U08 bh, Label label);
+    void bclr(U08 bo, U08 bi, U08 bh, Label label);
+    void bclrl(U08 bo, U08 bi, U08 bh, Label label);
     void cmp(RegCR crfd, RegGPR ra, RegGPR rb);
     void cmp(RegGPR ra, RegGPR rb);
     void cmpd(RegCR crfd, RegGPR ra, RegGPR rb);
@@ -168,17 +168,17 @@ public:
     void cntlzd_(RegGPR ra, RegGPR rs);
     void cntlzw(RegGPR ra, RegGPR rs);
     void cntlzw_(RegGPR ra, RegGPR rs);
-    void crand(U8 crfd, U8 crfa, U8 crfb);
-    void crandc(U8 crfd, U8 crfa, U8 crfb);
-    void creqv(U8 crfd, U8 crfa, U8 crfb);
-    void crnand(U8 crfd, U8 crfa, U8 crfb);
-    void crnor(U8 crfd, U8 crfa, U8 crfb);
-    void cror(U8 crfd, U8 crfa, U8 crfb);
-    void crorc(U8 crfd, U8 crfa, U8 crfb);
-    void crxor(U8 crfd, U8 crfa, U8 crfb);
+    void crand(U08 crfd, U08 crfa, U08 crfb);
+    void crandc(U08 crfd, U08 crfa, U08 crfb);
+    void creqv(U08 crfd, U08 crfa, U08 crfb);
+    void crnand(U08 crfd, U08 crfa, U08 crfb);
+    void crnor(U08 crfd, U08 crfa, U08 crfb);
+    void cror(U08 crfd, U08 crfa, U08 crfb);
+    void crorc(U08 crfd, U08 crfa, U08 crfb);
+    void crxor(U08 crfd, U08 crfa, U08 crfb);
     void dcbf(RegGPR ra, RegGPR rb);
     void dcbst(RegGPR ra, RegGPR rb);
-    void dcbt(RegGPR ra, RegGPR rb, U8 th);
+    void dcbt(RegGPR ra, RegGPR rb, U08 th);
     void dcbtst(RegGPR ra, RegGPR rb);
     void dcbz(RegGPR ra, RegGPR rb);
     void divd(RegGPR rd, RegGPR ra, RegGPR rb);
@@ -319,7 +319,7 @@ public:
     void mcrfs(RegCR crfd, RegCR crfs);
     void mffs(); // TODO
     void mffs_(); // TODO
-    void mfocrf(RegGPR rd, U8 crm);
+    void mfocrf(RegGPR rd, U08 crm);
     void mfcr(RegGPR rd);
     void mfspr(RegGPR rd, U16 spr);
     void mfxer(RegGPR rd);
@@ -331,8 +331,8 @@ public:
     void mtfsb1x(); // TODO
     void mtfsfix(); // TODO
     void mtfsfx(); // TODO
-    void mtocrf(U8 crm, RegGPR rs);
-    void mtcrf(U8 crm, RegGPR rs);
+    void mtocrf(U08 crm, RegGPR rs);
+    void mtcrf(U08 crm, RegGPR rs);
     void mtcr(RegGPR rs);
     void mtspr(U16 spr, RegGPR rs);
     void mtxer(RegGPR rs);
@@ -371,24 +371,24 @@ public:
     void orc_(RegGPR ra, RegGPR rs, RegGPR rb);
     void ori(RegGPR ra, RegGPR rs, U16 uimm);
     void oris(RegGPR ra, RegGPR rs, U16 uimm);
-    void rldcl(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb);
-    void rldcl_(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb);
-    void rldcr(RegGPR ra, RegGPR rs, RegGPR rb, U8 me);
-    void rldcr_(RegGPR ra, RegGPR rs, RegGPR rb, U8 me);
-    void rldic(RegGPR ra, RegGPR rs, U8 sh, U8 mb);
-    void rldic_(RegGPR ra, RegGPR rs, U8 sh, U8 mb);
-    void rldicl(RegGPR ra, RegGPR rs, U8 sh, U8 mb);
-    void rldicl_(RegGPR ra, RegGPR rs, U8 sh, U8 mb);
-    void rldicr(RegGPR ra, RegGPR rs, U8 sh, U8 me);
-    void rldicr_(RegGPR ra, RegGPR rs, U8 sh, U8 me);
-    void rldimi(RegGPR ra, RegGPR rs, U8 sh, U8 mb);
-    void rldimi_(RegGPR ra, RegGPR rs, U8 sh, U8 mb);
-    void rlwimi(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me);
-    void rlwimi_(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me);
-    void rlwinm(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me);
-    void rlwinm_(RegGPR ra, RegGPR rs, U8 sh, U8 mb, U8 me);
-    void rlwnm(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb, U8 me);
-    void rlwnm_(RegGPR ra, RegGPR rs, RegGPR rb, U8 mb, U8 me);
+    void rldcl(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb);
+    void rldcl_(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb);
+    void rldcr(RegGPR ra, RegGPR rs, RegGPR rb, U08 me);
+    void rldcr_(RegGPR ra, RegGPR rs, RegGPR rb, U08 me);
+    void rldic(RegGPR ra, RegGPR rs, U08 sh, U08 mb);
+    void rldic_(RegGPR ra, RegGPR rs, U08 sh, U08 mb);
+    void rldicl(RegGPR ra, RegGPR rs, U08 sh, U08 mb);
+    void rldicl_(RegGPR ra, RegGPR rs, U08 sh, U08 mb);
+    void rldicr(RegGPR ra, RegGPR rs, U08 sh, U08 me);
+    void rldicr_(RegGPR ra, RegGPR rs, U08 sh, U08 me);
+    void rldimi(RegGPR ra, RegGPR rs, U08 sh, U08 mb);
+    void rldimi_(RegGPR ra, RegGPR rs, U08 sh, U08 mb);
+    void rlwimi(RegGPR ra, RegGPR rs, U08 sh, U08 mb, U08 me);
+    void rlwimi_(RegGPR ra, RegGPR rs, U08 sh, U08 mb, U08 me);
+    void rlwinm(RegGPR ra, RegGPR rs, U08 sh, U08 mb, U08 me);
+    void rlwinm_(RegGPR ra, RegGPR rs, U08 sh, U08 mb, U08 me);
+    void rlwnm(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb, U08 me);
+    void rlwnm_(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb, U08 me);
     void sc();
     void sld(RegGPR ra, RegGPR rs, RegGPR rb);
     void sld_(RegGPR ra, RegGPR rs, RegGPR rb);
@@ -396,12 +396,12 @@ public:
     void slw_(RegGPR ra, RegGPR rs, RegGPR rb);
     void srad(RegGPR ra, RegGPR rs, RegGPR rb);
     void srad_(RegGPR ra, RegGPR rs, RegGPR rb);
-    void sradi(RegGPR ra, RegGPR rs, U8 sh);
-    void sradi_(RegGPR ra, RegGPR rs, U8 sh);
+    void sradi(RegGPR ra, RegGPR rs, U08 sh);
+    void sradi_(RegGPR ra, RegGPR rs, U08 sh);
     void sraw(RegGPR ra, RegGPR rs, RegGPR rb);
     void sraw_(RegGPR ra, RegGPR rs, RegGPR rb);
-    void srawi(RegGPR ra, RegGPR rs, U8 sh);
-    void srawi_(RegGPR ra, RegGPR rs, U8 sh);
+    void srawi(RegGPR ra, RegGPR rs, U08 sh);
+    void srawi_(RegGPR ra, RegGPR rs, U08 sh);
     void srd(RegGPR ra, RegGPR rs, RegGPR rb);
     void srd_(RegGPR ra, RegGPR rs, RegGPR rb);
     void srw(RegGPR ra, RegGPR rs, RegGPR rb);
@@ -459,7 +459,7 @@ public:
     void subfze_(RegGPR rd, RegGPR ra);
     void subfzeo(RegGPR rd, RegGPR ra);
     void subfzeo_(RegGPR rd, RegGPR ra);
-    void sync(U8 l);
+    void sync(U08 l);
     void td(); // TODO
     void tdi(); // TODO
     void tw(); // TODO

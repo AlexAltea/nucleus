@@ -49,7 +49,7 @@ public:
         curAddr = reinterpret_cast<void*>(reinterpret_cast<intptr_t>(curAddr) + sizeof(T));
         curSize += sizeof(T);
     }
-    void emit8(U8 data)   { emit(data); }
+    void emit8(U08 data)   { emit(data); }
     void emit16(U16 data) { emit(data); }
     void emit32(U32 data) { emit(data); }
     void emit64(U64 data) { emit(data); }

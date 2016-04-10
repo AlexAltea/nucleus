@@ -14,7 +14,7 @@
 namespace cpu {
 namespace hir {
 
-std::string Instruction::Operand::dump(U8 sigType) const {
+std::string Instruction::Operand::dump(U08 sigType) const {
     std::string output;
     if (sigType == OPCODE_SIG_TYPE_V || (sigType == OPCODE_SIG_TYPE_M && value != nullptr)) {
         if (value->isConstant()) {

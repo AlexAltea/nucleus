@@ -21,7 +21,7 @@ struct rsx_device_t {
 
 // LPAR DMA Control
 struct rsx_dma_control_t {
-    U8 reserved[0x40];
+    U08 reserved[0x40];
     BE<U32> put;
     BE<U32> get;
     BE<U32> ref;
@@ -37,7 +37,7 @@ struct rsx_driver_info_t {
     BE<U32> hardware_channel;
     BE<U32> nvcore_frequency;
     BE<U32> memory_frequency;
-    U8 unk1[0x10C0 - 6*4];
+    U08 unk1[0x10C0 - 6*4];
     struct head_t {
         BE<U32> flip;
         BE<U32> unk0[4];
@@ -119,7 +119,7 @@ public:
 
     // Display buffers stored as textures
     rsx_display_info_t display[8];
-    U8 queued_display = 0;
+    U08 queued_display = 0;
 
     std::shared_ptr<mem::Memory> memory;
 
@@ -134,7 +134,7 @@ public:
     U32 io_read32(U32 offset);
     U32 io_read64(U64 offset);
 
-    void io_write32(U8 offset, U8 value);
+    void io_write32(U08 offset, U08 value);
     void io_write32(U16 offset, U16 value);
     void io_write32(U32 offset, U32 value);
     void io_write32(U64 offset, U64 value);

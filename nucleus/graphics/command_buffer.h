@@ -49,7 +49,7 @@ public:
      * @param[in]  depthValue    The value to clear the depth buffer with
      * @param[in]  stencilValue  The value to clear the stencil buffer with
      */
-    virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U8 stencilValue) = 0;
+    virtual void cmdClearDepthStencil(DepthStencilTarget* target, F32 depthValue, U08 stencilValue) = 0;
 
     /**
      * Pushes a command to draw instanced, non-indexed geometry

@@ -134,8 +134,8 @@ bool VulkanShaderParser::checkHeader(const U32* header) {
         return false;
     }
     if (version > 0x00010000) {
-        const U8 major = version >> 16;
-        const U8 minor = version >> 8;
+        const U08 major = version >> 16;
+        const U08 minor = version >> 8;
         logger.warning(LOG_GRAPHICS, "VulkanShaderParser::parse: Unexpected SPIR-V version (%d.%02d)", major, minor);
     }
     if (schema != 0) {

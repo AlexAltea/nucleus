@@ -163,7 +163,7 @@ private:
      * @param[in]  swizzle  Byte containing the 2-bit swizzle masks for each of the 4 components (x,y,z,w) to read.
      * @return              Swizzled vector ID
      */
-    Literal getSwizzledValue(Literal vector, U8 swizzle);
+    Literal getSwizzledValue(Literal vector, U08 swizzle);
 
     /**
      * Get the source vector for the instruction, applying the corresponding modifiers

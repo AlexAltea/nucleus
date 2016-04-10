@@ -17,14 +17,14 @@ enum {
 
 // Classes
 union sys_dbg_spu_fpscr_t {
-    U8  vrb[16];  // Byte
+    U08  vrb[16];  // Byte
     U16 vrh[8];   // Half-word
     U32 vrw[4];   // Word
     U64 vrd[2];   // Double-word
 };
 
 union sys_dbg_spu_gpr_t {
-    U8  vrb[16];  // Byte
+    U08  vrb[16];  // Byte
     U16 vrh[8];   // Half-word
     U32 vrw[4];   // Word
     U64 vrd[2];   // Double-word

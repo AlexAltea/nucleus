@@ -11,8 +11,8 @@ namespace sys {
 
 // Kernel structures
 struct sys_rsx_device_t {
-    S8 init_flag;
-    S8 pad[7];
+    S08 init_flag;
+    S08 pad[7];
     BE<S64> lpar_size;
     BE<S64> lpar_addr;
     BE<S32> ctx_count;

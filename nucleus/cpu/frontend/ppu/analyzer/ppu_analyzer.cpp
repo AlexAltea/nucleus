@@ -11,7 +11,7 @@ namespace ppu {
 
 void Analyzer::setFlag(AnalyzerEvent& reg, AnalyzerEvent evt)
 {
-    auto& regValue = (U8&)reg;
+    auto& regValue = (U08&)reg;
     if (regValue == REG_NONE && evt == REG_READ) {
         regValue |= REG_READ_ORIG;
     }

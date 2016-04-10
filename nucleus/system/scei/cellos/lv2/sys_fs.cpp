@@ -14,7 +14,7 @@
 namespace sys {
 
 // SysCalls
-S32 sys_fs_open(const S8* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size) {
+S32 sys_fs_open(const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     // Create file
@@ -117,7 +117,7 @@ S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb) {
     return CELL_OK;
 }
 
-S32 sys_fs_stat(const S8* path, sys_fs_stat_t* sb) {
+S32 sys_fs_stat(const S08* path, sys_fs_stat_t* sb) {
     // Check requisites
     if (path == nucleus.memory->ptr(0) || sb == nucleus.memory->ptr(0)) {
         return CELL_EFAULT;

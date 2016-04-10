@@ -132,13 +132,13 @@ Value* Recompiler::getCRField(int index) {
     // TODO: Use volatility information?
 
     Value* field = builder.createShl(builder.createCtxLoad(
-        offsetof(PPUState, cr.field[index].bit[0]), TYPE_I8), U8(3));
+        offsetof(PPUState, cr.field[index].bit[0]), TYPE_I8), U08(3));
     field = builder.createOr(field, builder.createShl(builder.createCtxLoad(
-        offsetof(PPUState, cr.field[index].bit[1]), TYPE_I8), U8(2)));
+        offsetof(PPUState, cr.field[index].bit[1]), TYPE_I8), U08(2)));
     field = builder.createOr(field, builder.createShl(builder.createCtxLoad(
-        offsetof(PPUState, cr.field[index].bit[2]), TYPE_I8), U8(1)));
+        offsetof(PPUState, cr.field[index].bit[2]), TYPE_I8), U08(1)));
     field = builder.createOr(field, builder.createShl(builder.createCtxLoad(
-        offsetof(PPUState, cr.field[index].bit[3]), TYPE_I8), U8(0)));
+        offsetof(PPUState, cr.field[index].bit[3]), TYPE_I8), U08(0)));
 
     return field;
 }
@@ -167,10 +167,10 @@ Value* Recompiler::getLR() {
 
 Value* Recompiler::getXER() {
     Value* xer = builder.getConstantI64(0);
-    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_SO(), TYPE_I64), U8(31)));
-    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_OV(), TYPE_I64), U8(30)));
-    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_CA(), TYPE_I64), U8(29)));
-    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_BC(), TYPE_I64), U8(0)));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_SO(), TYPE_I64), U08(31)));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_OV(), TYPE_I64), U08(30)));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_CA(), TYPE_I64), U08(29)));
+    xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_BC(), TYPE_I64), U08(0)));
     return xer;
 }
 
@@ -254,13 +254,13 @@ void Recompiler::setCRField(int index, Value* value) {
     // Unpack and store the value bits
     case TYPE_I8:
         builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[0]),
-            builder.createAnd(builder.createShr(value, U8(3)), builder.getConstantI8(1)));
+            builder.createAnd(builder.createShr(value, U08(3)), builder.getConstantI8(1)));
         builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[1]),
-            builder.createAnd(builder.createShr(value, U8(2)), builder.getConstantI8(1)));
+            builder.createAnd(builder.createShr(value, U08(2)), builder.getConstantI8(1)));
         builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[2]),
-            builder.createAnd(builder.createShr(value, U8(1)), builder.getConstantI8(1)));
+            builder.createAnd(builder.createShr(value, U08(1)), builder.getConstantI8(1)));
         builder.createCtxStore(offsetof(PPUState, cr.field[index].bit[3]),
-            builder.createAnd(builder.createShr(value, U8(0)), builder.getConstantI8(1)));
+            builder.createAnd(builder.createShr(value, U08(0)), builder.getConstantI8(1)));
         break;
 
     // Store the unpacked value directly

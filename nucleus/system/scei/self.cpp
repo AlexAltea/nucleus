@@ -315,8 +315,8 @@ bool SELFLoader::decryptMetadata()
     auto& meta_info = (MetadataInfo&)self[sizeof(SceHeader) + sce_header.meta];
 
     // Decrypt NPDRM Layer if necessary
-    U8 npdrm_key[0x10];
-    U8 npdrm_iv[0x10] = {};
+    U08 npdrm_key[0x10];
+    U08 npdrm_iv[0x10] = {};
     U32 offset = self_header.controloff;
     while (offset < self_header.controloff + self_header.controlsize) {
         const auto& ctrl = (ControlInfo&)self[offset];
@@ -339,19 +339,19 @@ bool SELFLoader::decryptMetadata()
         aes_setkey_dec(&aes, NP_KLIC_KEY, 128);
         aes_crypt_ecb(&aes, AES_DECRYPT, npdrm_key, npdrm_key);
         aes_setkey_dec(&aes, npdrm_key, 128);
-        aes_crypt_cbc(&aes, AES_DECRYPT, sizeof(MetadataInfo), npdrm_iv, (U8*)&meta_info, (U8*)&meta_info);
+        aes_crypt_cbc(&aes, AES_DECRYPT, sizeof(MetadataInfo), npdrm_iv, (U08*)&meta_info, (U08*)&meta_info);
         break;
     }
 
     // Decrypt Metadata Info
-    U8 metadata_iv[0x10];
+    U08 metadata_iv[0x10];
     memcpy(metadata_iv, key.riv, 0x10);
     aes_setkey_dec(&aes, key.erk, 256);
-    aes_crypt_cbc(&aes, AES_DECRYPT, sizeof(MetadataInfo), metadata_iv, (U8*)&meta_info, (U8*)&meta_info);
+    aes_crypt_cbc(&aes, AES_DECRYPT, sizeof(MetadataInfo), metadata_iv, (U08*)&meta_info, (U08*)&meta_info);
 
     // Decrypt Metadata Headers (Metadata Header + Metadata Section Headers)
-    U8 ctr_stream_block[0x10];
-    U8* meta_headers = (U8*)&self[sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo)];
+    U08 ctr_stream_block[0x10];
+    U08* meta_headers = (U08*)&self[sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo)];
     U32 meta_headers_size = sce_header.hsize - (sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo));
     size_t ctr_nc_off = 0;
     aes_setkey_enc(&aes, meta_info.key, 128);
@@ -416,7 +416,7 @@ bool SELFLoader::decrypt()
         decryptMetadata();
         const U32 meta_header_off = sizeof(SceHeader) + sce_header.meta + sizeof(MetadataInfo);
         const auto& meta_header = (MetadataHeader&)self[meta_header_off];
-        const U8* data_keys = (U8*)&self[meta_header_off + sizeof(MetadataHeader) + meta_header.section_count * sizeof(MetadataSectionHeader)];
+        const U08* data_keys = (U08*)&self[meta_header_off + sizeof(MetadataHeader) + meta_header.section_count * sizeof(MetadataSectionHeader)];
 
         // Get ELF size and allocate/initialize it
         const U64 elfSize = getDecryptedElfSize();
@@ -442,19 +442,19 @@ bool SELFLoader::decrypt()
                 continue;
             }
 
-            U8* data_decrypted = new U8[meta_shdr.data_size.ToLE()]();
-            U8* data_decompressed = new U8[meta_phdr.filesz.ToLE()]();
+            U08* data_decrypted = new U08[meta_shdr.data_size.ToLE()]();
+            U08* data_decompressed = new U08[meta_phdr.filesz.ToLE()]();
 
             // Decrypt if necessary
             if (meta_shdr.encrypted == 3) {
-                U8 data_key[0x10];
-                U8 data_iv[0x10];
+                U08 data_key[0x10];
+                U08 data_iv[0x10];
                 memcpy(data_key, data_keys + meta_shdr.key_idx * 0x10, 0x10);
                 memcpy(data_iv, data_keys + meta_shdr.iv_idx * 0x10, 0x10);
                 memcpy(data_decrypted, &self[meta_shdr.data_offset], meta_shdr.data_size);
 
                 // Perform AES-CTR encryption on the data
-                U8 ctr_stream_block[0x10] = {};
+                U08 ctr_stream_block[0x10] = {};
                 size_t ctr_nc_off = 0;
                 aes_setkey_enc(&aes, data_key, 128);
                 aes_crypt_ctr(&aes, meta_shdr.data_size, &ctr_nc_off, data_iv, ctr_stream_block, data_decrypted, data_decrypted);
