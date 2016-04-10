@@ -8,7 +8,7 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/memory/memory.h"
 #include "nucleus/core/config.h"
-#include "nucleus/system/lv1/lv1_gpu.h"
+#include "nucleus/system/scei/cellos/lv1/lv1_gpu.h"
 
 #include "nucleus/gpu/rsx/rsx_dma.h"
 #include "nucleus/gpu/rsx/rsx_enum.h"

@@ -6,7 +6,7 @@
 #include "util.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/system/lv2.h"
+#include "nucleus/system/scei/cellos/lv2.h"
 #include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"

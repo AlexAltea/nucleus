@@ -1,180 +1,197 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="lv1">
-      <UniqueIdentifier>{853011dc-c5bf-47ff-bfe6-a011e96f7e9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lv2">
-      <UniqueIdentifier>{ad9164cb-7523-4be2-a4e1-1d0c252cf854}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="modules">
-      <UniqueIdentifier>{c38224e4-da9c-48b2-9354-1170605406c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common">
-      <UniqueIdentifier>{7b707aea-d370-492e-aeb6-779b89123d5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="common\scei">
+    <Filter Include="scei">
       <UniqueIdentifier>{71c18430-66f5-46f4-9a31-a6cc5a563ea0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scei\cellos">
+      <UniqueIdentifier>{0cc3957f-00e3-4fec-b7fa-fd82d7d4d24d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scei\orbisos">
+      <UniqueIdentifier>{02f51e2e-77d5-4628-a951-dc2edf786ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scei\cellos\lv1">
+      <UniqueIdentifier>{853011dc-c5bf-47ff-bfe6-a011e96f7e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scei\cellos\lv2">
+      <UniqueIdentifier>{ad9164cb-7523-4be2-a4e1-1d0c252cf854}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scei\cellos\modules">
+      <UniqueIdentifier>{c38224e4-da9c-48b2-9354-1170605406c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)callback.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv1.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)object.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)syscall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)system.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv1\lv1_gpu.h">
-      <Filter>lv1</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.h">
+      <Filter>scei\cellos\modules</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_hid.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.h">
+      <Filter>scei\cellos\modules</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_lwmutex.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_gamepad.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_memory.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_hid.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_mmapper.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwmutex.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_mutex.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_memory.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_ppu_thread.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_mmapper.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_process.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_mutex.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_prx.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_ppu_thread.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_rsx.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_process.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_semaphore.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_prx.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_ss.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_rsx.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_synchronization.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_semaphore.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_time.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_ss.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_timer.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_synchronization.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_tty.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_time.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_cond.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_timer.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_config.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_tty.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_dbg.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_cond.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_event.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_config.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_fs.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_dbg.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)lv2\sys_gamepad.h">
-      <Filter>lv2</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_event.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)modules\libsysutil_avconf_ext.h">
-      <Filter>modules</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_fs.h">
+      <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)modules\libsysutil.h">
-      <Filter>modules</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv1\lv1_gpu.h">
+      <Filter>scei\cellos\lv1</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)module.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)common\scei\pkg.h">
-      <Filter>common\scei</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\callback.h">
+      <Filter>scei\cellos</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv1.h">
+      <Filter>scei\cellos</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2.h">
+      <Filter>scei\cellos</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\module.h">
+      <Filter>scei\cellos</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\syscall.h">
+      <Filter>scei\cellos</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\pkg.h">
+      <Filter>scei</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv1\lv1_gpu.cpp">
-      <Filter>lv1</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp">
+      <Filter>scei\cellos\modules</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_hid.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.cpp">
+      <Filter>scei\cellos\modules</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_lwmutex.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_gamepad.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_memory.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_hid.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_mmapper.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwmutex.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_mutex.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_memory.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_ppu_thread.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_mmapper.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_process.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_mutex.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_prx.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_ppu_thread.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_rsx.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_process.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_semaphore.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_prx.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_ss.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_rsx.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_time.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_semaphore.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_timer.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_ss.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_tty.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_time.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_cond.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_timer.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_config.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_tty.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_dbg.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_cond.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_event.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_config.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_fs.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_dbg.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)lv2\sys_gamepad.cpp">
-      <Filter>lv2</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_event.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil_avconf_ext.cpp">
-      <Filter>modules</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_fs.cpp">
+      <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)modules\libsysutil.cpp">
-      <Filter>modules</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv1\lv1_gpu.cpp">
+      <Filter>scei\cellos\lv1</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)common\scei\pkg.cpp">
-      <Filter>common\scei</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\hle_module.cpp">
+      <Filter>scei\cellos</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)hle_module.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2.cpp">
+      <Filter>scei\cellos</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\pkg.cpp">
+      <Filter>scei</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

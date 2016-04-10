@@ -16,7 +16,7 @@
 #include "nucleus/loader/self.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/memory/memory.h"
-#include "nucleus/system/lv2.h"
+#include "nucleus/system/scei/cellos/lv2.h"
 
 // Global emulator object
 Emulator nucleus;

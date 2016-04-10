@@ -7,8 +7,8 @@
 
 #include "nucleus/common.h"
 #include "nucleus/filesystem/file.h"
-#include "nucleus/system/lv2/sys_process.h"
-#include "nucleus/system/lv2/sys_prx.h"
+#include "nucleus/system/scei/cellos/lv2/sys_process.h"
+#include "nucleus/system/scei/cellos/lv2/sys_prx.h"
 
 #include <string>
 #include <vector>
