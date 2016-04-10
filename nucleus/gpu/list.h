@@ -7,20 +7,20 @@
 
 #include "nucleus/common.h"
 
-#ifdef NUCLEUS_TARGET_PS3
+#ifdef NUCLEUS_PLATFORM_PS3
 #include "nucleus/gpu/rsx/rsx.h"
 #endif
-#ifdef NUCLEUS_TARGET_PS4
+#ifdef NUCLEUS_PLATFORM_PS4
 //#include "nucleus/gpu/r10xx/r10xx.h"
 #endif
 
 namespace gpu {
 
 // Shorthands
-#ifdef NUCLEUS_TARGET_PS3
+#ifdef NUCLEUS_PLATFORM_PS3
 using RSX = rsx::RSX;
 #endif
-#ifdef NUCLEUS_TARGET_PS4
+#ifdef NUCLEUS_PLATFORM_PS4
 //using R10XX = r10xx::R10XX;
 #endif
 

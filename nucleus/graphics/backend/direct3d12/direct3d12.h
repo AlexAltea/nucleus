@@ -31,7 +31,7 @@ namespace gfx {
 namespace direct3d12 {
 
 // Declare Function
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
 #define _D3D12CreateDevice            D3D12CreateDevice
 #define _D3D12GetDebugInterface       D3D12GetDebugInterface
 #define _D3D12SerializeRootSignature  D3D12SerializeRootSignature
@@ -44,7 +44,7 @@ namespace direct3d12 {
 #define _DXGIGetDebugInterface        DXGIGetDebugInterface
 #define _DXGIGetDebugInterface1       DXGIGetDebugInterface1
 
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
 #define DECLARE_FUNCTION(type, module, function) extern type _##function;
 #define FUNCTION DECLARE_FUNCTION
 #include "direct3d12.inl"

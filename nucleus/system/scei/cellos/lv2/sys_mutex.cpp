@@ -57,7 +57,7 @@ S32 sys_mutex_lock(U32 mutex_id, U64 timeout) {
         mutex->mutex.lock();
     } else {
         auto rel_time = std::chrono::microseconds(timeout);
-#if defined(NUCLEUS_PLATFORM_ANDROID) && defined(NUCLEUS_COMPILER_GCC)
+#if defined(NUCLEUS_TARGET_ANDROID) && defined(NUCLEUS_COMPILER_GCC)
         // TODO: Reimplement try_lock_for
         mutex->mutex.try_lock();
 #else

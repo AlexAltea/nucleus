@@ -100,7 +100,7 @@ bool Direct3D12Backend::initialize(const BackendParameters& params) {
     swapChainFullscreenDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     swapChainFullscreenDesc.Windowed = TRUE;
 
-#ifdef NUCLEUS_PLATFORM_UWP
+#ifdef NUCLEUS_TARGET_UWP
     hr = factory->CreateSwapChainForCoreWindow(queue, params.window, &swapChainDesc, nullptr, &tempSwapChain);
 #else
     hr = factory->CreateSwapChainForHwnd(queue, params.hwnd, &swapChainDesc, &swapChainFullscreenDesc, nullptr, &tempSwapChain);

@@ -44,6 +44,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\syscall.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\pkg.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)system.h" />
   </ItemGroup>
@@ -73,6 +74,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_tty.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\pkg.cpp" />
   </ItemGroup>
 </Project>

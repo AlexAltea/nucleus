@@ -10,7 +10,7 @@
 #include "nucleus/emulator.h"
 
 // Avoid <Windows.h> macro collisions with std::min and std::max
-#if defined(NUCLEUS_PLATFORM_UWP) || defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_UWP) || defined(NUCLEUS_TARGET_WINDOWS)
 #undef min
 #undef max
 #endif

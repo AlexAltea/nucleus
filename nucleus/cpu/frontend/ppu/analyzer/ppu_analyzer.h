@@ -15,7 +15,7 @@ namespace frontend {
 namespace ppu {
 
 // Avoid a collision with <Windows.h>
-#if defined(NUCLEUS_PLATFORM_UWP) || defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_UWP) || defined(NUCLEUS_TARGET_WINDOWS)
 #undef REG_NONE
 #endif
 

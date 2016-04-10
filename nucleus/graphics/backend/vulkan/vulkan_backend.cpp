@@ -70,7 +70,7 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     }
 
     VkSurfaceKHR surface = nullptr;
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
     VkWin32SurfaceCreateInfoKHR surfaceInfo;
     surfaceInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     surfaceInfo.pNext = nullptr;

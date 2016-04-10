@@ -5,29 +5,34 @@
 
 #pragma once
 
-// Temporarily enable all targets
-#define _NUCLEUS_TARGET_ALL
-
-#if defined(_NUCLEUS_TARGET_ALL) || defined(_NUCLEUS_TARGET_PS3)
-#define NUCLEUS_TARGET_PS3
+#if defined(__ANDROID__)
+#define NUCLEUS_TARGET_ANDROID
 #endif
-#if defined(_NUCLEUS_TARGET_ALL) || defined(_NUCLEUS_TARGET_PS4)
-#define NUCLEUS_TARGET_PS4
+#if defined(__APPLE__) && defined(TARGET_OS_IPHONE)
+#define NUCLEUS_TARGET_IOS
 #endif
-#if defined(_NUCLEUS_TARGET_ALL) || defined(_NUCLEUS_TARGET_PSP)
-#define NUCLEUS_TARGET_PSP
+#if defined(__linux__) && !defined(__ANDROID__)
+#define NUCLEUS_TARGET_LINUX
 #endif
-#if defined(_NUCLEUS_TARGET_ALL) || defined(_NUCLEUS_TARGET_PSVITA)
-#define NUCLEUS_TARGET_PSVITA
+#if defined(__APPLE__) && defined(__MACH__)
+#define NUCLEUS_TARGET_OSX
+#endif
+#if defined(_NUCLEUS_TARGET_UWP)
+#define NUCLEUS_TARGET_UWP
+#endif
+#if (defined(_WIN32) || defined(_WIN64)) && !defined(_NUCLEUS_TARGET_UWP) && !defined(__ANDROID__)
+#define NUCLEUS_TARGET_WINDOWS
 #endif
 
 namespace core {
 
 enum Target {
-    TARGET_PS3,
-    TARGET_PS4,
-    TARGET_PSP,
-    TARGET_PSVITA,
+    TARGET_ANDROID,
+    TARGET_IOS,
+    TARGET_LINUX,
+    TARGET_OSX,
+    TARGET_UWP,
+    TARGET_WINDOWS,
 };
 
 }  // namespace core

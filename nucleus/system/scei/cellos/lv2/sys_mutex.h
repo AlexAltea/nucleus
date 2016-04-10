@@ -31,7 +31,7 @@ struct sys_mutex_attribute_t
 
 struct sys_mutex_t
 {
-#if defined(NUCLEUS_PLATFORM_ANDROID) && defined(NUCLEUS_COMPILER_GCC)
+#if defined(NUCLEUS_TARGET_ANDROID) && defined(NUCLEUS_COMPILER_GCC)
     std::mutex mutex;
 #else
     std::timed_mutex mutex;

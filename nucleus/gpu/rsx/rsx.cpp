@@ -15,7 +15,7 @@
 #include "nucleus/gpu/rsx/rsx_methods.h"
 #include "nucleus/gpu/rsx/rsx_vp.h"
 
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
 #include <Windows.h>
 #endif
 
@@ -474,7 +474,7 @@ void RSX::method(U32 offset, U32 parameter) {
 }
 
 U64 RSX::ptimer_gettime() {
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
     static struct PerformanceFreqHolder {
         U64 value;
         PerformanceFreqHolder() {

@@ -18,7 +18,7 @@
 #endif
 
 // Glue: Error 'to_string' is not a member of 'std'. Under 'aarch64-linux-android-gcc.exe' (GCC 4.9)
-#if defined(NUCLEUS_COMPILER_GCC) && defined(NUCLEUS_PLATFORM_ANDROID)
+#if defined(NUCLEUS_COMPILER_GCC) && defined(NUCLEUS_TARGET_ANDROID)
 #include <string>
 #include <sstream>
 namespace std {

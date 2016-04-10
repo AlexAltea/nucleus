@@ -14,7 +14,7 @@
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
 #include <Windows.h>
 #endif
 
@@ -58,7 +58,7 @@ void nucleusLog(U64 guestAddr) {
 }
 
 U64 nucleusTime() {
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
     static struct PerformanceFreqHolder {
         U64 value;
         PerformanceFreqHolder() {

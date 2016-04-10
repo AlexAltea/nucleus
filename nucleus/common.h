@@ -59,7 +59,7 @@ using BE = SwappedEndian<T>;
 /**
  * Compiler warnings/errors
  */
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
 #define NOMINMAX  // Conflicts with std::min, std::max in <algorithm> and min, max definitions in <Windows.h>
 #endif
 

@@ -5,34 +5,29 @@
 
 #pragma once
 
-#if defined(__ANDROID__)
-#define NUCLEUS_PLATFORM_ANDROID
+// Temporarily enable all platforms
+#define _NUCLEUS_PLATFORM_ALL
+
+#if defined(_NUCLEUS_PLATFORM_ALL) || defined(_NUCLEUS_PLATFORM_PS3)
+#define NUCLEUS_PLATFORM_PS3
 #endif
-#if defined(__APPLE__) && defined(TARGET_OS_IPHONE)
-#define NUCLEUS_PLATFORM_IOS
+#if defined(_NUCLEUS_PLATFORM_ALL) || defined(_NUCLEUS_PLATFORM_PS4)
+#define NUCLEUS_PLATFORM_PS4
 #endif
-#if defined(__linux__) && !defined(__ANDROID__)
-#define NUCLEUS_PLATFORM_LINUX
+#if defined(_NUCLEUS_PLATFORM_ALL) || defined(_NUCLEUS_PLATFORM_PSP)
+#define NUCLEUS_PLATFORM_PSP
 #endif
-#if defined(__APPLE__) && defined(__MACH__)
-#define NUCLEUS_PLATFORM_OSX
-#endif
-#if defined(_NUCLEUS_PLATFORM_UWP)
-#define NUCLEUS_PLATFORM_UWP
-#endif
-#if (defined(_WIN32) || defined(_WIN64)) && !defined(_NUCLEUS_PLATFORM_UWP)
-#define NUCLEUS_PLATFORM_WINDOWS
+#if defined(_NUCLEUS_PLATFORM_ALL) || defined(_NUCLEUS_PLATFORM_PSVITA)
+#define NUCLEUS_PLATFORM_PSVITA
 #endif
 
 namespace core {
 
 enum Platform {
-    PLATFORM_ANDROID,
-    PLATFORM_IOS,
-    PLATFORM_LINUX,
-    PLATFORM_OSX,
-    PLATFORM_UWP,
-    PLATFORM_WINDOWS,
+    PLATFORM_PS3,
+    PLATFORM_PS4,
+    PLATFORM_PSP,
+    PLATFORM_PSVITA,
 };
 
 }  // namespace core

@@ -7,9 +7,9 @@
 
 #include <algorithm>
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
 #include <Windows.h>
-#elif defined(NUCLEUS_PLATFORM_LINUX)
+#elif defined(NUCLEUS_TARGET_LINUX)
 #include <unistd.h>
 #endif
 
@@ -19,15 +19,15 @@ Path getProcessPath(const Path& elfPath)
 {
     // Get current working directory
     char buffer[4096];
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
     GetCurrentDirectory(sizeof(buffer), buffer);
-#elif defined(NUCLEUS_PLATFORM_LINUX)
+#elif defined(NUCLEUS_TARGET_LINUX)
     getcwd(buffer, sizeof(buffer));
 #endif
 
     // Check if elfPath is absolute
     Path procPath;
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
     if (elfPath.find(':') != std::string::npos) {
 #else
     if (elfPath[0] == '/') {
@@ -38,7 +38,7 @@ Path getProcessPath(const Path& elfPath)
     }
 
     // Get the path to the actual folder containing the ELF binary
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
     std::replace(procPath.begin(), procPath.end(), '/', '\\');
     size_t pos = procPath.rfind('\\');
 #else

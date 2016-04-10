@@ -26,7 +26,7 @@ namespace gfx {
 namespace direct3d12 {
 
 // Declare functions
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
 #define DECLARE_FUNCTION(type, module, function) type _##function;
 #define FUNCTION DECLARE_FUNCTION
 #include "direct3d12.inl"
@@ -35,7 +35,7 @@ namespace direct3d12 {
 #endif
 
 bool initializeDirect3D12() {
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
     LOAD_MODULE(d3d12);
     LOAD_MODULE(dxgi);
     LOAD_MODULE(d3dcompiler_47);

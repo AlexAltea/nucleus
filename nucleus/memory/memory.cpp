@@ -7,13 +7,13 @@
 #include "nucleus/common.h"
 #include "nucleus/logger/logger.h"
 
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
 #include <Windows.h>
 #endif
-#ifdef NUCLEUS_PLATFORM_LINUX
+#ifdef NUCLEUS_TARGET_LINUX
 #include <sys/mman.h>
 #endif
-#ifdef NUCLEUS_PLATFORM_OSX
+#ifdef NUCLEUS_TARGET_OSX
 #include <sys/mman.h>
 #define MAP_ANONYMOUS MAP_ANON
 #endif
@@ -22,11 +22,11 @@ namespace mem {
 
 Memory::Memory() {
     // Reserve 4 GB of memory for any 32-bit pointer in the PS3 memory
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
     m_base = nullptr;
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
     m_base = VirtualAlloc(nullptr, 0x100000000ULL, MEM_RESERVE, PAGE_NOACCESS);
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(NUCLEUS_TARGET_LINUX) || defined(NUCLEUS_TARGET_OSX)
     m_base = ::mmap(nullptr, 0x100000000ULL, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
 #endif
 
@@ -46,11 +46,11 @@ Memory::Memory() {
 
 Memory::~Memory() {
     bool success;
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
     success = false;
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
     success = SUCCEEDED(VirtualFree(m_base, 0, MEM_RELEASE));
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(NUCLEUS_TARGET_LINUX) || defined(NUCLEUS_TARGET_OSX)
     success = munmap(m_base, 0x100000000ULL);
 #endif
     if (!success) {

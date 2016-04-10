@@ -6,9 +6,9 @@
 #include "segment.h"
 #include "nucleus/memory/memory.h"
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
 #include <Windows.h>
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(NUCLEUS_TARGET_LINUX) || defined(NUCLEUS_TARGET_OSX)
 #include <sys/mman.h>
 #endif
 
@@ -27,11 +27,11 @@ Block::Block(void* baseAddr, U32 blockAddr, U32 blockSize) {
     realaddr = reinterpret_cast<void*>((reinterpret_cast<intptr_t>(baseAddr) + blockAddr));
 
     bool success;
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
     success = false;
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
     success = VirtualAlloc(realaddr, size, MEM_COMMIT, PAGE_READWRITE) != realaddr;
-#elif defined(NUCLEUS_PLATFORM_LINUX) || defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(NUCLEUS_TARGET_LINUX) || defined(NUCLEUS_TARGET_OSX)
     success = ::mprotect(realaddr, blockSize, PROT_READ | PROT_WRITE);
 #endif
     if (!success) {

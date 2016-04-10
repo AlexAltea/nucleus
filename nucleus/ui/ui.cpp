@@ -44,7 +44,7 @@ void UI::task() {
     pipelineText = WidgetText::createPipeline(*graphics);
 
     // Initial screen
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
     screens.push_back(std::make_unique<ScreenLogo>(this));
 #else
     screens.push_back(std::make_unique<ScreenLogo>(this));

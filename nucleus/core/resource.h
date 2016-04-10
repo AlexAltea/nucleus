@@ -19,7 +19,7 @@ enum ResourceName {
 };
 
 class Resource {
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
     std::FILE* file;
     std::vector<Byte> buffer;
 #endif

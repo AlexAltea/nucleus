@@ -39,7 +39,7 @@ void X86Compiler::init() {
     extensions |= cpu.has(Xbyak::util::Cpu::tMOVBE) ? X86Extension::MOVBE : 0;*/
 
     // Set target information
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
     targetInfo.regSets.resize(2);
     targetInfo.regSets[0].types = RegisterSet::TYPE_INT;
     targetInfo.regSets[0].valueIndex = {10, 11, 12, 13, 14, 15}; // {r10, r11, r12, r13, r14, r15}
@@ -49,8 +49,8 @@ void X86Compiler::init() {
     targetInfo.regSets[1].valueIndex = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15}; // {xmm6, ...,  xmm15}
     targetInfo.regSets[1].argIndex = {0, 1, 2, 3}; // {xmm0, ..., xmm3}
     targetInfo.regSets[1].retIndex = 0; // xmm0
-#elif defined(NUCLEUS_PLATFORM_LINUX)
-#elif defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(NUCLEUS_TARGET_LINUX)
+#elif defined(NUCLEUS_TARGET_OSX)
 #endif
 }
 

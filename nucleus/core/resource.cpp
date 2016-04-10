@@ -8,20 +8,20 @@
 #include <string>
 #include <unordered_map>
 
-#if defined(NUCLEUS_PLATFORM_WINDOWS)
+#if defined(NUCLEUS_TARGET_WINDOWS)
 #include "wrappers/windows/resource.h"
 #include <Windows.h>
 #endif
 
 namespace core {
 
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
 #define RESOURCE(name, path) { RES_##name, path },
 std::unordered_map<ResourceName, const char*> resourceMap = {
 #include "resource.inl"
 };
 
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
 #define RESOURCE(name, path) { RES_##name, IDR_##name },
 std::unordered_map<ResourceName, int> resourceMap = {
 #include "resource.inl"
@@ -31,7 +31,7 @@ std::unordered_map<ResourceName, int> resourceMap = {
 #undef RESOURCE
 
 Resource::Resource(ResourceName name) {
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
     fopen_s(&file, resourceMap[name], "rb");
     _fseeki64(file, 0, SEEK_END);
     size = ftell(file);
@@ -41,7 +41,7 @@ Resource::Resource(ResourceName name) {
     _fseeki64(file, 0, SEEK_SET);
     fread(data, size, 1, file);
 
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
     HRSRC hRes = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(resourceMap[name]), "RESOURCE");
     HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRes);
     DWORD resSize = SizeofResource(GetModuleHandle(NULL), hRes);
@@ -52,7 +52,7 @@ Resource::Resource(ResourceName name) {
 }
 
 Resource::~Resource() {
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
     fclose(file);
 #endif
 }

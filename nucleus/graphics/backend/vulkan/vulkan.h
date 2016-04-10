@@ -8,11 +8,11 @@
 #include "nucleus/common.h"
 
 // Platform-specific definitions
-#if defined(NUCLEUS_PLATFORM_ANDROID)
-#define VK_USE_PLATFORM_ANDROID_KHR
-#elif defined(NUCLEUS_PLATFORM_LINUX)
+#if defined(NUCLEUS_TARGET_ANDROID)
+#define VK_USE_TARGET_ANDROID_KHR
+#elif defined(NUCLEUS_TARGET_LINUX)
 #define VK_USE_PLATFORM_XLIB_KHR
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 

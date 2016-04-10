@@ -16,7 +16,7 @@ void nucleusConfigure(int argc, char **argv) {
     config.parseArguments(argc, argv);
 }
 
-#if defined(NUCLEUS_PLATFORM_UWP)
+#if defined(NUCLEUS_TARGET_UWP)
 void nucleusPrepare(IUnknown* window, int width, int height) {
     gfx::BackendParameters params = {};
     params.window = window;
@@ -26,7 +26,7 @@ void nucleusPrepare(IUnknown* window, int width, int height) {
     nucleus.initialize(params);
 }
 
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
 void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height) {
     gfx::BackendParameters params = {};
     params.hdc = hdc;
@@ -58,6 +58,7 @@ int nucleusInitialize(int argc, char **argv) {
 
     // Start emulator
     if (!config.boot.empty()) {
+
         nucleus.load(config.boot);
         nucleus.run();
         nucleus.idle();

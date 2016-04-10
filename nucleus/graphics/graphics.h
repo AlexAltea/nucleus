@@ -15,12 +15,12 @@
 #include "nucleus/graphics/texture.h"
 #include "nucleus/graphics/vertex_buffer.h"
 
-#if defined(NUCLEUS_PLATFORM_LINUX)
+#if defined(NUCLEUS_TARGET_LINUX)
 #include <X11/Xlib.h>
-#elif defined(NUCLEUS_PLATFORM_UWP)
+#elif defined(NUCLEUS_TARGET_UWP)
 #define NOMINMAX
 #include <Windows.h>
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
 #define NOMINMAX
 #include <Windows.h>
 #endif
@@ -29,16 +29,16 @@ namespace gfx {
 
 // Graphics backend parameters
 struct BackendParameters {
-#if defined(NUCLEUS_PLATFORM_ANDROID)
-#elif defined(NUCLEUS_PLATFORM_IOS)
+#if defined(NUCLEUS_TARGET_ANDROID)
+#elif defined(NUCLEUS_TARGET_IOS)
     Display* display;
-#elif defined(NUCLEUS_PLATFORM_LINUX)
+#elif defined(NUCLEUS_TARGET_LINUX)
     Display* display;
-#elif defined(NUCLEUS_PLATFORM_OSX)
+#elif defined(NUCLEUS_TARGET_OSX)
     Display* display;
-#elif defined(NUCLEUS_PLATFORM_UWP)
+#elif defined(NUCLEUS_TARGET_UWP)
     IUnknown* window;
-#elif defined(NUCLEUS_PLATFORM_WINDOWS)
+#elif defined(NUCLEUS_TARGET_WINDOWS)
     HINSTANCE hinstance;
     HWND hwnd;
     HDC hdc;

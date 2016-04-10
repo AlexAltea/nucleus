@@ -6,14 +6,14 @@
 #include "compiler.h"
 #include "nucleus/logger/logger.h"
 
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
 #include <Windows.h>
 #endif
-#ifdef NUCLEUS_PLATFORM_LINUX
+#ifdef NUCLEUS_TARGET_LINUX
 #include <unistd.h>
 #include <sys/mman.h>
 #endif
-#ifdef NUCLEUS_PLATFORM_OSX
+#ifdef NUCLEUS_TARGET_OSX
 #include <sys/mman.h>
 #define MAP_ANONYMOUS MAP_ANON
 #endif
@@ -51,14 +51,14 @@ void* Compiler::allocRWXMemory(size_t size) {
     void* addr = malloc(size);
 
     // Enable execution permissions
-#ifdef NUCLEUS_PLATFORM_WINDOWS
+#ifdef NUCLEUS_TARGET_WINDOWS
     DWORD oldProtect;
     if (!VirtualProtect(addr, size, PAGE_EXECUTE_READWRITE, &oldProtect)) {
         logger.error(LOG_CPU, "Could not allocate %d bytes of RWX memory", size);
         return nullptr;
     }
 #endif
-#ifdef NUCLEUS_PLATFORM_LINUX
+#ifdef NUCLEUS_TARGET_LINUX
     size_t pageSize = sysconf(_SC_PAGESIZE);
     size_t iaddr = reinterpret_cast<size_t>(addr);
     size_t roundedAddr = iaddr & ~(pageSize - 1);

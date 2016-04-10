@@ -10,7 +10,7 @@
 #define fseeko64 _fseeki64
 #define ftello64 _ftelli64
 #endif
-#if defined(NUCLEUS_PLATFORM_ANDROID)
+#if defined(NUCLEUS_TARGET_ANDROID)
 #define fseeko64 fseek
 #define ftello64 ftell
 #endif
