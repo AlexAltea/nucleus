@@ -8,7 +8,7 @@
 #include "nucleus/system/system.h"
 #include "nucleus/format.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
-#include "nucleus/loader/loader.h"
+#include "nucleus/system/loader.h"
 #include "nucleus/logger/logger.h"
 
 bool PSFLoader::open(const std::string& path)

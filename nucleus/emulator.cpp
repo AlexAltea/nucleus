@@ -13,13 +13,75 @@
 #include "nucleus/cpu/cell.h"
 #include "nucleus/gpu/list.h"
 #include "nucleus/filesystem/utils.h"
-#include "nucleus/loader/self.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/memory/memory.h"
-#include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/system/loader.h"
+#include "nucleus/system/scei/self.h"
+#include "nucleus/system/list.h"
 
 // Global emulator object
 Emulator nucleus;
+
+/**
+ * Load specific platform
+ */
+bool Emulator::load_ps3(const std::string& path) {
+    // Initialize hardware
+    memory = std::make_shared<mem::Memory>();
+    cpu = std::make_shared<cpu::Cell>(memory);
+    gpu = std::make_shared<gpu::RSX>(memory, graphics);
+    sys = std::make_shared<sys::LV2>(memory, sys::LV2_DEX);
+
+    // Initialize application filesystem devices
+    const fs::Path& processPath = fs::getProcessPath(path);
+    sys->vfs.registerDevice(new fs::HostPathDevice("/app_home/", processPath));
+
+    // Load ELF/SELF file
+    SELFLoader self;
+    auto file = fs::HostFileSystem::openFile(path, fs::Read);
+    if (!self.open(file.get())) {
+        logger.error(LOG_COMMON, "Invalid file given.");
+        return false;
+    }
+
+    self.load_elf(static_cast<sys::LV2*>(sys.get())->proc);
+    if (self.getMachine() != EM_PPC64) {
+        logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
+        return false;
+    }
+
+    auto entry = self.getEntry();
+    static_cast<sys::LV2*>(sys.get())->init(entry);
+    return true;
+}
+
+bool Emulator::load_ps4(const std::string& path) {
+    // Initialize hardware
+    gpu = std::make_shared<gpu::R10XX>(graphics);
+    sys = std::make_shared<sys::OrbisOS>();
+
+    // Initialize application filesystem devices
+    const fs::Path& processPath = fs::getProcessPath(path);
+    sys->vfs.registerDevice(new fs::HostPathDevice("/app0/", processPath));
+
+    // Load ELF/SELF file
+    SELFLoader self;
+    auto file = fs::HostFileSystem::openFile(path, fs::Read);
+    if (!self.open(file.get())) {
+        logger.error(LOG_COMMON, "Invalid file given.");
+        return false;
+    }
+
+    self.load_elf(static_cast<sys::OrbisOS*>(sys.get())->proc);
+    if (self.getMachine() != EM_X86_64) {
+        logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
+        return false;
+    }
+
+    auto entry = self.getEntry();
+    static_cast<sys::OrbisOS*>(sys.get())->init(entry);
+    return true;
+}
 
 bool Emulator::initialize(const gfx::BackendParameters& params) {
     // Select graphics backend
@@ -93,33 +155,29 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
 }
 
 bool Emulator::load(const std::string& filepath) {
-    // Initialize hardware
-    memory = std::make_shared<mem::Memory>();
-    cpu = std::make_shared<cpu::Cell>(memory);
-    gpu = std::make_shared<gpu::RSX>(memory, graphics);
-    sys = std::make_shared<sys::LV2>(memory, sys::LV2_DEX);
-
-    // Initialize application filesystem devices
-    const fs::Path& processPath = fs::getProcessPath(filepath);
-    sys->vfs.registerDevice(new fs::HostPathDevice("/app_home/", processPath));
-
-    // Load ELF/SELF file
-    SELFLoader self;
-    auto file = fs::HostFileSystem::openFile(filepath, fs::Read);
-    if (!self.open(file.get())) {
-        logger.error(LOG_COMMON, "Invalid file given.");
+    // TODO: This is not a good way of detecting a platform
+    core::Platform platform;
+    switch (detectFiletype(filepath)) {
+    case FILETYPE_SELF:
+        platform = core::PLATFORM_PS3;
+        break;
+    case FILETYPE_ELF:
+        platform = core::PLATFORM_PS4;
+        break;
+    default:
+        logger.error(LOG_COMMON, "Unsupported file");
         return false;
     }
 
-    self.load_elf(static_cast<sys::LV2*>(sys.get())->proc);
-    if (self.getMachine() != EM_PPC64) {
-        logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
+    switch (platform) {
+    case core::PLATFORM_PS3:
+        return load_ps3(filepath);
+    case core::PLATFORM_PS4:
+        return load_ps4(filepath);
+    default:
+        logger.error(LOG_COMMON, "Unsupported platform");
         return false;
     }
-
-    auto entry = self.getEntry();
-    static_cast<sys::LV2*>(sys.get())->init(entry);
-    return true;
 }
 
 void Emulator::run() {

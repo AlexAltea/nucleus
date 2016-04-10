@@ -71,7 +71,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)\%(Directory)\</ObjectFileName>
-      <PreprocessorDefinitions>_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;_NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12;_NUCLEUS_FEATURE_GFXBACKEND_VULKAN;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;_NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12;_NUCLEUS_FEATURE_GFXBACKEND_VULKAN;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)\%(Directory)\</ObjectFileName>
-      <PreprocessorDefinitions>_NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12;_NUCLEUS_FEATURE_GFXBACKEND_VULKAN;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;_NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12;_NUCLEUS_FEATURE_GFXBACKEND_VULKAN;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

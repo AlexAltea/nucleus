@@ -8,18 +8,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.cpp">
       <Filter>externals</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\keys.cpp">
-      <Filter>loader</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\loader.cpp">
-      <Filter>loader</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\psf.cpp">
-      <Filter>loader</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\self.cpp">
-      <Filter>loader</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\emulator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\nucleus.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)resource.cpp" />
@@ -33,18 +21,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.h">
       <Filter>externals</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\keys.h">
-      <Filter>loader</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\loader.h">
-      <Filter>loader</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\psf.h">
-      <Filter>loader</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\self.h">
-      <Filter>loader</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\assert.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\common.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\emulator.h" />
@@ -55,17 +31,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\types.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\architecture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\compiler.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)resource.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\target.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\feature.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\target.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="externals">
       <UniqueIdentifier>{e809ab99-fe03-4cdd-bb7b-b5f8c53f32a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="loader">
-      <UniqueIdentifier>{2babb73a-fe6f-43bb-acfc-ef94369243b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

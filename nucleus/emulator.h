@@ -27,6 +27,10 @@ class Emulator {
     EmulatorEvent m_event;
     EmulatorStatus m_status;
 
+    // Load specific platform
+    bool load_ps3(const std::string& path);
+    bool load_ps4(const std::string& path);
+
 public:
     std::shared_ptr<audio::Backend> audio;
     std::shared_ptr<gfx::IBackend> graphics;

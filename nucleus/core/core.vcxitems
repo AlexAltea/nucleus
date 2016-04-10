@@ -18,10 +18,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\externals\sha1.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\emulator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\fmt.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\keys.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\loader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\psf.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\loader\self.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\nucleus.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)config.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)resource.cpp" />
@@ -37,10 +33,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\endianness.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\feature.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\format.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\keys.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\loader.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\psf.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\loader\self.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\macro.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\nucleus.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />

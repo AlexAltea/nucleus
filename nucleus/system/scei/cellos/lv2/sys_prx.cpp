@@ -10,7 +10,7 @@
 #include "nucleus/system/scei/cellos/callback.h"
 #include "nucleus/system/scei/cellos/lv2.h"
 #include "nucleus/system/scei/cellos/lv2/sys_process.h"
-#include "nucleus/loader/self.h"
+#include "nucleus/system/scei/self.h"
 
 namespace sys {
 

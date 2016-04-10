@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)gpu.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)r10xx\r10xx.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_convert.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_dma.cpp" />
@@ -26,6 +27,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)gpu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)gpu_hash.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)r10xx\r10xx.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_convert.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_dma.h" />

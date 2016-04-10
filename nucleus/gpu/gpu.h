@@ -7,6 +7,7 @@
 
 // Forward declarations
 namespace gfx { class Texture; }
+namespace gfx { class IBackend; }
 
 namespace gpu {
 

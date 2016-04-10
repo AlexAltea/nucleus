@@ -8,20 +8,21 @@
 #include "nucleus/common.h"
 
 #ifdef NUCLEUS_PLATFORM_PS3
-#include "nucleus/gpu/rsx/rsx.h"
+#include "nucleus/system/scei/cellos/lv1.h"
+#include "nucleus/system/scei/cellos/lv2.h"
 #endif
 #ifdef NUCLEUS_PLATFORM_PS4
-#include "nucleus/gpu/r10xx/r10xx.h"
+#include "nucleus/system/scei/orbisos/orbisos.h"
 #endif
 
-namespace gpu {
+namespace sys {
 
 // Shorthands
 #ifdef NUCLEUS_PLATFORM_PS3
-using RSX = rsx::RSX;
+using LV2 = sys::LV2;
 #endif
 #ifdef NUCLEUS_PLATFORM_PS4
-using R10XX = r10xx::R10XX;
+using OrbisOS = sys::scei::orbis::OrbisOS;
 #endif
 
-}  // namespace gpu
+}  // namespace sys

@@ -116,6 +116,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.h">
       <Filter>scei\orbisos</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)keys.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)loader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\psf.h">
+      <Filter>scei</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\self.h">
+      <Filter>scei</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp">
@@ -198,6 +207,14 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.cpp">
       <Filter>scei\orbisos</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)keys.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)loader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\psf.cpp">
+      <Filter>scei</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\self.cpp">
+      <Filter>scei</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

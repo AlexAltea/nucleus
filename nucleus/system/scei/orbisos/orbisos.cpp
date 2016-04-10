@@ -4,19 +4,26 @@
  */
 
 #include "orbisos.h"
-#include "nucleus/system/system.h"
 
 namespace sys {
 namespace scei {
 namespace orbis {
 
-struct OrbisSyscall {
-    const char* name;
-};
+OrbisOS::OrbisOS() {
+    // Initialize sandbox directories
+    vfs.registerDevice(new fs::HostPathDevice("/host/", ""));
+}
 
-class OrbisOS : public System {
-};
-                   
+bool OrbisOS::init(U64 entry) {
+    // TODO: Load /system/common/lib/libkernel.sprx
+
+    // TODO: Run libkernel.sprx start function
+
+    // TODO: Jump to executable entry point
+
+    return true;
+}
+
 }  // namespace orbis
 }  // namespace scei
 }  // namespace sys

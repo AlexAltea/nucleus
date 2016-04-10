@@ -30,6 +30,7 @@ enum ELFMachine {
     EM_PPC64  = 0x15,
     EM_SPU    = 0x17,
     EM_ARM    = 0x28,
+    EM_X86_64 = 0x3E,
 };
 
 // Segment types

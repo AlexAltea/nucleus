@@ -58,7 +58,6 @@ int nucleusInitialize(int argc, char **argv) {
 
     // Start emulator
     if (!config.boot.empty()) {
-
         nucleus.load(config.boot);
         nucleus.run();
         nucleus.idle();

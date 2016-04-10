@@ -10,8 +10,8 @@
 #include "nucleus/cpu/cell.h"
 #include "nucleus/system/scei/cellos/lv2.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
-#include "nucleus/loader/keys.h"
-#include "nucleus/loader/loader.h"
+#include "nucleus/system/keys.h"
+#include "nucleus/system/loader.h"
 #include "nucleus/logger/logger.h"
 
 #include "externals/aes.h"

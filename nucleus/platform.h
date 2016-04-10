@@ -24,6 +24,8 @@
 namespace core {
 
 enum Platform {
+    PLATFORM_UNKNOWN = 0,
+
     PLATFORM_PS3,
     PLATFORM_PS4,
     PLATFORM_PSP,

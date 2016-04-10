@@ -14,6 +14,9 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)keys.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)loader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\callback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv1.h" />
@@ -46,9 +49,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\syscall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\pkg.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\psf.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\self.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)system.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)keys.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)loader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\hle_module.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv1\lv1_gpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2.cpp" />
@@ -76,5 +83,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\pkg.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\psf.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\self.cpp" />
   </ItemGroup>
 </Project>

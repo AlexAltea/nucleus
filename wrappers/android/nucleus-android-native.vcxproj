@@ -204,6 +204,7 @@
       <ExceptionHandling>Enabled</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir);$(Sysroot)\usr\include;$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++1y</CppLanguageStandard>
+      <PreprocessorDefinitions>_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;_NUCLEUS_FEATURE_GFXBACKEND_VULKAN;</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv2;EGL;m</LibraryDependencies>
@@ -215,6 +216,7 @@
       <ExceptionHandling>Enabled</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir);$(Sysroot)\usr\include;$(StlIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++1y</CppLanguageStandard>
+      <PreprocessorDefinitions>_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;_NUCLEUS_FEATURE_GFXBACKEND_VULKAN;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>%(LibraryDependencies);GLESv2;EGL;m</LibraryDependencies>

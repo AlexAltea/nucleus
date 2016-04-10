@@ -42,6 +42,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_mmio.h">
       <Filter>rsx</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)r10xx\r10xx.h">
+      <Filter>r10xx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.cpp">
@@ -62,6 +65,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)gpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_convert.cpp">
       <Filter>rsx</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)r10xx\r10xx.cpp">
+      <Filter>r10xx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
