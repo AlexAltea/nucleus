@@ -24,32 +24,31 @@ enum {
 };
 
 class Memory {
-    void* m_base;
-    Segment m_segments[_SEG_COUNT];
-
 public:
     Memory();
     ~Memory();
 
-    U32 alloc(U32 size, U32 align=1);
-    void free(U32 addr);
-    bool check(U32 addr);
+    virtual U64 alloc(U64 size, U32 align=1) = 0;
+    virtual void free(U64 addr) = 0;
+    virtual bool check(U64 addr) = 0;
 
-    U08 read8(U32 addr);
-    U16 read16(U32 addr);
-    U32 read32(U32 addr);
-    U64 read64(U32 addr);
-    U128 read128(U32 addr);
-    void readLeft(U08* dst, U32 src, U32 size);
-    void readRight(U08* dst, U32 src, U32 size);
+    virtual U08 read8(U64 addr) = 0;
+    virtual U16 read16(U64 addr) = 0;
+    virtual U32 read32(U64 addr) = 0;
+    virtual U64 read64(U64 addr) = 0;
+    virtual U128 read128(U64 addr) = 0;
 
-    void write8(U32 addr, U08 value);
-    void write16(U32 addr, U16 value);
-    void write32(U32 addr, U32 value);
-    void write64(U32 addr, U64 value);
-    void write128(U32 addr, U128 value);
-    void writeLeft(U32 dst, U08* src, U32 size);
-    void writeRight(U32 dst, U08* src, U32 size);
+    virtual void write8(U64 addr, U08 value) = 0;
+    virtual void write16(U64 addr, U16 value) = 0;
+    virtual void write32(U64 addr, U32 value) = 0;
+    virtual void write64(U64 addr, U64 value) = 0;
+    virtual void write128(U64 addr, U128 value) = 0;
+
+    virtual void memcpy_h2h(void* destination, const void* source, Size num) = 0;
+    virtual void memcpy_h2g(U64 destination, const void* source, Size num) = 0;
+    virtual void memcpy_g2h(void* destination, U64 source, Size num)  = 0;
+    virtual void memcpy_g2g(U64 destination, U64 source, Size num) = 0;
+    virtual void memset(U64 ptr, int value, Size num) = 0;
 
     void* getBaseAddr() { return m_base; }
 
