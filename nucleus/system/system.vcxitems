@@ -14,6 +14,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)elf64.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)keys.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)loader.h" />

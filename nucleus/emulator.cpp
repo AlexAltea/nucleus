@@ -45,7 +45,7 @@ bool Emulator::load_ps3(const std::string& path) {
     }
 
     self.load_elf(static_cast<sys::LV2*>(sys.get())->proc);
-    if (self.getMachine() != EM_PPC64) {
+    if (self.getMachine() != sys::EM_PPC64) {
         logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;
     }
@@ -73,7 +73,7 @@ bool Emulator::load_ps4(const std::string& path) {
     }
 
     self.load_elf(static_cast<sys::OrbisOS*>(sys.get())->proc);
-    if (self.getMachine() != EM_X86_64) {
+    if (self.getMachine() != sys::EM_X86_64) {
         logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;
     }

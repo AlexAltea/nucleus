@@ -125,6 +125,7 @@
       <Filter>scei</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)elf64.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp">

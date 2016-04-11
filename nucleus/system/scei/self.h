@@ -7,59 +7,26 @@
 
 #include "nucleus/common.h"
 #include "nucleus/filesystem/file.h"
+#include "nucleus/system/elf64.h"
 #include "nucleus/system/scei/cellos/lv2/sys_process.h"
 #include "nucleus/system/scei/cellos/lv2/sys_prx.h"
 
 #include <string>
 #include <vector>
 
-/**
- * ELF64 Header constants
- */
-enum ELFType {
-    ET_NONE = 0,  // No file type
-    ET_REL  = 1,  // Relocatable object file
-    ET_EXEC = 2,  // Executable file
-    ET_DYN  = 3,  // Shared object file
-    ET_CORE = 4,  // Core file
-};
-
-enum ELFMachine {
-    EM_UNKNOWN,
-    EM_MIPS   = 0x08,
-    EM_PPC64  = 0x15,
-    EM_SPU    = 0x17,
-    EM_ARM    = 0x28,
-    EM_X86_64 = 0x3E,
-};
-
 // Segment types
 enum {
-    // Common segments
-    PT_LOAD     = 0x1,
-    PT_DYNAMIC  = 0x2,
-    PT_INTERP   = 0x3,
-    PT_NOTE     = 0x4,
-    PT_SHLIB    = 0x5,
-    PT_PHDR     = 0x6,
-    PT_TLS      = 0x7,
-
-    // Cell OS Lv-2 (OS) specific segments
+    // Cell OS Lv-2 (OS) specific
     PT_PROC_PARAM   = 0x60000001,
     PT_PRX_PARAM    = 0x60000002,
 
-    // Cell B.E. (CPU) specific segments
+    // Cell B.E. (CPU) specific
     PT_SCE_PPURELA  = 0x700000A4,
 };
 
 // Segment flags
 enum {
-    // Common flags
-    PF_X       = 0x00000001,  // Segment is executable (by PPU)
-    PF_W       = 0x00000002,  // Segment is writable (by PPU)
-    PF_R       = 0x00000004,  // Segment is readable (by PPU)
-
-    // Cell OS Lv-2 (OS) specific flags
+    // Cell OS Lv-2 (OS) specific
     PF_SPU_X   = 0x00100000,  // SPU execute
     PF_SPU_W   = 0x00200000,  // SPU write
     PF_SPU_R   = 0x00400000,  // SPU read
@@ -92,8 +59,7 @@ struct SceHeader
     BE<U64> esize;
 };
 
-struct SelfHeader
-{
+struct SelfHeader {
     BE<U64> htype;
     BE<U64> appinfooff;
     BE<U64> elfoff;
@@ -106,8 +72,7 @@ struct SelfHeader
     BE<U64> pad;
 };
 
-struct AppInfo
-{
+struct AppInfo {
     BE<U64> authid;
     BE<U32> vendor_id;
     BE<U32> self_type;
@@ -115,16 +80,14 @@ struct AppInfo
     BE<U64> padding;
 };
 
-struct MetadataInfo
-{
+struct MetadataInfo {
     U08 key[0x10];
     U08 key_pad[0x10];
     U08 iv[0x10];
     U08 iv_pad[0x10];
 };
 
-struct MetadataHeader
-{
+struct MetadataHeader {
     BE<U64> signature_input_length;
     BE<U32> unknown1;
     BE<U32> section_count;
@@ -134,8 +97,7 @@ struct MetadataHeader
     BE<U32> unknown3;
 };
 
-struct MetadataSectionHeader
-{
+struct MetadataSectionHeader {
     BE<U64> data_offset;
     BE<U64> data_size;
     BE<U32> type;
@@ -148,8 +110,7 @@ struct MetadataSectionHeader
     BE<U32> compressed;
 };
 
-struct ControlInfo
-{
+struct ControlInfo {
     BE<U32> type;
     BE<U32> size;
     BE<U64> next;
@@ -167,14 +128,14 @@ struct ControlInfo
         } control_flags;
 
         struct {  // Type 2 (0x30 bytes)
-            U08 digest[20];
-            U64 unknown;
+            BE<U08> digest[20];
+            BE<U64> unknown;
         } file_digest40;
 
         struct {  // Type 2 (0x40 bytes)
-          U08 digest1[20];
-          U08 digest2[20];
-          BE<U64> unknown;
+            BE<U08> digest1[20];
+            BE<U08> digest2[20];
+            BE<U64> unknown;
         } file_digest30;
 
         struct {  // Type 3 (0x90 bytes)
@@ -182,70 +143,23 @@ struct ControlInfo
             BE<U32> unknown1;
             BE<U32> license;
             BE<U32> type;
-            U08 content_id[48];
-            U08 digest[16];
-            U08 invdigest[16];
-            U08 xordigest[16];
+            BE<U08> content_id[48];
+            BE<U08> digest[16];
+            BE<U08> invdigest[16];
+            BE<U08> xordigest[16];
             BE<U64> unknown2;
             BE<U64> unknown3;
         } npdrm;
     };
 };
 
-// ELF64 structs
-struct Elf64_Ehdr
-{
-    BE<U32> magic;
-    BE<U08>  elf_class;
-    BE<U08>  data;
-    BE<U08>  curver;
-    BE<U08>  os_abi;
-    BE<U64> abi_ver;
-    BE<U16> type;
-    BE<U16> machine;
-    BE<U32> version;
-    BE<U64> entry;
-    BE<U64> phoff;
-    BE<U64> shoff;
-    BE<U32> flags;
-    BE<U16> ehsize;
-    BE<U16> phentsize;
-    BE<U16> phnum;
-    BE<U16> shentsize;
-    BE<U16> shnum;
-    BE<U16> shstrndx;
-};
+class SELFLoader {
+    using Ehdr = sys::Elf64_Ehdr<BE>;
+    using Phdr = sys::Elf64_Phdr<BE>;
+    using Shdr = sys::Elf64_Shdr<BE>;
 
-struct Elf64_Phdr
-{
-    BE<U32> type;
-    BE<U32> flags;
-    BE<U64> offset;
-    BE<U64> vaddr;
-    BE<U64> paddr;
-    BE<U64> filesz;
-    BE<U64> memsz;
-    BE<U64> align;
-};
-
-struct Elf64_Shdr
-{
-    BE<U32> name;
-    BE<U32> type;
-    BE<U64> flags;
-    BE<U64> addr;
-    BE<U64> offset;
-    BE<U64> size;
-    BE<U32> link;
-    BE<U32> info;
-    BE<U64> addralign;
-    BE<U64> entsize;
-};
-
-class SELFLoader
-{
-    std::vector<char> elf;  // Holds the decrypted executable
-    std::vector<char> self; // Holds the encrypted executable
+    std::vector<Byte> elf;  // Holds the decrypted executable
+    std::vector<Byte> self; // Holds the encrypted executable
 
     // Decrypts the Metadata Info and Headers of a SELF file
     bool decryptMetadata();
