@@ -10,6 +10,7 @@
 #include "nucleus/compiler.h"
 #include "nucleus/endianness.h"
 #include "nucleus/feature.h"
+#include "nucleus/literals.h"
 #include "nucleus/target.h"
 #include "nucleus/types.h"
 
