@@ -50,6 +50,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\syscall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\pkg.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\psf.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\self.h" />
@@ -85,6 +86,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\pkg.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\psf.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\self.cpp" />

@@ -17,6 +17,7 @@
 #include "nucleus/memory/memory.h"
 #include "nucleus/system/loader.h"
 #include "nucleus/system/scei/self.h"
+#include "nucleus/system/scei/orbisos/orbis_self.h"
 #include "nucleus/system/list.h"
 
 // Global emulator object
@@ -65,14 +66,14 @@ bool Emulator::load_ps4(const std::string& path) {
     sys->vfs.registerDevice(new fs::HostPathDevice("/app0/", processPath));
 
     // Load ELF/SELF file
-    SELFLoader self;
+    sys::scei::orbis::SELFLoader self;
     auto file = fs::HostFileSystem::openFile(path, fs::Read);
     if (!self.open(file.get())) {
         logger.error(LOG_COMMON, "Invalid file given.");
         return false;
     }
 
-    self.load_elf(static_cast<sys::OrbisOS*>(sys.get())->proc);
+    self.load();
     if (self.getMachine() != sys::EM_X86_64) {
         logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;

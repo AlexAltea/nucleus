@@ -19,6 +19,9 @@
     <Filter Include="scei\cellos\modules">
       <UniqueIdentifier>{c38224e4-da9c-48b2-9354-1170605406c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scei\orbisos\syscalls">
+      <UniqueIdentifier>{b8a3845c-1cb6-40f6-9171-bbce3fa7a6aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)object.h" />
@@ -129,6 +132,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.h">
       <Filter>scei\orbisos</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.h">
+      <Filter>scei\orbisos\syscalls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp">
@@ -222,6 +228,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.cpp">
       <Filter>scei\orbisos</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.cpp">
+      <Filter>scei\orbisos\syscalls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
