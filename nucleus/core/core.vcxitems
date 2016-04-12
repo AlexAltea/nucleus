@@ -33,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\endianness.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\feature.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\format.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\literals.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\macro.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\nucleus.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />
