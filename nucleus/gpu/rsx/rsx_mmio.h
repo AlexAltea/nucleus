@@ -156,7 +156,7 @@
 #define     RSX_PFIFO_CACHE1_PULL0_HASH_BUSY            0x00001000
 #define     RSX_PFIFO_CACHE1_PULL0_BIT14  // [14:14], acquire: 0(idle),      1(busy)
 #define     RSX_PFIFO_CACHE1_PULL0_BIT18  // [18:18], state:   0(idle),      1(busy)
-#define     RSX_PFIFO_CACHE1_PULL0_BIT19  // [19:19], 
+#define     RSX_PFIFO_CACHE1_PULL0_BIT19  // [19:19],
 #define     RSX_PFIFO_CACHE1_PULL0_BIT22  // [22:22], device:  0(s/w),       1(h/w)
 #define     RSX_PFIFO_CACHE1_PULL0_BIT26  // [26:26], hash:    0(succeeded), 1(failed)
 #define     RSX_PFIFO_CACHE1_PULL0_BIT30  // [30:30], access:  0(disable),   1(enable)
@@ -212,12 +212,12 @@
 #define     RSX_PFB_FIFO_DATA_RAM_AMOUNT_MB_MASK        0xFFF00000
 #define     RSX_PFB_FIFO_DATA_RAM_AMOUNT_MB_SHIFT               20
 #define     RSX_PFB_FIFO_DATA_RAM_MODE_MASK             0x000FFFFF // DDR self refresh/refresh mode
-#define RSX_PFB_UNK0320                (0x00100320) 
+#define RSX_PFB_UNK0320                (0x00100320)
 #define RSX_PFB_UNK032C                (0x0010032C)  // Set by LV1 to 0xFFFF18FF
 #define RSX_PFB_UNK0330                (0x00100330)  // Set by LV1 to 0xCCCC5044
 #define RSX_PFB_UNK0334                (0x00100334)  // Set by LV1 to 0x33332022
 #define RSX_PFB_UNK0338                (0x00100338)  // Set by LV1 to 0x0000000A
-#define RSX_PFB_CLOSE_PAGE2            (0x0010033C)  
+#define RSX_PFB_CLOSE_PAGE2            (0x0010033C)
 #define RSX_PFB_UNK0340                (0x00100340)  // Set by LV1 to 0x000001FB
 #define RSX_PFB_UNK0344                (0x00100344)  // Set by LV1 to 0x00000000
 #define RSX_PFB_UNK0348                (0x00100348)  // Set by LV1 to 0x00000000

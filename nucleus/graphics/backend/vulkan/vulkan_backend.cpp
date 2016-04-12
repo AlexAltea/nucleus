@@ -117,7 +117,7 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
         }
         return false;
     }*/
-    
+
     return true;
 }
 

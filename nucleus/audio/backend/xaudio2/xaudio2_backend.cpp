@@ -33,7 +33,7 @@ bool XAudio2Backend::initialize() {
 
 void XAudio2Backend::setVolume(float value) {
     if (masteringVoice) {
-		masteringVoice->SetVolume(value);
+        masteringVoice->SetVolume(value);
     }
 }
 

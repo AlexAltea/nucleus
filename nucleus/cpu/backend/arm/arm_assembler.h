@@ -26,22 +26,22 @@ namespace arm {
 // Condition Codes. Section 4.3 @ Page 16 @ [1].
 enum Condition {
     EQ = 0b0000,  // Equal                    Z == 1
-    NE = 0b0001,  // Not equal                Z == 0         
-    CS = 0b0010,  // Carry set                C == 1         
-    CC = 0b0011,  // Carry clear              C == 0         
-    MI = 0b0100,  // Negative                 N == 1         
-    PL = 0b0101,  // Positive or zero         N == 0         
-    VS = 0b0110,  // Overflow                 V == 1         
-    VC = 0b0111,  // No overflow              V == 0         
+    NE = 0b0001,  // Not equal                Z == 0
+    CS = 0b0010,  // Carry set                C == 1
+    CC = 0b0011,  // Carry clear              C == 0
+    MI = 0b0100,  // Negative                 N == 1
+    PL = 0b0101,  // Positive or zero         N == 0
+    VS = 0b0110,  // Overflow                 V == 1
+    VC = 0b0111,  // No overflow              V == 0
     HI = 0b1000,  // Unsigned higher          C == 1 and Z == 0
     LS = 0b1001,  // Unsigned lower or same   C == 0 or  Z == 1
-    GE = 0b1010,  // Greater or equal         N == V           
-    LT = 0b1011,  // Less than                N != V           
-    GT = 0b1100,  // Greater than             Z == 0 and N == V  
-    LE = 0b1101,  // Less then or equal       Z == 1 or  N != V  
-    AL = 0b1110,  // Always                   Any                 
+    GE = 0b1010,  // Greater or equal         N == V
+    LT = 0b1011,  // Less than                N != V
+    GT = 0b1100,  // Greater than             Z == 0 and N == V
+    LE = 0b1101,  // Less then or equal       Z == 1 or  N != V
+    AL = 0b1110,  // Always                   Any
     NV = 0b1111,  // Always                   Any
-    
+
     // Aliases
     HS = CS,
     LO = CC,

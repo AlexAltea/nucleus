@@ -62,7 +62,7 @@ S32 sys_mutex_lock(U32 mutex_id, U64 timeout) {
         mutex->mutex.try_lock();
 #else
         mutex->mutex.try_lock_for(rel_time);
-#endif    
+#endif
     }
     return CELL_OK;
 }

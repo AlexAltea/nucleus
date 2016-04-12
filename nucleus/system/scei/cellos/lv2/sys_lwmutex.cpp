@@ -59,7 +59,7 @@ S32 sys_lwmutex_lock(U32 lwmutex_id, U64 timeout) {
         lwmutex->lwmutex.try_lock();
 #else
         lwmutex->lwmutex.try_lock_for(rel_time);
-#endif    
+#endif
     }
     return CELL_OK;
 }

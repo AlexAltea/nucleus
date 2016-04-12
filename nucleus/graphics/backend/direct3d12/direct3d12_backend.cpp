@@ -246,7 +246,7 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     // Root signature parameters
     CD3DX12_DESCRIPTOR_RANGE ranges[2];
     ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-	ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+    ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
     Size index = 0;
     std::vector<CD3DX12_ROOT_PARAMETER> parameters(desc.numCBVs + desc.numSRVs);
@@ -408,15 +408,15 @@ VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc
     if (desc.cbvCreation) {
         HRESULT hr;
         D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc = {};
-		cbvHeapDesc.NumDescriptors = 1;
-		cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		hr = device->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&vtxBuffer->cbvHeap));
+        cbvHeapDesc.NumDescriptors = 1;
+        cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+        cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+        hr = device->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&vtxBuffer->cbvHeap));
 
         D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-		cbvDesc.BufferLocation = vtxBuffer->resource->GetGPUVirtualAddress();
-		cbvDesc.SizeInBytes = size;
-		device->CreateConstantBufferView(&cbvDesc, vtxBuffer->cbvHeap->GetCPUDescriptorHandleForHeapStart());
+        cbvDesc.BufferLocation = vtxBuffer->resource->GetGPUVirtualAddress();
+        cbvDesc.SizeInBytes = size;
+        device->CreateConstantBufferView(&cbvDesc, vtxBuffer->cbvHeap->GetCPUDescriptorHandleForHeapStart());
     }
     return vtxBuffer;
 }

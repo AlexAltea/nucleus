@@ -220,9 +220,9 @@ gfx::Format convertVertexFormat(VertexType type, U08 size) {
     case RSX_VERTEX_S1:
         switch (size) {
         case 1: return gfx::FORMAT_R16_SNORM;
-		case 2: return gfx::FORMAT_R16G16_SNORM;
-		case 3: return gfx::FORMAT_R16G16B16_SNORM; // TODO: Is this correct?
-		case 4: return gfx::FORMAT_R16G16B16A16_SNORM;
+        case 2: return gfx::FORMAT_R16G16_SNORM;
+        case 3: return gfx::FORMAT_R16G16B16_SNORM; // TODO: Is this correct?
+        case 4: return gfx::FORMAT_R16G16B16A16_SNORM;
         default:
             assert_always("Unexpected");
         }
@@ -230,9 +230,9 @@ gfx::Format convertVertexFormat(VertexType type, U08 size) {
     case RSX_VERTEX_F:
         switch (size) {
         case 1: return gfx::FORMAT_R32_FLOAT;
-		case 2: return gfx::FORMAT_R32G32_FLOAT;
-		case 3: return gfx::FORMAT_R32G32B32_FLOAT;
-		case 4: return gfx::FORMAT_R32G32B32A32_FLOAT;
+        case 2: return gfx::FORMAT_R32G32_FLOAT;
+        case 3: return gfx::FORMAT_R32G32B32_FLOAT;
+        case 4: return gfx::FORMAT_R32G32B32A32_FLOAT;
         default:
             assert_always("Unexpected");
         }
@@ -240,9 +240,9 @@ gfx::Format convertVertexFormat(VertexType type, U08 size) {
     case RSX_VERTEX_SF:
         switch (size) {
         case 1: return gfx::FORMAT_R16_FLOAT;
-		case 2: return gfx::FORMAT_R16G16_FLOAT;
-		case 3: return gfx::FORMAT_R16G16B16_FLOAT; // TODO: Is this correct?
-		case 4: return gfx::FORMAT_R16G16B16A16_FLOAT;
+        case 2: return gfx::FORMAT_R16G16_FLOAT;
+        case 3: return gfx::FORMAT_R16G16B16_FLOAT; // TODO: Is this correct?
+        case 4: return gfx::FORMAT_R16G16B16A16_FLOAT;
         default:
             assert_always("Unexpected");
         }
@@ -250,9 +250,9 @@ gfx::Format convertVertexFormat(VertexType type, U08 size) {
     case RSX_VERTEX_UB:
         switch (size) {
         case 1: return gfx::FORMAT_R8_UNORM;
-		case 2: return gfx::FORMAT_R8G8_UNORM;
-		case 3: return gfx::FORMAT_R8G8B8_UNORM; // TODO: Is this correct?
-		case 4: return gfx::FORMAT_R8G8B8A8_UNORM;
+        case 2: return gfx::FORMAT_R8G8_UNORM;
+        case 3: return gfx::FORMAT_R8G8B8_UNORM; // TODO: Is this correct?
+        case 4: return gfx::FORMAT_R8G8B8A8_UNORM;
         default:
             assert_always("Unexpected");
         }
@@ -260,9 +260,9 @@ gfx::Format convertVertexFormat(VertexType type, U08 size) {
     case RSX_VERTEX_S32K:
         switch (size) {
         case 1: return gfx::FORMAT_R16_SINT;
-		case 2: return gfx::FORMAT_R16G16_SINT;
-		case 3: return gfx::FORMAT_R16G16B16_SINT; // TODO: Is this correct?
-		case 4: return gfx::FORMAT_R16G16B16A16_SINT;
+        case 2: return gfx::FORMAT_R16G16_SINT;
+        case 3: return gfx::FORMAT_R16G16B16_SINT; // TODO: Is this correct?
+        case 4: return gfx::FORMAT_R16G16B16A16_SINT;
         default:
             assert_always("Unexpected");
         }
@@ -273,9 +273,9 @@ gfx::Format convertVertexFormat(VertexType type, U08 size) {
     case RSX_VERTEX_UB256:
         switch (size) {
         case 1: return gfx::FORMAT_R8_UINT;
-		case 2: return gfx::FORMAT_R8G8_UINT;
-		case 3: return gfx::FORMAT_R8G8B8_UINT; // TODO: Is this correct?
-		case 4: return gfx::FORMAT_R8G8B8A8_UINT;
+        case 2: return gfx::FORMAT_R8G8_UINT;
+        case 3: return gfx::FORMAT_R8G8B8_UINT; // TODO: Is this correct?
+        case 4: return gfx::FORMAT_R8G8B8A8_UINT;
         default:
             assert_always("Unexpected");
         }

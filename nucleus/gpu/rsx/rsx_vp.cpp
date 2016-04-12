@@ -141,11 +141,11 @@ void RSXVertexProgram::setDestVector(Literal value) {
     } else {
         pointer = getOutputReg(instr.dst);
     }
-    
+
     // Masked write
     U08 mask = instr.masc_vec;
     if (mask == 0b0000) {  // Check if mask disables all components
-        return; 
+        return;
     }
     if (mask == 0b1111) {  // Check if mask enables all components
         builder.opStore(pointer, value);

@@ -107,7 +107,7 @@ void RSX::task() {
 
 #ifdef NUCLEUS_BUILD_DEBUG
             // Ensure method register correctness by verifying objects to be bound to subchannels
-            if (cmd.method_offset == 0) { 
+            if (cmd.method_offset == 0) {
                 assert_true(cmd.method_count == 1);
                 switch (cmd.method_subchannel) {
                 case 0: assert_true(parameter == 0x31337000); break;

@@ -84,7 +84,7 @@ bool VulkanShader::initialize(const ShaderDesc& desc) {
         spv::Version,
         0, bound, 0,
     });
-    
+
     dump(module);
     return true;
 }
