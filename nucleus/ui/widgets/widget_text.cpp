@@ -83,15 +83,15 @@ void WidgetText::update(const Font* fontFamily, const Length& fontSize, const st
     txBuffer.clear();
     txBuffer.resize(txWidth * txHeight);
     for (Size i = 0; i < text.length(); i++) {
-        int dx;
-        int dy = (ascent - descent) + lineGap;
+        int lsb;
+        int dx, dy = (ascent - descent) + lineGap;
         int kern = stbtt_GetCodepointKernAdvance(fontInfo, text[i], text[i+1]);
-        stbtt_GetCodepointHMetrics(fontInfo, text[i], &dx, 0);
+        stbtt_GetCodepointHMetrics(fontInfo, text[i], &dx, &lsb);
 
         int x1, y1, x2, y2;
         stbtt_GetCodepointBitmapBox(fontInfo, text[i], scale, scale, &x1, &y1, &x2, &y2);
 
-        Size offset = x + ((y + ascent + y1) * txWidth);
+        Size offset = x + (lsb * scale) + ((y + ascent + y1) * txWidth);
         stbtt_MakeCodepointBitmap(fontInfo, &txBuffer[offset], x2 - x1, y2 - y1, txWidth, scale, scale, text[i]);
         x += (dx + kern) * scale;
     }
