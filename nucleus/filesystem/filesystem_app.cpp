@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "filesystem_application.h"
+#include "filesystem_app.h"
 #include "nucleus/filesystem/device/list.h"
 #include "nucleus/assert.h"
 
@@ -11,7 +11,7 @@
 
 namespace fs {
 
-Path ApplicationFileSystem::getPath(Location location) {
+Path AppFileSystem::getPath(Location location) {
     Path path;
 
 #if defined(NUCLEUS_TARGET_LINUX)
@@ -42,11 +42,11 @@ Path ApplicationFileSystem::getPath(Location location) {
 
 #elif defined(NUCLEUS_TARGET_WINDOWS)
     switch (location) {
-    case APPLICATION_LOCATION_LOCAL:
+    case APP_LOCATION_LOCAL:
         path = "./"; break;
-    case APPLICATION_LOCATION_ROAMING:
+    case APP_LOCATION_ROAMING:
         path = "./"; break;
-    case APPLICATION_LOCATION_TEMP:
+    case APP_LOCATION_TEMP:
         path = "%TEMP%/"; break;
     default:
         assert_always("Unexpected");
@@ -55,13 +55,13 @@ Path ApplicationFileSystem::getPath(Location location) {
     return path;
 }
 
-std::unique_ptr<File> ApplicationFileSystem::openFile(Location location, const Path& path, OpenMode mode) {
+std::unique_ptr<File> AppFileSystem::openFile(Location location, const Path& path, OpenMode mode) {
     Path locationPath = getPath(location);
     auto hostDevice = HostPathDevice("", locationPath);
     return std::unique_ptr<File>(hostDevice.openFile(path, mode));
 }
 
-bool ApplicationFileSystem::existsFile(Location location, const Path& path) {
+bool AppFileSystem::existsFile(Location location, const Path& path) {
     Path locationPath = getPath(location);
     auto hostDevice = HostPathDevice("", locationPath);
     return hostDevice.existsFile(path);

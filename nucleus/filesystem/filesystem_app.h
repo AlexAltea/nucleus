@@ -15,10 +15,10 @@
 
 namespace fs {
 
-enum ApplicationFileSystemLocation {
-    APPLICATION_LOCATION_LOCAL,    // Application data on the current device
-    APPLICATION_LOCATION_ROAMING,  // Application data synchronized across multiple devices
-    APPLICATION_LOCATION_TEMP,     // Temporary location
+enum AppFileSystemLocation {
+    APP_LOCATION_LOCAL,    // Application data on the current device
+    APP_LOCATION_ROAMING,  // Application data synchronized across multiple devices
+    APP_LOCATION_TEMP,     // Temporary location
 };
 
 /**
@@ -27,8 +27,8 @@ enum ApplicationFileSystemLocation {
  * Allows access to the application locations potentially managed by
  * the underlying host operating system
  */
-class ApplicationFileSystem {
-    using Location = ApplicationFileSystemLocation;
+class AppFileSystem {
+    using Location = AppFileSystemLocation;
 
 public:
     /**

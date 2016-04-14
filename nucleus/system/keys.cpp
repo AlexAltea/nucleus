@@ -5,7 +5,7 @@
 
 #include "keys.h"
 #include "nucleus/format.h"
-#include "nucleus/filesystem/filesystem_application.h"
+#include "nucleus/filesystem/filesystem_app.h"
 #include "nucleus/logger/logger.h"
 
 #include "externals/rapidxml/rapidxml.hpp"
@@ -32,7 +32,7 @@ static struct KeyvaultHandler {
     rapidxml::xml_document<> doc;
 
     KeyvaultHandler() {
-        auto file = fs::ApplicationFileSystem::openFile(fs::APPLICATION_LOCATION_ROAMING, KEYVAULT_FILE, fs::Read);
+        auto file = fs::AppFileSystem::openFile(fs::APP_LOCATION_ROAMING, KEYVAULT_FILE, fs::Read);
         auto size = file->attributes().size;
         buffer.resize(size + 1);
         file->read(buffer.data(), size);

@@ -4,6 +4,7 @@
  */
 
 #include "screen_main.h"
+#include "nucleus/filesystem/filesystem_app.h"
 #include "nucleus/ui/widgets/list.h"
 #include "nucleus/ui/ui.h"
 

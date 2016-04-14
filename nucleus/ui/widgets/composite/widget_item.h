@@ -6,11 +6,12 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/ui/widgets/widget_container.h"
 
-namespace fs {
+namespace ui {
 
-class Directory {
+class WidgetItem : public WidgetContainer {
 public:
 };
 
-}  // namespace fs
+}  // namespace ui

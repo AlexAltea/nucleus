@@ -3,14 +3,13 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#pragma once
+#include "widget_item.h"
 
-#include "nucleus/common.h"
+namespace ui {
 
-namespace fs {
+WidgetItem::WidgetItem() {
+}
 
-class Directory {
-public:
-};
 
-}  // namespace fs
+
+}  // namespace ui

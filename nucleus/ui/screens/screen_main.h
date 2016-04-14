@@ -7,6 +7,8 @@
 
 #include "nucleus/ui/screen.h"
 
+#include <string>
+
 namespace ui {
 
 class ScreenMain : public Screen {

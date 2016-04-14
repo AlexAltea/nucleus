@@ -5,6 +5,10 @@
 
 #pragma once
 
+// Primitive widgets
 #include "widget_container.h"
 #include "widget_image.h"
 #include "widget_text.h"
+
+// Composite widgets
+#include "composite/widget_item.h"
