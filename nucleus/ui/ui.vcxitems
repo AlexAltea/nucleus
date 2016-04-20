@@ -28,6 +28,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)transitions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ui.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widget.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_container.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_image.h" />
@@ -44,6 +46,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)transitions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ui.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widget.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_list.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_container.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_image.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_text.cpp" />

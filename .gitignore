@@ -37,6 +37,7 @@
 *.sdf
 *.suo
 *.user
+*.db
 
 # Linux
 bin/Nucleus

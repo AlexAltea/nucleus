@@ -9,12 +9,28 @@
 
 namespace sys {
 
-enum ELFType {
+enum ELFType : U08 {
     ET_NONE = 0,  // No file type
     ET_REL  = 1,  // Relocatable object file
     ET_EXEC = 2,  // Executable file
     ET_DYN  = 3,  // Shared object file
     ET_CORE = 4,  // Core file
+};
+
+enum ELFABI : U08 {
+    ELFOSABI_NONE        = 0,   // UNIX System V ABI
+    ELFOSABI_HPUX        = 1,   // HP-UX operating system
+    ELFOSABI_NETBSD      = 2,   // NetBSD
+    ELFOSABI_LINUX       = 3,   // GNU/Linux
+    ELFOSABI_HURD        = 4,   // GNU/Hurd
+    ELFOSABI_SOLARIS     = 6,   // Solaris
+    ELFOSABI_AIX         = 7,   // AIX
+    ELFOSABI_IRIX        = 8,   // IRIX
+    ELFOSABI_FREEBSD     = 9,   // FreeBSD
+    ELFOSABI_TRU64       = 10,  // TRU64 UNIX
+    ELFOSABI_MODESTO     = 11,  // Novell Modesto
+    ELFOSABI_OPENBSD     = 12,  // OpenBSD
+    ELFOSABI_STANDALONE  = 255, // Standalone application
 };
 
 enum ELFMachine {

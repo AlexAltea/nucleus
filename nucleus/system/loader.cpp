@@ -4,17 +4,18 @@
  */
 
 #include "loader.h"
+#include "nucleus/assert.h"
 #include "nucleus/emulator.h"
 #include "nucleus/filesystem/filesystem_host.h"
 
-Filetype detectFiletype(const std::string& filepath)
-{
+#include "nucleus/system/scei/orbisos/orbis_loader.h"
+
+Filetype detectFiletype(const std::string& filepath) {
     auto file = fs::HostFileSystem::openFile(filepath, fs::Read);
     return detectFiletype(file.get());
 }
 
-Filetype detectFiletype(fs::File* file)
-{
+Filetype detectFiletype(fs::File* file) {
     // Magic value to check
     BE<U32> magic;
 
@@ -39,4 +40,25 @@ Filetype detectFiletype(fs::File* file)
     }
 
     return FILETYPE_UNKNOWN;
+}
+
+core::Platform detectPlatform(fs::File* file) {
+    std::vector<core::Platform> platforms;
+#ifdef NUCLEUS_PLATFORM_PS3
+    if (0/*TODO*/) {
+        platforms.push_back(core::PLATFORM_PS3);
+    }
+#endif
+#ifdef NUCLEUS_PLATFORM_PS4
+    if (sys::scei::orbis::isValid(file)) {
+        platforms.push_back(core::PLATFORM_PS4);
+    }
+#endif
+
+    assert_true(platforms.size() <= 1, "Two or more platforms recognize the file as its own");
+    if (platforms.size() > 0) {
+        return platforms[0];
+    } else {
+        return core::PLATFORM_UNKNOWN;
+    }
 }

@@ -7,6 +7,9 @@
     <Filter Include="widgets">
       <UniqueIdentifier>{4f97e9c1-7f33-4978-9e4e-57b9f719d3c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="widgets\composite">
+      <UniqueIdentifier>{deafdfa7-1b97-46a5-a43e-643e0a4a95e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_text.h">
@@ -43,6 +46,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)surface.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)font.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item.h">
+      <Filter>widgets\composite</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_list.h">
+      <Filter>widgets\composite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_container.cpp">
@@ -70,5 +79,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)widget.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)surface.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)font.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item.cpp">
+      <Filter>widgets\composite</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_list.cpp">
+      <Filter>widgets\composite</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -36,3 +36,9 @@ Filetype detectFiletype(const std::string& filename);
 
 // Detect the format of a file given its handler
 Filetype detectFiletype(fs::File* file);
+
+/**
+ * Detect the corresponding platform of a given file
+ * @param[in]  file  File to analyze
+ */
+core::Platform detectPlatform(fs::File* file);

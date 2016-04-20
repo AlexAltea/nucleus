@@ -7,10 +7,19 @@
 
 #include "nucleus/common.h"
 
+#include <string>
+
 namespace fs {
 
-class Directory {
+enum DirectoryEntryType {
+    ENTRY_TYPE_FOLDER,
+    ENTRY_TYPE_FILE,
+};
+
+class DirectoryEntry {
 public:
+    std::string name;
+    DirectoryEntryType type;
 };
 
 }  // namespace fs

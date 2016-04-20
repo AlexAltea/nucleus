@@ -32,6 +32,11 @@ enum {
     PT_SCE_DYNLIBDATA,  // (Unknown value. Unknown description.)
     PT_SCE_COMMENT     = 0x6FFFFF00,
     PT_SCE_LIBVERSION  = 0x6FFFFF01,
+
+    PT_SCE_RELA        = 0x60000000,
+    PT_SCE_PSPRELA     = 0x700000A0,
+    PT_SCE_PPURELA     = 0x700000A4,
+    PT_SCE_PROCPARAM,
 };
 
 class SELFLoader {
