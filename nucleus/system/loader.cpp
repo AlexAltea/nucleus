@@ -8,6 +8,7 @@
 #include "nucleus/emulator.h"
 #include "nucleus/filesystem/filesystem_host.h"
 
+#include "nucleus/system/scei/cellos/cellos_loader.h"
 #include "nucleus/system/scei/orbisos/orbis_loader.h"
 
 Filetype detectFiletype(const std::string& filepath) {
@@ -45,7 +46,7 @@ Filetype detectFiletype(fs::File* file) {
 core::Platform detectPlatform(fs::File* file) {
     std::vector<core::Platform> platforms;
 #ifdef NUCLEUS_PLATFORM_PS3
-    if (0/*TODO*/) {
+    if (sys::scei::cellos::isValid(file)) {
         platforms.push_back(core::PLATFORM_PS3);
     }
 #endif
@@ -55,8 +56,8 @@ core::Platform detectPlatform(fs::File* file) {
     }
 #endif
 
-    assert_true(platforms.size() <= 1, "Two or more platforms recognize the file as its own");
     if (platforms.size() > 0) {
+        assert_true(platforms.size() == 1, "Two or more platforms recognize the file as its own");
         return platforms[0];
     } else {
         return core::PLATFORM_UNKNOWN;

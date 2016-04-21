@@ -3,21 +3,21 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "orbis_loader.h"
+#include "cellos_loader.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/system/scei/orbisos/orbis_self.h"
+#include "nucleus/system/scei/self.h"
 #include "nucleus/system/elf64.h"
 #include "nucleus/system/loader.h"
 
 namespace sys {
 namespace scei {
-namespace orbis {
+namespace cellos {
 
 bool isValid(fs::File* file) {
     Filetype type = detectFiletype(file);
 
     if (type == FILETYPE_PKG) {
-        logger.warning(LOG_COMMON, "sce::scei::orbis: PKG loader unimplemented");
+        logger.warning(LOG_COMMON, "sce::scei::cellos: PKG loader unimplemented");
         return false;
     }
     else if (type == FILETYPE_SELF) {
@@ -29,14 +29,14 @@ bool isValid(fs::File* file) {
         file->seek(0, fs::SeekSet);
         file->read(&eh, sizeof(eh));
         return eh.elf_class == ELFCLASS64 &&
-            eh.data == ELFDATA2LSB &&
-            eh.abi_ver == ELFOSABI_FREEBSD && 
-            eh.machine == EM_X86_64 &&
-            eh.type == ET_SCE_EXEC;
+            eh.data == ELFDATA2MSB &&
+            eh.abi_ver == ELFOSABI_CELL_LV2 && 
+            eh.machine == EM_PPC64 &&
+            eh.type == ET_EXEC;
     }
     return false;
 }
 
-}  // namespace orbis
+}  // namespace cellos
 }  // namespace scei
 }  // namespace sys

@@ -9,12 +9,16 @@
 
 namespace sys {
 
-enum ELFType : U08 {
-    ET_NONE = 0,  // No file type
-    ET_REL  = 1,  // Relocatable object file
-    ET_EXEC = 2,  // Executable file
-    ET_DYN  = 3,  // Shared object file
-    ET_CORE = 4,  // Core file
+enum ELFClass : U08 {
+    ELFCLASSNONE = 0,  // Invalid class
+    ELFCLASS32   = 1,  // 32-bit objects
+    ELFCLASS64   = 2,  // 64-bit objects
+};
+
+enum ELFData : U08 {
+    ELFDATANONE  = 0,  // Invalid data encoding
+    ELFDATA2LSB  = 1,  // Least-significant byte first (little-endian)
+    ELFDATA2MSB  = 2,  // Most-significant byte first (big-endian)
 };
 
 enum ELFABI : U08 {
@@ -31,6 +35,16 @@ enum ELFABI : U08 {
     ELFOSABI_MODESTO     = 11,  // Novell Modesto
     ELFOSABI_OPENBSD     = 12,  // OpenBSD
     ELFOSABI_STANDALONE  = 255, // Standalone application
+};
+
+enum ELFType : U16 {
+    ET_NONE   = 0,       // No file type
+    ET_REL    = 1,       // Relocatable object file
+    ET_EXEC   = 2,       // Executable file
+    ET_DYN    = 3,       // Shared object file
+    ET_CORE   = 4,       // Core file
+    ET_LOPROC = 0xFF00,  // Processor specific (start)
+    ET_HIPROC = 0xFFFF,  // Processor specific (end)
 };
 
 enum ELFMachine {

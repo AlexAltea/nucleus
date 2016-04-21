@@ -14,6 +14,11 @@
 #include <string>
 #include <vector>
 
+// ELF ABI
+enum {
+    ELFOSABI_CELL_LV2 = 0x66,
+};
+
 // Segment types
 enum {
     // Cell OS Lv-2 (OS) specific
@@ -48,8 +53,7 @@ enum {
 };
 
 // SELF structs
-struct SceHeader
-{
+struct SceHeader {
     BE<U32> magic;
     BE<U32> hver;
     BE<U16> flags;
