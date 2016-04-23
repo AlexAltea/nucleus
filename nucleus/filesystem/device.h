@@ -6,8 +6,11 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/filesystem/directory.h"
 #include "nucleus/filesystem/file.h"
 #include "nucleus/filesystem/path.h"
+
+#include <vector>
 
 namespace fs {
 

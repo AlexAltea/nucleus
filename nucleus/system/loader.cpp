@@ -30,7 +30,7 @@ Filetype detectFiletype(fs::File* file) {
         return FILETYPE_ELF;
     case 0x00454353:
         return FILETYPE_SELF;
-    case 0x00505346:
+    case 0x46535000:
         return FILETYPE_PSF;
     case 0x21726152:
         return FILETYPE_RAR;
@@ -41,6 +41,11 @@ Filetype detectFiletype(fs::File* file) {
     }
 
     return FILETYPE_UNKNOWN;
+}
+
+core::Platform detectPlatform(const std::string& filepath) {
+    auto file = fs::HostFileSystem::openFile(filepath, fs::Read);
+    return detectPlatform(file.get());
 }
 
 core::Platform detectPlatform(fs::File* file) {

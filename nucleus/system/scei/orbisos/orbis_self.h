@@ -27,16 +27,13 @@ enum {
 // Segment types
 enum {
     PT_GNU_EH_FRAME    = 0x6474E550,
-    PT_SCE_UNK61000000 = 0x61000000,
-    PT_SCE_UNK61000001 = 0x61000001,
-    PT_SCE_DYNLIBDATA,  // (Unknown value. Unknown description.)
+    PT_SCE_RELA        = 0x60000000,
+    PT_SCE_DYNLIBDATA  = 0x61000000,
+    PT_SCE_PROCPARAM   = 0x61000001,
     PT_SCE_COMMENT     = 0x6FFFFF00,
     PT_SCE_LIBVERSION  = 0x6FFFFF01,
-
-    PT_SCE_RELA        = 0x60000000,
     PT_SCE_PSPRELA     = 0x700000A0,
     PT_SCE_PPURELA     = 0x700000A4,
-    PT_SCE_PROCPARAM,
 };
 
 class SELFLoader {

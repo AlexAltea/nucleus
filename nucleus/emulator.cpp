@@ -156,21 +156,7 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
 }
 
 bool Emulator::load(const std::string& filepath) {
-    // TODO: This is not a good way of detecting a platform
-    core::Platform platform;
-    switch (detectFiletype(filepath)) {
-    case FILETYPE_SELF:
-        platform = core::PLATFORM_PS3;
-        break;
-    case FILETYPE_ELF:
-        platform = core::PLATFORM_PS4;
-        break;
-    default:
-        logger.error(LOG_COMMON, "Unsupported file");
-        return false;
-    }
-
-    switch (platform) {
+    switch (detectPlatform(filepath)) {
     case core::PLATFORM_PS3:
         return load_ps3(filepath);
     case core::PLATFORM_PS4:

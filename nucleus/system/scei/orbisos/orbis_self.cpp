@@ -66,8 +66,8 @@ bool SELFLoader::load() {
         case PT_DYNAMIC:
         case PT_INTERP:
         case PT_TLS:
-        case PT_SCE_UNK61000000:
-        case PT_SCE_UNK61000001:
+        case PT_SCE_DYNLIBDATA:
+        case PT_SCE_PROCPARAM:
         case PT_GNU_EH_FRAME:
         case PT_SCE_COMMENT:
         case PT_SCE_LIBVERSION:

@@ -4,30 +4,23 @@
  */
 
 #include "psf.h"
-#include "nucleus/emulator.h"
 #include "nucleus/system/system.h"
+#include "nucleus/assert.h"
 #include "nucleus/format.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/system/loader.h"
 #include "nucleus/logger/logger.h"
 
-bool PSFLoader::open(const std::string& path)
-{
-    if (detectFiletype(path) != FILETYPE_PSF) {
-        return false;
-    }
+namespace sys {
+namespace scei {
 
-    // Load file
-    fs::File* file = nucleus.sys->vfs.openFile(path, fs::Read);
-    if (!file) {
-        return false;
-    }
+void PSFLoader::open(fs::File* file) {
+    assert_true(detectFiletype(file) == FILETYPE_PSF);
 
     const U64 psfSize = file->attributes().size;
     psf.resize(psfSize);
     file->seek(0, fs::SeekSet);
     file->read(&psf[0], psfSize);
-    delete file;
 
     // Parse file contents
     const auto& header = (PSFHeader&)psf[0];
@@ -35,25 +28,18 @@ bool PSFLoader::open(const std::string& path)
         const U32 offset = sizeof(PSFHeader) + i * sizeof(PSFEntry);
         const auto& entry = (PSFEntry&)psf[offset];
 
-        std::string key = &psf[header.table_keys + entry.offset_key];
+        std::string key = (char*)&psf[header.table_keys + entry.offset_key];
         if (entry.type == PSFEntry::Type::TEXT_RAW ||
             entry.type == PSFEntry::Type::TEXT_NORMAL) {
-            map_strings[key] = &psf[header.table_data + entry.offset_data];
+            map_strings[key] = (char*)&psf[header.table_data + entry.offset_data];
         }
         if (entry.type == PSFEntry::Type::INTEGER) {
             map_integers[key] = (U32&)psf[header.table_data + entry.offset_data];
         }
     }
-    return true;
 }
 
-bool PSFLoader::save(const std::string& path)
-{
-    fs::File* file = nucleus.sys->vfs.openFile(path, fs::Write);
-    if (!file) {
-        return false;
-    }
-
+void PSFLoader::save(fs::File* file) {
     PSFHeader header;
     header.magic = 0x00505346;
     header.entries = map_strings.size() + map_integers.size();
@@ -91,12 +77,9 @@ bool PSFLoader::save(const std::string& path)
 
     file->seek(0, fs::SeekSet);
     file->write(&header, sizeof(PSFHeader));
-    delete file;
-    return true;
 }
 
-std::string PSFLoader::get_string(const std::string& key)
-{
+std::string PSFLoader::get_string(const std::string& key) {
     if (map_strings.find(key) != map_strings.end()) {
         return map_strings.at(key);
     }
@@ -106,3 +89,6 @@ std::string PSFLoader::get_string(const std::string& key)
     logger.error(LOG_LOADER, "PSFLoader: Entry not found (%s)", key.c_str());
     return "";
 }
+
+}  // namespace scei
+}  // namespace sys

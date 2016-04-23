@@ -6,9 +6,13 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/filesystem/file.h"
 
 #include <unordered_map>
 #include <vector>
+
+namespace sys {
+namespace scei {
 
 struct PSFHeader {
     BE<U32> magic;
@@ -26,23 +30,25 @@ struct PSFEntry {
     };
 
     LE<U16> offset_key;
-    LE<U16> type;
+    BE<U16> type;
     LE<U32> size;
     LE<U32> capacity;
     LE<U32> offset_data;
 };
 
-class PSFLoader
-{
-    std::vector<char> psf;
+class PSFLoader {
+    std::vector<Byte> psf;
     std::unordered_map<std::string, std::string> map_strings;
     std::unordered_map<std::string, U32> map_integers;
 
 public:
-    bool open(const std::string& path);
-    bool save(const std::string& path);
+    void open(fs::File* file);
+    void save(fs::File* file);
 
     // Access data
     std::string get_string(const std::string& key);
     U32 get_integer(const std::string& key);
 };
+
+}  // namespace scei
+}  // namespace sys

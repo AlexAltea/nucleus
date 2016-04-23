@@ -22,4 +22,8 @@ public:
     DirectoryEntryType type;
 };
 
+class Directory {
+public:
+};
+
 }  // namespace fs

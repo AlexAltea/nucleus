@@ -15,11 +15,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)elf64.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)information.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)keys.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)loader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\callback.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_info.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_loader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv1.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv1\lv1_gpu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2.h" />
@@ -49,6 +52,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\syscall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_loader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\pkg.h" />
@@ -57,8 +61,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)system.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)information.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)keys.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)loader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_info.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_loader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\hle_module.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv1\lv1_gpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2.cpp" />
@@ -85,6 +92,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbisos.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_loader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\pkg.cpp" />

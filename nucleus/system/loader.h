@@ -38,6 +38,12 @@ Filetype detectFiletype(const std::string& filename);
 Filetype detectFiletype(fs::File* file);
 
 /**
+ * Detect the corresponding platform of a file given its path
+ * @param[in]  filepath  Path to the file to analyze
+ */
+core::Platform detectPlatform(const std::string& filepath);
+
+/**
  * Detect the corresponding platform of a given file
  * @param[in]  file  File to analyze
  */

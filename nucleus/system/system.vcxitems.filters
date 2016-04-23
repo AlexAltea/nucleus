@@ -135,6 +135,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.h">
       <Filter>scei\orbisos\syscalls</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_loader.h">
+      <Filter>scei\orbisos</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_loader.h">
+      <Filter>scei\cellos</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)information.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_info.h">
+      <Filter>scei\cellos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp">
@@ -232,5 +242,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\syscalls\orbis_dynlib.cpp">
       <Filter>scei\orbisos\syscalls</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_loader.cpp">
+      <Filter>scei\orbisos</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_loader.cpp">
+      <Filter>scei\cellos</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\cellos_info.cpp">
+      <Filter>scei\cellos</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)information.cpp" />
   </ItemGroup>
 </Project>
