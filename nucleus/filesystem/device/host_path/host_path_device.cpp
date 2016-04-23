@@ -53,4 +53,32 @@ File::Attributes HostPathDevice::getFileAttributes(const Path& path) {
     return File::Attributes{};
 }
 
+
+std::vector<DirectoryEntry> HostPathDevice::listDirectory(const Path& path) {
+    std::vector<DirectoryEntry> result;
+#ifdef NUCLEUS_TARGET_WINDOWS    
+    WIN32_FIND_DATA ffd;
+    HANDLE handle = FindFirstFile((path + "\\*").c_str(), &ffd);
+    if (handle == INVALID_HANDLE_VALUE) {
+        return result;
+    }
+    do {
+        if (std::strcmp(ffd.cFileName, ".") == 0 ||
+            std::strcmp(ffd.cFileName, "..") == 0) {
+            continue;
+        }
+        DirectoryEntry info;
+        if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            info.type = ENTRY_TYPE_FOLDER;
+        } else {
+            info.type = ENTRY_TYPE_FILE;
+        }
+        info.name = ffd.cFileName;
+        result.push_back(info);
+    } while (FindNextFile(handle, &ffd) != 0);
+    FindClose(handle);
+#endif
+    return result;
+}
+
 }  // namespace fs

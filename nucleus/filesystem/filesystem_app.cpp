@@ -67,4 +67,10 @@ bool AppFileSystem::existsFile(Location location, const Path& path) {
     return hostDevice.existsFile(path);
 }
 
+std::vector<DirectoryEntry> AppFileSystem::listDirectory(Location location, const Path& path) {
+    Path locationPath = getPath(location);
+    auto hostDevice = HostPathDevice("", locationPath);
+    return hostDevice.listDirectory(path);
+}
+
 }  // namespace fs

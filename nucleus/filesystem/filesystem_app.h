@@ -12,6 +12,7 @@
 #include "nucleus/filesystem/path.h"
 
 #include <memory>
+#include <vector>
 
 namespace fs {
 
@@ -41,6 +42,8 @@ public:
     static bool createFile(Location location, const Path& path);
     static bool existsFile(Location location, const Path& path);
     static bool removeFile(Location location, const Path& path);
+
+    static std::vector<DirectoryEntry> listDirectory(Location location, const Path& path);
 };
 
 }  // namespace fs

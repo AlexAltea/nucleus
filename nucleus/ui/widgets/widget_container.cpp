@@ -69,6 +69,9 @@ bool WidgetContainer::removeElement(const std::string& target) {
 }
 
 Widget* WidgetContainer::find(const std::string& query) {
+    if (id == query) {
+        return this;
+    }
     for (auto& child : children) {
         Widget* result = child->find(query);
         if (result) {

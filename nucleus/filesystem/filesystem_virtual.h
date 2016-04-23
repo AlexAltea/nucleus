@@ -36,7 +36,7 @@ public:
     bool existsFile(const Path& path);
     bool removeFile(const Path& path);
 
-    IDir* openDir(const Path& path);
+    Directory* openDir(const Path& path);
     bool existsDir(const Path& path);
     bool removeDir(const Path& path);
 

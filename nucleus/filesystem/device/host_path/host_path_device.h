@@ -21,6 +21,8 @@ public:
     bool removeFile(const Path& path) override;
 
     File::Attributes getFileAttributes(const Path& path) override;
+
+    std::vector<DirectoryEntry> listDirectory(const Path& path);
 };
 
 }  // namespace fs
