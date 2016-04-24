@@ -34,6 +34,7 @@ void nucleusOnWindowSizeChanged(unsigned int width, unsigned int height);
 void nucleusOnMouseClick(int x, int y);
 void nucleusOnMouseDoubleClick(int x, int y);
 void nucleusOnMouseMove(int x, int y);
+void nucleusOnMouseWheel(int x, int y, int delta);
 void nucleusOnKeyDown(int keycode);
 void nucleusOnKeyUp(int keycode);
 

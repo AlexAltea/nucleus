@@ -12,17 +12,25 @@
 
 namespace ui {
 
+enum SurfaceType {
+    SURFACE_SMALL,   // Phones
+    SURFACE_MEDIUM,  // Tablets
+    SURFACE_LARGE,   // Computers
+};
+
 class Surface {
     std::mutex mutex;
     bool changed;
 
     Size nextWidth;
     Size nextHeight;
+    SurfaceType nextType;
 
 public:
     // Current properties
     Size width;
     Size height;
+    SurfaceType type;
     unsigned int hz;
     unsigned int dpi;
     float proportion;

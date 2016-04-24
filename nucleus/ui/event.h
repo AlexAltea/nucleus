@@ -21,6 +21,17 @@ class Event {
 
 public:
     Clock::time_point timestamp;
+
+    enum Type {
+        TYPE_MOUSE_CLICK,
+        TYPE_MOUSE_DBLCLICK,
+        TYPE_MOUSE_MOVE,
+        TYPE_MOUSE_WHEEL,
+        TYPE_KEY_DOWN,
+        TYPE_KEY_UP,
+    } type;
+
+    Event(Type type) : timestamp(Clock::now()), type(type) {}
 };
 
 /**
@@ -29,7 +40,10 @@ public:
  * Represents a keyboard event.
  */
 class KeyEvent : public Event {
+public:
     int keycode;
+
+    KeyEvent(Type type) : Event(type) {}
 };
 
 /**
@@ -51,6 +65,17 @@ public:
     int y;
     int dx;
     int dy;
+
+    MouseEvent(Type type) : Event(type) {}
+};
+
+class MouseWheelEvent : public Event {
+public:
+    int x;
+    int y;
+    int delta;
+
+    MouseWheelEvent() : Event(TYPE_MOUSE_WHEEL) {}
 };
 
 }  // namespace ui

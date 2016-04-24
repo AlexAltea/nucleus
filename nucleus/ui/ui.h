@@ -13,6 +13,7 @@
 #include "nucleus/ui/surface.h"
 
 #include <queue>
+#include <stack>
 #include <thread>
 #include <vector>
 
@@ -29,6 +30,9 @@ class UI {
 
 public:
     std::shared_ptr<gfx::IBackend> graphics;
+    
+    // Events
+    std::stack<std::unique_ptr<Event>> events;
 
     // Message translation database
     Language language;

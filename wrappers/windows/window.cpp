@@ -38,6 +38,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     case WM_MOUSEMOVE:
         nucleusOnMouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
         break;
+    case WM_MOUSEWHEEL:
+        nucleusOnMouseWheel(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), GET_WHEEL_DELTA_WPARAM(wParam));
+        break;
 
     // Keyboard events
     case WM_KEYDOWN:

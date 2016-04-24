@@ -99,11 +99,25 @@ float Widget::getMarginHeight() {
 }
 
 float Widget::getOffsetTop() {
-    return vertTop;
+    float bias = 0.0;
+    if (parent) {
+        auto container = reinterpret_cast<WidgetContainer*>(parent);
+        if (container->scrollV) {
+            bias = container->scrollVoffset * (container->compHeight - container->vertHeight);
+        }
+    }
+    return vertTop - bias;
 }
 
 float Widget::getOffsetLeft() {
-    return vertLeft;
+    float bias = 0.0;
+    if (parent) {
+        auto container = reinterpret_cast<WidgetContainer*>(parent);
+        if (container->scrollH) {
+            bias = container->scrollHoffset * (container->compWidth - container->vertWidth);
+        }
+    }
+    return vertLeft - bias;
 }
 
 void Widget::setOffsetTop(float value) {

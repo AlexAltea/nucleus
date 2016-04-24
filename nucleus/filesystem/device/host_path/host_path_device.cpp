@@ -6,6 +6,10 @@
 #include "host_path_device.h"
 #include "host_path_file.h"
 
+#ifdef NUCLEUS_TARGET_WINDOWS
+#include <Windows.h>
+#endif
+
 namespace fs {
 
 HostPathDevice::HostPathDevice(const Path& mountPath, const Path& localPath)

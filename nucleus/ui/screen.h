@@ -64,6 +64,12 @@ public:
     // Render the screen widgets
     void render();
 
+    /**
+     * Handles an event, propagating it from parents to children (capture model)
+     * @param[in]  evt  Event to handle
+     */
+    void handle(Event* evt);
+
     // Update the screen members
     virtual void update() = 0;
 };

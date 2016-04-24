@@ -72,34 +72,85 @@ void nucleusFinalize() {
 
 // Events
 void nucleusOnWindowSizeChanged(unsigned int width, unsigned int height) {
-    if (nucleus.ui) {
-        ui::Surface& surface = nucleus.ui->surface;
-        surface.setWidth(width);
-        surface.setHeight(height);
+    if (!nucleus.ui) {
+        return;
     }
+    ui::Surface& surface = nucleus.ui->surface;
+    surface.setWidth(width);
+    surface.setHeight(height);
 }
 
 void nucleusOnMouseClick(int x, int y) {
+    if (!nucleus.ui) {
+        return;
+    }
+    auto evt = std::make_unique<ui::MouseEvent>(ui::Event::TYPE_MOUSE_CLICK);
+    evt->button = ui::MouseEvent::BUTTON_LEFT;
+    evt->x = x;
+    evt->y = y;
+    nucleus.ui->events.emplace(std::move(evt));
 }
 
 void nucleusOnMouseDoubleClick(int x, int y) {
+    if (!nucleus.ui) {
+        return;
+    }
+    auto evt = std::make_unique<ui::MouseEvent>(ui::Event::TYPE_MOUSE_DBLCLICK);
+    evt->button = ui::MouseEvent::BUTTON_LEFT;
+    evt->x = x;
+    evt->y = y;
+    nucleus.ui->events.emplace(std::move(evt));
 }
 
 void nucleusOnMouseMove(int x, int y) {
+    if (!nucleus.ui) {
+        return;
+    }
+    auto evt = std::make_unique<ui::MouseEvent>(ui::Event::TYPE_MOUSE_MOVE);
+    evt->button = ui::MouseEvent::BUTTON_LEFT;
+    evt->x = x;
+    evt->y = y;
+    nucleus.ui->events.emplace(std::move(evt));
+}
+
+void nucleusOnMouseWheel(int x, int y, int delta) {
+    if (!nucleus.ui) {
+        return;
+    }
+    auto evt = std::make_unique<ui::MouseWheelEvent>();
+    evt->x = x;
+    evt->y = y;
+    evt->delta = delta;
+    nucleus.ui->events.emplace(std::move(evt));
 }
 
 void nucleusOnKeyDown(int keycode) {
+    if (!nucleus.ui) {
+        return;
+    }
+    auto evt = std::make_unique<ui::KeyEvent>(ui::Event::TYPE_KEY_DOWN);
+    evt->keycode = keycode;
+    nucleus.ui->events.emplace(std::move(evt));
 }
 
 void nucleusOnKeyUp(int keycode) {
+    if (!nucleus.ui) {
+        return;
+    }
+    auto evt = std::make_unique<ui::KeyEvent>(ui::Event::TYPE_KEY_UP);
+    evt->keycode = keycode;
+    nucleus.ui->events.emplace(std::move(evt));
 }
 
 // Drag-and-Drop events
 void nucleusOnDragEnter() {
 }
+
 void nucleusOnDragOver() {
 }
+
 void nucleusOnDragLeave() {
 }
+
 void nucleusOnDrop() {
 }

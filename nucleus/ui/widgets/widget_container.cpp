@@ -114,11 +114,13 @@ void WidgetContainer::dimensionalize() {
     // Set final dimensions
     if (style.width.type != Length::TYPE_UNDEFINED) {
         vertWidth = getCoordX(style.width);
+        scrollH = compWidth > vertWidth;
     } else {
         vertWidth = compWidth;
     }
     if (style.height.type != Length::TYPE_UNDEFINED) {
         vertHeight = getCoordY(style.height);
+        scrollV = compHeight > vertHeight;
     } else {
         vertHeight = compHeight;
     }

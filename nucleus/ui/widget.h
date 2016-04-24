@@ -167,11 +167,11 @@ public:
     void setOffsetLeft(float value);
 
     // Event handling
-    void onMouseMove(std::function<void(MouseEvent&)>);
-    void onMouseClick(std::function<void(MouseEvent&)>);
-    void onMouseWheel(std::function<void(MouseEvent&)>);
-    void onKeyDown(std::function<void(KeyEvent&)>);
-    void onKeyUp(std::function<void(KeyEvent&)>);
+    void onMouseMove(std::function<void(MouseEvent&)> handler);
+    void onMouseClick(std::function<void(MouseEvent&)> handler);
+    void onMouseWheel(std::function<void(MouseEvent&)> handler);
+    void onKeyDown(std::function<void(KeyEvent&)> handler);
+    void onKeyUp(std::function<void(KeyEvent&)> handler);
 };
 
 }  // namespace ui

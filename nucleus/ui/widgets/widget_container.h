@@ -25,6 +25,11 @@ public:
         LAYOUT_HORIZONTAL,
     } layout;
 
+    bool scrollV;
+    bool scrollH;
+    float scrollVoffset = 0.0f;
+    float scrollHoffset = 0.0f;
+
     WidgetContainer() {}
     WidgetContainer(const std::string& id) : Widget(id) {}
     WidgetContainer(Widget* parent, const std::string& id = "") : Widget(parent, id) {}

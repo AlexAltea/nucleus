@@ -17,6 +17,8 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     const auto* lightFont = manager->fontLight.get();
 
     // Body
+    body.style.height = 100.0_pct;
+    body.style.width = 100.0_pct;
     body.style.alignH = ALIGN_HORIZONTAL_CENTER;
     body.style.alignV = ALIGN_VERTICAL_CENTER;
     body.style.background = {0.157f, 0.157f, 0.360f, 1.0f};

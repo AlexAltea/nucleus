@@ -65,6 +65,14 @@ void UI::task() {
         cmdBuffer->cmdSetScissors(1, &scissor);
         cmdBuffer->cmdClearColor(graphics->screenBackTarget, clearColor);
 
+        // Process events
+        while (!events.empty()) {
+            auto& evt = events.top();
+            auto& frontScreen = screens[screens.size() - 1];
+            frontScreen->handle(evt.get());
+            events.pop();
+        }
+
         // Re-fill vertex buffers
         clearVtxBuffers();
         for (auto i = 0ULL; i < screens.size(); i++) {
@@ -137,7 +145,7 @@ void UI::renderContainers() {
     U32 strides[] = { sizeof(WidgetContainerInput) / 4 };
     cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_STRIP);
     cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
-    for (size_t i = 0; i < dataContainers.size(); i++) {
+    for (Size i = 0; i < dataContainers.size(); i++) {
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
     }
 }
@@ -162,7 +170,7 @@ void UI::renderImages() {
     cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_STRIP);
     cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
     gfx::Texture* texture = nullptr;
-    for (size_t i = 0; i < dataImages.size(); i++) {
+    for (Size i = 0; i < dataImages.size(); i++) {
         static bool isColorTarget = false;
         if (isColorTarget) {
             gfx::ResourceBarrier barrierBegin;
@@ -206,7 +214,7 @@ void UI::renderText() {
     cmdBuffer->cmdSetPrimitiveTopology(gfx::TOPOLOGY_TRIANGLE_STRIP);
     cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
     gfx::Texture* texture = nullptr;
-    for (size_t i = 0; i < dataText.size(); i++) {
+    for (Size i = 0; i < dataText.size(); i++) {
         if (texture != textureText[i].first) {
             texture = textureText[i].first;
             cmdBuffer->cmdSetDescriptors({}, {texture});
