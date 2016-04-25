@@ -29,6 +29,8 @@ public:
         TYPE_MOUSE_WHEEL,
         TYPE_KEY_DOWN,
         TYPE_KEY_UP,
+
+        _TYPE_COUNT,
     } type;
 
     Event(Type type) : timestamp(Clock::now()), type(type) {}

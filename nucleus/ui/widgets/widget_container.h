@@ -57,6 +57,7 @@ public:
     virtual Widget* find(const std::string& query) override;
     virtual void dimensionalize() override;
     virtual void render() override;
+    virtual void handle(Event& evt) override;
 };
 
 }  // namespace ui

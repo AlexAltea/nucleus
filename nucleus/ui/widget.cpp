@@ -128,4 +128,38 @@ void Widget::setOffsetLeft(float value) {
     vertLeft = value;
 }
 
+// Events
+void Widget::handle(Event& evt) {
+    auto& handler = evtHandlers[evt.type];
+    if (handler) {
+        handler(evt);
+    }
+}
+
+void Widget::onMouseMove(std::function<void(MouseEvent&)> handler) {
+    evtHandlers[Event::TYPE_MOUSE_MOVE] = [=](Event& e){
+        handler(static_cast<MouseEvent&>(e));
+    };
+}
+void Widget::onMouseClick(std::function<void(MouseEvent&)> handler) {
+    evtHandlers[Event::TYPE_MOUSE_CLICK] = [=](Event& e){
+        handler(static_cast<MouseEvent&>(e));
+    };
+}
+void Widget::onMouseWheel(std::function<void(MouseWheelEvent&)> handler) {
+    evtHandlers[Event::TYPE_MOUSE_WHEEL] = [=](Event& e){
+        handler(static_cast<MouseWheelEvent&>(e));
+    };
+}
+void Widget::onKeyDown(std::function<void(KeyEvent&)> handler) {
+    evtHandlers[Event::TYPE_KEY_DOWN] = [=](Event& e){
+        handler(static_cast<KeyEvent&>(e));
+    };
+}
+void Widget::onKeyUp(std::function<void(KeyEvent&)> handler) {
+    evtHandlers[Event::TYPE_KEY_UP] = [=](Event& e){
+        handler(static_cast<KeyEvent&>(e));
+    };
+}
+
 }  // namespace ui

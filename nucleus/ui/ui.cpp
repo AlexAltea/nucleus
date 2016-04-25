@@ -69,7 +69,7 @@ void UI::task() {
         while (!events.empty()) {
             auto& evt = events.top();
             auto& frontScreen = screens[screens.size() - 1];
-            frontScreen->handle(evt.get());
+            frontScreen->handle(*evt.get());
             events.pop();
         }
 

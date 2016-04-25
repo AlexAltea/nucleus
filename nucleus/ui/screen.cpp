@@ -12,6 +12,8 @@ Screen::Screen(UI* ui) : manager(ui) {
 
     // Body container style
     body.manager = ui;
+    body.style.height = 100.0_pct;
+    body.style.width = 100.0_pct;
 }
 
 void Screen::prologue() {
@@ -28,7 +30,8 @@ void Screen::epilogue() {
     frame += 1;
 }
 
-void Screen::handle(Event* evt) {
+void Screen::handle(Event& evt) {
+    body.handle(evt);
 }
 
 }  // namespace ui

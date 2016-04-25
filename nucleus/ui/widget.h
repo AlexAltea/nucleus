@@ -124,6 +124,9 @@ public:
     // Parent widget if applicable
     Widget* parent = nullptr;
 
+    // Events
+    std::function<void(Event&)> evtHandlers[Event::_TYPE_COUNT];
+
     std::string id;
 
     Style style;
@@ -166,10 +169,12 @@ public:
     void setOffsetTop(float value);
     void setOffsetLeft(float value);
 
-    // Event handling
+    // Events
+    virtual void handle(Event& evt);
+
     void onMouseMove(std::function<void(MouseEvent&)> handler);
     void onMouseClick(std::function<void(MouseEvent&)> handler);
-    void onMouseWheel(std::function<void(MouseEvent&)> handler);
+    void onMouseWheel(std::function<void(MouseWheelEvent&)> handler);
     void onKeyDown(std::function<void(KeyEvent&)> handler);
     void onKeyUp(std::function<void(KeyEvent&)> handler);
 };

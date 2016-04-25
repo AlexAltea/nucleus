@@ -208,4 +208,23 @@ void WidgetContainer::render() {
     }
 }
 
+void WidgetContainer::handle(Event& evt) {
+    // Mouse wheel displacement
+    if (evt.type == Event::TYPE_MOUSE_WHEEL) {
+        auto& wheelEvent = static_cast<MouseWheelEvent&>(evt);
+        if (wheelEvent.delta < 0) {
+            scrollVoffset = std::min(scrollVoffset + 0.05f, 1.0f);
+        } else {
+            scrollVoffset = std::max(scrollVoffset - 0.05f, 0.0f);
+        }
+    }
+    for (auto& child : children) {
+        child->handle(evt);
+    }
+    auto& handler = evtHandlers[evt.type];
+    if (handler) {
+        handler(evt);
+    }
+}
+
 }  // namespace ui
