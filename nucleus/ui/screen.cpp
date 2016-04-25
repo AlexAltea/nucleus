@@ -14,6 +14,7 @@ Screen::Screen(UI* ui) : manager(ui) {
     body.manager = ui;
     body.style.height = 100.0_pct;
     body.style.width = 100.0_pct;
+    body.id = "body";
 }
 
 void Screen::prologue() {

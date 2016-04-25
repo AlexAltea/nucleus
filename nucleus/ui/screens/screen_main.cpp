@@ -4,7 +4,6 @@
  */
 
 #include "screen_main.h"
-#include "nucleus/filesystem/filesystem_app.h"
 #include "nucleus/ui/widgets/list.h"
 #include "nucleus/ui/ui.h"
 
@@ -14,6 +13,7 @@ ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
     const auto* defaultFont = manager->fontRegular.get();
     const auto* lightFont = manager->fontLight.get();
 
+    // Body
     body.layout = WidgetContainer::LAYOUT_VERTICAL;
 
     auto* header = new WidgetContainer(&body, "header");
@@ -22,7 +22,7 @@ ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
     header->style.background = Color{0.282f, 0.282f, 0.500f, 1.0f};
 
     auto* content = new WidgetContainer(&body, "content");
-    content->layout = WidgetContainer::LAYOUT_HORIZONTAL;
+    content->layout = WidgetContainer::LAYOUT_VERTICAL;
     content->style.background = Color{0.882f, 0.882f, 0.100f, 1.0f};
 
     auto* home = new WidgetContainer(content, "home");
@@ -52,6 +52,21 @@ ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
     platformsHeader->style.color = Color{1,1,1,1};
 
 
+    auto* platform = new WidgetContainer(content, "platform");
+    platform->layout = WidgetContainer::LAYOUT_VERTICAL;
+    platform->style.width = 100_pct;
+    platform->style.alignH = ALIGN_HORIZONTAL_CENTER;
+
+    auto* apps = new WidgetContainer(content, "apps");
+    apps->layout = WidgetContainer::LAYOUT_VERTICAL;
+    apps->style.width = 100_pct;
+    apps->style.alignH = ALIGN_HORIZONTAL_CENTER;
+
+    sys::InfoPlatform infoPlatform = sys::getInformation(core::PLATFORM_PS3);
+    for (const auto& infoApp : infoPlatform.apps) {
+        auto widgetApp = new WidgetItemApp(home);
+        widgetApp->setInfoApp(infoApp);
+    }
 
     // content->home (@from=header)
     // content->home->current

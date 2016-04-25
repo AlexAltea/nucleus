@@ -66,12 +66,14 @@ void UI::task() {
         cmdBuffer->cmdClearColor(graphics->screenBackTarget, clearColor);
 
         // Process events
+        std::unique_lock<std::mutex> lock(eventMutex);
         while (!events.empty()) {
             auto& evt = events.top();
             auto& frontScreen = screens[screens.size() - 1];
             frontScreen->handle(*evt.get());
             events.pop();
         }
+        lock.unlock();
 
         // Re-fill vertex buffers
         clearVtxBuffers();
