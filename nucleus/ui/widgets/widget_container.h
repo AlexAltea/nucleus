@@ -6,8 +6,11 @@
 #pragma once
 
 #include "nucleus/ui/widget.h"
+#include "nucleus/ui/transitions.h"
 
 #include <vector>
+
+using namespace std::literals::chrono_literals;
 
 namespace ui {
 
@@ -27,8 +30,8 @@ public:
 
     bool scrollV;
     bool scrollH;
-    float scrollVoffset = 0.0f;
-    float scrollHoffset = 0.0f;
+    Transition<float> scrollVoffset{transition::easeOut, 100ms};
+    Transition<float> scrollHoffset{transition::easeOut, 100ms};
 
     WidgetContainer() {}
     WidgetContainer(const std::string& id) : Widget(id) {}

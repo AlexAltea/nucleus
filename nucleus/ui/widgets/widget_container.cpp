@@ -210,7 +210,7 @@ void WidgetContainer::render() {
 
 void WidgetContainer::handle(Event& evt) {
     // Mouse wheel displacement
-    if (evt.type == Event::TYPE_MOUSE_WHEEL) {
+    if (scrollV && evt.type == Event::TYPE_MOUSE_WHEEL) {
         auto& wheelEvent = static_cast<MouseWheelEvent&>(evt);
         if (wheelEvent.delta < 0) {
             scrollVoffset = std::min(scrollVoffset + 0.1f, 1.0f);
