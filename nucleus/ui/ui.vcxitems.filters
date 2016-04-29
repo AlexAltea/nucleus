@@ -49,6 +49,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item_app.h">
       <Filter>widgets\composite</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_button.h">
+      <Filter>widgets\composite</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)icon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_container.cpp">
@@ -77,6 +81,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)surface.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)font.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item_app.cpp">
+      <Filter>widgets\composite</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_button.cpp">
       <Filter>widgets\composite</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,5 +11,5 @@
 #include "widget_text.h"
 
 // Composite widgets
+#include "composite/widget_button.h"
 #include "composite/widget_item_app.h"
-

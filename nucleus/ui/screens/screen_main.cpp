@@ -16,14 +16,28 @@ ScreenMain::ScreenMain(UI* manager) : Screen(manager) {
     // Body
     body.layout = WidgetContainer::LAYOUT_VERTICAL;
 
+    // Header
     auto* header = new WidgetContainer(&body, "header");
+    header->layout = WidgetContainer::LAYOUT_HORIZONTAL;
+    header->style.alignH = ALIGN_HORIZONTAL_CENTER;
+    header->style.alignV = ALIGN_VERTICAL_BOTTOM;
     header->style.width = 100_pct;
     header->style.height = 100_px;
     header->style.background = Color{0.282f, 0.282f, 0.500f, 1.0f};
 
+    auto* buttonHome = new WidgetButton(header);
+    buttonHome->setDesign(WidgetButton::DESIGN_HEADER);
+    buttonHome->setIcon(ICON_HOME);
+    buttonHome->setText("Home");
+    auto* buttonSettings = new WidgetButton(header);
+    buttonSettings->setDesign(WidgetButton::DESIGN_HEADER);
+    buttonSettings->setIcon(ICON_SETTINGS);
+    buttonSettings->setText("Settings");
+
+    // Content
     auto* content = new WidgetContainer(&body, "content");
     content->layout = WidgetContainer::LAYOUT_VERTICAL;
-    content->style.background = Color{0.882f, 0.882f, 0.100f, 1.0f};
+    content->style.background = Color{0.157f, 0.157f, 0.360f, 1.0f};
 
     auto* home = new WidgetContainer(content, "home");
     home->layout = WidgetContainer::LAYOUT_VERTICAL;

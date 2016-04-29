@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)font.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)icon.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)language.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)length.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)screen.h" />
@@ -28,6 +29,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)transitions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ui.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widget.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_button.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item_app.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)widgets\widget_container.h" />
@@ -45,6 +47,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)transitions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ui.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widget.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_button.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\composite\widget_item_app.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_container.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)widgets\widget_image.cpp" />

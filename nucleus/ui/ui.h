@@ -45,6 +45,7 @@ public:
     std::unique_ptr<Font> fontRegular;
     std::unique_ptr<Font> fontBold;
     std::unique_ptr<Font> fontLight;
+    std::unique_ptr<Font> fontIcon;
 
     // Constructor
     UI(std::shared_ptr<gfx::IBackend> graphics, Size width, Size height);

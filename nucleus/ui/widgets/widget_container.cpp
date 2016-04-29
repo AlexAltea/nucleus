@@ -106,8 +106,8 @@ void WidgetContainer::dimensionalize() {
             child->dimensionalize();
             auto cw = child->getMarginWidth();
             auto ch = child->getMarginHeight();
-            compWidth = std::max(ch, compWidth);
-            vertWidth += cw;
+            compHeight = std::max(ch, compHeight);
+            compWidth += cw;
         }
     }
 
@@ -193,12 +193,12 @@ void WidgetContainer::render() {
 
         for (auto& child : children) {
             // Correct vertical alignment
-            switch (style.alignH) {
-            case ALIGN_HORIZONTAL_LEFT:
+            switch (style.alignV) {
+            case ALIGN_VERTICAL_TOP:
                 child->setOffsetTop(childOffsetTop); break;
-            case ALIGN_HORIZONTAL_CENTER:
+            case ALIGN_VERTICAL_CENTER:
                 child->setOffsetTop(childOffsetTop + (getContentHeight() - child->getBorderHeight()) / 2.0); break;
-            case ALIGN_HORIZONTAL_RIGHT:
+            case ALIGN_VERTICAL_BOTTOM:
                 child->setOffsetTop(childOffsetTop + (getContentHeight() - child->getBorderHeight())); break;
             }
             child->setOffsetLeft(childOffsetLeft);
