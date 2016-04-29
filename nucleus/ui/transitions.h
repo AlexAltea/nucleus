@@ -43,10 +43,18 @@ public:
      * @param[in]  value  Value to set the transition value to
      */
     Transition<T>& operator=(const T& value) {
-        source = target;
+        auto now = Clock::now();
+        if (now <= end) {
+            double elapsedTicks = (now - start).count();
+            double durationTicks = duration.count();
+            auto a = elapsedTicks / durationTicks;
+            source = (1 - a) * source + a * target;
+        } else {
+            source = target;
+        }
         target = value;
-        start = Clock::now();
-        end = start + duration;
+        start = now;
+        end = now + duration;
         return *this;
     }
 

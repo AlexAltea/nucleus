@@ -12,10 +12,16 @@ namespace ui {
 void WidgetItemApp::setInfoApp(const sys::InfoApp& info) {
     const auto* lightFont = manager->fontLight.get();
 
+    style.width = 600_px;
+    style.height = 70_px;
+
     wName = std::make_unique<WidgetText>(this);
-    wVersion = std::make_unique<WidgetText>(this);
     wName->update(lightFont, 30_px, info.name);
+    wName->style.color = Color{1,1,1,1};
+
+    wVersion = std::make_unique<WidgetText>(this);
     wVersion->update(lightFont, 20_px, info.version);
+    wVersion->style.color = Color{1,1,1,1};
 }
 
 }  // namespace ui
