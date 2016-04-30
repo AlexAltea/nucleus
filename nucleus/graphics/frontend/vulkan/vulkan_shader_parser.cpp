@@ -144,7 +144,7 @@ bool VulkanShaderParser::checkHeader(const U32* header) {
     return true;
 }
 
-Module* VulkanShaderParser::parse(const char* data, size_t size) {
+Module* VulkanShaderParser::parse(const char* data, Size size) {
     initialize();
     assert_true(size % 4 == 0, "SPIR-V binary size should be a multiple of 4");
     assert_true(size > 0x30, "SPIR-V binary size should be at least 0x30");
@@ -161,13 +161,13 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
     module->idInstructions.resize(words[3]);
 
     // Parse instruction stream
-    size_t i = 5;
+    Size i = 5;
     while (i < totalWordCount) {
         // Instruction header
         const U32 header = words[i];
         constexpr Literal mask = (1 << spv::WordCountShift) - 1;
         U16 wordCount = (header >> spv::WordCountShift) & mask;
-        size_t operandCount = wordCount - 1;
+        Size operandCount = wordCount - 1;
         assert_true(i + wordCount <= totalWordCount, "Instruction operands do not fit in the given buffer");
         i += 1;
 
@@ -187,6 +187,7 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
         // Special instructions
         switch (opcode) {
         case spv::OpLabel:
+            assert_true(function, "OpLabel can only appear inside a function");
             block = new Block(*function, resultId);
             break;
         case spv::OpFunction:
@@ -196,7 +197,7 @@ Module* VulkanShaderParser::parse(const char* data, size_t size) {
 
         // Create instruction and push operands
         Instruction* instruction = new Instruction(opcode, typeId, resultId);
-        for (size_t operandIndex = 0; operandIndex < operandCount; operandIndex++) {
+        for (Size operandIndex = 0; operandIndex < operandCount; operandIndex++) {
             instruction->operands.push_back(words[i++]);
         }
         module->idInstructions[resultId] = instruction;

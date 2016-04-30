@@ -21,16 +21,15 @@ bool isValid(fs::File* file) {
         return false;
     }
     else if (type == FILETYPE_SELF) {
-        logger.warning(LOG_COMMON, "sce::scei::orbis: SELF loader unimplemented");
+        logger.warning(LOG_COMMON, "sce::scei::cellos: SELF loader unimplemented");
         return false;
     }
     else if (type == FILETYPE_ELF) {
-        Elf64_Ehdr<LE> eh;
+        Elf64_Ehdr<BE> eh;
         file->seek(0, fs::SeekSet);
         file->read(&eh, sizeof(eh));
         return eh.elf_class == ELFCLASS64 &&
             eh.data == ELFDATA2MSB &&
-            eh.abi_ver == ELFOSABI_CELL_LV2 && 
             eh.machine == EM_PPC64 &&
             eh.type == ET_EXEC;
     }

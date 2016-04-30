@@ -9,7 +9,7 @@
 namespace cpu {
 namespace backend {
 
-Assembler::Assembler(size_t codeSize, void* codeAddr) :
+Assembler::Assembler(Size codeSize, void* codeAddr) :
     codeSize(codeSize), codeAddr(codeAddr) {
     curAddr = codeAddr;
     curSize = 0;

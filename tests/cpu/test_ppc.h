@@ -84,7 +84,7 @@ protected:
         PPCAssembler a(sizeof(buffer), buffer);
         ppcFunc(a);
 
-        for (size_t i = 0; (i * sizeof(U32)) < a.curSize; i++) {
+        for (Size i = 0; (i * sizeof(U32)) < a.curSize; i++) {
             Instruction instr;
             instr.value = static_cast<U32*>(a.codeAddr)[i];
             auto method = get_entry(instr).recompile;

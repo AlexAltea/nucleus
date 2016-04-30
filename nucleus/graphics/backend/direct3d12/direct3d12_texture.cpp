@@ -38,7 +38,7 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
 
     D3D12_CLEAR_VALUE clearValue = {};
     D3D12_CLEAR_VALUE* clearValuePtr = nullptr;
-    D3D12_RESOURCE_STATES resourceState;
+    D3D12_RESOURCE_STATES resourceState = D3D12_RESOURCE_STATE_COMMON;
     if (desc.data) {
         resourceState = D3D12_RESOURCE_STATE_COPY_DEST;
     } else {
@@ -176,6 +176,7 @@ bool Direct3D12Texture::upload(ID3D12Device* device, ID3D12CommandQueue* queue, 
 
     // Wait until completion to delete intermediates
     HANDLE fenceEvent = CreateEventEx(NULL, FALSE, FALSE, EVENT_ALL_ACCESS);
+    assert_true(fenceEvent != 0);
     fence->SetEventOnCompletion(1, fenceEvent);
     WaitForSingleObject(fenceEvent, INFINITE);
 

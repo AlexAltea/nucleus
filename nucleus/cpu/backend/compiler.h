@@ -56,7 +56,7 @@ public:
     virtual bool call(hir::Function* function, void* state, const std::vector<hir::Value*>& args = {}) = 0;
 
     // Manage RWX memory
-    void* allocRWXMemory(size_t size);
+    void* allocRWXMemory(Size size);
     void freeRWXMemory(void* addr);
 };
 

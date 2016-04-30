@@ -36,7 +36,9 @@ bool Direct3D12CommandBuffer::initialize(ID3D12Device* device) {
 }
 
 bool Direct3D12CommandBuffer::reset() {
-    HRESULT hr = list->Reset(allocator, nullptr);
+    HRESULT hr;
+    hr = allocator->Reset();
+    hr = list->Reset(allocator, nullptr);
     return SUCCEEDED(hr);
 }
 

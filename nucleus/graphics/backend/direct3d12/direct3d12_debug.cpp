@@ -4,6 +4,7 @@
  */
 
 #include "direct3d12_debug.h"
+#include "nucleus/assert.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 #include "nucleus/logger/logger.h"
 
@@ -134,7 +135,9 @@ void Direct3D12Debug::print(DXGI_INFO_QUEUE_MESSAGE* msg) {
     }
 
     OLECHAR* producerStr;
-    StringFromCLSID(msg->Producer, &producerStr);
+    HRESULT hr = StringFromCLSID(msg->Producer, &producerStr);
+    assert_true(SUCCEEDED(hr));
+
     logger.error(LOG_GRAPHICS, "DXGI Debug Message (Category: %s, Severity: %s, Producer: {%s}, ID: %d):\n%s",
         categoryName, severityName, producerStr, msg->ID, msg->pDescription);
     CoTaskMemFree(producerStr);

@@ -47,7 +47,7 @@ void Compiler::addPass(std::unique_ptr<Pass> pass) {
     passes.push_back(std::move(pass));
 }
 
-void* Compiler::allocRWXMemory(size_t size) {
+void* Compiler::allocRWXMemory(Size size) {
     void* addr = malloc(size);
 
     // Enable execution permissions
