@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "externals", "externals", "{697C8FFB-2D7C-418D-A387-054747206AC2}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "externals\zlib\zlib.vcxproj", "{F761046E-6C38-4428-A5F1-38391A37BB34}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{04EA3EAD-EA25-4335-8AB4-743FD64EA58E}"
 EndProject
@@ -13,9 +11,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wrappers", "wrappers", "{23
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nucleus", "nucleus", "{A7460D25-D247-4280-A724-C612EF91F823}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "android", "android", "{4DDEF118-646F-4D39-BE6C-F17A36F8897D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ios", "ios", "{FD34974D-3536-4275-9D08-F7139316C1DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "uwp", "uwp", "{689B6B8F-CB14-47B8-9442-76C86A4C7EDB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "windows", "windows", "{24581052-23E5-4B55-A9BD-86AC313E727A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "externals\zlib\zlib.vcxproj", "{F761046E-6C38-4428-A5F1-38391A37BB34}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_cpu", "tests\cpu\test_cpu.vcxproj", "{B1FF30F1-16CC-43E9-A896-CE8D54312F62}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus-windows", "wrappers\windows\nucleus-windows.vcxproj", "{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F761046E-6C38-4428-A5F1-38391A37BB34} = {F761046E-6C38-4428-A5F1-38391A37BB34}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus-uwp", "wrappers\uwp\nucleus-uwp.vcxproj", "{B93FE3B0-3DAE-45B0-88DE-F8568F3E04AB}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -48,14 +59,6 @@ Project("{39E2626F-3545-4960-A6E8-258AD8476CE5}") = "nucleus-android", "wrappers
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus-ios", "wrappers\ios\nucleus-ios.xcodeproj\nucleus-ios.pbxproj", "{F4F6000F-F006-421A-95C0-64451AB14ABD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "android", "android", "{4DDEF118-646F-4D39-BE6C-F17A36F8897D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ios", "ios", "{FD34974D-3536-4275-9D08-F7139316C1DC}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "uwp", "uwp", "{689B6B8F-CB14-47B8-9442-76C86A4C7EDB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "windows", "windows", "{24581052-23E5-4B55-A9BD-86AC313E727A}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nucleus-android-native", "wrappers\android\nucleus-android-native.vcxproj", "{5ABBEF76-750E-453E-8F40-E3F17FB28224}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "graphics-direct3d12", "nucleus\graphics\backend\graphics-direct3d12.vcxitems", "{F52A48CF-B8CD-473B-915F-A58A3259FE0B}"
@@ -76,32 +79,20 @@ Global
 		nucleus\graphics\graphics.vcxitems*{2d30f46f-665a-4d03-8d33-f2a810e98af2}*SharedItemsImports = 9
 		nucleus\audio\backend\audio-xaudio2.vcxitems*{623f605f-427f-4b3e-93a1-e644a70543aa}*SharedItemsImports = 9
 		nucleus\filesystem\filesystem.vcxitems*{7ec60005-180c-4cc7-ae7c-a0c3058f4f26}*SharedItemsImports = 9
-		nucleus\logger\logger.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\debugger\debugger.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\memory\memory.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\core\core.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\gpu\gpu.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\ui\ui.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\system\system.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\graphics\backend\graphics-vulkan.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\cpu\cpu.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\graphics\graphics.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\audio\audio.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
-		nucleus\filesystem\filesystem.vcxitems*{5abbef76-750e-453e-8f40-e3f17fb28224}*SharedItemsImports = 4
 		nucleus\core\core.vcxitems*{e7be9e89-784d-49a9-9e30-506b6d99e4e4}*SharedItemsImports = 9
-		nucleus\logger\logger.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
+		nucleus\audio\audio.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\debugger\debugger.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
-		nucleus\memory\memory.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
+		nucleus\graphics\backend\graphics-vulkan.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\core\core.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\audio\backend\audio-xaudio2.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
+		nucleus\filesystem\filesystem.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
+		nucleus\logger\logger.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\gpu\gpu.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\ui\ui.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
-		nucleus\system\system.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
-		nucleus\graphics\backend\graphics-vulkan.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\cpu\cpu.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
+		nucleus\memory\memory.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
+		nucleus\system\system.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\graphics\graphics.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
-		nucleus\audio\audio.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
-		nucleus\filesystem\filesystem.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\graphics\backend\graphics-direct3d12.vcxitems*{c5ddbb9e-692c-49f0-988f-7a3442d4dd9b}*SharedItemsImports = 4
 		nucleus\graphics\backend\graphics-direct3d12.vcxitems*{f52a48cf-b8cd-473b-915f-a58a3259fe0b}*SharedItemsImports = 9
 		nucleus\ui\ui.vcxitems*{dfcff467-3a2f-4447-9ebd-e57fb23e3e40}*SharedItemsImports = 9
@@ -112,18 +103,6 @@ Global
 		nucleus\gpu\gpu.vcxitems*{d40b9bfd-09de-49c1-8fab-800901da53fb}*SharedItemsImports = 9
 		nucleus\memory\memory.vcxitems*{21d84ac9-cc37-482c-a481-b0723c06daf5}*SharedItemsImports = 9
 		nucleus\audio\audio.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
-		nucleus\logger\logger.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\debugger\debugger.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\memory\memory.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\core\core.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\gpu\gpu.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\ui\ui.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\system\system.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\cpu\cpu.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\graphics\graphics.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\audio\audio.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\filesystem\filesystem.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
-		nucleus\graphics\backend\graphics-direct3d12.vcxitems*{b93fe3b0-3dae-45b0-88de-f8568f3e04ab}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -288,6 +267,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{4DDEF118-646F-4D39-BE6C-F17A36F8897D} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
+		{FD34974D-3536-4275-9D08-F7139316C1DC} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
+		{689B6B8F-CB14-47B8-9442-76C86A4C7EDB} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
+		{24581052-23E5-4B55-A9BD-86AC313E727A} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
 		{F761046E-6C38-4428-A5F1-38391A37BB34} = {697C8FFB-2D7C-418D-A387-054747206AC2}
 		{B1FF30F1-16CC-43E9-A896-CE8D54312F62} = {04EA3EAD-EA25-4335-8AB4-743FD64EA58E}
 		{C5DDBB9E-692C-49F0-988F-7A3442D4DD9B} = {24581052-23E5-4B55-A9BD-86AC313E727A}
@@ -305,10 +288,6 @@ Global
 		{DFCFF467-3A2F-4447-9EBD-E57FB23E3E40} = {A7460D25-D247-4280-A724-C612EF91F823}
 		{B43BEB64-2BB6-4B10-B838-F618F3EDEFE9} = {4DDEF118-646F-4D39-BE6C-F17A36F8897D}
 		{F4F6000F-F006-421A-95C0-64451AB14ABD} = {FD34974D-3536-4275-9D08-F7139316C1DC}
-		{4DDEF118-646F-4D39-BE6C-F17A36F8897D} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
-		{FD34974D-3536-4275-9D08-F7139316C1DC} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
-		{689B6B8F-CB14-47B8-9442-76C86A4C7EDB} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
-		{24581052-23E5-4B55-A9BD-86AC313E727A} = {23F66B7C-9BC8-409B-8135-3C3AC7423527}
 		{5ABBEF76-750E-453E-8F40-E3F17FB28224} = {4DDEF118-646F-4D39-BE6C-F17A36F8897D}
 		{F52A48CF-B8CD-473B-915F-A58A3259FE0B} = {A7460D25-D247-4280-A724-C612EF91F823}
 		{B18A3DA6-6A07-4E2D-88B5-C30E4EE481E3} = {A7460D25-D247-4280-A724-C612EF91F823}

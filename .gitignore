@@ -21,9 +21,11 @@
 *.app
 
 # Visual Studio files
+/Backup/
 /enc_temp_folder/
 /ipch/
 /packages/
+UpgradeLog.htm
 *.aps
 *.idc
 *.ilk
