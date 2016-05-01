@@ -17,6 +17,7 @@
 #endif
 
 // Vulkan
+#define VK_NO_PROTOTYPES
 #include "externals/vulkan/vulkan.h"
 #include "externals/vulkan/vk_platform.h"
 
@@ -27,7 +28,13 @@
 namespace gfx {
 namespace vulkan {
 
-// Load extensions
+#define DECLARE_FUNCTION(function) extern PFN_##function function;
+#define FUNCTION DECLARE_FUNCTION
+#include "vulkan.inl"
+#undef FUNCTION
+#undef DECLARE_FUNCTION
+
+// Load functions
 bool initializeVulkan();
 
 }  // namespace vulkan

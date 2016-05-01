@@ -5,11 +5,21 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+
+#include <vector>
+
 namespace gfx {
 namespace vulkan {
 
 class VulkanDebug {
 public:
+    std::vector<const char*> validationLayers;
+
+    /**
+     * Specify debugging layers
+     */
+    void enable();
 };
 
 }  // namespace vulkan

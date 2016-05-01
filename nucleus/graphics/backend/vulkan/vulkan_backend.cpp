@@ -4,6 +4,7 @@
  */
 
 #include "vulkan_backend.h"
+#include "nucleus/assert.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/graphics/backend/vulkan/vulkan.h"
 //#include "nucleus/graphics/backend/vulkan/vulkan_convert.h"
@@ -33,7 +34,20 @@ VulkanBackend::~VulkanBackend() {
 }
 
 bool VulkanBackend::initialize(const BackendParameters& params) {
-    /*VkApplicationInfo applicationInfo;
+    assert_true(initializeVulkan());
+
+    // Set Vulkan validation layers and extensions
+    debug.enable();
+    std::vector<const char*> enabledExtensions = { VK_KHR_SURFACE_EXTENSION_NAME };
+#if defined(NUCLEUS_TARGET_ANDROID)
+    enabledExtensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#elif defined(NUCLEUS_TARGET_LINUX)
+    enabledExtensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#elif defined(NUCLEUS_TARGET_WINDOWS)
+    enabledExtensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#endif
+
+    VkApplicationInfo applicationInfo;
     applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     applicationInfo.pNext = nullptr;
     applicationInfo.pApplicationName = "Nucleus";
@@ -47,12 +61,13 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     instanceInfo.pNext = nullptr;
     instanceInfo.flags = 0;
     instanceInfo.pApplicationInfo = &applicationInfo;
-    instanceInfo.enabledLayerCount = static_cast<uint32_t>(enabledLayers.size());
-    instanceInfo.ppEnabledLayerNames = enabledLayers.data();
+    instanceInfo.enabledLayerCount = static_cast<uint32_t>(debug.validationLayers.size());
+    instanceInfo.ppEnabledLayerNames = debug.validationLayers.data();
     instanceInfo.enabledExtensionCount = static_cast<uint32_t>(enabledExtensions.size());
     instanceInfo.ppEnabledExtensionNames = enabledExtensions.data();
 
-    VkResult vkr = vkCreateInstance(&instanceInfo, nullptr, &instance);
+    VkResult vkr;
+    vkr = vkCreateInstance(&instanceInfo, nullptr, &instance);
     if (vkr != VK_SUCCESS) {
         switch (vkr) {
         case VK_ERROR_INITIALIZATION_FAILED:
@@ -80,7 +95,35 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     auto err = vkCreateWin32SurfaceKHR(instance, &surfaceInfo, nullptr, &surface);
 #endif
 
-    Size queueCount = 1;
+    // Physical device
+    uint32_t gpuCount = 0;
+    vkr = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
+    if (vkr != VK_SUCCESS || gpuCount == 0) {
+        logger.error(LOG_GRAPHICS, "vkEnumeratePhysicalDevices failed or no compatible GPU detected");
+        return false;
+    }
+
+    std::vector<VkPhysicalDevice> physicalDevices(gpuCount);
+    vkr = vkEnumeratePhysicalDevices(instance, &gpuCount, physicalDevices.data());
+    if (vkr != VK_SUCCESS) {
+        logger.error(LOG_GRAPHICS, "vkEnumeratePhysicalDevices failed: Unknown reason (%d)", vkr);
+        return false;
+    }
+
+    uint32_t queueCount;
+    physicalDevice = physicalDevices[0];
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueCount, nullptr);
+    assert_true(queueCount >= 1);
+
+
+    std::vector<VkQueueFamilyProperties> queueProps(queueCount);
+    uint32_t graphicsQueueIndex;
+    for (graphicsQueueIndex = 0; graphicsQueueIndex < queueCount; graphicsQueueIndex++) {
+        if (queueProps[graphicsQueueIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            break;
+        }
+    }
+
     std::vector<float> queuePriorities(queueCount);
     queuePriorities[0] = 1.0f;
 
@@ -88,21 +131,21 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
     queueInfo.pNext = nullptr;
     queueInfo.flags = 0;
-    //queueInfo.queueFamilyIndex = ideal_queue_family_index;
-    queueInfo.queueCount = queueCount;
+    queueInfo.queueFamilyIndex = graphicsQueueIndex;
+    queueInfo.queueCount = 1;
     queueInfo.pQueuePriorities = queuePriorities.data();
 
-    VkDeviceCreateInfo deviceInfo;
+    VkDeviceCreateInfo deviceInfo = {};
     deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     deviceInfo.pNext = nullptr;
     deviceInfo.flags = 0;
     deviceInfo.queueCreateInfoCount = 1;
     deviceInfo.pQueueCreateInfos = &queueInfo;
-    deviceInfo.enabledLayerCount = static_cast<uint32_t>(enabledLayers.size());
-    deviceInfo.ppEnabledLayerNames = enabledLayers.data();
+    deviceInfo.enabledLayerCount = static_cast<uint32_t>(debug.validationLayers.size());
+    deviceInfo.ppEnabledLayerNames = debug.validationLayers.data();
     deviceInfo.enabledExtensionCount = static_cast<uint32_t>(enabledExtensions.size());
     deviceInfo.ppEnabledExtensionNames = enabledExtensions.data();
-    deviceInfo.pEnabledFeatures = &enabledFeatures;
+    deviceInfo.pEnabledFeatures = nullptr;
     vkr = vkCreateDevice(physicalDevice, &deviceInfo, nullptr, &device);
     if (vkr != VK_SUCCESS) {
         switch (vkr) {
@@ -116,7 +159,12 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
             logger.error(LOG_GRAPHICS, "vkCreateDevice failed: Unknown reason (%d)", vkr);
         }
         return false;
-    }*/
+    }
+
+    // Store device properties
+    vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+    vkGetPhysicalDeviceFeatures(physicalDevice, &physicalDeviceFeatures);
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &physicalDeviceMemoryProperties);
 
     return true;
 }

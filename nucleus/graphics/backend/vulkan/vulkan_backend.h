@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
 #include "nucleus/graphics/backend/vulkan/vulkan.h"
+#include "nucleus/graphics/backend/vulkan/vulkan_debug.h"
 
 namespace gfx {
 namespace vulkan {
@@ -15,9 +16,15 @@ namespace vulkan {
 class VulkanBackend : public IBackend {
     VkInstance instance;
     VkPhysicalDevice physicalDevice;
+    VkPhysicalDeviceProperties physicalDeviceProperties;
+    VkPhysicalDeviceFeatures physicalDeviceFeatures;
+    VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
     VkDevice device;
 
 public:
+    // Debugging
+    VulkanDebug debug;
+
     VulkanBackend();
     ~VulkanBackend();
 

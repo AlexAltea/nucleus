@@ -8,7 +8,10 @@
 namespace gfx {
 namespace vulkan {
 
-
+void VulkanDebug::enable() {
+    validationLayers.clear();
+    validationLayers.push_back("VK_LAYER_LUNARG_standard_validation");
+}
 
 }  // namespace vulkan
 }  // namespace gfx
