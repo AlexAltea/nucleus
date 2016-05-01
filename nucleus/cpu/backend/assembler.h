@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+#include <cstdint>
+
 namespace cpu {
 namespace backend {
 

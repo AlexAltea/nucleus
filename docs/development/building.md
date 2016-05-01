@@ -20,6 +20,10 @@ Below are the instructions to compile Nucleus for different platforms. If you wa
 
 * __Compiling on Windows__: Install [Visual Studio 2015](http://www.visualstudio.com/) along with the [Windows 10 SDK](https://dev.windows.com/en-us/downloads/windows-10-sdk). Open `nucleus.sln` and build the project `nucleus-uwp`.
 
+### Linux
+
+* __Compiling on Linux__: Follow the `.travis.yml` file.
+
 ### Android
 
 * __Compiling on Windows__: Install [Visual Studio 2015](http://www.visualstudio.com/) along with the [Android SDK](http://developer.android.com/sdk/index.html) and [Android NDK](https://developer.android.com/tools/sdk/ndk/index.html#download). Open `nucleus.sln` and build the project `nucleus-android`.

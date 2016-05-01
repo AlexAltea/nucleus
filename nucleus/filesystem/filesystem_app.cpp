@@ -16,11 +16,11 @@ Path AppFileSystem::getPath(Location location) {
 
 #if defined(NUCLEUS_TARGET_LINUX)
     switch (location) {
-    case APPLICATION_LOCATION_LOCAL:
+    case APP_LOCATION_LOCAL:
         path = "./"; break;
-    case APPLICATION_LOCATION_ROAMING:
+    case APP_LOCATION_ROAMING:
         path = "./"; break;
-    case APPLICATION_LOCATION_TEMP:
+    case APP_LOCATION_TEMP:
         path = "/tmp/"; break;
     default:
         assert_always("Unexpected");

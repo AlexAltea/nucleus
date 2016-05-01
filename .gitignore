@@ -41,6 +41,9 @@ UpgradeLog.htm
 *.user
 *.db
 
+# CLion files
+/.idea/
+
 # Linux
 bin/Nucleus
 CMakeFiles/

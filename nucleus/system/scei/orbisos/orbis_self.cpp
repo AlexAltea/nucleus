@@ -40,11 +40,11 @@ bool SELFLoader::load() {
     Size high = 0ULL;
     for (Size i = 0; i < eh.phnum; i++) {
         const auto& ph = (Phdr&)elf[eh.phoff + i*sizeof(Phdr)];
-        low = std::min(low, ph.vaddr);
-        high = std::min(high, ph.vaddr + ph.memsz);
+        low = std::min(low, Size(ph.vaddr));
+        high = std::min(high, Size(ph.vaddr + ph.memsz));
     }
     Size size = high - low;
-    void* elf_addr = _aligned_malloc(size, 0x4000);
+    /*void* elf_addr = _aligned_malloc(size, 0x4000);
 
     // Loading program header table
     for (U64 i = 0; i < eh.phnum; i++) {
@@ -77,7 +77,7 @@ bool SELFLoader::load() {
         default:
             assert_always("Unexpected segment type");
         }
-    }
+    }*/
     return true;
 }
 

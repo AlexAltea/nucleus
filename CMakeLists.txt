@@ -17,6 +17,7 @@ option(EMULATE_PSP     "Enable to support PlayStation Portable emulation")
 option(EMULATE_PSVITA  "Enable to support PlayStation Vita emulation")
 
 # Features
+set(FEATURE_AUDIO_BACKEND_XAUDIO2   "False")
 set(FEATURE_CPU_BACKEND_ARM         "False")
 set(FEATURE_CPU_BACKEND_X86         "False")
 set(FEATURE_GFX_BACKEND_DIRECT3D11  "False")
@@ -24,19 +25,32 @@ set(FEATURE_GFX_BACKEND_DIRECT3D12  "False")
 set(FEATURE_GFX_BACKEND_OPENGL      "False")
 set(FEATURE_GFX_BACKEND_VULKAN      "False")
 
-# Compiler platform
+# Target auto-select
+if (NOT (TARGET_ANDROID OR TARGET_IOS OR TARGET_LINUX OR TARGET_OSX OR TARGET_UWP OR TARGET_WINDOWS))
+    message(STATUS "No target system specified (-DTARGET_*=ON). Choosing target automatically...")
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        message(STATUS "Using TARGET_LINUX.")
+        set(TARGET_LINUX ON)
+    elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+        message(STATUS "Using TARGET_OSX.")
+        set(TARGET_OSX ON)
+    elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+        message(STATUS "Using TARGET_WINDOWS.")
+        set(TARGET_WINDOWS ON)
+    endif()
+endif()
+
+# Feature auto-select
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(FEATURE_GFX_BACKEND_OPENGL "True")
-    option (PLATFORM_LINUX, ON)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(FEATURE_GFX_BACKEND_OPENGL "True")
-    option (PLATFORM_OSX, ON)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    set(FEATURE_AUDIO_BACKEND_XAUDIO2  "True")
     set(FEATURE_GFX_BACKEND_DIRECT3D11 "True")
     set(FEATURE_GFX_BACKEND_DIRECT3D12 "True")
     set(FEATURE_GFX_BACKEND_OPENGL "True")
     set(FEATURE_GFX_BACKEND_VULKAN "True")
-    option (PLATFORM_WINDOWS, ON)
 endif()
 
 # Paths
@@ -55,6 +69,7 @@ endif()
 # Dependencies
 find_package(OpenGL QUIET)
 find_package(ZLIB QUIET)
+find_package(X11 QUIET)
 
 if (NOT OPENGL_FOUND)
     message(WARNING "OpenGL not found. Corresponding backend will be disabled")
@@ -82,7 +97,7 @@ macro(NUCLEUS_FILES_REMOVE)
     list(REMOVE_ITEM NUCLEUS_FILES ${FILES_REMOVE})
 endmacro()
 
-# Set platform-dependent files
+# Set target-dependent files
 if (TARGET_ANDROID)
     NUCLEUS_FILES_APPEND(
         "${NUCLEUS_PATH_SOLUTION}/wrappers/android/*.cpp"
@@ -105,35 +120,40 @@ elseif (TARGET_OSX)
     )
 elseif (TARGET_UWP)
     NUCLEUS_FILES_APPEND(
-	"${NUCLEUS_PATH_SOLUTION}/wrappers/uwp/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/uwp/*.cpp"
         "${NUCLEUS_PATH_SOLUTION}/wrappers/uwp/*.h"
     )
 elseif (TARGET_WINDOWS)
     NUCLEUS_FILES_APPEND(
-	"${NUCLEUS_PATH_SOLUTION}/wrappers/windows/*.cpp"
+        "${NUCLEUS_PATH_SOLUTION}/wrappers/windows/*.cpp"
         "${NUCLEUS_PATH_SOLUTION}/wrappers/windows/*.h"
     )
 endif()
 
 # Set feature-dependent files
+if (NOT FEATURE_AUDIO_BACKEND_XAUDIO2)
+    NUCLEUS_FILES_REMOVE(
+        "${NUCLEUS_PATH_SOLUTION}/nucleus/audio/backend/xaudio2/*"
+    )
+endif()
 if (NOT FEATURE_GFX_BACKEND_DIRECT3D11)
     NUCLEUS_FILES_REMOVE(
-	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/direct3d11/*"
+        "${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/direct3d11/*"
     )
 endif()
 if (NOT FEATURE_GFX_BACKEND_DIRECT3D12)
     NUCLEUS_FILES_REMOVE(
-	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/direct3d12/*"
+        "${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/direct3d12/*"
     )
 endif()
 if (NOT FEATURE_GFX_BACKEND_OPENGL)
     NUCLEUS_FILES_REMOVE(
-	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/opengl/*"
+        "${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/opengl/*"
     )
 endif()
 if (NOT FEATURE_GFX_BACKEND_VULKAN)
     NUCLEUS_FILES_REMOVE(
-	"${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/vulkan/*"
+        "${NUCLEUS_PATH_SOLUTION}/nucleus/graphics/backend/vulkan/*"
     )
 endif()
 
@@ -145,6 +165,9 @@ set_target_properties(nucleus PROPERTIES LINKER_LANGUAGE CXX)
 include_directories(${NUCLEUS_PATH_SOLUTION})
 
 # Set feature definitions
+if (FEATURE_AUDIO_BACKEND_XAUDIO2)
+    add_definitions(-D_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2)
+endif()
 if (FEATURE_GFX_BACKEND_DIRECT3D11)
     add_definitions(-D_NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D11)
 endif()
@@ -176,3 +199,12 @@ else()
     target_link_libraries(nucleus zlib)
 endif()
 
+# Set platform-dependent dependencies
+if (TARGET_LINUX)
+    if (X11_FOUND)
+        include_directories(${X11_INCLUDE_DIR})
+        target_link_libraries(nucleus ${X11_LIBRARIES})
+    else()
+        message(FATAL_ERROR "X11 could not be located")
+    endif()
+endif()
