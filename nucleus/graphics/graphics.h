@@ -34,6 +34,7 @@ struct BackendParameters {
     Display* display;
 #elif defined(NUCLEUS_TARGET_LINUX)
     Display* display;
+    Window window;
 #elif defined(NUCLEUS_TARGET_OSX)
     Display* display;
 #elif defined(NUCLEUS_TARGET_UWP)

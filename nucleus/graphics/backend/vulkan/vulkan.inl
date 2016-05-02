@@ -100,6 +100,16 @@ FUNCTION(vkCmdResetQueryPool)
 FUNCTION(vkCmdCopyQueryPoolResults)
 
 // Extensions
+//FUNCTION(vkCreateDebugReportCallbackEXT)
+//FUNCTION(vkDestroyDebugReportCallbackEXT)
+
+// Platform-dependent extensions
+#if defined(VK_USE_TARGET_ANDROID_KHR)
+FUNCTION(vkCreateAndroidSurfaceKHR)
+#elif defined(VK_USE_PLATFORM_XCB_KHR)
+FUNCTION(vkCreateXcbSurfaceKHR)
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+FUNCTION(vkCreateXlibSurfaceKHR)
+#elif defined(VK_USE_PLATFORM_WIN32_KHR)
 FUNCTION(vkCreateWin32SurfaceKHR)
-FUNCTION(vkCreateDebugReportCallbackEXT)
-FUNCTION(vkDestroyDebugReportCallbackEXT)
+#endif

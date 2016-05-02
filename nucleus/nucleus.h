@@ -18,12 +18,12 @@
 void nucleusConfigure(int argc, char **argv);
 
 // Initialize UI
-#if defined(NUCLEUS_TARGET_UWP)
+#if defined(NUCLEUS_TARGET_LINUX)
+void nucleusPrepare(Display* display, Window window, int width, int height);
+#elif defined(NUCLEUS_TARGET_UWP)
 void nucleusPrepare(IUnknown* window, int width, int height);
 #elif defined(NUCLEUS_TARGET_WINDOWS)
 void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height);
-#elif defined(NUCLEUS_TARGET_LINUX)
-void nucleusPrepare(Display* display);
 #endif
 
 int nucleusInitialize(int argc, char **argv);

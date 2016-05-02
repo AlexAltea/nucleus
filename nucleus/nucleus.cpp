@@ -16,16 +16,23 @@ void nucleusConfigure(int argc, char **argv) {
     config.parseArguments(argc, argv);
 }
 
-#if defined(NUCLEUS_TARGET_UWP)
+#if defined(NUCLEUS_TARGET_LINUX)
+void nucleusPrepare(Display* display, Window window, int width, int height) {
+    gfx::BackendParameters params = {};
+    params.display = display;
+    params.window = window;
+    params.width = width;
+    params.height = height;
+    nucleus.initialize(params);
+}
+#elif defined(NUCLEUS_TARGET_UWP)
 void nucleusPrepare(IUnknown* window, int width, int height) {
     gfx::BackendParameters params = {};
     params.window = window;
     params.width = width;
     params.height = height;
-
     nucleus.initialize(params);
 }
-
 #elif defined(NUCLEUS_TARGET_WINDOWS)
 void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height) {
     gfx::BackendParameters params = {};
@@ -33,7 +40,6 @@ void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height) {
     params.hwnd = hwnd;
     params.width = width;
     params.height = height;
-
     nucleus.initialize(params);
 }
 #endif

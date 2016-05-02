@@ -6,13 +6,28 @@
 #include "vulkan.h"
 #include "nucleus/logger/logger.h"
 
+#if defined(NUCLEUS_TARGET_LINUX)
+#include <dlfcn.h>
+#endif
+
+// Load functions
+#if defined(NUCLEUS_TARGET_LINUX)
 #define LOAD_FUNCTION(function) { \
-    function = reinterpret_cast<PFN_##function>(GetProcAddress(hmodule, #function)); \
+    function = reinterpret_cast<PFN_##function>(dlsym(module, #function)); \
     if (!function) { \
         logger.error(LOG_GRAPHICS, "Could not load Vulkan extension '%s'", #function); \
         return false; \
     } \
 }
+#elif defined(NUCLEUS_TARGET_WINDOWS)
+#define LOAD_FUNCTION(function) { \
+    function = reinterpret_cast<PFN_##function>(GetProcAddress(module, #function)); \
+    if (!function) { \
+        logger.error(LOG_GRAPHICS, "Could not load Vulkan extension '%s'", #function); \
+        return false; \
+    } \
+}
+#endif
 
 namespace gfx {
 namespace vulkan {
@@ -24,11 +39,19 @@ namespace vulkan {
 #undef DECLARE_FUNCTION
 
 bool initializeVulkan() {
-    HMODULE hmodule = LoadLibrary("vulkan-1.dll");
-    if (!hmodule) {
-        logger.error(LOG_GRAPHICS, "initializeDirect3D12: Could not load vulkan-1.dll module");
+#if defined(NUCLEUS_TARGET_LINUX)
+    void* module = dlopen("libvulkan.so", RTLD_NOW | RTLD_LOCAL);
+    if (!module) {
+        logger.error(LOG_GRAPHICS, "initializeVulkan: Could not load libvulkan.so module");
         return false;
     }
+#elif defined(NUCLEUS_TARGET_WINDOWS)
+    HMODULE module = LoadLibrary("vulkan-1.dll");
+    if (!module) {
+        logger.error(LOG_GRAPHICS, "initializeVulkan: Could not load vulkan-1.dll module");
+        return false;
+    }
+#endif
 
 #define FUNCTION LOAD_FUNCTION
 #include "vulkan.inl"

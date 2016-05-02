@@ -39,11 +39,11 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     // Set Vulkan validation layers and extensions
     debug.enable();
     std::vector<const char*> enabledExtensions = { VK_KHR_SURFACE_EXTENSION_NAME };
-#if defined(NUCLEUS_TARGET_ANDROID)
+#if defined(VK_USE_TARGET_ANDROID_KHR)
     enabledExtensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#elif defined(NUCLEUS_TARGET_LINUX)
-    enabledExtensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
-#elif defined(NUCLEUS_TARGET_WINDOWS)
+#elif defined(VK_USE_PLATFORM_XLIB_KHR)
+    enabledExtensions.push_back(VK_KHR_XLIB_SURFACE_EXTENSION_NAME);
+#elif defined(VK_USE_PLATFORM_WIN32_KHR)
     enabledExtensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #endif
 
@@ -85,15 +85,24 @@ bool VulkanBackend::initialize(const BackendParameters& params) {
     }
 
     VkSurfaceKHR surface = nullptr;
-#ifdef NUCLEUS_TARGET_WINDOWS
+#if defined(VK_USE_PLATFORM_XLIB_KHR)
+    VkXlibSurfaceCreateInfoKHR surfaceInfo;
+    surfaceInfo.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+    surfaceInfo.pNext = nullptr;
+    surfaceInfo.flags = 0;
+    surfaceInfo.dpy = params.display;
+    surfaceInfo.window = params.window;
+    vkr = vkCreateXlibSurfaceKHR(instance, &surfaceInfo, nullptr, &surface);
+#elif defined(VK_USE_PLATFORM_WIN32_KHR)
     VkWin32SurfaceCreateInfoKHR surfaceInfo;
     surfaceInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     surfaceInfo.pNext = nullptr;
     surfaceInfo.flags = 0;
     surfaceInfo.hinstance = params.hinstance;
     surfaceInfo.hwnd = params.hwnd;
-    auto err = vkCreateWin32SurfaceKHR(instance, &surfaceInfo, nullptr, &surface);
+    vkr = vkCreateWin32SurfaceKHR(instance, &surfaceInfo, nullptr, &surface);
 #endif
+    assert_true(vkr == VK_SUCCESS);
 
     // Physical device
     uint32_t gpuCount = 0;

@@ -130,7 +130,7 @@ bool Emulator::initialize(const gfx::BackendParameters& params) {
         break;
 #endif
      default:
-        logger.warning(LOG_COMMON, "Unsupported graphics backend");
+        logger.warning(LOG_COMMON, "Unsupported audio backend");
         return false;
     }
 

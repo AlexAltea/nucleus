@@ -11,6 +11,7 @@
 #include <X11/Xutil.h>
 
 #include <cstring>
+#include <thread>
 
 int main(int argc, char **argv) {
     // Load configuration
@@ -41,19 +42,34 @@ int main(int argc, char **argv) {
         XSetForeground(display, gc, foreground);
         XSelectInput(display, window, ButtonPressMask | KeyPressMask | ExposureMask);
         XMapRaised(display, window);
-        
-        int done = 0;
+
+        nucleusPrepare(display, window, hint.width, hint.height);
+        auto thread = std::thread([&]{
+            nucleusInitialize(argc, argv);
+        });
+
+        Atom wmDeleteMessage = XInternAtom(display, "WM_DELETE_WINDOW", False);
+        XSetWMProtocols(display, window, &wmDeleteMessage, 1);
+        bool done = false;
         while (!done) {
             XEvent evt;
             XNextEvent(display, &evt);
             switch(evt.type) {
+            case ClientMessage:
+                if (evt.xclient.data.l[0] == wmDeleteMessage) {
+                    done = true;
+                }
+                break;
             case MappingNotify:
                 XRefreshKeyboardMapping(&evt.xmapping);
                 break;
             case ButtonPress:
-	        nucleusOnMouseClick(evt.xbutton.x, evt.xbutton.y);
+                nucleusOnMouseClick(evt.xbutton.x, evt.xbutton.y);
                 break;
             case KeyPress:
+                break;
+
+            default:
                 break;
             }
         }
