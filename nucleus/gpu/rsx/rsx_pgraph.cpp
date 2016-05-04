@@ -22,6 +22,10 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* me
     cmdQueue = graphics->getGraphicsCommandQueue();
     cmdBuffer = graphics->createCommandBuffer();
 
+    // Fence
+    gfx::FenceDesc fenceDesc = {};
+    fence = graphics->createFence(fenceDesc);
+
     // Vertex Buffer for VPE constant registers
     gfx::VertexBufferDesc vtxConstantBufferDesc;
     vtxConstantBufferDesc.size = 468 * sizeof(V128);
@@ -248,8 +252,10 @@ void PGRAPH::Begin(Primitive primitive) {
     setSurface();
 
     // Set viewport
-    gfx::Viewport rectangle = { viewport.x, viewport.y, viewport.width, viewport.height };
-    cmdBuffer->cmdSetViewports(1, &rectangle);
+    gfx::Viewport viewportRect = { viewport.x, viewport.y, viewport.width, viewport.height };
+    gfx::Rectangle scissorRect = { scissor.x, scissor.y, scissor.width, scissor.height };
+    cmdBuffer->cmdSetViewports(1, &viewportRect);
+    cmdBuffer->cmdSetScissors(1, &scissorRect);
 
     // Hashing
     auto vpData = &vpe.data[vpe.start];
@@ -316,7 +322,8 @@ void PGRAPH::Begin(Primitive primitive) {
 
 void PGRAPH::End() {
     cmdBuffer->finalize();
-    cmdQueue->submit(cmdBuffer, nullptr);
+    cmdQueue->submit(cmdBuffer, fence);
+    fence->wait();
     cmdBuffer->reset();
 }
 
@@ -346,7 +353,8 @@ void PGRAPH::ClearSurface(U32 mask) {
 
     // TODO: Check if cmdBuffer is empty
     cmdBuffer->finalize();
-    cmdQueue->submit(cmdBuffer, nullptr);
+    cmdQueue->submit(cmdBuffer, fence);
+    fence->wait();
     cmdBuffer->reset();
 }
 

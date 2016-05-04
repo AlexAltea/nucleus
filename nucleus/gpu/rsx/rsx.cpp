@@ -320,6 +320,18 @@ void RSX::method(U32 offset, U32 parameter) {
         pgraph.viewport.dirty = true;
         break;
 
+    case NV4097_SET_SCISSOR_HORIZONTAL:
+        pgraph.scissor.x = parameter & 0xFFFF;
+        pgraph.scissor.width = (parameter >> 16) & 0xFFFF;
+        pgraph.scissor.dirty = true;
+        break;
+
+    case NV4097_SET_SCISSOR_VERTICAL:
+        pgraph.scissor.y = parameter & 0xFFFF;
+        pgraph.scissor.height = (parameter >> 16) & 0xFFFF;
+        pgraph.scissor.dirty = true;
+        break;
+
     case_range(32, NV4097_SET_TRANSFORM_PROGRAM, 4)
         pgraph.vpe.data[pgraph.vpe.load].word[index % 4] = parameter;
         if (index % 4 == 3) {

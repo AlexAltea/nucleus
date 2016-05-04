@@ -86,6 +86,15 @@ struct rsx_viewport_t {
     U16 y;
 };
 
+struct rsx_scissor_t {
+    bool dirty;
+
+    U16 width;
+    U16 height;
+    U16 x;
+    U16 y;
+};
+
 /**
  * Pipeline
  * ========
@@ -126,6 +135,7 @@ class PGRAPH {
 
     gfx::CommandQueue* cmdQueue;
     gfx::CommandBuffer* cmdBuffer;
+    gfx::Fence* fence;
     gfx::VertexBuffer* vpeConstantMemory;
     gfx::VertexBuffer* vpeInputs[16];
 
@@ -162,6 +172,7 @@ public:
 
     Surface surface;
     rsx_viewport_t viewport;
+    rsx_scissor_t scissor;
 
     // DMA
     U32 dma_report;
