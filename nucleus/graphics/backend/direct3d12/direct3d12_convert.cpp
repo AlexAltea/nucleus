@@ -47,6 +47,27 @@ D3D12_BLEND_OP convertBlendOp(gfx::BlendOp blendOp) {
     }
 }
 
+D3D12_CULL_MODE convertCullMode(gfx::CullMode cullMode) {
+    switch (cullMode) {
+    case CULL_MODE_NONE:   return D3D12_CULL_MODE_NONE;
+    case CULL_MODE_FRONT:  return D3D12_CULL_MODE_FRONT;
+    case CULL_MODE_BACK:   return D3D12_CULL_MODE_BACK;
+    default:
+        assert_always("Unimplemented");
+        return D3D12_CULL_MODE_NONE;
+    }
+}
+
+D3D12_FILL_MODE convertFillMode(gfx::FillMode fillMode) {
+    switch (fillMode) {
+    case FILL_MODE_SOLID:      return D3D12_FILL_MODE_SOLID;
+    case FILL_MODE_WIREFRAME:  return D3D12_FILL_MODE_WIREFRAME;
+    default:
+        assert_always("Unimplemented");
+        return D3D12_FILL_MODE_SOLID;
+    }
+}
+
 UINT8 convertColorWriteMask(gfx::ColorWriteMask mask) {
     UINT8 d3dMask = 0;
     if (mask & COLOR_WRITE_ENABLE_RED)    d3dMask |= D3D12_COLOR_WRITE_ENABLE_RED;

@@ -54,6 +54,11 @@ enum BlendEquation : U16 {
     RSX_BLEND_EQUATION_FUNC_REVERSE_ADD_SIGNED       = 0xF007,
 };
 
+enum CullMode : U16 {
+    RSX_CULL_MODE_FRONT = 0x0404,
+    RSX_CULL_MODE_BACK  = 0x0405,
+};
+
 enum ColorMask : U32 {
     RSX_COLOR_MASK_R  = (1 << (0 * 8)),
     RSX_COLOR_MASK_G  = (1 << (1 * 8)),

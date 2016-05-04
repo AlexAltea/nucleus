@@ -40,7 +40,20 @@ struct TessState {
 };
 
 // Rasterizer
+enum FillMode {
+    FILL_MODE_SOLID,      // Fill triangles formed by vertices
+    FILL_MODE_WIREFRAME,  // Draw lines connecting vertices
+};
+
+enum CullMode {
+    CULL_MODE_NONE,   // Draw all triangles
+    CULL_MODE_FRONT,  // Draw front-facing triangles
+    CULL_MODE_BACK,   // Draw back-facing triangles
+};
+
 struct RSState {
+    FillMode fillMode;
+    CullMode cullMode;
 };
 
 // Color Blender

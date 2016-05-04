@@ -277,6 +277,8 @@ void PGRAPH::Begin(Primitive primitive) {
         pipelineDesc.numSRVs = 0;
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
+        pipelineDesc.rsState.fillMode = gfx::FILL_MODE_SOLID;
+        pipelineDesc.rsState.cullMode = p.cull_face_enable ? convertCullMode(p.cull_mode) : gfx::CULL_MODE_NONE;
         pipelineDesc.cbState.colorTarget[0].enableBlend = p.blend_enable;
         pipelineDesc.cbState.colorTarget[0].enableLogicOp = p.logic_op_enable;
         pipelineDesc.cbState.colorTarget[0].blendOp = convertBlendOp(p.blend_equation_rgb);
@@ -398,10 +400,6 @@ void PGRAPH::Enable(U32 prop, U32 enabled) {
 
     case NV4097_SET_DEPTH_TEST_ENABLE:
         enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-        break;
-
-    case NV4097_SET_CULL_FACE_ENABLE:
-        enabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
         break;
 
     case NV4097_SET_BLEND_ENABLE:

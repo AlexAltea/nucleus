@@ -65,6 +65,15 @@ gfx::ColorWriteMask convertColorMask(ColorMask mask) {
     return colorWriteMask;
 }
 
+gfx::CullMode convertCullMode(CullMode cullMode) {
+    switch (cullMode) {
+    case RSX_CULL_MODE_FRONT: return gfx::CULL_MODE_FRONT;
+    case RSX_CULL_MODE_BACK:  return gfx::CULL_MODE_BACK;
+    default:
+        return gfx::CULL_MODE_NONE;
+    }
+}
+
 gfx::LogicOp convertLogicOp(LogicOp op) {
     switch (op) {
     case RSX_LOGIC_OP_CLEAR:          return gfx::LOGIC_OP_CLEAR;

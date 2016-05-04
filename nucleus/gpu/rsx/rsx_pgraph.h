@@ -98,6 +98,10 @@ struct alignas(sizeof(Hash)) Pipeline {
     U32 depth_func;
     ColorMask color_mask;
 
+    // Culling
+    bool cull_face_enable;
+    CullMode cull_mode;
+
     // Blending
     bool blend_enable;
     BlendEquation blend_equation_rgb;

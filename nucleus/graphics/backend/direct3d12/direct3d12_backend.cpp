@@ -349,8 +349,8 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     d3dDesc.PrimitiveTopologyType = convertPrimitiveTopologyType(desc.iaState.topology);
 
     // RS state
-    d3dDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID; // TODO
-    d3dDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // TODO
+    d3dDesc.RasterizerState.FillMode = convertFillMode(desc.rsState.fillMode);
+    d3dDesc.RasterizerState.CullMode = convertCullMode(desc.rsState.cullMode);
     d3dDesc.RasterizerState.DepthClipEnable = TRUE; // TODO
 
     d3dDesc.SampleMask = UINT_MAX;

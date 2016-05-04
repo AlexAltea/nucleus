@@ -165,7 +165,6 @@ void RSX::method(U32 offset, U32 parameter) {
     case NV4097_SET_ALPHA_TEST_ENABLE:
     case NV4097_SET_STENCIL_TEST_ENABLE:
     case NV4097_SET_DEPTH_TEST_ENABLE:
-    case NV4097_SET_CULL_FACE_ENABLE:
     case NV4097_SET_POLY_OFFSET_FILL_ENABLE:
     case NV4097_SET_POLY_OFFSET_LINE_ENABLE:
     case NV4097_SET_POLY_OFFSET_POINT_ENABLE:
@@ -173,6 +172,14 @@ void RSX::method(U32 offset, U32 parameter) {
     case NV4097_SET_LINE_SMOOTH_ENABLE:
     case NV4097_SET_POLY_SMOOTH_ENABLE:
         pgraph.Enable(offset, parameter);
+        break;
+
+    case NV4097_SET_CULL_FACE_ENABLE:
+        pgraph.pipeline.cull_face_enable = parameter;
+        break;
+
+    case NV4097_SET_CULL_FACE:
+        pgraph.pipeline.cull_mode = static_cast<CullMode>(parameter);
         break;
 
     case NV4097_SET_SEMAPHORE_OFFSET:
