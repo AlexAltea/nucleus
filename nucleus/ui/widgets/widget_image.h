@@ -28,6 +28,11 @@ private:
 public:
     bool isColorTarget = false;
 
+    // Minimum opacity value
+    // The alpha channel of some images (e.g. guest GPU render targets)
+    // should be ignored while displaying the buffer on screen.
+    float opacityMin = 0.0;
+
     WidgetImage() {}
     WidgetImage(const std::string& id) : Widget(id) {}
     WidgetImage(Widget* parent, const std::string& id = "") : Widget(parent, id) {}

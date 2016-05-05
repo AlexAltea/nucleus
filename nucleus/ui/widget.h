@@ -46,6 +46,7 @@ struct WidgetImageInput {
         float texcoord[2];
         float zindex;
         float opacity;
+        float opacityMin;
     } vertex[4];
 };
 struct WidgetTextInput {

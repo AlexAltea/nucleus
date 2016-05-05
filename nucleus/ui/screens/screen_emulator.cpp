@@ -19,6 +19,7 @@ ScreenEmulator::ScreenEmulator(UI* manager) : Screen(manager) {
     app->manager = manager;
     app->style.width = 100_pct;
     app->style.height = 100_pct;
+    app->opacityMin = 1.0f;
     body.addElement(app);
 }
 

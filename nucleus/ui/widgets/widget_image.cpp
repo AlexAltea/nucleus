@@ -39,6 +39,7 @@ gfx::Pipeline* WidgetImage::createPipeline(gfx::IBackend& backend) {
         { 1, gfx::FORMAT_R32G32_FLOAT,  0,  8, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // TexCoord
         { 2, gfx::FORMAT_R32_FLOAT,     0, 16, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Z-Index
         { 3, gfx::FORMAT_R32_FLOAT,     0, 20, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // Opacity
+        { 4, gfx::FORMAT_R32_FLOAT,     0, 24, 0, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }, // OpacityMin
     };
     pipelineDesc.cbState.colorTarget[0] = {
         true, false,
@@ -151,6 +152,10 @@ void WidgetImage::render() {
     V1.opacity = style.opacity;
     V2.opacity = style.opacity;
     V3.opacity = style.opacity;
+    V0.opacityMin = opacityMin;
+    V1.opacityMin = opacityMin;
+    V2.opacityMin = opacityMin;
+    V3.opacityMin = opacityMin;
 
     // Texture coordinates assume top-left is (0,0) and bottom-right is (1,1)
     V0.texcoord[0] = 0.0; V0.texcoord[1] = 1.0;
