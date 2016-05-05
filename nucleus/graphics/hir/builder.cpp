@@ -338,7 +338,7 @@ Literal Builder::makeConstantFloat(F32 c) {
     }
     Instruction* i = createInstr(OP_CONSTANT, true);
     i->typeId = typeId;
-    i->operands.push_back(c);
+    i->operands.push_back(reinterpret_cast<Literal&>(c));
     cache[CACHE_CONSTANT_FLOAT].push_back(i);
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;

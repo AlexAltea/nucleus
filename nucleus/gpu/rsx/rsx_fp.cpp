@@ -25,18 +25,18 @@ const RSXFragmentProgramInput rsxInputs[] = {
     {  0, { DECORATION_BUILTIN,   BUILTIN_FRAGCOORD } },
     {  1, { DECORATION_LOCATION,  1} },
     {  2, { DECORATION_LOCATION,  2} },
-    {  3, { DECORATION_LOCATION,  3} },
-    {  4, { DECORATION_LOCATION,  4} },
-    {  5, { DECORATION_LOCATION,  5} },
-    {  6, { DECORATION_LOCATION,  6} },
-    {  7, { DECORATION_LOCATION,  7} },
-    {  8, { DECORATION_LOCATION,  8} },
-    {  9, { DECORATION_LOCATION,  9} },
-    { 10, { DECORATION_LOCATION, 10} },
-    { 11, { DECORATION_LOCATION, 11} },
-    { 12, { DECORATION_LOCATION, 12} },
-    { 13, { DECORATION_LOCATION, 13} },
-    { 14, { DECORATION_LOCATION, 14} },
+    {  3, { DECORATION_LOCATION,  0} },
+    {  4, { DECORATION_LOCATION,  7} },
+    {  5, { DECORATION_LOCATION,  8} },
+    {  6, { DECORATION_LOCATION,  9} },
+    {  7, { DECORATION_LOCATION,  10} },
+    {  8, { DECORATION_LOCATION,  11} },
+    {  9, { DECORATION_LOCATION,  12} },
+    { 10, { DECORATION_LOCATION,  13} },
+    { 11, { DECORATION_LOCATION,  14} },
+    { 12, { DECORATION_LOCATION,  15} },
+    { 13, { DECORATION_LOCATION,  6} },
+    { 14, { DECORATION_BUILTIN,   BUILTIN_FRONTFACING} },
 };
 
 // Output registers
@@ -130,10 +130,10 @@ Literal RSXFragmentProgram::getSourceVector(int index) {
         break;
     case RSX_FP_REGISTER_TYPE_CONSTANT:
         sourceId = builder.makeConstantComposite(vecTypeId, {
-            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[0])),
-            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[1])),
-            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[2])),
-            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[3])),
+            builder.makeConstantFloat(get_word<F32>(instr_ptr->word[0])),
+            builder.makeConstantFloat(get_word<F32>(instr_ptr->word[1])),
+            builder.makeConstantFloat(get_word<F32>(instr_ptr->word[2])),
+            builder.makeConstantFloat(get_word<F32>(instr_ptr->word[3])),
         });
         instr_ptr++;
         break;
@@ -178,8 +178,10 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
     tempsHalf.resize(48);
     samplers.resize(16);
 
-    // TODO: Always place FragCoord position as input. Do the same with other inputs and outputs in all shader stages
-    getInputReg(0);
+    // Reference all linkable registers
+    for (const auto& reg : { 0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }) {
+        getInputReg(reg);
+    }
 
     // Temporary values
     Literal src0, src1, src2;

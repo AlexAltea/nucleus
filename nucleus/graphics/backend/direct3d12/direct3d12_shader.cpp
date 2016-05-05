@@ -641,7 +641,7 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
     HRESULT hr = _D3DCompile(source.data(), source.size(), "shader", nullptr, nullptr, "main", target, compileFlags, 0, &bytecode, &errors);
     if (FAILED(hr)) {
         LPVOID errorString = errors->GetBufferPointer();
-        logger.error(LOG_GPU, "Direct3D12Shader::initialize: Cannot compile shader (0x%X):\n%s", hr, errorString);
+        logger.error(LOG_GPU, "Direct3D12Shader::initialize: Cannot compile shader (0x%X):\n%s\nShader source:%s\n", hr, errorString, source.data());
         return false;
     }
 

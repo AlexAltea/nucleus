@@ -174,6 +174,11 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     inputs.resize(16);
     outputs.resize(16);
 
+    // Reference all linkable registers
+    for (const auto& reg : { 0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }) {
+        getOutputReg(reg);
+    }
+
     // Temporary values
     Literal src0, src1, src2;
     Literal tmp0, tmp1, tmp2;

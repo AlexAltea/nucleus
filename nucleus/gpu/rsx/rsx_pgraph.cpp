@@ -252,7 +252,9 @@ void PGRAPH::Begin(Primitive primitive) {
     setSurface();
 
     // Set viewport
-    gfx::Viewport viewportRect = { viewport.x, viewport.y, viewport.width, viewport.height };
+    viewport.width = 1280; // TODO: Why is this failing?
+    scissor.width = 1280;  // TODO: Why is this failing?
+    gfx::Viewport viewportRect = { viewport.x, viewport.y, viewport.width, viewport.height, 0.0f, 1.0f };
     gfx::Rectangle scissorRect = { scissor.x, scissor.y, scissor.width, scissor.height };
     cmdBuffer->cmdSetViewports(1, &viewportRect);
     cmdBuffer->cmdSetScissors(1, &scissorRect);

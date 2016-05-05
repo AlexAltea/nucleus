@@ -310,7 +310,7 @@ void RSX::method(U32 offset, U32 parameter) {
 
     case NV4097_SET_VIEWPORT_HORIZONTAL:
         pgraph.viewport.x = parameter & 0xFFFF;
-        pgraph.viewport.width = 1280;//(parameter >> 16) & 0xFFFF;  // TODO: Why is this failing?
+        pgraph.viewport.width = (parameter >> 16) & 0xFFFF;
         pgraph.viewport.dirty = true;
         break;
 
