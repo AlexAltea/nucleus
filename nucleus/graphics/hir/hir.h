@@ -76,6 +76,10 @@ enum FunctionControl {
     FUNCTION_CONTROL_CONST        = (1 << 3),
 };
 
+enum ImageFormat {
+    IMAGE_FORMAT_UNKNOWN = 0,
+};
+
 enum BuiltIn {
     BUILTIN_POSITION = 0,
     BUILTIN_POINTSIZE = 1,

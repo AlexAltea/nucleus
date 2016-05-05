@@ -169,6 +169,7 @@ private:
     std::unique_ptr<Module> module;
     Builder builder;
     Literal vecTypeId;
+    Literal samplerTypeId;
     std::vector<Literal> entryPointInterface;
 
     // Registers
@@ -178,8 +179,8 @@ private:
     std::vector<Literal> samplers;
 
     Literal getInputReg(int index);
-    Literal getTempReg(int index, bool isHalf);
     Literal getSamplerReg(int index);
+    Literal getTempReg(int index, bool isHalf);    
 
     Literal getConstant(F32 x0, F32 x1, F32 x2, F32 x3);
 

@@ -70,6 +70,15 @@ Literal RSXFragmentProgram::getInputReg(int index) {
     return inputReg;
 }
 
+Literal RSXFragmentProgram::getSamplerReg(int index) {
+    Literal& samplerReg = samplers[index];
+    if (!samplerReg) {
+        samplerReg = builder.opVariable(STORAGE_CLASS_UNIFORM_CONSTANT, samplerTypeId);
+        builder.addDecoration(samplerReg, DECORATION_BINDING, index);
+    }
+    return builder.opLoad(samplerReg);
+}
+
 Literal RSXFragmentProgram::getTempReg(int index, bool isHalf) {
     Literal& tempReg = tempsSingle[index];
     if (!tempReg) {
@@ -120,12 +129,12 @@ Literal RSXFragmentProgram::getSourceVector(int index) {
         sourceId = builder.opLoad(getInputReg(instr.input_index));
         break;
     case RSX_FP_REGISTER_TYPE_CONSTANT:
-        assert_always("Unimplemented");
-        /*src = format("vec4(%f, %f, %f, %f)",
-            get_word<F32>(instr_ptr->word[0]),
-            get_word<F32>(instr_ptr->word[1]),
-            get_word<F32>(instr_ptr->word[2]),
-            get_word<F32>(instr_ptr->word[3]));*/
+        sourceId = builder.makeConstantComposite(vecTypeId, {
+            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[0])),
+            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[1])),
+            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[2])),
+            builder.makeConstantFloat(reinterpret_cast<const F32&>(instr_ptr->word[3])),
+        });
         instr_ptr++;
         break;
     }
@@ -156,6 +165,9 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
     // Basic types
     Literal floatType = builder.opTypeFloat(32);
     vecTypeId = builder.opTypeVector(floatType, 4);
+    samplerTypeId = builder.opTypeSampledImage(
+        builder.opTypeImage(floatType, DIMENSION_2D, 0, 0, 0, 1, IMAGE_FORMAT_UNKNOWN)
+    );
 
     Function* function = new Function(*module.get(), builder.opTypeFunction(builder.opTypeVoid()));
     Block* block = new Block(*function);
@@ -172,6 +184,7 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
     // Temporary values
     Literal src0, src1, src2;
     Literal tmp0, tmp1, tmp2;
+    Literal tex;
 
     // Shader body
     instr_ptr = buffer;
@@ -195,9 +208,11 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
             src1 = getSourceVector(1);
             setDestVector(builder.opFMul(src0, src1));
             break;
-        /*case RSX_FP_OPCODE_TEX:
-            source += format("%s = texture(%s, %s.xy)%s;", DST(), TEX(), SRC(0), get_fp_mask(instr.dst_mask));
-            break;*/
+        case RSX_FP_OPCODE_TEX:
+            src0 = getSourceVector(0);
+            tex = getSamplerReg(instr.tex);
+            setDestVector(builder.opImageSampleImplicitLod(vecTypeId, tex, src0));
+            break;
         case RSX_FP_OPCODE_FENCB:
             break;
         default:

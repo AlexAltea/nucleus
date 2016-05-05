@@ -246,6 +246,30 @@ Literal Builder::opTypePointer(StorageClass storageClass, Literal type) {
     return i->resultId;
 }
 
+Literal Builder::opTypeImage(Literal sampledType, Dimension dim, Literal depth, Literal arrayed, Literal ms, Literal sampled, ImageFormat format) {
+    // TODO: Search in cache
+    // Make type
+    Instruction* i = createInstr(OP_TYPE_IMAGE, true);
+    i->operands.push_back(sampledType);
+    i->operands.push_back(dim);
+    i->operands.push_back(depth);
+    i->operands.push_back(arrayed);
+    i->operands.push_back(ms);
+    i->operands.push_back(sampled);
+    i->operands.push_back(format);
+    module->hConstsTypesGlobs.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::opTypeSampledImage(Literal imageTypeId) {
+    // TODO: Search in cache
+    // Make type
+    Instruction* i = createInstr(OP_TYPE_SAMPLED_IMAGE, true);
+    i->operands.push_back(imageTypeId);
+    module->hConstsTypesGlobs.push_back(i);
+    return i->resultId;
+}
+
 Literal Builder::opTypeFunction(Literal returnType, const std::vector<Literal>& parameters) {
     // Search in cache
     for (const auto* t : cache[CACHE_OP_TYPE_FUNCTION]) {
@@ -277,10 +301,11 @@ Literal Builder::opTypeFunction(Literal returnType, const std::vector<Literal>& 
 // HIR constants
 Literal Builder::makeConstantInt(S32 c) {
     Literal typeId = opTypeInt(32, 1);
-    /*TODO Literal existingId = findScalarConstant(OP_TYPE_INT, OP_CONSTANT, typeId);
-    if (existingId) {
-        return existingId;
-    }*/
+    for (const auto* i : cache[CACHE_CONSTANT_INT]) {
+        if (reinterpret_cast<const S32&>(i->operands[0]) == c) {
+            return i->resultId;
+        }
+    }
     Instruction* i = createInstr(OP_CONSTANT, true);
     i->typeId = typeId;
     i->operands.push_back(c);
@@ -291,14 +316,41 @@ Literal Builder::makeConstantInt(S32 c) {
 
 Literal Builder::makeConstantUInt(U32 c) {
     Literal typeId = opTypeInt(32, 0);
-    /*TODO Literal existingId = findScalarConstant(OP_TYPE_INT, OP_CONSTANT, typeId);
-    if (existingId) {
-        return existingId;
-    }*/
+    for (const auto* i : cache[CACHE_CONSTANT_UINT]) {
+        if (reinterpret_cast<const S32&>(i->operands[0]) == c) {
+            return i->resultId;
+        }
+    }
     Instruction* i = createInstr(OP_CONSTANT, true);
     i->typeId = typeId;
     i->operands.push_back(c);
     cache[CACHE_CONSTANT_INT].push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::makeConstantFloat(F32 c) {
+    Literal typeId = opTypeFloat(32);
+    for (const auto* i : cache[CACHE_CONSTANT_FLOAT]) {
+        if (reinterpret_cast<const float&>(i->operands[0]) == c) {
+            return i->resultId;
+        }
+    }
+    Instruction* i = createInstr(OP_CONSTANT, true);
+    i->typeId = typeId;
+    i->operands.push_back(c);
+    cache[CACHE_CONSTANT_FLOAT].push_back(i);
+    module->hConstsTypesGlobs.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::makeConstantComposite(Literal typeId, const std::vector<Literal>& constants) {
+    Instruction* i = createInstr(OP_CONSTANT_COMPOSITE, true);
+    i->typeId = typeId;
+    // TODO: Verify correctness of each member's type below
+    for (const auto& c : constants) {
+        i->operands.push_back(c);
+    }
     module->hConstsTypesGlobs.push_back(i);
     return i->resultId;
 }
@@ -338,6 +390,15 @@ Literal Builder::opDot(Literal lhs, Literal rhs) {
 Literal Builder::opFNegate(Literal value) {
     Instruction* i = createInstr(OP_FNEGATE, true);
     i->typeId = getType(value);
+    curBlock->instructions.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::opImageSampleImplicitLod(Literal typeId, Literal image, Literal coordinate) {
+    Instruction* i = createInstr(OP_IMAGE_SAMPLE_IMPLICIT_LOD, true);
+    i->typeId = typeId;
+    i->operands.push_back(image);
+    i->operands.push_back(coordinate);
     curBlock->instructions.push_back(i);
     return i->resultId;
 }

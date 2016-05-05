@@ -2,12 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Products">
-      <UniqueIdentifier>{cc670e93-b7d9-49aa-b05b-cfb8235768d5}</UniqueIdentifier>
+      <UniqueIdentifier>{c379abfe-44cc-491a-b780-8bc86e133680}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ObjCCompile Include="main.mm">
+    <ClCompile Include="main.mm" />
+    <InfoPlist Include="Info.plist">
       <Filter>Products</Filter>
-    </ObjCCompile>
+    </InfoPlist>
   </ItemGroup>
 </Project>

@@ -38,18 +38,168 @@
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <ProjectVersion>1.0</ProjectVersion>
     <ProjectGuid>{f4f6000f-f006-421a-95c0-64451ab14abd}</ProjectGuid>
-    <RootNamespace>nucleus_ios</RootNamespace>
+    <PbxprojDirectory>nucleus-ios.xcodeproj</PbxprojDirectory>
+    <TARGET_NAME>Nucleus</TARGET_NAME>
   </PropertyGroup>
   <Import Project="$(iOSTargetsPath)\iOS.Default.props" />
-  <PropertyGroup Label="Configuration" />
+  <PropertyGroup Label="Configuration">
+    <iOSConfigurationType>Application</iOSConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'" Label="Configuration">
+    <UseOfStl>libc++</UseOfStl>
+  </PropertyGroup>
   <Import Project="$(iOSTargetsPath)\iOS.props" />
   <ImportGroup Label="ExtensionSettings" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'" Label="UserMacros">
+    <VISUALSTUDIOVERSION>14.1</VISUALSTUDIOVERSION>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetName>Nucleus</TargetName>
+    <TargetExt>.app</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'" />
   <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>"DEBUG=1";"$(inherited)";</PreprocessorDefinitions>
+      <SymbolsHiddenByDefault>false</SymbolsHiddenByDefault>
+      <GenerateDebugSymbols>true</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>"DEBUG=1";"$(inherited)";</PreprocessorDefinitions>
+      <SymbolsHiddenByDefault>false</SymbolsHiddenByDefault>
+      <GenerateDebugSymbols>true</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>"DEBUG=1";"$(inherited)";</PreprocessorDefinitions>
+      <SymbolsHiddenByDefault>false</SymbolsHiddenByDefault>
+      <GenerateDebugSymbols>true</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>"DEBUG=1";"$(inherited)";</PreprocessorDefinitions>
+      <SymbolsHiddenByDefault>false</SymbolsHiddenByDefault>
+      <GenerateDebugSymbols>true</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <GenerateDebugSymbols>false</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <GenerateDebugSymbols>false</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <GenerateDebugSymbols>false</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <CLanguageStandard>gnu99</CLanguageStandard>
+      <GenerateDebugSymbols>false</GenerateDebugSymbols>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.mm" />
+    <InfoPlist Include="Info.plist" />
+  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ObjCCompile Include="main.mm" />
+    <FrameworkReference Include="System\Library\Frameworks\GLKit.framework">
+      <SourceTree>SDKROOT</SourceTree>
+    </FrameworkReference>
+    <FrameworkReference Include="System\Library\Frameworks\OpenGLES.framework">
+      <SourceTree>SDKROOT</SourceTree>
+    </FrameworkReference>
+    <FrameworkReference Include="System\Library\Frameworks\UIKit.framework">
+      <SourceTree>SDKROOT</SourceTree>
+    </FrameworkReference>
   </ItemGroup>
   <ItemGroup>
     <pbxproj Include="nucleus-ios.xcodeproj\nucleus-ios.pbxproj" />

@@ -70,6 +70,7 @@ private:
         CACHE_CONSTANT_BOOL,
         CACHE_CONSTANT_INT,
         CACHE_CONSTANT_FLOAT,
+        CACHE_CONSTANT_UINT,
 
         _CACHE_COUNT,
     };
@@ -103,15 +104,17 @@ public:
     Literal opTypeMatrix(Literal columnType, Literal columnCount);
     Literal opTypeArray(Literal elementType, int length);
     Literal opTypePointer(StorageClass storageClass, Literal type);
+    Literal opTypeImage(Literal sampledType, Dimension dim, Literal depth, Literal arrayed, Literal ms, Literal sampled, ImageFormat format);
+    Literal opTypeSampledImage(Literal imageTypeId);
     Literal opTypeFunction(Literal returnType, const std::vector<Literal>& parameters = {});
 
     // HIR constants
-    Literal findScalarConstant(Opcode opcode);
     Literal makeConstantBool(bool c);
     Literal makeConstantInt(S32 c);
     Literal makeConstantUInt(U32 c);
     Literal makeConstantFloat(F32 c);
     Literal makeConstantDouble(F64 c);
+    Literal makeConstantComposite(Literal typeId, const std::vector<Literal>& constants);
 
     // HIR variables
     Literal opVariable(StorageClass storage, Literal type);
@@ -130,6 +133,9 @@ public:
     Literal opFDiv(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FDIV, lhs, rhs); }
     Literal opDot(Literal lhs, Literal rhs);
     Literal opFNegate(Literal value);
+
+    // TODO: Auto-deduce typeId from image type
+    Literal opImageSampleImplicitLod(Literal typeId, Literal image, Literal coordinate);
 
     Literal opCompositeConstruct(Literal typeId, const std::vector<Literal>& constituents);
     Literal opAccessChain(Literal base, const std::vector<Literal>& indexes);

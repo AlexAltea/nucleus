@@ -565,6 +565,15 @@ std::string Direct3D12Shader::compile(Module* module) {
             std::string constant = getConstant(i->resultId);
             sourceConstants += format("static %s v%d = %s;\n", type.c_str(), i->resultId, constant.c_str());
         }
+        if (i->opcode == OP_CONSTANT_COMPOSITE) {
+            std::string type = getType(i->typeId);
+            std::string components;
+            for (const auto& c : i->operands) {
+                components += getConstant(c) + ", ";
+            }
+            components = components.substr(0, components.size() - 2);
+            sourceConstants += format("static %s v%d = %s(%s);\n", type.c_str(), i->resultId, type.c_str(), components.c_str());
+        }
         if (i->opcode == OP_VARIABLE) {
             Literal storageClass = i->operands[0];
             switch (storageClass) {
