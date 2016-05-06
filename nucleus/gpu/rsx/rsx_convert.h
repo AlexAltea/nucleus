@@ -25,7 +25,7 @@ gfx::PrimitiveTopologyType convertPrimitiveTopologyType(Primitive primitive);
 gfx::StencilOp convertStencilOp(StencilOp op);
 gfx::Format convertFormat(Surface::ColorFormat format);
 gfx::Format convertFormat(Surface::DepthStencilFormat format);
-gfx::Format convertFormat(TextureFormat format);
+gfx::Format convertTextureFormat(TextureFormat format);
 gfx::Format convertVertexFormat(VertexType type, U08 size);
 
 }  // namespace rsx

@@ -9,6 +9,7 @@
 #include "nucleus/graphics/graphics.h"
 #include "nucleus/memory/memory.h"
 #include "nucleus/gpu/gpu_hash.h"
+#include "nucleus/gpu/texture_cache.h"
 #include "nucleus/gpu/rsx/rsx_enum.h"
 #include "nucleus/gpu/rsx/rsx_vp.h"
 #include "nucleus/gpu/rsx/rsx_fp.h"
@@ -143,6 +144,7 @@ class PGRAPH {
     std::unordered_map<Hash, std::unique_ptr<gfx::Pipeline>> cachePipeline;
     std::unordered_map<Hash, std::unique_ptr<RSXVertexProgram>> cacheVP;
     std::unordered_map<Hash, std::unique_ptr<RSXFragmentProgram>> cacheFP;
+    TextureCache cacheTexture;
 
     // Surface
     std::unordered_map<U32, gfx::Texture*> textures;
@@ -153,7 +155,6 @@ class PGRAPH {
     gfx::ColorTarget* getColorTarget(U32 address);
     gfx::DepthStencilTarget* getDepthStencilTarget(U32 address);
 
-    U64 HashTexture();
     U64 HashVertexProgram(rsx_vp_instruction_t* program);
     U64 HashFragmentProgram(rsx_fp_instruction_t* program);
 

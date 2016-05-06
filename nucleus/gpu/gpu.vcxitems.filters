@@ -45,6 +45,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)r10xx\r10xx.h">
       <Filter>r10xx</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)texture_cache.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.cpp">
@@ -69,6 +70,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)r10xx\r10xx.cpp">
       <Filter>r10xx</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)texture_cache.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)rsx\rsx_methods.inl">

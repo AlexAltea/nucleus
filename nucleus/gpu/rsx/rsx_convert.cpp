@@ -185,7 +185,7 @@ gfx::Format convertFormat(Surface::DepthStencilFormat format) {
     }
 }
 
-gfx::Format convertFormat(TextureFormat format) {
+gfx::Format convertTextureFormat(TextureFormat format) {
     switch (format) {
     case RSX_TEXTURE_B8:                     return gfx::FORMAT_R8_UNORM;
     case RSX_TEXTURE_A1R5G5B5:               return gfx::FORMAT_B5G5R5A1_UNORM;

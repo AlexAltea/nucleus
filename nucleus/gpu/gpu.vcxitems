@@ -22,6 +22,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_fp.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)texture_cache.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)gpu.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_pgraph.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_texture.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)rsx\rsx_vp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)texture_cache.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)rsx\rsx_methods.inl" />
