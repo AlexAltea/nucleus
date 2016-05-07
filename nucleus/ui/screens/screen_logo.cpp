@@ -22,37 +22,27 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     body.style.background = {0.157f, 0.157f, 0.360f, 1.0f};
 
     // Create widgets
-    logo = new WidgetImage("logo");
-    logo->manager = manager;
+    logo = new WidgetImage(&body, "logo");
     logo->update(core::RES_IMAGE_NUCLEUS_LOGO);
     logo->style.width = 50_pct;
 
-    version = new WidgetText("version");
-    version->manager = manager;
+    version = new WidgetText(&body, "version");
     version->update(lightFont, 30_px, "Version v0.1.0 from 2016-04-01");
     version->style.margin.top = 0_px;
     version->style.width = 25_pct;
     version->style.color = Color{1,1,1,1};
 
-    author = new WidgetText("author");
-    author->manager = manager;
+    author = new WidgetText(&body, "author");
     author->update(defaultFont, 60_px, "Created by Alexandro Sanchez Bach");
     author->style.margin.top = 40_px;
     author->style.width = 40_pct;
     author->style.color = Color{1,1,1,1};
 
-    license = new WidgetText("license");
-    license->manager = manager;
+    license = new WidgetText(&body, "license");
     license->update(defaultFont, 60_px, "Licensed under GPL v2.0");
     license->style.margin.top = 0_px;
     license->style.width = 27_pct;
     license->style.color = Color{1,1,1,1};
-
-    // Add widgets
-    body.addElement(logo);
-    body.addElement(version);
-    body.addElement(author);
-    body.addElement(license);
 }
 
 void ScreenLogo::update() {

@@ -14,13 +14,12 @@ ScreenEmulator::ScreenEmulator(UI* manager) : Screen(manager) {
     body.style.alignV = ALIGN_VERTICAL_CENTER;
     body.style.background = Color{0,0,0,1};
 
-    app = new WidgetImage("app");
+    app = new WidgetImage(&body, "app");
     app->isColorTarget = true;
     app->manager = manager;
     app->style.width = 100_pct;
     app->style.height = 100_pct;
     app->opacityMin = 1.0f;
-    body.addElement(app);
 }
 
 void ScreenEmulator::update() {

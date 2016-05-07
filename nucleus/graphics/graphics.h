@@ -127,7 +127,7 @@ public:
 
     /**
      * Gets a graphics command queue, or creates a new one if none exists
-     * @return Command queue
+     * @return  Command queue
      */
     virtual CommandQueue* getGraphicsCommandQueue() = 0;
 

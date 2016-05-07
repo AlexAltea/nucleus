@@ -34,6 +34,9 @@ Direct3D12VertexBuffer::Direct3D12VertexBuffer(ID3D12Device* device, UINT64 size
     if (FAILED(hr)) {
         logger.error(LOG_GRAPHICS, "Direct3D12VertexBuffer::Direct3D12VertexBuffer: Could not create resource");
     }
+
+    cbvDesc.BufferLocation = resource->GetGPUVirtualAddress();
+    cbvDesc.SizeInBytes = size;
 }
 
 Direct3D12VertexBuffer::~Direct3D12VertexBuffer() {

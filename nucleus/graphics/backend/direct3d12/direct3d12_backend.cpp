@@ -168,27 +168,11 @@ Fence* Direct3D12Backend::createFence(const FenceDesc& desc) {
 }
 
 Heap* Direct3D12Backend::createHeap(const HeapDesc& desc) {
-    auto* heap = new Direct3D12Heap();
-
-    D3D12_DESCRIPTOR_HEAP_DESC d3dDesc = {};
-    d3dDesc.NumDescriptors = desc.size;
-    d3dDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-
-    switch (desc.type) {
-    case HEAP_TYPE_CT:
-        d3dDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; break;
-    case HEAP_TYPE_DST:
-        d3dDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV; break;
-    default:
-        logger.error(LOG_GRAPHICS, "Unimplemented descriptor heap type");
-    }
-
-    HRESULT hr = device->CreateDescriptorHeap(&d3dDesc, IID_PPV_ARGS(&heap->heap));
-    if (FAILED(hr)) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createHeap: device->CreateDescriptorHeap failed (0x%X)", hr);
+    auto* heap = new Direct3D12Heap(device);
+    if (!heap->initialize(desc)) {
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createHeap: Heap creation failed");
         return nullptr;
     }
-
     return heap;
 }
 
@@ -399,25 +383,9 @@ Texture* Direct3D12Backend::createTexture(const TextureDesc& desc) {
 }
 
 VertexBuffer* Direct3D12Backend::createVertexBuffer(const VertexBufferDesc& desc) {
-    UINT64 size = desc.size;
-    if (desc.cbvCreation) {
-        size = (size + 255) & ~255; // CB size is required to be 256-byte aligned
-    }
-
+    // CBV's are required to be 256-byte aligned
+    UINT64 size = (desc.size + 255) & ~255;
     auto* vtxBuffer = new Direct3D12VertexBuffer(device, size);
-    if (desc.cbvCreation) {
-        HRESULT hr;
-        D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc = {};
-        cbvHeapDesc.NumDescriptors = 1;
-        cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-        cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-        hr = device->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&vtxBuffer->cbvHeap));
-
-        D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-        cbvDesc.BufferLocation = vtxBuffer->resource->GetGPUVirtualAddress();
-        cbvDesc.SizeInBytes = size;
-        device->CreateConstantBufferView(&cbvDesc, vtxBuffer->cbvHeap->GetCPUDescriptorHandleForHeapStart());
-    }
     return vtxBuffer;
 }
 

@@ -8,12 +8,30 @@
 #include "nucleus/graphics/heap.h"
 #include "nucleus/graphics/backend/direct3d12/direct3d12.h"
 
+// Forward declarations
+class Direct3D12Texture;
+class Direct3D12VertexBuffer;
+
 namespace gfx {
 namespace direct3d12 {
 
 class Direct3D12Heap : public Heap {
+    ID3D12Device* device;
+
+    D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
+    Size cpuHandleIncrement;
+
 public:
     ID3D12DescriptorHeap* heap;
+
+    Direct3D12Heap(ID3D12Device* device);
+    ~Direct3D12Heap();
+
+    bool initialize(const HeapDesc& desc);
+
+    virtual void reset() override;
+    virtual void pushTexture(Texture* texture) override;
+    virtual void pushVertexBuffer(VertexBuffer* buffer) override;
 };
 
 }  // namespace direct3d12

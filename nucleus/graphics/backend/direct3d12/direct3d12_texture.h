@@ -16,6 +16,9 @@ class Direct3D12Texture : public Direct3D12Resource, public Texture {
 public:
     ID3D12DescriptorHeap* srvHeap;
 
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    D3D12_SHADER_RESOURCE_VIEW_DESC uavDesc;
+
     Direct3D12Texture(ID3D12Resource* resource);
     Direct3D12Texture(ID3D12Device* device, const TextureDesc& desc);
     ~Direct3D12Texture();

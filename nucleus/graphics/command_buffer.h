@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/graphics/heap.h"
 #include "nucleus/graphics/pipeline.h"
 #include "nucleus/graphics/primitive.h"
 #include "nucleus/graphics/resource.h"
@@ -71,11 +72,10 @@ public:
     virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) = 0;
 
     /**
-     * Bind a texture to a pipeline sampler
-     * @param[in]  buffers  Uniform buffers to bind
-     * @param[in]  texture  Textures to bind
+     * Bind descriptors to the pipeline
+     * @param[in]  heaps  Different types of descriptor heaps
      */
-    virtual void cmdSetDescriptors(const std::vector<VertexBuffer*>& buffers, const std::vector<Texture*>& textures) = 0;
+    virtual void cmdSetDescriptors(const std::vector<Heap*>& heaps) = 0;
 
     /**
      * Pushes a command to set the vertex buffer for an input slots

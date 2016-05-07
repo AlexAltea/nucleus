@@ -26,10 +26,19 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* me
     gfx::FenceDesc fenceDesc = {};
     fence = graphics->createFence(fenceDesc);
 
+    // Heaps
+    gfx::HeapDesc heapResourcesDesc = {};
+    heapResourcesDesc.type = gfx::HEAP_TYPE_RESOURCE;
+    heapResourcesDesc.size = RSX_MAX_TEXTURES + 1;
+    heapResources = graphics->createHeap(heapResourcesDesc);
+    gfx::HeapDesc heapSamplersDesc = {};
+    heapSamplersDesc.type = gfx::HEAP_TYPE_RESOURCE;
+    heapSamplersDesc.size = RSX_MAX_TEXTURES;
+    heapSamplers = graphics->createHeap(heapSamplersDesc);
+
     // Vertex Buffer for VPE constant registers
     gfx::VertexBufferDesc vtxConstantBufferDesc;
     vtxConstantBufferDesc.size = 468 * sizeof(V128);
-    vtxConstantBufferDesc.cbvCreation = true;
     vpeConstantMemory = graphics->createVertexBuffer(vtxConstantBufferDesc);
 
     // Vertex buffer for VPE input attributes
@@ -308,13 +317,16 @@ void PGRAPH::Begin(Primitive primitive) {
         cachePipeline[pipelineHash] = std::unique_ptr<gfx::Pipeline>(graphics->createPipeline(pipelineDesc));
     }
 
+    heapResources->reset();
+
     // Upload VPE constants if necessary
     void* constantsPtr = vpeConstantMemory->map();
     memcpy(constantsPtr, &vpe.constant, sizeof(vpe.constant));
     vpeConstantMemory->unmap();
+    heapResources->pushVertexBuffer(vpeConstantMemory);
 
     cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());
-    cmdBuffer->cmdSetDescriptors({vpeConstantMemory}, {});
+    cmdBuffer->cmdSetDescriptors({ heapResources });
     cmdBuffer->cmdSetPrimitiveTopology(convertPrimitiveTopology(primitive));
 }
 

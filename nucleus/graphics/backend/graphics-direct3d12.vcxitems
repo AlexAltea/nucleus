@@ -37,6 +37,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)direct3d12\direct3d12_convert.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)direct3d12\direct3d12_debug.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)direct3d12\direct3d12_fence.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)direct3d12\direct3d12_heap.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)direct3d12\direct3d12_resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)direct3d12\direct3d12_shader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)direct3d12\direct3d12_texture.cpp" />

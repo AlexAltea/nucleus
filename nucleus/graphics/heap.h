@@ -9,20 +9,38 @@
 
 namespace gfx {
 
-using HeapSize = U32;
+// Forward declarations
+class Texture;
+class VertexBuffer;
 
 enum HeapType {
-    HEAP_TYPE_CT,   // Heap for color target descriptors
-    HEAP_TYPE_DST,  // Heap for depth-stencil target descriptors
+    HEAP_TYPE_CT,       // Heap for color target descriptors
+    HEAP_TYPE_DST,      // Heap for depth-stencil target descriptors
+    HEAP_TYPE_RESOURCE,
+    HEAP_TYPE_SAMPLER,
 };
 
 struct HeapDesc {
     HeapType type;  // Type of descriptors
-    HeapSize size;  // Number of descriptors
+    Size size;      // Number of descriptors
 };
 
 class Heap {
 public:
+    /**
+     * Reset the heap
+     */
+    virtual void reset() = 0;
+
+    /**
+     * Allocate texture
+     */
+    virtual void pushTexture(Texture* texture) = 0;
+
+    /**
+     * Allocate vertex buffer
+     */
+    virtual void pushVertexBuffer(VertexBuffer* buffer) = 0;
 };
 
 }  // namespace gfx

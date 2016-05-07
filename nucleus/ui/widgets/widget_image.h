@@ -18,12 +18,15 @@ private:
     // Input
     WidgetImageInput input;
     gfx::Texture* texture;
+    gfx::Heap* heap;
 
     // Image
     unsigned char* imBuffer;
     int imWidth = 0;
     int imHeight = 0;
     int imComponents;
+
+    void init();
 
 public:
     bool isColorTarget = false;
@@ -33,9 +36,9 @@ public:
     // should be ignored while displaying the buffer on screen.
     float opacityMin = 0.0;
 
-    WidgetImage() {}
-    WidgetImage(const std::string& id) : Widget(id) {}
-    WidgetImage(Widget* parent, const std::string& id = "") : Widget(parent, id) {}
+    WidgetImage() { init(); }
+    WidgetImage(const std::string& id) : Widget(id) { init(); }
+    WidgetImage(Widget* parent, const std::string& id = "") : Widget(parent, id) { init(); }
     ~WidgetImage();
 
     /**

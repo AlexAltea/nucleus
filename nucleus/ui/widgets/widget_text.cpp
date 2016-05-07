@@ -104,8 +104,15 @@ void WidgetText::update(const Font* fontFamily, const Length& fontSize, const st
     textureDesc.format = gfx::FORMAT_R8_UNORM;
     textureDesc.data = txBuffer.data();
     textureDesc.size = txBuffer.size();
-
     texture = manager->graphics->createTexture(textureDesc);
+
+    // Create heap
+    gfx::HeapDesc heapDesc = {};
+    heapDesc.type = gfx::HEAP_TYPE_RESOURCE;
+    heapDesc.size = 1;
+    heap = manager->graphics->createHeap(heapDesc);
+    heap->reset();
+    heap->pushTexture(texture);
 }
 
 void WidgetText::dimensionalize() {
@@ -165,7 +172,7 @@ void WidgetText::render() {
     V2.texcoord[0] = 1.0; V2.texcoord[1] = 1.0;
     V3.texcoord[0] = 1.0; V3.texcoord[1] = 0.0;
 
-    manager->pushWidgetText(input, texture);
+    manager->pushWidgetText(input, texture, heap);
 }
 
 }  // namespace ui

@@ -137,6 +137,8 @@ class PGRAPH {
     gfx::CommandQueue* cmdQueue;
     gfx::CommandBuffer* cmdBuffer;
     gfx::Fence* fence;
+    gfx::Heap* heapResources;
+    gfx::Heap* heapSamplers;
     gfx::VertexBuffer* vpeConstantMemory;
     gfx::VertexBuffer* vpeInputs[16];
 

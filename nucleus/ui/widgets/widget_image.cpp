@@ -18,6 +18,14 @@ WidgetImage::~WidgetImage() {
     stbi_image_free(imBuffer);
 }
 
+void WidgetImage::init() {
+    // Create heap
+    gfx::HeapDesc heapDesc = {};
+    heapDesc.type = gfx::HEAP_TYPE_RESOURCE;
+    heapDesc.size = 1;
+    heap = manager->graphics->createHeap(heapDesc);
+}
+
 gfx::Pipeline* WidgetImage::createPipeline(gfx::IBackend& backend) {
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
@@ -97,13 +105,17 @@ void WidgetImage::update(const Byte* buffer, Size size) {
     textureDesc.format = gfx::FORMAT_R8G8B8A8_UNORM;
     textureDesc.data = imBuffer;
     textureDesc.size = imWidth * imHeight * imComponents;
-    auto* texture = manager->graphics->createTexture(textureDesc);
+    texture = manager->graphics->createTexture(textureDesc);
 
     update(texture);
 }
 
 void WidgetImage::update(gfx::Texture* newTexture) {
     texture = newTexture;
+    if (texture) {
+        heap->reset();
+        heap->pushTexture(texture);
+    }
 }
 
 void WidgetImage::dimensionalize() {
@@ -165,7 +177,7 @@ void WidgetImage::render() {
 
     if (texture) {
         // Render texture if possible
-        manager->pushWidgetImage(input, texture, isColorTarget);
+        manager->pushWidgetImage(input, texture, heap, isColorTarget);
     } else {
         // Otherwise placeholder container
         WidgetContainerInput containerInput;

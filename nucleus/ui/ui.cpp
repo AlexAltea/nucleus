@@ -176,14 +176,14 @@ void UI::renderImages() {
         static bool isColorTarget = false;
         if (isColorTarget) {
             gfx::ResourceBarrier barrierBegin;
-            barrierBegin.transition.resource = textureImages[i].first;
+            barrierBegin.transition.resource = std::get<0>(textureImages[i]);
             barrierBegin.transition.before = gfx::RESOURCE_STATE_COLOR_TARGET;
             barrierBegin.transition.after = gfx::RESOURCE_STATE_GENERIC_READ;
             cmdBuffer->cmdResourceBarrier(1, &barrierBegin);
         }
-        if (texture != textureImages[i].first) {
-            texture = textureImages[i].first;
-            cmdBuffer->cmdSetDescriptors({}, {texture});
+        if (texture != std::get<0>(textureImages[i])) {
+            texture =  std::get<0>(textureImages[i]);
+            cmdBuffer->cmdSetDescriptors({ std::get<1>(textureImages[i]) });
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
         if (isColorTarget) {
@@ -217,9 +217,9 @@ void UI::renderText() {
     cmdBuffer->cmdSetVertexBuffers(0, 1, &vtxBuffer, offsets, strides);
     gfx::Texture* texture = nullptr;
     for (Size i = 0; i < dataText.size(); i++) {
-        if (texture != textureText[i].first) {
-            texture = textureText[i].first;
-            cmdBuffer->cmdSetDescriptors({}, {texture});
+        if (texture != std::get<0>(textureText[i])) {
+            texture =  std::get<0>(textureText[i]);
+            cmdBuffer->cmdSetDescriptors({ std::get<1>(textureText[i]) });
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
     }
@@ -228,13 +228,13 @@ void UI::renderText() {
 void UI::pushWidgetContainer(const WidgetContainerInput& input) {
     dataContainers.push_back(input);
 }
-void UI::pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture, bool isColorTarget) {
+void UI::pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture, gfx::Heap* heap, bool isColorTarget) {
     dataImages.push_back(input);
-    textureImages.push_back({texture, isColorTarget});
+    textureImages.push_back(std::make_tuple(texture, heap, isColorTarget));
 }
-void UI::pushWidgetText(const WidgetTextInput& input, gfx::Texture* texture) {
+void UI::pushWidgetText(const WidgetTextInput& input, gfx::Texture* texture, gfx::Heap* heap) {
     dataText.push_back(input);
-    textureText.push_back({texture, false});
+    textureText.push_back(std::make_tuple(texture, heap, false));
 }
 
 }  // namespace ui

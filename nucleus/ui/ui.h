@@ -15,6 +15,7 @@
 #include <queue>
 #include <stack>
 #include <thread>
+#include <tuple>
 #include <vector>
 
 namespace ui {
@@ -23,6 +24,7 @@ class UI {
     // Graphics
     gfx::CommandQueue* cmdQueue;
     gfx::CommandBuffer* cmdBuffer;
+    gfx::Heap* heapResources;
 
     std::thread thread;
     std::vector<std::unique_ptr<Screen>> screens;
@@ -73,8 +75,8 @@ public:
     std::vector<WidgetContainerInput> dataContainers;
     std::vector<WidgetImageInput> dataImages;
     std::vector<WidgetTextInput> dataText;
-    std::vector<std::pair<gfx::Texture*, bool>> textureImages;
-    std::vector<std::pair<gfx::Texture*, bool>> textureText;
+    std::vector<std::tuple<gfx::Texture*, gfx::Heap*, bool>> textureImages;
+    std::vector<std::tuple<gfx::Texture*, gfx::Heap*, bool>> textureText;
 
     // Vertex buffers
     std::unique_ptr<gfx::VertexBuffer> vtxBufferContainers;
@@ -101,14 +103,14 @@ public:
      * @param[in]  texture        WidgetImage texture
      * @param[in]  isColorTarget  True if the specified texture is a color target
      */
-    void pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture, bool isColorTarget);
+    void pushWidgetImage(const WidgetImageInput& input, gfx::Texture* texture, gfx::Heap* heap, bool isColorTarget);
 
     /**
      * Pushes a new WidgetText input data to the buffer
      * @param[in]  input    WidgetText vertex data
      * @param[in]  texture  WidgetText texture
      */
-    void pushWidgetText(const WidgetTextInput& input, gfx::Texture* texture);
+    void pushWidgetText(const WidgetTextInput& input, gfx::Texture* texture, gfx::Heap* heap);
 };
 
 }  // namespace ui

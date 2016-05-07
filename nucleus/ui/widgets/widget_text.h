@@ -19,6 +19,7 @@ private:
     // Input
     WidgetTextInput input;
     gfx::Texture* texture;
+    gfx::Heap* heap;
 
     // Text
     std::vector<Byte> txBuffer;
