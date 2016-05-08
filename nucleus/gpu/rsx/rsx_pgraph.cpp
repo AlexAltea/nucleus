@@ -287,7 +287,7 @@ void PGRAPH::Begin(Primitive primitive) {
         }
         gfx::PipelineDesc pipelineDesc = {};
         pipelineDesc.numCBVs = 1;
-        pipelineDesc.numSRVs = 0;
+        pipelineDesc.numSRVs = 1;
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
         pipelineDesc.rsState.fillMode = gfx::FILL_MODE_SOLID;
@@ -314,6 +314,14 @@ void PGRAPH::Begin(Primitive primitive) {
                 index, format, index, 0, stride, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }
             );
         }
+        for (U32 i = 0; i < 1/*RSX_MAX_TEXTURES*/; i++) {
+            gfx::Sampler sampler = {};
+            sampler.filter = gfx::FILTER_MIN_MAG_MIP_LINEAR;
+            sampler.addressU = gfx::TEXTURE_ADDRESS_MIRROR;
+            sampler.addressV = gfx::TEXTURE_ADDRESS_MIRROR;
+            sampler.addressW = gfx::TEXTURE_ADDRESS_MIRROR;
+            pipelineDesc.samplers.push_back(sampler);
+        }
         cachePipeline[pipelineHash] = std::unique_ptr<gfx::Pipeline>(graphics->createPipeline(pipelineDesc));
     }
 
@@ -325,8 +333,32 @@ void PGRAPH::Begin(Primitive primitive) {
     vpeConstantMemory->unmap();
     heapResources->pushVertexBuffer(vpeConstantMemory);
 
+    // Set textures
+    for (U32 i = 0; i < 1/*RSX_MAX_TEXTURES*/; i++) {
+        const auto& tex = texture[i];
+        if (!tex.enable) {
+            heapResources->pushTexture(nullptr);
+        } else {
+            auto texFormat = static_cast<TextureFormat>(tex.format & ~RSX_TEXTURE_LN & ~RSX_TEXTURE_UN);
+
+            gfx::TextureDesc texDesc = {};
+            texDesc.data = memory->ptr<Byte>((tex.location ? rsx->get_ea(0x0) : 0xC0000000) + tex.offset);
+            texDesc.size = tex.width * tex.height;
+            texDesc.width = tex.width;
+            texDesc.height = tex.height;
+            texDesc.format = convertTextureFormat(texFormat);
+            texDesc.mipmapLevels = tex.mipmap;
+            texDesc.swizzle = convertTextureSwizzle(texFormat);
+
+            gfx::Texture* texDescriptor = graphics->createTexture(texDesc);
+            heapResources->pushTexture(texDescriptor);
+        }
+    }
+
     cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());
-    cmdBuffer->cmdSetDescriptors({ heapResources });
+    cmdBuffer->cmdSetHeaps({ heapResources });
+    cmdBuffer->cmdSetDescriptor(0, heapResources, 0);
+    cmdBuffer->cmdSetDescriptor(1, heapResources, 1);
     cmdBuffer->cmdSetPrimitiveTopology(convertPrimitiveTopology(primitive));
 }
 

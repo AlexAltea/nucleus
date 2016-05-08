@@ -72,10 +72,18 @@ public:
     virtual void cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32 vertexOffset, U32 firstInstance, U32 instanceCount) = 0;
 
     /**
-     * Bind descriptors to the pipeline
+     * Sets the descriptor heaps to be used by the pipeline
      * @param[in]  heaps  Different types of descriptor heaps
      */
-    virtual void cmdSetDescriptors(const std::vector<Heap*>& heaps) = 0;
+    virtual void cmdSetHeaps(const std::vector<Heap*>& heaps) = 0;
+
+    /**
+     * Bind descriptors to the pipeline
+     * @param[in]  index   Parameter index
+     * @param[in]  heaps   Different types of descriptor heaps
+     * @param[in]  offset  Offset in heap
+     */
+    virtual void cmdSetDescriptor(Size index, Heap* heap, Size offset) = 0;
 
     /**
      * Pushes a command to set the vertex buffer for an input slots

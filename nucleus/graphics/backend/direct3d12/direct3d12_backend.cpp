@@ -229,16 +229,19 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
 
     // Root signature parameters
     CD3DX12_DESCRIPTOR_RANGE ranges[2];
-    ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-    ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+    ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, desc.numCBVs, 0);
+    ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, desc.numSRVs, 0);
 
-    Size index = 0;
-    std::vector<CD3DX12_ROOT_PARAMETER> parameters(desc.numCBVs + desc.numSRVs);
-    for (Size reg = 0; reg < desc.numCBVs; reg++) {
-        parameters[index++].InitAsDescriptorTable(1, &ranges[0], D3D12_SHADER_VISIBILITY_ALL);
+    std::vector<CD3DX12_ROOT_PARAMETER> parameters;
+    if (desc.numCBVs) {
+        CD3DX12_ROOT_PARAMETER parameter;
+        parameter.InitAsDescriptorTable(1, &ranges[0], D3D12_SHADER_VISIBILITY_ALL);
+        parameters.push_back(parameter);
     }
-    for (Size reg = 0; reg < desc.numSRVs; reg++) {
-        parameters[index++].InitAsDescriptorTable(1, &ranges[1], D3D12_SHADER_VISIBILITY_PIXEL);
+    if (desc.numSRVs) {
+        CD3DX12_ROOT_PARAMETER parameter;
+        parameter.InitAsDescriptorTable(1, &ranges[1], D3D12_SHADER_VISIBILITY_PIXEL);
+        parameters.push_back(parameter);
     }
 
     // Samplers

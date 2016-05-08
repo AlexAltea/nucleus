@@ -183,7 +183,8 @@ void UI::renderImages() {
         }
         if (texture != std::get<0>(textureImages[i])) {
             texture =  std::get<0>(textureImages[i]);
-            cmdBuffer->cmdSetDescriptors({ std::get<1>(textureImages[i]) });
+            cmdBuffer->cmdSetHeaps({ std::get<1>(textureImages[i]) });
+            cmdBuffer->cmdSetDescriptor(0, std::get<1>(textureImages[i]), 0);
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
         if (isColorTarget) {
@@ -219,7 +220,8 @@ void UI::renderText() {
     for (Size i = 0; i < dataText.size(); i++) {
         if (texture != std::get<0>(textureText[i])) {
             texture =  std::get<0>(textureText[i]);
-            cmdBuffer->cmdSetDescriptors({ std::get<1>(textureText[i]) });
+            cmdBuffer->cmdSetHeaps({ std::get<1>(textureText[i]) });
+            cmdBuffer->cmdSetDescriptor(0, std::get<1>(textureText[i]), 0);
         }
         cmdBuffer->cmdDraw(4 * i, 4, 0, 1);
     }

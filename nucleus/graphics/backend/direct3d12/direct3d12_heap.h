@@ -19,7 +19,8 @@ class Direct3D12Heap : public Heap {
     ID3D12Device* device;
 
     D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
-    Size cpuHandleIncrement;
+    D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
+    Size handleIncrement;
 
 public:
     ID3D12DescriptorHeap* heap;
@@ -28,6 +29,8 @@ public:
     ~Direct3D12Heap();
 
     bool initialize(const HeapDesc& desc);
+
+    D3D12_GPU_DESCRIPTOR_HANDLE getGpuHandle(Size offset) const;
 
     virtual void reset() override;
     virtual void pushTexture(Texture* texture) override;

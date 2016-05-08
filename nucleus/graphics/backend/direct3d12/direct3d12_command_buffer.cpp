@@ -85,7 +85,7 @@ void Direct3D12CommandBuffer::cmdDrawIndexed(U32 firstIndex, U32 indexCount, U32
     list->DrawIndexedInstanced(indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 }
 
-void Direct3D12CommandBuffer::cmdSetDescriptors(const std::vector<Heap*>& heaps) {
+void Direct3D12CommandBuffer::cmdSetHeaps(const std::vector<Heap*>& heaps) {
     Size size = heaps.size();
     std::vector<ID3D12DescriptorHeap*> d3dHeaps(size);
     for (Size i = 0; i < size; i++) {
@@ -97,6 +97,12 @@ void Direct3D12CommandBuffer::cmdSetDescriptors(const std::vector<Heap*>& heaps)
     for (Size i = 0; i < size; i++) {
         list->SetGraphicsRootDescriptorTable(i, d3dHeaps[i]->GetGPUDescriptorHandleForHeapStart());
     }
+}
+
+void Direct3D12CommandBuffer::cmdSetDescriptor(Size index, Heap* heap, Size offset) {
+    const auto* d3dHeap = static_cast<const Direct3D12Heap*>(heap);
+
+    list->SetGraphicsRootDescriptorTable(index, d3dHeap->getGpuHandle(offset));
 }
 
 void Direct3D12CommandBuffer::cmdSetVertexBuffers(U32 index, U32 vtxBufferCount, VertexBuffer** vtxBuffer, U32* offsets, U32* strides) {

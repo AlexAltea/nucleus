@@ -43,8 +43,13 @@ bool Direct3D12Heap::initialize(const HeapDesc& desc) {
     }
 
     cpuHandle = heap->GetCPUDescriptorHandleForHeapStart();
-    cpuHandleIncrement = device->GetDescriptorHandleIncrementSize(d3dType);
+    gpuHandle = heap->GetGPUDescriptorHandleForHeapStart();
+    handleIncrement = device->GetDescriptorHandleIncrementSize(d3dType);
     return true;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE Direct3D12Heap::getGpuHandle(Size offset) const {
+    return CD3DX12_GPU_DESCRIPTOR_HANDLE(gpuHandle).Offset(offset, handleIncrement);
 }
 
 void Direct3D12Heap::reset() {
@@ -56,7 +61,7 @@ void Direct3D12Heap::pushTexture(Texture* texture) {
     auto* d3dResource = d3dTexture->resource;
 
     device->CreateShaderResourceView(d3dResource, &d3dTexture->srvDesc, cpuHandle);
-    cpuHandle.ptr += cpuHandleIncrement;
+    cpuHandle.ptr += handleIncrement;
 }
 
 void Direct3D12Heap::pushVertexBuffer(VertexBuffer* buffer) {
@@ -64,7 +69,7 @@ void Direct3D12Heap::pushVertexBuffer(VertexBuffer* buffer) {
     auto* d3dResource = d3dVertexBuffer->resource;
 
     device->CreateConstantBufferView(&d3dVertexBuffer->cbvDesc, cpuHandle);
-    cpuHandle.ptr += cpuHandleIncrement;
+    cpuHandle.ptr += handleIncrement;
 }
 
 }  // namespace direct3d12
