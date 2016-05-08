@@ -12,7 +12,7 @@ namespace rsx {
 
 // Properties
 enum {
-    RSX_MAX_TEXTURES = 16,
+    RSX_MAX_TEXTURES = 1,//16,
     RSX_MAX_VERTEX_INPUTS = 16,
 };
 

@@ -374,10 +374,10 @@ int convertTextureSwizzle(TextureFormat format) {
     case RSX_TEXTURE_A8R8G8B8:
     case RSX_TEXTURE_D8R8G8B8:
         return TEXTURE_SWIZZLE_ENCODE(
-            gfx::TEXTURE_SWIZZLE_COMPONENT_3,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_3,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
         );
 
     case RSX_TEXTURE_R6G5B5:

@@ -221,37 +221,6 @@ void PGRAPH::setSurface() {
     surface.dirty = false;
 }
 
-/**
- * PGRAPH methods
- */
-// NOTE: RSX doesn't know how big the vertex buffer is, but OpenGL requires this information
-// to copy the data to the host GPU. Therefore, LoadVertexAttributes needs to be called.
-/*void PGRAPH::BindVertexAttributes() {
-    // Indices are attr.type
-    static const GLenum vertexType[] = {
-        0, GL_SHORT, GL_FLOAT, GL_HALF_FLOAT, GL_UNSIGNED_BYTE, GL_SHORT, GL_FLOAT, GL_UNSIGNED_BYTE
-    };
-    static const GLboolean vertexNormalized[] = {
-        0, GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE, GL_FALSE
-    };
-
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    for (int index = 0; index < 16; index++) {
-        const auto& attr = vpe.attr[index];
-        if (attr.size) {
-            GLuint vbo;
-            glGenBuffers(1, &vbo);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, attr.data.size(), attr.data.data(), GL_STATIC_DRAW);
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, attr.size, vertexType[attr.type], vertexNormalized[attr.type], 0, 0);
-        }
-    }
-}*/
-
 void PGRAPH::Begin(Primitive primitive) {
     // Set surface
     setSurface();
@@ -287,7 +256,7 @@ void PGRAPH::Begin(Primitive primitive) {
         }
         gfx::PipelineDesc pipelineDesc = {};
         pipelineDesc.numCBVs = 1;
-        pipelineDesc.numSRVs = 1;
+        pipelineDesc.numSRVs = RSX_MAX_TEXTURES;
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
         pipelineDesc.rsState.fillMode = gfx::FILL_MODE_SOLID;
@@ -314,7 +283,7 @@ void PGRAPH::Begin(Primitive primitive) {
                 index, format, index, 0, stride, 0, gfx::INPUT_CLASSIFICATION_PER_VERTEX, 0 }
             );
         }
-        for (U32 i = 0; i < 1/*RSX_MAX_TEXTURES*/; i++) {
+        for (U32 i = 0; i < RSX_MAX_TEXTURES; i++) {
             gfx::Sampler sampler = {};
             sampler.filter = gfx::FILTER_MIN_MAG_MIP_LINEAR;
             sampler.addressU = gfx::TEXTURE_ADDRESS_MIRROR;
@@ -334,7 +303,7 @@ void PGRAPH::Begin(Primitive primitive) {
     heapResources->pushVertexBuffer(vpeConstantMemory);
 
     // Set textures
-    for (U32 i = 0; i < 1/*RSX_MAX_TEXTURES*/; i++) {
+    for (U32 i = 0; i < RSX_MAX_TEXTURES; i++) {
         const auto& tex = texture[i];
         if (!tex.enable) {
             heapResources->pushTexture(nullptr);

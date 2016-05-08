@@ -87,22 +87,6 @@ Literal RSXFragmentProgram::getTempReg(int index, bool isHalf) {
     return tempReg;
 }
 
-Literal RSXFragmentProgram::getMaskedValue(Literal dest, Literal source, U08 mask) {
-    // Check if mask enables all components
-    if (mask == 0b1111) {
-        return source;
-    }
-    // Check if mask disables all components
-    if (mask == 0b0000) {
-        return dest;
-    }
-    Literal x = (mask >> 3) ? 4 : 0;
-    Literal y = (mask >> 2) ? 5 : 1;
-    Literal z = (mask >> 1) ? 6 : 2;
-    Literal w = (mask >> 0) ? 7 : 3;
-    return builder.opVectorShuffle(vecTypeId, dest, source, {x,y,z,w});
-}
-
 Literal RSXFragmentProgram::getSwizzledValue(Literal vector, U08 swizzle) {
     // Check if swizzling is required. Note that: [11,10,01,00] -> [x,y,z,w].
     if (swizzle == 0b11100100) {
@@ -156,9 +140,25 @@ void RSXFragmentProgram::setDestVector(Literal value) {
     if (instr.dst_index >= 48) {
         logger.error(LOG_GPU, "Fragment program: Destination register out of range");
     }
+
+    U08 mask = instr.dst_mask;
+    // Check if mask disables all components
+    if (mask == 0b0000) {
+        return;
+    }
     Literal pointer = getTempReg(instr.dst_index, instr.dst_half);
-    builder.opStore(pointer, value);
-    // TODO: getMaskedValue. //return format("%s[%d]%s", instr.dst_half ? "h" : "r", instr.dst_index, get_fp_mask(instr.dst_mask));
+    // Check if mask enables all components
+    if (mask == 0b1111) {
+        builder.opStore(pointer, value);
+        return;
+    }
+
+    Literal old = builder.opLoad(pointer);
+    Literal x = (mask >> 0) ? 4 : 0;
+    Literal y = (mask >> 1) ? 5 : 1;
+    Literal z = (mask >> 2) ? 6 : 2;
+    Literal w = (mask >> 3) ? 7 : 3;
+    builder.opStore(pointer, builder.opVectorShuffle(vecTypeId, old, value, {x,y,z,w}));
 }
 
 void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {

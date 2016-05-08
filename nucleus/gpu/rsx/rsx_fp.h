@@ -189,14 +189,6 @@ private:
     const rsx_fp_instruction_t* instr_ptr;
 
     /**
-     * Get the vector resulting from updating a component subset specified by a mask with the contents of another vector
-     * @param[in]  dest     Output vector ID whose component-subset will be written
-     * @param[in]  source   Input vector ID whose components will be copied to output
-     * @param[in]  mask     Byte containing the 4-bit mask that enable/disable the 4 components (x,y,z,w) to write.
-     */
-    Literal getMaskedValue(Literal dest, Literal source, U08 mask);
-
-    /**
      * Get the vector resulting from swizzling/shuffling its components according to a swizzle argument
      * @param[in]  vector   Input vector ID whose components are going to be swizzled/shuffled.
      * @param[in]  swizzle  Byte containing the 2-bit swizzle masks for each of the 4 components (x,y,z,w) to read.
