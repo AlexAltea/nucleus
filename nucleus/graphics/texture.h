@@ -41,6 +41,25 @@ enum TextureAddress {
     TEXTURE_ADDRESS_MIRROR_ONCE = 5,
 };
 
+enum TextureSwizzle {
+    TEXTURE_SWIZZLE_COMPONENT_0	= 0,
+    TEXTURE_SWIZZLE_COMPONENT_1	= 1,
+    TEXTURE_SWIZZLE_COMPONENT_2	= 2,
+    TEXTURE_SWIZZLE_COMPONENT_3	= 3,
+    TEXTURE_SWIZZLE_VALUE_0	= 4,
+    TEXTURE_SWIZZLE_VALUE_1	= 5
+};
+
+#define TEXTURE_SWIZZLE_MASK   0x7 
+#define TEXTURE_SWIZZLE_SHIFT  3 
+#define TEXTURE_SWIZZLE_ENCODE(S0, S1, S2, S3) ( \
+    (((S0) & TEXTURE_SWIZZLE_MASK) << (TEXTURE_SWIZZLE_SHIFT * 0)) | \
+    (((S1) & TEXTURE_SWIZZLE_MASK) << (TEXTURE_SWIZZLE_SHIFT * 1)) | \
+    (((S2) & TEXTURE_SWIZZLE_MASK) << (TEXTURE_SWIZZLE_SHIFT * 2)) | \
+    (((S3) & TEXTURE_SWIZZLE_MASK) << (TEXTURE_SWIZZLE_SHIFT * 3)) | \
+                                 1 << (TEXTURE_SWIZZLE_SHIFT * 4))
+#define TEXTURE_SWIZZLE_DEFAULT TEXTURE_SWIZZLE_ENCODE(0,1,2,3)
+
 enum TextureFlags {
     TEXTURE_FLAG_NONE = 0,
     TEXTURE_FLAG_COLOR_TARGET         = (1 << 0),
@@ -62,6 +81,7 @@ struct TextureDesc {
     U16 mipmapLevels;    // Maximum number of mipmap levels in the texture
     Format format;       // Format of the texture
     TextureFlags flags;  // Flags
+    int swizzle = TEXTURE_SWIZZLE_DEFAULT;
 };
 
 class Texture : public virtual Resource {

@@ -60,7 +60,7 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
 
     // Create SRV description heap for non-depth-stencil textures
     if (!(desc.flags & TEXTURE_FLAG_DEPTHSTENCIL_TARGET)) {
-        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        srvDesc.Shader4ComponentMapping = desc.swizzle;
         srvDesc.Format = resourceDesc.Format;
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
         srvDesc.Texture2D.MipLevels = 1;

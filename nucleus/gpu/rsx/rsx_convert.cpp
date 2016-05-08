@@ -295,5 +295,100 @@ gfx::Format convertVertexFormat(VertexType type, U08 size) {
     }
 }
 
+int convertTextureSwizzle(TextureFormat format) {
+    switch (format) {
+    case RSX_TEXTURE_COMPRESSED_HILO8:
+    case RSX_TEXTURE_COMPRESSED_DXT1:
+    case RSX_TEXTURE_COMPRESSED_DXT23:
+    case RSX_TEXTURE_COMPRESSED_DXT45:
+    case RSX_TEXTURE_DEPTH24_D8:
+    case RSX_TEXTURE_DEPTH24_D8_FLOAT:
+    case RSX_TEXTURE_DEPTH16:
+    case RSX_TEXTURE_DEPTH16_FLOAT:
+    case RSX_TEXTURE_X32_FLOAT:
+    case RSX_TEXTURE_W32_Z32_Y32_X32_FLOAT:
+    case RSX_TEXTURE_R5G5B5A1:
+    case RSX_TEXTURE_D1R5G5B5:
+    case RSX_TEXTURE_A1R5G5B5:
+    case RSX_TEXTURE_A4R4G4B4:
+    case RSX_TEXTURE_R5G6B5:
+    case RSX_TEXTURE_COMPRESSED_B8R8_G8R8:
+    case RSX_TEXTURE_COMPRESSED_R8B8_R8G8:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_3,
+        );
+    case RSX_TEXTURE_B8:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+        );
+    case RSX_TEXTURE_G8B8:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+        );
+    case RSX_TEXTURE_X16:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_VALUE_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_VALUE_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+        );
+    case RSX_TEXTURE_Y16_X16:
+    case RSX_TEXTURE_COMPRESSED_HILO_S8:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+        );
+    case RSX_TEXTURE_Y16_X16_FLOAT:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+        );
+    case RSX_TEXTURE_W16_Z16_Y16_X16_FLOAT:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_3,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+        );
+    case RSX_TEXTURE_COMPRESSED_B8R8_G8R8 & ~(RSX_TEXTURE_LN | RSX_TEXTURE_UN):
+    case RSX_TEXTURE_COMPRESSED_R8B8_R8G8 & ~(RSX_TEXTURE_LN | RSX_TEXTURE_UN):
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_VALUE_0,
+        );
+    case RSX_TEXTURE_A8R8G8B8:
+    case RSX_TEXTURE_D8R8G8B8:
+        return TEXTURE_SWIZZLE_ENCODE(
+            gfx::TEXTURE_SWIZZLE_COMPONENT_3,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+        );
+
+    case RSX_TEXTURE_R6G5B5:
+        assert_always("Unimplemented texture format");
+        return TEXTURE_SWIZZLE_DEFAULT;
+
+    default:
+        assert_always("Unexpected texture format");
+        return TEXTURE_SWIZZLE_DEFAULT;
+    }
+}
+
 }  // namespace rsx
 }  // namespace gpu
