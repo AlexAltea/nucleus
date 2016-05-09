@@ -77,6 +77,16 @@ UINT8 convertColorWriteMask(gfx::ColorWriteMask mask) {
     return d3dMask;
 }
 
+D3D12_DEPTH_WRITE_MASK convertDepthWriteMask(gfx::DepthWriteMask mask) {
+    switch (mask) {
+    case gfx::DEPTH_WRITE_MASK_ZERO:  return D3D12_DEPTH_WRITE_MASK_ZERO;
+    case gfx::DEPTH_WRITE_MASK_ALL:   return D3D12_DEPTH_WRITE_MASK_ALL;
+    default:
+        assert_always("Unimplemented");
+        return D3D12_DEPTH_WRITE_MASK_ALL;
+    }
+}
+
 D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc) {
     switch (comparisonFunc) {
     case COMPARISON_FUNC_NEVER:          return D3D12_COMPARISON_FUNC_NEVER;
@@ -88,7 +98,6 @@ D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc) 
     case COMPARISON_FUNC_GREATER_EQUAL:  return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
     case COMPARISON_FUNC_ALWAYS:         return D3D12_COMPARISON_FUNC_ALWAYS;
     default:
-        assert_always("Unimplemented");
         return D3D12_COMPARISON_FUNC_NEVER;
     }
 }
@@ -111,6 +120,7 @@ D3D12_FILTER convertFilter(gfx::Filter filter) {
 
 DXGI_FORMAT convertFormat(gfx::Format format) {
     switch (format) {
+    case FORMAT_UNKNOWN:             return DXGI_FORMAT_UNKNOWN;
     case FORMAT_R32_FLOAT:           return DXGI_FORMAT_R32_FLOAT;
     case FORMAT_R32G32_FLOAT:        return DXGI_FORMAT_R32G32_FLOAT;
     case FORMAT_R32G32B32_FLOAT:     return DXGI_FORMAT_R32G32B32_FLOAT;

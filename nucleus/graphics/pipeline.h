@@ -51,10 +51,54 @@ enum CullMode {
     CULL_MODE_BACK,   // Draw back-facing triangles
 };
 
+enum ComparisonFunc {
+    COMPARISON_FUNC_NEVER          = 1,
+    COMPARISON_FUNC_LESS           = 2,
+    COMPARISON_FUNC_EQUAL          = 3,
+    COMPARISON_FUNC_LESS_EQUAL     = 4,
+    COMPARISON_FUNC_GREATER        = 5,
+    COMPARISON_FUNC_NOT_EQUAL      = 6,
+    COMPARISON_FUNC_GREATER_EQUAL  = 7,
+    COMPARISON_FUNC_ALWAYS         = 8,
+};
+
+enum DepthWriteMask { 
+    DEPTH_WRITE_MASK_ZERO  = 0,
+    DEPTH_WRITE_MASK_ALL   = 1
+};
+
+enum StencilOp {
+    STENCIL_OP_KEEP,
+    STENCIL_OP_ZERO,
+    STENCIL_OP_REPLACE,
+    STENCIL_OP_INCR_SAT,
+    STENCIL_OP_DECR_SAT,
+    STENCIL_OP_INVERT,
+    STENCIL_OP_INCR,
+    STENCIL_OP_DECR,
+};
+
+struct StencilOpDesc {
+    StencilOp stencilOpFail;
+    StencilOp stencilOpZFail;
+    StencilOp stencilOpPass;
+    ComparisonFunc stencilFunc;
+};
+
 struct RSState {
     FillMode fillMode;
     CullMode cullMode;
     bool frontFaceClockwise;
+
+    // Depth-Stencil state
+    bool depthEnable;
+    DepthWriteMask depthWriteMask;
+    ComparisonFunc depthFunc;
+    bool stencilEnable;
+    U08 stencilReadMask;
+    U08 stencilWriteMask;
+    StencilOpDesc frontFace;
+    StencilOpDesc backFace;
 };
 
 // Color Blender
@@ -103,17 +147,6 @@ enum LogicOp {
     LOGIC_OP_OR_INVERTED,
     LOGIC_OP_NAND,
     LOGIC_OP_SET,
-};
-
-enum StencilOp {
-    STENCIL_OP_KEEP,
-    STENCIL_OP_ZERO,
-    STENCIL_OP_REPLACE,
-    STENCIL_OP_INCR_SAT,
-    STENCIL_OP_DECR_SAT,
-    STENCIL_OP_INVERT,
-    STENCIL_OP_INCR,
-    STENCIL_OP_DECR,
 };
 
 using ColorWriteMask = U08;
@@ -171,6 +204,7 @@ public:
     DBState dbState;      // Depth-stencil static pipeline state
 
     std::vector<Sampler> samplers;
+    Format formatDSV;
     Size numCBVs;
     Size numSRVs;
 };

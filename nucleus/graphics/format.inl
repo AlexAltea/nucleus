@@ -3,6 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
+FORMAT(UNKNOWN,              0)
 FORMAT(R8_UINT,              1)
 FORMAT(R8_UNORM,             1)
 FORMAT(R8G8_UINT,            2)

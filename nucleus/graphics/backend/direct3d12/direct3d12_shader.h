@@ -36,7 +36,6 @@ class Direct3D12Shader : public Shader {
     int countArbitraryOutput;
     int countArbitraryCBV;
     hir::Literal idEntryPoint;
-    hir::Literal idBuiltinPosition;
     std::unordered_map<hir::Literal, std::vector<hir::Instruction*>> idDecoration;
     const char* getBuiltin(hir::Literal builtinDecoration);
 

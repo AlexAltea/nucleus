@@ -144,7 +144,12 @@ void Direct3D12CommandBuffer::cmdSetTargets(U32 colorCount, ColorTarget** colorT
         auto* d3dColorTarget = static_cast<Direct3D12ColorTarget*>(colorTargets[i]);
         renderTargets[i] = d3dColorTarget->handle;
     }
-    list->OMSetRenderTargets(colorCount, renderTargets.data(), FALSE, nullptr); // TODO
+    if (depthStencilTarget) {
+        auto* d3dDepthStencilTarget = static_cast<Direct3D12DepthStencilTarget*>(depthStencilTarget);
+        list->OMSetRenderTargets(colorCount, renderTargets.data(), FALSE, &d3dDepthStencilTarget->handle);
+    } else {
+        list->OMSetRenderTargets(colorCount, renderTargets.data(), FALSE, nullptr);
+    }
 }
 
 void Direct3D12CommandBuffer::cmdSetViewports(U32 viewportsCount, const Viewport* viewports) {

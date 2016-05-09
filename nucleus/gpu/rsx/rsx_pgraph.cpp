@@ -255,13 +255,37 @@ void PGRAPH::Begin(Primitive primitive) {
             cacheFP[fpHash] = std::move(fp);
         }
         gfx::PipelineDesc pipelineDesc = {};
+        pipelineDesc.formatDSV = convertFormat(surface.depthFormat);
         pipelineDesc.numCBVs = 1;
         pipelineDesc.numSRVs = RSX_MAX_TEXTURES;
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
+
         pipelineDesc.rsState.fillMode = gfx::FILL_MODE_SOLID;
         pipelineDesc.rsState.cullMode = p.cull_face_enable ? convertCullMode(p.cull_mode) : gfx::CULL_MODE_NONE;
         pipelineDesc.rsState.frontFaceClockwise = convertFrontFace(p.front_face);
+        pipelineDesc.rsState.depthEnable = p.depth_test_enable;
+        pipelineDesc.rsState.depthWriteMask = p.depth_mask ? gfx::DEPTH_WRITE_MASK_ALL : gfx::DEPTH_WRITE_MASK_ZERO;
+        pipelineDesc.rsState.depthFunc = convertCompareFunc(p.depth_func);
+        pipelineDesc.rsState.stencilEnable = p.stencil_test_enable;
+        pipelineDesc.rsState.stencilReadMask = p.stencil_func_mask;
+        pipelineDesc.rsState.stencilWriteMask = p.stencil_mask;
+        pipelineDesc.rsState.frontFace.stencilOpFail = convertStencilOp(p.stencil_op_fail);
+        pipelineDesc.rsState.frontFace.stencilOpZFail = convertStencilOp(p.stencil_op_zfail);
+        pipelineDesc.rsState.frontFace.stencilOpPass = convertStencilOp(p.stencil_op_zpass);
+        pipelineDesc.rsState.frontFace.stencilFunc = convertCompareFunc(p.stencil_func);
+        if (p.two_sided_stencil_test_enable) {
+            pipelineDesc.rsState.backFace.stencilOpFail = convertStencilOp(p.stencil_op_fail);
+            pipelineDesc.rsState.backFace.stencilOpZFail = convertStencilOp(p.stencil_op_zfail);
+            pipelineDesc.rsState.backFace.stencilOpPass = convertStencilOp(p.stencil_op_zpass);
+            pipelineDesc.rsState.backFace.stencilFunc = convertCompareFunc(p.stencil_func);
+        } else {
+            pipelineDesc.rsState.backFace.stencilOpFail = convertStencilOp(p.back_stencil_op_fail);
+            pipelineDesc.rsState.backFace.stencilOpZFail = convertStencilOp(p.back_stencil_op_zfail);
+            pipelineDesc.rsState.backFace.stencilOpPass = convertStencilOp(p.back_stencil_op_zpass);
+            pipelineDesc.rsState.backFace.stencilFunc = convertCompareFunc(p.back_stencil_func);
+        }
+
         pipelineDesc.cbState.colorTarget[0].enableBlend = p.blend_enable;
         pipelineDesc.cbState.colorTarget[0].enableLogicOp = p.logic_op_enable;
         pipelineDesc.cbState.colorTarget[0].blendOp = convertBlendOp(p.blend_equation_rgb);
@@ -318,9 +342,8 @@ void PGRAPH::Begin(Primitive primitive) {
                 gfx::TEXTURE_SWIZZLE_VALUE_0,
                 gfx::TEXTURE_SWIZZLE_VALUE_0,
                 gfx::TEXTURE_SWIZZLE_VALUE_0,
-                gfx::TEXTURE_SWIZZLE_VALUE_0,
+                gfx::TEXTURE_SWIZZLE_VALUE_0
             );
-
             gfx::Texture* texDescriptor = graphics->createTexture(texDesc);
             heapResources->pushTexture(texDescriptor);
         }

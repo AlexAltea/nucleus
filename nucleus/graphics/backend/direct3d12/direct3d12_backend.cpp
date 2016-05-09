@@ -292,6 +292,7 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     d3dDesc.pRootSignature = pipeline->rootSignature;
     d3dDesc.NumRenderTargets = 1;
     d3dDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+    d3dDesc.DSVFormat = convertFormat(desc.formatDSV);
     d3dDesc.SampleDesc.Count = 1;
 
     // Shaders
@@ -342,8 +343,20 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     d3dDesc.RasterizerState.DepthClipEnable = TRUE; // TODO
 
     d3dDesc.SampleMask = UINT_MAX;
-    d3dDesc.DepthStencilState.DepthEnable = FALSE;
-    d3dDesc.DepthStencilState.StencilEnable = FALSE;
+    d3dDesc.DepthStencilState.DepthEnable = desc.rsState.depthEnable;
+    d3dDesc.DepthStencilState.DepthWriteMask = convertDepthWriteMask(desc.rsState.depthWriteMask);
+    d3dDesc.DepthStencilState.DepthFunc = convertComparisonFunc(desc.rsState.depthFunc);
+    d3dDesc.DepthStencilState.StencilEnable = desc.rsState.stencilEnable;
+    d3dDesc.DepthStencilState.StencilReadMask = desc.rsState.stencilReadMask;
+    d3dDesc.DepthStencilState.StencilWriteMask = desc.rsState.stencilWriteMask;
+    d3dDesc.DepthStencilState.FrontFace.StencilFailOp = convertStencilOp(desc.rsState.frontFace.stencilOpFail);
+    d3dDesc.DepthStencilState.FrontFace.StencilDepthFailOp = convertStencilOp(desc.rsState.frontFace.stencilOpZFail);
+    d3dDesc.DepthStencilState.FrontFace.StencilPassOp = convertStencilOp(desc.rsState.frontFace.stencilOpPass);
+    d3dDesc.DepthStencilState.FrontFace.StencilFunc = convertComparisonFunc(desc.rsState.frontFace.stencilFunc);
+    d3dDesc.DepthStencilState.BackFace.StencilFailOp = convertStencilOp(desc.rsState.backFace.stencilOpFail);
+    d3dDesc.DepthStencilState.BackFace.StencilDepthFailOp = convertStencilOp(desc.rsState.backFace.stencilOpZFail);
+    d3dDesc.DepthStencilState.BackFace.StencilPassOp = convertStencilOp(desc.rsState.backFace.stencilOpPass);
+    d3dDesc.DepthStencilState.BackFace.StencilFunc = convertComparisonFunc(desc.rsState.backFace.stencilFunc);
 
     // CB state
     d3dDesc.BlendState.AlphaToCoverageEnable = desc.cbState.enableAlphaToCoverage;

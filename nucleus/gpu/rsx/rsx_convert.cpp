@@ -65,6 +65,22 @@ gfx::ColorWriteMask convertColorMask(ColorMask mask) {
     return colorWriteMask;
 }
 
+gfx::ComparisonFunc convertCompareFunc(CompareFunc func) {
+    switch (func) {
+    case RSX_COMPARE_FUNC_NEVER:     return gfx::COMPARISON_FUNC_NEVER;
+    case RSX_COMPARE_FUNC_LESS:      return gfx::COMPARISON_FUNC_LESS;
+    case RSX_COMPARE_FUNC_EQUAL:     return gfx::COMPARISON_FUNC_EQUAL;
+    case RSX_COMPARE_FUNC_LEQUAL:    return gfx::COMPARISON_FUNC_LESS_EQUAL;
+    case RSX_COMPARE_FUNC_GREATER:   return gfx::COMPARISON_FUNC_GREATER;
+    case RSX_COMPARE_FUNC_NOTEQUAL:  return gfx::COMPARISON_FUNC_NOT_EQUAL;
+    case RSX_COMPARE_FUNC_GEQUAL:    return gfx::COMPARISON_FUNC_GREATER_EQUAL;
+    case RSX_COMPARE_FUNC_ALWAYS:    return gfx::COMPARISON_FUNC_ALWAYS;
+    default:
+        assert_always("Unexpected");
+        return gfx::COMPARISON_FUNC_ALWAYS;
+    }
+}
+
 gfx::CullMode convertCullMode(CullMode cullMode) {
     switch (cullMode) {
     case RSX_CULL_MODE_FRONT: return gfx::CULL_MODE_FRONT;
@@ -318,28 +334,28 @@ int convertTextureSwizzle(TextureFormat format) {
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_2,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_3,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_3
         );
     case RSX_TEXTURE_B8:
         return TEXTURE_SWIZZLE_ENCODE(
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0
         );
     case RSX_TEXTURE_G8B8:
         return TEXTURE_SWIZZLE_ENCODE(
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_2,
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_2,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_2
         );
     case RSX_TEXTURE_X16:
         return TEXTURE_SWIZZLE_ENCODE(
             gfx::TEXTURE_SWIZZLE_VALUE_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
             gfx::TEXTURE_SWIZZLE_VALUE_1,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0
         );
     case RSX_TEXTURE_Y16_X16:
     case RSX_TEXTURE_COMPRESSED_HILO_S8:
@@ -347,21 +363,21 @@ int convertTextureSwizzle(TextureFormat format) {
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0
         );
     case RSX_TEXTURE_Y16_X16_FLOAT:
         return TEXTURE_SWIZZLE_ENCODE(
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_1,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_1
         );
     case RSX_TEXTURE_W16_Z16_Y16_X16_FLOAT:
         return TEXTURE_SWIZZLE_ENCODE(
             gfx::TEXTURE_SWIZZLE_COMPONENT_3,
             gfx::TEXTURE_SWIZZLE_COMPONENT_2,
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0
         );
     case RSX_TEXTURE_COMPRESSED_B8R8_G8R8 & ~(RSX_TEXTURE_LN | RSX_TEXTURE_UN):
     case RSX_TEXTURE_COMPRESSED_R8B8_R8G8 & ~(RSX_TEXTURE_LN | RSX_TEXTURE_UN):
@@ -369,7 +385,7 @@ int convertTextureSwizzle(TextureFormat format) {
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_2,
             gfx::TEXTURE_SWIZZLE_COMPONENT_0,
-            gfx::TEXTURE_SWIZZLE_VALUE_0,
+            gfx::TEXTURE_SWIZZLE_VALUE_0
         );
     case RSX_TEXTURE_A8R8G8B8:
     case RSX_TEXTURE_D8R8G8B8:
@@ -377,7 +393,7 @@ int convertTextureSwizzle(TextureFormat format) {
             gfx::TEXTURE_SWIZZLE_COMPONENT_1,
             gfx::TEXTURE_SWIZZLE_COMPONENT_2,
             gfx::TEXTURE_SWIZZLE_COMPONENT_3,
-            gfx::TEXTURE_SWIZZLE_COMPONENT_0,
+            gfx::TEXTURE_SWIZZLE_COMPONENT_0
         );
 
     case RSX_TEXTURE_R6G5B5:

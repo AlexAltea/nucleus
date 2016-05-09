@@ -163,8 +163,6 @@ void RSX::method(U32 offset, U32 parameter) {
     // NV40_CURIE_PRIMITIVE
     case NV4097_SET_DITHER_ENABLE:
     case NV4097_SET_ALPHA_TEST_ENABLE:
-    case NV4097_SET_STENCIL_TEST_ENABLE:
-    case NV4097_SET_DEPTH_TEST_ENABLE:
     case NV4097_SET_POLY_OFFSET_FILL_ENABLE:
     case NV4097_SET_POLY_OFFSET_LINE_ENABLE:
     case NV4097_SET_POLY_OFFSET_POINT_ENABLE:
@@ -256,8 +254,53 @@ void RSX::method(U32 offset, U32 parameter) {
         pgraph.pipeline.color_mask = static_cast<ColorMask>(parameter);
         break;
 
+    // Depth
+    case NV4097_SET_DEPTH_TEST_ENABLE:
+        pgraph.pipeline.depth_test_enable = parameter;
+        break;
+    case NV4097_SET_DEPTH_MASK:
+        pgraph.pipeline.depth_mask = parameter;
+        break;
     case NV4097_SET_DEPTH_FUNC:
-        pgraph.pipeline.depth_func = parameter;
+        pgraph.pipeline.depth_func = static_cast<CompareFunc>(parameter);
+        break;
+
+    // Stencil
+    case NV4097_SET_STENCIL_TEST_ENABLE:
+        pgraph.pipeline.stencil_test_enable = parameter;
+        break;
+    case NV4097_SET_TWO_SIDED_STENCIL_TEST_ENABLE:
+        pgraph.pipeline.two_sided_stencil_test_enable = parameter;
+        break;
+    case NV4097_SET_STENCIL_FUNC_MASK:
+        pgraph.pipeline.stencil_func_mask = parameter;
+        break;
+    case NV4097_SET_STENCIL_MASK:
+        pgraph.pipeline.stencil_mask = parameter;
+        break;
+    case NV4097_SET_STENCIL_OP_ZPASS:
+        pgraph.pipeline.stencil_op_zpass = static_cast<StencilOp>(parameter);
+        break;
+    case NV4097_SET_STENCIL_OP_ZFAIL:
+        pgraph.pipeline.stencil_op_zfail = static_cast<StencilOp>(parameter);
+        break;
+    case NV4097_SET_STENCIL_OP_FAIL:
+        pgraph.pipeline.stencil_op_fail = static_cast<StencilOp>(parameter);
+        break;
+    case NV4097_SET_STENCIL_FUNC:
+        pgraph.pipeline.stencil_func = static_cast<CompareFunc>(parameter);
+        break;
+    case NV4097_SET_BACK_STENCIL_OP_ZPASS:
+        pgraph.pipeline.back_stencil_op_zpass = static_cast<StencilOp>(parameter);
+        break;
+    case NV4097_SET_BACK_STENCIL_OP_ZFAIL:
+        pgraph.pipeline.back_stencil_op_zfail = static_cast<StencilOp>(parameter);
+        break;
+    case NV4097_SET_BACK_STENCIL_OP_FAIL:
+        pgraph.pipeline.back_stencil_op_fail = static_cast<StencilOp>(parameter);
+        break;
+    case NV4097_SET_BACK_STENCIL_FUNC:
+        pgraph.pipeline.back_stencil_func = static_cast<CompareFunc>(parameter);
         break;
 
     case NV4097_SET_CONTEXT_DMA_REPORT:

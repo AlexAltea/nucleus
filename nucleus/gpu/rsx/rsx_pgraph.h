@@ -105,9 +105,25 @@ struct rsx_scissor_t {
 struct alignas(sizeof(Hash)) Pipeline {
     U32 alpha_func;
     F32 alpha_ref;
-    U32 depth_func;
     ColorMask color_mask;
     FrontFace front_face;
+
+    // Depth-Stencil state
+    bool depth_test_enable;
+    bool depth_mask;
+    CompareFunc depth_func;
+    bool stencil_test_enable;
+    bool two_sided_stencil_test_enable;
+    U08 stencil_func_mask;
+    U08 stencil_mask;
+    StencilOp stencil_op_zpass;
+    StencilOp stencil_op_zfail;
+    StencilOp stencil_op_fail; 
+    CompareFunc stencil_func;
+    StencilOp back_stencil_op_zpass;
+    StencilOp back_stencil_op_zfail;
+    StencilOp back_stencil_op_fail; 
+    CompareFunc back_stencil_func;
 
     // Culling
     bool cull_face_enable;

@@ -20,6 +20,7 @@ D3D12_BLEND_OP convertBlendOp(gfx::BlendOp blendOp);
 D3D12_CULL_MODE convertCullMode(gfx::CullMode cullMode);
 D3D12_FILL_MODE convertFillMode(gfx::FillMode fillMode);
 UINT8 convertColorWriteMask(gfx::ColorWriteMask mask);
+D3D12_DEPTH_WRITE_MASK convertDepthWriteMask(gfx::DepthWriteMask mask);
 D3D12_COMPARISON_FUNC convertComparisonFunc(gfx::ComparisonFunc comparisonFunc);
 D3D12_FILTER convertFilter(gfx::Filter filter);
 DXGI_FORMAT convertFormat(gfx::Format format);

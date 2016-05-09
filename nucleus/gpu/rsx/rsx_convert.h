@@ -18,6 +18,7 @@ namespace rsx {
 gfx::Blend convertBlend(Blend func);
 gfx::BlendOp convertBlendOp(BlendEquation equation);
 gfx::ColorWriteMask convertColorMask(ColorMask mask);
+gfx::ComparisonFunc convertCompareFunc(CompareFunc func);
 gfx::CullMode convertCullMode(CullMode cullMode);
 gfx::LogicOp convertLogicOp(LogicOp op);
 gfx::PrimitiveTopology convertPrimitiveTopology(Primitive primitive);
