@@ -274,10 +274,10 @@ void Recompiler::fmsubsx(Instruction code)
 void Recompiler::fmulx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
-    Value* frb = getFPR(code.frb);
+    Value* frc = getFPR(code.frc);
     Value* frd;
 
-    frd = builder.createFMul(fra, frb);
+    frd = builder.createFMul(fra, frc);
     if (code.rc) {
         assert_always("Unimplemented");
         // TODO: CR1 update
@@ -289,10 +289,10 @@ void Recompiler::fmulx(Instruction code)
 void Recompiler::fmulsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
-    Value* frb = getFPR(code.frb);
+    Value* frc = getFPR(code.frc);
     Value* frd;
 
-    frd = builder.createFMul(fra, frb);
+    frd = builder.createFMul(fra, frc);
     if (code.rc) {
         assert_always("Unimplemented");
         // TODO: CR1 update
@@ -457,7 +457,7 @@ void Recompiler::fselx(Instruction code)
     Value* frd;
 
     frd = builder.createCmpSGE(fra, builder.getConstantF64(0.0));
-    frd = builder.createSelect(frd, fra, frb);
+    frd = builder.createSelect(frd, frc, frb);
     if (code.rc) {
         assert_always("Unimplemented");
         // TODO: CR1 update
