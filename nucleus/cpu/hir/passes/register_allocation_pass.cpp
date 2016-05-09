@@ -138,6 +138,12 @@ bool RegisterAllocationPass::run(Function* function) {
                 if (regSet.types & backend::RegisterSet::TYPE_INT && value->isTypeInteger()) {
                     value->reg = regSet.valueIndex[value->reg];
                 }
+                if (regSet.types & backend::RegisterSet::TYPE_FLOAT && value->isTypeFloat()) {
+                    value->reg = regSet.valueIndex[value->reg];
+                }
+                if (regSet.types & backend::RegisterSet::TYPE_VECTOR && value->isTypeVector()) {
+                    value->reg = regSet.valueIndex[value->reg];
+                }
             }
         }
     }
