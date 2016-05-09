@@ -11,6 +11,8 @@
 
 #include <iostream>
 
+#if !defined(NUCLEUS_BUILD_TEST)
+
 void nucleusConfigure(int argc, char **argv) {
     // Configure emulator
     config.parseArguments(argc, argv);
@@ -173,3 +175,5 @@ void nucleusOnDragLeave() {
 
 void nucleusOnDrop() {
 }
+
+#endif  // !defined(NUCLEUS_BUILD_TEST)

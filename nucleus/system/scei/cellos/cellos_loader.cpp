@@ -21,17 +21,19 @@ bool isValid(fs::File* file) {
         return false;
     }
     else if (type == FILETYPE_SELF) {
-        logger.warning(LOG_COMMON, "sce::scei::cellos: SELF loader unimplemented");
-        return false;
+        SceHeader sceh;
+        file->seek(0, fs::SeekSet);
+        file->read(&sceh, sizeof(sceh));
+        return (sceh.flags == 0x8000 || sceh.flags <= 0x1E) && sceh.type == 1;
     }
     else if (type == FILETYPE_ELF) {
         Elf64_Ehdr<BE> eh;
         file->seek(0, fs::SeekSet);
         file->read(&eh, sizeof(eh));
-        return eh.elf_class == ELFCLASS64 &&
-            eh.data == ELFDATA2MSB &&
-            eh.machine == EM_PPC64 &&
-            eh.type == ET_EXEC;
+        return eh.elf_class == ELFCLASS64
+            && eh.data == ELFDATA2MSB
+            && eh.machine == EM_PPC64
+            && eh.type == ET_EXEC;
     }
     return false;
 }

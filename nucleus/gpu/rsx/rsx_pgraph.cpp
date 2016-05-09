@@ -319,6 +319,16 @@ void PGRAPH::Begin(Primitive primitive) {
             texDesc.mipmapLevels = tex.mipmap;
             texDesc.swizzle = convertTextureSwizzle(texFormat);
 
+            switch (texFormat) {
+            case RSX_TEXTURE_B8:        texDesc.size *= 1; break;
+            case RSX_TEXTURE_A1R5G5B5:  texDesc.size *= 2; break;
+            case RSX_TEXTURE_A4R4G4B4:  texDesc.size *= 2; break;
+            case RSX_TEXTURE_R5G6B5:    texDesc.size *= 2; break;
+            case RSX_TEXTURE_A8R8G8B8:  texDesc.size *= 4; break;
+            default:
+                assert_always("Unimplemented");
+            }
+
             gfx::Texture* texDescriptor = graphics->createTexture(texDesc);
             heapResources->pushTexture(texDescriptor);
         }

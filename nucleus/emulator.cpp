@@ -20,6 +20,8 @@
 #include "nucleus/system/scei/orbisos/orbis_self.h"
 #include "nucleus/system/list.h"
 
+#if !defined(NUCLEUS_BUILD_TEST)
+
 // Global emulator object
 Emulator nucleus;
 
@@ -210,3 +212,5 @@ void Emulator::task(EmulatorEvent evt) {
     m_event = evt;
     m_cv.notify_one();
 }
+
+#endif  // !defined(NUCLEUS_BUILD_TEST)

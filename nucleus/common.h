@@ -23,6 +23,9 @@
 #if defined(NDEBUG)
 #define NUCLEUS_BUILD_RELEASE
 #endif
+#if defined(_NUCLEUS_BUILD_TEST)
+#define NUCLEUS_BUILD_TEST
+#endif
 
 /**
  * Events & Status

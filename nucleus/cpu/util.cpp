@@ -41,13 +41,17 @@ void nucleusCall(U64 guestAddr) {
 }
 
 void nucleusSysCall() {
+#if !defined(NUCLEUS_BUILD_TEST)
     auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
     static_cast<sys::LV2*>(nucleus.sys.get())->call(*state);
+#endif
 }
 
 void nucleusHook(U32 fnid) {
+#if !defined(NUCLEUS_BUILD_TEST)
     auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
     static_cast<sys::LV2*>(nucleus.sys.get())->modules.call(*state, fnid);
+#endif
 }
 
 void nucleusLog(U64 guestAddr) {
