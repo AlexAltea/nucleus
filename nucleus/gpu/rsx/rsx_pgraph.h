@@ -107,6 +107,7 @@ struct alignas(sizeof(Hash)) Pipeline {
     F32 alpha_ref;
     U32 depth_func;
     ColorMask color_mask;
+    FrontFace front_face;
 
     // Culling
     bool cull_face_enable;

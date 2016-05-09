@@ -54,6 +54,7 @@ enum CullMode {
 struct RSState {
     FillMode fillMode;
     CullMode cullMode;
+    bool frontFaceClockwise;
 };
 
 // Color Blender

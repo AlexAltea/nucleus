@@ -261,6 +261,7 @@ void PGRAPH::Begin(Primitive primitive) {
         pipelineDesc.ps = cacheFP[fpHash]->shader;
         pipelineDesc.rsState.fillMode = gfx::FILL_MODE_SOLID;
         pipelineDesc.rsState.cullMode = p.cull_face_enable ? convertCullMode(p.cull_mode) : gfx::CULL_MODE_NONE;
+        pipelineDesc.rsState.frontFaceClockwise = convertFrontFace(p.front_face);
         pipelineDesc.cbState.colorTarget[0].enableBlend = p.blend_enable;
         pipelineDesc.cbState.colorTarget[0].enableLogicOp = p.logic_op_enable;
         pipelineDesc.cbState.colorTarget[0].blendOp = convertBlendOp(p.blend_equation_rgb);
@@ -305,9 +306,27 @@ void PGRAPH::Begin(Primitive primitive) {
     // Set textures
     for (U32 i = 0; i < RSX_MAX_TEXTURES; i++) {
         const auto& tex = texture[i];
+
+        // Dummy texture
         if (!tex.enable) {
-            heapResources->pushTexture(nullptr);
-        } else {
+            gfx::TextureDesc texDesc = {};
+            texDesc.width = 2;
+            texDesc.height = 2;
+            texDesc.format = gfx::FORMAT_R8G8B8A8_UNORM;
+            texDesc.mipmapLevels = 1;
+            texDesc.swizzle = TEXTURE_SWIZZLE_ENCODE(
+                gfx::TEXTURE_SWIZZLE_VALUE_0,
+                gfx::TEXTURE_SWIZZLE_VALUE_0,
+                gfx::TEXTURE_SWIZZLE_VALUE_0,
+                gfx::TEXTURE_SWIZZLE_VALUE_0,
+            );
+
+            gfx::Texture* texDescriptor = graphics->createTexture(texDesc);
+            heapResources->pushTexture(texDescriptor);
+        }
+        
+        // Upload real texture
+        else {
             auto texFormat = static_cast<TextureFormat>(tex.format & ~RSX_TEXTURE_LN & ~RSX_TEXTURE_UN);
 
             gfx::TextureDesc texDesc = {};

@@ -131,6 +131,7 @@ void Recompiler::fctiwx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
+    // TODO: Saturation check
     frd = builder.createConvert(frb, TYPE_I32);
     frd = builder.createZExt(frd, TYPE_I64);
     frd = builder.createCast(frd, TYPE_F64);
@@ -147,6 +148,7 @@ void Recompiler::fctiwzx(Instruction code)
     Value* frb = getFPR(code.frb);
     Value* frd;
 
+    // TODO: Saturation check
     frd = builder.createConvert(frb, TYPE_I32);
     frd = builder.createZExt(frd, TYPE_I64);
     frd = builder.createCast(frd, TYPE_F64);

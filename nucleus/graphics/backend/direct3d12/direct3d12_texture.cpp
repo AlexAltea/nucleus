@@ -42,12 +42,14 @@ Direct3D12Texture::Direct3D12Texture(ID3D12Device* device, const TextureDesc& de
     if (desc.data) {
         resourceState = D3D12_RESOURCE_STATE_COPY_DEST;
     } else {
-        clearValuePtr = &clearValue;
-        clearValue.Format = resourceDesc.Format;
         if (desc.flags & TEXTURE_FLAG_COLOR_TARGET) {
+            clearValuePtr = &clearValue;
+            clearValue.Format = resourceDesc.Format;
             resourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
         }
         if (desc.flags & TEXTURE_FLAG_DEPTHSTENCIL_TARGET) {
+            clearValuePtr = &clearValue;
+            clearValue.Format = resourceDesc.Format;
             resourceState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
         }
     }

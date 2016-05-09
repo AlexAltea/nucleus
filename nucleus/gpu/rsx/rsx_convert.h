@@ -28,6 +28,7 @@ gfx::Format convertFormat(Surface::DepthStencilFormat format);
 gfx::Format convertTextureFormat(TextureFormat format);
 gfx::Format convertVertexFormat(VertexType type, U08 size);
 int convertTextureSwizzle(TextureFormat format);
+bool convertFrontFace(FrontFace frontFace);
 
 }  // namespace rsx
 }  // namespace gpu

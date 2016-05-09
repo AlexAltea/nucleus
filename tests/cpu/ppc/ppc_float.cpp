@@ -53,24 +53,129 @@ void PPCTestRunner::faddsx() {
 }
 
 void PPCTestRunner::fcfidx() {
+    // Floating Convert from Integer Double Word
+    TEST_INSTRUCTION(test_fcfid, F1, F2, {
+        (U64&)state.f[1] = F1;
+        run({ a.fcfid(f2, f1); });
+        expect(state.f[2] == F2);
+        // TODO: Other registers
+    });
+
+    test_fcfid(0xFFFFFFFF'FFFFFFFF,                   -1.0);
+    test_fcfid(0x00000000'00000000,                    0.0);
+    test_fcfid(0x00000000'00000010,                   16.0);
+    test_fcfid(0x00000000'80000001,          +2147483649.0);
+    test_fcfid(0xFFFFFFFF'7FFFFFFF,          -2147483649.0);
+    test_fcfid(0x7FFFFFFF'FFFFFFFF, +9223372036854775807.0); // TODO: Why doesn't this work?
+    test_fcfid(0x80000000'00000000, -9223372036854775808.0); // TODO: Why doesn't this work?
 }
 
 void PPCTestRunner::fcmpo() {
 }
 
 void PPCTestRunner::fcmpu() {
+    // Floating Compare Unordered
+    TEST_INSTRUCTION(test_fcmpu, CRFD, F1, F2, LT, GT, EQ, SO, {
+        state.f[1] = F1;
+        state.f[2] = F2;
+        run({ a.fcmpu(CRFD, f1, f2); });
+        expect(state.cr.field[CRFD].lt == LT);
+        expect(state.cr.field[CRFD].gt == GT);
+        expect(state.cr.field[CRFD].eq == EQ);
+        expect(state.cr.field[CRFD].so == SO);
+    });
+
+    test_fcmpu(cr0,  1.0,  2.0,  1,0,0,0);
+    test_fcmpu(cr0,  2.5,  2.4,  0,1,0,0);
+    test_fcmpu(cr1, -9.0,  0.0,  1,0,0,0);
+    test_fcmpu(cr7, -7.0, -7.0,  0,0,1,0);
+    test_fcmpu(cr7,  0.0,  0.0,  0,0,1,0);
 }
 
 void PPCTestRunner::fctidx() {
+    // Floating Convert to Integer Double Word
+    TEST_INSTRUCTION(test_fctid, F1, F2, {
+        state.f[1] = F1;
+        run({ a.fctid(f2, f1); });
+        expect((U64&)state.f[2] == F2);
+        // TODO: Other registers
+    });
+
+    // Rounding mode: Round toward zero
+    test_fctid(                  -1.5, 0xFFFFFFFF'FFFFFFFF);
+    test_fctid(                   0.0, 0x00000000'00000000);
+    test_fctid(                   0.1, 0x00000000'00000000);
+    test_fctid(                  16.9, 0x00000000'00000010);
+    test_fctid(         +2147483649.0, 0x00000000'80000001);
+    test_fctid(         -2147483649.0, 0xFFFFFFFF'7FFFFFFF);
+    //test_fctid(+*223372036854775807.0, 0x7FFFFFFF'FFFFFFFF); // TODO: Why doesn't this work?
+    //test_fctid(-9223372036854775808.0, 0x80000000'00000000); // TODO: Why doesn't this work?
+    //test_fctiw(+9223372036854775808.0, 0x7FFFFFFF'FFFFFFFF); // TODO: Saturation check
+    //test_fctiw(-9223372036854775809.0, 0x80000000'00000000); // TODO: Saturation check
+
+    // TODO: Other rounding modes
 }
 
 void PPCTestRunner::fctidzx() {
+    // Floating Convert to Integer Double Word with Round toward Zero
+    TEST_INSTRUCTION(test_fctidz, F1, F2, {
+        state.f[1] = F1;
+        run({ a.fctidz(f2, f1); });
+        expect((U64&)state.f[2] == F2);
+        // TODO: Other registers
+    });
+
+    test_fctidz(                  -1.5, 0xFFFFFFFF'FFFFFFFF);
+    test_fctidz(                   0.0, 0x00000000'00000000);
+    test_fctidz(                   0.1, 0x00000000'00000000);
+    test_fctidz(                  16.9, 0x00000000'00000010);
+    test_fctidz(         +2147483649.0, 0x00000000'80000001);
+    test_fctidz(         -2147483649.0, 0xFFFFFFFF'7FFFFFFF);
+    //test_fctidz(+*223372036854775807.0, 0x7FFFFFFF'FFFFFFFF); // TODO: Why doesn't this work?
+    //test_fctidz(-9223372036854775808.0, 0x80000000'00000000); // TODO: Why doesn't this work?
+    //test_fctiwz(+9223372036854775808.0, 0x7FFFFFFF'FFFFFFFF); // TODO: Saturation check
+    //test_fctiwz(-9223372036854775809.0, 0x80000000'00000000); // TODO: Saturation check
 }
 
 void PPCTestRunner::fctiwx() {
+    // Floating Convert to Integer Word 
+    TEST_INSTRUCTION(test_fctiw, F1, F2, {
+        state.f[1] = F1;
+        run({ a.fctiw(f2, f1); });
+        expect(U32((U64&)state.f[2]) == F2);
+        // TODO: Other registers
+    });
+
+    // Rounding mode: Round toward zero
+    test_fctiw(         -1.5, 0xFFFFFFFF);
+    test_fctiw(          0.0, 0x00000000);
+    test_fctiw(          0.1, 0x00000000);
+    test_fctiw(         16.9, 0x00000010);
+    test_fctiw(+2147483647.0, 0x7FFFFFFF);
+    test_fctiw(-2147483648.0, 0x80000000);
+    //test_fctiw(+2147483648.0, 0x7FFFFFFF); // TODO: Saturation check
+    //test_fctiw(-2147483649.0, 0x80000000); // TODO: Saturation check
+
+    // TODO: Other rounding modes
 }
 
 void PPCTestRunner::fctiwzx() {
+    // Floating Convert to Integer Word with Round toward Zero
+    TEST_INSTRUCTION(test_fctiwz, F1, F2, {
+        state.f[1] = F1;
+        run({ a.fctiwz(f2, f1); });
+        expect(U32((U64&)state.f[2]) == F2);
+        // TODO: Other registers
+    });
+
+    test_fctiwz(         -1.5, 0xFFFFFFFF);
+    test_fctiwz(          0.0, 0x00000000);
+    test_fctiwz(          0.1, 0x00000000);
+    test_fctiwz(         16.9, 0x00000010);
+    test_fctiwz(+2147483647.0, 0x7FFFFFFF);
+    test_fctiwz(-2147483648.0, 0x80000000);
+    //test_fctiwz(+2147483648.0, 0x7FFFFFFF); // TODO: Saturation check
+    //test_fctiwz(-2147483649.0, 0x80000000); // TODO: Saturation check
 }
 
 void PPCTestRunner::fdivx() {

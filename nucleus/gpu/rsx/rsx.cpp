@@ -182,6 +182,10 @@ void RSX::method(U32 offset, U32 parameter) {
         pgraph.pipeline.cull_mode = static_cast<CullMode>(parameter);
         break;
 
+    case NV4097_SET_FRONT_FACE:
+        pgraph.pipeline.front_face = static_cast<FrontFace>(parameter);
+        break;
+
     case NV4097_SET_SEMAPHORE_OFFSET:
         pgraph.semaphore_index = parameter >> 4;
         break;

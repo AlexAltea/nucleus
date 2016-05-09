@@ -390,5 +390,15 @@ int convertTextureSwizzle(TextureFormat format) {
     }
 }
 
+bool convertFrontFace(FrontFace frontFace) {
+    bool frontFaceClockwise;
+    if (frontFace == RSX_FRONT_FACE_CW) {
+        frontFaceClockwise = true;
+    } else {
+        frontFaceClockwise = false;
+    }
+    return frontFaceClockwise;
+}
+
 }  // namespace rsx
 }  // namespace gpu

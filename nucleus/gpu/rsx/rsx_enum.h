@@ -66,6 +66,11 @@ enum ColorMask : U32 {
     RSX_COLOR_MASK_A  = (1 << (3 * 8)),
 };
 
+enum FrontFace : U16 {
+    RSX_FRONT_FACE_CW  = 0x0900,
+	RSX_FRONT_FACE_CCW = 0x0901,
+};
+
 enum LogicOp : U32 {
     RSX_LOGIC_OP_CLEAR          = 0x1500,
     RSX_LOGIC_OP_AND            = 0x1501,
