@@ -49,10 +49,12 @@ class Direct3D12Shader : public Shader {
     std::string sourceOutput;
     std::string sourceConstants;
     std::string sourceUniforms;
+    std::string sourceStatics;
 
     void appendUniform(hir::Literal typeId, hir::Literal resultId);
     void appendInput(hir::Literal typeId, hir::Literal resultId);
     void appendOutput(hir::Literal typeId, hir::Literal resultId);
+    void appendStatic(hir::Literal typeId, hir::Literal resultId);
 
     // Conversion
     std::string getType(hir::Literal typeId);
@@ -60,6 +62,7 @@ class Direct3D12Shader : public Shader {
     std::string getPointer(hir::Literal pointerId);
 
     // Emitters
+    std::string emitUnaryOp(hir::Instruction* i, hir::Literal value, const char* function);
     std::string emitBinaryOp(hir::Instruction* i, hir::Opcode type, char symbol);
     std::string emitBinaryFunctionOp(hir::Instruction* i, hir::Opcode type, const char* function);
     std::string emitOpCompositeConstruct(hir::Instruction* i);
@@ -69,6 +72,7 @@ class Direct3D12Shader : public Shader {
     std::string emitOpStore(hir::Instruction* i);
     std::string emitOpVariable(hir::Instruction* i);
     std::string emitOpVectorShuffle(hir::Instruction* i);
+    std::string emitOpExtInst(hir::Instruction* i);
 
     // Compile HIR components into HLSL
     std::string compile(hir::Instruction* i);

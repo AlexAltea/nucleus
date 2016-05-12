@@ -94,9 +94,6 @@ void Direct3D12CommandBuffer::cmdSetHeaps(const std::vector<Heap*>& heaps) {
     }
 
     list->SetDescriptorHeaps(d3dHeaps.size(), d3dHeaps.data());
-    for (Size i = 0; i < size; i++) {
-        list->SetGraphicsRootDescriptorTable(i, d3dHeaps[i]->GetGPUDescriptorHandleForHeapStart());
-    }
 }
 
 void Direct3D12CommandBuffer::cmdSetDescriptor(Size index, Heap* heap, Size offset) {

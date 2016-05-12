@@ -164,7 +164,9 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     // Basic types
     Literal floatType = builder.opTypeFloat(32);
     vecTypeId = builder.opTypeVector(floatType, 4);
+    matTypeId = builder.opTypeMatrix(vecTypeId, 4);
     constMemoryId = builder.opVariable(STORAGE_CLASS_UNIFORM_CONSTANT, builder.opTypeArray(vecTypeId, 468));
+    transformsId = builder.opVariable(STORAGE_CLASS_UNIFORM_CONSTANT, matTypeId);
 
     Function* function = new Function(*module.get(), builder.opTypeFunction(builder.opTypeVoid()));
     Block* block = new Block(*function);
@@ -215,12 +217,12 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
             setDestVector(builder.opFAdd(builder.opFMul(src0, src1), src2));
             break;
         case RSX_VP_OPCODE_VEC_FRC:
-            assert_always("Unimplemented");
-            //source += format("%s = fract(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
+            src0 = getSourceVector(0);
+            setDestVector(builder.opExtFract(src0));
             break;
         case RSX_VP_OPCODE_VEC_FLR:
-            assert_always("Unimplemented");
-            //source += format("%s = floor(%s)%s;", DST(), SRC(0), get_vp_mask(instr.masc_vec));
+            src0 = getSourceVector(0);
+            setDestVector(builder.opExtFloor(src0));
             break;
         case RSX_VP_OPCODE_VEC_DP4:
             src0 = getSourceVector(0);
@@ -232,6 +234,13 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
             logger.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
         }
     } while (!(buffer++)->end);
+
+    // Transform vertex output
+    Literal position = getOutputReg(0);
+    builder.opStore(position, builder.opMatrixTimesVector(
+        builder.opLoad(transformsId),
+        builder.opLoad(position))
+    );
 
     // Header
     builder.addCapability(CAPABILITY_SHADER);

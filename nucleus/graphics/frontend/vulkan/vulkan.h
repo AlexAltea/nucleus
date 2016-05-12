@@ -7,7 +7,7 @@
 
 #include "nucleus/common.h"
 
-#include "externals/spirv/GLSL450Lib.h"
+#include "externals/spirv/GLSL.std.450.h"
 #include "externals/spirv/spirv.hpp"
 
 namespace gfx {

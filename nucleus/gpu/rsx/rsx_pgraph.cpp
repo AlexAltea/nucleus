@@ -29,7 +29,7 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* me
     // Heaps
     gfx::HeapDesc heapResourcesDesc = {};
     heapResourcesDesc.type = gfx::HEAP_TYPE_RESOURCE;
-    heapResourcesDesc.size = RSX_MAX_TEXTURES + 1;
+    heapResourcesDesc.size = RSX_MAX_TEXTURES + 2;
     heapResources = graphics->createHeap(heapResourcesDesc);
     gfx::HeapDesc heapSamplersDesc = {};
     heapSamplersDesc.type = gfx::HEAP_TYPE_RESOURCE;
@@ -231,8 +231,6 @@ void PGRAPH::Begin(Primitive primitive) {
     setSurface();
 
     // Set viewport
-    viewport.width = 1280; // TODO: Why is this failing?
-    scissor.width = 1280;  // TODO: Why is this failing?
     gfx::Viewport viewportRect = { viewport.x, viewport.y, viewport.width, viewport.height, 0.0f, 1.0f };
     gfx::Rectangle scissorRect = { scissor.x, scissor.y, scissor.width, scissor.height };
     cmdBuffer->cmdSetViewports(1, &viewportRect);
@@ -261,7 +259,7 @@ void PGRAPH::Begin(Primitive primitive) {
         }
         gfx::PipelineDesc pipelineDesc = {};
         pipelineDesc.formatDSV = convertFormat(surface.depthFormat);
-        pipelineDesc.numCBVs = 1;
+        pipelineDesc.numCBVs = 2;
         pipelineDesc.numSRVs = RSX_MAX_TEXTURES;
         pipelineDesc.vs = cacheVP[vpHash]->shader;
         pipelineDesc.ps = cacheFP[fpHash]->shader;
@@ -325,12 +323,13 @@ void PGRAPH::Begin(Primitive primitive) {
     }
 
     heapResources->reset();
+    heapResources->pushVertexBuffer(vpeConstantMemory);
+    heapResources->pushVertexBuffer(vtxTransform);
 
     // Upload VPE constants if necessary
     void* constantsPtr = vpeConstantMemory->map();
     memcpy(constantsPtr, &vpe.constant, sizeof(vpe.constant));
     vpeConstantMemory->unmap();
-    heapResources->pushVertexBuffer(vpeConstantMemory);
 
     // Upload vertex transform matrix if necessary
     if (vertex_transform_dirty) {
@@ -400,7 +399,7 @@ void PGRAPH::Begin(Primitive primitive) {
     cmdBuffer->cmdBindPipeline(cachePipeline[pipelineHash].get());
     cmdBuffer->cmdSetHeaps({ heapResources });
     cmdBuffer->cmdSetDescriptor(0, heapResources, 0);
-    cmdBuffer->cmdSetDescriptor(1, heapResources, 1);
+    cmdBuffer->cmdSetDescriptor(1, heapResources, 2);
     cmdBuffer->cmdSetPrimitiveTopology(convertPrimitiveTopology(primitive));
 }
 

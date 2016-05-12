@@ -141,7 +141,9 @@ private:
     std::unique_ptr<Module> module;
     Builder builder;
     Literal vecTypeId;
+    Literal matTypeId;
     Literal constMemoryId;
+    Literal transformsId;
     std::vector<Literal> entryPointInterface;
 
     // Registers

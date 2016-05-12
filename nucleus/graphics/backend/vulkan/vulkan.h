@@ -22,7 +22,7 @@
 #include "externals/vulkan/vk_platform.h"
 
 // SPIR-V
-#include "externals/spirv/GLSL450Lib.h"
+#include "externals/spirv/GLSL.std.450.h"
 #include "externals/spirv/spirv.hpp"
 
 namespace gfx {

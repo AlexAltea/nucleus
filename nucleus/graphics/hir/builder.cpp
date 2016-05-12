@@ -390,6 +390,16 @@ Literal Builder::opDot(Literal lhs, Literal rhs) {
 Literal Builder::opFNegate(Literal value) {
     Instruction* i = createInstr(OP_FNEGATE, true);
     i->typeId = getType(value);
+    i->addOperandLiteral(value);
+    curBlock->instructions.push_back(i);
+    return i->resultId;
+}
+
+Literal Builder::opMatrixTimesVector(Literal matrix, Literal vector) {
+    Instruction* i = createInstr(OP_MATRIX_TIMES_VECTOR, true);
+    i->typeId = getContainedType(getType(matrix));
+    i->addOperandLiteral(matrix);
+    i->addOperandLiteral(vector);
     curBlock->instructions.push_back(i);
     return i->resultId;
 }
@@ -467,9 +477,13 @@ Literal Builder::opVectorShuffle(Literal resType, Literal vec1, Literal vec2, co
 }
 
 // GLSL extensions
-Literal Builder::opExtFAbs(Literal value) {
-    assert_always("Unimplemented");
-    Instruction* i = createInstr(OP_NOP, true);
+Literal Builder::emitGlslUnaryOp(Literal instruction, Literal value) {
+    Instruction* i = createInstr(OP_EXT_INST, true);
+    i->typeId = getType(value);
+    i->addOperandLiteral(0); // TODO: Use GLSL's OpExtInstImport result ID
+    i->addOperandLiteral(instruction);
+    i->addOperandLiteral(value);
+    curBlock->instructions.push_back(i);
     return i->resultId;
 }
 

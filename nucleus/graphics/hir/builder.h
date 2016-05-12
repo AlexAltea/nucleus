@@ -133,6 +133,7 @@ public:
     Literal opFDiv(Literal lhs, Literal rhs) { return emitBinaryOp(OP_FDIV, lhs, rhs); }
     Literal opDot(Literal lhs, Literal rhs);
     Literal opFNegate(Literal value);
+    Literal opMatrixTimesVector(Literal matrix, Literal vector);
 
     // TODO: Auto-deduce typeId from image type
     Literal opImageSampleImplicitLod(Literal typeId, Literal image, Literal coordinate);
@@ -144,7 +145,11 @@ public:
     Literal opVectorShuffle(Literal resType, Literal vec1, Literal vec2, const std::vector<Literal>& components);
 
     // GLSL extensions
-    Literal opExtFAbs(Literal value);
+    Literal emitGlslUnaryOp(Literal instruction, Literal value);
+    Literal emitGlslBinaryOp(Literal instruction, Literal value);
+    Literal opExtFAbs(Literal value)  { return emitGlslUnaryOp(GLSLstd450FAbs, value); }
+    Literal opExtFloor(Literal value) { return emitGlslUnaryOp(GLSLstd450Floor, value); }
+    Literal opExtFract(Literal value) { return emitGlslUnaryOp(GLSLstd450Fract, value); }
 };
 
 }  // namespace hir

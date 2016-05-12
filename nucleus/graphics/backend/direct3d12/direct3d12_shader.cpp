@@ -69,7 +69,7 @@ void Direct3D12Shader::appendUniform(Literal typeId, Literal resultId) {
     }
     else {
         std::string type = getType(underlyingType->resultId);
-        sourceUniforms += format("%s v%d : register(b%d);\n", type.c_str(), resultId, countArbitraryCBV++);
+        sourceUniforms += format("cbuffer C%d : register(b%d) { %s v%d; };\n", resultId, countArbitraryCBV++, type.c_str(), resultId);
     }
 }
 
@@ -157,6 +157,12 @@ void Direct3D12Shader::appendOutput(Literal typeId, Literal resultId) {
     }
 }
 
+void Direct3D12Shader::appendStatic(hir::Literal typeId, hir::Literal resultId) {
+    // TODO: Value initialization is hardcoded for float4
+    std::string type = getType(typeId);
+    sourceStatics += format("static %s v%d = %s(0.0, 0.0, 0.0, 0.0);\n", type.c_str(), resultId, type.c_str());
+}
+
 // Conversion
 std::string Direct3D12Shader::getType(Literal instrId) {
     if (!idCache[instrId].empty()) {
@@ -201,6 +207,15 @@ std::string Direct3D12Shader::getType(Literal instrId) {
         assert_true(1 <= componentCount && componentCount <= 4, "HLSL 5.0 only supports between 1 and 4 vector components");
         std::string componentTypeName = getType(componentType);
         typeName = format("%s%d", componentTypeName.c_str(), componentCount);
+    }
+
+    // Matrices
+    else if (instr->opcode == OP_TYPE_MATRIX) {
+        Literal columnType = instr->operands[0];
+        Literal columnCount = instr->operands[1];
+        assert_true(1 <= columnType && columnType <= 4, "HLSL 5.0 only supports between 1 and 4 matrix columns");
+        std::string componentTypeName = getType(columnType);
+        typeName = format("%sx%d", componentTypeName.c_str(), columnCount);
     }
 
     // Arrays
@@ -439,9 +454,34 @@ std::string Direct3D12Shader::emitOpVectorShuffle(hir::Instruction* i) {
     return format(PADDING "%s v%d = %s(%s);\n", type.c_str(), result, type.c_str(), components.c_str());
 }
 
+std::string Direct3D12Shader::emitUnaryOp(hir::Instruction* i, Literal valueId, const char* function) {
+    Literal result = i->resultId;
+    std::string typeStr = getType(i->typeId);
+    return format(PADDING "%s v%d = %s(v%d);\n", typeStr.c_str(), result, function, valueId);
+}
+
+std::string Direct3D12Shader::emitOpExtInst(Instruction* i) {
+    std::string source;
+    // TODO: Assuming GLSL extensions
+    Literal instruction = i->operands[1];
+    switch (instruction) {
+    case GLSLstd450FAbs:
+        return emitUnaryOp(i, i->operands[2], "abs");
+    case GLSLstd450Floor:
+        return emitUnaryOp(i, i->operands[2], "floor");
+    case GLSLstd450Fract:
+        return emitUnaryOp(i, i->operands[2], "frac");
+    default:
+        assert_always("Unimplemented");
+        return source;
+    }
+}
+
 std::string Direct3D12Shader::compile(Instruction* i) {
     std::string source;
     switch (i->opcode) {
+    case OP_FNEGATE:
+        return emitUnaryOp(i, i->operands[0], "-");
     case OP_FADD:
         return emitBinaryOp(i, OP_TYPE_FLOAT, '+');
     case OP_FSUB:
@@ -472,6 +512,8 @@ std::string Direct3D12Shader::compile(Instruction* i) {
         return emitBinaryOp(i, OP_TYPE_INT, '%'); // TODO: Is this correct?
     case OP_DOT:
         return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "dot");
+    case OP_MATRIX_TIMES_VECTOR:
+        return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "mul");
     case OP_VECTOR_SHUFFLE:
         return emitOpVectorShuffle(i);
     case OP_COMPOSITE_EXTRACT:
@@ -486,6 +528,8 @@ std::string Direct3D12Shader::compile(Instruction* i) {
         return emitOpLoad(i);
     case OP_STORE:
         return emitOpStore(i);
+    case OP_EXT_INST:
+        return emitOpExtInst(i);
     }
     return source;
 }
@@ -509,7 +553,7 @@ std::string Direct3D12Shader::compile(Function* function) {
 
     source += idCache[funcId] + " {\n";
     if (idEntryPoint == funcId) {
-        source += PADDING "TOutput output;\n";
+        source += PADDING "TOutput output = (TOutput)(0);\n";
     }
     for (auto* var : function->blocks[0]->variables) {
         source += emitOpVariable(var);
@@ -587,6 +631,9 @@ std::string Direct3D12Shader::compile(Module* module) {
             case STORAGE_CLASS_OUTPUT:
                 appendOutput(i->typeId, i->resultId);
                 break;
+            case STORAGE_CLASS_PRIVATE:
+                appendStatic(i->typeId, i->resultId);
+                break;
             default:
                 assert_always("Unimplemented");
             }
@@ -600,8 +647,9 @@ std::string Direct3D12Shader::compile(Module* module) {
     for (const auto& var : userOutputs) {
         sourceOutput += var;
     }
-    source = format("%s\nstruct TInput {\n%s};\nstruct TOutput {\n%s};\n%s\n%s\n",
-        sourceTypes.c_str(), sourceInput.c_str(), sourceOutput.c_str(), sourceUniforms.c_str(), sourceConstants.c_str());
+    source = format("%s\nstruct TInput {\n%s};\nstruct TOutput {\n%s};\n%s\n%s\n%s\n",
+        sourceTypes.c_str(), sourceInput.c_str(), sourceOutput.c_str(),
+        sourceUniforms.c_str(), sourceConstants.c_str(), sourceStatics.c_str());
 
     // Compile functions
     for (auto* function : module->functions) {

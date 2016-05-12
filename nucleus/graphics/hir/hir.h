@@ -7,6 +7,8 @@
 
 #include "nucleus/common.h"
 
+#include "externals/spirv/GLSL.std.450.h"
+
 namespace gfx {
 namespace hir {
 

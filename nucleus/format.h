@@ -23,7 +23,7 @@
 template <typename... Args>
 std::string format(const char* pattern, Args... args)
 {
-    char buffer[4096];
+    char buffer[64_KB];
     snprintf(buffer, sizeof(buffer), pattern, std::forward<Args>(args)...);
     return std::string(buffer);
 }

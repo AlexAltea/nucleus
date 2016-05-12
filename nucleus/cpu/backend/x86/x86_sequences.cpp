@@ -1255,7 +1255,7 @@ struct STORE_I16 : Sequence<STORE_I16, I<OPCODE_STORE, VoidOp, PtrOp, I16Op>> {
             } else {
                 e.mov(e.eax, i.src2);
                 e.xchg(e.ah, e.al);
-                e.mov(e.word[addr], e.eax);
+                e.mov(e.word[addr], e.ax);
             }
         } else {
             if (i.src2.isConstant) {
