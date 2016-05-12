@@ -289,6 +289,8 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     }
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dDesc = {};
+    d3dDesc.NodeMask = 1;
+    d3dDesc.SampleMask = UINT_MAX;
     d3dDesc.pRootSignature = pipeline->rootSignature;
     d3dDesc.NumRenderTargets = 1;
     d3dDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -342,7 +344,6 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     d3dDesc.RasterizerState.FrontCounterClockwise = desc.rsState.frontFaceClockwise;
     d3dDesc.RasterizerState.DepthClipEnable = TRUE; // TODO
 
-    d3dDesc.SampleMask = UINT_MAX;
     d3dDesc.DepthStencilState.DepthEnable = desc.rsState.depthEnable;
     d3dDesc.DepthStencilState.DepthWriteMask = convertDepthWriteMask(desc.rsState.depthWriteMask);
     d3dDesc.DepthStencilState.DepthFunc = convertComparisonFunc(desc.rsState.depthFunc);

@@ -41,6 +41,11 @@ PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* me
     vtxConstantBufferDesc.size = 468 * sizeof(V128);
     vpeConstantMemory = graphics->createVertexBuffer(vtxConstantBufferDesc);
 
+    // Vertex buffer for viewport scale+offsets
+    gfx::VertexBufferDesc vtxTransformDesc;
+    vtxTransformDesc.size = 4 * sizeof(V128);
+    vtxTransform = graphics->createVertexBuffer(vtxConstantBufferDesc);
+
     // Vertex buffer for VPE input attributes
     gfx::VertexBufferDesc vtxInputBufferDesc = {};
     vtxInputBufferDesc.size = 0x100000; // TODO: Could it be bigger? Assuming 0x10000 vertices * 4 coords/vertex * 4 bytes/coord
@@ -326,6 +331,22 @@ void PGRAPH::Begin(Primitive primitive) {
     memcpy(constantsPtr, &vpe.constant, sizeof(vpe.constant));
     vpeConstantMemory->unmap();
     heapResources->pushVertexBuffer(vpeConstantMemory);
+
+    // Upload vertex transform matrix if necessary
+    if (vertex_transform_dirty) {
+        V128* transformPtr = reinterpret_cast<V128*>(vtxTransform->map());
+        memset(transformPtr, 0, 4 * sizeof(V128));
+        F32 half_cliph = surface.width / 2.0f;
+        F32 half_clipv = surface.height / 2.0f;
+        transformPtr[0].f32[0] = (viewport_scale.f32[0] / half_cliph);
+        transformPtr[1].f32[1] = (viewport_scale.f32[1] / half_clipv);
+        transformPtr[2].f32[2] = (viewport_scale.f32[2]);
+        transformPtr[0].f32[3] = (viewport_offset.f32[0] - half_cliph) / half_cliph;
+        transformPtr[1].f32[3] = (viewport_offset.f32[1] - half_clipv) / half_clipv;
+        transformPtr[2].f32[3] = (viewport_offset.f32[2]);
+        transformPtr[3].f32[3] = 1.0f;
+        vtxTransform->unmap();
+    }
 
     // Set textures
     for (U32 i = 0; i < RSX_MAX_TEXTURES; i++) {

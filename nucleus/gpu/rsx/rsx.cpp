@@ -342,12 +342,14 @@ void RSX::method(U32 offset, U32 parameter) {
         pgraph.surface.dirty = true;
         pgraph.surface.x = parameter & 0xFFFF;
         pgraph.surface.width = (parameter >> 16) & 0xFFFF;
+        pgraph.vertex_transform_dirty = true;
         break;
 
     case NV4097_SET_SURFACE_CLIP_VERTICAL:
         pgraph.surface.dirty = true;
         pgraph.surface.y = parameter & 0xFFFF;
         pgraph.surface.height = (parameter >> 16) & 0xFFFF;
+        pgraph.vertex_transform_dirty = true;
         break;
 
     case NV4097_SET_SURFACE_COLOR_TARGET:
@@ -355,24 +357,32 @@ void RSX::method(U32 offset, U32 parameter) {
         pgraph.surface.colorTarget = parameter;
         break;
 
+    // Viewport
     case NV4097_SET_VIEWPORT_HORIZONTAL:
         pgraph.viewport.x = parameter & 0xFFFF;
         pgraph.viewport.width = (parameter >> 16) & 0xFFFF;
         pgraph.viewport.dirty = true;
         break;
-
     case NV4097_SET_VIEWPORT_VERTICAL:
         pgraph.viewport.y = parameter & 0xFFFF;
         pgraph.viewport.height = (parameter >> 16) & 0xFFFF;
         pgraph.viewport.dirty = true;
         break;
+    case_range(4, NV4097_SET_VIEWPORT_SCALE, 4)
+        pgraph.viewport_scale.u32[index] = parameter;
+        pgraph.vertex_transform_dirty = true;
+        break;
+    case_range(4, NV4097_SET_VIEWPORT_OFFSET, 4)
+        pgraph.viewport_offset.u32[index] = parameter;
+        pgraph.vertex_transform_dirty = true;
+        break;
 
+    // Scissor
     case NV4097_SET_SCISSOR_HORIZONTAL:
         pgraph.scissor.x = parameter & 0xFFFF;
         pgraph.scissor.width = (parameter >> 16) & 0xFFFF;
         pgraph.scissor.dirty = true;
         break;
-
     case NV4097_SET_SCISSOR_VERTICAL:
         pgraph.scissor.y = parameter & 0xFFFF;
         pgraph.scissor.height = (parameter >> 16) & 0xFFFF;

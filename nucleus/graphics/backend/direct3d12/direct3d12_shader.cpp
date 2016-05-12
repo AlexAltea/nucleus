@@ -131,6 +131,9 @@ void Direct3D12Shader::appendOutput(Literal typeId, Literal resultId) {
             if (builtinType == BUILTIN_VERTEXID || builtinType == BUILTIN_INSTANCEID) {
                 type = "uint";
             }
+            if (builtinType == BUILTIN_POSITION) {
+                idBuiltinPosition = resultId;
+            }
             sourceOutput += format(PADDING "%s v%d : %s;\n", type.c_str(), resultId, getBuiltin(builtinType));
             return;
         }
@@ -515,6 +518,13 @@ std::string Direct3D12Shader::compile(Function* function) {
         source += compile(block);
     }
     if (idEntryPoint == funcId) {
+        if (shaderType == SHADER_TYPE_VERTEX) {
+            // Correct coordinate system (TODO: Implement proper system to detect BUILTIN_POSITION's)
+            if (idBuiltinPosition != 0) {
+                source += format(PADDING "output.v%d.y *= -1.0f;\n", idBuiltinPosition);
+                source += format(PADDING "output.v%d.z +=  0.5f;\n", idBuiltinPosition);
+            }
+        }
         source += PADDING "return output;\n";
     }
     source += "}\n\n";

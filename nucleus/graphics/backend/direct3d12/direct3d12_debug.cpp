@@ -158,7 +158,11 @@ void Direct3D12Debug::printMessages() {
         std::vector<byte> buffer(msgSize);
         auto* msg = reinterpret_cast<D3D12_MESSAGE*>(buffer.data());
         hr = d3dInfoQueue->GetMessage(i, msg, &msgSize);
-        print(msg);
+
+        if (msg->ID != 921 &&  // Cause: Resetting command allocators of the guest GPU thread (WARP bug?)
+            msg->ID != 552) {  // Cause: Resetting command allocators of the guest GPU thread (WARP bug?)
+            print(msg);
+        }
     }
     d3dInfoQueue->ClearStoredMessages();
 

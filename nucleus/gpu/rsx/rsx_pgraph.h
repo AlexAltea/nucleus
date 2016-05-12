@@ -156,6 +156,7 @@ class PGRAPH {
     gfx::Fence* fence;
     gfx::Heap* heapResources;
     gfx::Heap* heapSamplers;
+    gfx::VertexBuffer* vtxTransform;
     gfx::VertexBuffer* vpeConstantMemory;
     gfx::VertexBuffer* vpeInputs[16];
 
@@ -193,6 +194,10 @@ public:
     Surface surface;
     rsx_viewport_t viewport;
     rsx_scissor_t scissor;
+
+    bool vertex_transform_dirty;
+    V128 viewport_scale;
+    V128 viewport_offset;
 
     // DMA
     U32 dma_report;
