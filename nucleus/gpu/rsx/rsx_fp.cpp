@@ -154,10 +154,10 @@ void RSXFragmentProgram::setDestVector(Literal value) {
     }
 
     Literal old = builder.opLoad(pointer);
-    Literal x = (mask >> 0) ? 4 : 0;
-    Literal y = (mask >> 1) ? 5 : 1;
-    Literal z = (mask >> 2) ? 6 : 2;
-    Literal w = (mask >> 3) ? 7 : 3;
+    Literal x = ((mask >> 0) & 1) ? 4 : 0;
+    Literal y = ((mask >> 1) & 1) ? 5 : 1;
+    Literal z = ((mask >> 2) & 1) ? 6 : 2;
+    Literal w = ((mask >> 3) & 1) ? 7 : 3;
     builder.opStore(pointer, builder.opVectorShuffle(vecTypeId, old, value, {x,y,z,w}));
 }
 

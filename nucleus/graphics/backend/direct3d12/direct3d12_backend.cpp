@@ -258,7 +258,7 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
         d3dSamplers[i].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
         d3dSamplers[i].MinLOD = 0.0f;
         d3dSamplers[i].MaxLOD = D3D12_FLOAT32_MAX;
-        d3dSamplers[i].ShaderRegister = 0;
+        d3dSamplers[i].ShaderRegister = i;
         d3dSamplers[i].RegisterSpace = 0;
         d3dSamplers[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
     }
@@ -278,7 +278,8 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     ID3DBlob* error;
     hr = _D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
     if (FAILED(hr)) {
-        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createPipeline: D3D12SerializeRootSignature failed (0x%X)", hr);
+        LPVOID errorString = error->GetBufferPointer();
+        logger.error(LOG_GRAPHICS, "Direct3D12Backend::createPipeline: D3D12SerializeRootSignature failed (0x%X): %s", hr, errorString);
         return nullptr;
     }
 

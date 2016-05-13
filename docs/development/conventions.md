@@ -15,8 +15,8 @@ This document describes the coding-style rules that apply on this repository.
 ## Coding
 
 * High-level emulated primitive types should be defined through the following fixed-sized types:
-    * `S8`, `S16`, `S32`, `S64` for signed integer types.
-    * `U8`, `U16`, `U32`, `U64` for unsigned integer types.
+    * `S08`, `S16`, `S32`, `S64` for signed integer types.
+    * `U08`, `U16`, `U32`, `U64` for unsigned integer types.
     * `F32`, `F64` for floating-point types.
 * High-level emulated primitive types bigger than 8-bit byte should be wrapped with `LE` or `BE` depending on the emulated architecture:
     * `LE<T>` is a little-endian representation of the type `T`.
@@ -41,7 +41,7 @@ The following layout appplies both to source files (_.cpp_) and header files (_.
 __License__. Mandatory comment:
 ```cpp
 /**
- * (c) 2015 Alexandro Sanchez Bach. All rights reserved.
+ * (c) 2014-2016 Alexandro Sanchez Bach. All rights reserved.
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 ```

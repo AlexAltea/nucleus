@@ -301,6 +301,7 @@ std::string Direct3D12Shader::getPointer(Literal pointerId) {
         pointerString = "output."; break;
     case STORAGE_CLASS_UNIFORM_CONSTANT:
     case STORAGE_CLASS_FUNCTION:
+    case STORAGE_CLASS_PRIVATE:
         break;
     default:
         assert_always("Unimplemented");

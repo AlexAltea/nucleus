@@ -455,14 +455,6 @@ void PGRAPH::Enable(U32 prop, U32 enabled) {
         enabled ? glEnable(GL_ALPHA_TEST) : glDisable(GL_ALPHA_TEST);
         break;
 
-    case NV4097_SET_STENCIL_TEST_ENABLE:
-        enabled ? glEnable(GL_STENCIL_TEST) : glDisable(GL_STENCIL_TEST);
-        break;
-
-    case NV4097_SET_DEPTH_TEST_ENABLE:
-        enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-        break;
-
     case NV4097_SET_BLEND_ENABLE:
         enabled ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
         break;
@@ -477,11 +469,6 @@ void PGRAPH::Enable(U32 prop, U32 enabled) {
 
     case NV4097_SET_POLY_OFFSET_POINT_ENABLE:
         enabled ? glEnable(GL_POLYGON_OFFSET_POINT) : glDisable(GL_POLYGON_OFFSET_POINT);
-        break;
-
-    case NV4097_SET_LOGIC_OP_ENABLE:
-        // TODO: Nsight dislikes this
-        //enabled ? glEnable(GL_LOGIC_OP) : glDisable(GL_LOGIC_OP);
         break;
 
     case NV4097_SET_SPECULAR_ENABLE:
