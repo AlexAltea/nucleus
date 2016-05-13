@@ -18,7 +18,7 @@ HostPathDevice::HostPathDevice(const Path& mountPath, const Path& localPath)
 
 File* HostPathDevice::openFile(const Path& path, OpenMode mode) {
     auto* file = new HostPathFile(localPath + path, mode);
-    if (!file->isOpen()) {
+    if (!file || !file->isOpen()) {
         delete file;
         return nullptr;
     }

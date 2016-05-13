@@ -33,10 +33,12 @@ static struct KeyvaultHandler {
 
     KeyvaultHandler() {
         auto file = fs::AppFileSystem::openFile(fs::APP_LOCATION_ROAMING, KEYVAULT_FILE, fs::Read);
-        auto size = file->attributes().size;
-        buffer.resize(size + 1);
-        file->read(buffer.data(), size);
-        doc.parse<0>(buffer.data());
+        if (file.get()) {
+            auto size = file->attributes().size;
+            buffer.resize(size + 1);
+            file->read(buffer.data(), size);
+            doc.parse<0>(buffer.data());
+        }
     }
 } keyvault;
 

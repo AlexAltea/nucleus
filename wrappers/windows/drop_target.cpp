@@ -35,5 +35,8 @@ HRESULT DropTarget::DragLeave() {
 }
 
 HRESULT DropTarget::Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) {
+    if (pDataObj == nullptr) {
+        return E_FAIL;
+    }
     return E_NOTIMPL;
 }

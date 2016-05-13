@@ -1,6 +1,6 @@
 ﻿Nucleus
 =======
-[![Last Release](https://img.shields.io/badge/version-0.0.4-brightgreen.svg?style=flat)](https://github.com/AlexAltea/nucleus/releases)
+[![Last Release](https://img.shields.io/badge/version-0.1.0-brightgreen.svg?style=flat)](https://github.com/AlexAltea/nucleus/releases)
 
 Created by Alexandro Sánchez Bach.
 

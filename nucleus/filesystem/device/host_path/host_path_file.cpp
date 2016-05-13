@@ -56,7 +56,9 @@ HostPathFile::HostPathFile(const Path& path, OpenMode mode) {
 }
 
 HostPathFile::~HostPathFile() {
-    std::fclose(handle);
+    if (handle) {
+        std::fclose(handle);
+    }
 }
 
 Size HostPathFile::read(void* dst, Size size) {
