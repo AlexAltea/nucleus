@@ -1075,6 +1075,7 @@ struct CONVERT_F64_F32 : Sequence<CONVERT_F64_F32, I<OPCODE_CONVERT, F64Op, F32O
  */
 #define EMIT_CTLZ(bitSize) \
     Xbyak::Label jz, jend; \
+    e.inLocalLabel(); \
     e.bsr(i.dest, i.src1); \
     e.jz(jz); \
     e.mov(e.rax, bitSize-1); \
@@ -1083,7 +1084,8 @@ struct CONVERT_F64_F32 : Sequence<CONVERT_F64_F32, I<OPCODE_CONVERT, F64Op, F32O
     e.jmp(jend); \
     e.L(jz); \
     e.mov(i.dest, bitSize); \
-    e.L(jend);
+    e.L(jend); \
+    e.outLocalLabel();
 
 struct CTLZ_I8 : Sequence<CTLZ_I8, I<OPCODE_CTLZ, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
@@ -1092,9 +1094,7 @@ struct CTLZ_I8 : Sequence<CTLZ_I8, I<OPCODE_CTLZ, I8Op, I8Op>> {
             e.mov(e.al, i.src1);
             e.lzcnt(i.dest.reg.cvt16(), e.ax);
         } else {
-            e.inLocalLabel();
             EMIT_CTLZ(8);
-            e.outLocalLabel();
         }
     }
 };
@@ -1103,9 +1103,7 @@ struct CTLZ_I16 : Sequence<CTLZ_I16, I<OPCODE_CTLZ, I8Op, I16Op>> {
         if (e.isExtensionAvailable(X86Extension::LZCNT)) {
             e.lzcnt(i.dest.reg.cvt16(), i.src1);
         } else {
-            e.inLocalLabel();
             EMIT_CTLZ(16);
-            e.outLocalLabel();
         }
     }
 };
@@ -1114,9 +1112,7 @@ struct CTLZ_I32 : Sequence<CTLZ_I32, I<OPCODE_CTLZ, I8Op, I32Op>> {
         if (e.isExtensionAvailable(X86Extension::LZCNT)) {
             e.lzcnt(i.dest.reg.cvt32(), i.src1);
         } else {
-            e.inLocalLabel();
             EMIT_CTLZ(32);
-            e.outLocalLabel();
         }
     }
 };
@@ -1125,9 +1121,7 @@ struct CTLZ_I64 : Sequence<CTLZ_I64, I<OPCODE_CTLZ, I8Op, I64Op>> {
         if (e.isExtensionAvailable(X86Extension::LZCNT)) {
             e.lzcnt(i.dest.reg.cvt64(), i.src1);
         } else {
-            e.inLocalLabel();
             EMIT_CTLZ(64);
-            e.outLocalLabel();
         }
     }
 };

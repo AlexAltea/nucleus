@@ -216,14 +216,14 @@ void PPCTestRunner::vmaddfp() {
         state.v[2] = V2;
         state.v[3] = V3;
         run({ a.vmaddfp(v4, v1, v2, v3); });
-        expect(state.v43] == V4);
+        expect(state.v[4] == V4);
     });
 
     test_vmaddfp(
-        V128::from(+1.0, +1.0, +2.0, +0.0),
-        V128::from(+0.0, +1.0, +3.0, +1.0),
-        V128::from(+1.0, -1.0, -1.0, -7.0),
-        V128::from(+1.0, +0.0, +5.0, -7.0));
+        V128::from(+1.0f, +1.0f, +2.0f, +0.0f),
+        V128::from(+0.0f, +1.0f, +3.0f, +1.0f),
+        V128::from(+1.0f, -1.0f, -1.0f, -7.0f),
+        V128::from(+1.0f, +0.0f, +5.0f, -7.0f));
 }
 
 void PPCTestRunner::vmaxfp() {
@@ -235,9 +235,9 @@ void PPCTestRunner::vmaxfp() {
     });
 
     test_vmaxfp(
-        V128::from(+10.0, -10.0, +15.0, -15.0),
-        V128::from(-10.0, +20.0, -20.0, +30.0),
-        V128::from(+10.0, +20.0, +15.0, +30.0));
+        V128::from(+10.0f, -10.0f, +15.0f, -15.0f),
+        V128::from(-10.0f, +20.0f, -20.0f, +30.0f),
+        V128::from(+10.0f, +20.0f, +15.0f, +30.0f));
 }
 
 void PPCTestRunner::vmaxsb() {
@@ -309,9 +309,9 @@ void PPCTestRunner::vminfp() {
     });
 
     test_vminfp(
-        V128::from(+10.0, -10.0, +15.0, -15.0),
-        V128::from(-10.0, +20.0, -20.0, +30.0),
-        V128::from(-10.0, -10.0, -20.0, -15.0));
+        V128::from(+10.0f, -10.0f, +15.0f, -15.0f),
+        V128::from(-10.0f, +20.0f, -20.0f, +30.0f),
+        V128::from(-10.0f, -10.0f, -20.0f, -15.0f));
 }
 
 void PPCTestRunner::vminsb() {
@@ -586,7 +586,7 @@ void PPCTestRunner::vperm() {
         state.v[2] = V2;
         state.v[3] = V3;
         run({ a.vperm(v4, v1, v2, v3); });
-        expect(state.v43] == V4);
+        expect(state.v[4] == V4);
     });
 
     test_vperm(
@@ -795,11 +795,11 @@ void PPCTestRunner::vrfin() {
     });
 
     test_vrfin(
-        V128::from(+1.0, +1.5, +1.1, +1.9),
-        V128::from(+1.0, +2.0, +1.0, +2.0));
+        V128::from(+1.0f, +1.5f, +1.1f, +1.9f),
+        V128::from(+1.0f, +2.0f, +1.0f, +2.0f));
     test_vrfin(
-        V128::from(-1.0, -1.5, -1.1, -1.9),
-        V128::from(-1.0, -2.0, -1.0, -2.0));
+        V128::from(-1.0f, -1.5f, -1.1f, -1.9f),
+        V128::from(-1.0f, -2.0f, -1.0f, -2.0f));
 }
 
 void PPCTestRunner::vrfip() {
@@ -842,7 +842,7 @@ void PPCTestRunner::vsel() {
         state.v[2] = V2;
         state.v[3] = V3;
         run({ a.vsel(v4, v1, v2, v3); });
-        expect(state.v43] == V4);
+        expect(state.v[4] == V4);
     });
 
     test_vsel(
@@ -1221,9 +1221,9 @@ void PPCTestRunner::vsubfp() {
     });
 
     test_vsubuhm(
-        V128::from(+10.0, -10.0, +15.0, -15.0),
-        V128::from(-10.0, -10.0, +20.0, +30.0),
-        V128::from(+20.0,  +0.0,  -5.0, -45.0));
+        V128::from(+10.0f, -10.0f, +15.0f, -15.0f),
+        V128::from(-10.0f, -10.0f, +20.0f, +30.0f),
+        V128::from(+20.0f,  +0.0f,  -5.0f, -45.0f));
 }
 
 void PPCTestRunner::vsubsbs() {

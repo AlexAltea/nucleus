@@ -14,14 +14,8 @@ namespace ppu {
 using namespace cpu::hir;
 
 // Utilities
-Value* addDidCarry(Builder& builder, Value* v1, Value* v2) {
-    /*// 32-bit
-    return builder.createCmpUGT(
-        builder.createTrunc(v2, TYPE_I32),
-        builder.createNot(builder.createTrunc(v1, TYPE_I32)));*/
-
-    // 64-bit
-    return builder.createCmpUGT(v2, builder.createNot(v1));
+Value* addDidCarry(Builder& builder, Value* add, Value* lhs) {
+    return builder.createCmpULT(add, lhs);
 }
 
 Value* subDidCarry(Builder& builder, Value* v1, Value* v2) {
@@ -95,7 +89,7 @@ void Recompiler::addcx(Instruction code)
         // TODO: XER OV update
     } else {
         rd = builder.createAdd(ra, rb);
-        ca = addDidCarry(builder, ra, rb);
+        ca = addDidCarry(builder, rd, ra);
     }
     if (code.rc) {
         updateCR0(rd);
@@ -153,7 +147,7 @@ void Recompiler::addic(Instruction code)
 
     Value* simm = builder.getConstantI64(code.simm);
     rd = builder.createAdd(ra, simm);
-    ca = addDidCarry(builder, ra, simm);
+    ca = addDidCarry(builder, rd, ra);
 
     setXER_CA(ca);
     setGPR(code.rd, rd);
@@ -167,7 +161,7 @@ void Recompiler::addic_(Instruction code)
 
     Value* simm = builder.getConstantI64(code.simm);
     rd = builder.createAdd(ra, simm);
-    ca = addDidCarry(builder, ra, simm);
+    ca = addDidCarry(builder, rd, ra);
 
     updateCR0(rd);
 

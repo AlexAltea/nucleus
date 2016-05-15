@@ -8,6 +8,10 @@
 #include "nucleus/logger/logger.h"
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
+#ifdef NUCLEUS_ARCH_X86
+#include <intrin.h>
+#endif
+
 #include <cstring>
 #include <queue>
 
@@ -30,13 +34,17 @@ void X86Compiler::init() {
     X86Sequences::init();
 
     // Set extensions information
-    /*Xbyak::util::Cpu cpu;
+#ifdef NUCLEUS_ARCH_X86
     extensions = 0;
-    extensions |= cpu.has(Xbyak::util::Cpu::tAVX)   ? X86Extension::AVX : 0;
-    extensions |= cpu.has(Xbyak::util::Cpu::tAVX2)  ? X86Extension::AVX2 : 0;
-    extensions |= cpu.has(Xbyak::util::Cpu::tBMI2)  ? X86Extension::BMI2 : 0;
-    extensions |= cpu.has(Xbyak::util::Cpu::tLZCNT) ? X86Extension::LZCNT : 0;
-    extensions |= cpu.has(Xbyak::util::Cpu::tMOVBE) ? X86Extension::MOVBE : 0;*/
+    int data[4];
+    __cpuid(data, 0x00000001);
+    extensions |= ((data[2] >> 28) & 1) ? X86Extension::AVX : 0;
+    extensions |= 0 ? X86Extension::AVX2 : 0;
+    extensions |= 0 ? X86Extension::BMI2 : 0;
+    __cpuid(data, 0x80000001);
+    extensions |= ((data[2] >>  5) & 1) ? X86Extension::LZCNT : 0;
+    extensions |= 0 ? X86Extension::MOVBE : 0;
+#endif
 
     // Set target information
 #if defined(NUCLEUS_TARGET_WINDOWS)
