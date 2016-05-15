@@ -76,6 +76,21 @@ void PPCAssembler::emitFormM(U32 instruction, Operand s, Operand a, Operand b, O
     emit32(instruction | sMask | aMask | bMask | mbMask | meMask);
 }
 
+void PPCAssembler::emitFormVA(U32 instruction, Operand vd, Operand va, Operand vb, Operand vc) {
+    const U32 vdMask = (vd & 0x1F) << 21;
+    const U32 vaMask = (va & 0x1F) << 16;
+    const U32 vbMask = (vb & 0x1F) << 11;
+    const U32 vcMask = (vc & 0x1F) <<  6;
+    emit32(instruction | vdMask | vaMask | vbMask | vcMask);
+}
+
+void PPCAssembler::emitFormVX(U32 instruction, Operand vd, Operand va, Operand vb) {
+    const U32 vdMask = (vd & 0x1F) << 21;
+    const U32 vaMask = (va & 0x1F) << 16;
+    const U32 vbMask = (vb & 0x1F) << 11;
+    emit32(instruction | vdMask | vaMask | vbMask);
+}
+
 // PPC instructions
 void PPCAssembler::add(RegGPR rd, RegGPR ra, RegGPR rb) { emitFormXO(0x7C000214, rd, ra, rb); }
 void PPCAssembler::add_(RegGPR rd, RegGPR ra, RegGPR rb) { emitFormXO(0x7C000215, rd, ra, rb); }
@@ -479,6 +494,185 @@ void PPCAssembler::xor_(RegGPR ra, RegGPR rs, RegGPR rb) { emitFormX(0x7C000278,
 void PPCAssembler::xor__(RegGPR ra, RegGPR rs, RegGPR rb) { emitFormX(0x7C000279, rs, ra, rb); }
 void PPCAssembler::xori(RegGPR ra, RegGPR rs, U16 uimm) { emitFormD(0x68000000, rs, ra, uimm); }
 void PPCAssembler::xoris(RegGPR ra, RegGPR rs, U16 uimm) { emitFormD(0x6C000000, rs, ra, uimm); }
+
+// PPC64 Vector/SIMD Instructions (aka AltiVec)
+void PPCAssembler::lvebx(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00000E, vd, va, vb); }
+void PPCAssembler::lvehx(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00004E, vd, va, vb); }
+void PPCAssembler::lvewx(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00008E, vd, va, vb); }
+void PPCAssembler::lvlx(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00040E, vd, va, vb); }
+void PPCAssembler::lvlxl(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00060E, vd, va, vb); }
+void PPCAssembler::lvrx(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00044E, vd, va, vb); }
+void PPCAssembler::lvrxl(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00064E, vd, va, vb); }
+void PPCAssembler::lvsl(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00000C, vd, va, vb); }
+void PPCAssembler::lvsr(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C00004C, vd, va, vb); }
+void PPCAssembler::lvx(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C0000CE, vd, va, vb); }
+void PPCAssembler::lvxl(RegVR vd, RegVR va, RegVR vb) { emitFormX(0x7C0002CE, vd, va, vb); }
+void PPCAssembler::mfvscr(RegVR vd) { emitFormVX(0x10000604, vd, 0, 0); }
+void PPCAssembler::mtvscr(RegVR vb) { emitFormVX(0x10000644, 0, 0, vb); }
+void PPCAssembler::stvebx(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C00010E, vs, va, vb); }
+void PPCAssembler::stvehx(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C00014E, vs, va, vb); }
+void PPCAssembler::stvewx(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C00018E, vs, va, vb); }
+void PPCAssembler::stvlx(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C00050E, vs, va, vb); }
+void PPCAssembler::stvlxl(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C00070E, vs, va, vb); }
+void PPCAssembler::stvrx(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C00054E, vs, va, vb); }
+void PPCAssembler::stvrxl(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C00074E, vs, va, vb); }
+void PPCAssembler::stvx(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C0001CE, vs, va, vb); }
+void PPCAssembler::stvxl(RegVR vs, RegVR va, RegVR vb) { emitFormX(0x7C0003CE, vs, va, vb); }
+void PPCAssembler::vaddcuw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000180, vd, va, vb); }
+void PPCAssembler::vaddfp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000000A, vd, va, vb); }
+void PPCAssembler::vaddsbs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000300, vd, va, vb); }
+void PPCAssembler::vaddshs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000340, vd, va, vb); }
+void PPCAssembler::vaddsws(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000380, vd, va, vb); }
+void PPCAssembler::vaddubm(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000000, vd, va, vb); }
+void PPCAssembler::vaddubs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000200, vd, va, vb); }
+void PPCAssembler::vadduhm(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000040, vd, va, vb); }
+void PPCAssembler::vadduhs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000240, vd, va, vb); }
+void PPCAssembler::vadduwm(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000080, vd, va, vb); }
+void PPCAssembler::vadduws(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000280, vd, va, vb); }
+void PPCAssembler::vand(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000404, vd, va, vb); }
+void PPCAssembler::vandc(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000444, vd, va, vb); }
+void PPCAssembler::vavgsb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000502, vd, va, vb); }
+void PPCAssembler::vavgsh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000542, vd, va, vb); }
+void PPCAssembler::vavgsw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000582, vd, va, vb); }
+void PPCAssembler::vavgub(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000402, vd, va, vb); }
+void PPCAssembler::vavguh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000442, vd, va, vb); }
+void PPCAssembler::vavguw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000482, vd, va, vb); }
+void PPCAssembler::vcfsx(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000034A, vd, uimm, vb); }
+void PPCAssembler::vcfux(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000030A, vd, uimm, vb); }
+void PPCAssembler::vcmpbfp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100003C6, vd, va, vb); }
+void PPCAssembler::vcmpbfp_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100007C6, vd, va, vb); }
+void PPCAssembler::vcmpeqfp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100000C6, vd, va, vb); }
+void PPCAssembler::vcmpeqfp_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100004C6, vd, va, vb); }
+void PPCAssembler::vcmpequb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000006, vd, va, vb); }
+void PPCAssembler::vcmpequb_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000406, vd, va, vb); }
+void PPCAssembler::vcmpequh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000046, vd, va, vb); }
+void PPCAssembler::vcmpequh_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000446, vd, va, vb); }
+void PPCAssembler::vcmpequw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000086, vd, va, vb); }
+void PPCAssembler::vcmpequw_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000486, vd, va, vb); }
+void PPCAssembler::vcmpgefp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100001C6, vd, va, vb); }
+void PPCAssembler::vcmpgefp_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100005C6, vd, va, vb); }
+void PPCAssembler::vcmpgtfp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100002C6, vd, va, vb); }
+void PPCAssembler::vcmpgtfp_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100006C6, vd, va, vb); }
+void PPCAssembler::vcmpgtsb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000306, vd, va, vb); }
+void PPCAssembler::vcmpgtsb_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000706, vd, va, vb); }
+void PPCAssembler::vcmpgtsh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000346, vd, va, vb); }
+void PPCAssembler::vcmpgtsh_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000746, vd, va, vb); }
+void PPCAssembler::vcmpgtsw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000386, vd, va, vb); }
+void PPCAssembler::vcmpgtsw_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000786, vd, va, vb); }
+void PPCAssembler::vcmpgtub(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000206, vd, va, vb); }
+void PPCAssembler::vcmpgtub_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000606, vd, va, vb); }
+void PPCAssembler::vcmpgtuh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000246, vd, va, vb); }
+void PPCAssembler::vcmpgtuh_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000646, vd, va, vb); }
+void PPCAssembler::vcmpgtuw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000286, vd, va, vb); }
+void PPCAssembler::vcmpgtuw_(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000686, vd, va, vb); }
+void PPCAssembler::vctsxs(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x100003CA, vd, uimm, vb); }
+void PPCAssembler::vctuxs(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000038A, vd, uimm, vb); }
+void PPCAssembler::vexptefp(RegVR vd, RegVR vb) { emitFormVX(0x1000018A, vd, 0, vb); }
+void PPCAssembler::vlogefp(RegVR vd, RegVR vb) { emitFormVX(0x100001CA, vd, 0, vb); }
+void PPCAssembler::vmaddfp(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x1000002E, vd, va, vb, vc); }
+void PPCAssembler::vmaxfp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000040A, vd, va, vb); }
+void PPCAssembler::vmaxsb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000102, vd, va, vb); }
+void PPCAssembler::vmaxsh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000142, vd, va, vb); }
+void PPCAssembler::vmaxsw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000182, vd, va, vb); }
+void PPCAssembler::vmaxub(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000002, vd, va, vb); }
+void PPCAssembler::vmaxuh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000042, vd, va, vb); }
+void PPCAssembler::vmaxuw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000082, vd, va, vb); }
+void PPCAssembler::vmhaddshs(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000020, vd, va, vb, vc); }
+void PPCAssembler::vmhraddshs(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000021, vd, va, vb, vc); }
+void PPCAssembler::vminfp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000044A, vd, va, vb); }
+void PPCAssembler::vminsb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000302, vd, va, vb); }
+void PPCAssembler::vminsh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000342, vd, va, vb); }
+void PPCAssembler::vminsw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000382, vd, va, vb); }
+void PPCAssembler::vminub(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000202, vd, va, vb); }
+void PPCAssembler::vminuh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000242, vd, va, vb); }
+void PPCAssembler::vminuw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000282, vd, va, vb); }
+void PPCAssembler::vmladduhm(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000022, vd, va, vb, vc); }
+void PPCAssembler::vmrghb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000000C, vd, va, vb); }
+void PPCAssembler::vmrghh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000004C, vd, va, vb); }
+void PPCAssembler::vmrghw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000008C, vd, va, vb); }
+void PPCAssembler::vmrglb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000010C, vd, va, vb); }
+void PPCAssembler::vmrglh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000014C, vd, va, vb); }
+void PPCAssembler::vmrglw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000018C, vd, va, vb); }
+void PPCAssembler::vmsummbm(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000025, vd, va, vb, vc); }
+void PPCAssembler::vmsumshm(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000028, vd, va, vb, vc); }
+void PPCAssembler::vmsumshs(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000029, vd, va, vb, vc); }
+void PPCAssembler::vmsumubm(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000024, vd, va, vb, vc); }
+void PPCAssembler::vmsumuhm(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000026, vd, va, vb, vc); }
+void PPCAssembler::vmsumuhs(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x10000027, vd, va, vb, vc); }
+void PPCAssembler::vmulesb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000308, vd, va, vb); }
+void PPCAssembler::vmulesh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000348, vd, va, vb); }
+void PPCAssembler::vmuleub(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000208, vd, va, vb); }
+void PPCAssembler::vmuleuh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000248, vd, va, vb); }
+void PPCAssembler::vmulosb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000108, vd, va, vb); }
+void PPCAssembler::vmulosh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000148, vd, va, vb); }
+void PPCAssembler::vmuloub(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000008, vd, va, vb); }
+void PPCAssembler::vmulouh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000048, vd, va, vb); }
+void PPCAssembler::vnmsubfp(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x1000002F, vd, va, vb, vc); }
+void PPCAssembler::vnor(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000504, vd, va, vb); }
+void PPCAssembler::vor(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000484, vd, va, vb); }
+void PPCAssembler::vperm(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x1000002B, vd, va, vb, vc); }
+void PPCAssembler::vpkpx(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000030E, vd, va, vb); }
+void PPCAssembler::vpkshss(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000018E, vd, va, vb); }
+void PPCAssembler::vpkshus(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000010E, vd, va, vb); }
+void PPCAssembler::vpkswss(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100001CE, vd, va, vb); }
+void PPCAssembler::vpkswus(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000014E, vd, va, vb); }
+void PPCAssembler::vpkuhum(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000000E, vd, va, vb); }
+void PPCAssembler::vpkuhus(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000008E, vd, va, vb); }
+void PPCAssembler::vpkuwum(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000004E, vd, va, vb); }
+void PPCAssembler::vpkuwus(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100000CE, vd, va, vb); }
+void PPCAssembler::vrefp(RegVR vd, RegVR vb) { emitFormVX(0x1000010A, vd, 0, vb); }
+void PPCAssembler::vrfim(RegVR vd, RegVR vb) { emitFormVX(0x100002CA, vd, 0, vb); }
+void PPCAssembler::vrfin(RegVR vd, RegVR vb) { emitFormVX(0x1000020A, vd, 0, vb); }
+void PPCAssembler::vrfip(RegVR vd, RegVR vb) { emitFormVX(0x1000028A, vd, 0, vb); }
+void PPCAssembler::vrfiz(RegVR vd, RegVR vb) { emitFormVX(0x1000024A, vd, 0, vb); }
+void PPCAssembler::vrlb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000004, vd, va, vb); }
+void PPCAssembler::vrlh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000044, vd, va, vb); }
+void PPCAssembler::vrlw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000084, vd, va, vb); }
+void PPCAssembler::vrsqrtefp(RegVR vd, RegVR vb) { emitFormVX(0x1000014A, vd, 0, vb); }
+void PPCAssembler::vsel(RegVR vd, RegVR va, RegVR vb, RegVR vc) { emitFormVA(0x1000002A, vd, va, vb, vc); }
+void PPCAssembler::vsl(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100001C4, vd, va, vb); }
+void PPCAssembler::vslb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000104, vd, va, vb); }
+void PPCAssembler::vsldoi(RegVR vd, RegVR va, RegVR vb, U08 shb) { emitFormVA(0x1000002C, vd, va, vb, shb & 0xF); }
+void PPCAssembler::vslh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000144, vd, va, vb); }
+void PPCAssembler::vslo(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000040C, vd, va, vb); }
+void PPCAssembler::vslw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000184, vd, va, vb); }
+void PPCAssembler::vspltb(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000020C, vd, uimm, vb); }
+void PPCAssembler::vsplth(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000024C, vd, uimm, vb); }
+void PPCAssembler::vspltisb(RegVR vd, RegVR vb, S08 simm) { emitFormVX(0x1000030C, vd, simm, vb); }
+void PPCAssembler::vspltish(RegVR vd, S08 simm) { emitFormVX(0x1000034C, vd, simm, 0); }
+void PPCAssembler::vspltisw(RegVR vd, S08 simm) { emitFormVX(0x1000038C, vd, simm, 0); }
+void PPCAssembler::vspltw(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000028C, vd, uimm, vb); }
+void PPCAssembler::vsr(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100002C4, vd, va, vb); }
+void PPCAssembler::vsrab(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000304, vd, va, vb); }
+void PPCAssembler::vsrah(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000344, vd, va, vb); }
+void PPCAssembler::vsraw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000384, vd, va, vb); }
+void PPCAssembler::vsrb(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000204, vd, va, vb); }
+void PPCAssembler::vsrh(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000244, vd, va, vb); }
+void PPCAssembler::vsro(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000044C, vd, va, vb); }
+void PPCAssembler::vsrw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000284, vd, va, vb); }
+void PPCAssembler::vsubcuw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000580, vd, va, vb); }
+void PPCAssembler::vsubfp(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000004A, vd, va, vb); }
+void PPCAssembler::vsubsbs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000700, vd, va, vb); }
+void PPCAssembler::vsubshs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000740, vd, va, vb); }
+void PPCAssembler::vsubsws(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000780, vd, va, vb); }
+void PPCAssembler::vsububm(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000400, vd, va, vb); }
+void PPCAssembler::vsububs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000600, vd, va, vb); }
+void PPCAssembler::vsubuhm(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000440, vd, va, vb); }
+void PPCAssembler::vsubuhs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000640, vd, va, vb); }
+void PPCAssembler::vsubuwm(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000480, vd, va, vb); }
+void PPCAssembler::vsubuws(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000680, vd, va, vb); }
+void PPCAssembler::vsum2sws(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000688, vd, va, vb); }
+void PPCAssembler::vsum4sbs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000708, vd, va, vb); }
+void PPCAssembler::vsum4shs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000648, vd, va, vb); }
+void PPCAssembler::vsum4ubs(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000608, vd, va, vb); }
+void PPCAssembler::vsumsws(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000788, vd, va, vb); }
+void PPCAssembler::vupkhpx(RegVR vd, RegVR vb) { emitFormVX(0x1000034E, vd, 0, vb); }
+void PPCAssembler::vupkhsb(RegVR vd, RegVR vb) { emitFormVX(0x1000020E, vd, 0, vb); }
+void PPCAssembler::vupkhsh(RegVR vd, RegVR vb) { emitFormVX(0x1000024E, vd, 0, vb); }
+void PPCAssembler::vupklpx(RegVR vd, RegVR vb) { emitFormVX(0x100003CE, vd, 0, vb); }
+void PPCAssembler::vupklsb(RegVR vd, RegVR vb) { emitFormVX(0x1000028E, vd, 0, vb); }
+void PPCAssembler::vupklsh(RegVR vd, RegVR vb) { emitFormVX(0x100002CE, vd, 0, vb); }
+void PPCAssembler::vxor(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x100004C4, vd, va, vb); }
 
 }  // namespace ppc
 }  // namespace backend
