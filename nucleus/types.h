@@ -84,6 +84,19 @@ union V128 {
         result.f32[3] = a3;
         return result;
     }
+
+    static V128 from_u32(U32 a0, U32 a1, U32 a2, U32 a3) {
+        V128 result;
+        result.u32[0] = a0;
+        result.u32[1] = a1;
+        result.u32[2] = a2;
+        result.u32[3] = a3;
+        return result;
+    }
+
+    bool operator == (const V128& r) const {
+        return (u64[0] == r.u64[0]) && (u64[1] == r.u64[1]);
+    }
 };
 
 /**

@@ -617,7 +617,7 @@ public:
     void vslw(RegVR vd, RegVR va, RegVR vb);
     void vspltb(RegVR vd, RegVR vb, U08 uimm);
     void vsplth(RegVR vd, RegVR vb, U08 uimm);
-    void vspltisb(RegVR vd, RegVR vb, S08 simm);
+    void vspltisb(RegVR vd, S08 simm);
     void vspltish(RegVR vd, S08 simm);
     void vspltisw(RegVR vd, S08 simm);
     void vspltw(RegVR vd, RegVR vb, U08 uimm);

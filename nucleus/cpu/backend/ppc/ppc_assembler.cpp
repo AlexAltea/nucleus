@@ -638,7 +638,7 @@ void PPCAssembler::vslo(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x1000040C, v
 void PPCAssembler::vslw(RegVR vd, RegVR va, RegVR vb) { emitFormVX(0x10000184, vd, va, vb); }
 void PPCAssembler::vspltb(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000020C, vd, uimm, vb); }
 void PPCAssembler::vsplth(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000024C, vd, uimm, vb); }
-void PPCAssembler::vspltisb(RegVR vd, RegVR vb, S08 simm) { emitFormVX(0x1000030C, vd, simm, vb); }
+void PPCAssembler::vspltisb(RegVR vd, S08 simm) { emitFormVX(0x1000030C, vd, simm, 0); }
 void PPCAssembler::vspltish(RegVR vd, S08 simm) { emitFormVX(0x1000034C, vd, simm, 0); }
 void PPCAssembler::vspltisw(RegVR vd, S08 simm) { emitFormVX(0x1000038C, vd, simm, 0); }
 void PPCAssembler::vspltw(RegVR vd, RegVR vb, U08 uimm) { emitFormVX(0x1000028C, vd, uimm, vb); }

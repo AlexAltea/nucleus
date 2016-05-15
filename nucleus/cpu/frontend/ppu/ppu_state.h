@@ -224,7 +224,7 @@ union PPU_VSCR {
     };
 };
 
-class PPUState {
+class alignas(16) PPUState {
 public:
     // UISA Registers
     U64 r[32];      // General-Purpose Registers
