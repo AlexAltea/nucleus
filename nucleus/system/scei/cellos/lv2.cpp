@@ -179,7 +179,6 @@ void LV2::call(cpu::frontend::ppu::PPUState& state) {
         logger.warning(LOG_HLE, "LV2 Syscall %d (0x%x) called", id, id);
         return;
     }
-    //printf("LV2 Syscall %d (0x%x: %s) called\n", id, id, syscalls[id].name);
     //logger.notice(LOG_HLE, "LV2 Syscall %d (0x%x: %s) called", id, id, syscalls[id].name);
     syscalls[id].func->call(state, memory->getBaseAddr());
 }

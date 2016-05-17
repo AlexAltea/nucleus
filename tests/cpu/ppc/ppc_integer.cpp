@@ -63,7 +63,7 @@ void PPCTestRunner::addcx() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_addc(0x000000010000FFFFULL, 0x0000000200000001ULL, false, 0x0000000300010000ULL, false);
@@ -84,7 +84,7 @@ void PPCTestRunner::addcx() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_addc_(0x000000010000FFFFULL, 0x0000000200000001ULL, false, 0x0000000300010000ULL, false, 0,1,0,0);
@@ -107,7 +107,7 @@ void PPCTestRunner::addex() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_adde(0x000000010000FFFFULL, 0x0000000200000001ULL, false, 0x0000000300010000ULL, false);
@@ -128,7 +128,7 @@ void PPCTestRunner::addex() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_adde_(0x000000010000FFFFULL, 0x0000000200000001ULL, false, 0x0000000300010000ULL, false, 0,1,0,0);
@@ -173,7 +173,7 @@ void PPCTestRunner::addic() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_addic(0x000000010000FFFFULL, 0x0001, 0x0000000100010000ULL, false);
@@ -194,7 +194,7 @@ void PPCTestRunner::addic_() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_addic_(0x000000010000FFFFULL, 0x0001, 0x0000000100010000ULL, false, 0,1,0,0);
@@ -244,7 +244,7 @@ void PPCTestRunner::addzex() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_addze(0x1111111111111111, false, 0x1111111111111111, false);
@@ -266,7 +266,7 @@ void PPCTestRunner::addzex() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_addze_(0x1111111111111111, false, 0x1111111111111111, false, 0,1,0,0);
@@ -1392,18 +1392,106 @@ void PPCTestRunner::rldicx() {
 }
 
 void PPCTestRunner::rldiclx() {
+    // Rotate Left Double Word Immediate then Clear Left
+    TEST_INSTRUCTION(test_rldicl, RS, SH, ME, RA, {
+        state.r[1] = RS;
+        run({ a.rldicl(r2, r1, SH, ME); });
+        expect(state.r[2] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_rldicl(0x0123456789ABCDEFULL, 24,  0, 0x6789ABCDEF012345ULL);
+    test_rldicl(0x0123456789ABCDEFULL, 24,  8, 0x0089ABCDEF012345ULL);
+    test_rldicl(0x0123456789ABCDEFULL, 24, 63, 0x0000000000000001ULL);
+    test_rldicl(0x0123456789ABCDEFULL,  0,  0, 0x0123456789ABCDEFULL);
+    test_rldicl(0x0123456789ABCDEFULL,  0, 63, 0x0000000000000001ULL);
+    test_rldicl(0x0123456789ABCDEFULL,  0,  8, 0x0023456789ABCDEFULL);
+    test_rldicl(0x0123456789ABCDEFULL, 63,  0, 0x8091A2B3C4D5E6F7ULL);
+    test_rldicl(0x0123456789ABCDEFULL, 63, 63, 0x0000000000000001ULL);
+    test_rldicl(0x0123456789ABCDEFULL, 31,  0, 0xC4D5E6F78091A2B3ULL);
+    test_rldicl(0x0000000016300000ULL, 58,  6, 0x000000000058C000ULL);
 }
 
 void PPCTestRunner::rldicrx() {
+    // Rotate Left Double Word Immediate then Clear Right
+    TEST_INSTRUCTION(test_rldicr, RS, SH, ME, RA, {
+        state.r[1] = RS;
+        run({ a.rldicr(r2, r1, SH, ME); });
+        expect(state.r[2] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_rldicr(0x0123456789ABCDEFULL, 24,  0, 0x0000000000000000);
+    test_rldicr(0x0123456789ABCDEFULL, 24,  8, 0x6780000000000000);
+    test_rldicr(0x0123456789ABCDEFULL, 24, 63, 0x6789ABCDEF012345);
+    test_rldicr(0x0123456789ABCDEFULL,  0,  0, 0x0000000000000000);
+    test_rldicr(0x0123456789ABCDEFULL,  0, 63, 0x0123456789ABCDEF);
+    test_rldicr(0x0123456789ABCDEFULL,  0,  8, 0x0100000000000000);
+    test_rldicr(0x0123456789ABCDEFULL, 63,  0, 0x8000000000000000);
+    test_rldicr(0x0123456789ABCDEFULL, 63, 63, 0x8091A2B3C4D5E6F7);
+    test_rldicr(0x0123456789ABCDEFULL, 31,  0, 0x8000000000000000);
 }
 
 void PPCTestRunner::rldimix() {
 }
 
 void PPCTestRunner::rlwimix() {
+    // Rotate Left Word Immediate then Mask Insert
+    TEST_INSTRUCTION(test_rlwimi, RS, oldRA, SH, MB, ME, newRA, {
+        state.r[1] = RS;
+        state.r[2] = oldRA;
+        run({ a.rlwimi(r2, r1, SH, MB, ME); });
+        expect(state.r[2] == newRA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_rlwimi(0xCAFEBABE90003000ULL, 0xDEADBEEF00000003ULL, 2, 0, 0x1D, 0xDEADBEEF4000C003ULL);
+    // TODO: More tests
 }
 
 void PPCTestRunner::rlwinmx() {
+    // Rotate Left Word Immediate then Mask Insert
+    TEST_INSTRUCTION(test_rlwinm, RS, SH, MB, ME, RA, {
+        state.r[1] = RS;
+        state.r[2] = 0xF0F0F0F0F0F0F0F0ULL;
+        run({ a.rlwinm(r2, r1, SH, MB, ME); });
+        expect(state.r[2] == RA);
+        expect(!state.cr.field[0].lt);
+        expect(!state.cr.field[0].gt);
+        expect(!state.cr.field[0].eq);
+        expect(!state.cr.field[0].so);
+        expect(!state.xer.so);
+        expect(!state.xer.ov);
+        expect(!state.xer.ca);
+    });
+
+    test_rlwinm(0x00000000'12345678ULL, 24,  8, 15, 0x00000000'00120000ULL);
+    test_rlwinm(0x00000000'12345678ULL,  4,  0, 27, 0x00000000'23456780ULL);
+    test_rlwinm(0x00000000'90003000ULL,  2,  0, 29, 0x00000000'4000C000ULL);
+    test_rlwinm(0x00000000'B0043000ULL,  2,  0, 29, 0x00000000'C010C000ULL);
+    test_rlwinm(0xFF00FF00'12345678ULL,  0,  5, 29, 0x00000000'02345678ULL);
+    test_rlwinm(0x00FF00FF'12345678ULL,  0,  0, 31, 0x00000000'12345678ULL);
+    test_rlwinm(0x0000FF00'12345678ULL,  0,  0, 16, 0x00000000'12340000ULL);
+    test_rlwinm(0x00FF00FF'12345678ULL,  0, 16, 31, 0x00000000'00005678ULL);
+    test_rlwinm(0xFF00FF00'12345678ULL, 16, 16, 31, 0x00000000'00001234ULL);
 }
 
 void PPCTestRunner::rlwnmx() {
@@ -1422,7 +1510,17 @@ void PPCTestRunner::rlwnmx() {
         expect(!state.xer.ca);
     });
 
-    //test_rlwnm(0x0000000012345678ULL, 0x0000000000000000ULL, 0x08, 0x0F, 0x0000000000000000ULL);
+    test_rlwnm(0x00000000'12345678ULL,         24,  8, 15, 0x00000000'00120000ULL);
+    test_rlwnm(0x00000000'12345678ULL,          4,  0, 27, 0x00000000'23456780ULL);
+    test_rlwnm(0x00000000'90003000ULL,          2,  0, 29, 0x00000000'4000C000ULL);
+    test_rlwnm(0x00000000'B0043000ULL,          2,  0, 29, 0x00000000'C010C000ULL);                             
+    test_rlwnm(0x00000000'12345678ULL,          0,  5, 29, 0x00000000'02345678ULL);
+    test_rlwnm(0x00000000'12345678ULL,          0,  0, 31, 0x00000000'12345678ULL);
+    test_rlwnm(0x00000000'12345678ULL,          0,  0, 16, 0x00000000'12340000ULL);
+    test_rlwnm(0x00000000'12345678ULL,          0, 16, 31, 0x00000000'00005678ULL);
+    test_rlwnm(0x00000000'12345678ULL,         16, 16, 31, 0x00000000'00001234ULL);
+    test_rlwnm(0x00000000'00000001ULL,          1,  1,  0, 0x00000002'00000002ULL);
+    test_rlwnm(0x01234567'89ABCDEFULL, 0x01234567, 31, 30, 0xD5E6F7C4'D5E6F7C4ULL);
 }
 
 void PPCTestRunner::sldx() {
@@ -1501,7 +1599,7 @@ void PPCTestRunner::srawx() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_sraw(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false);
@@ -1530,7 +1628,7 @@ void PPCTestRunner::srawx() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_sraw_(0x0000000000000000ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false, 0,0,1,0);
@@ -1560,7 +1658,7 @@ void PPCTestRunner::srawix() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_srawi(0x0000000000000000ULL, 0x00, 0x0000000000000000ULL, false);
@@ -1586,7 +1684,7 @@ void PPCTestRunner::srawix() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_srawi_(0x0000000000000000ULL, 0x00, 0x0000000000000000ULL, false, 0,0,1,0);
@@ -1762,7 +1860,7 @@ void PPCTestRunner::subfcx() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_subfc(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000000ULL, true);
@@ -1782,7 +1880,7 @@ void PPCTestRunner::subfcx() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_subfc_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000000ULL, true,  0,0,1,0);
@@ -1805,7 +1903,7 @@ void PPCTestRunner::subfex() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_subfe(0x0000000000000001ULL, 0x0000000000000001ULL, true,  0x0000000000000000ULL, true);
@@ -1828,7 +1926,7 @@ void PPCTestRunner::subfex() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_subfe_(0x0000000000000001ULL, 0x0000000000000001ULL, true,  0x0000000000000000ULL, true,  0,0,1,0);
@@ -1851,7 +1949,7 @@ void PPCTestRunner::subfic() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == CA);
+        expect(state.xer.ca == U08(CA));
     });
 
     test_subfic(0x0000000000000000ULL, 0x0001, 0x0000000000000001ULL, true);
@@ -1876,7 +1974,7 @@ void PPCTestRunner::subfzex() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_subfze(0x1111111111111111, false, 0x1111111111111111, false);
@@ -1898,7 +1996,7 @@ void PPCTestRunner::subfzex() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == U08(newCA));
     });
 
     test_subfze_(0x1111111111111111, false, 0x1111111111111111, false, 0,1,0,0);
