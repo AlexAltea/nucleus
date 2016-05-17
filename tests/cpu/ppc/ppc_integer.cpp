@@ -1726,8 +1726,8 @@ void PPCTestRunner::subfx() {
         expect(!state.xer.ca);
     });
 
-    test_subf(0x0000000300010000ULL, 0x0000000200000001ULL, 0x000000010000FFFFULL);
-    test_subf(0x0000000000000000ULL, 0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL);
+    test_subf(0x0000000200000001ULL, 0x0000000300010000ULL, 0x000000010000FFFFULL);
+    test_subf(0x0000000000000001ULL, 0x0000000000000000ULL, 0xFFFFFFFFFFFFFFFFULL);
     
     // Subtract From (with condition)
     TEST_INSTRUCTION(test_subf_, R1, R2, R3, LT, GT, EQ, SO, {
@@ -1744,17 +1744,16 @@ void PPCTestRunner::subfx() {
         expect(!state.xer.ca);
     });
 
-    test_subf_(0x0000000300010000ULL, 0x000000010000FFFFULL, 0x0000000200000001ULL, 0,1,0,0);
-    test_subf_(0x0000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0,0,1,0);
-    test_subf_(0x8000000000000001ULL, 0xFFFFFFFFFFFFFFFFULL, 0x8000000000000000ULL, 1,0,0,0);
+    test_subf_(0x000000010000FFFFULL, 0x0000000300010000ULL, 0x0000000200000001ULL, 0,1,0,0);
+    test_subf_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000000ULL, 0,0,1,0);
+    test_subf_(0xFFFFFFFFFFFFFFFFULL, 0x7FFFFFFFFFFFFFFFULL, 0x8000000000000000ULL, 1,0,0,0);
 }
 
 void PPCTestRunner::subfcx() {
     // Subtract from Carrying
-    TEST_INSTRUCTION(test_subfc, RA, RB, oldCA, RD, newCA, {
+    TEST_INSTRUCTION(test_subfc, RA, RB, RD, CA, {
         state.r[1] = RA;
         state.r[2] = RB;
-        state.xer.ca = oldCA;
         run({ a.subfc(r3, r1, r2); });
         expect(state.r[3] == RD);
         expect(!state.cr.field[0].lt);
@@ -1763,19 +1762,18 @@ void PPCTestRunner::subfcx() {
         expect(!state.cr.field[0].so);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == CA);
     });
 
-    test_subfc(0x000000010000FFFFULL, 0x0000000300010000ULL, false, 0x0000000200000001ULL, false);
-    test_subfc(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, false, 0x0000000000000001ULL, true);
-    test_subfc(0xFFFFFFFFFFFFFFF0ULL, 0xFFFFFFFFFFFFFFFFULL, true,  0x000000000000000FULL, false);
-    test_subfc(0x000000000000FFFFULL, 0x0000000000000010ULL, true,  0xFFFFFFFFFFFF0011ULL, true);
+    test_subfc(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000000ULL, true);
+    test_subfc(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x0000000000000001ULL, false);
+    test_subfc(0xFFFFFFFFFFFFFFF0ULL, 0xFFFFFFFFFFFFFFFFULL, 0x000000000000000FULL, true);
+    test_subfc(0x000000000000FFFFULL, 0x0000000000000010ULL, 0xFFFFFFFFFFFF0011ULL, false);
 
     // Subtract from Carrying (with condition)
-    TEST_INSTRUCTION(test_subfc_, RA, RB, oldCA, RD, newCA, LT, GT, EQ, SO, {
+    TEST_INSTRUCTION(test_subfc_, RA, RB, RD, CA, LT, GT, EQ, SO, {
         state.r[1] = RA;
         state.r[2] = RB;
-        state.xer.ca = oldCA;
         run({ a.subfc_(r3, r1, r2); });
         expect(state.r[3] == RD);
         expect(state.cr.field[0].lt == LT);
@@ -1784,13 +1782,13 @@ void PPCTestRunner::subfcx() {
         expect(state.cr.field[0].so == SO);
         expect(!state.xer.so);
         expect(!state.xer.ov);
-        expect(state.xer.ca == newCA);
+        expect(state.xer.ca == CA);
     });
 
-    test_subfc_(0x000000010000FFFFULL, 0x0000000200000001ULL, false, 0x0000000300010000ULL, false, 0,1,0,0);
-    test_subfc_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, false, 0x0000000000000000ULL, true,  0,0,1,0);
-    test_subfc_(0xFFFFFFFFFFFFFFF0ULL, 0x000000000000000FULL, true,  0xFFFFFFFFFFFFFFFFULL, false, 1,0,0,0);
-    test_subfc_(0x000000000000FFFFULL, 0xFFFFFFFFFFFF0011ULL, true,  0x0000000000000010ULL, true,  0,1,0,0);
+    test_subfc_(0x0000000000000001ULL, 0x0000000000000001ULL, 0x0000000000000000ULL, true,  0,0,1,0);
+    test_subfc_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, 0x0000000000000001ULL, false, 0,1,0,0);
+    test_subfc_(0xFFFFFFFFFFFFFFF0ULL, 0xFFFFFFFFFFFFFFFFULL, 0x000000000000000FULL, true,  0,1,0,0);
+    test_subfc_(0x000000000000FFFFULL, 0x0000000000000010ULL, 0xFFFFFFFFFFFF0011ULL, false, 1,0,0,0);
 }
 
 void PPCTestRunner::subfex() {
@@ -1799,7 +1797,7 @@ void PPCTestRunner::subfex() {
         state.r[1] = R1;
         state.r[2] = R2;
         state.xer.ca = oldCA;
-        run({ a.adde(r3, r1, r2); });
+        run({ a.subfe(r3, r1, r2); });
         expect(state.r[3] == R3);
         expect(!state.cr.field[0].lt);
         expect(!state.cr.field[0].gt);
@@ -1810,10 +1808,12 @@ void PPCTestRunner::subfex() {
         expect(state.xer.ca == newCA);
     });
 
-    test_subfe(0x000000010000FFFFULL, 0x0000000200000001ULL, false, 0x0000000300010000ULL, false);
-    test_subfe(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, false, 0x0000000000000000ULL, true);
-    test_subfe(0x000000000000FFFFULL, 0x0000000000000000ULL, true,  0x0000000000010000ULL, false);
-    test_subfe(0xFFFFFFFFFFFFFFF0ULL, 0x000000000000000FULL, true,  0x0000000000000000ULL, true);
+    test_subfe(0x0000000000000001ULL, 0x0000000000000001ULL, true,  0x0000000000000000ULL, true);
+    test_subfe(0x0000000000000001ULL, 0x0000000000000001ULL, false, 0xFFFFFFFFFFFFFFFFULL, false);
+    test_subfe(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, true,  0x0000000000000001ULL, false);
+    test_subfe(0xFFFFFFFFFFFFFFF0ULL, 0xFFFFFFFFFFFFFFFFULL, true,  0x000000000000000FULL, true);
+    test_subfe(0xFFFFFFFFFFFFFFF0ULL, 0xFFFFFFFFFFFFFFFFULL, false, 0x000000000000000EULL, true);
+    test_subfe(0x000000000000FFFFULL, 0x0000000000000010ULL, true,  0xFFFFFFFFFFFF0011ULL, false);
         
     // Subtract from Extended (with condition)
     TEST_INSTRUCTION(test_subfe_, R1, R2, oldCA, R3, newCA, LT, GT, EQ, SO, {
@@ -1831,10 +1831,12 @@ void PPCTestRunner::subfex() {
         expect(state.xer.ca == newCA);
     });
 
-    test_subfe_(0x000000010000FFFFULL, 0x0000000200000001ULL, false, 0x0000000300010000ULL, false, 0,1,0,0);
-    test_subfe_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000001ULL, false, 0x0000000000000000ULL, true,  0,0,1,0);
-    test_subfe_(0x000000000000FFFFULL, 0x0000000000000000ULL, true,  0x0000000000010000ULL, false, 0,1,0,0);
-    test_subfe_(0xFFFFFFFFFFFFFFFFULL, 0x8000000000000000ULL, true,  0x8000000000000000ULL, true,  1,0,0,0);
+    test_subfe_(0x0000000000000001ULL, 0x0000000000000001ULL, true,  0x0000000000000000ULL, true,  0,0,1,0);
+    test_subfe_(0x0000000000000001ULL, 0x0000000000000001ULL, false, 0xFFFFFFFFFFFFFFFFULL, false, 1,0,0,0);
+    test_subfe_(0xFFFFFFFFFFFFFFFFULL, 0x0000000000000000ULL, true,  0x0000000000000001ULL, false, 0,1,0,0);
+    test_subfe_(0xFFFFFFFFFFFFFFF0ULL, 0xFFFFFFFFFFFFFFFFULL, true,  0x000000000000000FULL, true,  0,1,0,0);
+    test_subfe_(0xFFFFFFFFFFFFFFF0ULL, 0xFFFFFFFFFFFFFFFFULL, false, 0x000000000000000EULL, true,  0,1,0,0);
+    test_subfe_(0x000000000000FFFFULL, 0x0000000000000010ULL, true,  0xFFFFFFFFFFFF0011ULL, false, 1,0,0,0);
 }
 
 void PPCTestRunner::subfic() {
@@ -1852,10 +1854,10 @@ void PPCTestRunner::subfic() {
         expect(state.xer.ca == CA);
     });
 
-    test_subfic(0x000000010000FFFFULL, 0x0001, 0x0000000100010000ULL, false);
-    test_subfic(0x00000000FFFFFFFFULL, 0x0001, 0x0000000100000000ULL, false);
-    test_subfic(0x00000000FFFF0001ULL, 0xFFFF, 0x00000000FFFF0000ULL, false);
-    test_subfic(0xFFFFFFFFFFFFFFFFULL, 0x0001, 0x0000000000000000ULL, true);
+    test_subfic(0x0000000000000000ULL, 0x0001, 0x0000000000000001ULL, true);
+    test_subfic(0xFFFFFFFFFFFFFFFFULL, 0x0000, 0x0000000000000001ULL, false);
+    test_subfic(0x7FFFFFFFFFFFFFFFULL, 0xFFFF, 0x8000000000000000ULL, true);
+    test_subfic(0xFFFFFFFFFFFFFFFFULL, 0xFFFF, 0x0000000000000000ULL, true);
 }
 
 void PPCTestRunner::subfmex() {

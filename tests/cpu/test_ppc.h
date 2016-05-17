@@ -79,6 +79,7 @@ protected:
 
         Recompiler recompiler(cpu.get(), nullptr);
         recompiler.builder.setInsertPoint(block);
+        recompiler.currentAddress = 0x10000;
 
         U32 buffer[256];
         PPCAssembler a(sizeof(buffer), buffer);

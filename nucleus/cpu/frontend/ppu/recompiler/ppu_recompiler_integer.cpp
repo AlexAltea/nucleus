@@ -15,12 +15,18 @@ using namespace cpu::hir;
 
 // Utilities
 Value* addDidCarry(Builder& builder, Value* add, Value* lhs) {
+    // 32-bit
+    /*return builder.createCmpUGT(
+        builder.createTrunc(v2, TYPE_I32),
+        builder.createNot(builder.createTrunc(v1, TYPE_I32)));*/
+
+    // 64-bit
     return builder.createCmpULT(add, lhs);
 }
 
 Value* subDidCarry(Builder& builder, Value* v1, Value* v2) {
-    /*// 32-bit
-    return builder.createOr(
+    // 32-bit
+    /*return builder.createOr(
         builder.createCmpUGT(
             builder.createTrunc(v1, TYPE_I32),
             builder.createNot(builder.createNeg(builder.createTrunc(v2, TYPE_I32)))),
@@ -1029,7 +1035,7 @@ void Recompiler::subfx(Instruction code)
 
 void Recompiler::subfcx(Instruction code)
 {
-    Value* ra = builder.createNeg(getGPR(code.ra));
+    Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
     Value* rd;
     Value* ca;
@@ -1040,7 +1046,7 @@ void Recompiler::subfcx(Instruction code)
         ca = builder.getConstantI8(0); // TODO
         // TODO: XER OV update
     } else {
-        rd = builder.createAdd(ra, rb);
+        rd = builder.createSub(rb, ra);
         ca = subDidCarry(builder, rb, ra);
     }
 
