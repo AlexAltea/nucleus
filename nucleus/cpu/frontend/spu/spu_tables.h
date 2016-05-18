@@ -7,7 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/spu/spu_instruction.h"
-#include "nucleus/cpu/frontend/spu/recompiler/spu_recompiler.h"
+#include "nucleus/cpu/frontend/spu/translator/spu_translator.h"
 
 #include <string>
 

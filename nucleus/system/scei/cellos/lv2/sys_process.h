@@ -37,6 +37,9 @@ enum
 
     // Custom
     SYS_PPU_THREAD_OBJECT           = 0x01,
+
+    // TODO: Are these even objects?
+    SYS_SPU_THREAD_GROUP_OBJECT     = 0x02,
 };
 
 // ELF file headers
@@ -87,6 +90,7 @@ S32 sys_process_kill(U32 pid);
 S32 sys_process_wait_for_child(U32 pid, BE<U32>* status, U64 unk);
 S32 sys_process_wait_for_child2(U64 unk1, U64 unk2, U64 unk3, U64 unk4, U64 unk5, U64 unk6);
 S32 sys_process_detach_child(U64 unk);
+S32 sys_process_is_spu_lock_line_reservation_address(U32 addr, U64 flags);
 void sys_game_process_exitspawn(U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
 void sys_game_process_exitspawn2(U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
 

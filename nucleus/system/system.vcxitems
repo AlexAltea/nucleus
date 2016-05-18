@@ -42,6 +42,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_prx.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_rsx.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_semaphore.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_spu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_ss.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_synchronization.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_time.h" />
@@ -85,6 +86,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_prx.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_rsx.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_semaphore.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_spu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_ss.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_time.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_timer.cpp" />
