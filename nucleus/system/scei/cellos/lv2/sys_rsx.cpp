@@ -7,6 +7,7 @@
 #include "nucleus/system/scei/cellos/lv2.h"
 #include "nucleus/system/scei/cellos/lv1/lv1_gpu.h"
 #include "nucleus/gpu/rsx/rsx.h"
+#include "nucleus/logger/logger.h"
 #include "nucleus/emulator.h"
 
 namespace sys {
@@ -122,6 +123,7 @@ S32 sys_rsx_context_iomap(U32 context_id, U32 io, U32 ea, U32 size, U64 flags) {
 S32 sys_rsx_context_iounmap(U32 context_id, U32 a2, U32 io_addr, U32 size) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
+    logger.warning(LOG_HLE, "LV2 Syscall (0x2A1) called: sys_rsx_context_iounmap");
     return CELL_OK;
 }
 

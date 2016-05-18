@@ -93,7 +93,7 @@ S32 sys_fs_mkdir(const S08* path, U32 mode);
 S32 sys_fs_rename(const S08* from, const S08* to);
 S32 sys_fs_rmdir(const S08* path);
 S32 sys_fs_unlink(const S08* path);
-S32 sys_fs_fcntl();
+S32 sys_fs_fcntl(S32 fd, S32 cmd, void* argv, U32 argc);
 S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, U64 *pos);
 
 }  // namespace sys

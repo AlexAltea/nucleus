@@ -136,7 +136,7 @@ S32 sys_fs_stat(const S08* path, sys_fs_stat_t* sb) {
     return CELL_OK;
 }
 
-S32 sys_fs_fcntl() {
+S32 sys_fs_fcntl(S32 fd, S32 cmd, void* argv, U32 argc) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     logger.warning(LOG_HLE, "LV2 Syscall (0x331) called: sys_fs_fcntl");

@@ -56,7 +56,8 @@ void nucleusHook(U32 fnid) {
 
 void nucleusLog(U64 guestAddr) {
     auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
-    //printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(guestAddr).name);
+    frontend::ppu::Instruction instr { CPU::getCurrentThread()->parent->memory->read32(guestAddr) };
+    printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(instr).name);
     int a = 0;
     a += 1;
 }

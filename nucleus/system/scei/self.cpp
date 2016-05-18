@@ -206,7 +206,7 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
                         U32 value = stub.second;
                         for (const auto& segment : prx.segments) {
                             if (segment.prx_offset <= value && value < segment.initial_addr + segment.size_file) {
-                                value = value + (segment.addr - segment.initial_addr - 0xf0);
+                                value = value + (segment.addr - segment.initial_addr - prx.segments[0].prx_offset);
                             }
                         }
                         stub.second = value;

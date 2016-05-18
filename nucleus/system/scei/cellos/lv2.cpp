@@ -30,12 +30,15 @@
 #include "lv2/sys_timer.h"
 #include "lv2/sys_tty.h"
 
+#include <cstring>
+
 #define SYSCALL(name, flags) { wrap(name), #name, flags }
 
 namespace sys {
 
 LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(memory)), modules(this) {
     // Initialize syscall table
+    memset(syscalls, 0, sizeof(syscalls));
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
         syscalls[0x001] = SYSCALL(sys_process_getpid, LV2_NONE);
         syscalls[0x003] = SYSCALL(sys_process_exit, LV2_NONE);
@@ -116,11 +119,12 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         syscalls[0x29C] = SYSCALL(sys_rsx_memory_allocate, LV2_NONE);
         syscalls[0x29E] = SYSCALL(sys_rsx_context_allocate, LV2_NONE);
         syscalls[0x2A0] = SYSCALL(sys_rsx_context_iomap, LV2_NONE);
+        syscalls[0x2A1] = SYSCALL(sys_rsx_context_iounmap, LV2_NONE);
         syscalls[0x2A2] = SYSCALL(sys_rsx_context_attribute, LV2_NONE);
         syscalls[0x2A3] = SYSCALL(sys_rsx_device_map, LV2_NONE);
         syscalls[0x2A5] = SYSCALL(sys_rsx_attribute, LV2_NONE);
         syscalls[0x321] = SYSCALL(sys_fs_open, LV2_NONE);
-        syscalls[0x323] = SYSCALL(sys_fs_read, LV2_NONE);
+        syscalls[0x322] = SYSCALL(sys_fs_read, LV2_NONE);
         syscalls[0x323] = SYSCALL(sys_fs_write, LV2_NONE);
         syscalls[0x324] = SYSCALL(sys_fs_close, LV2_NONE);
         syscalls[0x328] = SYSCALL(sys_fs_stat, LV2_NONE);
