@@ -76,6 +76,22 @@ void PPCAssembler::emitFormM(U32 instruction, Operand s, Operand a, Operand b, O
     emit32(instruction | sMask | aMask | bMask | mbMask | meMask);
 }
 
+void PPCAssembler::emitFormMD(U32 instruction, Operand s, Operand a, U16 sh, U16 m) {
+    const U32 sMask = (s & 0x1F) << 21;
+    const U32 aMask = (a & 0x1F) << 16;
+    const U32 shMask = ((sh & 0x1F) << 11) | ((sh & 0x20) >> 4);
+    const U32 mMask = ((m & 0x1F) << 6) | (m & 0x20);
+    emit32(instruction | sMask | aMask | shMask | mMask);  
+}
+
+void PPCAssembler::emitFormMDS(U32 instruction, Operand s, Operand a, Operand b, U16 m) {
+    const U32 sMask = (s & 0x1F) << 21;
+    const U32 aMask = (a & 0x1F) << 16;
+    const U32 bMask = (b & 0x1F) << 11;
+    const U32 mMask = ((m & 0x1F) << 6) | (m & 0x20);
+    emit32(instruction | sMask | aMask | bMask | mMask); 
+}
+
 void PPCAssembler::emitFormVA(U32 instruction, Operand vd, Operand va, Operand vb, Operand vc) {
     const U32 vdMask = (vd & 0x1F) << 21;
     const U32 vaMask = (va & 0x1F) << 16;
@@ -397,18 +413,18 @@ void PPCAssembler::orc(RegGPR ra, RegGPR rs, RegGPR rb) { emitFormX(0x7C000338, 
 void PPCAssembler::orc_(RegGPR ra, RegGPR rs, RegGPR rb) { emitFormX(0x7C000339, rs, ra, rb); }
 void PPCAssembler::ori(RegGPR ra, RegGPR rs, U16 uimm) { emitFormD(0x60000000, rs, ra, uimm); }
 void PPCAssembler::oris(RegGPR ra, RegGPR rs, U16 uimm) { emitFormD(0x64000000, rs, ra, uimm); }
-void PPCAssembler::rldcl(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb) {  }
-void PPCAssembler::rldcl_(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb) {  }
-void PPCAssembler::rldcr(RegGPR ra, RegGPR rs, RegGPR rb, U08 me) {  }
-void PPCAssembler::rldcr_(RegGPR ra, RegGPR rs, RegGPR rb, U08 me) {  }
-void PPCAssembler::rldic(RegGPR ra, RegGPR rs, U08 sh, U08 mb) {  }
-void PPCAssembler::rldic_(RegGPR ra, RegGPR rs, U08 sh, U08 mb) {  }
-void PPCAssembler::rldicl(RegGPR ra, RegGPR rs, U08 sh, U08 mb) {  }
-void PPCAssembler::rldicl_(RegGPR ra, RegGPR rs, U08 sh, U08 mb) {  }
-void PPCAssembler::rldicr(RegGPR ra, RegGPR rs, U08 sh, U08 me) {  }
-void PPCAssembler::rldicr_(RegGPR ra, RegGPR rs, U08 sh, U08 me) {  }
-void PPCAssembler::rldimi(RegGPR ra, RegGPR rs, U08 sh, U08 mb) {  }
-void PPCAssembler::rldimi_(RegGPR ra, RegGPR rs, U08 sh, U08 mb) {  }
+void PPCAssembler::rldcl(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb) { emitFormMDS(0x78000010, rs, ra, rb, mb); }
+void PPCAssembler::rldcl_(RegGPR ra, RegGPR rs, RegGPR rb, U08 mb) { emitFormMDS(0x78000011, rs, ra, rb, mb); }
+void PPCAssembler::rldcr(RegGPR ra, RegGPR rs, RegGPR rb, U08 me) { emitFormMDS(0x78000012, rs, ra, rb, me); }
+void PPCAssembler::rldcr_(RegGPR ra, RegGPR rs, RegGPR rb, U08 me) { emitFormMDS(0x78000013, rs, ra, rb, me); }
+void PPCAssembler::rldic(RegGPR ra, RegGPR rs, U08 sh, U08 mb) { emitFormMD(0x78000008, rs, ra, sh, mb); }
+void PPCAssembler::rldic_(RegGPR ra, RegGPR rs, U08 sh, U08 mb) { emitFormMD(0x78000009, rs, ra, sh, mb); }
+void PPCAssembler::rldicl(RegGPR ra, RegGPR rs, U08 sh, U08 mb) { emitFormMD(0x78000000, rs, ra, sh, mb); }
+void PPCAssembler::rldicl_(RegGPR ra, RegGPR rs, U08 sh, U08 mb) { emitFormMD(0x78000001, rs, ra, sh, mb); }
+void PPCAssembler::rldicr(RegGPR ra, RegGPR rs, U08 sh, U08 me) { emitFormMD(0x78000004, rs, ra, sh, me);  }
+void PPCAssembler::rldicr_(RegGPR ra, RegGPR rs, U08 sh, U08 me) { emitFormMD(0x78000005, rs, ra, sh, me); }
+void PPCAssembler::rldimi(RegGPR ra, RegGPR rs, U08 sh, U08 mb) { emitFormMD(0x7800000C, rs, ra, sh, mb);  }
+void PPCAssembler::rldimi_(RegGPR ra, RegGPR rs, U08 sh, U08 mb) { emitFormMD(0x7800000D, rs, ra, sh, mb);  }
 void PPCAssembler::rlwimi(RegGPR ra, RegGPR rs, U08 sh, U08 mb, U08 me) { emitFormM(0x50000000, rs, ra, sh, mb, me); }
 void PPCAssembler::rlwimi_(RegGPR ra, RegGPR rs, U08 sh, U08 mb, U08 me) { emitFormM(0x50000001, rs, ra, sh, mb, me); }
 void PPCAssembler::rlwinm(RegGPR ra, RegGPR rs, U08 sh, U08 mb, U08 me) { emitFormM(0x54000000, rs, ra, sh, mb, me); }

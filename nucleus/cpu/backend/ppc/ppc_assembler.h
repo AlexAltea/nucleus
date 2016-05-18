@@ -61,6 +61,8 @@ private:
     void emitFormXO(U32 instruction, Operand d, Operand a, Operand b);
     void emitFormA(U32 instruction, Operand d, Operand a, Operand b, Operand c);
     void emitFormM(U32 instruction, Operand s, Operand a, Operand b, Operand mb, Operand me);
+    void emitFormMD(U32 instruction, Operand s, Operand a, U16 sh, U16 m);
+    void emitFormMDS(U32 instruction, Operand s, Operand a, Operand b, U16 m);
     void emitFormVA(U32 instruction, Operand vd, Operand va, Operand vb, Operand vc);
     void emitFormVX(U32 instruction, Operand vd, Operand va, Operand vb);
 
