@@ -26,12 +26,11 @@ struct sys_lwcond_t {
     sys_lwcond_attribute_t attr;
 };
 
-// SysCalls (TODO: Are all of these actually LV2 syscalls?)
+// SysCalls
 S32 sys_lwcond_create(BE<U32>* lwcond_id, U32 lwmutex_id, sys_lwcond_attribute_t* attr);
 S32 sys_lwcond_destroy(U32 lwcond_id);
-S32 sys_lwcond_wait(U32 lwcond_id, U64 timeout);
+S32 sys_lwcond_queue_wait(U32 lwcond_id, U64 timeout);
 S32 sys_lwcond_signal(U32 lwcond_id);
 S32 sys_lwcond_signal_all(U32 lwcond_id);
-S32 sys_lwcond_signal_to(U32 lwcond_id, U32 thread_id);
 
 }  // namespace sys

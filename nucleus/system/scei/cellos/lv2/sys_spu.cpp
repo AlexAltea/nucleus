@@ -5,6 +5,7 @@
 
 #include "sys_spu.h"
 #include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/system/scei/cellos/lv2/sys_event.h"
 #include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/frontend/spu/spu_thread.h"
 #include "nucleus/cpu/frontend/spu/spu_state.h"
@@ -94,6 +95,45 @@ S32 sys_spu_thread_initialize(BE<U32>* thread, U32 group, U32 spu_num, sys_spu_i
     state->gpr[6].u64[1] = arg->arg4;
 
     *thread = lv2.objects.add(spuThread, SYS_SPU_THREAD_OBJECT);
+    return CELL_OK;
+}
+
+S32 sys_spu_thread_group_connect_event(U32 id, U32 eq, U32 et) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(id);
+    auto* eventQueue = lv2.objects.get<sys_event_queue_t>(eq);
+    if (!spuThreadGroup || !eventQueue) {
+        return CELL_ESRCH;
+    }
+
+    switch (et) {
+    case SYS_SPU_THREAD_GROUP_EVENT_RUN:
+        // TODO: Implement this
+        break;
+    case SYS_SPU_THREAD_GROUP_EVENT_EXCEPTION:
+        // TODO: Implement this
+        break;
+    default:
+        // TODO: This actually returns CELL_OK due to weird implementation reason on a real LV2 kernel.
+        return CELL_EINVAL;
+    }
+    return CELL_OK;
+}
+
+S32 sys_spu_thread_group_connect_event_all_threads(S32 group_id, U32 equeue_id, U64 req, U08* spup) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(group_id);
+    auto* eventQueue = lv2.objects.get<sys_event_queue_t>(equeue_id);
+    if (!spuThreadGroup || !eventQueue) {
+        return CELL_ESRCH;
+    }
+    if (req == 0) {
+        return CELL_EINVAL;
+    }
+
+    // TODO: Implement syscall
     return CELL_OK;
 }
 

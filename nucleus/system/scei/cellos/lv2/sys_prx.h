@@ -88,38 +88,36 @@ struct sys_prx_relocation_info_t
 
 
 // Data types
-struct sys_prx_load_module_option_t
-{
+struct sys_prx_load_module_option_t {
     BE<U64> size;
     BE<U32> base_addr;
 };
 
-struct sys_prx_start_module_option_t
-{
+struct sys_prx_start_module_option_t {
     BE<U64> size;
     BE<U64> unk0;
     BE<U64> entry;
 };
 
-struct sys_prx_stop_module_option_t
-{
+struct sys_prx_stop_module_option_t {
     BE<U64> size;
 };
 
-struct sys_prx_unload_module_option_t
-{
+struct sys_prx_unload_module_option_t {
+    BE<U64> size;
+};
+
+struct sys_prx_get_module_id_by_name_option_t {
     BE<U64> size;
 };
 
 // Auxiliary classes
-struct sys_prx_library_t
-{
+struct sys_prx_library_t {
     std::string name;
     std::unordered_map<U32, U32> exports; // Map: FNID (32-bit) -> Export table offset (32-bit)
 };
 
-struct sys_prx_segment_t
-{
+struct sys_prx_segment_t {
     U32 addr;          // Base address where the PRX segment has been copied
     U32 flags;         // R|W|X-flags for the PPU/SPU/RSX (PHDR's flags)
     U32 align;         // Alignment (PHDR's align)
@@ -157,7 +155,7 @@ S32 sys_prx_register_module();
 S32 sys_prx_get_module_list();
 S32 sys_prx_get_my_module_id();
 S32 sys_prx_get_module_id_by_address();
-S32 sys_prx_get_module_id_by_name();
+S32 sys_prx_get_module_id_by_name(const S08* name, U64 flags, sys_prx_get_module_id_by_name_option_t* pOpt);
 S32 sys_prx_get_module_info();
 S32 sys_prx_register_library(U32 lib_addr);
 S32 sys_prx_unregister_library();

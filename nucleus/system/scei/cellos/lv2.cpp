@@ -83,7 +83,10 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         syscalls[0x06E] = SYSCALL(sys_cond_signal_to, LV2_NONE);
         syscalls[0x06F] = SYSCALL(sys_lwcond_create, LV2_NONE);
         syscalls[0x070] = SYSCALL(sys_lwcond_destroy, LV2_NONE);
+        syscalls[0x071] = SYSCALL(sys_lwcond_queue_wait, LV2_NONE);
         syscalls[0x072] = SYSCALL(sys_semaphore_get_value, LV2_NONE);
+        syscalls[0x073] = SYSCALL(sys_lwcond_signal, LV2_NONE);
+        syscalls[0x074] = SYSCALL(sys_lwcond_signal_all, LV2_NONE);
         syscalls[0x076] = SYSCALL(sys_event_flag_clear, LV2_NONE);
         syscalls[0x080] = SYSCALL(sys_event_queue_create, LV2_NONE);
         syscalls[0x081] = SYSCALL(sys_event_queue_destroy, LV2_NONE);
@@ -129,7 +132,7 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         //syscalls[0x0B5] = SYSCALL(sys_spu_thread_write_ls, LV2_NONE);
         //syscalls[0x0B6] = SYSCALL(sys_spu_thread_read_ls, LV2_NONE);
         //syscalls[0x0B8] = SYSCALL(sys_spu_thread_write_snr, LV2_NONE);
-        //syscalls[0x0B9] = SYSCALL(sys_spu_thread_group_connect_event, LV2_NONE);
+        syscalls[0x0B9] = SYSCALL(sys_spu_thread_group_connect_event, LV2_NONE);
         //syscalls[0x0BA] = SYSCALL(sys_spu_thread_group_disconnect_event, LV2_NONE);
         //syscalls[0x0BB] = SYSCALL(sys_spu_thread_set_spu_cfg, LV2_NONE);
         //syscalls[0x0BC] = SYSCALL(sys_spu_thread_get_spu_cfg, LV2_NONE);
@@ -142,6 +145,8 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         //syscalls[0x0C5] = SYSCALL(sys_raw_spu_get_spu_cfg, LV2_NONE);
         //syscalls[0x0C6] = SYSCALL(sys_spu_thread_recover_page_fault, LV2_NONE);
         //syscalls[0x0C7] = SYSCALL(sys_raw_spu_recover_page_fault, LV2_NONE);
+        syscalls[0x0FB] = SYSCALL(sys_spu_thread_group_connect_event_all_threads, LV2_NONE);
+        //syscalls[0x0FC] = SYSCALL(sys_spu_thread_group_disconnect_event_all_threads, LV2_NONE);
         syscalls[0x14A] = SYSCALL(sys_mmapper_allocate_address, LV2_NONE);
         syscalls[0x14C] = SYSCALL(sys_mmapper_allocate_shared_memory, LV2_NONE);
         syscalls[0x15C] = SYSCALL(sys_memory_allocate, LV2_NONE);
@@ -158,6 +163,7 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         syscalls[0x1E4] = SYSCALL(sys_prx_register_module, LV2_NONE);
         syscalls[0x1E6] = SYSCALL(sys_prx_register_library, LV2_NONE);
         syscalls[0x1EE] = SYSCALL(sys_prx_get_module_list, LV2_NONE);
+        syscalls[0x1F0] = SYSCALL(sys_prx_get_module_id_by_name, LV2_NONE);
         syscalls[0x1FE] = SYSCALL(sys_hid_0x1FE, LV2_NONE);
         syscalls[0x200] = SYSCALL(sys_hid_0x200, LV2_NONE);
         syscalls[0x202] = SYSCALL(sys_hid_0x202, LV2_NONE);

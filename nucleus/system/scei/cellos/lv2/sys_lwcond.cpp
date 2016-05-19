@@ -20,7 +20,7 @@ S32 sys_lwcond_create(BE<U32>* lwcond_id, U32 lwmutex_id, sys_lwcond_attribute_t
     if (!lwmutex) {
         return CELL_ESRCH;
     }
-    if ((lwcond_id == nucleus.memory->ptr(0)) || 
+    if ((lwcond_id == nucleus.memory->ptr(0)) ||
         (attr == nucleus.memory->ptr(0))) {
         return CELL_EFAULT;
     }
@@ -71,22 +71,7 @@ S32 sys_lwcond_signal_all(U32 lwcond_id) {
     return CELL_OK;
 }
 
-S32 sys_lwcond_signal_to(U32 lwcond_id, U32 thread_id) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* lwcond = lv2.objects.get<sys_lwcond_t>(lwcond_id);
-
-    // Check requisites
-    if (!lwcond) {
-        return CELL_ESRCH;
-    }
-
-    // TODO: This is wrong
-    lwcond->cv.notify_all();
-    return CELL_OK;
-}
-
-S32 sys_lwcond_wait(U32 lwcond_id, U64 timeout) {
+S32 sys_lwcond_queue_wait(U32 lwcond_id, U64 timeout) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     auto* lwcond = lv2.objects.get<sys_lwcond_t>(lwcond_id);

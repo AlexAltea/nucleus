@@ -26,6 +26,28 @@ enum {
     SYS_SPU_THREAD_GROUP_TYPE_COOPERATE_WITH_SYSTEM  = 0x20,
 };
 
+enum {
+    SYS_SPU_THREAD_GROUP_EVENT_RUN            = 0x1,
+    SYS_SPU_THREAD_GROUP_EVENT_EXCEPTION      = 0x2,
+    SYS_SPU_THREAD_GROUP_EVENT_SYSTEM_MODULE  = 0x4,
+};
+
+enum {
+    SYS_SPU_EXCEPTION_NO_VALUE        =    0x0,
+    SYS_SPU_EXCEPTION_DMA_ALIGNMENT   = 0x0001,
+    SYS_SPU_EXCEPTION_DMA_COMMAND     = 0x0002,
+    SYS_SPU_EXCEPTION_SPU_ERROR       = 0x0004,
+    SYS_SPU_EXCEPTION_MFC_FIR         = 0x0008,
+    SYS_SPU_EXCEPTION_MFC_SEGMENT     = 0x0010,
+    SYS_SPU_EXCEPTION_MFC_STORAGE     = 0x0020,
+    SYS_SPU_EXCEPTION_STOP_CALL       = 0x0100,
+    SYS_SPU_EXCEPTION_STOP_BREAK      = 0x0200,
+    SYS_SPU_EXCEPTION_HALT            = 0x0400,
+    SYS_SPU_EXCEPTION_UNKNOWN_SIGNAL  = 0x0800,
+    SYS_SPU_EXCEPTION_NON_CONTEXT     = 0x1000,
+    SYS_SPU_EXCEPTION_MAT             = 0x2000,
+};
+
 // Classes
 struct sys_spu_thread_argument_t {
     BE<U64> arg1;  // SPU GPR3
@@ -118,7 +140,7 @@ S32 sys_spu_thread_group_get_priority(U32 id, BE<S32>* priority);
 S32 sys_spu_thread_write_ls(U32 id, U32 address, U64 value, U32 type);
 S32 sys_spu_thread_read_ls(U32 id, U32 address, BE<U64>* value, U32 type);
 S32 sys_spu_thread_write_snr(U32 id, S32 number, U32 value);
-S32 sys_spu_thread_group_connect_event(U32 id, U32 equeue, U32 et);
+S32 sys_spu_thread_group_connect_event(U32 id, U32 eq, U32 et);
 S32 sys_spu_thread_group_disconnect_event(U32 id, U32 et);
 S32 sys_spu_thread_set_spu_cfg(U32 id, U64 value);
 S32 sys_spu_thread_get_spu_cfg(U32 id, BE<U64>* value);
@@ -131,5 +153,7 @@ S32 sys_raw_spu_set_spu_cfg(S32 id, U32 value);
 S32 sys_raw_spu_get_spu_cfg(S32 id, BE<U32>* value);
 S32 sys_spu_thread_recover_page_fault(U32 id);
 S32 sys_raw_spu_recover_page_fault(S32 id);
+S32 sys_spu_thread_group_connect_event_all_threads(S32 group_id, U32 equeue_id, U64 req, U08* spup);
+S32 sys_spu_thread_group_disconnect_event_all_threads(S32 group_id, U08 spup);
 
 }  // namespace sys
