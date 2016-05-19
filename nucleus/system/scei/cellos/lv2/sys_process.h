@@ -39,7 +39,8 @@ enum
     SYS_PPU_THREAD_OBJECT           = 0x01,
 
     // TODO: Are these even objects?
-    SYS_SPU_THREAD_GROUP_OBJECT     = 0x02,
+    SYS_SPU_THREAD_OBJECT           = 0x02,
+    SYS_SPU_THREAD_GROUP_OBJECT     = 0x03,
 };
 
 // ELF file headers

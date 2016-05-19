@@ -112,9 +112,9 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         //syscalls[0x0A6] = SYSCALL(sys_spu_thread_set_argument, LV2_NONE);
         //syscalls[0x0A7] = SYSCALL(sys_spu_thread_group_start_on_exit, LV2_NONE);
         syscalls[0x0A9] = SYSCALL(sys_spu_initialize, LV2_NONE);
-        //syscalls[0x0AA] = SYSCALL(sys_spu_thread_group_create, LV2_NONE);
-        //syscalls[0x0AB] = SYSCALL(sys_spu_thread_group_destroy, LV2_NONE);
-        //syscalls[0x0AC] = SYSCALL(sys_spu_thread_initialize, LV2_NONE);
+        syscalls[0x0AA] = SYSCALL(sys_spu_thread_group_create, LV2_NONE);
+        syscalls[0x0AB] = SYSCALL(sys_spu_thread_group_destroy, LV2_NONE);
+        syscalls[0x0AC] = SYSCALL(sys_spu_thread_initialize, LV2_NONE);
         //syscalls[0x0AD] = SYSCALL(sys_spu_thread_group_start, LV2_NONE);
         //syscalls[0x0AE] = SYSCALL(sys_spu_thread_group_suspend, LV2_NONE);
         //syscalls[0x0AF] = SYSCALL(sys_spu_thread_group_resume, LV2_NONE);

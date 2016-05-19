@@ -44,7 +44,7 @@ Thread* CPU::addThread(ThreadType type) {
         break;
     case THREAD_TYPE_SPU:
         thread = new frontend::spu::SPUThread(this);
-        return nullptr;
+        break;
     case THREAD_TYPE_RAWSPU:
         logger.error(LOG_CPU, "Unimplemented CPU thread type");
         return nullptr;

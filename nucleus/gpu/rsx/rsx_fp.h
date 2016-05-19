@@ -180,7 +180,7 @@ private:
 
     Literal getInputReg(int index);
     Literal getSamplerReg(int index);
-    Literal getTempReg(int index, bool isHalf);    
+    Literal getTempReg(int index, bool isHalf);
 
     Literal getConstant(F32 x0, F32 x1, F32 x2, F32 x3);
 

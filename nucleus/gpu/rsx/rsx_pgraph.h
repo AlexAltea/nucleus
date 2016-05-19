@@ -118,11 +118,11 @@ struct alignas(sizeof(Hash)) Pipeline {
     U08 stencil_mask;
     StencilOp stencil_op_zpass;
     StencilOp stencil_op_zfail;
-    StencilOp stencil_op_fail; 
+    StencilOp stencil_op_fail;
     CompareFunc stencil_func;
     StencilOp back_stencil_op_zpass;
     StencilOp back_stencil_op_zfail;
-    StencilOp back_stencil_op_fail; 
+    StencilOp back_stencil_op_fail;
     CompareFunc back_stencil_func;
 
     // Culling

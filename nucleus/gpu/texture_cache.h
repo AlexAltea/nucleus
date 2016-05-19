@@ -33,7 +33,7 @@ class TextureCache {
     // Ring buffer of hashes
     std::deque<Hash> hash;
 
-    // Holds each cached texture 
+    // Holds each cached texture
     std::unordered_map<Hash, gfx::Texture*> textureCache;
 
     Size curSize;
@@ -51,5 +51,5 @@ public:
      */
     gfx::Texture* get(const Byte* addr, Size size);
 };
-    
+
 }  // namespace gpu

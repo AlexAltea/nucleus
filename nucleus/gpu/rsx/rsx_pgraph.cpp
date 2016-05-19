@@ -367,7 +367,7 @@ void PGRAPH::Begin(Primitive primitive) {
             gfx::Texture* texDescriptor = graphics->createTexture(texDesc);
             heapResources->pushTexture(texDescriptor);
         }
-        
+
         // Upload real texture
         else {
             auto texFormat = static_cast<TextureFormat>(tex.format & ~RSX_TEXTURE_LN & ~RSX_TEXTURE_UN);

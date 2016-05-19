@@ -32,7 +32,7 @@ class UI {
 
 public:
     std::shared_ptr<gfx::IBackend> graphics;
-    
+
     // Events
     std::mutex eventMutex;
     std::stack<std::unique_ptr<Event>> events;

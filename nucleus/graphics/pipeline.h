@@ -62,7 +62,7 @@ enum ComparisonFunc {
     COMPARISON_FUNC_ALWAYS         = 8,
 };
 
-enum DepthWriteMask { 
+enum DepthWriteMask {
     DEPTH_WRITE_MASK_ZERO  = 0,
     DEPTH_WRITE_MASK_ALL   = 1
 };

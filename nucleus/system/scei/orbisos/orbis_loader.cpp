@@ -30,7 +30,7 @@ bool isValid(fs::File* file) {
         file->read(&eh, sizeof(eh));
         return eh.elf_class == ELFCLASS64 &&
             eh.data == ELFDATA2LSB &&
-            eh.abi_ver == ELFOSABI_FREEBSD && 
+            eh.abi_ver == ELFOSABI_FREEBSD &&
             eh.machine == EM_X86_64 &&
             eh.type == ET_SCE_EXEC;
     }

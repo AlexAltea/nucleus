@@ -60,7 +60,7 @@ File::Attributes HostPathDevice::getFileAttributes(const Path& path) {
 
 std::vector<DirectoryEntry> HostPathDevice::listDirectory(const Path& path) {
     std::vector<DirectoryEntry> result;
-#ifdef NUCLEUS_TARGET_WINDOWS    
+#ifdef NUCLEUS_TARGET_WINDOWS
     WIN32_FIND_DATA ffd;
     HANDLE handle = FindFirstFile((path + "\\*").c_str(), &ffd);
     if (handle == INVALID_HANDLE_VALUE) {

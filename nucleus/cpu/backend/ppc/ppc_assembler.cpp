@@ -81,7 +81,7 @@ void PPCAssembler::emitFormMD(U32 instruction, Operand s, Operand a, U16 sh, U16
     const U32 aMask = (a & 0x1F) << 16;
     const U32 shMask = ((sh & 0x1F) << 11) | ((sh & 0x20) >> 4);
     const U32 mMask = ((m & 0x1F) << 6) | (m & 0x20);
-    emit32(instruction | sMask | aMask | shMask | mMask);  
+    emit32(instruction | sMask | aMask | shMask | mMask);
 }
 
 void PPCAssembler::emitFormMDS(U32 instruction, Operand s, Operand a, Operand b, U16 m) {
@@ -89,7 +89,7 @@ void PPCAssembler::emitFormMDS(U32 instruction, Operand s, Operand a, Operand b,
     const U32 aMask = (a & 0x1F) << 16;
     const U32 bMask = (b & 0x1F) << 11;
     const U32 mMask = ((m & 0x1F) << 6) | (m & 0x20);
-    emit32(instruction | sMask | aMask | bMask | mMask); 
+    emit32(instruction | sMask | aMask | bMask | mMask);
 }
 
 void PPCAssembler::emitFormVA(U32 instruction, Operand vd, Operand va, Operand vb, Operand vc) {
