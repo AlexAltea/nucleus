@@ -148,6 +148,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_spu.h">
       <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwcond.h">
+      <Filter>scei\cellos\lv2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.cpp">
@@ -256,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)information.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_spu.cpp">
+      <Filter>scei\cellos\lv2</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwcond.cpp">
       <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
   </ItemGroup>

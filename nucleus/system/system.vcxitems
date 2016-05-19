@@ -33,6 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_fs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_gamepad.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_hid.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwcond.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwmutex.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_mmapper.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_fs.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_gamepad.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_hid.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwcond.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwmutex.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_memory.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_mmapper.cpp" />

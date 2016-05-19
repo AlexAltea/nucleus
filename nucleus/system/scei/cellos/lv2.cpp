@@ -16,6 +16,7 @@
 #include "lv2/sys_fs.h"
 #include "lv2/sys_gamepad.h"
 #include "lv2/sys_hid.h"
+#include "lv2/sys_lwcond.h"
 #include "lv2/sys_lwmutex.h"
 #include "lv2/sys_memory.h"
 #include "lv2/sys_mmapper.h"
@@ -80,6 +81,8 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         syscalls[0x06C] = SYSCALL(sys_cond_signal, LV2_NONE);
         syscalls[0x06D] = SYSCALL(sys_cond_signal_all, LV2_NONE);
         syscalls[0x06E] = SYSCALL(sys_cond_signal_to, LV2_NONE);
+        syscalls[0x06F] = SYSCALL(sys_lwcond_create, LV2_NONE);
+        syscalls[0x070] = SYSCALL(sys_lwcond_destroy, LV2_NONE);
         syscalls[0x072] = SYSCALL(sys_semaphore_get_value, LV2_NONE);
         syscalls[0x076] = SYSCALL(sys_event_flag_clear, LV2_NONE);
         syscalls[0x080] = SYSCALL(sys_event_queue_create, LV2_NONE);
