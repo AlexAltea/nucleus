@@ -3,10 +3,11 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "spu_recompiler.h"
+#include "spu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 using namespace cpu::hir;
@@ -18,222 +19,223 @@ using namespace cpu::hir;
  */
 
 // Compare, Branch and Halt Instructions (Chapter 7)
-void Recompiler::bi(Instruction code)
+void Translator::bi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::bihnz(Instruction code)
+void Translator::bihnz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::bihz(Instruction code)
+void Translator::bihz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::binz(Instruction code)
+void Translator::binz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::bisl(Instruction code)
+void Translator::bisl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::bisled(Instruction code)
+void Translator::bisled(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::biz(Instruction code)
+void Translator::biz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::br(Instruction code)
+void Translator::br(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::bra(Instruction code)
+void Translator::bra(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::brasl(Instruction code)
+void Translator::brasl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::brhnz(Instruction code)
+void Translator::brhnz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::brhz(Instruction code)
+void Translator::brhz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::brnz(Instruction code)
+void Translator::brnz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::brsl(Instruction code)
+void Translator::brsl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::brz(Instruction code)
+void Translator::brz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ceq(Instruction code)
+void Translator::ceq(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ceqb(Instruction code)
+void Translator::ceqb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ceqbi(Instruction code)
+void Translator::ceqbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ceqh(Instruction code)
+void Translator::ceqh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ceqhi(Instruction code)
+void Translator::ceqhi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ceqi(Instruction code)
+void Translator::ceqi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cgt(Instruction code)
+void Translator::cgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cgtb(Instruction code)
+void Translator::cgtb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cgtbi(Instruction code)
+void Translator::cgtbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cgth(Instruction code)
+void Translator::cgth(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cgthi(Instruction code)
+void Translator::cgthi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cgti(Instruction code)
+void Translator::cgti(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::clgt(Instruction code)
+void Translator::clgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::clgtb(Instruction code)
+void Translator::clgtb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::clgtbi(Instruction code)
+void Translator::clgtbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::clgth(Instruction code)
+void Translator::clgth(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::clgthi(Instruction code)
+void Translator::clgthi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::clgti(Instruction code)
+void Translator::clgti(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::heq(Instruction code)
+void Translator::heq(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::heqi(Instruction code)
+void Translator::heqi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::hgt(Instruction code)
+void Translator::hgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::hgti(Instruction code)
+void Translator::hgti(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::hlgt(Instruction code)
+void Translator::hlgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::hlgti(Instruction code)
+void Translator::hlgti(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::iret(Instruction code)
+void Translator::iret(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 
 // Hint-for-Branch Instructions (Chapter 8)
-void Recompiler::hbr(Instruction code)
+void Translator::hbr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::hbra(Instruction code)
+void Translator::hbra(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::hbrr(Instruction code)
+void Translator::hbrr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

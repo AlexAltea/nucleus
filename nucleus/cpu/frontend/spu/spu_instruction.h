@@ -8,6 +8,7 @@
 #include "nucleus/common.h"
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 // SPU Instruction
@@ -20,7 +21,7 @@ union Instruction
      * Represents the bit fields contained in 32-bit SPU instructions.
      */
 
-    U32 instruction;
+    U32 value;
 
     // Opcode fields
     FIELD( 0,  3, U32 opcode);  // Primary opcode
@@ -68,4 +69,5 @@ union Instruction
 };
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

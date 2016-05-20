@@ -121,7 +121,7 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         syscalls[0x0AA] = SYSCALL(sys_spu_thread_group_create, LV2_NONE);
         syscalls[0x0AB] = SYSCALL(sys_spu_thread_group_destroy, LV2_NONE);
         syscalls[0x0AC] = SYSCALL(sys_spu_thread_initialize, LV2_NONE);
-        //syscalls[0x0AD] = SYSCALL(sys_spu_thread_group_start, LV2_NONE);
+        syscalls[0x0AD] = SYSCALL(sys_spu_thread_group_start, LV2_NONE);
         //syscalls[0x0AE] = SYSCALL(sys_spu_thread_group_suspend, LV2_NONE);
         //syscalls[0x0AF] = SYSCALL(sys_spu_thread_group_resume, LV2_NONE);
         //syscalls[0x0B0] = SYSCALL(sys_spu_thread_group_yield, LV2_NONE);
@@ -130,7 +130,7 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         //syscalls[0x0B3] = SYSCALL(sys_spu_thread_group_set_priority, LV2_NONE);
         //syscalls[0x0B4] = SYSCALL(sys_spu_thread_group_get_priority, LV2_NONE);
         //syscalls[0x0B5] = SYSCALL(sys_spu_thread_write_ls, LV2_NONE);
-        //syscalls[0x0B6] = SYSCALL(sys_spu_thread_read_ls, LV2_NONE);
+        syscalls[0x0B6] = SYSCALL(sys_spu_thread_read_ls, LV2_NONE);
         //syscalls[0x0B8] = SYSCALL(sys_spu_thread_write_snr, LV2_NONE);
         syscalls[0x0B9] = SYSCALL(sys_spu_thread_group_connect_event, LV2_NONE);
         //syscalls[0x0BA] = SYSCALL(sys_spu_thread_group_disconnect_event, LV2_NONE);

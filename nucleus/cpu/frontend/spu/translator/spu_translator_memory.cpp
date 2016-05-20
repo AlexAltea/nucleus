@@ -3,10 +3,11 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "spu_recompiler.h"
+#include "spu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 using namespace cpu::hir;
@@ -17,85 +18,86 @@ using namespace cpu::hir;
  */
 
 // Memory-Load/Store Instructions (Chapter 3)
-void Recompiler::cbd(Instruction code)
+void Translator::cbd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cbx(Instruction code)
+void Translator::cbx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cdd(Instruction code)
+void Translator::cdd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cdx(Instruction code)
+void Translator::cdx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::chd(Instruction code)
+void Translator::chd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::chx(Instruction code)
+void Translator::chx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cwd(Instruction code)
+void Translator::cwd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cwx(Instruction code)
+void Translator::cwx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lqa(Instruction code)
+void Translator::lqa(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lqd(Instruction code)
+void Translator::lqd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lqr(Instruction code)
+void Translator::lqr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lqx(Instruction code)
+void Translator::lqx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stqa(Instruction code)
+void Translator::stqa(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stqd(Instruction code)
+void Translator::stqd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stqr(Instruction code)
+void Translator::stqr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stqx(Instruction code)
+void Translator::stqx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

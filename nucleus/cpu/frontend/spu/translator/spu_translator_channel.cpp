@@ -3,10 +3,11 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "spu_recompiler.h"
+#include "spu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 using namespace cpu::hir;
@@ -17,20 +18,21 @@ using namespace cpu::hir;
  */
 
 // Channel Instructions (Chapter 11)
-void Recompiler::rchcnt(Instruction code)
+void Translator::rchcnt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rdch(Instruction code)
+void Translator::rdch(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::wrch(Instruction code)
+void Translator::wrch(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

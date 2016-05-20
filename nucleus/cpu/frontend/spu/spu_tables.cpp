@@ -12,6 +12,7 @@
 # define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr }
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 /**
@@ -30,5 +31,22 @@ struct Table {
     }
 };
 
+// Primary Table
+static const struct table_primary_t : Table<0x40> {
+    table_primary_t() : Table() {
+    }
+} tablePrimary;
+
+/**
+ * Return entries from tables
+ */
+const Entry& get_entry(Instruction code) {
+    if (tablePrimary[code.opcode].type == ENTRY_TABLE) {
+        return tablePrimary[code.opcode].caller(code);
+    }
+    return tablePrimary[code.opcode];
+}
+
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

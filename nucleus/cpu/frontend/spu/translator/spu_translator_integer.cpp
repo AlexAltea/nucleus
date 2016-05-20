@@ -3,10 +3,11 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "spu_recompiler.h"
+#include "spu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 using namespace cpu::hir;
@@ -19,12 +20,12 @@ using namespace cpu::hir;
  */
 
 // Constant-Formation Instructions (Chapter 4)
-void Recompiler::fsmbi(Instruction code)
+void Translator::fsmbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::il(Instruction code)
+void Translator::il(Instruction code)
 {
     V128 value;
     value.s32[0] = code.i16;
@@ -36,7 +37,7 @@ void Recompiler::il(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::ila(Instruction code)
+void Translator::ila(Instruction code)
 {
     V128 value;
     value.u32[0] = code.i18 & 0x3FFFF;
@@ -48,7 +49,7 @@ void Recompiler::ila(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::ilh(Instruction code)
+void Translator::ilh(Instruction code)
 {
     V128 value;
     value.u16[0] = code.i16;
@@ -64,7 +65,7 @@ void Recompiler::ilh(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::ilhu(Instruction code)
+void Translator::ilhu(Instruction code)
 {
     V128 value;
     value.u32[0] = code.i16 << 16;
@@ -76,10 +77,10 @@ void Recompiler::ilhu(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::iohl(Instruction code)
+void Translator::iohl(Instruction code)
 {
     Value* constant;
-    Value* rt;
+    Value* rt = getGPR(code.rt);
 
     V128 value;
     value.u32[0] = code.i16 & 0xFFFF;
@@ -94,7 +95,7 @@ void Recompiler::iohl(Instruction code)
 
 
 // Integer and Logical Instructions (Chapter 5)
-void Recompiler::a(Instruction code)
+void Translator::a(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -105,7 +106,7 @@ void Recompiler::a(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::absdb(Instruction code)
+void Translator::absdb(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -117,7 +118,7 @@ void Recompiler::absdb(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::addx(Instruction code)
+void Translator::addx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -130,7 +131,7 @@ void Recompiler::addx(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::ah(Instruction code)
+void Translator::ah(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -141,7 +142,7 @@ void Recompiler::ah(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::ahi(Instruction code)
+void Translator::ahi(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rt;
@@ -161,7 +162,7 @@ void Recompiler::ahi(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::ai(Instruction code)
+void Translator::ai(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rt;
@@ -177,7 +178,7 @@ void Recompiler::ai(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::and_(Instruction code)
+void Translator::and_(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -188,7 +189,7 @@ void Recompiler::and_(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::andc(Instruction code)
+void Translator::andc(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -200,37 +201,37 @@ void Recompiler::andc(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::andbi(Instruction code)
+void Translator::andbi(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rt;
 
     //rt = builder.createAnd(ra, (code.i10 & 0xFF)); // TODO: AND with (code.i10 & 0xFF)^16
 
-    setGPR(code.rt, rt);
+    //setGPR(code.rt, rt);
 }
 
-void Recompiler::andhi(Instruction code)
+void Translator::andhi(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rt;
 
     //rt = builder.createAnd(ra, code.i10); // TODO: AND with (code.i10)^8
 
-    setGPR(code.rt, rt);
+    //setGPR(code.rt, rt);
 }
 
-void Recompiler::andi(Instruction code)
+void Translator::andi(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rt;
 
     //rt = builder.createAnd(ra, code.i10); // TODO: AND with (code.i10)^8
 
-    setGPR(code.rt, rt);
+    //setGPR(code.rt, rt);
 }
 
-void Recompiler::avgb(Instruction code)
+void Translator::avgb(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -241,7 +242,7 @@ void Recompiler::avgb(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::bg(Instruction code)
+void Translator::bg(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -253,392 +254,393 @@ void Recompiler::bg(Instruction code)
     setGPR(code.rt, rt);
 }
 
-void Recompiler::bgx(Instruction code)
+void Translator::bgx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cg(Instruction code)
+void Translator::cg(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cgx(Instruction code)
+void Translator::cgx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::clz(Instruction code)
+void Translator::clz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cntb(Instruction code)
+void Translator::cntb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::eqv(Instruction code)
+void Translator::eqv(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fsm(Instruction code)
+void Translator::fsm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fsmb(Instruction code)
+void Translator::fsmb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fsmh(Instruction code)
+void Translator::fsmh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::gb(Instruction code)
+void Translator::gb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::gbb(Instruction code)
+void Translator::gbb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::gbh(Instruction code)
+void Translator::gbh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpy(Instruction code)
+void Translator::mpy(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpya(Instruction code)
+void Translator::mpya(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyh(Instruction code)
+void Translator::mpyh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyhh(Instruction code)
+void Translator::mpyhh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyhha(Instruction code)
+void Translator::mpyhha(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyhhau(Instruction code)
+void Translator::mpyhhau(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyhhu(Instruction code)
+void Translator::mpyhhu(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyi(Instruction code)
+void Translator::mpyi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpys(Instruction code)
+void Translator::mpys(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyu(Instruction code)
+void Translator::mpyu(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mpyui(Instruction code)
+void Translator::mpyui(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::nand(Instruction code)
+void Translator::nand(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::nor(Instruction code)
+void Translator::nor(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::or_(Instruction code)
+void Translator::or_(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::orbi(Instruction code)
+void Translator::orbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::orc(Instruction code)
+void Translator::orc(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::orhi(Instruction code)
+void Translator::orhi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ori(Instruction code)
+void Translator::ori(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::orx(Instruction code)
+void Translator::orx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::selb(Instruction code)
+void Translator::selb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sf(Instruction code)
+void Translator::sf(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sfh(Instruction code)
+void Translator::sfh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sfhi(Instruction code)
+void Translator::sfhi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sfi(Instruction code)
+void Translator::sfi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sfx(Instruction code)
+void Translator::sfx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shufb(Instruction code)
+void Translator::shufb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sumb(Instruction code)
+void Translator::sumb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::xor_(Instruction code)
+void Translator::xor_(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::xorbi(Instruction code)
+void Translator::xorbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::xorhi(Instruction code)
+void Translator::xorhi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::xori(Instruction code)
+void Translator::xori(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::xsbh(Instruction code)
+void Translator::xsbh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::xshw(Instruction code)
+void Translator::xshw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::xswd(Instruction code)
+void Translator::xswd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 
 // Shift and Rotate Instructions (Chapter 6)
-void Recompiler::shl(Instruction code)
+void Translator::shl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shlh(Instruction code)
+void Translator::shlh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shlhi(Instruction code)
+void Translator::shlhi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shli(Instruction code)
+void Translator::shli(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shlqbi(Instruction code)
+void Translator::shlqbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shlqbii(Instruction code)
+void Translator::shlqbii(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shlqby(Instruction code)
+void Translator::shlqby(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shlqbybi(Instruction code)
+void Translator::shlqbybi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::shlqbyi(Instruction code)
+void Translator::shlqbyi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rot(Instruction code)
+void Translator::rot(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::roth(Instruction code)
+void Translator::roth(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rothi(Instruction code)
+void Translator::rothi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rothm(Instruction code)
+void Translator::rothm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rothmi(Instruction code)
+void Translator::rothmi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::roti(Instruction code)
+void Translator::roti(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotm(Instruction code)
+void Translator::rotm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotma(Instruction code)
+void Translator::rotma(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotmah(Instruction code)
+void Translator::rotmah(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotmahi(Instruction code)
+void Translator::rotmahi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotmai(Instruction code)
+void Translator::rotmai(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotmi(Instruction code)
+void Translator::rotmi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqbi(Instruction code)
+void Translator::rotqbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqbii(Instruction code)
+void Translator::rotqbii(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqby(Instruction code)
+void Translator::rotqby(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqbybi(Instruction code)
+void Translator::rotqbybi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqbyi(Instruction code)
+void Translator::rotqbyi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqmbi(Instruction code)
+void Translator::rotqmbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqmbii(Instruction code)
+void Translator::rotqmbii(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqmby(Instruction code)
+void Translator::rotqmby(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqmbybi(Instruction code)
+void Translator::rotqmbybi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rotqmbyi(Instruction code)
+void Translator::rotqmbyi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

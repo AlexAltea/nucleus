@@ -3,10 +3,11 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "spu_recompiler.h"
+#include "spu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 using namespace cpu::hir;
@@ -17,170 +18,171 @@ using namespace cpu::hir;
  */
 
 // Floating-Point Instructions (Chapter 9)
-void Recompiler::cflts(Instruction code)
+void Translator::cflts(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cfltu(Instruction code)
+void Translator::cfltu(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::csflt(Instruction code)
+void Translator::csflt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::cuflt(Instruction code)
+void Translator::cuflt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfa(Instruction code)
+void Translator::dfa(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfceq(Instruction code)
+void Translator::dfceq(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfcgt(Instruction code)
+void Translator::dfcgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfcmeq(Instruction code)
+void Translator::dfcmeq(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfcmgt(Instruction code)
+void Translator::dfcmgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfm(Instruction code)
+void Translator::dfm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfma(Instruction code)
+void Translator::dfma(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfms(Instruction code)
+void Translator::dfms(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfnma(Instruction code)
+void Translator::dfnma(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfnms(Instruction code)
+void Translator::dfnms(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dfs(Instruction code)
+void Translator::dfs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dftsv(Instruction code)
+void Translator::dftsv(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fa(Instruction code)
+void Translator::fa(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fceq(Instruction code)
+void Translator::fceq(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fcgt(Instruction code)
+void Translator::fcgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fcmeq(Instruction code)
+void Translator::fcmeq(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fcmgt(Instruction code)
+void Translator::fcmgt(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fesd(Instruction code)
+void Translator::fesd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fi(Instruction code)
+void Translator::fi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fm(Instruction code)
+void Translator::fm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fma(Instruction code)
+void Translator::fma(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fms(Instruction code)
+void Translator::fms(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fnms(Instruction code)
+void Translator::fnms(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::frds(Instruction code)
+void Translator::frds(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::frest(Instruction code)
+void Translator::frest(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::frsqest(Instruction code)
+void Translator::frsqest(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fs(Instruction code)
+void Translator::fs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fscrrd(Instruction code)
+void Translator::fscrrd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::fscrwr(Instruction code)
+void Translator::fscrwr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

@@ -34,6 +34,8 @@ Compiler::Compiler(const Settings& settings) : settings(settings) {
 }
 
 bool Compiler::optimize(Function* function) {
+    // TODO: Run passes in parallel
+    std::lock_guard<std::mutex> lock(pass_mutex);
     for (auto& pass : passes) {
         if (!pass->run(function)) {
             logger.error(LOG_CPU, "Could not run pass: %s", pass->name());

@@ -6,6 +6,7 @@
 #include "sys_prx.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/cell.h"
+#include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 #include "nucleus/core/config.h"
 #include "nucleus/system/scei/cellos/callback.h"
 #include "nucleus/system/scei/cellos/lv2.h"

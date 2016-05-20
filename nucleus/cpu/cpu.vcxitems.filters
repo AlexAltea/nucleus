@@ -34,6 +34,9 @@
     <Filter Include="hir\passes">
       <UniqueIdentifier>{265e9980-218c-4682-86cf-bbe575a9e6be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="frontend\spu\translator">
+      <UniqueIdentifier>{20d596a6-6bdf-4139-aa9a-eaae49beeb41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\assembler.cpp">
@@ -166,6 +169,30 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_module.cpp">
       <Filter>hir</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\spu_decoder.cpp">
+      <Filter>frontend\spu</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator_control.cpp">
+      <Filter>frontend\spu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator_float.cpp">
+      <Filter>frontend\spu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator_integer.cpp">
+      <Filter>frontend\spu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator_memory.cpp">
+      <Filter>frontend\spu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator.cpp">
+      <Filter>frontend\spu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator_branch.cpp">
+      <Filter>frontend\spu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator_channel.cpp">
+      <Filter>frontend\spu\translator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">
@@ -291,6 +318,12 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\module.h">
       <Filter>hir</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_decoder.h">
+      <Filter>frontend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator.h">
+      <Filter>frontend\spu\translator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

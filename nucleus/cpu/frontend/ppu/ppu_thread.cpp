@@ -7,6 +7,7 @@
 #include "nucleus/core/config.h"
 #include "nucleus/cpu/cell.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
+#include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 
 namespace cpu {
 namespace frontend {

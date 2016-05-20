@@ -5,8 +5,9 @@
 
 #include "spu_thread.h"
 #include "nucleus/core/config.h"
-#include "nucleus/emulator.h"
+#include "nucleus/cpu/cell.h"
 #include "nucleus/cpu/frontend/spu/spu_state.h"
+#include "nucleus/cpu/frontend/spu/spu_decoder.h"
 
 namespace cpu {
 namespace frontend {
@@ -22,25 +23,36 @@ void SPUThread::start() {
     });
 }
 
-void SPUThread::task()
-{
+void SPUThread::task() {
+     if (config.spuTranslator & CPU_TRANSLATOR_FUNCTION) {
+        for (auto* spu_segment : static_cast<Cell*>(parent)->spu_modules) {
+            if (!spu_segment->contains(state->pc)) {
+                continue;
+            }
+
+            auto* function = spu_segment->addFunction(state->pc);
+            auto* hirFunction = function->hirFunction;
+            if (!(hirFunction->flags & hir::FUNCTION_IS_COMPILED)) {
+                parent->compiler->compile(hirFunction);
+            }
+            parent->compiler->call(hirFunction, state.get());
+            return;
+        }
+    }
 }
 
-void SPUThread::run()
-{
+void SPUThread::run() {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_event = NUCLEUS_EVENT_RUN;
     m_cv.notify_one();
 }
 
-void SPUThread::pause()
-{
+void SPUThread::pause() {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_event = NUCLEUS_EVENT_PAUSE;
 }
 
-void SPUThread::stop()
-{
+void SPUThread::stop() {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_event = NUCLEUS_EVENT_STOP;
 }

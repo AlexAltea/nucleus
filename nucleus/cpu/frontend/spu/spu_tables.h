@@ -12,6 +12,7 @@
 #include <string>
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 enum EntryType {
@@ -32,11 +33,12 @@ struct Entry
 
     // Instruction data
     const char* name;
-    void (Recompiler::*recompile)(Instruction);
+    void (Translator::*recompile)(Instruction);
 };
 
 // Instruction callers
 const Entry& get_entry(Instruction code);
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu

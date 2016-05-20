@@ -89,6 +89,7 @@ S32 sys_spu_thread_initialize(BE<U32>* thread, U32 group, U32 spu_num, sys_spu_i
 
     // Set SPU thread initial state
     auto* state = spuThread->thread->state.get();
+    state->pc = img->entry_point;
     state->gpr[3].u64[1] = arg->arg1;
     state->gpr[4].u64[1] = arg->arg2;
     state->gpr[5].u64[1] = arg->arg3;
@@ -116,6 +117,44 @@ S32 sys_spu_thread_group_connect_event(U32 id, U32 eq, U32 et) {
         break;
     default:
         // TODO: This actually returns CELL_OK due to weird implementation reason on a real LV2 kernel.
+        return CELL_EINVAL;
+    }
+    return CELL_OK;
+}
+
+S32 sys_spu_thread_group_start(U32 id) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(id);
+    if (!spuThreadGroup) {
+        return CELL_ESRCH;
+    }
+
+    for (auto* spuThread : spuThreadGroup->threads) {
+        if (spuThread) {
+            spuThread->thread->start();
+        }
+    }
+    return CELL_OK;
+}
+
+S32 sys_spu_thread_read_ls(U32 id, U32 address, BE<U64>* value, U32 type) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* spuThread = lv2.objects.get<SPUThread>(id);
+    if (!spuThread) {
+        return CELL_ESRCH;
+    }
+    if ((address + type > 0x40000) || (address % type != 0)) {
+        return CELL_EINVAL;
+    }
+
+    switch (type) {
+    case 1: break;  // TODO
+    case 2: break;  // TODO
+    case 4: break;  // TODO
+    case 8: break;  // TODO
+    default:
         return CELL_EINVAL;
     }
     return CELL_OK;

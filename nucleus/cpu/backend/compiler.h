@@ -15,6 +15,7 @@
 #include "nucleus/cpu/hir/value.h"
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 namespace cpu {
@@ -23,6 +24,7 @@ namespace backend {
 class Compiler {
     // Compiler passes
     std::vector<std::unique_ptr<hir::Pass>> passes;
+    std::mutex pass_mutex;
 
 protected:
     // Optimize HIR

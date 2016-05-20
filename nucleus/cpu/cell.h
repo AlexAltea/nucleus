@@ -7,14 +7,18 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/cpu.h"
-#include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 
 namespace cpu {
+
+// Forward declarations
+namespace frontend { namespace ppu { class Module; } }
+namespace frontend { namespace spu { class Module; } }
 
 class Cell : public CPU {
 public:
     // Executable memory segments
     std::vector<frontend::ppu::Module*> ppu_modules;
+    std::vector<frontend::spu::Module*> spu_modules;
 
     Cell(std::shared_ptr<mem::Memory> memory);
 };

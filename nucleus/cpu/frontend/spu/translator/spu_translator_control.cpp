@@ -3,10 +3,11 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "spu_recompiler.h"
+#include "spu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
+namespace frontend {
 namespace spu {
 
 using namespace cpu::hir;
@@ -17,45 +18,46 @@ using namespace cpu::hir;
  */
 
 // Control Instructions (Chapter 10)
-void Recompiler::dsync(Instruction code)
+void Translator::dsync(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lnop(Instruction code)
+void Translator::lnop(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mfspr(Instruction code)
+void Translator::mfspr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mtspr(Instruction code)
+void Translator::mtspr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::nop(Instruction code)
+void Translator::nop(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stop(Instruction code)
+void Translator::stop(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stopd(Instruction code)
+void Translator::stopd(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sync(Instruction code)
+void Translator::sync(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
 }  // namespace spu
+}  // namespace frontend
 }  // namespace cpu
