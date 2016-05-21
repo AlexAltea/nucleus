@@ -17,18 +17,70 @@ void SPUTestRunner::fsmbi() {
 }
 
 void SPUTestRunner::il() {
+    // Immediate Load Word
+    TEST_INSTRUCTION(test_il, I16, R1, {
+        run({ a.il(r1, I16); });
+        expect(state.r[1] == R1);
+    });
+
+    test_il(0x0000, V128::from_u32(0x00000000, 0x00000000, 0x00000000, 0x00000000));
+    test_il(0x0001, V128::from_u32(0x00000001, 0x00000001, 0x00000001, 0x00000001));
+    test_il(0xFFFF, V128::from_u32(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF));
 }
 
 void SPUTestRunner::ila() {
+    // Immediate Load Address
+    TEST_INSTRUCTION(test_ila, I18, R1, {
+        run({ a.ila(r1, I18); });
+        expect(state.r[1] == R1);
+    });
+
+    test_ila(0x00000, V128::from_u32(0x00000000, 0x00000000, 0x00000000, 0x00000000));
+    test_ila(0x00001, V128::from_u32(0x00000001, 0x00000001, 0x00000001, 0x00000001));
+    test_ila(0x3FFFF, V128::from_u32(0x0003FFFF, 0x0003FFFF, 0x0003FFFF, 0x0003FFFF));
 }
 
 void SPUTestRunner::ilh() {
+    // Immediate Load Halfword
+    TEST_INSTRUCTION(test_ilh, I16, R1, {
+        run({ a.ilh(r1, I16); });
+        expect(state.r[1] == R1);
+    });
+
+    test_ilh(0x0000, V128::from_u32(0x00000000, 0x00000000, 0x00000000, 0x00000000));
+    test_ilh(0x0001, V128::from_u32(0x00010001, 0x00010001, 0x00010001, 0x00010001));
+    test_ilh(0xFFFF, V128::from_u32(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF));
 }
 
 void SPUTestRunner::ilhu() {
+    // Immediate Load Halfword Upper
+    TEST_INSTRUCTION(test_ilhu, I16, R1, {
+        run({ a.ilhu(r1, I16); });
+        expect(state.r[1] == R1);
+    });
+
+    test_ilhu(0x0000, V128::from_u32(0x00000000, 0x00000000, 0x00000000, 0x00000000));
+    test_ilhu(0x0001, V128::from_u32(0x00010000, 0x00010000, 0x00010000, 0x00010000));
+    test_ilhu(0xFFFF, V128::from_u32(0xFFFF0000, 0xFFFF0000, 0xFFFF0000, 0xFFFF0000));
 }
 
 void SPUTestRunner::iohl() {
+    // Immediate Or Halfword Lower
+    TEST_INSTRUCTION(test_iohl, I16, oldR1, newR1, {
+        state.r[1] = oldR1;
+        run({ a.iohl(r1, I16); });
+        expect(state.r[1] == newR1);
+    });
+
+    test_iohl(0x0000,
+        V128::from_u32(0x00000000, 0x00000001, 0x00000000, 0x00000001),
+        V128::from_u32(0x00000000, 0x00000001, 0x00000000, 0x00000001));
+    test_iohl(0x0001,
+        V128::from_u32(0x12345678, 0x00000000, 0x12345678, 0x00000000),
+        V128::from_u32(0x12345679, 0x00000001, 0x12345679, 0x00000001));
+    test_iohl(0xFFFF,
+        V128::from_u32(0xF0F0F0F0, 0xF0F0F0F0, 0xF0F0F0F0, 0xF0F0F0F0),
+        V128::from_u32(0xF0F0FFFF, 0xF0F0FFFF, 0xF0F0FFFF, 0xF0F0FFFF));
 }
 
 

@@ -94,7 +94,7 @@ bool Value::isConstantZero() const {
     case TYPE_I64:  return (constant.i64 == 0);
     case TYPE_F32:  return (constant.f32 == 0);
     case TYPE_F64:  return (constant.f64 == 0);
-    case TYPE_V128: assert_always("Unimplemented Value::isConstantZero for TYPE_V128"); return false;
+    case TYPE_V128: return (constant.v128.u64[0] == 0 && constant.v128.u64[1] == 0);
     case TYPE_V256: assert_always("Unimplemented Value::isConstantZero for TYPE_V256"); return false;
 
     default:

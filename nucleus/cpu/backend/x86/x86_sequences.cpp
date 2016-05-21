@@ -1481,8 +1481,8 @@ struct CTXSTORE_V128 : Sequence<CTXSTORE_V128, I<OPCODE_CTXSTORE, VoidOp, Immedi
     static void emit(X86Emitter& e, InstrType& i) {
         auto addr = e.rbx + i.src1.immediate;
         if (i.src2.isConstant) {
-            e.mov(e.qword[addr + 0], i.src2.constant().u64[0]);
-            e.mov(e.qword[addr + 8], i.src2.constant().u64[1]);
+            getXmmConstant(e, e.xmm0, i.src2.constant());
+            e.vmovaps(e.ptr[addr], e.xmm0);
         } else {
             e.vmovaps(e.ptr[addr], i.src2);
         }

@@ -32,10 +32,10 @@ union Instruction
     FIELD( 0, 10, U32 op11);  // Opcode field of 11-bits
 
     // Instruction fields
-    FIELD(11, 17, U32 i7);    // Immediate (7-bit)
-    FIELD( 8, 17, U32 i10);   // Immediate (10-bit)
-    FIELD( 9, 24, U32 i16);   // Immediate (16-bit)
-    FIELD( 7, 24, U32 i18);   // Immediate (18-bit)
+    FIELD(11, 17, S32 i7);    // Immediate (7-bit)
+    FIELD( 8, 17, S32 i10);   // Immediate (10-bit)
+    FIELD( 9, 24, S32 i16);   // Immediate (16-bit)
+    FIELD( 7, 24, S32 i18);   // Immediate (18-bit)
     FIELD(18, 24, U32 ra);    // GPR: Source
     FIELD(11, 17, U32 rb);    // GPR: Source
     FIELD(25, 31, U32 rc);    // GPR: Source
