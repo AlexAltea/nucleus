@@ -6,26 +6,17 @@
 // Visual Studio testing dependencies
 #include "CppUnitTest.h"
 
-// Target
-// TODO
+// Testing dependencies
+#include "test_spu.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+#define TEST_METHOD_INSTRUCTION(method) \
+    TEST_METHOD_CATEGORY(method, L"SPU Tests") { test.##method##(); }
 
 TEST_CLASS(SPUTests) {
+    SPUTestRunner test;
 
 public:
-    TEST_METHOD(SPU_AnalyzerTests)
-    {
-        // TODO
-    }
-
-    TEST_METHOD(SPU_InterpreterTests)
-    {
-        // TODO
-    }
-
-    TEST_METHOD(SPU_RecompilerTests)
-    {
-        // TODO
-    }
+#define INSTRUCTION(name) TEST_METHOD_INSTRUCTION(name)
+#include "test_spu.inl"
+#undef INSTRUCTION
 };

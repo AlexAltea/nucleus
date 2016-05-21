@@ -38,6 +38,9 @@ bool Instruction::is_branch() const {
         (op11 == 0x12B)) { // bihnz
         return true;
     }
+    if ((op11 == 0x000)) { // stop
+        return true;
+    }
     return false;
 }
 
