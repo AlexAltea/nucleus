@@ -37,6 +37,9 @@
     <Filter Include="frontend\spu\translator">
       <UniqueIdentifier>{20d596a6-6bdf-4139-aa9a-eaae49beeb41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backend\spu">
+      <UniqueIdentifier>{54e4ebaa-887d-43a1-bd65-6226cccb24c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\assembler.cpp">
@@ -193,6 +196,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator_channel.cpp">
       <Filter>frontend\spu\translator</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\spu\spu_assembler.cpp">
+      <Filter>backend\spu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">
@@ -324,6 +330,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator.h">
       <Filter>frontend\spu\translator</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\spu\spu_assembler.h">
+      <Filter>backend\spu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

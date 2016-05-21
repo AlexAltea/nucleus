@@ -20,6 +20,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\ppc\ppc_assembler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\sequences.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\settings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)backend\spu\spu_assembler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\target.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_assembler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\x86\x86_compiler.h" />
@@ -66,6 +67,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\assembler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\compiler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\ppc\ppc_assembler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)backend\spu\spu_assembler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_compiler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_constants.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_emitter.cpp" />

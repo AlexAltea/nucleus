@@ -4,9 +4,11 @@
     <Filter Include="ppc">
       <UniqueIdentifier>{8e9abc21-40db-4caf-bb82-156cfa3b8f52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="spu">
+      <UniqueIdentifier>{75fda61c-a79b-40d0-89fd-6064a1c2b84e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_spu.cpp" />
     <ClCompile Include="test_ir.cpp" />
     <ClCompile Include="test_ppc.cpp" />
     <ClCompile Include="ppc\ppc_memory.cpp">
@@ -27,11 +29,32 @@
     <ClCompile Include="ppc\ppc_integer.cpp">
       <Filter>ppc</Filter>
     </ClCompile>
+    <ClCompile Include="test_spu.cpp" />
+    <ClCompile Include="spu\spu_control.cpp">
+      <Filter>spu</Filter>
+    </ClCompile>
+    <ClCompile Include="spu\spu_float.cpp">
+      <Filter>spu</Filter>
+    </ClCompile>
+    <ClCompile Include="spu\spu_integer.cpp">
+      <Filter>spu</Filter>
+    </ClCompile>
+    <ClCompile Include="spu\spu_memory.cpp">
+      <Filter>spu</Filter>
+    </ClCompile>
+    <ClCompile Include="spu\spu_branch.cpp">
+      <Filter>spu</Filter>
+    </ClCompile>
+    <ClCompile Include="spu\spu_channel.cpp">
+      <Filter>spu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_ppc.h" />
+    <ClInclude Include="test_spu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="test_ppc.inl" />
+    <None Include="test_spu.inl" />
   </ItemGroup>
 </Project>

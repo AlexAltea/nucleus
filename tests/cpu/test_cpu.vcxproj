@@ -17,15 +17,23 @@
     <ClCompile Include="ppc\ppc_integer.cpp" />
     <ClCompile Include="ppc\ppc_memory.cpp" />
     <ClCompile Include="ppc\ppc_vector.cpp" />
+    <ClCompile Include="spu\spu_branch.cpp" />
+    <ClCompile Include="spu\spu_channel.cpp" />
+    <ClCompile Include="spu\spu_control.cpp" />
+    <ClCompile Include="spu\spu_float.cpp" />
+    <ClCompile Include="spu\spu_integer.cpp" />
+    <ClCompile Include="spu\spu_memory.cpp" />
     <ClCompile Include="test_ir.cpp" />
     <ClCompile Include="test_ppc.cpp" />
     <ClCompile Include="test_spu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test_ppc.h" />
+    <ClInclude Include="test_spu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="test_ppc.inl" />
+    <None Include="test_spu.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B1FF30F1-16CC-43E9-A896-CE8D54312F62}</ProjectGuid>
