@@ -11,6 +11,7 @@
 #include "nucleus/cpu/frontend/spu/spu_instruction.h"
 #include "nucleus/cpu/frontend/spu/spu_state.h"
 #include "nucleus/cpu/frontend/spu/spu_tables.h"
+#include "nucleus/cpu/frontend/spu/spu_thread.h"
 
 #include <algorithm>
 #include <iterator>
@@ -20,6 +21,18 @@
 namespace cpu {
 namespace frontend {
 namespace spu {
+
+void nucleusTranslateSPU(void* guestFunc, U64 guestAddr) {
+    auto* function = static_cast<frontend::spu::Function*>(guestFunc);
+    function->analyze_cfg();
+    function->recompile();
+
+    auto* hirFunction = function->hirFunction;
+    auto* cpu = CPU::getCurrentThread()->parent;
+    auto* state = static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread())->state.get();
+    cpu->compiler->compile(hirFunction);
+    cpu->compiler->call(hirFunction, state);
+}
 
 /**
  * SPU Block methods
@@ -305,7 +318,9 @@ void Function::createPlaceholder()
     hir::Block* block = new hir::Block(hirFunction);
     builder.setInsertPoint(block);
 
-    hir::Function* translateFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusTranslate));
+    hir::Function* translateFunc = builder.getExternFunction(
+        nucleusTranslateSPU, hir::TYPE_VOID, {hir::TYPE_PTR, hir::TYPE_I64}
+    );
     hir::Value* guestFuncValue = builder.getConstantPointer(this);
     hir::Value* guestAddrValue = builder.getConstantI64(address);
     builder.createCall(translateFunc, {guestFuncValue, guestAddrValue}, hir::CALL_EXTERN);

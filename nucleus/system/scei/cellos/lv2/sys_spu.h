@@ -48,6 +48,21 @@ enum {
     SYS_SPU_EXCEPTION_MAT             = 0x2000,
 };
 
+enum {
+    SYS_SPU_SEGMENT_TYPE_COPY   = 0x0001,
+    SYS_SPU_SEGMENT_TYPE_FILL   = 0x0002,
+    SYS_SPU_SEGMENT_TYPE_INFO   = 0x0004,
+};
+
+enum {
+    SYS_SPU_THREAD_BASE_HIGH  = 0x00000000,
+    SYS_SPU_THREAD_BASE_LOW   = 0xF0000000,
+    SYS_SPU_THREAD_OFFSET     = 0x00100000,
+    SYS_SPU_THREAD_LS_BASE    = 0x00000000,
+    SYS_SPU_THREAD_SNR1       = 0x0005400C,
+    SYS_SPU_THREAD_SNR2       = 0x0005C00C,
+};
+
 // Classes
 struct sys_spu_thread_argument_t {
     BE<U64> arg1;  // SPU GPR3
@@ -89,7 +104,7 @@ struct sys_spu_segment_t {
 struct sys_spu_image_t {
     BE<U32> type;
     BE<U32> entry_point;
-    sys_spu_segment_t* segs;
+    BE<U32> segs_addr;
     BE<S32> nsegs;
 };
 

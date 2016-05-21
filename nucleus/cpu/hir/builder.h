@@ -48,7 +48,7 @@ public:
     Value* getConstantString(const std::string& str);
 
     // HIR functions
-    Function* getExternFunction(void* hostAddr);
+    Function* getExternFunction(void* hostAddr, Type typeOut = TYPE_VOID, const std::vector<Type>& typeIn = {});
 
     /**
      * HIR instruction generation

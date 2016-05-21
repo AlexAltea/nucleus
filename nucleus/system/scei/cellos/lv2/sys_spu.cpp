@@ -7,12 +7,22 @@
 #include "nucleus/system/scei/cellos/lv2.h"
 #include "nucleus/system/scei/cellos/lv2/sys_event.h"
 #include "nucleus/cpu/cpu.h"
+#include "nucleus/cpu/cell.h"
+#include "nucleus/cpu/frontend/spu/spu_decoder.h"
 #include "nucleus/cpu/frontend/spu/spu_thread.h"
 #include "nucleus/cpu/frontend/spu/spu_state.h"
 #include "nucleus/emulator.h"
 #include "nucleus/assert.h"
 
 namespace sys {
+
+// Addressing
+#define SPU_LS_OFFSET(spuNum) \
+    (SYS_SPU_THREAD_OFFSET * (spuNum) + SYS_SPU_THREAD_BASE_LOW + SYS_SPU_THREAD_LS_BASE)
+#define SPU_SNR1_OFFSET(spuNum) \
+    (SYS_SPU_THREAD_OFFSET * (spuNum) + SYS_SPU_THREAD_BASE_LOW + SYS_SPU_THREAD_SNR1)
+#define SPU_SNR2_OFFSET(spuNum) \
+    (SYS_SPU_THREAD_OFFSET * (spuNum) + SYS_SPU_THREAD_BASE_LOW + SYS_SPU_THREAD_SNR2)
 
 S32 sys_spu_initialize(U32 max_usable_spu, U32 max_raw_spu) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
@@ -89,11 +99,29 @@ S32 sys_spu_thread_initialize(BE<U32>* thread, U32 group, U32 spu_num, sys_spu_i
 
     // Set SPU thread initial state
     auto* state = spuThread->thread->state.get();
-    state->pc = img->entry_point;
+    state->pc = SPU_LS_OFFSET(spu_num) + img->entry_point;
     state->gpr[3].u64[1] = arg->arg1;
     state->gpr[4].u64[1] = arg->arg2;
     state->gpr[5].u64[1] = arg->arg3;
     state->gpr[6].u64[1] = arg->arg4;
+
+    // Create SPU modules
+    for (Size i = 0; i < img->nsegs; i++) {
+        const auto& seg = nucleus.memory->ptr<sys_spu_segment_t>(img->segs_addr)[i];
+        void* dstAddr = nucleus.memory->ptr(SPU_LS_OFFSET(spu_num) + seg.ls_start);
+        void* srcAddr = nucleus.memory->ptr(seg.src.pa_start);
+        if (seg.type == SYS_SPU_SEGMENT_TYPE_COPY) {
+            memcpy(dstAddr, srcAddr, seg.size);
+            // Assuming the it contains executable code
+            auto segment = new cpu::frontend::spu::Module(nucleus.cpu.get());
+            segment->address = SPU_LS_OFFSET(spu_num) + seg.ls_start;
+            segment->size = seg.size;
+            static_cast<cpu::Cell*>(nucleus.cpu.get())->spu_modules.push_back(segment);
+        }
+        if (seg.type == SYS_SPU_SEGMENT_TYPE_FILL) {
+            assert_always("Unimplemented");
+        }
+    }
 
     *thread = lv2.objects.add(spuThread, SYS_SPU_THREAD_OBJECT);
     return CELL_OK;
@@ -135,6 +163,23 @@ S32 sys_spu_thread_group_start(U32 id) {
             spuThread->thread->start();
         }
     }
+    return CELL_OK;
+}
+
+S32 sys_spu_thread_group_join(U32 gid, BE<S32>* cause, BE<S32>* status) {
+    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
+
+    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(gid);
+    if (!spuThreadGroup) {
+        return CELL_ESRCH;
+    }
+
+    for (auto* spuThread : spuThreadGroup->threads) {
+        if (spuThread) {
+            spuThread->thread->join();
+        }
+    }
+    // TODO: ?
     return CELL_OK;
 }
 

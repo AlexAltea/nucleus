@@ -42,6 +42,10 @@ Memory::Memory() {
     m_segments[SEG_MMAPPER_MEMORY].init(this, 0xB0000000, 0x10000000);
     m_segments[SEG_RSX_LOCAL_MEMORY].init(this, 0xC0000000, 0x10000000);
     m_segments[SEG_STACK].init(this, 0xD0000000, 0x10000000);
+    m_segments[SEG_SPU].init(this, 0xF0000000, 0x10000000);
+
+    // Allocate SPU-related memory
+    m_segments[SEG_SPU].alloc(0x10000000);
 }
 
 Memory::~Memory() {

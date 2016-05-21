@@ -18,6 +18,7 @@ enum {
     SEG_MMAPPER_MEMORY,    // 0xB0000000 to 0xBFFFFFFF
     SEG_RSX_LOCAL_MEMORY,  // 0xC0000000 to 0xCFFFFFFF
     SEG_STACK,             // 0xD0000000 to 0xDFFFFFFF
+    SEG_SPU,               // 0xF0000000 to 0xFFFFFFFF
 
     // Count of memory segments
     _SEG_COUNT,
@@ -53,7 +54,7 @@ public:
 
     void* getBaseAddr() { return m_base; }
 
-    Segment& getSegment(size_t id) { return m_segments[id]; }
+    Segment& getSegment(Size id) { return m_segments[id]; }
 
     template <typename T>
     T& ref(U32 addr) { return *(T*)((U64)m_base + addr); }

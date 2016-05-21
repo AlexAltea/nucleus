@@ -111,7 +111,7 @@ Value* Builder::getConstantPointer(void* c) {
 }
 
 // HIR functions
-Function* Builder::getExternFunction(void* hostAddr) {
+Function* Builder::getExternFunction(void* hostAddr, Type typeOut, const std::vector<Type>& typeIn) {
     hir::Function* parFunction = ib->parent;
     hir::Module* parModule = parFunction->parent;
 
@@ -129,6 +129,8 @@ Function* Builder::getExternFunction(void* hostAddr) {
         externFunc = new Function(parModule, TYPE_VOID, {TYPE_I64});
     } else if (hostAddr == nucleusTime) {
         externFunc = new Function(parModule, TYPE_I64, {});
+    } else {
+        externFunc = new Function(parModule, typeOut, typeIn);
     }
 
     externFunc->flags |= FUNCTION_IS_EXTERN;
