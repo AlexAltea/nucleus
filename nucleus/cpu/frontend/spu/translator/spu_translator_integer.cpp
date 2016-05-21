@@ -22,7 +22,26 @@ using namespace cpu::hir;
 // Constant-Formation Instructions (Chapter 4)
 void Translator::fsmbi(Instruction code)
 {
-    assert_always("Unimplemented");
+    V128 value;
+    value.u8[0x0] = (code.i16 >> 0x0) & 1 ? 0xFF : 00;
+    value.u8[0x1] = (code.i16 >> 0x1) & 1 ? 0xFF : 00;
+    value.u8[0x2] = (code.i16 >> 0x2) & 1 ? 0xFF : 00;
+    value.u8[0x3] = (code.i16 >> 0x3) & 1 ? 0xFF : 00;
+    value.u8[0x4] = (code.i16 >> 0x4) & 1 ? 0xFF : 00;
+    value.u8[0x5] = (code.i16 >> 0x5) & 1 ? 0xFF : 00;
+    value.u8[0x6] = (code.i16 >> 0x6) & 1 ? 0xFF : 00;
+    value.u8[0x7] = (code.i16 >> 0x7) & 1 ? 0xFF : 00;
+    value.u8[0x8] = (code.i16 >> 0x8) & 1 ? 0xFF : 00;
+    value.u8[0x9] = (code.i16 >> 0x9) & 1 ? 0xFF : 00;
+    value.u8[0xA] = (code.i16 >> 0xA) & 1 ? 0xFF : 00;
+    value.u8[0xB] = (code.i16 >> 0xB) & 1 ? 0xFF : 00;
+    value.u8[0xC] = (code.i16 >> 0xC) & 1 ? 0xFF : 00;
+    value.u8[0xD] = (code.i16 >> 0xD) & 1 ? 0xFF : 00;
+    value.u8[0xE] = (code.i16 >> 0xE) & 1 ? 0xFF : 00;
+    value.u8[0xF] = (code.i16 >> 0xF) & 1 ? 0xFF : 00;
+    Value* rt = builder.getConstantV128(value);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::il(Instruction code)
