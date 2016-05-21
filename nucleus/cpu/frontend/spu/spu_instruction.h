@@ -24,19 +24,23 @@ union Instruction
     U32 value;
 
     // Opcode fields
-    FIELD( 0,  3, U32 opcode);  // Primary opcode
-    FIELD(26, 31, U32 op4);     // Extended opcode of 6-bits (up to 0x3F)
+    FIELD( 0,  3, U32 op4);   // Opcode field of 4-bits
+    FIELD( 0,  6, U32 op7);   // Opcode field of 7-bits
+    FIELD( 0,  7, U32 op8);   // Opcode field of 8-bits
+    FIELD( 0,  8, U32 op9);   // Opcode field of 9-bits
+    FIELD( 0,  9, U32 op10);  // Opcode field of 10-bits
+    FIELD( 0, 10, U32 op11);  // Opcode field of 11-bits
 
     // Instruction fields
-    FIELD(11, 17, U32 i7);      // Immediate (7-bit)
-    FIELD( 8, 17, U32 i10);     // Immediate (10-bit)
-    FIELD( 9, 24, U32 i16);     // Immediate (16-bit)
-    FIELD( 7, 24, U32 i18);     // Immediate (18-bit)
-    FIELD(18, 24, U32 ra);      // GPR: Source
-    FIELD(11, 17, U32 rb);      // GPR: Source
-    FIELD(25, 31, U32 rc);      // GPR: Source
-    FIELD(25, 31, U32 rt);      // GPR: Source
-    FIELD( 4, 10, U32 rt_);     // GPR: Source
+    FIELD(11, 17, U32 i7);    // Immediate (7-bit)
+    FIELD( 8, 17, U32 i10);   // Immediate (10-bit)
+    FIELD( 9, 24, U32 i16);   // Immediate (16-bit)
+    FIELD( 7, 24, U32 i18);   // Immediate (18-bit)
+    FIELD(18, 24, U32 ra);    // GPR: Source
+    FIELD(11, 17, U32 rb);    // GPR: Source
+    FIELD(25, 31, U32 rc);    // GPR: Source
+    FIELD(25, 31, U32 rt);    // GPR: Source
+    FIELD( 4, 10, U32 rt_);   // GPR: Source
 
     /**
      * SPU Instruction properties:
