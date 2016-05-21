@@ -12,176 +12,133 @@
  */
 
 // Compare, Branch and Halt Instructions (Chapter 7)
-void Translator::bi(Instruction code)
-{
+void SPUTestRunner::bi() {
 }
 
-void Translator::bihnz(Instruction code)
-{
+void SPUTestRunner::bihnz() {
 }
 
-void Translator::bihz(Instruction code)
-{
+void SPUTestRunner::bihz() {
 }
 
-void Translator::binz(Instruction code)
-{
+void SPUTestRunner::binz() {
 }
 
-void Translator::bisl(Instruction code)
-{
+void SPUTestRunner::bisl() {
 }
 
-void Translator::bisled(Instruction code)
-{
+void SPUTestRunner::bisled() {
 }
 
-void Translator::biz(Instruction code)
-{
+void SPUTestRunner::biz() {
 }
 
-void Translator::br(Instruction code)
-{
+void SPUTestRunner::br() {
 }
 
-void Translator::bra(Instruction code)
-{
+void SPUTestRunner::bra() {
 }
 
-void Translator::brasl(Instruction code)
-{
+void SPUTestRunner::brasl() {
 }
 
-void Translator::brhnz(Instruction code)
-{
+void SPUTestRunner::brhnz() {
 }
 
-void Translator::brhz(Instruction code)
-{
+void SPUTestRunner::brhz() {
 }
 
-void Translator::brnz(Instruction code)
-{
+void SPUTestRunner::brnz() {
 }
 
-void Translator::brsl(Instruction code)
-{
+void SPUTestRunner::brsl() {
 }
 
-void Translator::brz(Instruction code)
-{
+void SPUTestRunner::brz() {
 }
 
-void Translator::ceq(Instruction code)
-{
+void SPUTestRunner::ceq() {
 }
 
-void Translator::ceqb(Instruction code)
-{
+void SPUTestRunner::ceqb() {
 }
 
-void Translator::ceqbi(Instruction code)
-{
+void SPUTestRunner::ceqbi() {
 }
 
-void Translator::ceqh(Instruction code)
-{
+void SPUTestRunner::ceqh() {
 }
 
-void Translator::ceqhi(Instruction code)
-{
+void SPUTestRunner::ceqhi() {
 }
 
-void Translator::ceqi(Instruction code)
-{
+void SPUTestRunner::ceqi() {
 }
 
-void Translator::cgt(Instruction code)
-{
+void SPUTestRunner::cgt() {
 }
 
-void Translator::cgtb(Instruction code)
-{
+void SPUTestRunner::cgtb() {
 }
 
-void Translator::cgtbi(Instruction code)
-{
+void SPUTestRunner::cgtbi() {
 }
 
-void Translator::cgth(Instruction code)
-{
+void SPUTestRunner::cgth() {
 }
 
-void Translator::cgthi(Instruction code)
-{
+void SPUTestRunner::cgthi() {
 }
 
-void Translator::cgti(Instruction code)
-{
+void SPUTestRunner::cgti() {
 }
 
-void Translator::clgt(Instruction code)
-{
+void SPUTestRunner::clgt() {
 }
 
-void Translator::clgtb(Instruction code)
-{
+void SPUTestRunner::clgtb() {
 }
 
-void Translator::clgtbi(Instruction code)
-{
+void SPUTestRunner::clgtbi() {
 }
 
-void Translator::clgth(Instruction code)
-{
+void SPUTestRunner::clgth() {
 }
 
-void Translator::clgthi(Instruction code)
-{
+void SPUTestRunner::clgthi() {
 }
 
-void Translator::clgti(Instruction code)
-{
+void SPUTestRunner::clgti() {
 }
 
-void Translator::heq(Instruction code)
-{
+void SPUTestRunner::heq() {
 }
 
-void Translator::heqi(Instruction code)
-{
+void SPUTestRunner::heqi() {
 }
 
-void Translator::hgt(Instruction code)
-{
+void SPUTestRunner::hgt() {
 }
 
-void Translator::hgti(Instruction code)
-{
+void SPUTestRunner::hgti() {
 }
 
-void Translator::hlgt(Instruction code)
-{
+void SPUTestRunner::hlgt() {
 }
 
-void Translator::hlgti(Instruction code)
-{
+void SPUTestRunner::hlgti() {
 }
 
-void Translator::iret(Instruction code)
-{
+void SPUTestRunner::iret() {
 }
 
 
 // Hint-for-Branch Instructions (Chapter 8)
-void Translator::hbr(Instruction code)
-{
+void SPUTestRunner::hbr() {
 }
 
-void Translator::hbra(Instruction code)
-{
+void SPUTestRunner::hbra() {
 }
 
-void Translator::hbrr(Instruction code)
-{
+void SPUTestRunner::hbrr() {
 }

@@ -13,390 +13,294 @@
  */
 
 // Constant-Formation Instructions (Chapter 4)
-void Translator::fsmbi(Instruction code)
-{
+void SPUTestRunner::fsmbi() {
 }
 
-void Translator::il(Instruction code)
-{
+void SPUTestRunner::il() {
 }
 
-void Translator::ila(Instruction code)
-{
+void SPUTestRunner::ila() {
 }
 
-void Translator::ilh(Instruction code)
-{
+void SPUTestRunner::ilh() {
 }
 
-void Translator::ilhu(Instruction code)
-{
+void SPUTestRunner::ilhu() {
 }
 
-void Translator::iohl(Instruction code)
-{
+void SPUTestRunner::iohl() {
 }
 
 
 // Integer and Logical Instructions (Chapter 5)
-void Translator::a(Instruction code)
-{
+void SPUTestRunner::a() {
 }
 
-void Translator::absdb(Instruction code)
-{
+void SPUTestRunner::absdb() {
 }
 
-void Translator::addx(Instruction code)
-{
+void SPUTestRunner::addx() {
 }
 
-void Translator::ah(Instruction code)
-{
+void SPUTestRunner::ah() {
 }
 
-void Translator::ahi(Instruction code)
-{
+void SPUTestRunner::ahi() {
 }
 
-void Translator::ai(Instruction code)
-{
+void SPUTestRunner::ai() {
 }
 
-void Translator::and_(Instruction code)
-{
+void SPUTestRunner::and_() {
 }
 
-void Translator::andc(Instruction code)
-{
+void SPUTestRunner::andc() {
 }
 
-void Translator::andbi(Instruction code)
-{
+void SPUTestRunner::andbi() {
 }
 
-void Translator::andhi(Instruction code)
-{
+void SPUTestRunner::andhi() {
 }
 
-void Translator::andi(Instruction code)
-{
+void SPUTestRunner::andi() {
 }
 
-void Translator::avgb(Instruction code)
-{
+void SPUTestRunner::avgb() {
 }
 
-void Translator::bg(Instruction code)
-{
+void SPUTestRunner::bg() {
 }
 
-void Translator::bgx(Instruction code)
-{
+void SPUTestRunner::bgx() {
 }
 
-void Translator::cg(Instruction code)
-{
+void SPUTestRunner::cg() {
 }
 
-void Translator::cgx(Instruction code)
-{
+void SPUTestRunner::cgx() {
 }
 
-void Translator::clz(Instruction code)
-{
+void SPUTestRunner::clz() {
 }
 
-void Translator::cntb(Instruction code)
-{
+void SPUTestRunner::cntb() {
 }
 
-void Translator::eqv(Instruction code)
-{
+void SPUTestRunner::eqv() {
 }
 
-void Translator::fsm(Instruction code)
-{
+void SPUTestRunner::fsm() {
 }
 
-void Translator::fsmb(Instruction code)
-{
+void SPUTestRunner::fsmb() {
 }
 
-void Translator::fsmh(Instruction code)
-{
+void SPUTestRunner::fsmh() {
 }
 
-void Translator::gb(Instruction code)
-{
+void SPUTestRunner::gb() {
 }
 
-void Translator::gbb(Instruction code)
-{
+void SPUTestRunner::gbb() {
 }
 
-void Translator::gbh(Instruction code)
-{
+void SPUTestRunner::gbh() {
 }
 
-void Translator::mpy(Instruction code)
-{
+void SPUTestRunner::mpy() {
 }
 
-void Translator::mpya(Instruction code)
-{
+void SPUTestRunner::mpya() {
 }
 
-void Translator::mpyh(Instruction code)
-{
+void SPUTestRunner::mpyh() {
 }
 
-void Translator::mpyhh(Instruction code)
-{
+void SPUTestRunner::mpyhh() {
 }
 
-void Translator::mpyhha(Instruction code)
-{
+void SPUTestRunner::mpyhha() {
 }
 
-void Translator::mpyhhau(Instruction code)
-{
+void SPUTestRunner::mpyhhau() {
 }
 
-void Translator::mpyhhu(Instruction code)
-{
+void SPUTestRunner::mpyhhu() {
 }
 
-void Translator::mpyi(Instruction code)
-{
+void SPUTestRunner::mpyi() {
 }
 
-void Translator::mpys(Instruction code)
-{
+void SPUTestRunner::mpys() {
 }
 
-void Translator::mpyu(Instruction code)
-{
+void SPUTestRunner::mpyu() {
 }
 
-void Translator::mpyui(Instruction code)
-{
+void SPUTestRunner::mpyui() {
 }
 
-void Translator::nand(Instruction code)
-{
+void SPUTestRunner::nand() {
 }
 
-void Translator::nor(Instruction code)
-{
+void SPUTestRunner::nor() {
 }
 
-void Translator::or_(Instruction code)
-{
+void SPUTestRunner::or_() {
 }
 
-void Translator::orbi(Instruction code)
-{
+void SPUTestRunner::orbi() {
 }
 
-void Translator::orc(Instruction code)
-{
+void SPUTestRunner::orc() {
 }
 
-void Translator::orhi(Instruction code)
-{
+void SPUTestRunner::orhi() {
 }
 
-void Translator::ori(Instruction code)
-{
+void SPUTestRunner::ori() {
 }
 
-void Translator::orx(Instruction code)
-{
+void SPUTestRunner::orx() {
 }
 
-void Translator::selb(Instruction code)
-{
+void SPUTestRunner::selb() {
 }
 
-void Translator::sf(Instruction code)
-{
+void SPUTestRunner::sf() {
 }
 
-void Translator::sfh(Instruction code)
-{
+void SPUTestRunner::sfh() {
 }
 
-void Translator::sfhi(Instruction code)
-{
+void SPUTestRunner::sfhi() {
 }
 
-void Translator::sfi(Instruction code)
-{
+void SPUTestRunner::sfi() {
 }
 
-void Translator::sfx(Instruction code)
-{
+void SPUTestRunner::sfx() {
 }
 
-void Translator::shufb(Instruction code)
-{
+void SPUTestRunner::shufb() {
 }
 
-void Translator::sumb(Instruction code)
-{
+void SPUTestRunner::sumb() {
 }
 
-void Translator::xor_(Instruction code)
-{
+void SPUTestRunner::xor_() {
 }
 
-void Translator::xorbi(Instruction code)
-{
+void SPUTestRunner::xorbi() {
 }
 
-void Translator::xorhi(Instruction code)
-{
+void SPUTestRunner::xorhi() {
 }
 
-void Translator::xori(Instruction code)
-{
+void SPUTestRunner::xori() {
 }
 
-void Translator::xsbh(Instruction code)
-{
+void SPUTestRunner::xsbh() {
 }
 
-void Translator::xshw(Instruction code)
-{
+void SPUTestRunner::xshw() {
 }
 
-void Translator::xswd(Instruction code)
-{
+void SPUTestRunner::xswd() {
 }
 
 
 // Shift and Rotate Instructions (Chapter 6)
-void Translator::shl(Instruction code)
-{
+void SPUTestRunner::shl() {
 }
 
-void Translator::shlh(Instruction code)
-{
+void SPUTestRunner::shlh() {
 }
 
-void Translator::shlhi(Instruction code)
-{
+void SPUTestRunner::shlhi() {
 }
 
-void Translator::shli(Instruction code)
-{
+void SPUTestRunner::shli() {
 }
 
-void Translator::shlqbi(Instruction code)
-{
+void SPUTestRunner::shlqbi() {
 }
 
-void Translator::shlqbii(Instruction code)
-{
+void SPUTestRunner::shlqbii() {
 }
 
-void Translator::shlqby(Instruction code)
-{
+void SPUTestRunner::shlqby() {
 }
 
-void Translator::shlqbybi(Instruction code)
-{
+void SPUTestRunner::shlqbybi() {
 }
 
-void Translator::shlqbyi(Instruction code)
-{
+void SPUTestRunner::shlqbyi() {
 }
 
-void Translator::rot(Instruction code)
-{
+void SPUTestRunner::rot() {
 }
 
-void Translator::roth(Instruction code)
-{
+void SPUTestRunner::roth() {
 }
 
-void Translator::rothi(Instruction code)
-{
+void SPUTestRunner::rothi() {
 }
 
-void Translator::rothm(Instruction code)
-{
+void SPUTestRunner::rothm() {
 }
 
-void Translator::rothmi(Instruction code)
-{
+void SPUTestRunner::rothmi() {
 }
 
-void Translator::roti(Instruction code)
-{
+void SPUTestRunner::roti() {
 }
 
-void Translator::rotm(Instruction code)
-{
+void SPUTestRunner::rotm() {
 }
 
-void Translator::rotma(Instruction code)
-{
+void SPUTestRunner::rotma() {
 }
 
-void Translator::rotmah(Instruction code)
-{
+void SPUTestRunner::rotmah() {
 }
 
-void Translator::rotmahi(Instruction code)
-{
+void SPUTestRunner::rotmahi() {
 }
 
-void Translator::rotmai(Instruction code)
-{
+void SPUTestRunner::rotmai() {
 }
 
-void Translator::rotmi(Instruction code)
-{
+void SPUTestRunner::rotmi() {
 }
 
-void Translator::rotqbi(Instruction code)
-{
+void SPUTestRunner::rotqbi() {
 }
 
-void Translator::rotqbii(Instruction code)
-{
+void SPUTestRunner::rotqbii() {
 }
 
-void Translator::rotqby(Instruction code)
-{
+void SPUTestRunner::rotqby() {
 }
 
-void Translator::rotqbybi(Instruction code)
-{
+void SPUTestRunner::rotqbybi() {
 }
 
-void Translator::rotqbyi(Instruction code)
-{
+void SPUTestRunner::rotqbyi() {
 }
 
-void Translator::rotqmbi(Instruction code)
-{
+void SPUTestRunner::rotqmbi() {
 }
 
-void Translator::rotqmbii(Instruction code)
-{
+void SPUTestRunner::rotqmbii() {
 }
 
-void Translator::rotqmby(Instruction code)
-{
+void SPUTestRunner::rotqmby() {
 }
 
-void Translator::rotqmbybi(Instruction code)
-{
+void SPUTestRunner::rotqmbybi() {
 }
 
-void Translator::rotqmbyi(Instruction code)
-{
+void SPUTestRunner::rotqmbyi() {
 }

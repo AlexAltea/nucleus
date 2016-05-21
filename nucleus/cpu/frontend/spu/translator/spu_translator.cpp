@@ -4,6 +4,7 @@
  */
 
 #include "spu_translator.h"
+#include "nucleus/cpu/frontend/spu/spu_state.h"
 #include "nucleus/core/config.h"
 #include "nucleus/assert.h"
 
@@ -11,16 +12,37 @@ namespace cpu {
 namespace frontend {
 namespace spu {
 
+using namespace cpu::hir;
+
 Translator::Translator(CPU* parent, spu::Function* function) : parent(parent), IRecompiler<U32>(function) {
 }
 
 hir::Value* Translator::getGPR(int index) {
-    // TODO
-    return nullptr;
+    const U32 offset = offsetof(SPUState, r[index]);
+
+    // TODO: Use volatility information?
+    return builder.createCtxLoad(offset, TYPE_V128);
+}
+
+hir::Value* Translator::getSPR(int index) {
+    const U32 offset = offsetof(SPUState, s[index]);
+
+    // TODO: Use volatility information?
+    return builder.createCtxLoad(offset, TYPE_V128);
 }
 
 void Translator::setGPR(int index, hir::Value* value) {
-    // TODO
+    const U32 offset = offsetof(SPUState, r[index]);
+
+    // TODO: Use volatility information?
+    builder.createCtxStore(offset, value);
+}
+
+void Translator::setSPR(int index, hir::Value* value) {
+    const U32 offset = offsetof(SPUState, s[index]);
+
+    // TODO: Use volatility information?
+    builder.createCtxStore(offset, value);
 }
 
 void Translator::createProlog() {

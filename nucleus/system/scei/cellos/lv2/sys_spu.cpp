@@ -100,10 +100,10 @@ S32 sys_spu_thread_initialize(BE<U32>* thread, U32 group, U32 spu_num, sys_spu_i
     // Set SPU thread initial state
     auto* state = spuThread->thread->state.get();
     state->pc = SPU_LS_OFFSET(spu_num) + img->entry_point;
-    state->gpr[3].u64[1] = arg->arg1;
-    state->gpr[4].u64[1] = arg->arg2;
-    state->gpr[5].u64[1] = arg->arg3;
-    state->gpr[6].u64[1] = arg->arg4;
+    state->r[3].u64[1] = arg->arg1;
+    state->r[4].u64[1] = arg->arg2;
+    state->r[5].u64[1] = arg->arg3;
+    state->r[6].u64[1] = arg->arg4;
 
     // Create SPU modules
     for (Size i = 0; i < img->nsegs; i++) {

@@ -11,134 +11,101 @@
  */
 
 // Floating-Point Instructions (Chapter 9)
-void Translator::cflts(Instruction code)
-{
+void SPUTestRunner::cflts() {
 }
 
-void Translator::cfltu(Instruction code)
-{
+void SPUTestRunner::cfltu() {
 }
 
-void Translator::csflt(Instruction code)
-{
+void SPUTestRunner::csflt() {
 }
 
-void Translator::cuflt(Instruction code)
-{
+void SPUTestRunner::cuflt() {
 }
 
-void Translator::dfa(Instruction code)
-{
+void SPUTestRunner::dfa() {
 }
 
-void Translator::dfceq(Instruction code)
-{
+void SPUTestRunner::dfceq() {
 }
 
-void Translator::dfcgt(Instruction code)
-{
+void SPUTestRunner::dfcgt() {
 }
 
-void Translator::dfcmeq(Instruction code)
-{
+void SPUTestRunner::dfcmeq() {
 }
 
-void Translator::dfcmgt(Instruction code)
-{
+void SPUTestRunner::dfcmgt() {
 }
 
-void Translator::dfm(Instruction code)
-{
+void SPUTestRunner::dfm() {
 }
 
-void Translator::dfma(Instruction code)
-{
+void SPUTestRunner::dfma() {
 }
 
-void Translator::dfms(Instruction code)
-{
+void SPUTestRunner::dfms() {
 }
 
-void Translator::dfnma(Instruction code)
-{
+void SPUTestRunner::dfnma() {
 }
 
-void Translator::dfnms(Instruction code)
-{
+void SPUTestRunner::dfnms() {
 }
 
-void Translator::dfs(Instruction code)
-{
+void SPUTestRunner::dfs() {
 }
 
-void Translator::dftsv(Instruction code)
-{
+void SPUTestRunner::dftsv() {
 }
 
-void Translator::fa(Instruction code)
-{
+void SPUTestRunner::fa() {
 }
 
-void Translator::fceq(Instruction code)
-{
+void SPUTestRunner::fceq() {
 }
 
-void Translator::fcgt(Instruction code)
-{
+void SPUTestRunner::fcgt() {
 }
 
-void Translator::fcmeq(Instruction code)
-{
+void SPUTestRunner::fcmeq() {
 }
 
-void Translator::fcmgt(Instruction code)
-{
+void SPUTestRunner::fcmgt() {
 }
 
-void Translator::fesd(Instruction code)
-{
+void SPUTestRunner::fesd() {
 }
 
-void Translator::fi(Instruction code)
-{
+void SPUTestRunner::fi() {
 }
 
-void Translator::fm(Instruction code)
-{
+void SPUTestRunner::fm() {
 }
 
-void Translator::fma(Instruction code)
-{
+void SPUTestRunner::fma() {
 }
 
-void Translator::fms(Instruction code)
-{
+void SPUTestRunner::fms() {
 }
 
-void Translator::fnms(Instruction code)
-{
+void SPUTestRunner::fnms() {
 }
 
-void Translator::frds(Instruction code)
-{
+void SPUTestRunner::frds() {
 }
 
-void Translator::frest(Instruction code)
-{
+void SPUTestRunner::frest() {
 }
 
-void Translator::frsqest(Instruction code)
-{
+void SPUTestRunner::frsqest() {
 }
 
-void Translator::fs(Instruction code)
-{
+void SPUTestRunner::fs() {
 }
 
-void Translator::fscrrd(Instruction code)
-{
+void SPUTestRunner::fscrrd() {
 }
 
-void Translator::fscrwr(Instruction code)
-{
+void SPUTestRunner::fscrwr() {
 }

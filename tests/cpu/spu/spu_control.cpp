@@ -11,34 +11,26 @@
  */
 
 // Control Instructions (Chapter 10)
-void Translator::dsync(Instruction code)
-{
+void SPUTestRunner::dsync() {
 }
 
-void Translator::lnop(Instruction code)
-{
+void SPUTestRunner::lnop() {
 }
 
-void Translator::mfspr(Instruction code)
-{
+void SPUTestRunner::mfspr() {
 }
 
-void Translator::mtspr(Instruction code)
-{
+void SPUTestRunner::mtspr() {
 }
 
-void Translator::nop(Instruction code)
-{
+void SPUTestRunner::nop() {
 }
 
-void Translator::stop(Instruction code)
-{
+void SPUTestRunner::stop() {
 }
 
-void Translator::stopd(Instruction code)
-{
+void SPUTestRunner::stopd() {
 }
 
-void Translator::sync(Instruction code)
-{
+void SPUTestRunner::sync() {
 }

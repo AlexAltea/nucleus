@@ -79,7 +79,7 @@ protected:
 
         Translator translator(cpu.get(), nullptr);
         translator.builder.setInsertPoint(block);
-        translator.currentAddress = 0x10000;
+        translator.currentAddress = 0xF0000100;
 
         U32 buffer[256];
         SPUAssembler a(sizeof(buffer), buffer);

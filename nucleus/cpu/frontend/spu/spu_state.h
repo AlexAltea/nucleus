@@ -13,10 +13,10 @@ namespace spu {
 
 class alignas(16) SPUState {
 public:
-    V128 gpr[128];  // General-Purpose Registers
-    V128 spr[128];  // Special-Purpose Registers
+    V128 r[128];  // General-Purpose Registers
+    V128 s[128];  // Special-Purpose Registers
 
-    U32 pc;         // Program Counter
+    U32 pc;       // Program Counter
 };
 
 }  // namespace spu

@@ -11,66 +11,50 @@
  */
 
 // Memory-Load/Store Instructions (Chapter 3)
-void Translator::cbd(Instruction code)
-{
+void SPUTestRunner::cbd() {
 }
 
-void Translator::cbx(Instruction code)
-{
+void SPUTestRunner::cbx() {
 }
 
-void Translator::cdd(Instruction code)
-{
+void SPUTestRunner::cdd() {
 }
 
-void Translator::cdx(Instruction code)
-{
+void SPUTestRunner::cdx() {
 }
 
-void Translator::chd(Instruction code)
-{
+void SPUTestRunner::chd() {
 }
 
-void Translator::chx(Instruction code)
-{
+void SPUTestRunner::chx() {
 }
 
-void Translator::cwd(Instruction code)
-{
+void SPUTestRunner::cwd() {
 }
 
-void Translator::cwx(Instruction code)
-{
+void SPUTestRunner::cwx() {
 }
 
-void Translator::lqa(Instruction code)
-{
+void SPUTestRunner::lqa() {
 }
 
-void Translator::lqd(Instruction code)
-{
+void SPUTestRunner::lqd() {
 }
 
-void Translator::lqr(Instruction code)
-{
+void SPUTestRunner::lqr() {
 }
 
-void Translator::lqx(Instruction code)
-{
+void SPUTestRunner::lqx() {
 }
 
-void Translator::stqa(Instruction code)
-{
+void SPUTestRunner::stqa() {
 }
 
-void Translator::stqd(Instruction code)
-{
+void SPUTestRunner::stqd() {
 }
 
-void Translator::stqr(Instruction code)
-{
+void SPUTestRunner::stqr() {
 }
 
-void Translator::stqx(Instruction code)
-{
+void SPUTestRunner::stqx() {
 }

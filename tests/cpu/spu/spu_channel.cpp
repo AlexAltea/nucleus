@@ -11,14 +11,11 @@
  */
 
 // Channel Instructions (Chapter 11)
-void Translator::rchcnt(Instruction code)
-{
+void SPUTestRunner::rchcnt() {
 }
 
-void Translator::rdch(Instruction code)
-{
+void SPUTestRunner::rdch() {
 }
 
-void Translator::wrch(Instruction code)
-{
+void SPUTestRunner::wrch() {
 }

@@ -22,9 +22,11 @@ private:
 
     // Register read
     hir::Value* getGPR(int index);
+    hir::Value* getSPR(int index);
 
     // Register write
     void setGPR(int index, hir::Value* value);
+    void setSPR(int index, hir::Value* value);
 
 public:
     hir::Builder builder;
