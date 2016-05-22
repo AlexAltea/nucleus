@@ -25,11 +25,13 @@ namespace xaudio2 {
 #undef DECLARE_FUNCTION
 
 bool initializeXAudio2() {
+#ifdef NUCLEUS_TARGET_WINDOWS
     HMODULE hmodule = LoadLibrary(XAUDIO2_DLL);
 
 #define FUNCTION LOAD_FUNCTION
 #include "xaudio2.inl"
 #undef FUNCTION
+#endif
     return true;
 }
 

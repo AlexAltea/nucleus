@@ -17,6 +17,7 @@ bool XAudio2Backend::initialize() {
         return false;
     }
 
+#ifdef NUCLEUS_TARGET_WINDOWS
     hr = _XAudio2Create(&xaudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
     if (FAILED(hr)) {
         logger.error(LOG_AUDIO, "XAudio2Backend::initialize: XAudio2Create failed (0x%X)", hr);
@@ -28,6 +29,7 @@ bool XAudio2Backend::initialize() {
         logger.error(LOG_AUDIO, "XAudio2Backend::initialize: IXAudio2::CreateMasteringVoice failed (0x%X)", hr);
         return false;
     }
+#endif
     return true;
 }
 

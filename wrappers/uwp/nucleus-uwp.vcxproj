@@ -90,6 +90,7 @@
     <Import Project="..\..\nucleus\ui\ui.vcxitems" Label="Shared" />
     <Import Project="..\..\nucleus\system\system.vcxitems" Label="Shared" />
     <Import Project="..\..\nucleus\graphics\backend\graphics-direct3d12.vcxitems" Label="Shared" />
+    <Import Project="..\..\nucleus\audio\backend\audio-xaudio2.vcxitems" Label="Shared" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -186,7 +187,7 @@
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_NUCLEUS_PLATFORM_UWP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12;_NUCLEUS_TARGET_UWP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)\%(Directory)\</ObjectFileName>
     </ClCompile>
     <Link>
@@ -200,7 +201,7 @@
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_NUCLEUS_PLATFORM_UWP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2;NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12;_NUCLEUS_TARGET_UWP;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)\%(Directory)\</ObjectFileName>
     </ClCompile>
     <Link>

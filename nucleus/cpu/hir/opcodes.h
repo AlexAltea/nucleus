@@ -6,15 +6,18 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/hir/type.h"
 
 namespace cpu {
 namespace hir {
 
-using OpcodeFlags = U08;
+using OpcodeFlags = U32;
 
 enum ArithmeticFlags : OpcodeFlags {
-    ARITHMETIC_SIGNED    = 0 << 0,
-    ARITHMETIC_UNSIGNED  = 1 << 0,
+    ARITHMETIC_SIGNED      = 0 << 0,
+    ARITHMETIC_UNSIGNED    = 1 << 0,
+    ARITHMETIC_NONSATURATE = 0 << 1,
+    ARITHMETIC_SATURATE    = 1 << 1,
 };
 
 enum CallFlags : OpcodeFlags {
@@ -41,13 +44,17 @@ enum MemoryFlags : OpcodeFlags {
     ENDIAN_LITTLE   = 1 << 1,  // Little Endian memory access
 };
 
-enum VectorFlags : OpcodeFlags {
-    COMPONENT_I8,
-    COMPONENT_I16,
-    COMPONENT_I32,
-    COMPONENT_I64,
-    COMPONENT_F32,
-    COMPONENT_F64,
+enum ComponentFlags : OpcodeFlags {
+    _COMPONENT_SHIFT = 16,
+    _COMPONENT_MASK  = 0xFF,
+
+    COMPONENT_VOID = (TYPE_VOID << _COMPONENT_SHIFT),
+    COMPONENT_I8   = (TYPE_I8   << _COMPONENT_SHIFT),
+    COMPONENT_I16  = (TYPE_I16  << _COMPONENT_SHIFT),
+    COMPONENT_I32  = (TYPE_I32  << _COMPONENT_SHIFT),
+    COMPONENT_I64  = (TYPE_I64  << _COMPONENT_SHIFT),
+    COMPONENT_F32  = (TYPE_F32  << _COMPONENT_SHIFT),
+    COMPONENT_F64  = (TYPE_F64  << _COMPONENT_SHIFT),
 };
 
 enum Opcode {

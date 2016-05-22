@@ -124,25 +124,25 @@ public:
     Value* createFNeg(Value* value);
 
     // Vector operations
-    Value* createVAdd(Value* lhs, Value* rhs, Type compType);
-    Value* createVSub(Value* lhs, Value* rhs, Type compType);
-    Value* createVMul(Value* lhs, Value* rhs, Type compType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
-    Value* createVAvg(Value* lhs, Value* rhs, Type compType, ArithmeticFlags flags = ARITHMETIC_SIGNED);
-    Value* createVAbs(Value* value, Type compType);
-    Value* createVCmpEQ(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpNE(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpFLT(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpFLE(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpFGT(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpFGE(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpSLT(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpSLE(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpSGT(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpSGE(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpULT(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpULE(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpUGT(Value* lhs, Value* rhs, Type compType);
-    Value* createVCmpUGE(Value* lhs, Value* rhs, Type compType);
+    Value* createVAdd(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVSub(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVMul(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVAvg(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVAbs(Value* value, OpcodeFlags flags);
+    Value* createVCmpEQ(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpNE(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpFLT(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpFLE(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpFGT(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpFGE(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpSLT(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpSLE(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpSGT(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpSGE(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpULT(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpULE(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpUGT(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createVCmpUGE(Value* lhs, Value* rhs, OpcodeFlags flags);
 };
 
 }  // namespace hir

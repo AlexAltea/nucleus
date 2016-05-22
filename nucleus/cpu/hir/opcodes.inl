@@ -46,6 +46,7 @@ OPCODE(FMUL,      "fmul",      OPCODE_SIG_V_V_V)   // Floating-point multiplicat
 OPCODE(FDIV,      "fdiv",      OPCODE_SIG_V_V_V)   // Floating-point division
 OPCODE(FNEG,      "fneg",      OPCODE_SIG_V_V)     // Floating-point negation
 OPCODE(VADD,      "vadd",      OPCODE_SIG_V_V_V)   // Vector addition
-OPCODE(VSUB,      "vadd",      OPCODE_SIG_V_V_V)   // Vector subtraction
+OPCODE(VSUB,      "vsub",      OPCODE_SIG_V_V_V)   // Vector subtraction
+OPCODE(VABS,      "vabs",      OPCODE_SIG_V_V)     // Vector absolute value
 OPCODE(VAVG,      "vavg",      OPCODE_SIG_V_V_V)   // Vector average
 OPCODE(VCMP,      "vcmp",      OPCODE_SIG_V_V_V)   // Vector compare

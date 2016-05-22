@@ -29,11 +29,11 @@ Path AppFileSystem::getPath(Location location) {
 #elif defined(NUCLEUS_TARGET_UWP)
     Windows::Storage::StorageFolder^ folder;
     switch (location) {
-    case APPLICATION_LOCATION_LOCAL:
+    case APP_LOCATION_LOCAL:
         folder = Windows::Storage::ApplicationData::Current->LocalFolder; break;
-    case APPLICATION_LOCATION_ROAMING:
+    case APP_LOCATION_ROAMING:
         folder = Windows::Storage::ApplicationData::Current->RoamingFolder; break;
-    case APPLICATION_LOCATION_TEMP:
+    case APP_LOCATION_TEMP:
         folder = Windows::Storage::ApplicationData::Current->TemporaryFolder; break;
     }
     std::wstring widePath = folder->Path->Data();

@@ -120,7 +120,7 @@ void Translator::a(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt;
 
-    rt = builder.createVAdd(ra, rb, TYPE_I32);
+    rt = builder.createVAdd(ra, rb, COMPONENT_I32);
 
     setGPR(code.rt, rt);
 }
@@ -131,8 +131,8 @@ void Translator::absdb(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt;
 
-    rt = builder.createVSub(ra, rb, TYPE_I8);
-    rt = builder.createVAbs(rt, TYPE_I8);
+    rt = builder.createVSub(ra, rb, COMPONENT_I8);
+    rt = builder.createVAbs(rt, COMPONENT_I8);
 
     setGPR(code.rt, rt);
 }
@@ -144,8 +144,8 @@ void Translator::addx(Instruction code)
     Value* rt = getGPR(code.rt);
 
     //rt = builder.createAnd(rt, 1); // TODO
-    rt = builder.createVAdd(rt, ra, TYPE_I32);
-    rt = builder.createVAdd(rt, rb, TYPE_I32);
+    rt = builder.createVAdd(rt, ra, COMPONENT_I32);
+    rt = builder.createVAdd(rt, rb, COMPONENT_I32);
 
     setGPR(code.rt, rt);
 }
@@ -156,7 +156,7 @@ void Translator::ah(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt;
 
-    rt = builder.createVAdd(ra, rb, TYPE_I16);
+    rt = builder.createVAdd(ra, rb, COMPONENT_I16);
 
     setGPR(code.rt, rt);
 }
@@ -256,7 +256,7 @@ void Translator::avgb(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt;
 
-    rt = builder.createVAvg(ra, rb, TYPE_I8);
+    rt = builder.createVAvg(ra, rb, COMPONENT_I8);
 
     setGPR(code.rt, rt);
 }
@@ -267,7 +267,7 @@ void Translator::bg(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt;
 
-    auto result = builder.createVCmpUGT(ra, rb, TYPE_I32);
+    auto result = builder.createVCmpUGT(ra, rb, COMPONENT_I32);
     rt = builder.createZExt(result, TYPE_I32);
 
     setGPR(code.rt, rt);

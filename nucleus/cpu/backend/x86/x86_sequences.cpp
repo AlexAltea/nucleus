@@ -13,6 +13,10 @@
 
 #include <unordered_map>
 
+// Helper
+#define COMPONENT_TYPE \
+    (i.instr->flags & (_COMPONENT_MASK << _COMPONENT_SHIFT))
+
 namespace cpu {
 namespace backend {
 namespace x86 {
@@ -2079,6 +2083,134 @@ struct FNEG_F64 : Sequence<FNEG_F64, I<OPCODE_FNEG, F64Op, F64Op>> {
 };
 
 /**
+ * Opcode: VADD
+ */
+struct VADD_V128 : Sequence<VADD_V128, I<OPCODE_VADD, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        bool isUnsigned = i.instr->flags & ARITHMETIC_UNSIGNED;
+        bool isSaturate = i.instr->flags & ARITHMETIC_SATURATE;
+        switch (COMPONENT_TYPE) {
+        case COMPONENT_I8:
+            if (isSaturate) {
+                if (isUnsigned) {
+                    e.vpaddusb(i.dest, i.src1, i.src2);
+                } else {
+                    e.vpaddsb(i.dest, i.src1, i.src2);
+                }
+            } else {
+                e.vpaddb(i.dest, i.src1, i.src2);
+            }
+            break;
+        case COMPONENT_I16:
+            if (isSaturate) {
+                if (isUnsigned) {
+                    e.vpaddusw(i.dest, i.src1, i.src2);
+                } else {
+                    e.vpaddsw(i.dest, i.src1, i.src2);
+                }
+            } else {
+                e.vpaddw(i.dest, i.src1, i.src2);
+            }
+            break;
+        default:
+            assert_always("Unimplemented");
+        }
+    }
+};
+
+/**
+ * Opcode: VSUB
+ */
+struct VSUB_V128 : Sequence<VSUB_V128, I<OPCODE_VSUB, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        bool isUnsigned = i.instr->flags & ARITHMETIC_UNSIGNED;
+        bool isSaturate = i.instr->flags & ARITHMETIC_SATURATE;
+        switch (COMPONENT_TYPE) {
+        case COMPONENT_I8:
+            if (isSaturate) {
+                if (isUnsigned) {
+                    e.vpsubusb(i.dest, i.src1, i.src2);
+                } else {
+                    e.vpsubsb(i.dest, i.src1, i.src2);
+                }
+            } else {
+                e.vpsubb(i.dest, i.src1, i.src2);
+            }
+            break;
+        case COMPONENT_I16:
+            if (isSaturate) {
+                if (isUnsigned) {
+                    e.vpsubusw(i.dest, i.src1, i.src2);
+                } else {
+                    e.vpsubsw(i.dest, i.src1, i.src2);
+                }
+            } else {
+                e.vpsubw(i.dest, i.src1, i.src2);
+            }
+            break;
+        default:
+            assert_always("Unimplemented");
+        }
+    }
+};
+
+/**
+ * Opcode: VABS
+ */
+struct VABS_V128 : Sequence<VABS_V128, I<OPCODE_VABS, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        switch (COMPONENT_TYPE) {
+        case COMPONENT_I8:
+            if (1) {//e.isExtensionAvailable(X86Extension::SSSE3)) {
+                e.vpabsb(i.dest, i.src1);
+            } else {
+                assert_always("Unimplemented");
+            }
+            break;
+        case COMPONENT_I16:
+            if (e.isExtensionAvailable(X86Extension::SSSE3)) {
+                e.vpabsw(i.dest, i.src1);
+            } else {
+                assert_always("Unimplemented");
+            }
+            break;
+        case COMPONENT_I32:
+            if (e.isExtensionAvailable(X86Extension::SSSE3)) {
+                e.vpabsd(i.dest, i.src1);
+            } else {
+                assert_always("Unimplemented");
+            }
+            break;
+        case COMPONENT_F32:
+            if (e.isExtensionAvailable(X86Extension::SSSE3)) {
+                e.vpabsd(i.dest, i.src1);
+            } else {
+                getXmmConstant(e, e.xmm0, V128::from_u32(0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF));
+                e.vpand(i.dest, i.src1, e.xmm0);
+            }
+            break;
+        case COMPONENT_I64:
+            if (0) {//e.isExtensionAvailable(X86Extension::AVX512)) {
+                //e.vpabsq(i.dest, i.src1);
+            } else {
+                assert_always("Unimplemented");
+            }
+            break;
+        case COMPONENT_F64:
+            if (0) {//e.isExtensionAvailable(X86Extension::AVX512)) {
+                //e.vpabsq(i.dest, i.src1);
+            } else {
+                getXmmConstant(e, e.xmm0, V128::from_u32(0x7FFFFFFF, 0xFFFFFFFF, 0x7FFFFFFF, 0xFFFFFFFF));
+                e.vpand(i.dest, i.src1, e.xmm0);
+            }
+            break;
+        default:
+            assert_always("Unimplemented");
+        }
+    }
+};
+
+/**
  * x86 Sequences
  */
 std::unordered_map<InstrKey::Value, X86Sequences::SelectFunction> X86Sequences::sequences;
@@ -2126,6 +2258,9 @@ void X86Sequences::init() {
         registerSequence<FMUL_F32, FMUL_F64>();
         registerSequence<FDIV_F32, FDIV_F64>();
         registerSequence<FNEG_F32, FNEG_F64>();
+        registerSequence<VADD_V128>();
+        registerSequence<VSUB_V128>();
+        registerSequence<VABS_V128>();
 #endif
     }
 }

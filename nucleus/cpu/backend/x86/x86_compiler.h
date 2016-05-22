@@ -15,11 +15,13 @@ namespace backend {
 namespace x86 {
 
 enum X86Extension {
-    AVX   = (1 << 0),  // Advanced Vector Extensions
-    AVX2  = (1 << 1),  // Advanced Vector Extensions 2
-    BMI2  = (1 << 2),  // Bit Manipulation Instructions 2
-    LZCNT = (1 << 3),  // Leading Zeros Count
-    MOVBE = (1 << 4),  // Move Data After Swapping Bytes
+    AVX    = (1 << 0),  // Advanced Vector Extensions
+    AVX2   = (1 << 1),  // Advanced Vector Extensions 2
+    AVX512 = (1 << 2),  // Advanced Vector Extensions 3
+    BMI2   = (1 << 3),  // Bit Manipulation Instructions 2
+    LZCNT  = (1 << 4),  // Leading Zeros Count
+    MOVBE  = (1 << 5),  // Move Data After Swapping Bytes
+    SSSE3  = (1 << 6),  // Supplemental Streaming SIMD Extensions 3
 };
 
 class X86Compiler : public Compiler {

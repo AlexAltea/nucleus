@@ -34,6 +34,14 @@ void nucleusTranslateSPU(void* guestFunc, U64 guestAddr) {
     cpu->compiler->call(hirFunction, state);
 }
 
+void nucleusLogSPU(U64 guestAddr) {
+    auto* state = static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread())->state.get();
+    frontend::spu::Instruction instr { CPU::getCurrentThread()->parent->memory->read32(guestAddr) };
+    printf("> [%08X] %s\n", U32(guestAddr), frontend::spu::get_entry(instr).name);
+    int a = 0;
+    a += 1;
+}
+
 /**
  * SPU Block methods
  */
@@ -260,12 +268,10 @@ void Function::declare()
     hirFunction = new hir::Function(hirModule, result, params);
 }
 
-void Function::recompile()
-{
+void Function::recompile() {
     Translator recompiler(parent->parent, this);
 
     hir::Builder& builder = recompiler.builder;
-
     hirFunction->reset();
 
     // Declare CFG blocks
@@ -288,14 +294,15 @@ void Function::recompile()
         builder.setInsertPoint(recompiler.blocks[block.address]);
 
         // Get function (TODO: This gets loaded multiple times into the module)
-        //hir::Function* logFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusLog));
+        hir::Function* logFunc = builder.getExternFunction(
+            nucleusLogSPU, hir::TYPE_VOID, {hir::TYPE_I64});
 
         for (U32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
             Instruction instr;
             instr.value = parent->parent->memory->read32(recompiler.currentAddress);
             auto method = get_entry(instr).recompile;
-            //builder.createCall(logFunc, {builder.getConstantI64(recompiler.currentAddress)}, hir::CALL_EXTERN);
+            builder.createCall(logFunc, {builder.getConstantI64(recompiler.currentAddress)}, hir::CALL_EXTERN);
             (recompiler.*method)(instr);
         }
 
@@ -312,8 +319,7 @@ void Function::recompile()
     //llvm::verifyFunction(*function.function, &llvm::outs());
 }
 
-void Function::createPlaceholder()
-{
+void Function::createPlaceholder() {
     hir::Builder builder;
     hir::Block* block = new hir::Block(hirFunction);
     builder.setInsertPoint(block);
@@ -333,8 +339,7 @@ void Function::createPlaceholder()
 Module::Module(CPU* parent) : frontend::Module<U32>(parent) {
 }
 
-Function* Module::addFunction(U32 addr)
-{
+Function* Module::addFunction(U32 addr) {
     // Return function if already present
     if (functions.find(addr) != functions.end()) {
         return static_cast<Function*>(functions[addr]);
@@ -353,8 +358,7 @@ Function* Module::addFunction(U32 addr)
     return function;
 }
 
-void Module::analyze()
-{
+void Module::analyze() {
     // Lists of labels
     std::set<U32> labelBlocks;  // Detected immediately
     std::set<U32> labelCalls;   // Direct target of a {bl*, bcl*} instruction (call)
@@ -418,123 +422,7 @@ void Module::analyze()
     }
 }
 
-void Module::recompile()
-{
-    //module = hir::Module::Create(name);
-
-    // Optimization passes
-    /*auto fpm = new llvm::legacy::FunctionPassManager(module.module);
-    fpm->add(llvm::createPromoteMemoryToRegisterPass());  // Promote allocas to registers
-    fpm->add(llvm::createInstructionCombiningPass());     // Simple peephole and bit-twiddling optimizations
-    fpm->add(llvm::createReassociatePass());              // Reassociate expressions
-    fpm->add(llvm::createGVNPass());                      // Eliminate Common SubExpressions
-    fpm->add(llvm::createCFGSimplificationPass());        // Simplify the Control Flow Graph (e.g.: deleting unreachable blocks)
-    fpm->doInitialization();*/
-
-    // Global variables
-    /*memoryBase = module.getOrInsertGlobal<hir::I64>("memoryBase");
-    funcGetState = hir::Function::Create(
-        llvm::FunctionType::get(hir::Pointer<StateType>::getType().type, false),
-        llvm::Function::ExternalLinkage, "nucleusGetState", module);
-    funcLogState = hir::Function::Create(
-        llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
-        llvm::Function::ExternalLinkage, "nucleusLogState", module);
-    funcDebugState = hir::Function::Create(
-        llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
-        llvm::Function::ExternalLinkage, "nucleusDebugState", module);
-    funcIntermodularCall = hir::Function::Create(
-        llvm::FunctionType::get(hir::Void::getType().type, { hir::I64::getType().type }, false),
-        llvm::Function::ExternalLinkage, "nucleusIntermodularCall", module);
-    funcSystemCall = hir::Function::Create(
-        llvm::FunctionType::get(hir::Void::getType().type, false),
-        llvm::Function::ExternalLinkage, "nucleusSystemCall", module);*/
-    /*
-    // Declare all functions
-    for (auto& item : functions) {
-        auto& function = static_cast<Function&>(*item.second);
-        function.declare(module);
-    }
-
-    // Recompile and optimize all functions
-    for (auto& item : functions) {
-        auto& function = static_cast<Function&>(*item.second);
-        function.recompile();
-        fpm->run(*function.function.function); // TODO: This is unreadable
-    }
-
-    // Add function caller
-    llvm::FunctionType* callerType = llvm::FunctionType::get(
-        llvm::Type::getVoidTy(llvm::getGlobalContext()),
-        llvm::Type::getInt32Ty(llvm::getGlobalContext()),
-        false);
-    hir::Function callerFunction = hir::Function::Create(callerType, llvm::Function::InternalLinkage, "caller", module);
-    hir::Block entryBlock = hir::Block::Create("entry", callerFunction);
-    hir::Block defaultBlock = hir::Block::Create("caller", callerFunction);
-
-    hir::Builder builder;
-    builder.setInsertPoint(entryBlock);
-    hir::Value* state = builder.createCall(funcGetState);
-    auto switchInst = builder.createSwitch(hir::Value<hir::I32>{ callerFunction.function->arg_begin() }, defaultBlock);
-
-    for (auto& item : functions) {
-        auto& function = static_cast<Function&>(*item.second);
-
-        // Declare block
-        hir::Block callerBlock = hir::Block::Create(function.name + "_caller", callerFunction);
-        switchInst->addCase(llvm::ConstantInt::get(
-            llvm::IntegerType::getInt32Ty(llvm::getGlobalContext()), function.address),
-            callerBlock.bb);
-
-        // Proxy
-        int index = 0;
-        builder.setInsertPoint(callerBlock);
-        std::vector<hir::Value*> args;
-        for (auto& type : function.type_in) {
-            switch (type) {
-            case FUNCTION_IN_INTEGER:
-                args.push_back(builder.createLoad<hir::I64>(
-                    builder.createInBoundsGEP(state, {
-                        builder.get<hir::I32>(0),
-                        builder.get<hir::I32>(0),
-                        builder.get<hir::I32>(3 + index++)
-                    })
-                ));
-                break;
-
-            case FUNCTION_IN_FLOAT: {
-                args.push_back(builder.createLoad<hir::I64>(
-                    builder.createInBoundsGEP(state, {
-                        builder.get<hir::I32>(0),
-                        builder.get<hir::I32>(1),
-                        builder.get<hir::I32>(1 + index++)
-                    })
-                ));
-                break;
-            }
-            case FUNCTION_IN_VECTOR: {
-                // TODO
-                break;
-            }
-            default:
-                break;
-            }
-        }
-
-        hir::Value* value = builder.createCall(function.function, args);
-
-        // TODO: ?
-
-        builder.createRetVoid();
-    }
-
-    builder.SetInsertPoint(defaultBlock);
-    builder.createRetVoid();
-
-    // NOTE: Debugging purposes
-    module.dump();
-
-    // Compile
-    backend::Generate(static_cast<frontend::Module<U32>*>(this));*/
+void Module::recompile() {
 }
 
 void Module::hook(U32 funcAddr, U32 fnid) {
