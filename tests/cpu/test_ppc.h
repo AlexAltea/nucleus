@@ -77,7 +77,7 @@ protected:
         function->reset();
         block = new hir::Block(function);
 
-        Recompiler recompiler(cpu.get(), nullptr);
+        Translator recompiler(cpu.get(), nullptr);
         recompiler.builder.setInsertPoint(block);
         recompiler.currentAddress = 0x10000;
 

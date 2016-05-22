@@ -16,7 +16,7 @@ namespace cpu {
 namespace frontend {
 namespace ppu {
 
-class Recompiler : public frontend::IRecompiler<U32> {
+class Translator : public frontend::IRecompiler<U32> {
 private:
     CPU* parent;
 
@@ -68,7 +68,7 @@ private:
 public:
     hir::Builder builder;
 
-    Recompiler(CPU* parent, Function* function);
+    Translator(CPU* parent, Function* function);
 
     void createProlog();
     void createEpilog();

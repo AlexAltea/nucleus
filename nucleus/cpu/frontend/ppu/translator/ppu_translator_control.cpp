@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_recompiler.h"
+#include "ppu_translator.h"
 #include "nucleus/cpu/util.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
@@ -23,13 +23,13 @@ using namespace cpu::hir;
  *  - VEA: External Control Instructions (Section: 4.3.4)
  */
 
-void Recompiler::mfocrf(Instruction code)
+void Translator::mfocrf(Instruction code)
 {
     Value* cr = getCR();
     setGPR(code.rd, cr);
 }
 
-void Recompiler::mfspr(Instruction code)
+void Translator::mfspr(Instruction code)
 {
     Value* rd;
 
@@ -47,13 +47,13 @@ void Recompiler::mfspr(Instruction code)
 
     default:
         rd = builder.getConstantI64(0);
-        logger.error(LOG_CPU, "Recompiler::mfspr error: Unknown SPR");
+        logger.error(LOG_CPU, "Translator::mfspr error: Unknown SPR");
     }
 
     setGPR(code.rd, rd);
 }
 
-void Recompiler::mtocrf(Instruction code)
+void Translator::mtocrf(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
 
@@ -82,7 +82,7 @@ void Recompiler::mtocrf(Instruction code)
     }
 }
 
-void Recompiler::mtspr(Instruction code)
+void Translator::mtspr(Instruction code)
 {
     Value* rs = getGPR(code.rs);
 
@@ -99,11 +99,11 @@ void Recompiler::mtspr(Instruction code)
         break;
 
     default:
-        logger.error(LOG_CPU, "Recompiler::mtspr error: Unknown SPR");
+        logger.error(LOG_CPU, "Translator::mtspr error: Unknown SPR");
     }
 }
 
-void Recompiler::mftb(Instruction code)
+void Translator::mftb(Instruction code)
 {
     hir::Function* timeFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusTime));
     hir::Value* timestamp = builder.createCall(timeFunc, {}, CALL_EXTERN);
@@ -123,42 +123,42 @@ void Recompiler::mftb(Instruction code)
     }
 }
 
-void Recompiler::dcbf(Instruction code)
+void Translator::dcbf(Instruction code)
 {
     // TODO
 }
 
-void Recompiler::dcbst(Instruction code)
+void Translator::dcbst(Instruction code)
 {
     // TODO
 }
 
-void Recompiler::dcbt(Instruction code)
+void Translator::dcbt(Instruction code)
 {
     // TODO
 }
 
-void Recompiler::dcbtst(Instruction code)
+void Translator::dcbtst(Instruction code)
 {
     // TODO
 }
 
-void Recompiler::dcbz(Instruction code)
+void Translator::dcbz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::icbi(Instruction code)
+void Translator::icbi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::eciwx(Instruction code)
+void Translator::eciwx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ecowx(Instruction code)
+void Translator::ecowx(Instruction code)
 {
     assert_always("Unimplemented");
 }

@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_recompiler.h"
+#include "ppu_translator.h"
 #include "nucleus/core/config.h"
 #include "nucleus/cpu/util.h"
 #include "nucleus/assert.h"
@@ -19,7 +19,7 @@ using namespace cpu::hir;
  *  - UISA: Branch and Flow Control Instructions (Section: 4.2.4)
  */
 
-void Recompiler::bx(Instruction code)
+void Translator::bx(Instruction code)
 {
     const U32 targetAddr = code.aa ? (code.li << 2) : (currentAddress + (code.li << 2)) & ~0x3;
 
@@ -39,7 +39,7 @@ void Recompiler::bx(Instruction code)
     }
 }
 
-void Recompiler::bcx(Instruction code)
+void Translator::bcx(Instruction code)
 {
     const U32 targetAddr = code.aa ? (code.bd << 2) : (currentAddress + (code.bd << 2)) & ~0x3;
     const U32 nextAddr = (currentAddress + 4) & ~0x3;
@@ -99,7 +99,7 @@ void Recompiler::bcx(Instruction code)
     }
 }
 
-void Recompiler::bcctrx(Instruction code)
+void Translator::bcctrx(Instruction code)
 {
     Value* targetAddr = getCTR();
     const U32 nextAddr = (currentAddress + 4) & ~0x3;
@@ -139,7 +139,7 @@ void Recompiler::bcctrx(Instruction code)
     }
 }
 
-void Recompiler::bclrx(Instruction code)
+void Translator::bclrx(Instruction code)
 {
     // Check condition
     const U08 bo0 = (code.bo & 0x10) ? 1 : 0;
@@ -192,7 +192,7 @@ void Recompiler::bclrx(Instruction code)
     }
 }
 
-void Recompiler::crand(Instruction code)
+void Translator::crand(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -202,7 +202,7 @@ void Recompiler::crand(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::crandc(Instruction code)
+void Translator::crandc(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -212,7 +212,7 @@ void Recompiler::crandc(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::creqv(Instruction code)
+void Translator::creqv(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -222,7 +222,7 @@ void Recompiler::creqv(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::crnand(Instruction code)
+void Translator::crnand(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -232,7 +232,7 @@ void Recompiler::crnand(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::crnor(Instruction code)
+void Translator::crnor(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -242,7 +242,7 @@ void Recompiler::crnor(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::cror(Instruction code)
+void Translator::cror(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -252,7 +252,7 @@ void Recompiler::cror(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::crorc(Instruction code)
+void Translator::crorc(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -262,7 +262,7 @@ void Recompiler::crorc(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::crxor(Instruction code)
+void Translator::crxor(Instruction code)
 {
     Value* crba = getCRBit(code.crba);
     Value* crbb = getCRBit(code.crbb);
@@ -272,12 +272,12 @@ void Recompiler::crxor(Instruction code)
     setCRBit(code.crbd, crbd);
 }
 
-void Recompiler::mcrf(Instruction code)
+void Translator::mcrf(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sc(Instruction code)
+void Translator::sc(Instruction code)
 {
     hir::Function* syscallFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusSysCall));
 
@@ -285,22 +285,22 @@ void Recompiler::sc(Instruction code)
     builder.createCall(syscallFunc, {}, CALL_EXTERN);
 }
 
-void Recompiler::td(Instruction code)
+void Translator::td(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::tdi(Instruction code)
+void Translator::tdi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::tw(Instruction code)
+void Translator::tw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::twi(Instruction code)
+void Translator::twi(Instruction code)
 {
     assert_always("Unimplemented");
 }

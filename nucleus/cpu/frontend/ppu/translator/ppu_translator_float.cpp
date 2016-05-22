@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_recompiler.h"
+#include "ppu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
@@ -17,7 +17,7 @@ using namespace cpu::hir;
  *  - UISA: Floating-Point Instructions (Section: 4.2.2)
  */
 
-void Recompiler::fabsx(Instruction code)
+void Translator::fabsx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -30,7 +30,7 @@ void Recompiler::fabsx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::faddx(Instruction code)
+void Translator::faddx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -45,7 +45,7 @@ void Recompiler::faddx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::faddsx(Instruction code)
+void Translator::faddsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -61,7 +61,7 @@ void Recompiler::faddsx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fcfidx(Instruction code)
+void Translator::fcfidx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -76,7 +76,7 @@ void Recompiler::fcfidx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fcmpo(Instruction code)
+void Translator::fcmpo(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -86,7 +86,7 @@ void Recompiler::fcmpo(Instruction code)
     updateCR(code.crfd, fra, frb, false);
 }
 
-void Recompiler::fcmpu(Instruction code)
+void Translator::fcmpu(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -96,7 +96,7 @@ void Recompiler::fcmpu(Instruction code)
     updateCR(code.crfd, fra, frb, false);
 }
 
-void Recompiler::fctidx(Instruction code)
+void Translator::fctidx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -111,7 +111,7 @@ void Recompiler::fctidx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fctidzx(Instruction code)
+void Translator::fctidzx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -126,7 +126,7 @@ void Recompiler::fctidzx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fctiwx(Instruction code)
+void Translator::fctiwx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -143,7 +143,7 @@ void Recompiler::fctiwx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fctiwzx(Instruction code)
+void Translator::fctiwzx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -160,7 +160,7 @@ void Recompiler::fctiwzx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fdivx(Instruction code)
+void Translator::fdivx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -175,7 +175,7 @@ void Recompiler::fdivx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fdivsx(Instruction code)
+void Translator::fdivsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -190,7 +190,7 @@ void Recompiler::fdivsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::fmaddx(Instruction code)
+void Translator::fmaddx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -207,7 +207,7 @@ void Recompiler::fmaddx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fmaddsx(Instruction code)
+void Translator::fmaddsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -224,7 +224,7 @@ void Recompiler::fmaddsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::fmrx(Instruction code)
+void Translator::fmrx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -238,7 +238,7 @@ void Recompiler::fmrx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fmsubx(Instruction code)
+void Translator::fmsubx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -255,7 +255,7 @@ void Recompiler::fmsubx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fmsubsx(Instruction code)
+void Translator::fmsubsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -273,7 +273,7 @@ void Recompiler::fmsubsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::fmulx(Instruction code)
+void Translator::fmulx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -288,7 +288,7 @@ void Recompiler::fmulx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fmulsx(Instruction code)
+void Translator::fmulsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -303,7 +303,7 @@ void Recompiler::fmulsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::fnabsx(Instruction code)
+void Translator::fnabsx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -318,7 +318,7 @@ void Recompiler::fnabsx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fnegx(Instruction code)
+void Translator::fnegx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -332,7 +332,7 @@ void Recompiler::fnegx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fnmaddx(Instruction code)
+void Translator::fnmaddx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -350,7 +350,7 @@ void Recompiler::fnmaddx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fnmaddsx(Instruction code)
+void Translator::fnmaddsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -368,7 +368,7 @@ void Recompiler::fnmaddsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::fnmsubx(Instruction code)
+void Translator::fnmsubx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -387,7 +387,7 @@ void Recompiler::fnmsubx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fnmsubsx(Instruction code)
+void Translator::fnmsubsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -406,7 +406,7 @@ void Recompiler::fnmsubsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::fresx(Instruction code)
+void Translator::fresx(Instruction code)
 {
     Value* frb = getFPR(code.frb, TYPE_F32);
     Value* frd;
@@ -421,7 +421,7 @@ void Recompiler::fresx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::frspx(Instruction code)
+void Translator::frspx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -436,7 +436,7 @@ void Recompiler::frspx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::frsqrtex(Instruction code)
+void Translator::frsqrtex(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -451,7 +451,7 @@ void Recompiler::frsqrtex(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fselx(Instruction code)
+void Translator::fselx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frc = getFPR(code.frc);
@@ -468,7 +468,7 @@ void Recompiler::fselx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fsqrtx(Instruction code)
+void Translator::fsqrtx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -482,7 +482,7 @@ void Recompiler::fsqrtx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fsqrtsx(Instruction code)
+void Translator::fsqrtsx(Instruction code)
 {
     Value* frb = getFPR(code.frb);
     Value* frd;
@@ -496,7 +496,7 @@ void Recompiler::fsqrtsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::fsubx(Instruction code)
+void Translator::fsubx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -511,7 +511,7 @@ void Recompiler::fsubx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::fsubsx(Instruction code)
+void Translator::fsubsx(Instruction code)
 {
     Value* fra = getFPR(code.fra);
     Value* frb = getFPR(code.frb);
@@ -526,12 +526,12 @@ void Recompiler::fsubsx(Instruction code)
     setFPR(code.frd, builder.createConvert(frd, TYPE_F32));
 }
 
-void Recompiler::mcrfs(Instruction code)
+void Translator::mcrfs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mffsx(Instruction code)
+void Translator::mffsx(Instruction code)
 {
     Value* frd;
 
@@ -545,22 +545,22 @@ void Recompiler::mffsx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::mtfsb0x(Instruction code)
+void Translator::mtfsb0x(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mtfsb1x(Instruction code)
+void Translator::mtfsb1x(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mtfsfix(Instruction code)
+void Translator::mtfsfix(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mtfsfx(Instruction code)
+void Translator::mtfsfx(Instruction code)
 {
     assert_always("Unimplemented");
 }

@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_recompiler.h"
+#include "ppu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
@@ -18,67 +18,67 @@ using namespace cpu::hir;
  *  - Vector VEA Instructions (Section: 4.3.x)
  */
 
-void Recompiler::dss(Instruction code)
+void Translator::dss(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dst(Instruction code)
+void Translator::dst(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::dstst(Instruction code)
+void Translator::dstst(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvebx(Instruction code)
+void Translator::lvebx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvehx(Instruction code)
+void Translator::lvehx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvewx(Instruction code)
+void Translator::lvewx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvlx(Instruction code)
+void Translator::lvlx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvlxl(Instruction code)
+void Translator::lvlxl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvrx(Instruction code)
+void Translator::lvrx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvrxl(Instruction code)
+void Translator::lvrxl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvsl(Instruction code)
+void Translator::lvsl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvsr(Instruction code)
+void Translator::lvsr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lvx(Instruction code)
+void Translator::lvx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -93,57 +93,57 @@ void Recompiler::lvx(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::lvxl(Instruction code)
+void Translator::lvxl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mfvscr(Instruction code)
+void Translator::mfvscr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::mtvscr(Instruction code)
+void Translator::mtvscr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvebx(Instruction code)
+void Translator::stvebx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvehx(Instruction code)
+void Translator::stvehx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvewx(Instruction code)
+void Translator::stvewx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvlx(Instruction code)
+void Translator::stvlx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvlxl(Instruction code)
+void Translator::stvlxl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvrx(Instruction code)
+void Translator::stvrx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvrxl(Instruction code)
+void Translator::stvrxl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stvx(Instruction code)
+void Translator::stvx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -157,17 +157,17 @@ void Recompiler::stvx(Instruction code)
     writeMemory(addr, vs);
 }
 
-void Recompiler::stvxl(Instruction code)
+void Translator::stvxl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vaddcuw(Instruction code)
+void Translator::vaddcuw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vaddfp(Instruction code)
+void Translator::vaddfp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -178,7 +178,7 @@ void Recompiler::vaddfp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vaddsbs(Instruction code)
+void Translator::vaddsbs(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -189,7 +189,7 @@ void Recompiler::vaddsbs(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vaddshs(Instruction code)
+void Translator::vaddshs(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -200,7 +200,7 @@ void Recompiler::vaddshs(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vaddsws(Instruction code)
+void Translator::vaddsws(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -211,7 +211,7 @@ void Recompiler::vaddsws(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vaddubm(Instruction code)
+void Translator::vaddubm(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -222,7 +222,7 @@ void Recompiler::vaddubm(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vaddubs(Instruction code)
+void Translator::vaddubs(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -234,7 +234,7 @@ void Recompiler::vaddubs(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vadduhm(Instruction code)
+void Translator::vadduhm(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -245,7 +245,7 @@ void Recompiler::vadduhm(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vadduhs(Instruction code)
+void Translator::vadduhs(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -256,7 +256,7 @@ void Recompiler::vadduhs(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vadduwm(Instruction code)
+void Translator::vadduwm(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -267,7 +267,7 @@ void Recompiler::vadduwm(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vadduws(Instruction code)
+void Translator::vadduws(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -278,7 +278,7 @@ void Recompiler::vadduws(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vand(Instruction code)
+void Translator::vand(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -289,7 +289,7 @@ void Recompiler::vand(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vandc(Instruction code)
+void Translator::vandc(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -301,7 +301,7 @@ void Recompiler::vandc(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vavgsb(Instruction code)
+void Translator::vavgsb(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -312,7 +312,7 @@ void Recompiler::vavgsb(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vavgsh(Instruction code)
+void Translator::vavgsh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -323,7 +323,7 @@ void Recompiler::vavgsh(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vavgsw(Instruction code)
+void Translator::vavgsw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -334,7 +334,7 @@ void Recompiler::vavgsw(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vavgub(Instruction code)
+void Translator::vavgub(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -345,7 +345,7 @@ void Recompiler::vavgub(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vavguh(Instruction code)
+void Translator::vavguh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -356,7 +356,7 @@ void Recompiler::vavguh(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vavguw(Instruction code)
+void Translator::vavguw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -367,28 +367,28 @@ void Recompiler::vavguw(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcfsx(Instruction code)
+void Translator::vcfsx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vcfux(Instruction code)
+void Translator::vcfux(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vcmpbfp(Instruction code)
+void Translator::vcmpbfp(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vcmpbfp_(Instruction code)
+void Translator::vcmpbfp_(Instruction code)
 {
     vcmpbfp(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpeqfp(Instruction code)
+void Translator::vcmpeqfp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -399,13 +399,13 @@ void Recompiler::vcmpeqfp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpeqfp_(Instruction code)
+void Translator::vcmpeqfp_(Instruction code)
 {
     vcmpeqfp(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpequb(Instruction code)
+void Translator::vcmpequb(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -416,13 +416,13 @@ void Recompiler::vcmpequb(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpequb_(Instruction code)
+void Translator::vcmpequb_(Instruction code)
 {
     vcmpequb(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpequh(Instruction code)
+void Translator::vcmpequh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -433,13 +433,13 @@ void Recompiler::vcmpequh(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpequh_(Instruction code)
+void Translator::vcmpequh_(Instruction code)
 {
     vcmpequh(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpequw(Instruction code)
+void Translator::vcmpequw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -450,13 +450,13 @@ void Recompiler::vcmpequw(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpequw_(Instruction code)
+void Translator::vcmpequw_(Instruction code)
 {
     vcmpequw(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgefp(Instruction code)
+void Translator::vcmpgefp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -467,13 +467,13 @@ void Recompiler::vcmpgefp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgefp_(Instruction code)
+void Translator::vcmpgefp_(Instruction code)
 {
     vcmpgefp(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgtfp(Instruction code)
+void Translator::vcmpgtfp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -484,13 +484,13 @@ void Recompiler::vcmpgtfp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgtfp_(Instruction code)
+void Translator::vcmpgtfp_(Instruction code)
 {
     vcmpgtfp(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgtsb(Instruction code)
+void Translator::vcmpgtsb(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -501,13 +501,13 @@ void Recompiler::vcmpgtsb(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgtsb_(Instruction code)
+void Translator::vcmpgtsb_(Instruction code)
 {
     vcmpgtsb(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgtsh(Instruction code)
+void Translator::vcmpgtsh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -518,13 +518,13 @@ void Recompiler::vcmpgtsh(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgtsh_(Instruction code)
+void Translator::vcmpgtsh_(Instruction code)
 {
     vcmpgtsh(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgtsw(Instruction code)
+void Translator::vcmpgtsw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -535,13 +535,13 @@ void Recompiler::vcmpgtsw(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgtsw_(Instruction code)
+void Translator::vcmpgtsw_(Instruction code)
 {
     vcmpgtsw(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgtub(Instruction code)
+void Translator::vcmpgtub(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -552,13 +552,13 @@ void Recompiler::vcmpgtub(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgtub_(Instruction code)
+void Translator::vcmpgtub_(Instruction code)
 {
     vcmpgtub(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgtuh(Instruction code)
+void Translator::vcmpgtuh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -569,13 +569,13 @@ void Recompiler::vcmpgtuh(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgtuh_(Instruction code)
+void Translator::vcmpgtuh_(Instruction code)
 {
     vcmpgtuh(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vcmpgtuw(Instruction code)
+void Translator::vcmpgtuw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -586,23 +586,23 @@ void Recompiler::vcmpgtuw(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vcmpgtuw_(Instruction code)
+void Translator::vcmpgtuw_(Instruction code)
 {
     vcmpgtuw(code);
     // TODO: CR6 update
 }
 
-void Recompiler::vctsxs(Instruction code)
+void Translator::vctsxs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vctuxs(Instruction code)
+void Translator::vctuxs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vexptefp(Instruction code)
+void Translator::vexptefp(Instruction code)
 {
     Value* vb = getVR(code.vb);
     Value* vd = vb; // TODO: This is wrong. Just a temporary fix
@@ -613,7 +613,7 @@ void Recompiler::vexptefp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vlogefp(Instruction code)
+void Translator::vlogefp(Instruction code)
 {
     Value* vb = getVR(code.vb);
     Value* vd = vb; // TODO: This is wrong. Just a temporary fix
@@ -624,7 +624,7 @@ void Recompiler::vlogefp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vmaddfp(Instruction code)
+void Translator::vmaddfp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vc = getVR(code.vc);
@@ -637,192 +637,192 @@ void Recompiler::vmaddfp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vmaxfp(Instruction code)
+void Translator::vmaxfp(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmaxsb(Instruction code)
+void Translator::vmaxsb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmaxsh(Instruction code)
+void Translator::vmaxsh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmaxsw(Instruction code)
+void Translator::vmaxsw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmaxub(Instruction code)
+void Translator::vmaxub(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmaxuh(Instruction code)
+void Translator::vmaxuh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmaxuw(Instruction code)
+void Translator::vmaxuw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmhaddshs(Instruction code)
+void Translator::vmhaddshs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmhraddshs(Instruction code)
+void Translator::vmhraddshs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vminfp(Instruction code)
+void Translator::vminfp(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vminsb(Instruction code)
+void Translator::vminsb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vminsh(Instruction code)
+void Translator::vminsh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vminsw(Instruction code)
+void Translator::vminsw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vminub(Instruction code)
+void Translator::vminub(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vminuh(Instruction code)
+void Translator::vminuh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vminuw(Instruction code)
+void Translator::vminuw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmladduhm(Instruction code)
+void Translator::vmladduhm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmrghb(Instruction code)
+void Translator::vmrghb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmrghh(Instruction code)
+void Translator::vmrghh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmrghw(Instruction code)
+void Translator::vmrghw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmrglb(Instruction code)
+void Translator::vmrglb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmrglh(Instruction code)
+void Translator::vmrglh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmrglw(Instruction code)
+void Translator::vmrglw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmsummbm(Instruction code)
+void Translator::vmsummbm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmsumshm(Instruction code)
+void Translator::vmsumshm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmsumshs(Instruction code)
+void Translator::vmsumshs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmsumubm(Instruction code)
+void Translator::vmsumubm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmsumuhm(Instruction code)
+void Translator::vmsumuhm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmsumuhs(Instruction code)
+void Translator::vmsumuhs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmulesb(Instruction code)
+void Translator::vmulesb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmulesh(Instruction code)
+void Translator::vmulesh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmuleub(Instruction code)
+void Translator::vmuleub(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmuleuh(Instruction code)
+void Translator::vmuleuh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmulosb(Instruction code)
+void Translator::vmulosb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmulosh(Instruction code)
+void Translator::vmulosh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmuloub(Instruction code)
+void Translator::vmuloub(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vmulouh(Instruction code)
+void Translator::vmulouh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vnmsubfp(Instruction code)
+void Translator::vnmsubfp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vc = getVR(code.vc);
@@ -836,7 +836,7 @@ void Recompiler::vnmsubfp(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vnor(Instruction code)
+void Translator::vnor(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -848,7 +848,7 @@ void Recompiler::vnor(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vor(Instruction code)
+void Translator::vor(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
@@ -859,317 +859,317 @@ void Recompiler::vor(Instruction code)
     setVR(code.vd, vd);
 }
 
-void Recompiler::vperm(Instruction code)
+void Translator::vperm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkpx(Instruction code)
+void Translator::vpkpx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkshss(Instruction code)
+void Translator::vpkshss(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkshus(Instruction code)
+void Translator::vpkshus(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkswss(Instruction code)
+void Translator::vpkswss(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkswus(Instruction code)
+void Translator::vpkswus(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkuhum(Instruction code)
+void Translator::vpkuhum(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkuhus(Instruction code)
+void Translator::vpkuhus(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkuwum(Instruction code)
+void Translator::vpkuwum(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vpkuwus(Instruction code)
+void Translator::vpkuwus(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrefp(Instruction code)
+void Translator::vrefp(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrfim(Instruction code)
+void Translator::vrfim(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrfin(Instruction code)
+void Translator::vrfin(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrfip(Instruction code)
+void Translator::vrfip(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrfiz(Instruction code)
+void Translator::vrfiz(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrlb(Instruction code)
+void Translator::vrlb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrlh(Instruction code)
+void Translator::vrlh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrlw(Instruction code)
+void Translator::vrlw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vrsqrtefp(Instruction code)
+void Translator::vrsqrtefp(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsel(Instruction code)
+void Translator::vsel(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsl(Instruction code)
+void Translator::vsl(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vslb(Instruction code)
+void Translator::vslb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsldoi(Instruction code)
+void Translator::vsldoi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vslh(Instruction code)
+void Translator::vslh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vslo(Instruction code)
+void Translator::vslo(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vslw(Instruction code)
+void Translator::vslw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vspltb(Instruction code)
+void Translator::vspltb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsplth(Instruction code)
+void Translator::vsplth(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vspltisb(Instruction code)
+void Translator::vspltisb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vspltish(Instruction code)
+void Translator::vspltish(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vspltisw(Instruction code)
+void Translator::vspltisw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vspltw(Instruction code)
+void Translator::vspltw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsr(Instruction code)
+void Translator::vsr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsrab(Instruction code)
+void Translator::vsrab(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsrah(Instruction code)
+void Translator::vsrah(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsraw(Instruction code)
+void Translator::vsraw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsrb(Instruction code)
+void Translator::vsrb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsrh(Instruction code)
+void Translator::vsrh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsro(Instruction code)
+void Translator::vsro(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsrw(Instruction code)
+void Translator::vsrw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubcuw(Instruction code)
+void Translator::vsubcuw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubfp(Instruction code)
+void Translator::vsubfp(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubsbs(Instruction code)
+void Translator::vsubsbs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubshs(Instruction code)
+void Translator::vsubshs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubsws(Instruction code)
+void Translator::vsubsws(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsububm(Instruction code)
+void Translator::vsububm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsububs(Instruction code)
+void Translator::vsububs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubuhm(Instruction code)
+void Translator::vsubuhm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubuhs(Instruction code)
+void Translator::vsubuhs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubuwm(Instruction code)
+void Translator::vsubuwm(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsubuws(Instruction code)
+void Translator::vsubuws(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsum2sws(Instruction code)
+void Translator::vsum2sws(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsum4sbs(Instruction code)
+void Translator::vsum4sbs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsum4shs(Instruction code)
+void Translator::vsum4shs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsum4ubs(Instruction code)
+void Translator::vsum4ubs(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vsumsws(Instruction code)
+void Translator::vsumsws(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vupkhpx(Instruction code)
+void Translator::vupkhpx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vupkhsb(Instruction code)
+void Translator::vupkhsb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vupkhsh(Instruction code)
+void Translator::vupkhsh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vupklpx(Instruction code)
+void Translator::vupklpx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vupklsb(Instruction code)
+void Translator::vupklsb(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vupklsh(Instruction code)
+void Translator::vupklsh(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::vxor(Instruction code)
+void Translator::vxor(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);

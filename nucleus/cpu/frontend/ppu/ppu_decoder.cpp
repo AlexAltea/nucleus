@@ -248,7 +248,7 @@ void Function::declare()
 
 void Function::recompile()
 {
-    Recompiler recompiler(parent->parent, this);
+    Translator recompiler(parent->parent, this);
 
     hir::Builder& builder = recompiler.builder;
 

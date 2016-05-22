@@ -8,7 +8,7 @@
 #include "nucleus/common.h"
 #include "nucleus/cpu/frontend/ppu/ppu_instruction.h"
 #include "nucleus/cpu/frontend/ppu/analyzer/ppu_analyzer.h"
-#include "nucleus/cpu/frontend/ppu/recompiler/ppu_recompiler.h"
+#include "nucleus/cpu/frontend/ppu/translator/ppu_translator.h"
 
 #include <string>
 
@@ -35,7 +35,7 @@ struct Entry
     // Instruction data
     const char* name;
     void (Analyzer::*analyze)(Instruction);
-    void (Recompiler::*recompile)(Instruction);
+    void (Translator::*recompile)(Instruction);
 };
 
 // Instruction callers

@@ -28,9 +28,6 @@
     <Filter Include="frontend\ppu\analyzer">
       <UniqueIdentifier>{cf830a63-b8c1-42ba-915b-8e7108ed162e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="frontend\ppu\recompiler">
-      <UniqueIdentifier>{a34b6b7e-17d4-4d11-9501-9cb168be53f7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="hir\passes">
       <UniqueIdentifier>{265e9980-218c-4682-86cf-bbe575a9e6be}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="backend\spu">
       <UniqueIdentifier>{54e4ebaa-887d-43a1-bd65-6226cccb24c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend\ppu\translator">
+      <UniqueIdentifier>{f4062f54-21be-476f-ba9e-fed11f4dd627}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -83,27 +83,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_utils.cpp">
       <Filter>frontend\ppu</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_integer.cpp">
-      <Filter>frontend\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_memory.cpp">
-      <Filter>frontend\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_vector.cpp">
-      <Filter>frontend\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler.cpp">
-      <Filter>frontend\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_branch.cpp">
-      <Filter>frontend\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_control.cpp">
-      <Filter>frontend\ppu\recompiler</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler_float.cpp">
-      <Filter>frontend\ppu\recompiler</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer_float.cpp">
       <Filter>frontend\ppu\analyzer</Filter>
@@ -199,6 +178,27 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\spu\spu_assembler.cpp">
       <Filter>backend\spu</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_control.cpp">
+      <Filter>frontend\ppu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_integer.cpp">
+      <Filter>frontend\ppu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_memory.cpp">
+      <Filter>frontend\ppu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_vector.cpp">
+      <Filter>frontend\ppu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator.cpp">
+      <Filter>frontend\ppu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_branch.cpp">
+      <Filter>frontend\ppu\translator</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_float.cpp">
+      <Filter>frontend\ppu\translator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">
@@ -263,9 +263,6 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\ppu_utils.h">
       <Filter>frontend\ppu</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\recompiler\ppu_recompiler.h">
-      <Filter>frontend\ppu\recompiler</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer.h">
       <Filter>frontend\ppu\analyzer</Filter>
@@ -333,6 +330,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\spu\spu_assembler.h">
       <Filter>backend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator.h">
+      <Filter>frontend\ppu\translator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

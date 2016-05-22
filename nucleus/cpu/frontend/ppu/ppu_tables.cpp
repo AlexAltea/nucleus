@@ -6,7 +6,7 @@
 #include "ppu_tables.h"
 
 // Instruction entry
-#define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, &Analyzer::name, &Recompiler::name }
+#define INSTRUCTION(name) { ENTRY_INSTRUCTION, nullptr, #name, &Analyzer::name, &Translator::name }
 
 // Table entry
 #define TABLE(caller) { ENTRY_TABLE, caller, nullptr, nullptr, nullptr }

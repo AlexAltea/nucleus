@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_recompiler.h"
+#include "ppu_translator.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
@@ -19,7 +19,7 @@ using namespace cpu::hir;
  *  - VEA: Memory Synchronization Instructions (Section: 4.3.2)
  */
 
-void Recompiler::lbz(Instruction code)
+void Translator::lbz(Instruction code)
 {
     Value* result;
     Value* addr = builder.getConstantI64(code.d);
@@ -34,7 +34,7 @@ void Recompiler::lbz(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lbzu(Instruction code)
+void Translator::lbzu(Instruction code)
 {
     Value* result;
     Value* addr = builder.getConstantI64(code.d);
@@ -48,7 +48,7 @@ void Recompiler::lbzu(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lbzux(Instruction code)
+void Translator::lbzux(Instruction code)
 {
     Value* result;
     Value* addr;
@@ -62,7 +62,7 @@ void Recompiler::lbzux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lbzx(Instruction code)
+void Translator::lbzx(Instruction code)
 {
     Value* result;
     Value* addr = getGPR(code.rb);
@@ -77,7 +77,7 @@ void Recompiler::lbzx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::ld(Instruction code)
+void Translator::ld(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.ds << 2);
     Value* rd;
@@ -90,7 +90,7 @@ void Recompiler::ld(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::ldarx(Instruction code)
+void Translator::ldarx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -107,12 +107,12 @@ void Recompiler::ldarx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::ldbrx(Instruction code)
+void Translator::ldbrx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::ldu(Instruction code)
+void Translator::ldu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.ds << 2);
     Value* rd;
@@ -124,7 +124,7 @@ void Recompiler::ldu(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::ldux(Instruction code)
+void Translator::ldux(Instruction code)
 {
     Value* addr;
     Value* rd;
@@ -136,7 +136,7 @@ void Recompiler::ldux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::ldx(Instruction code)
+void Translator::ldx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* rd;
@@ -149,7 +149,7 @@ void Recompiler::ldx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lfd(Instruction code)
+void Translator::lfd(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* frd;
@@ -162,7 +162,7 @@ void Recompiler::lfd(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::lfdu(Instruction code)
+void Translator::lfdu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* frd;
@@ -174,7 +174,7 @@ void Recompiler::lfdu(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::lfdux(Instruction code)
+void Translator::lfdux(Instruction code)
 {
     Value* addr;
     Value* frd;
@@ -186,7 +186,7 @@ void Recompiler::lfdux(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::lfdx(Instruction code)
+void Translator::lfdx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* frd;
@@ -199,7 +199,7 @@ void Recompiler::lfdx(Instruction code)
     setFPR(code.frd, frd);
 }
 
-void Recompiler::lfs(Instruction code)
+void Translator::lfs(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* result;
@@ -212,7 +212,7 @@ void Recompiler::lfs(Instruction code)
     setFPR(code.frd, result);
 }
 
-void Recompiler::lfsu(Instruction code)
+void Translator::lfsu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* result;
@@ -224,7 +224,7 @@ void Recompiler::lfsu(Instruction code)
     setFPR(code.frd, result);
 }
 
-void Recompiler::lfsux(Instruction code)
+void Translator::lfsux(Instruction code)
 {
     Value* addr;
     Value* result;
@@ -236,7 +236,7 @@ void Recompiler::lfsux(Instruction code)
     setFPR(code.frd, result);
 }
 
-void Recompiler::lfsx(Instruction code)
+void Translator::lfsx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* result;
@@ -249,7 +249,7 @@ void Recompiler::lfsx(Instruction code)
     setFPR(code.frd, result);
 }
 
-void Recompiler::lha(Instruction code)
+void Translator::lha(Instruction code)
 {
     Value* result;
     Value* addr = builder.getConstantI64(code.d);
@@ -264,7 +264,7 @@ void Recompiler::lha(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lhau(Instruction code)
+void Translator::lhau(Instruction code)
 {
     Value* result;
     Value* addr = builder.getConstantI64(code.d);
@@ -278,7 +278,7 @@ void Recompiler::lhau(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lhaux(Instruction code)
+void Translator::lhaux(Instruction code)
 {
     Value* result;
     Value* addr;
@@ -292,7 +292,7 @@ void Recompiler::lhaux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lhax(Instruction code)
+void Translator::lhax(Instruction code)
 {
     Value* result;
     Value* addr = getGPR(code.rb);
@@ -307,12 +307,12 @@ void Recompiler::lhax(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lhbrx(Instruction code)
+void Translator::lhbrx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lhz(Instruction code)
+void Translator::lhz(Instruction code)
 {
     Value* result;
     Value* addr = builder.getConstantI64(code.d);
@@ -327,7 +327,7 @@ void Recompiler::lhz(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lhzu(Instruction code)
+void Translator::lhzu(Instruction code)
 {
     Value* result;
     Value* addr = builder.getConstantI64(code.d);
@@ -341,7 +341,7 @@ void Recompiler::lhzu(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lhzux(Instruction code)
+void Translator::lhzux(Instruction code)
 {
     Value* result;
     Value* addr;
@@ -355,7 +355,7 @@ void Recompiler::lhzux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lhzx(Instruction code)
+void Translator::lhzx(Instruction code)
 {
     Value* result;
     Value* addr = getGPR(code.rb);
@@ -370,22 +370,22 @@ void Recompiler::lhzx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lmw(Instruction code)
+void Translator::lmw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lswi(Instruction code)
+void Translator::lswi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lswx(Instruction code)
+void Translator::lswx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lwa(Instruction code)
+void Translator::lwa(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.ds << 2);
     Value* rd;
@@ -399,7 +399,7 @@ void Recompiler::lwa(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lwarx(Instruction code)
+void Translator::lwarx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -416,7 +416,7 @@ void Recompiler::lwarx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lwaux(Instruction code)
+void Translator::lwaux(Instruction code)
 {
     Value* addr;
     Value* rd;
@@ -429,7 +429,7 @@ void Recompiler::lwaux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lwax(Instruction code)
+void Translator::lwax(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* rd;
@@ -443,12 +443,12 @@ void Recompiler::lwax(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lwbrx(Instruction code)
+void Translator::lwbrx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::lwz(Instruction code)
+void Translator::lwz(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rd;
@@ -462,7 +462,7 @@ void Recompiler::lwz(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lwzu(Instruction code)
+void Translator::lwzu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rd;
@@ -475,7 +475,7 @@ void Recompiler::lwzu(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lwzux(Instruction code)
+void Translator::lwzux(Instruction code)
 {
     Value* addr;
     Value* rd;
@@ -488,7 +488,7 @@ void Recompiler::lwzux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::lwzx(Instruction code)
+void Translator::lwzx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* rd;
@@ -502,7 +502,7 @@ void Recompiler::lwzx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::stb(Instruction code)
+void Translator::stb(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I8);
@@ -514,7 +514,7 @@ void Recompiler::stb(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::stbu(Instruction code)
+void Translator::stbu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I8);
@@ -525,7 +525,7 @@ void Recompiler::stbu(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stbux(Instruction code)
+void Translator::stbux(Instruction code)
 {
     Value* addr;
     Value* rs = getGPR(code.rs, TYPE_I8);
@@ -536,7 +536,7 @@ void Recompiler::stbux(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stbx(Instruction code)
+void Translator::stbx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* rs = getGPR(code.rs, TYPE_I8);
@@ -547,7 +547,7 @@ void Recompiler::stbx(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::std(Instruction code)
+void Translator::std(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs);
@@ -559,7 +559,7 @@ void Recompiler::std(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::stdcx_(Instruction code)
+void Translator::stdcx_(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -578,7 +578,7 @@ void Recompiler::stdcx_(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::stdu(Instruction code)
+void Translator::stdu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.ds << 2);
     Value* rs = getGPR(code.rs);
@@ -589,7 +589,7 @@ void Recompiler::stdu(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stdux(Instruction code)
+void Translator::stdux(Instruction code)
 {
     Value* addr;
     Value* rs = getGPR(code.rs);
@@ -600,7 +600,7 @@ void Recompiler::stdux(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stdx(Instruction code)
+void Translator::stdx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* rs = getGPR(code.rs);
@@ -611,7 +611,7 @@ void Recompiler::stdx(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::stfd(Instruction code)
+void Translator::stfd(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* frs = getFPR(code.frs);
@@ -623,7 +623,7 @@ void Recompiler::stfd(Instruction code)
     writeMemory(addr, frs);
 }
 
-void Recompiler::stfdu(Instruction code)
+void Translator::stfdu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* frs = getFPR(code.frs);
@@ -634,7 +634,7 @@ void Recompiler::stfdu(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stfdux(Instruction code)
+void Translator::stfdux(Instruction code)
 {
     Value* addr;
     Value* frs = getFPR(code.frs);
@@ -645,7 +645,7 @@ void Recompiler::stfdux(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stfdx(Instruction code)
+void Translator::stfdx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* frs = getFPR(code.frs);
@@ -656,7 +656,7 @@ void Recompiler::stfdx(Instruction code)
     writeMemory(addr, frs);
 }
 
-void Recompiler::stfiwx(Instruction code)
+void Translator::stfiwx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* frs = getFPR(code.frs);
@@ -670,7 +670,7 @@ void Recompiler::stfiwx(Instruction code)
     writeMemory(addr, frs);
 }
 
-void Recompiler::stfs(Instruction code)
+void Translator::stfs(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* frs = getFPR(code.frs);
@@ -683,7 +683,7 @@ void Recompiler::stfs(Instruction code)
     writeMemory(addr, frs_f32);
 }
 
-void Recompiler::stfsu(Instruction code)
+void Translator::stfsu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* frs = getFPR(code.frs);
@@ -695,7 +695,7 @@ void Recompiler::stfsu(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stfsux(Instruction code)
+void Translator::stfsux(Instruction code)
 {
     Value* addr;
     Value* frs = getFPR(code.frs);
@@ -707,7 +707,7 @@ void Recompiler::stfsux(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stfsx(Instruction code)
+void Translator::stfsx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* frs = getFPR(code.frs);
@@ -719,7 +719,7 @@ void Recompiler::stfsx(Instruction code)
     writeMemory(addr, frs_f32);
 }
 
-void Recompiler::sth(Instruction code)
+void Translator::sth(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I16);
@@ -731,12 +731,12 @@ void Recompiler::sth(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::sthbrx(Instruction code)
+void Translator::sthbrx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::sthu(Instruction code)
+void Translator::sthu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I16);
@@ -747,7 +747,7 @@ void Recompiler::sthu(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::sthux(Instruction code)
+void Translator::sthux(Instruction code)
 {
     Value* addr;
     Value* rs = getGPR(code.rs, TYPE_I16);
@@ -758,7 +758,7 @@ void Recompiler::sthux(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::sthx(Instruction code)
+void Translator::sthx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* rs = getGPR(code.rs, TYPE_I16);
@@ -769,22 +769,22 @@ void Recompiler::sthx(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::stmw(Instruction code)
+void Translator::stmw(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stswi(Instruction code)
+void Translator::stswi(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stswx(Instruction code)
+void Translator::stswx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stw(Instruction code)
+void Translator::stw(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I32);
@@ -796,12 +796,12 @@ void Recompiler::stw(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::stwbrx(Instruction code)
+void Translator::stwbrx(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::stwcx_(Instruction code)
+void Translator::stwcx_(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -820,7 +820,7 @@ void Recompiler::stwcx_(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::stwu(Instruction code)
+void Translator::stwu(Instruction code)
 {
     Value* addr = builder.getConstantI64(code.d);
     Value* rs = getGPR(code.rs, TYPE_I32);
@@ -831,7 +831,7 @@ void Recompiler::stwu(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stwux(Instruction code)
+void Translator::stwux(Instruction code)
 {
     Value* addr;
     Value* rs = getGPR(code.rs, TYPE_I32);
@@ -842,7 +842,7 @@ void Recompiler::stwux(Instruction code)
     setGPR(code.ra, addr);
 }
 
-void Recompiler::stwx(Instruction code)
+void Translator::stwx(Instruction code)
 {
     Value* addr = getGPR(code.rb);
     Value* rs = getGPR(code.rs, TYPE_I32);
@@ -853,17 +853,17 @@ void Recompiler::stwx(Instruction code)
     writeMemory(addr, rs);
 }
 
-void Recompiler::eieio(Instruction code)
+void Translator::eieio(Instruction code)
 {
     builder.createMemFence();
 }
 
-void Recompiler::sync(Instruction code)
+void Translator::sync(Instruction code)
 {
     builder.createMemFence();
 }
 
-void Recompiler::isync(Instruction code)
+void Translator::isync(Instruction code)
 {
     // TODO
 }

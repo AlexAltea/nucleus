@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_recompiler.h"
+#include "ppu_translator.h"
 #include "nucleus/assert.h"
 #include "nucleus/cpu/frontend/ppu/ppu_utils.h"
 
@@ -61,7 +61,7 @@ Value* addWithCarryDidCarry(Builder& builder, Value* v1, Value* v2, Value* v3) {
  *  - UISA: Integer instructions (Section: 4.2.1)
  */
 
-void Recompiler::addx(Instruction code)
+void Translator::addx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -81,7 +81,7 @@ void Recompiler::addx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addcx(Instruction code)
+void Translator::addcx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -105,7 +105,7 @@ void Recompiler::addcx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addex(Instruction code)
+void Translator::addex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -129,7 +129,7 @@ void Recompiler::addex(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addi(Instruction code)
+void Translator::addi(Instruction code)
 {
     Value* simm = builder.getConstantI64(code.simm);
     Value* ra;
@@ -145,7 +145,7 @@ void Recompiler::addi(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addic(Instruction code)
+void Translator::addic(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rd;
@@ -159,7 +159,7 @@ void Recompiler::addic(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addic_(Instruction code)
+void Translator::addic_(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rd;
@@ -175,7 +175,7 @@ void Recompiler::addic_(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addis(Instruction code)
+void Translator::addis(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* simm = builder.getConstantI64(code.simm << 16);
@@ -190,7 +190,7 @@ void Recompiler::addis(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addmex(Instruction code)
+void Translator::addmex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* ca = getXER_CA();
@@ -214,7 +214,7 @@ void Recompiler::addmex(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::addzex(Instruction code)
+void Translator::addzex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* ca = getXER_CA();
@@ -237,7 +237,7 @@ void Recompiler::addzex(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::andx(Instruction code)
+void Translator::andx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -251,7 +251,7 @@ void Recompiler::andx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::andcx(Instruction code)
+void Translator::andcx(Instruction code)
 {
     Value* rb = getGPR(code.rb);
     Value* rs = getGPR(code.rs);
@@ -265,7 +265,7 @@ void Recompiler::andcx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::andi_(Instruction code)
+void Translator::andi_(Instruction code)
 {
     Value* constant = builder.getConstantI64(code.uimm);
     Value* rs = getGPR(code.rs);
@@ -277,7 +277,7 @@ void Recompiler::andi_(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::andis_(Instruction code)
+void Translator::andis_(Instruction code)
 {
     Value* constant = builder.getConstantI64(code.uimm << 16);
     Value* rs = getGPR(code.rs);
@@ -289,7 +289,7 @@ void Recompiler::andis_(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::cmp(Instruction code)
+void Translator::cmp(Instruction code)
 {
     if (code.l10) {
         updateCR(code.crfd, getGPR(code.ra, TYPE_I64), getGPR(code.rb, TYPE_I64), false);
@@ -298,7 +298,7 @@ void Recompiler::cmp(Instruction code)
     }
 }
 
-void Recompiler::cmpi(Instruction code)
+void Translator::cmpi(Instruction code)
 {
     if (code.l10) {
         updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.simm), false);
@@ -307,7 +307,7 @@ void Recompiler::cmpi(Instruction code)
     }
 }
 
-void Recompiler::cmpl(Instruction code)
+void Translator::cmpl(Instruction code)
 {
     if (code.l10) {
         updateCR(code.crfd, getGPR(code.ra, TYPE_I64), getGPR(code.rb, TYPE_I64), true);
@@ -316,7 +316,7 @@ void Recompiler::cmpl(Instruction code)
     }
 }
 
-void Recompiler::cmpli(Instruction code)
+void Translator::cmpli(Instruction code)
 {
     if (code.l10) {
         updateCR(code.crfd, getGPR(code.ra, TYPE_I64), builder.getConstantI64(code.uimm), true);
@@ -325,7 +325,7 @@ void Recompiler::cmpli(Instruction code)
     }
 }
 
-void Recompiler::cntlzdx(Instruction code)
+void Translator::cntlzdx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* ra;
@@ -339,7 +339,7 @@ void Recompiler::cntlzdx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::cntlzwx(Instruction code)
+void Translator::cntlzwx(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
     Value* ra;
@@ -353,7 +353,7 @@ void Recompiler::cntlzwx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::divdx(Instruction code)
+void Translator::divdx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -372,7 +372,7 @@ void Recompiler::divdx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::divdux(Instruction code)
+void Translator::divdux(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -391,7 +391,7 @@ void Recompiler::divdux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::divwx(Instruction code)
+void Translator::divwx(Instruction code)
 {
     Value* ra = getGPR(code.ra, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I32);
@@ -411,7 +411,7 @@ void Recompiler::divwx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::divwux(Instruction code)
+void Translator::divwux(Instruction code)
 {
     Value* ra = getGPR(code.ra, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I32);
@@ -431,7 +431,7 @@ void Recompiler::divwux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::eqvx(Instruction code)
+void Translator::eqvx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -446,7 +446,7 @@ void Recompiler::eqvx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::extsbx(Instruction code)
+void Translator::extsbx(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I8);
     Value* ra;
@@ -459,7 +459,7 @@ void Recompiler::extsbx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::extshx(Instruction code)
+void Translator::extshx(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I16);
     Value* ra;
@@ -472,7 +472,7 @@ void Recompiler::extshx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::extswx(Instruction code)
+void Translator::extswx(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
     Value* ra;
@@ -485,7 +485,7 @@ void Recompiler::extswx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::mulhdx(Instruction code)
+void Translator::mulhdx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -499,7 +499,7 @@ void Recompiler::mulhdx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::mulhdux(Instruction code)
+void Translator::mulhdux(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -513,7 +513,7 @@ void Recompiler::mulhdux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::mulhwx(Instruction code)
+void Translator::mulhwx(Instruction code)
 {
     Value* ra = getGPR(code.ra, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I32);
@@ -528,7 +528,7 @@ void Recompiler::mulhwx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::mulhwux(Instruction code)
+void Translator::mulhwux(Instruction code)
 {
     Value* ra = getGPR(code.ra, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I32);
@@ -543,7 +543,7 @@ void Recompiler::mulhwux(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::mulldx(Instruction code)
+void Translator::mulldx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -561,7 +561,7 @@ void Recompiler::mulldx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::mulli(Instruction code)
+void Translator::mulli(Instruction code)
 {
     Value* constant = builder.getConstantI64(code.simm);
     Value* ra = getGPR(code.ra);
@@ -572,7 +572,7 @@ void Recompiler::mulli(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::mullwx(Instruction code)
+void Translator::mullwx(Instruction code)
 {
     Value* ra = getGPR(code.ra, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I32);
@@ -593,7 +593,7 @@ void Recompiler::mullwx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::nandx(Instruction code)
+void Translator::nandx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -608,7 +608,7 @@ void Recompiler::nandx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::negx(Instruction code)
+void Translator::negx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rd;
@@ -625,7 +625,7 @@ void Recompiler::negx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::norx(Instruction code)
+void Translator::norx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -640,7 +640,7 @@ void Recompiler::norx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::orx(Instruction code)
+void Translator::orx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -654,7 +654,7 @@ void Recompiler::orx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::orcx(Instruction code)
+void Translator::orcx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -669,7 +669,7 @@ void Recompiler::orcx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::ori(Instruction code)
+void Translator::ori(Instruction code)
 {
     Value* constant = builder.getConstantI64(code.uimm);
     Value* rs = getGPR(code.rs);
@@ -680,7 +680,7 @@ void Recompiler::ori(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::oris(Instruction code)
+void Translator::oris(Instruction code)
 {
     Value* constant = builder.getConstantI64(code.uimm << 16);
     Value* rs = getGPR(code.rs);
@@ -691,12 +691,12 @@ void Recompiler::oris(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::rldc_lr(Instruction code)
+void Translator::rldc_lr(Instruction code)
 {
     assert_always("Unimplemented");
 }
 
-void Recompiler::rldicx(Instruction code)
+void Translator::rldicx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* ra = rs;
@@ -717,7 +717,7 @@ void Recompiler::rldicx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::rldiclx(Instruction code)
+void Translator::rldiclx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* ra = rs;
@@ -738,7 +738,7 @@ void Recompiler::rldiclx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::rldicrx(Instruction code)
+void Translator::rldicrx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* ra = rs;
@@ -759,7 +759,7 @@ void Recompiler::rldicrx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::rldimix(Instruction code)
+void Translator::rldimix(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* ra = getGPR(code.ra);
@@ -784,7 +784,7 @@ void Recompiler::rldimix(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::rlwimix(Instruction code)
+void Translator::rlwimix(Instruction code)
 {
     Value* rs_trunc = builder.createZExt(getGPR(code.rs, TYPE_I32), TYPE_I64);
     Value* rs_shift = builder.createShl(rs_trunc, 32);
@@ -810,7 +810,7 @@ void Recompiler::rlwimix(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::rlwinmx(Instruction code)
+void Translator::rlwinmx(Instruction code)
 {
     Value* rs_trunc = builder.createZExt(getGPR(code.rs, TYPE_I32), TYPE_I64);
     Value* rs_shift = builder.createShl(rs_trunc, 32);
@@ -832,7 +832,7 @@ void Recompiler::rlwinmx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::rlwnmx(Instruction code)
+void Translator::rlwnmx(Instruction code)
 {
     Value* rs_trunc = builder.createZExt(getGPR(code.rs, TYPE_I32), TYPE_I64);
     Value* rs_shift = builder.createShl(rs_trunc, 32);
@@ -854,7 +854,7 @@ void Recompiler::rlwnmx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::sldx(Instruction code)
+void Translator::sldx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb, TYPE_I8);
@@ -872,7 +872,7 @@ void Recompiler::sldx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::slwx(Instruction code)
+void Translator::slwx(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I8);
@@ -888,7 +888,7 @@ void Recompiler::slwx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::sradx(Instruction code)
+void Translator::sradx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -906,7 +906,7 @@ void Recompiler::sradx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::sradix(Instruction code)
+void Translator::sradix(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* ra;
@@ -929,7 +929,7 @@ void Recompiler::sradix(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::srawx(Instruction code)
+void Translator::srawx(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I8);
@@ -951,7 +951,7 @@ void Recompiler::srawx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::srawix(Instruction code)
+void Translator::srawix(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
     Value* ra;
@@ -977,7 +977,7 @@ void Recompiler::srawix(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::srdx(Instruction code)
+void Translator::srdx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb, TYPE_I8);
@@ -996,7 +996,7 @@ void Recompiler::srdx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::srwx(Instruction code)
+void Translator::srwx(Instruction code)
 {
     Value* rs = getGPR(code.rs, TYPE_I32);
     Value* rb = getGPR(code.rb, TYPE_I8);
@@ -1012,7 +1012,7 @@ void Recompiler::srwx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::subfx(Instruction code)
+void Translator::subfx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -1033,7 +1033,7 @@ void Recompiler::subfx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::subfcx(Instruction code)
+void Translator::subfcx(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -1058,7 +1058,7 @@ void Recompiler::subfcx(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::subfex(Instruction code)
+void Translator::subfex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rb = getGPR(code.rb);
@@ -1083,7 +1083,7 @@ void Recompiler::subfex(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::subfic(Instruction code)
+void Translator::subfic(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rd;
@@ -1097,7 +1097,7 @@ void Recompiler::subfic(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::subfmex(Instruction code)
+void Translator::subfmex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rd;
@@ -1122,7 +1122,7 @@ void Recompiler::subfmex(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::subfzex(Instruction code)
+void Translator::subfzex(Instruction code)
 {
     Value* ra = getGPR(code.ra);
     Value* rd;
@@ -1147,7 +1147,7 @@ void Recompiler::subfzex(Instruction code)
     setGPR(code.rd, rd);
 }
 
-void Recompiler::xorx(Instruction code)
+void Translator::xorx(Instruction code)
 {
     Value* rs = getGPR(code.rs);
     Value* rb = getGPR(code.rb);
@@ -1161,7 +1161,7 @@ void Recompiler::xorx(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::xori(Instruction code)
+void Translator::xori(Instruction code)
 {
     Value* constant = builder.getConstantI64(code.uimm);
     Value* rs = getGPR(code.rs);
@@ -1172,7 +1172,7 @@ void Recompiler::xori(Instruction code)
     setGPR(code.ra, ra);
 }
 
-void Recompiler::xoris(Instruction code)
+void Translator::xoris(Instruction code)
 {
     Value* constant = builder.getConstantI64(code.uimm << 16);
     Value* rs = getGPR(code.rs);

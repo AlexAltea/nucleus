@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "ppu_recompiler.h"
+#include "ppu_translator.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/memory/memory.h"
 #include "nucleus/core/config.h"
@@ -16,10 +16,10 @@ namespace ppu {
 
 using namespace cpu::hir;
 
-Recompiler::Recompiler(CPU* parent, ppu::Function* function) : parent(parent), IRecompiler<U32>(function) {
+Translator::Translator(CPU* parent, ppu::Function* function) : parent(parent), IRecompiler<U32>(function) {
 }
 
-void Recompiler::createProlog() {
+void Translator::createProlog() {
     /*builder.SetInsertPoint(prolog);
 
     // Place arguments in local variables
@@ -50,7 +50,7 @@ void Recompiler::createProlog() {
     builder.createBr(entryBlock);*/
 }
 
-void Recompiler::createEpilog() {
+void Translator::createEpilog() {
     assert_true(epilog == nullptr, "The frontend epilog block was already declared");
 
     epilog = new hir::Block(function->hirFunction);
@@ -84,7 +84,7 @@ void Recompiler::createEpilog() {
             break;
 
         default:
-            logger.error(LOG_CPU, "Recompiler::createReturn: Invalid returnType");
+            logger.error(LOG_CPU, "Translator::createReturn: Invalid returnType");
             builder.createRet();
             break;
         }
@@ -94,7 +94,7 @@ void Recompiler::createEpilog() {
 /**
  * Register read
  */
-Value* Recompiler::getGPR(int index, Type type) {
+Value* Translator::getGPR(int index, Type type) {
     const U32 offset = offsetof(PPUState, r[index]);
 
     // TODO: Use volatility information?
@@ -107,7 +107,7 @@ Value* Recompiler::getGPR(int index, Type type) {
     return value;
 }
 
-Value* Recompiler::getFPR(int index, Type type) {
+Value* Translator::getFPR(int index, Type type) {
     const U32 offset = offsetof(PPUState, f[index]);
 
     // TODO: Use volatility information?
@@ -120,7 +120,7 @@ Value* Recompiler::getFPR(int index, Type type) {
     return value;
 }
 
-Value* Recompiler::getVR(int index) {
+Value* Translator::getVR(int index) {
     const U32 offset = offsetof(PPUState, v[index]);
 
     // TODO: Use volatility information?
@@ -128,7 +128,7 @@ Value* Recompiler::getVR(int index) {
     return builder.createCtxLoad(offset, TYPE_V128);
 }
 
-Value* Recompiler::getCRField(int index) {
+Value* Translator::getCRField(int index) {
     // TODO: Use volatility information?
 
     Value* field = builder.createShl(builder.createCtxLoad(
@@ -143,7 +143,7 @@ Value* Recompiler::getCRField(int index) {
     return field;
 }
 
-Value* Recompiler::getCRBit(int index) {
+Value* Translator::getCRBit(int index) {
     const U32 offset = offsetof(PPUState, cr.field[index >> 2].bit[index & 0b11]);
 
      // TODO: Use volatility information?
@@ -151,7 +151,7 @@ Value* Recompiler::getCRBit(int index) {
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
-Value* Recompiler::getCR() {
+Value* Translator::getCR() {
     Value* cr = builder.getConstantI32(0);
     for (int field = 0; field < 8; field++) {
         cr = builder.createOr(cr, builder.createShl(
@@ -160,12 +160,12 @@ Value* Recompiler::getCR() {
     return cr;
 }
 
-Value* Recompiler::getLR() {
+Value* Translator::getLR() {
     constexpr U32 offset = offsetof(PPUState, lr);
     return builder.createCtxLoad(offset, TYPE_I64);
 }
 
-Value* Recompiler::getXER() {
+Value* Translator::getXER() {
     Value* xer = builder.getConstantI64(0);
     xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_SO(), TYPE_I64), U08(31)));
     xer = builder.createOr(xer, builder.createShl(builder.createZExt(getXER_OV(), TYPE_I64), U08(30)));
@@ -174,32 +174,32 @@ Value* Recompiler::getXER() {
     return xer;
 }
 
-Value* Recompiler::getXER_SO() {
+Value* Translator::getXER_SO() {
     constexpr U32 offset = offsetof(PPUState, xer.so);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
-Value* Recompiler::getXER_OV() {
+Value* Translator::getXER_OV() {
     constexpr U32 offset = offsetof(PPUState, xer.ov);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
-Value* Recompiler::getXER_CA() {
+Value* Translator::getXER_CA() {
     constexpr U32 offset = offsetof(PPUState, xer.ca);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
-Value* Recompiler::getXER_BC() {
+Value* Translator::getXER_BC() {
     constexpr U32 offset = offsetof(PPUState, xer.bc);
     return builder.createCtxLoad(offset, TYPE_I8);
 }
 
-Value* Recompiler::getCTR() {
+Value* Translator::getCTR() {
     constexpr U32 offset = offsetof(PPUState, ctr);
     return builder.createCtxLoad(offset, TYPE_I64);
 }
 
-Value* Recompiler::getFPSCR() {
+Value* Translator::getFPSCR() {
     constexpr U32 offset = offsetof(PPUState, fpscr);
     return builder.createCtxLoad(offset, TYPE_I32);
 }
@@ -207,7 +207,7 @@ Value* Recompiler::getFPSCR() {
 /**
  * Register write
  */
-void Recompiler::setGPR(int index, Value* value) {
+void Translator::setGPR(int index, Value* value) {
     const U32 offset = offsetof(PPUState, r[index]);
 
     // TODO: Use volatility information?
@@ -223,7 +223,7 @@ void Recompiler::setGPR(int index, Value* value) {
     builder.createCtxStore(offset, value_i64);
 }
 
-void Recompiler::setFPR(int index, Value* value) {
+void Translator::setFPR(int index, Value* value) {
     const U32 offset = offsetof(PPUState, f[index]);
 
     // TODO: Use volatility information?
@@ -239,7 +239,7 @@ void Recompiler::setFPR(int index, Value* value) {
     builder.createCtxStore(offset, value_f64);
 }
 
-void Recompiler::setVR(int index, Value* value) {
+void Translator::setVR(int index, Value* value) {
     const U32 offset = offsetof(PPUState, v[index]);
 
     // TODO: Use volatility information?
@@ -247,7 +247,7 @@ void Recompiler::setVR(int index, Value* value) {
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setCRField(int index, Value* value) {
+void Translator::setCRField(int index, Value* value) {
     // TODO: Use volatility information?
 
     switch (value->type) {
@@ -273,7 +273,7 @@ void Recompiler::setCRField(int index, Value* value) {
     }
 }
 
-void Recompiler::setCRBit(int index, Value* value) {
+void Translator::setCRBit(int index, Value* value) {
     const U32 offset = offsetof(PPUState, cr.field[index >> 2].bit[index & 0b11]);
 
      // TODO: Use volatility information?
@@ -281,7 +281,7 @@ void Recompiler::setCRBit(int index, Value* value) {
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setCR(Value* value) {
+void Translator::setCR(Value* value) {
     if (value->type != TYPE_I32) {
         logger.error(LOG_CPU, "Wrong value type for CR register");
         return;
@@ -292,7 +292,7 @@ void Recompiler::setCR(Value* value) {
     }
 }
 
-void Recompiler::setLR(Value* value) {
+void Translator::setLR(Value* value) {
     constexpr U32 offset = offsetof(PPUState, lr);
 
     if (value->type != TYPE_I64) {
@@ -302,7 +302,7 @@ void Recompiler::setLR(Value* value) {
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setXER(Value* value) {
+void Translator::setXER(Value* value) {
     assert_true(value->type == TYPE_I64, "Wrong value type for XER register");
     constexpr U32 offset_so = offsetof(PPUState, xer.so);
     constexpr U32 offset_ov = offsetof(PPUState, xer.ov);
@@ -322,31 +322,31 @@ void Recompiler::setXER(Value* value) {
     builder.createCtxStore(offset_so, builder.createTrunc(so_i64, TYPE_I8));
 }
 
-void Recompiler::setXER_SO(Value* value) {
+void Translator::setXER_SO(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::SO field");
     constexpr U32 offset = offsetof(PPUState, xer.so);
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setXER_OV(Value* value) {
+void Translator::setXER_OV(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::OV field");
     constexpr U32 offset = offsetof(PPUState, xer.ov);
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setXER_CA(Value* value) {
+void Translator::setXER_CA(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::CA field");
     constexpr U32 offset = offsetof(PPUState, xer.ca);
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setXER_BC(Value* value) {
+void Translator::setXER_BC(Value* value) {
     assert_true(value->type == TYPE_I8, "Wrong value type for XER::CA field");
     constexpr U32 offset = offsetof(PPUState, xer.bc);
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setCTR(Value* value) {
+void Translator::setCTR(Value* value) {
     constexpr U32 offset = offsetof(PPUState, ctr);
 
     if (value->type != TYPE_I64) {
@@ -356,7 +356,7 @@ void Recompiler::setCTR(Value* value) {
     builder.createCtxStore(offset, value);
 }
 
-void Recompiler::setFPSCR(Value* value) {
+void Translator::setFPSCR(Value* value) {
     constexpr U32 offset = offsetof(PPUState, fpscr);
 
     if (value->type != TYPE_I32) {
@@ -369,7 +369,7 @@ void Recompiler::setFPSCR(Value* value) {
 /**
  * Memory access
  */
-Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
+Value* Translator::readMemory(hir::Value* addr, hir::Type type) {
     // Get host address
     void* baseAddress = parent->memory->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
@@ -381,7 +381,7 @@ Value* Recompiler::readMemory(hir::Value* addr, hir::Type type) {
     }
 }
 
-void Recompiler::writeMemory(Value* addr, Value* value) {
+void Translator::writeMemory(Value* addr, Value* value) {
     // Get host address
     void* baseAddress = parent->memory->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
@@ -396,7 +396,7 @@ void Recompiler::writeMemory(Value* addr, Value* value) {
 /**
  * Operation flags
  */
-void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalComparison) {
+void Translator::updateCR(int field, Value* lhs, Value* rhs, bool logicalComparison) {
     Value* isLT;
     Value* isGT;
     Value* result;
@@ -414,20 +414,20 @@ void Recompiler::updateCR(int field, Value* lhs, Value* rhs, bool logicalCompari
     setCRField(field, result);
 }
 
-void Recompiler::updateCR0(Value* value) {
+void Translator::updateCR0(Value* value) {
     updateCR(0, value, builder.getConstantI64(0), false);
 }
 
-void Recompiler::updateCR1(Value* value) {
+void Translator::updateCR1(Value* value) {
 }
 
-void Recompiler::updateCR6(Value* value) {
+void Translator::updateCR6(Value* value) {
 }
 
 /**
  * Branching
  */
-void Recompiler::createFunctionCall(U32 nia, Value* condition) {
+void Translator::createFunctionCall(U32 nia, Value* condition) {
     auto* module = function->parent;
     auto& targetFunc = static_cast<Function&>(*module->functions.at(nia));
 
