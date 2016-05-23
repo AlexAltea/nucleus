@@ -225,9 +225,13 @@ void Translator::andbi(Instruction code)
     Value* ra = getGPR(code.ra);
     Value* rt;
 
-    //rt = builder.createAnd(ra, (code.i10 & 0xFF)); // TODO: AND with (code.i10 & 0xFF)^16
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U08); i++) {
+        value.u8[i] = code.i10;
+    }
+    rt = builder.createAnd(ra, builder.getConstantV128(value));
 
-    //setGPR(code.rt, rt);
+    setGPR(code.rt, rt);
 }
 
 void Translator::andhi(Instruction code)
@@ -235,9 +239,13 @@ void Translator::andhi(Instruction code)
     Value* ra = getGPR(code.ra);
     Value* rt;
 
-    //rt = builder.createAnd(ra, code.i10); // TODO: AND with (code.i10)^8
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U16); i++) {
+        value.u16[i] = code.i10;
+    }
+    rt = builder.createAnd(ra, builder.getConstantV128(value));
 
-    //setGPR(code.rt, rt);
+    setGPR(code.rt, rt);
 }
 
 void Translator::andi(Instruction code)
@@ -245,9 +253,13 @@ void Translator::andi(Instruction code)
     Value* ra = getGPR(code.ra);
     Value* rt;
 
-    //rt = builder.createAnd(ra, code.i10); // TODO: AND with (code.i10)^8
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U32); i++) {
+        value.u32[i] = code.i10;
+    }
+    rt = builder.createAnd(ra, builder.getConstantV128(value));
 
-    //setGPR(code.rt, rt);
+    setGPR(code.rt, rt);
 }
 
 void Translator::avgb(Instruction code)
@@ -256,7 +268,7 @@ void Translator::avgb(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt;
 
-    rt = builder.createVAvg(ra, rb, COMPONENT_I8);
+    rt = builder.createVAvg(ra, rb, COMPONENT_I8 | ARITHMETIC_UNSIGNED);
 
     setGPR(code.rt, rt);
 }

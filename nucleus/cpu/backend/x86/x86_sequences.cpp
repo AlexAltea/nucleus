@@ -2087,34 +2087,36 @@ struct FNEG_F64 : Sequence<FNEG_F64, I<OPCODE_FNEG, F64Op, F64Op>> {
  */
 struct VADD_V128 : Sequence<VADD_V128, I<OPCODE_VADD, V128Op, V128Op, V128Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        bool isUnsigned = i.instr->flags & ARITHMETIC_UNSIGNED;
-        bool isSaturate = i.instr->flags & ARITHMETIC_SATURATE;
-        switch (COMPONENT_TYPE) {
-        case COMPONENT_I8:
-            if (isSaturate) {
-                if (isUnsigned) {
-                    e.vpaddusb(i.dest, i.src1, i.src2);
+        emitBinaryXmmOp(e, i, [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            bool isUnsigned = i.instr->flags & ARITHMETIC_UNSIGNED;
+            bool isSaturate = i.instr->flags & ARITHMETIC_SATURATE;
+            switch (COMPONENT_TYPE) {
+            case COMPONENT_I8:
+                if (isSaturate) {
+                    if (isUnsigned) {
+                        e.vpaddusb(dest, src1, src2);
+                    } else {
+                        e.vpaddsb(dest, src1, src2);
+                    }
                 } else {
-                    e.vpaddsb(i.dest, i.src1, i.src2);
+                    e.vpaddb(dest, src1, src2);
                 }
-            } else {
-                e.vpaddb(i.dest, i.src1, i.src2);
-            }
-            break;
-        case COMPONENT_I16:
-            if (isSaturate) {
-                if (isUnsigned) {
-                    e.vpaddusw(i.dest, i.src1, i.src2);
+                break;
+            case COMPONENT_I16:
+                if (isSaturate) {
+                    if (isUnsigned) {
+                        e.vpaddusw(dest, src1, src2);
+                    } else {
+                        e.vpaddsw(dest, src1, src2);
+                    }
                 } else {
-                    e.vpaddsw(i.dest, i.src1, i.src2);
+                    e.vpaddw(dest, src1, src2);
                 }
-            } else {
-                e.vpaddw(i.dest, i.src1, i.src2);
+                break;
+            default:
+                assert_always("Unimplemented");
             }
-            break;
-        default:
-            assert_always("Unimplemented");
-        }
+        });
     }
 };
 
@@ -2123,34 +2125,59 @@ struct VADD_V128 : Sequence<VADD_V128, I<OPCODE_VADD, V128Op, V128Op, V128Op>> {
  */
 struct VSUB_V128 : Sequence<VSUB_V128, I<OPCODE_VSUB, V128Op, V128Op, V128Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        bool isUnsigned = i.instr->flags & ARITHMETIC_UNSIGNED;
-        bool isSaturate = i.instr->flags & ARITHMETIC_SATURATE;
-        switch (COMPONENT_TYPE) {
-        case COMPONENT_I8:
-            if (isSaturate) {
-                if (isUnsigned) {
-                    e.vpsubusb(i.dest, i.src1, i.src2);
+        emitBinaryXmmOp(e, i, [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            bool isUnsigned = i.instr->flags & ARITHMETIC_UNSIGNED;
+            bool isSaturate = i.instr->flags & ARITHMETIC_SATURATE;
+            switch (COMPONENT_TYPE) {
+            case COMPONENT_I8:
+                if (isSaturate) {
+                    if (isUnsigned) {
+                        e.vpsubusb(dest, src1, src2);
+                    } else {
+                        e.vpsubsb(dest, src1, src2);
+                    }
                 } else {
-                    e.vpsubsb(i.dest, i.src1, i.src2);
+                    e.vpsubb(dest, src1, src2);
                 }
-            } else {
-                e.vpsubb(i.dest, i.src1, i.src2);
-            }
-            break;
-        case COMPONENT_I16:
-            if (isSaturate) {
-                if (isUnsigned) {
-                    e.vpsubusw(i.dest, i.src1, i.src2);
+                break;
+            case COMPONENT_I16:
+                if (isSaturate) {
+                    if (isUnsigned) {
+                        e.vpsubusw(dest, src1, src2);
+                    } else {
+                        e.vpsubsw(dest, src1, src2);
+                    }
                 } else {
-                    e.vpsubsw(i.dest, i.src1, i.src2);
+                    e.vpsubw(dest, src1, src2);
                 }
-            } else {
-                e.vpsubw(i.dest, i.src1, i.src2);
+                break;
+            default:
+                assert_always("Unimplemented");
             }
-            break;
-        default:
-            assert_always("Unimplemented");
-        }
+        });
+    }
+};
+
+/**
+ * Opcode: VAVG
+ */
+struct VAVG_V128 : Sequence<VAVG_V128, I<OPCODE_VAVG, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        emitBinaryXmmOp(e, i, [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            bool isUnsigned = i.instr->flags & ARITHMETIC_UNSIGNED;
+            switch (COMPONENT_TYPE) {
+            case COMPONENT_I8:
+                assert_true(isUnsigned, "Signed average is unimplemented");
+                e.vpavgb(dest, src1, src2);
+                break;
+            case COMPONENT_I16:
+                assert_true(isUnsigned, "Signed average is unimplemented");
+                e.vpavgw(dest, src1, src2);
+                break;
+            default:
+                assert_always("Unimplemented");
+            }
+        });
     }
 };
 
@@ -2260,6 +2287,7 @@ void X86Sequences::init() {
         registerSequence<FNEG_F32, FNEG_F64>();
         registerSequence<VADD_V128>();
         registerSequence<VSUB_V128>();
+        registerSequence<VAVG_V128>();
         registerSequence<VABS_V128>();
 #endif
     }

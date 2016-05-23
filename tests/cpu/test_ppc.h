@@ -15,7 +15,7 @@
 #include "nucleus/cpu/backend/ppc/ppc_assembler.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
-#include "nucleus/cpu/frontend/ppu/recompiler/ppu_recompiler.h"
+#include "nucleus/cpu/frontend/ppu/translator/ppu_translator.h"
 #include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/hir/module.h"
