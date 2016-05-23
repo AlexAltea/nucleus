@@ -25,7 +25,7 @@ void Translator::dsync(Instruction code)
 
 void Translator::lnop(Instruction code)
 {
-    assert_always("Unimplemented");
+    // NOTE: No need to implement this instruction.
 }
 
 void Translator::mfspr(Instruction code)
@@ -40,12 +40,13 @@ void Translator::mtspr(Instruction code)
 
 void Translator::nop(Instruction code)
 {
-    assert_always("Unimplemented");
+    // NOTE: No need to implement this instruction.
 }
 
 void Translator::stop(Instruction code)
 {
-    assert_always("Unimplemented");
+    // TODO: Handle signal
+    builder.createRet();
 }
 
 void Translator::stopd(Instruction code)

@@ -40,7 +40,13 @@ void Translator::cuflt(Instruction code)
 
 void Translator::dfa(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVAdd(ra, rb, COMPONENT_F64);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::dfceq(Instruction code)
@@ -65,32 +71,77 @@ void Translator::dfcmgt(Instruction code)
 
 void Translator::dfm(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F64);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::dfma(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F64);
+    rt = builder.createVAdd(rt, rc, COMPONENT_F64);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::dfms(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F64);
+    rt = builder.createVSub(rt, rc, COMPONENT_F64);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::dfnma(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F64);
+    rt = builder.createVAdd(rt, rc, COMPONENT_F64);
+    rt = builder.createFNeg(rt);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::dfnms(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F64);
+    rt = builder.createVSub(rc, rt, COMPONENT_F64);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::dfs(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVSub(ra, rb, COMPONENT_F64);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::dftsv(Instruction code)
@@ -100,7 +151,13 @@ void Translator::dftsv(Instruction code)
 
 void Translator::fa(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVAdd(ra, rb, COMPONENT_F32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::fceq(Instruction code)
@@ -135,22 +192,52 @@ void Translator::fi(Instruction code)
 
 void Translator::fm(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::fma(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F32);
+    rt = builder.createVAdd(rt, rc, COMPONENT_F32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::fms(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F32);
+    rt = builder.createVSub(rt, rc, COMPONENT_F32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::fnms(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    rt = builder.createVMul(ra, rb, COMPONENT_F32);
+    rt = builder.createVSub(rc, rt, COMPONENT_F32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::frds(Instruction code)
@@ -170,7 +257,13 @@ void Translator::frsqest(Instruction code)
 
 void Translator::fs(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVSub(ra, rb, COMPONENT_F32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::fscrrd(Instruction code)

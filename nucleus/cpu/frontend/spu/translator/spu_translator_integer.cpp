@@ -313,7 +313,14 @@ void Translator::cntb(Instruction code)
 
 void Translator::eqv(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rb = builder.createNot(rb);
+    rt = builder.createXor(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::fsm(Instruction code)
@@ -403,37 +410,91 @@ void Translator::mpyui(Instruction code)
 
 void Translator::nand(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createAnd(ra, rb);
+    rt = builder.createNot(rt);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::nor(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createOr(ra, rb);
+    rt = builder.createNot(rt);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::or_(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createOr(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::orbi(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U08); i++) {
+        value.u8[i] = code.i10;
+    }
+    rt = builder.createOr(ra, builder.getConstantV128(value));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::orc(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rb = builder.createNot(rb);
+    rt = builder.createOr(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::orhi(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U16); i++) {
+        value.u16[i] = code.i10;
+    }
+    rt = builder.createOr(ra, builder.getConstantV128(value));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::ori(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U32); i++) {
+        value.u32[i] = code.i10;
+    }
+    rt = builder.createOr(ra, builder.getConstantV128(value));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::orx(Instruction code)
@@ -448,22 +509,60 @@ void Translator::selb(Instruction code)
 
 void Translator::sf(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVSub(rb, ra, COMPONENT_I32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::sfh(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createVSub(rb, ra, COMPONENT_I16);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::sfhi(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    value.u16[0] = code.i10;
+    value.u16[1] = code.i10;
+    value.u16[2] = code.i10;
+    value.u16[3] = code.i10;
+    value.u16[4] = code.i10;
+    value.u16[5] = code.i10;
+    value.u16[6] = code.i10;
+    value.u16[7] = code.i10;
+    rt = builder.getConstantV128(value);
+    rt = builder.createVSub(rt, ra, COMPONENT_I16);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::sfi(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    value.u32[0] = code.i10;
+    value.u32[1] = code.i10;
+    value.u32[2] = code.i10;
+    value.u32[3] = code.i10;
+    rt = builder.getConstantV128(value);
+    rt = builder.createVSub(rt, ra, COMPONENT_I32);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::sfx(Instruction code)
@@ -483,22 +582,55 @@ void Translator::sumb(Instruction code)
 
 void Translator::xor_(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    rt = builder.createXor(ra, rb);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::xorbi(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U08); i++) {
+        value.u8[i] = code.i10;
+    }
+    rt = builder.createXor(ra, builder.getConstantV128(value));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::xorhi(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U16); i++) {
+        value.u16[i] = code.i10;
+    }
+    rt = builder.createXor(ra, builder.getConstantV128(value));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::xori(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    V128 value;
+    for (Size i = 0; i < sizeof(V128) / sizeof(U32); i++) {
+        value.u32[i] = code.i10;
+    }
+    rt = builder.createXor(ra, builder.getConstantV128(value));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::xsbh(Instruction code)

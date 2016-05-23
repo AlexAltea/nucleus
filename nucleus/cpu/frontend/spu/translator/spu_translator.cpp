@@ -49,7 +49,7 @@ void Translator::setSPR(int index, hir::Value* value) {
  * Memory access
  */
 Value* Translator::readMemory(hir::Value* addr, hir::Type type) {
-    assert_true(value->type == TYPE_V128);
+    assert_true(type == TYPE_V128);
 
     // Get host address
     void* baseAddress = parent->memory->getBaseAddr();
