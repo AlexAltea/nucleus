@@ -143,7 +143,8 @@ void Translator::addx(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt = getGPR(code.rt);
 
-    //rt = builder.createAnd(rt, 1); // TODO
+    Value* mask = builder.getConstantV128(V128::from_u32(1, 1, 1, 1));
+    rt = builder.createAnd(rt, mask);
     rt = builder.createVAdd(rt, ra, COMPONENT_I32);
     rt = builder.createVAdd(rt, rb, COMPONENT_I32);
 
@@ -176,7 +177,7 @@ void Translator::ahi(Instruction code)
     value.u16[6] = code.i10;
     value.u16[7] = code.i10;
     rt = builder.getConstantV128(value);
-    rt = builder.createAdd(rt, ra);
+    rt = builder.createVAdd(rt, ra, COMPONENT_I16);
 
     setGPR(code.rt, rt);
 }
@@ -192,7 +193,7 @@ void Translator::ai(Instruction code)
     value.u32[2] = code.i10;
     value.u32[3] = code.i10;
     rt = builder.getConstantV128(value);
-    rt = builder.createAdd(rt, ra);
+    rt = builder.createVAdd(rt, ra, COMPONENT_I32);
 
     setGPR(code.rt, rt);
 }

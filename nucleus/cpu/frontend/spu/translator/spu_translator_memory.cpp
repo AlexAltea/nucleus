@@ -70,7 +70,9 @@ void Translator::lqd(Instruction code)
 
 void Translator::lqr(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* addr = builder.getConstantI32(((code.i16 << 2) + currentAddress) & ~0xF);
+    Value* rt = readMemory(addr, TYPE_V128);
+    setGPR(code.rt, rt);
 }
 
 void Translator::lqx(Instruction code)
@@ -90,7 +92,9 @@ void Translator::stqd(Instruction code)
 
 void Translator::stqr(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* rt = getGPR(code.rt);
+    Value* addr = builder.getConstantI32(((code.i16 << 2) + currentAddress) & ~0xF);
+    writeMemory(addr, rt);
 }
 
 void Translator::stqx(Instruction code)

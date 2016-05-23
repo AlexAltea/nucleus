@@ -45,6 +45,27 @@ void Translator::setSPR(int index, hir::Value* value) {
     builder.createCtxStore(offset, value);
 }
 
+/**
+ * Memory access
+ */
+Value* Translator::readMemory(hir::Value* addr, hir::Type type) {
+    assert_true(value->type == TYPE_V128);
+
+    // Get host address
+    void* baseAddress = parent->memory->getBaseAddr();
+    addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
+    return builder.createLoad(addr, type, ENDIAN_BIG);
+}
+
+void Translator::writeMemory(Value* addr, Value* value) {
+    assert_true(value->type == TYPE_V128);
+
+    // Get host address
+    void* baseAddress = parent->memory->getBaseAddr();
+    addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
+    builder.createStore(addr, value, ENDIAN_BIG);
+}
+
 void Translator::createProlog() {
 }
 

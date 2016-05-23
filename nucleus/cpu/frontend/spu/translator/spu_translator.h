@@ -28,6 +28,10 @@ private:
     void setGPR(int index, hir::Value* value);
     void setSPR(int index, hir::Value* value);
 
+    // Memory access
+    hir::Value* readMemory(hir::Value* addr, hir::Type type);
+    void writeMemory(hir::Value* addr, hir::Value* value);
+
 public:
     hir::Builder builder;
 

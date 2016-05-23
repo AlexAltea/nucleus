@@ -223,17 +223,23 @@ void Translator::iret(Instruction code)
 // Hint-for-Branch Instructions (Chapter 8)
 void Translator::hbr(Instruction code)
 {
-    assert_always("Unimplemented");
+    // NOTE: Not implemented.
+    // Although there is no need to translate these branch hints,
+    // its translation could result in performance improvements.
 }
 
 void Translator::hbra(Instruction code)
 {
-    assert_always("Unimplemented");
+    // NOTE: Not implemented.
+    // Although there is no need to translate these branch hints,
+    // its translation could result in performance improvements.
 }
 
 void Translator::hbrr(Instruction code)
 {
-    assert_always("Unimplemented");
+    // NOTE: Not implemented.
+    // Although there is no need to translate these branch hints,
+    // its translation could result in performance improvements.
 }
 
 }  // namespace spu
