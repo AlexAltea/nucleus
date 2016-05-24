@@ -12,10 +12,13 @@
 
 // Channel Instructions (Chapter 11)
 void SPUTestRunner::rchcnt() {
+    // Read Channel Count
 }
 
 void SPUTestRunner::rdch() {
+    // Read Channel
 }
 
 void SPUTestRunner::wrch() {
+    // Rotate Word
 }
