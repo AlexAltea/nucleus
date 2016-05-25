@@ -2297,11 +2297,23 @@ struct INSERT_V128_I8 : Sequence<INSERT_V128_I8, I<OPCODE_INSERT, V128Op, V128Op
         } else {
             e.movaps(i.dest, i.src1);
         }
-        if (i.src3.isConstant) {
-            e.mov(e.eax, i.src3.constant());
-            e.vpinsrb(i.dest, e.eax, i.src2.constant());
+        if (i.src2.isConstant) {
+            if (i.src3.isConstant) {
+                e.mov(e.eax, i.src3.constant());
+                e.vpinsrb(i.dest, e.eax, i.src2.constant());
+            } else {
+                e.vpinsrb(i.dest, i.src3.reg.cvt32(), i.src2.constant() ^ 0x3);
+            }
         } else {
-            e.vpinsrb(i.dest, i.src3.reg.cvt32(), i.src2.constant() ^ 0x3);
+            Xbyak::Reg64 idx(i.src2.reg.getIdx());
+            e.vmovdqa(e.ptr[e.rsp], i.dest);
+            if (i.src3.isConstant) {
+                e.mov(e.al, i.src3.constant());
+                e.mov(e.byte[e.rsp + idx * 8], e.al);
+            } else {
+                e.mov(e.byte[e.rsp + idx * 8], i.src3);
+            }
+            e.vmovdqa(i.dest, e.ptr[e.rsp]);
         }
     }
 };
@@ -2313,11 +2325,23 @@ struct INSERT_V128_I16 : Sequence<INSERT_V128_I16, I<OPCODE_INSERT, V128Op, V128
         } else {
             e.movaps(i.dest, i.src1);
         }
-        if (i.src3.isConstant) {
-            e.mov(e.eax, i.src3.constant());
-            e.vpinsrw(i.dest, e.eax, i.src2.constant());
+        if (i.src2.isConstant) {
+            if (i.src3.isConstant) {
+                e.mov(e.eax, i.src3.constant());
+                e.vpinsrw(i.dest, e.eax, i.src2.constant());
+            } else {
+                e.vpinsrw(i.dest, i.src3.reg.cvt32(), i.src2.constant() ^ 0x1);
+            }
         } else {
-            e.vpinsrw(i.dest, i.src3.reg.cvt32(), i.src2.constant() ^ 0x1);
+            Xbyak::Reg64 idx(i.src2.reg.getIdx());
+            e.vmovdqa(e.ptr[e.rsp], i.dest);
+            if (i.src3.isConstant) {
+                e.mov(e.ax, i.src3.constant());
+                e.mov(e.word[e.rsp + idx * 8], e.ax);
+            } else {
+                e.mov(e.word[e.rsp + idx * 8], i.src3);
+            }
+            e.vmovdqa(i.dest, e.ptr[e.rsp]);
         }
     }
 };
@@ -2329,27 +2353,50 @@ struct INSERT_V128_I32 : Sequence<INSERT_V128_I32, I<OPCODE_INSERT, V128Op, V128
         } else {
             e.movaps(i.dest, i.src1);
         }
-        if (i.src3.isConstant) {
-            e.mov(e.eax, i.src3.constant());
-            e.vpinsrd(i.dest, e.eax, i.src2.constant());
+        if (i.src2.isConstant) {
+            if (i.src3.isConstant) {
+                e.mov(e.eax, i.src3.constant());
+                e.vpinsrd(i.dest, e.eax, i.src2.constant());
+            } else {
+                e.vpinsrd(i.dest, i.src3, i.src2.constant());
+            }
         } else {
-            e.vpinsrd(i.dest, i.src3, i.src2.constant());
+            Xbyak::Reg64 idx(i.src2.reg.getIdx());
+            e.vmovdqa(e.ptr[e.rsp], i.dest);
+            if (i.src3.isConstant) {
+                e.mov(e.eax, i.src3.constant());
+                e.mov(e.dword[e.rsp + idx * 8], e.eax);
+            } else {
+                e.mov(e.dword[e.rsp + idx * 8], i.src3);
+            }
+            e.vmovdqa(i.dest, e.ptr[e.rsp]);
         }
     }
 };
 struct INSERT_V128_I64 : Sequence<INSERT_V128_I64, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I64Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        assert_true(i.src2.isConstant);
         if (i.src1.isConstant) {
             getXmmConstant(e, i.dest, i.src1.constant());
         } else {
             e.movaps(i.dest, i.src1);
         }
-        if (i.src3.isConstant) {
-            e.mov(e.rax, i.src3.constant());
-            e.vpinsrq(i.dest, e.rax, i.src2.constant());
+        if (i.src2.isConstant) {
+            if (i.src3.isConstant) {
+                e.mov(e.rax, i.src3.constant());
+                e.vpinsrq(i.dest, e.rax, i.src2.constant());
+            } else {
+                e.vpinsrq(i.dest, i.src3, i.src2.constant());
+            }
         } else {
-            e.vpinsrq(i.dest, i.src3, i.src2.constant());
+            Xbyak::Reg64 idx(i.src2.reg.getIdx());
+            e.vmovdqa(e.ptr[e.rsp], i.dest);
+            if (i.src3.isConstant) {
+                e.mov(e.rax, i.src3.constant());
+                e.mov(e.qword[e.rsp + idx * 8], e.rax);
+            } else {
+                e.mov(e.qword[e.rsp + idx * 8], i.src3);
+            }
+            e.vmovdqa(i.dest, e.ptr[e.rsp]);
         }
     }
 };

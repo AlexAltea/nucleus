@@ -42,7 +42,7 @@ void SPUTestRunner::cdd() {
         expect(state.r[2] == RT);
     });
 
-    // TODO
+    // TODO: Are these tests correct?
     test_cdd(0, 0x00000000, V128::from_u32(0x00010203, 0x04050607, 0x18191A1B, 0x1C1D1E1F));
     test_cdd(8, 0x00000000, V128::from_u32(0x10111213, 0x14151617, 0x00010203, 0x04050607));
     test_cdd(0, 0x00000008, V128::from_u32(0x10111213, 0x14151617, 0x00010203, 0x04050607));

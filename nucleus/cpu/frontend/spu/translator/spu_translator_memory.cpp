@@ -20,12 +20,34 @@ using namespace cpu::hir;
 // Memory-Load/Store Instructions (Chapter 3)
 void Translator::cbd(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    Value* idx = builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32);
+    idx = builder.createAdd(idx, builder.getConstantI32(code.i7));
+    idx = builder.createNot(idx);
+    idx = builder.createAnd(idx, builder.getConstantI32(0xF));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI32(0x03));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::cbx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    Value* idx = builder.createAdd(
+        builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32),
+        builder.createExtract(rb, builder.getConstantI8(3), TYPE_I32));
+    idx = builder.createNot(idx);
+    idx = builder.createAnd(idx, builder.getConstantI32(0xF));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI64(0x0001020304050607ULL));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::cdd(Instruction code)
@@ -36,8 +58,8 @@ void Translator::cdd(Instruction code)
     Value* idx = builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32);
     idx = builder.createAdd(idx, builder.getConstantI32(code.i7));
     idx = builder.createNot(idx);
-    idx = builder.createShr(idx, builder.getConstantI32(3));
-    idx = builder.createAnd(idx, builder.getConstantI32(1));
+    idx = builder.createAnd(idx, builder.getConstantI32(0x8));
+    idx = builder.createShr(idx, builder.getConstantI32(0x3));
     rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
     rt = builder.createInsert(rt, idx, builder.getConstantI64(0x0001020304050607ULL));
 
@@ -46,27 +68,88 @@ void Translator::cdd(Instruction code)
 
 void Translator::cdx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    Value* idx = builder.createAdd(
+        builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32),
+        builder.createExtract(rb, builder.getConstantI8(3), TYPE_I32));
+    idx = builder.createNot(idx);
+    idx = builder.createAnd(idx, builder.getConstantI32(0x8));
+    idx = builder.createShr(idx, builder.getConstantI32(0x3));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI64(0x0001020304050607ULL));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::chd(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    Value* idx = builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32);
+    idx = builder.createAdd(idx, builder.getConstantI32(code.i7));
+    idx = builder.createNot(idx);
+    idx = builder.createAnd(idx, builder.getConstantI32(0xE));
+    idx = builder.createShr(idx, builder.getConstantI32(0x1));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI32(0x0203));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::chx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    Value* idx = builder.createAdd(
+        builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32),
+        builder.createExtract(rb, builder.getConstantI8(3), TYPE_I32));
+    idx = builder.createNot(idx);
+    idx = builder.createAnd(idx, builder.getConstantI32(0xE));
+    idx = builder.createShr(idx, builder.getConstantI32(0x1));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI64(0x0001020304050607ULL));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::cwd(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    Value* idx = builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32);
+    idx = builder.createAdd(idx, builder.getConstantI32(code.i7));
+    idx = builder.createNot(idx);
+    idx = builder.createAnd(idx, builder.getConstantI32(0xC));
+    idx = builder.createShr(idx, builder.getConstantI32(0x2));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI32(0x00010203));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::cwx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    Value* idx = builder.createAdd(
+        builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32),
+        builder.createExtract(rb, builder.getConstantI8(3), TYPE_I32));
+    idx = builder.createNot(idx);
+    idx = builder.createAnd(idx, builder.getConstantI32(0xC));
+    idx = builder.createShr(idx, builder.getConstantI32(0x2));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI64(0x0001020304050607ULL));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::lqa(Instruction code)
