@@ -143,6 +143,8 @@ public:
     Value* createVCmpULE(Value* lhs, Value* rhs, OpcodeFlags flags);
     Value* createVCmpUGT(Value* lhs, Value* rhs, OpcodeFlags flags);
     Value* createVCmpUGE(Value* lhs, Value* rhs, OpcodeFlags flags);
+    Value* createExtract(Value* vec, Value* index, Type type);
+    Value* createInsert(Value* vec, Value* index, Value* element);
 };
 
 }  // namespace hir

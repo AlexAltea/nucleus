@@ -2252,6 +2252,109 @@ struct VABS_V128 : Sequence<VABS_V128, I<OPCODE_VABS, V128Op, V128Op>> {
 };
 
 /**
+ * OPCODE_EXTRACT
+ */
+struct EXTRACT_I8_V128 : Sequence<EXTRACT_I8_V128, I<OPCODE_EXTRACT, I8Op, V128Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_true(!i.src1.isConstant);
+        assert_true(i.src2.isConstant);
+        e.vpextrb(i.dest.reg.cvt32(), i.src1, i.src2.constant());
+    }
+};
+struct EXTRACT_I16_V128 : Sequence<EXTRACT_I16_V128, I<OPCODE_EXTRACT, I16Op, V128Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_true(!i.src1.isConstant);
+        assert_true(i.src2.isConstant);
+        e.vpextrw(i.dest.reg.cvt32(), i.src1, i.src2.constant());
+    }
+};
+struct EXTRACT_I32_V128 : Sequence<EXTRACT_I32_V128, I<OPCODE_EXTRACT, I32Op, V128Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_true(i.src2.isConstant);
+        Xbyak::Xmm src1;
+        if (i.src1.isConstant) {
+            src1 = e.xmm0;
+            getXmmConstant(e, src1, i.src1.constant());
+        } else {
+            src1 = i.src1;
+        }
+        if (i.src2.constant() == 0) {
+            e.vmovd(i.dest, src1);
+        } else {
+            e.vpextrd(i.dest, src1, i.src2.constant());
+        }
+    }
+};
+
+/**
+ * OPCODE_INSERT
+ */
+struct INSERT_V128_I8 : Sequence<INSERT_V128_I8, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I8Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_true(i.src2.isConstant);
+        if (i.src1.isConstant) {
+            getXmmConstant(e, i.dest, i.src1.constant());
+        } else {
+            e.movaps(i.dest, i.src1);
+        }
+        if (i.src3.isConstant) {
+            e.mov(e.eax, i.src3.constant());
+            e.vpinsrb(i.dest, e.eax, i.src2.constant());
+        } else {
+            e.vpinsrb(i.dest, i.src3.reg.cvt32(), i.src2.constant() ^ 0x3);
+        }
+    }
+};
+struct INSERT_V128_I16 : Sequence<INSERT_V128_I16, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I16Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_true(i.src2.isConstant);
+        if (i.src1.isConstant) {
+            getXmmConstant(e, i.dest, i.src1.constant());
+        } else {
+            e.movaps(i.dest, i.src1);
+        }
+        if (i.src3.isConstant) {
+            e.mov(e.eax, i.src3.constant());
+            e.vpinsrw(i.dest, e.eax, i.src2.constant());
+        } else {
+            e.vpinsrw(i.dest, i.src3.reg.cvt32(), i.src2.constant() ^ 0x1);
+        }
+    }
+};
+struct INSERT_V128_I32 : Sequence<INSERT_V128_I32, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I32Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_true(i.src2.isConstant);
+        if (i.src1.isConstant) {
+            getXmmConstant(e, i.dest, i.src1.constant());
+        } else {
+            e.movaps(i.dest, i.src1);
+        }
+        if (i.src3.isConstant) {
+            e.mov(e.eax, i.src3.constant());
+            e.vpinsrd(i.dest, e.eax, i.src2.constant());
+        } else {
+            e.vpinsrd(i.dest, i.src3, i.src2.constant());
+        }
+    }
+};
+struct INSERT_V128_I64 : Sequence<INSERT_V128_I64, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I64Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        assert_true(i.src2.isConstant);
+        if (i.src1.isConstant) {
+            getXmmConstant(e, i.dest, i.src1.constant());
+        } else {
+            e.movaps(i.dest, i.src1);
+        }
+        if (i.src3.isConstant) {
+            e.mov(e.rax, i.src3.constant());
+            e.vpinsrq(i.dest, e.rax, i.src2.constant());
+        } else {
+            e.vpinsrq(i.dest, i.src3, i.src2.constant());
+        }
+    }
+};
+
+/**
  * x86 Sequences
  */
 std::unordered_map<InstrKey::Value, X86Sequences::SelectFunction> X86Sequences::sequences;
@@ -2294,15 +2397,21 @@ void X86Sequences::init() {
         registerSequence<CALL_VOID, CALL_I8, CALL_I16, CALL_I32, CALL_I64>();
         registerSequence<BRCOND_I8, BRCOND_I16, BRCOND_I32, BRCOND_I64>();
         registerSequence<RET_VOID, RET_I8, RET_I16, RET_I32, RET_I64, RET_F32, RET_F64>();
+
+        // Floating-point operations
         registerSequence<FADD_F32, FADD_F64>();
         registerSequence<FSUB_F32, FSUB_F64>();
         registerSequence<FMUL_F32, FMUL_F64>();
         registerSequence<FDIV_F32, FDIV_F64>();
         registerSequence<FNEG_F32, FNEG_F64>();
+
+        // Vector operations
         registerSequence<VADD_V128>();
         registerSequence<VSUB_V128>();
         registerSequence<VAVG_V128>();
         registerSequence<VABS_V128>();
+        registerSequence<EXTRACT_I8_V128, EXTRACT_I16_V128, EXTRACT_I32_V128>();
+        registerSequence<INSERT_V128_I8, INSERT_V128_I16, INSERT_V128_I32, INSERT_V128_I64>();
 #endif
     }
 }

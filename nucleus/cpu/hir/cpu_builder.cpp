@@ -943,5 +943,34 @@ Value* Builder::createVCmpUGE(Value* lhs, Value* rhs, OpcodeFlags flags) {
     return nullptr;
 }
 
+Value* Builder::createExtract(Value* vec, Value* index, Type type) {
+    ASSERT_TYPE_VECTOR(vec);
+    ASSERT_TYPE_INTEGER(index);
+
+    if (index->type != TYPE_I8) {
+        index = createTrunc(index, TYPE_I8);
+    }
+
+    Instruction* i = appendInstr(OPCODE_EXTRACT, 0, allocValue(type));
+    i->src1.setValue(vec);
+    i->src2.setValue(index);
+    return i->dest;
+}
+    
+Value* Builder::createInsert(Value* vec, Value* index, Value* element) {
+    ASSERT_TYPE_VECTOR(vec);
+    ASSERT_TYPE_INTEGER(index);
+
+    if (index->type != TYPE_I8) {
+        index = createTrunc(index, TYPE_I8);
+    }
+    
+    Instruction* i = appendInstr(OPCODE_INSERT, 0, allocValue(vec->type));
+    i->src1.setValue(vec);
+    i->src2.setValue(index);
+    i->src3.setValue(element);
+    return i->dest;
+}
+
 }  // namespace hir
 }  // namespace cpu

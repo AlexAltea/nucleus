@@ -30,7 +30,18 @@ void Translator::cbx(Instruction code)
 
 void Translator::cdd(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    Value* idx = builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32);
+    idx = builder.createAdd(idx, builder.getConstantI32(code.i7));
+    idx = builder.createNot(idx);
+    idx = builder.createShr(idx, builder.getConstantI32(3));
+    idx = builder.createAnd(idx, builder.getConstantI32(1));
+    rt = builder.getConstantV128(V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F));
+    rt = builder.createInsert(rt, idx, builder.getConstantI64(0x0001020304050607ULL));
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::cdx(Instruction code)

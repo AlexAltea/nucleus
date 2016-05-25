@@ -40,13 +40,19 @@ OPCODE(BRCOND,    "brcond",    OPCODE_SIG_X_V_B)   // Conditional branch
 OPCODE(CALLCOND,  "callcond",  OPCODE_SIG_M_V_F)   // Conditional call
 OPCODE(RET,       "ret",       OPCODE_SIG_X_M)     // Return
 OPCODE(PHI,       "phi",       OPCODE_SIG_V_V_V)   // Phi node
+
+// Floating-point operations
 OPCODE(FADD,      "fadd",      OPCODE_SIG_V_V_V)   // Floating-point addition
 OPCODE(FSUB,      "fsub",      OPCODE_SIG_V_V_V)   // Floating-point subtraction
 OPCODE(FMUL,      "fmul",      OPCODE_SIG_V_V_V)   // Floating-point multiplication
 OPCODE(FDIV,      "fdiv",      OPCODE_SIG_V_V_V)   // Floating-point division
 OPCODE(FNEG,      "fneg",      OPCODE_SIG_V_V)     // Floating-point negation
+
+// Vector operations
 OPCODE(VADD,      "vadd",      OPCODE_SIG_V_V_V)   // Vector addition
 OPCODE(VSUB,      "vsub",      OPCODE_SIG_V_V_V)   // Vector subtraction
 OPCODE(VABS,      "vabs",      OPCODE_SIG_V_V)     // Vector absolute value
 OPCODE(VAVG,      "vavg",      OPCODE_SIG_V_V_V)   // Vector average
 OPCODE(VCMP,      "vcmp",      OPCODE_SIG_V_V_V)   // Vector compare
+OPCODE(EXTRACT,   "extract",   OPCODE_SIG_V_V_V)   // Extract element
+OPCODE(INSERT,    "insert",    OPCODE_SIG_V_V_V_V) // Insert element
