@@ -217,7 +217,7 @@ public:
     void ori(RegGPR rt, RegGPR ra, U32 i10);
     void orx(RegGPR rt, RegGPR ra);
     void rchcnt(RegGPR rt, RegGPR ra);
-    void rdch(RegGPR rt, RegGPR ra);
+    void rdch(RegGPR rt, U32 ca);
     void rot(RegGPR rt, RegGPR ra, RegGPR rb);
     void roth(RegGPR rt, RegGPR ra, RegGPR rb);
     void rothi(RegGPR rt, RegGPR ra, U32 i7);
@@ -264,7 +264,7 @@ public:
     void stqx(RegGPR rt, RegGPR ra, RegGPR rb);
     void sumb(RegGPR rt, RegGPR ra, RegGPR rb);
     void sync();
-    void wrch(RegGPR rt, RegGPR ra);
+    void wrch(U32 ca, RegGPR rt);
     void xor_(RegGPR rt, RegGPR ra, RegGPR rb);
     void xorbi(RegGPR rt, RegGPR ra, U32 i10);
     void xorhi(RegGPR rt, RegGPR ra, U32 i10);

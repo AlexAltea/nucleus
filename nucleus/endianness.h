@@ -8,6 +8,7 @@
 #include "nucleus/compiler.h"
 #include "nucleus/types.h"
 
+// Swap endianness macros
 #ifdef NUCLEUS_COMPILER_MSVC
 #define SE16(val)  _byteswap_ushort(val)
 #define SE32(val)  _byteswap_ulong(val)

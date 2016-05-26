@@ -205,7 +205,7 @@ void SPUAssembler::orhi(RegGPR rt, RegGPR ra, U32 i10) { emitFormRI10(0x05000000
 void SPUAssembler::ori(RegGPR rt, RegGPR ra, U32 i10) { emitFormRI10(0x04000000, rt, ra, i10); }
 void SPUAssembler::orx(RegGPR rt, RegGPR ra) { emitFormRR(0x3E000000, rt, ra, 0); }
 void SPUAssembler::rchcnt(RegGPR rt, RegGPR ra) { emitFormRR(0x01E00000, rt, ra, 0); }
-void SPUAssembler::rdch(RegGPR rt, RegGPR ra) { emitFormRR(0x01A00000, rt, ra, 0); }
+void SPUAssembler::rdch(RegGPR rt, U32 ca) { emitFormRR(0x01A00000, rt, ca, 0); }
 void SPUAssembler::rot(RegGPR rt, RegGPR ra, RegGPR rb) { emitFormRR(0x0B000000, rt, ra, rb); }
 void SPUAssembler::roth(RegGPR rt, RegGPR ra, RegGPR rb) { emitFormRR(0x0B800000, rt, ra, rb); }
 void SPUAssembler::rothi(RegGPR rt, RegGPR ra, U32 i7) { emitFormRI7(0x0F800000, rt, ra, i7); }
@@ -252,7 +252,7 @@ void SPUAssembler::stqr(RegGPR rt, U32 i16) { emitFormRI16(0x23800000, rt, i16);
 void SPUAssembler::stqx(RegGPR rt, RegGPR ra, RegGPR rb) { emitFormRR(0x28800000, rt, ra, rb); }
 void SPUAssembler::sumb(RegGPR rt, RegGPR ra, RegGPR rb) { emitFormRR(0x4A600000, rt, ra, rb); }
 void SPUAssembler::sync() { } // TODO: 0x00400000
-void SPUAssembler::wrch(RegGPR rt, RegGPR ra) { emitFormRR(0x21A00000, rt, ra, 0); }
+void SPUAssembler::wrch(U32 ca, RegGPR rt) { emitFormRR(0x21A00000, rt, ca, 0); }
 void SPUAssembler::xor_(RegGPR rt, RegGPR ra, RegGPR rb) { emitFormRR(0x48200000, rt, ra, rb); }
 void SPUAssembler::xorbi(RegGPR rt, RegGPR ra, U32 i10) { emitFormRI10(0x46000000, rt, ra, i10); }
 void SPUAssembler::xorhi(RegGPR rt, RegGPR ra, U32 i10) { emitFormRI10(0x45000000, rt, ra, i10); }

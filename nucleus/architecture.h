@@ -5,6 +5,7 @@
 
 #pragma once
 
+// Architecture detection
 #if defined(__i386) || defined(__i386__) || defined(_M_IX86) || defined(_X86_)
 #define NUCLEUS_ARCH_X86_32BITS
 #endif

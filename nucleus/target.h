@@ -5,6 +5,7 @@
 
 #pragma once
 
+// Target detection
 #if defined(__ANDROID__)
 #define NUCLEUS_TARGET_ANDROID
 #endif
