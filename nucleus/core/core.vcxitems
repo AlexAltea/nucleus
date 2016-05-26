@@ -39,6 +39,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\platform.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\target.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\types.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\version.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)resource.h" />
   </ItemGroup>

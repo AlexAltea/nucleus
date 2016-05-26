@@ -13,6 +13,7 @@
 #include "nucleus/literals.h"
 #include "nucleus/target.h"
 #include "nucleus/types.h"
+#include "nucleus/version.h"
 
 /**
  * Builds

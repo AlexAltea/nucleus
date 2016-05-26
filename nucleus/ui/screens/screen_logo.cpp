@@ -27,7 +27,7 @@ ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
     logo->style.width = 50_pct;
 
     version = new WidgetText(&body, "version");
-    version->update(lightFont, 30_px, "Version v0.1.0 from 2016-05-14");
+    version->update(lightFont, 30_px, "Version " NUCLEUS_VERSION " from 2016-05-14");
     version->style.margin.top = 0_px;
     version->style.width = 25_pct;
     version->style.color = Color{1,1,1,1};

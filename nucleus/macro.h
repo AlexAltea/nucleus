@@ -17,3 +17,7 @@
 #define __NUCLEUS_MACRO_SELECT(function, argc) \
     __NUCLEUS_MACRO_CONCAT(function, argc)
 #define __NUCLEUS_MACRO_CONCAT(a, b) a##b
+
+// Stringify macros
+#define __NUCLEUS_STRINGIFY_APPLY(x) #x
+#define __NUCLEUS_STRINGIFY(x) __NUCLEUS_STRINGIFY_APPLY(x)
