@@ -164,7 +164,7 @@ void Translator::lqd(Instruction code)
 
 void Translator::lqr(Instruction code)
 {
-    Value* addr = builder.getConstantI32(((code.i16 << 2) + currentAddress) & ~0xF);
+    Value* addr = builder.getConstantI64(((code.i16 << 2) + currentAddress) & ~0xF);
     Value* rt = readMemory(addr, TYPE_V128);
     setGPR(code.rt, rt);
 }
@@ -187,7 +187,7 @@ void Translator::stqd(Instruction code)
 void Translator::stqr(Instruction code)
 {
     Value* rt = getGPR(code.rt);
-    Value* addr = builder.getConstantI32(((code.i16 << 2) + currentAddress) & ~0xF);
+    Value* addr = builder.getConstantI64(((code.i16 << 2) + currentAddress) & ~0xF);
     writeMemory(addr, rt);
 }
 

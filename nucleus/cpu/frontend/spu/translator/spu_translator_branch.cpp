@@ -4,6 +4,7 @@
  */
 
 #include "spu_translator.h"
+#include "nucleus/core/config.h"
 #include "nucleus/assert.h"
 
 namespace cpu {
@@ -86,7 +87,17 @@ void Translator::brnz(Instruction code)
 
 void Translator::brsl(Instruction code)
 {
-    assert_always("Unimplemented");
+    const U32 targetAddr = currentAddress + (code.i16 << 2);
+    
+    Value* rt = builder.getConstantI32(currentAddress + 4);
+    setGPR(code.rt, rt);
+
+    Module* module = static_cast<Module*>(function->parent);
+    if (config.spuTranslator & CPU_TRANSLATOR_IS_JIT) {
+        module->addFunction(targetAddr);
+    }
+    auto& targetFunc = static_cast<Function&>(*module->functions.at(targetAddr));
+    builder.createCall(targetFunc.hirFunction);
 }
 
 void Translator::brz(Instruction code)

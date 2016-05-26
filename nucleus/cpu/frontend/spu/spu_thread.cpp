@@ -19,6 +19,7 @@ SPUThread::SPUThread(CPU* parent) : Thread(parent) {
 
 void SPUThread::start() {
     m_thread = std::thread([&](){
+        parent->setCurrentThread(this);
         task();
     });
 }

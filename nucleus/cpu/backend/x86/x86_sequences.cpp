@@ -1218,8 +1218,12 @@ struct LOAD_F64 : Sequence<LOAD_F64, I<OPCODE_LOAD, F64Op, PtrOp>> {
 };
 struct LOAD_V128 : Sequence<LOAD_V128, I<OPCODE_LOAD, V128Op, PtrOp>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        auto addr = i.src1.reg;
-        e.vmovups(i.dest, e.ptr[addr]);
+        if (i.src1.isConstant) {
+            e.mov(e.rax, reinterpret_cast<U64>(i.src1.constant()));
+            e.vmovups(i.dest, e.ptr[e.rax]);
+        } else {
+            e.vmovups(i.dest, e.ptr[i.src1.reg]);
+        }
         if (i.instr->flags & ENDIAN_BIG) {
             V128 byteSwapMask;
             byteSwapMask.u64[0] = 0x08090A0B0C0D0E0FULL;
@@ -1350,7 +1354,13 @@ struct STORE_F64 : Sequence<STORE_F64, I<OPCODE_STORE, VoidOp, PtrOp, F64Op>> {
 };
 struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        auto addr = i.src1.reg;
+        Xbyak::Reg64 addr;
+        if (i.src1.isConstant) {
+            addr = e.rdx;
+            e.mov(addr, reinterpret_cast<U64>(i.src1.constant()));
+        } else {
+            addr = i.src1.reg;
+        }
         if (i.instr->flags & ENDIAN_BIG) {
             assert_false(i.src2.isConstant);
             V128 byteSwapMask;
@@ -1369,6 +1379,7 @@ struct STORE_V128 : Sequence<STORE_V128, I<OPCODE_STORE, VoidOp, PtrOp, V128Op>>
                 e.vmovaps(e.ptr[addr], i.src2);
             }
         }
+        // TODO: Restore rdx
     }
 };
 
@@ -2291,7 +2302,6 @@ struct EXTRACT_I32_V128 : Sequence<EXTRACT_I32_V128, I<OPCODE_EXTRACT, I32Op, V1
  */
 struct INSERT_V128_I8 : Sequence<INSERT_V128_I8, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I8Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        assert_true(i.src2.isConstant);
         if (i.src1.isConstant) {
             getXmmConstant(e, i.dest, i.src1.constant());
         } else {
@@ -2319,7 +2329,6 @@ struct INSERT_V128_I8 : Sequence<INSERT_V128_I8, I<OPCODE_INSERT, V128Op, V128Op
 };
 struct INSERT_V128_I16 : Sequence<INSERT_V128_I16, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I16Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        assert_true(i.src2.isConstant);
         if (i.src1.isConstant) {
             getXmmConstant(e, i.dest, i.src1.constant());
         } else {
@@ -2347,7 +2356,6 @@ struct INSERT_V128_I16 : Sequence<INSERT_V128_I16, I<OPCODE_INSERT, V128Op, V128
 };
 struct INSERT_V128_I32 : Sequence<INSERT_V128_I32, I<OPCODE_INSERT, V128Op, V128Op, I8Op, I32Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
-        assert_true(i.src2.isConstant);
         if (i.src1.isConstant) {
             getXmmConstant(e, i.dest, i.src1.constant());
         } else {

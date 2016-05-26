@@ -218,7 +218,7 @@ template <typename RegType>
 struct PtrOpBase : ValueOp<PtrOpBase<RegType>, RegType, void*, hir::TYPE_PTR> {
     using Base = ValueOp<PtrOpBase<RegType>, RegType, void*, hir::TYPE_PTR>;
     const void* constant() const {
-        return Base::value->constant.i64; // TODO
+        return reinterpret_cast<void*>(Base::value->constant.i64); // TODO
     }
 };
 
