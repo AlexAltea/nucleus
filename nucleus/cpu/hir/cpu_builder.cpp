@@ -972,5 +972,16 @@ Value* Builder::createInsert(Value* vec, Value* index, Value* element) {
     return i->dest;
 }
 
+Value* Builder::createShuffle(Value* mask, Value* v1, Value* v2) {
+    ASSERT_TYPE_VECTOR(v1);
+    ASSERT_TYPE_EQUAL(v1, v2);
+
+    Instruction* i = appendInstr(OPCODE_SHUFFLE, 0, allocValue(v1->type));
+    i->src1.setValue(mask);
+    i->src2.setValue(v1);
+    i->src3.setValue(v2);
+    return i->dest;
+}
+
 }  // namespace hir
 }  // namespace cpu

@@ -21,8 +21,8 @@ void SPUAssembler::emitFormRR(U32 instruction, Operand rt, Operand ra, Operand r
 }
 void SPUAssembler::emitFormRRR(U32 instruction, Operand rt, Operand ra, Operand rb, Operand rc) {
     const U32 rcMask = (rc & 0x7F);
-    const U32 raMask = (rb & 0x7F) << 7;
-    const U32 rbMask = (ra & 0x7F) << 14;
+    const U32 raMask = (ra & 0x7F) << 7;
+    const U32 rbMask = (rb & 0x7F) << 14;
     const U32 rtMask = (rt & 0x7F) << 21;
     emit32(instruction | rtMask | raMask | rbMask | rcMask);
 }

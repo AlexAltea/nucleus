@@ -94,6 +94,14 @@ union V128 {
         return result;
     }
 
+    static V128 from_u8(U08 a) {
+        V128 result;
+        for (Size i = 0; i < sizeof(V128) / sizeof(a); i++) {
+            result.u8[i] = a;
+        }
+        return result;
+    }
+
     bool operator == (const V128& r) const {
         return (u64[0] == r.u64[0]) && (u64[1] == r.u64[1]);
     }

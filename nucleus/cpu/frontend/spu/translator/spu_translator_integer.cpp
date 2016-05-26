@@ -572,7 +572,18 @@ void Translator::sfx(Instruction code)
 
 void Translator::shufb(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    //Value* zero = builder.getConstantV128(V128::from_u8(0x00));
+    //Value* mask = builder.createVCmpSGT(zero, rc, COMPONENT_I8);
+    rt = builder.createShuffle(rc, ra, rb);
+    //rt = builder.createAnd(rt, builder.createNot(mask));
+    //// TODO: Cases 10X, 110X, 111X are wrongly translated as 0x00.
+
+    setGPR(code.rt_, rt);
 }
 
 void Translator::sumb(Instruction code)

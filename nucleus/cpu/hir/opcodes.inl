@@ -56,3 +56,4 @@ OPCODE(VAVG,      "vavg",      OPCODE_SIG_V_V_V)   // Vector average
 OPCODE(VCMP,      "vcmp",      OPCODE_SIG_V_V_V)   // Vector compare
 OPCODE(EXTRACT,   "extract",   OPCODE_SIG_V_V_V)   // Extract element
 OPCODE(INSERT,    "insert",    OPCODE_SIG_V_V_V_V) // Insert element
+OPCODE(SHUFFLE,   "shuffle",   OPCODE_SIG_V_V_V_V) // Shuffle bytes

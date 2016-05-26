@@ -39,8 +39,8 @@ union Instruction
     FIELD(18, 24, U32 ra);    // GPR: Source
     FIELD(11, 17, U32 rb);    // GPR: Source
     FIELD(25, 31, U32 rc);    // GPR: Source
-    FIELD(25, 31, U32 rt);    // GPR: Source
-    FIELD( 4, 10, U32 rt_);   // GPR: Source
+    FIELD(25, 31, U32 rt);    // GPR: Destination
+    FIELD( 4, 10, U32 rt_);   // GPR: Destination (RRR-Form)
 
     /**
      * SPU Instruction properties:

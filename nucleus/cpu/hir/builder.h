@@ -145,6 +145,7 @@ public:
     Value* createVCmpUGE(Value* lhs, Value* rhs, OpcodeFlags flags);
     Value* createExtract(Value* vec, Value* index, Type type);
     Value* createInsert(Value* vec, Value* index, Value* element);
+    Value* createShuffle(Value* mask, Value* v1, Value* v2);
 };
 
 }  // namespace hir

@@ -762,7 +762,21 @@ void SPUTestRunner::shufb() {
         expect(state.r[4] == RT);
     });
 
-    // TODO
+    test_shufb(
+        V128::from_u32(0xDEADBEEF, 0xCAFEBABE, 0x1337C0DE, 0x0BADF00D),
+        V128::from_u32(0x0DEFACED, 0x1337BABE, 0xDEAFFEED, 0xCACAFACE),
+        V128::from_u32(0x00010203, 0x04050607, 0x08090A0B, 0x0C0D0E0F),
+        V128::from_u32(0xDEADBEEF, 0xCAFEBABE, 0x1337C0DE, 0x0BADF00D));
+    test_shufb(
+        V128::from_u32(0xDEADBEEF, 0xCAFEBABE, 0x1337C0DE, 0x0BADF00D),
+        V128::from_u32(0x0DEFACED, 0x1337BABE, 0xDEAFFEED, 0xCACAFACE),
+        V128::from_u32(0x10111213, 0x14151617, 0x18191A1B, 0x1C1D1E1F),
+        V128::from_u32(0x0DEFACED, 0x1337BABE, 0xDEAFFEED, 0xCACAFACE));
+    test_shufb(
+        V128::from_u32(0xDEADBEEF, 0xCAFEBABE, 0x1337C0DE, 0x0BADF00D),
+        V128::from_u32(0x0DEFACED, 0x1337BABE, 0xDEAFFEED, 0xCACAFACE),
+        V128::from_u32(0x04050607, 0x11011202, 0x08071615, 0x1C1D1E1F),
+        V128::from_u32(0xCAFEBABE, 0xEFADACBE, 0x13BEBA37, 0xCACAFACE));
 }
 
 void SPUTestRunner::sumb() {

@@ -2402,6 +2402,45 @@ struct INSERT_V128_I64 : Sequence<INSERT_V128_I64, I<OPCODE_INSERT, V128Op, V128
 };
 
 /**
+ * OPCODE_SHUFFLE
+ */
+struct SHUFFLE_V128 : Sequence<SHUFFLE_V128, I<OPCODE_SHUFFLE, V128Op, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        Xbyak::Xmm iV1 = e.xmm0;
+        Xbyak::Xmm iV2 = e.xmm1;
+        Xbyak::Xmm mask = e.xmm2;
+        Xbyak::Xmm temp = e.xmm3;
+
+        getXmmConstant(e, temp, V128::from_u8(0x03));
+        if (i.src1.isConstant) {
+            getXmmConstant(e, mask, i.src1.constant());
+            e.vxorps(mask, mask, temp);
+        } else {
+            e.vxorps(mask, i.src1, temp);
+        }
+        getXmmConstant(e, temp, V128::from_u8(0x1F));
+        e.vpand(mask, temp);
+
+        if (i.src2.isConstant) {
+            getXmmConstant(e, iV1, i.src2.constant());
+            e.vpshufb(iV1, iV1, mask);
+        } else {
+            e.vpshufb(iV1, i.src2, mask);
+        }
+        if (i.src3.isConstant) {
+            getXmmConstant(e, iV2, i.src3.constant());
+            e.vpshufb(iV2, iV2, mask);
+        } else {
+            e.vpshufb(iV2, i.src3, mask);
+        }
+
+        getXmmConstant(e, temp, V128::from_u8(0x0F));
+        e.vpcmpgtb(i.dest, mask, temp);
+        e.vpblendvb(i.dest, iV1, iV2, i.dest);
+    }
+};
+
+/**
  * x86 Sequences
  */
 std::unordered_map<InstrKey::Value, X86Sequences::SelectFunction> X86Sequences::sequences;
@@ -2459,6 +2498,7 @@ void X86Sequences::init() {
         registerSequence<VABS_V128>();
         registerSequence<EXTRACT_I8_V128, EXTRACT_I16_V128, EXTRACT_I32_V128>();
         registerSequence<INSERT_V128_I8, INSERT_V128_I16, INSERT_V128_I32, INSERT_V128_I64>();
+        registerSequence<SHUFFLE_V128>();
 #endif
     }
 }
