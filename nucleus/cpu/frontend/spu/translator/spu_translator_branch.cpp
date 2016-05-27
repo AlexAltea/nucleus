@@ -25,6 +25,14 @@ namespace spu {
 
 using namespace cpu::hir;
 
+void nucleusCallSPU(U64 guestAddr) {
+    auto* thread = static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread());
+    auto* state = thread->state.get();
+
+    state->pc = guestAddr;
+    thread->task();
+}
+
 /**
  * SPU Instructions:
  *  - Compare, Branch and Halt Instructions (Chapter 7)
@@ -54,7 +62,12 @@ void Translator::binz(Instruction code)
 
 void Translator::bisl(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* ps = builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32);
+    Value* addr = builder.createOr(ps, builder.getConstantI32(currentAddress & ~0x3FFFF));
+
+    hir::Function* proxyFunc = builder.getExternFunction(nucleusCallSPU, TYPE_VOID, { TYPE_I32 });
+    builder.createCall(proxyFunc, { addr }, hir::CALL_EXTERN);
 }
 
 void Translator::bisled(Instruction code)

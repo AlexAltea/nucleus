@@ -53,6 +53,7 @@ Value* Translator::readMemory(hir::Value* addr, hir::Type type) {
 
     // Get host address
     void* baseAddress = parent->memory->getBaseAddr();
+    addr = builder.createZExt(addr, TYPE_PTR);
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
     return builder.createLoad(addr, type, ENDIAN_BIG);
 }
@@ -62,6 +63,7 @@ void Translator::writeMemory(Value* addr, Value* value) {
 
     // Get host address
     void* baseAddress = parent->memory->getBaseAddr();
+    addr = builder.createZExt(addr, TYPE_PTR);
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
     builder.createStore(addr, value, ENDIAN_BIG);
 }

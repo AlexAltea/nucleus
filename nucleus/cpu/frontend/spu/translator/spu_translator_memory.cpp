@@ -154,46 +154,81 @@ void Translator::cwx(Instruction code)
 
 void Translator::lqa(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* addr = builder.getConstantI32(((code.i16 << 2) + (currentAddress & ~0x3FFFF)) & ~0xF);
+    Value* rt = readMemory(addr, TYPE_V128);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::lqd(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt;
+
+    Value* addr = builder.getConstantI32((code.i10 << 4) + (currentAddress & ~0x3FFFF));
+    addr = builder.createAdd(addr, builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32));
+    rt = readMemory(addr, TYPE_V128);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::lqr(Instruction code)
 {
-    Value* addr = builder.getConstantI64(((code.i16 << 2) + currentAddress) & ~0xF);
+    Value* addr = builder.getConstantI32(((code.i16 << 2) + currentAddress) & ~0xF);
     Value* rt = readMemory(addr, TYPE_V128);
     setGPR(code.rt, rt);
 }
 
 void Translator::lqx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt;
+
+    Value* addr = builder.getConstantI32(currentAddress & ~0x3FFFF);
+    addr = builder.createAdd(addr, builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32));
+    addr = builder.createAdd(addr, builder.createExtract(rb, builder.getConstantI8(3), TYPE_I32));
+    addr = builder.createAnd(addr, builder.getConstantI32(~0xF));
+    rt = readMemory(addr, TYPE_V128);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::stqa(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* rt = getGPR(code.rt);
+    Value* addr = builder.getConstantI32(((code.i16 << 2) + (currentAddress & ~0x3FFFF)) & ~0xF);
+    writeMemory(addr, rt);
 }
 
 void Translator::stqd(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rt = getGPR(code.rt);
+    Value* addr = builder.getConstantI32((code.i10 << 4) + (currentAddress & ~0x3FFFF));
+    addr = builder.createAdd(addr, builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32));
+    writeMemory(addr, rt);
 }
 
 void Translator::stqr(Instruction code)
 {
     Value* rt = getGPR(code.rt);
-    Value* addr = builder.getConstantI64(((code.i16 << 2) + currentAddress) & ~0xF);
+    Value* addr = builder.getConstantI32(((code.i16 << 2) + currentAddress) & ~0xF);
     writeMemory(addr, rt);
 }
 
 void Translator::stqx(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rt = getGPR(code.rt);
+
+    Value* addr = builder.getConstantI32(currentAddress & ~0x3FFFF);
+    addr = builder.createAdd(addr, builder.createExtract(ra, builder.getConstantI8(3), TYPE_I32));
+    addr = builder.createAdd(addr, builder.createExtract(rb, builder.getConstantI8(3), TYPE_I32));
+    addr = builder.createAnd(addr, builder.getConstantI32(~0xF));
+
+    writeMemory(addr, rt);
 }
 
 }  // namespace spu

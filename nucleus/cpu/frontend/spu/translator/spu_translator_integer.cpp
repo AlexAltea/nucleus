@@ -300,17 +300,37 @@ void Translator::bg(Instruction code)
 
 void Translator::bgx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        S64 r;
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            r = (U64)rb.u32[i] - (U64)ra.u32[i] - (U64)(1 - (state.r[o.rt].u32[i] & 1));
+            state.r[o.rt].u32[i] = (r < 0) ? 0 : 1;
+        }
+    });
 }
 
 void Translator::cg(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[0] = ((ra.u32[0] + rb.u32[0]) < ra.u32[0]) ? 1 : 0;
+        }
+    });
 }
 
 void Translator::cgx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = ((U64)ra.u32[i] + (U64)rb.u32[i] + (U64)(state.r[o.rt].u32[i] & 1)) >> 32;
+        }
+    });
 }
 
 void Translator::clz(Instruction code)
@@ -337,87 +357,194 @@ void Translator::eqv(Instruction code)
 
 void Translator::fsm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U32 ps = state.r[o.ra].u32[3];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = (ps & (1 << i)) ? ~0 : 0;
+        }
+    });
 }
 
 void Translator::fsmb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U32 ps = state.r[o.ra].u32[3];
+        for (Size i = 0; i < 16; i++) {
+            state.r[o.rt].u8[i] = (ps & (1 << i)) ? ~0 : 0;
+        }
+    });
 }
 
 void Translator::fsmh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U32 ps = state.r[o.ra].u32[3];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].u16[i] = (ps & (1 << i)) ? ~0 : 0;
+        }
+    });
 }
 
 void Translator::gb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        U32 temp = 0;
+        for (Size i = 0; i < 4; i++) {
+            temp |= (state.r[o.ra].u32[i] & 1) << i;
+        }
+        state.r[o.rt].u32[3] = temp;
+        state.r[o.rt].u32[2] = 0;
+        state.r[o.rt].u32[1] = 0;
+        state.r[o.rt].u64[0] = 0;
+    });
 }
 
 void Translator::gbb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        U32 temp = 0;
+        for (Size i = 0; i < 16; i++) {
+            temp |= (state.r[o.ra].u8[i] & 1) << i;
+        }
+        state.r[o.rt].u32[3] = temp;
+        state.r[o.rt].u32[2] = 0;
+        state.r[o.rt].u32[1] = 0;
+        state.r[o.rt].u64[0] = 0;
+    });
 }
 
 void Translator::gbh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        U32 temp = 0;
+        for (Size i = 0; i < 8; i++) {
+            temp |= (state.r[o.ra].u16[i] & 1) << i;
+        }
+        state.r[o.rt].u32[3] = temp;
+        state.r[o.rt].u32[2] = 0;
+        state.r[o.rt].u32[1] = 0;
+        state.r[o.rt].u64[0] = 0;
+    });
 }
 
 void Translator::mpy(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = ra.s16[i*2] * rb.s16[i*2];
+        }
+    });
 }
 
 void Translator::mpya(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        const auto& rc = state.r[o.rc];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = ra.s16[i*2] * rb.s16[i*2] + rc.s32[i];
+        }
+    });
 }
 
 void Translator::mpyh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = (ra.s16[i*2 + 1] * rb.s16[i*2]) << 16;
+        }
+    });
 }
 
 void Translator::mpyhh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = ra.s16[i*2 + 1] * rb.s16[i*2 + 1];
+        }
+    });
 }
 
 void Translator::mpyhha(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] += ra.s16[i*2 + 1] * rb.s16[i*2 + 1];
+        }
+    });
 }
 
 void Translator::mpyhhau(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] += ra.u16[i*2 + 1] * rb.u16[i*2 + 1];
+        }
+    });
 }
 
 void Translator::mpyhhu(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = ra.u16[i*2 + 1] * rb.u16[i*2 + 1];
+        }
+    });
 }
 
 void Translator::mpyi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = ra.s16[i*2] * (S32)(o.i10);
+        }
+    });
 }
 
 void Translator::mpys(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = (ra.s16[i*2] * rb.s16[i*2]) >> 16;
+        }
+    });
 }
 
 void Translator::mpyu(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = ra.u16[i*2] * rb.u16[i*2];
+        }
+    });
 }
 
 void Translator::mpyui(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = ra.u16[i*2] * (U16)(o.i10 & 0xFFFF);
+        }
+    });
 }
 
 void Translator::nand(Instruction code)
@@ -516,7 +643,16 @@ void Translator::orx(Instruction code)
 
 void Translator::selb(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* ra = getGPR(code.ra);
+    Value* rb = getGPR(code.rb);
+    Value* rc = getGPR(code.rc);
+    Value* rt;
+
+    Value* selA = builder.createAnd(ra, builder.createNot(rc));
+    Value* selB = builder.createAnd(rb, rc);
+    rt = builder.createOr(selA, selB);
+
+    setGPR(code.rt, rt);
 }
 
 void Translator::sf(Instruction code)
@@ -681,7 +817,8 @@ void Translator::shl(Instruction code)
         for (Size i = 0; i < 4; i++) {
             state.r[o.rt].u32[i] = (rb.u32[i] & 0x3F) > 31 ? 0 : ra.u32[i] << (rb.u32[i] & 0x3F);
         }
-    });}
+    });
+}
 
 void Translator::shlh(Instruction code)
 {

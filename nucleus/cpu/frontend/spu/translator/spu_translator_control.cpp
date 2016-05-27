@@ -5,6 +5,18 @@
 
 #include "spu_translator.h"
 #include "nucleus/assert.h"
+#include "nucleus/cpu/frontend/spu/spu_state.h"
+#include "nucleus/cpu/frontend/spu/spu_thread.h"
+
+#define INTERPRET(func) \
+    builder.createCall(builder.getExternFunction( \
+        reinterpret_cast<void*>( \
+        reinterpret_cast<uintptr_t>( \
+        static_cast<void(*)(Instruction)>([](Instruction o) { \
+            auto& state = *static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread())->state.get(); \
+            func \
+        }))), \
+    TYPE_VOID, { TYPE_I32 }), { builder.getConstantI32(code.value) });
 
 namespace cpu {
 namespace frontend {
@@ -56,7 +68,13 @@ void Translator::stopd(Instruction code)
 
 void Translator::sync(Instruction code)
 {
+#ifdef NUCLEUS_ARCH_X86
+    INTERPRET({
+        _mm_mfence();
+    });
+#else
     assert_always("Unimplemented");
+#endif
 }
 
 }  // namespace spu
