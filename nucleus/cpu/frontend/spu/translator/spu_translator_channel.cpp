@@ -13,7 +13,8 @@
         reinterpret_cast<void*>( \
         reinterpret_cast<uintptr_t>( \
         static_cast<void(*)(Instruction)>([](Instruction i) { \
-            auto& state = *static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread())->state.get(); \
+            auto& thread = *static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread()); \
+            auto& state = *thread.state.get(); \
             func \
         }))), \
     TYPE_VOID, { TYPE_I32 }), { builder.getConstantI32(code.value) });
@@ -82,6 +83,11 @@ void Translator::wrch(Instruction code)
         case MFC_TagID:
             state.mfc.tag = value;
             break;
+        case MFC_Cmd:
+            thread.mfcCommand(value);
+            break;
+        case MFC_WrTagMask:
+        case MFC_WrTagUpdate:
         default:
             assert_always("Unimplemented");
         }

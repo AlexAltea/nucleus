@@ -154,9 +154,11 @@ void Translator::cwx(Instruction code)
 
 void Translator::lqa(Instruction code)
 {
-    Value* addr = builder.getConstantI32(((code.i16 << 2) + (currentAddress & ~0x3FFFF)) & ~0xF);
-    Value* rt = readMemory(addr, TYPE_V128);
+    U32 lsAddr = (code.i16 << 2) & 0x3FFFF;
+    U32 lsBase = currentAddress & ~0x3FFFF;
+    Value* addr = builder.getConstantI32((lsBase + lsAddr) & ~0xF);
 
+    Value* rt = readMemory(addr, TYPE_V128);
     setGPR(code.rt, rt);
 }
 
@@ -196,8 +198,11 @@ void Translator::lqx(Instruction code)
 
 void Translator::stqa(Instruction code)
 {
+    U32 lsAddr = (code.i16 << 2) & 0x3FFFF;
+    U32 lsBase = currentAddress & ~0x3FFFF;
+    Value* addr = builder.getConstantI32((lsBase + lsAddr) & ~0xF);
+
     Value* rt = getGPR(code.rt);
-    Value* addr = builder.getConstantI32(((code.i16 << 2) + (currentAddress & ~0x3FFFF)) & ~0xF);
     writeMemory(addr, rt);
 }
 

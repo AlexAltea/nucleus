@@ -96,6 +96,12 @@ enum MFCCommand {
     MFC_PUTQLLUC_CMD    = 0x00B8,  // SPU Only
 };
 
+struct MFCListElement {
+    BE<U16> s;     // Stall-and-notify bit (0x8000)
+    BE<U16> lts;   // List element transfer size (LTS)
+    BE<U32> leal;  // Low word of the 64-bit effective address
+};
+
 class MFC {
 public:
     // Registers

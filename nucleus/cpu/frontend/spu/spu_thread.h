@@ -30,8 +30,9 @@ public:
     virtual void pause() override;
     virtual void stop() override;
 
-    /*void dmaTransfer(U32 cmd);
-    void dmaTransferList(U32 cmd, U32 eal, U32 lsa, U32 size);*/
+    void mfcCommand(U32 cmd);
+    void dmaTransfer(U32 cmd, U32 eal, U32 lsa, U32 size);
+    void dmaTransferList(U32 cmd, U32 eal, U32 lsa, U32 size);
 };
 
 }  // namespace ppu
