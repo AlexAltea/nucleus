@@ -192,9 +192,9 @@ void Translator::ceqhi(Instruction code)
 {
     INTERPRET({
         const auto& ra = state.r[o.ra];
-        for (Size i = 0; i < 8; i++)
+        for (Size i = 0; i < 8; i++) {
             state.r[o.rt].u16[i] = (ra.s16[i] == (S16)(o.i10)) ? 0xFFFF : 0;
-    
+        }
     });
 }
 
@@ -319,8 +319,8 @@ void Translator::clgthi(Instruction code)
     INTERPRET({
         const auto& ra = state.r[o.ra];
         for (Size i = 0; i < 8; i++) {
-			state.r[o.rt].u16[i] = (ra.u16[i] > (U16)(o.i10)) ? 0xFFFF : 0;
-		}
+            state.r[o.rt].u16[i] = (ra.u16[i] > (U16)(o.i10)) ? 0xFFFF : 0;
+        }
     });
 }
 

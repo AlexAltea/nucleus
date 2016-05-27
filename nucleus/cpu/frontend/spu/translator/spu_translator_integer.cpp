@@ -675,47 +675,113 @@ void Translator::xswd(Instruction code)
 // Shift and Rotate Instructions (Chapter 6)
 void Translator::shl(Instruction code)
 {
-    assert_always("Unimplemented");
-}
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = (rb.u32[i] & 0x3F) > 31 ? 0 : ra.u32[i] << (rb.u32[i] & 0x3F);
+        }
+    });}
 
 void Translator::shlh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& ra = state.r[o.ra];
+        const auto& rb = state.r[o.rb];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].u16[i] = (rb.u16[i] & 0x1F) > 15 ? 0 : ra.u16[i] << (rb.u16[i] & 0x1F);
+        }
+    });
 }
 
 void Translator::shlhi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (o.i7 & 0x1F);
+        const auto& ra = state.r[o.ra];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].u16[i] = (s > 15) ? 0 : (ra.u16[i] << s);
+        }
+    });
 }
 
 void Translator::shli(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (o.i7 & 0x3F);
+        const auto& ra = state.r[o.ra];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = (s > 31) ? 0 : (ra.u32[i] << s);
+        }
+    });
 }
 
 void Translator::shlqbi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = state.r[o.rb].u32[3] & 0x7;
+        if (s) {
+            const V128 temp = state.r[o.ra];
+            state.r[o.rt].u32[0] = (temp.u32[0] << s);
+            state.r[o.rt].u32[1] = (temp.u32[1] << s) | (temp.u32[0] >> (32 - s));
+            state.r[o.rt].u32[2] = (temp.u32[2] << s) | (temp.u32[1] >> (32 - s));
+            state.r[o.rt].u32[3] = (temp.u32[3] << s) | (temp.u32[2] >> (32 - s));
+        } else {
+            state.r[o.rt] = state.r[o.ra];
+        }
+    });
 }
 
 void Translator::shlqbii(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = o.i7 & 0x7;
+        if (s) {
+            const V128 temp = state.r[o.ra];
+            state.r[o.rt].u32[0] = (temp.u32[0] << s);
+            state.r[o.rt].u32[1] = (temp.u32[1] << s) | (temp.u32[0] >> (32 - s));
+            state.r[o.rt].u32[2] = (temp.u32[2] << s) | (temp.u32[1] >> (32 - s));
+            state.r[o.rt].u32[3] = (temp.u32[3] << s) | (temp.u32[2] >> (32 - s));
+        } else {
+            state.r[o.rt] = state.r[o.ra];
+        }
+    });
 }
 
 void Translator::shlqby(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = o.i7 & 0x1F;
+        const V128 temp = state.r[o.ra];
+        state.r[o.rt] = V128{};
+        for (Size i = s; i < 16; i++) {
+            state.r[o.rt].u8[i] = temp.u8[i - s];
+        }
+    });
 }
 
 void Translator::shlqbybi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (state.r[o.rb].u32[3] >> 3) & 0x1F;
+        const V128 temp = state.r[o.ra];
+        state.r[o.rt] = V128{};
+        for (Size i = s; i < 16; i++) {
+            state.r[o.rt].u8[i] = temp.u8[i - s];
+        }
+    });
 }
 
 void Translator::shlqbyi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = o.i7 & 0x1F;
+        const V128 temp = state.r[o.ra];
+        state.r[o.rt] = V128{};
+        for (Size i = s; i < 16; i++) {
+            state.r[o.rt].u8[i] = temp.u8[i - s];
+        }
+    });
 }
 
 void Translator::rot(Instruction code)
@@ -743,7 +809,11 @@ void Translator::roth(Instruction code)
 void Translator::rothi(Instruction code)
 {
     INTERPRET({
-        assert_always("Unimplemented");
+        const auto s = o.i7 & 0xF;
+        const auto& a = state.r[o.ra];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].u16[i] = (a.u16[i] << s) | (a.u16[i] >> (16 - s));
+        }
     });
 }
 
@@ -761,14 +831,22 @@ void Translator::rothm(Instruction code)
 void Translator::rothmi(Instruction code)
 {
     INTERPRET({
-        assert_always("Unimplemented");
+        const auto s = (0 - o.i7) & 0x1F;
+        const auto& a = state.r[o.ra];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].u16[i] = s < 16 ? a.u16[i] >> s : 0;
+        }
     });
 }
 
 void Translator::roti(Instruction code)
 {
     INTERPRET({
-        assert_always("Unimplemented");
+        const auto s = o.i7 & 0x1F;
+        const auto& a = state.r[o.ra];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = (a.u32[i] << s) | (a.u32[i] >> (32 - s));
+        }
     });
 }
 
@@ -808,72 +886,167 @@ void Translator::rotmah(Instruction code)
 void Translator::rotmahi(Instruction code)
 {
     INTERPRET({
-        assert_always("Unimplemented");
+        const auto s = (0 - o.i7) & 0x1F;
+        const auto& a = state.r[o.ra];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].s16[i] = s < 16 ? a.s16[i] >> s : a.s16[i] >> 15;
+        }
     });
 }
 
 void Translator::rotmai(Instruction code)
 {
     INTERPRET({
-        assert_always("Unimplemented");
+        const auto s = (0 - o.i7) & 0x3F;
+        const auto& a = state.r[o.ra];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = s < 32 ? a.s32[i] >> s : a.s32[i] >> 31;
+        }
     });
 }
 
 void Translator::rotmi(Instruction code)
 {
     INTERPRET({
-        assert_always("Unimplemented");
+        const auto s = (0 - o.i7) & 0x3F;
+        const auto& a = state.r[o.ra];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = s < 32 ? a.u32[i] >> s : 0;
+        }
     });
 }
 
 void Translator::rotqbi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = state.r[o.rb].u32[3] & 0x7;
+        if (s) {
+            const V128 temp = state.r[o.ra];
+            state.r[o.rt].u32[0] = (temp.u32[0] << s) | (temp.u32[3] >> (32 - s));
+            state.r[o.rt].u32[1] = (temp.u32[1] << s) | (temp.u32[0] >> (32 - s));
+            state.r[o.rt].u32[2] = (temp.u32[2] << s) | (temp.u32[1] >> (32 - s));
+            state.r[o.rt].u32[3] = (temp.u32[3] << s) | (temp.u32[2] >> (32 - s));
+        } else {
+            state.r[o.rt] = state.r[o.ra];
+        }
+    });
 }
 
 void Translator::rotqbii(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = o.i7 & 0x7;
+        if (s) {
+            const V128 temp = state.r[o.ra];
+            state.r[o.rt].u32[0] = (temp.u32[0] << s) | (temp.u32[3] >> (32 - s));
+            state.r[o.rt].u32[1] = (temp.u32[1] << s) | (temp.u32[0] >> (32 - s));
+            state.r[o.rt].u32[2] = (temp.u32[2] << s) | (temp.u32[1] >> (32 - s));
+            state.r[o.rt].u32[3] = (temp.u32[3] << s) | (temp.u32[2] >> (32 - s));
+        } else {
+            state.r[o.rt] = state.r[o.ra];
+        }
+    });
 }
 
 void Translator::rotqby(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = o.i7 & 0xF;
+        const auto& ra = state.r[o.ra];
+        for (Size i = 0; i < 16; i++) {
+            state.r[o.rt].u8[i] = ra.u8[(i - s) & 0xF];
+        }
+    });
 }
 
 void Translator::rotqbybi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (state.r[o.rb].u32[3] >> 3) & 0xF;
+        const V128 temp = state.r[o.ra];
+        for (Size i = 0; i < 16; i++) {
+            state.r[o.rt].u8[i] = temp.u8[(i - s) & 0xF];
+        }
+    });
 }
 
 void Translator::rotqbyi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = o.i7 & 0xF;
+        const V128 temp = state.r[o.ra];
+        for (Size i = 0; i < 16; i++) {
+            state.r[o.rt].u8[i] = temp.u8[(i - s) & 0xF];
+        }
+    });
 }
 
 void Translator::rotqmbi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (0 - state.r[o.rb].u32[3]) & 0x7;
+        if (s) {
+            const V128 temp = state.r[o.ra];
+            state.r[o.rt].u32[0] = (temp.u32[0] >> s) | (temp.u32[1] << (32 - s));
+            state.r[o.rt].u32[1] = (temp.u32[1] >> s) | (temp.u32[2] << (32 - s));
+            state.r[o.rt].u32[2] = (temp.u32[2] >> s) | (temp.u32[3] << (32 - s));
+            state.r[o.rt].u32[3] = (temp.u32[3] >> s);
+        } else {
+            state.r[o.rt] = state.r[o.ra];
+        }
+    });
 }
 
 void Translator::rotqmbii(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (0 - o.i7) & 0x7;
+        if (s) {
+            const V128 temp = state.r[o.ra];
+            state.r[o.rt].u32[0] = (temp.u32[0] >> s) | (temp.u32[1] << (32 - s));
+            state.r[o.rt].u32[1] = (temp.u32[1] >> s) | (temp.u32[2] << (32 - s));
+            state.r[o.rt].u32[2] = (temp.u32[2] >> s) | (temp.u32[3] << (32 - s));
+            state.r[o.rt].u32[3] = (temp.u32[3] >> s);
+        } else {
+            state.r[o.rt] = state.r[o.ra];
+        }
+    });
 }
 
 void Translator::rotqmby(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (0 - state.r[o.rb].u32[3]) & 0x1F;
+        const V128 temp = state.r[o.ra];
+        state.r[o.rt] = V128{};
+        for (Size i = 0; i < 16 - s; i++) {
+            state.r[o.rt].u8[i] = temp.u8[i + s];
+        }
+    });
 }
 
 void Translator::rotqmbybi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (0 - (state.r[o.rb].u32[3] >> 3)) & 0x1F;
+        const V128 temp = state.r[o.ra];
+        state.r[o.rt] = V128{};
+        for (Size i = 0; i < 16 - s; i++) {
+            state.r[o.rt].u8[i] = temp.u8[i + s];
+        }
+    });
 }
 
 void Translator::rotqmbyi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto s = (0 - o.i7) & 0x1F;
+        const V128 temp = state.r[o.ra];
+        state.r[o.rt] = V128{};
+        for (Size i = 0; i < 16 - s; i++) {
+            state.r[o.rt].u8[i] = temp.u8[i + s];
+        }
+    });
 }
 
 }  // namespace spu
