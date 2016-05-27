@@ -20,5 +20,12 @@ void SPUTestRunner::rdch() {
 }
 
 void SPUTestRunner::wrch() {
-    // Rotate Word
+    // Write Channel
+    TEST_INSTRUCTION(test_wrch, CA, VALUE, {
+        state.r[1].u32[3] = VALUE;
+        run({ a.wrch(CA, r1); });
+        // TODO: Test results
+    });
+
+    // TODO
 }

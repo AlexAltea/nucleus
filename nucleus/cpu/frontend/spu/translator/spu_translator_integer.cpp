@@ -5,6 +5,18 @@
 
 #include "spu_translator.h"
 #include "nucleus/assert.h"
+#include "nucleus/cpu/frontend/spu/spu_state.h"
+#include "nucleus/cpu/frontend/spu/spu_thread.h"
+
+#define INTERPRET(func) \
+    builder.createCall(builder.getExternFunction( \
+        reinterpret_cast<void*>( \
+        reinterpret_cast<uintptr_t>( \
+        static_cast<void(*)(Instruction)>([](Instruction o) { \
+            auto& state = *static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread())->state.get(); \
+            func \
+        }))), \
+    TYPE_VOID, { TYPE_I32 }), { builder.getConstantI32(code.value) });
 
 namespace cpu {
 namespace frontend {
@@ -708,62 +720,110 @@ void Translator::shlqbyi(Instruction code)
 
 void Translator::rot(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& a = state.r[o.ra];
+        const auto& b = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = (a.u32[i] << b.s32[i]) | (a.u32[i] >> (32 - b.s32[i]));
+        }
+    });
 }
 
 void Translator::roth(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& a = state.r[o.ra];
+        const auto& b = state.r[o.rb];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].u16[i] = (a.u16[i] << b.s16[i]) | (a.u16[i] >> (16 - b.s16[i]));
+        }
+    });
 }
 
 void Translator::rothi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        assert_always("Unimplemented");
+    });
 }
 
 void Translator::rothm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& a = state.r[o.ra];
+        const auto& b = state.r[o.rb];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].u16[i] = (a.u16[i] >> (0 - b.u16[i]));
+        }
+    });
 }
 
 void Translator::rothmi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        assert_always("Unimplemented");
+    });
 }
 
 void Translator::roti(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        assert_always("Unimplemented");
+    });
 }
 
 void Translator::rotm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& a = state.r[o.ra];
+        const auto& b = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].u32[i] = (a.u32[i] >> (0 - b.u32[i]));
+        }
+    });
 }
 
 void Translator::rotma(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& a = state.r[o.ra];
+        const auto& b = state.r[o.rb];
+        for (Size i = 0; i < 4; i++) {
+            state.r[o.rt].s32[i] = (a.s32[i] >> (0 - b.u32[i]));
+        }
+    });
 }
 
 void Translator::rotmah(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& a = state.r[o.ra];
+        const auto& b = state.r[o.rb];
+        for (Size i = 0; i < 8; i++) {
+            state.r[o.rt].s16[i] = (a.s16[i] >> (0 - b.u16[i]));
+        }
+    });
 }
 
 void Translator::rotmahi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        assert_always("Unimplemented");
+    });
 }
 
 void Translator::rotmai(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        assert_always("Unimplemented");
+    });
 }
 
 void Translator::rotmi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        assert_always("Unimplemented");
+    });
 }
 
 void Translator::rotqbi(Instruction code)

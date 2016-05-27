@@ -80,7 +80,7 @@ enum MFCCommand {
     MFC_GETL_CMD        = 0x0044,  // SPU Only
     MFC_GETLF_CMD       = 0x0046,  // SPU Only
     MFC_GETLB_CMD       = 0x0045,  // SPU Only
-    
+
     // MFC Synchronization Commands
     MFC_SNDSIG_CMD      = 0x00A0,
     MFC_SNDSIGB_CMD     = 0x00A1,
@@ -88,7 +88,7 @@ enum MFCCommand {
     MFC_BARRIER_CMD     = 0x00C0,
     MFC_EIEIO_CMD       = 0x00C8,
     MFC_SYNC_CMD        = 0x00CC,
-    
+
     // MFC Atomic Commands
     MFC_GETLLAR_CMD     = 0x00D0,  // SPU Only
     MFC_PUTLLC_CMD      = 0x00B4,  // SPU Only

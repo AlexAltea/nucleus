@@ -88,7 +88,7 @@ void Translator::brnz(Instruction code)
 void Translator::brsl(Instruction code)
 {
     const U32 targetAddr = currentAddress + (code.i16 << 2);
-    
+
     Value* rt = builder.getConstantI32(currentAddress + 4);
     setGPR(code.rt, rt);
 

@@ -5,6 +5,18 @@
 
 #include "spu_translator.h"
 #include "nucleus/assert.h"
+#include "nucleus/cpu/frontend/spu/spu_state.h"
+#include "nucleus/cpu/frontend/spu/spu_thread.h"
+
+#define INTERPRET(func) \
+    builder.createCall(builder.getExternFunction( \
+        reinterpret_cast<void*>( \
+        reinterpret_cast<uintptr_t>( \
+        static_cast<void(*)(Instruction)>([](Instruction i) { \
+            auto& state = *static_cast<frontend::spu::SPUThread*>(CPU::getCurrentThread())->state.get(); \
+            func \
+        }))), \
+    TYPE_VOID, { TYPE_I32 }), { builder.getConstantI32(code.value) });
 
 namespace cpu {
 namespace frontend {
@@ -20,17 +32,60 @@ using namespace cpu::hir;
 // Channel Instructions (Chapter 11)
 void Translator::rchcnt(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        assert_always("Unimplemented");
+    });
 }
 
 void Translator::rdch(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        U32& result = state.r[i.rt].u32[3];
+        switch (i.ca) {
+        case MFC_LSA:
+            result = state.mfc.lsa;
+            break;
+        case MFC_EAH:
+            result = state.mfc.eah;
+            break;
+        case MFC_EAL:
+            result = state.mfc.eal;
+            break;
+        case MFC_Size:
+            result = state.mfc.size;
+            break;
+        default:
+            assert_always("Unimplemented");
+        }
+    });
 }
 
 void Translator::wrch(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        U32 value = state.r[i.rt].u32[3];
+        switch (i.ca) {
+        case MFC_LSA:
+            assert_true(value < 0x40000);
+            state.mfc.lsa = value;
+            break;
+        case MFC_EAH:
+            state.mfc.eah = value;
+            break;
+        case MFC_EAL:
+            state.mfc.eal = value;
+            break;
+        case MFC_Size:
+            assert_true(value <= 16_KB);
+            state.mfc.size = value;
+            break;
+        case MFC_TagID:
+            state.mfc.tag = value;
+            break;
+        default:
+            assert_always("Unimplemented");
+        }
+    });
 }
 
 }  // namespace spu
