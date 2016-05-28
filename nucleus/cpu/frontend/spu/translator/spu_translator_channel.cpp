@@ -34,7 +34,19 @@ using namespace cpu::hir;
 void Translator::rchcnt(Instruction code)
 {
     INTERPRET({
-        assert_always("Unimplemented");
+        U32& rt = state.r[i.rt].u32[3];
+        switch (i.ca) {
+        case SPU_WrOutMbox:        rt = state.chOutMbox.getCount();       break;
+        case SPU_WrOutIntrMbox:    rt = state.chOutIntrMbox.getCount();   break;
+        case SPU_RdInMbox:         rt = state.chInMbox.getCount();        break;
+        case MFC_RdTagStat:        rt = state.chTagStat.getCount();       break;
+        case MFC_RdListStallStat:  rt = state.chListStallStat.getCount(); break;
+        case SPU_RdSigNotify1:     rt = state.chSigNotify1.getCount();    break;
+        case SPU_RdSigNotify2:     rt = state.chSigNotify2.getCount();    break;
+        case MFC_RdAtomicStat:     rt = state.chAtomicStat.getCount();    break;
+        default:
+            assert_always("Unimplemented");
+        }
     });
 }
 
@@ -87,6 +99,8 @@ void Translator::wrch(Instruction code)
             thread.mfcCommand(value);
             break;
         case MFC_WrTagMask:
+            assert_always("Unimplemented");
+            break;
         case MFC_WrTagUpdate:
         default:
             assert_always("Unimplemented");

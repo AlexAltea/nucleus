@@ -334,6 +334,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator.h">
       <Filter>frontend\ppu\translator</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_channel.h">
+      <Filter>frontend\spu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl">

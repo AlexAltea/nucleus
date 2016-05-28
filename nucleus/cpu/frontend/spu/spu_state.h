@@ -6,44 +6,11 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/cpu/frontend/spu/spu_channel.h"
 
 namespace cpu {
 namespace frontend {
 namespace spu {
-
-enum Channel {
-    // SPU Channels
-    SPU_RdEventStat      = 0x00,  // SPU Read Event Status
-    SPU_WrEventMask      = 0x01,  // SPU Write Event Mask
-    SPU_WrEventAck       = 0x02,  // SPU Write Event Acknowledgment
-    SPU_RdSigNotify1     = 0x03,  // SPU Signal Notification 1
-    SPU_RdSigNotify2     = 0x04,  // SPU Signal Notification 2
-    SPU_WrDec            = 0x07,  // SPU Write Decrementer
-    SPU_RdDec            = 0x08,  // SPU Read Decrementer
-    SPU_RdEventMask      = 0x0B,  // SPU Read Event Mask
-    SPU_RdMachStat       = 0x0D,  // SPU Read Machine Status
-    SPU_WrSRR0           = 0x0E,  // SPU Write State Save-and-Restore
-    SPU_RdSRR0           = 0x0F,  // SPU Read State Save-and-Restore
-    SPU_WrOutMbox        = 0x1C,  // SPU Write Outbound Mailbox
-    SPU_RdInMbox         = 0x1D,  // SPU Read Inbound Mailbox
-    SPU_WrOutIntrMbox    = 0x1E,  // SPU Write Outbound Interrupt Mailbox
-
-    // MFC Channels
-    MFC_WrMSSyncReq      = 0x09,  // MFC Write Multisource Synchronization Request
-    MFC_RdTagMask        = 0x0C,  // MFC Read Tag Group Query Mask Channe
-    MFC_LSA              = 0x10,  // MFC LS Address
-    MFC_EAH              = 0x11,  // MFC Effective Address High
-    MFC_EAL              = 0x12,  // MFC Effective Address Low (or List Address)
-    MFC_Size             = 0x13,  // MFC Transfer Size (or List Size)
-    MFC_TagID            = 0x14,  // MFC Tag ID
-    MFC_Cmd              = 0x15,  // MFC Command Opcode | MFC Class ID
-    MFC_WrTagMask        = 0x16,  // MFC Write Tag Group Query Mask
-    MFC_WrTagUpdate      = 0x17,  // MFC Write Tag Status Update Request
-    MFC_RdTagStat        = 0x18,  // MFC Read Tag Group Status
-    MFC_RdListStallStat  = 0x19,  // MFC Read List Stall-and-Notify Tag Status
-    MFC_WrListStallAck   = 0x1A,  // MFC Write List Stall-and-Notify Tag Acknowledgment
-    MFC_RdAtomicStat     = 0x1B,  // MFC Read Atomic Command Status
-};
 
 enum MFCCommand {
     // MFC DMA Command flags
@@ -127,9 +94,21 @@ public:
     V128 r[128];  // General-Purpose Registers
     V128 s[128];  // Special-Purpose Registers
 
-    U32 pc;       // Program Counter
+    // Program Counter
+    U32 pc;
 
-    MFC mfc;      // Memory Flow Controller
+    // Memory Flow Controller
+    MFC mfc;
+
+    // Channels
+    Channel<1, false> chTagStat;       // MFC Tag Group Status
+    Channel<1, false> chListStallStat; // MFC List Stall-and-Notify Tag Acknowledgment
+    Channel<1, false> chAtomicStat;    // MFC Atomic Command Status
+    Channel<4,  true> chInMbox;        // SPU Inbound Mailbox
+    Channel<1,  true> chOutMbox;       // SPU Outbound Mailbox
+    Channel<1,  true> chOutIntrMbox;   // SPU Outbound Interrupt Mailbox
+    Channel<1,  true> chSigNotify1;    // SPU Signal Notification Register 1
+    Channel<1,  true> chSigNotify2;    // SPU Signal Notification Register 2
 };
 
 }  // namespace spu

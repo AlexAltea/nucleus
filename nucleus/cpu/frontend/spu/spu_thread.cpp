@@ -63,26 +63,26 @@ void SPUThread::mfcCommand(U32 cmd) {
     const auto& mfc = state->mfc;
     switch (cmd) {
     case MFC_PUT_CMD:
-	case MFC_PUTB_CMD:
-	case MFC_PUTF_CMD:
-	case MFC_PUTR_CMD:
-	case MFC_PUTRB_CMD:
-	case MFC_PUTRF_CMD:
-	case MFC_GET_CMD:
-	case MFC_GETB_CMD:
-	case MFC_GETF_CMD:
+    case MFC_PUTB_CMD:
+    case MFC_PUTF_CMD:
+    case MFC_PUTR_CMD:
+    case MFC_PUTRB_CMD:
+    case MFC_PUTRF_CMD:
+    case MFC_GET_CMD:
+    case MFC_GETB_CMD:
+    case MFC_GETF_CMD:
         dmaTransfer(cmd, mfc.eal, mfc.lsa, mfc.size);
         break;
 
     case MFC_PUTL_CMD:
-	case MFC_PUTLB_CMD:
-	case MFC_PUTLF_CMD:
-	case MFC_PUTRL_CMD:
-	case MFC_PUTRLB_CMD:
-	case MFC_PUTRLF_CMD:
-	case MFC_GETL_CMD:
-	case MFC_GETLB_CMD:
-	case MFC_GETLF_CMD:
+    case MFC_PUTLB_CMD:
+    case MFC_PUTLF_CMD:
+    case MFC_PUTRL_CMD:
+    case MFC_PUTRLB_CMD:
+    case MFC_PUTRLF_CMD:
+    case MFC_GETL_CMD:
+    case MFC_GETLB_CMD:
+    case MFC_GETLF_CMD:
         dmaTransferList(cmd, mfc.eal, mfc.lsa, mfc.size);
         break;
 
@@ -114,7 +114,7 @@ void SPUThread::dmaTransfer(U32 cmd, U32 eal, U32 lsa, U32 size) {
 
 void SPUThread::dmaTransferList(U32 cmd, U32 eal, U32 lsa, U32 size) {
     const U32 listAddr = eal & 0x3ffff;
-	const U32 listSize = size / 8;
+    const U32 listSize = size / 8;
 
     const auto& memory = parent->memory;
     const auto* list = memory->ptr<MFCListElement>(listAddr);

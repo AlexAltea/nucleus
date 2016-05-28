@@ -216,7 +216,7 @@ public:
     void orhi(RegGPR rt, RegGPR ra, U32 i10);
     void ori(RegGPR rt, RegGPR ra, U32 i10);
     void orx(RegGPR rt, RegGPR ra);
-    void rchcnt(RegGPR rt, RegGPR ra);
+    void rchcnt(RegGPR rt, U32 ca);
     void rdch(RegGPR rt, U32 ca);
     void rot(RegGPR rt, RegGPR ra, RegGPR rb);
     void roth(RegGPR rt, RegGPR ra, RegGPR rb);
