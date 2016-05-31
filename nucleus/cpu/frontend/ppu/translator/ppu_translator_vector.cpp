@@ -5,10 +5,28 @@
 
 #include "ppu_translator.h"
 #include "nucleus/assert.h"
+#include "nucleus/cpu/frontend/ppu/ppu_state.h"
+#include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 
 namespace cpu {
 namespace frontend {
 namespace ppu {
+
+#define INTERPRET(func) \
+    builder.createCall(builder.getExternFunction( \
+        reinterpret_cast<void*>( \
+        reinterpret_cast<uintptr_t>( \
+        static_cast<void(*)(Instruction)>([](Instruction o) { \
+            auto& state = *static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get(); \
+            func \
+        }))), \
+    TYPE_VOID, { TYPE_I32 }), { builder.getConstantI32(code.value) });
+
+// PowerPC Rotation-related functions
+inline U64 rotl64(const U64 x, const U08 n) { return (x << n) | (x >> (64 - n)); }
+inline U64 rotl32(const U32 x, const U08 n) { return rotl64((U64)x | ((U64)x << 32), n); }
+inline U16 rotl16(const U16 x, const U08 n) { return (x << n) | (x >> (16 - n)); }
+inline U08 rotl8 (const U08 x, const U08 n) { return (x << n) | (x >> (8 - n)); }
 
 using namespace cpu::hir;
 
@@ -35,47 +53,56 @@ void Translator::dstst(Instruction code)
 
 void Translator::lvebx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvehx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvewx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvlx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvlxl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvrx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvrxl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvsl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvsr(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::lvx(Instruction code)
@@ -95,52 +122,62 @@ void Translator::lvx(Instruction code)
 
 void Translator::lvxl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::mfvscr(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::mtvscr(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvebx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvehx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvewx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvlx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvlxl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvrx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvrxl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::stvx(Instruction code)
@@ -159,12 +196,14 @@ void Translator::stvx(Instruction code)
 
 void Translator::stvxl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vaddcuw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vaddfp(Instruction code)
@@ -369,17 +408,20 @@ void Translator::vavguw(Instruction code)
 
 void Translator::vcfsx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vcfux(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vcmpbfp(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vcmpbfp_(Instruction code)
@@ -594,12 +636,14 @@ void Translator::vcmpgtuw_(Instruction code)
 
 void Translator::vctsxs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vctuxs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vexptefp(Instruction code)
@@ -639,187 +683,224 @@ void Translator::vmaddfp(Instruction code)
 
 void Translator::vmaxfp(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmaxsb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmaxsh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmaxsw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmaxub(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmaxuh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmaxuw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmhaddshs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmhraddshs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vminfp(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vminsb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vminsh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vminsw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vminub(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vminuh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vminuw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmladduhm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmrghb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmrghh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmrghw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmrglb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmrglh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmrglw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmsummbm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmsumshm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmsumshs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmsumubm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmsumuhm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmsumuhs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmulesb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmulesh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmuleub(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmuleuh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmulosb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmulosh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmuloub(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vmulouh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vnmsubfp(Instruction code)
@@ -861,247 +942,513 @@ void Translator::vor(Instruction code)
 
 void Translator::vperm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vpkpx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vpkshss(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vpkshus(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vpkswss(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vpkswus(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 va = state.v[o.va];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            S32 result = va.s32[i];
+            if (result > 0xFFFF) {
+                result = 0xFFFF;
+            } else if (result < 0) {
+                result = 0;
+            }
+            vd.u16[i + 4] = result;
+            result = vb.s32[i];
+
+            if (result > 0xFFFF) {
+                result = 0xFFFF;
+            } else if (result < 0) {
+                result = 0;
+            }
+            vd.u16[i] = result;
+        }
+    });
 }
 
 void Translator::vpkuhum(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 va = state.v[o.va];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 8; i++) {
+            vd.u8[i + 8] = va.u8[i*2];
+            vd.u8[i + 0] = vb.u8[i*2];
+        }
+    });
 }
 
 void Translator::vpkuhus(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 va = state.v[o.va];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 8; i++) {
+            U16 result = va.u16[i];
+            if (result > 0xFF) {
+                result = 0xFF;
+            }
+            vd.u8[i + 8] = (U08)result;
+            result = vb.u16[i];
+            if (result > 0xFF) {
+                result = 0xFF;
+            }
+            vd.u8[i] = (U08)result;
+        }
+    });
 }
 
 void Translator::vpkuwum(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 va = state.v[o.va];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.u16[i + 4] = va.u16[i * 2];
+            vd.u16[i + 0] = vb.u16[i * 2];
+        }
+    });
 }
 
 void Translator::vpkuwus(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 va = state.v[o.va];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            U32 result = va.u32[i];
+            if (result > 0xFFFF) {
+                result = 0xFFFF;
+            }
+            vd.u16[i + 4] = result;
+            result = vb.u32[i];
+            if (result > 0xFFFF) {
+                result = 0xFFFF;
+            }
+            vd.u16[i] = result;
+        }
+    });
 }
 
 void Translator::vrefp(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vrfim(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.f32[i] = std::floor(vb.f32[i]);
+        }
+    });
 }
 
 void Translator::vrfin(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.f32[i] = std::nearbyint(vb.f32[i]);
+        }
+    });
 }
 
 void Translator::vrfip(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.f32[i] = std::ceil(vb.f32[i]);
+        }
+    });
 }
 
 void Translator::vrfiz(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.f32[i] = std::truncf(vb.f32[i]);
+        }
+    });
 }
 
 void Translator::vrlb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 16; i++) {
+            vd.u8[i] = rotl8(va.u8[i], vb.u8[i] & 0x7);
+        }
+    });
 }
 
 void Translator::vrlh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 8; i++) {
+            vd.u16[i] = rotl16(va.u16[i], vb.u8[i*2] & 0xF);
+        }
+    });
 }
 
 void Translator::vrlw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.u32[i] = rotl32(va.u32[i], vb.u8[i*4] & 0x1F);
+        }
+    });
 }
 
 void Translator::vrsqrtefp(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsel(Instruction code)
 {
-    assert_always("Unimplemented");
+    Value* va = getGPR(code.va);
+    Value* vb = getGPR(code.vb);
+    Value* vc = getGPR(code.vc);
+    Value* vd;
+
+    Value* selA = builder.createAnd(va, builder.createNot(vc));
+    Value* selB = builder.createAnd(vb, vc);
+    vd = builder.createOr(selA, selB);
+
+    setGPR(code.vd, vd);
 }
 
 void Translator::vsl(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 va = state.v[o.va];
+        U08 sh = state.v[o.vb].u8[0] & 0x7;
+        vd.u8[0] = va.u8[0] << sh;
+        for (Size i = 1; i < 16; i++) {
+            vd.u8[i] = (va.u8[i] << sh) | (va.u8[i - 1] >> (8 - sh));
+        }
+    });
 }
 
 void Translator::vslb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 16; i++) {
+            state.v[o.vd].u8[i] = va.u8[i] << (vb.u8[i] & 0x7);
+        }
+    });
 }
 
 void Translator::vsldoi(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        V128 vconcat[2];
+        vconcat[0] = state.v[o.vb];
+        vconcat[1] = state.v[o.va];
+        const U08* buffer = reinterpret_cast<U08*>(vconcat);
+        for (Size i = 0; i < 16; i++) {
+            state.v[o.vd].u8[15 - i] = buffer[31 - (i + o.vshb)];
+        }
+    });
 }
 
 void Translator::vslh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 8; i++) {
+            state.v[o.vd].u16[i] = va.u16[i] << (vb.u16[i] & 0xF);
+        }
+    });
 }
 
 void Translator::vslo(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        V128 vd = V128{};
+        V128 va = state.v[o.va];
+        U08 shb = (state.v[o.vb].u8[0] >> 3) & 0xF;
+        for (Size i = 0; i < 16 - shb; i++) {
+            vd.u8[15 - i] = va.u8[15 - (i + shb)];
+        }
+        state.v[o.vd] = vd;
+    });
 }
 
 void Translator::vslw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            state.v[o.vd].u32[i] = va.u32[i] << (vb.u32[i] & 0x1F);
+        }
+    });
 }
 
 void Translator::vspltb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U08 b = state.v[o.vb].u8[15 - o.vuimm];
+        for (Size i = 0; i < 16; i++) {
+            state.v[o.vd].u8[i] = b;
+        }
+    });
 }
 
 void Translator::vsplth(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U16 h = state.v[o.vb].u16[7 - o.vuimm];
+        for (Size i = 0; i < 8; i++) {
+            state.v[o.vd].u16[i] = h;
+        }
+    });
 }
 
 void Translator::vspltisb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        for (Size i = 0; i < 16; i++) {
+            state.v[o.vd].s8[i] = o.vsimm;
+        }
+    });
 }
 
 void Translator::vspltish(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        for (Size i = 0; i < 8; i++) {
+            state.v[o.vd].s16[i] = o.vsimm;
+        }
+    });
 }
 
 void Translator::vspltisw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        for (Size i = 0; i < 4; i++) {
+            state.v[o.vd].s32[i] = o.vsimm;
+        }
+    });
 }
 
 void Translator::vspltw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        U32 w = state.v[o.vb].u32[3 - o.vuimm];
+        for (Size i = 0; i < 4; i++) {
+            state.v[o.vd].u32[i] = w;
+        }
+    });
 }
 
 void Translator::vsr(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 va = state.v[o.va];
+        U08 sh = state.v[o.vb].u8[0] & 0x7;
+        vd.u8[15] = va.u8[15] >> sh;
+        for (Size i = 0; i < 14; i++) {
+            vd.u8[i] = (va.u8[i] >> sh) | (va.u8[i + 1] << (8 - sh));
+        }
+    });
 }
 
 void Translator::vsrab(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 16; i++) {
+            state.v[o.vd].s8[i] = va.s8[i] >> (vb.u8[i] & 0x7);
+        }
+    });
 }
 
 void Translator::vsrah(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 8; i++) {
+            state.v[o.vd].s16[i] = va.s16[i] >> (vb.u16[i] & 0xF);
+        }
+    });
 }
 
 void Translator::vsraw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        for (Size i = 0; i < 4; i++) {
+            vd.s32[i] = va.s32[i] >> (vb.u32[i] & 0x1F);
+        }
+    });
 }
 
 void Translator::vsrb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        
+        for (Size i = 0; i < 16; i++) {
+            vd.u8[i] = va.u8[i] >> (vb.u8[i] & 0x7);
+        }
+    });
 }
 
 void Translator::vsrh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        for (Size i = 0; i < 8; i++) {
+            vd.u16[i] = va.u16[i] >> (vb.u16[i] & 0xF);
+        }
+    });
 }
 
 void Translator::vsro(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        V128 vd = V128{};
+        V128 va = state.v[o.va];
+        U08 shb = (state.v[o.vb].u8[0] >> 3) & 0xF;
+        for (Size i = 0; i < 16 - shb; i++) {
+            vd.u8[i] = va.u8[i + shb];
+        }
+        state.v[o.vd] = vd;
+    });
 }
 
 void Translator::vsrw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            state.v[o.vd].u32[i] = va.u32[i] >> (vb.u32[i] & 0x1F);
+        }
+    });
 }
 
 void Translator::vsubcuw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsubfp(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsubsbs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsubshs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsubsws(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsububm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsububs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsubuhm(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsubuhs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+    });
 }
 
 void Translator::vsubuwm(Instruction code)
@@ -1111,62 +1458,204 @@ void Translator::vsubuwm(Instruction code)
 
 void Translator::vsubuws(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        for (Size i = 0; i < 4; i++) {
+            S64 result = (S64)va.u32[i] - (S64)vb.u32[i];
+            if (result < 0) {
+                vd.u32[i] = 0;
+            } else {
+                vd.u32[i] = (U32)result;
+            }
+        }
+    });
 }
 
 void Translator::vsum2sws(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        vd = V128{};
+        for (Size i = 0; i < 2; i++) {
+            S64 sum = 0;
+            sum += va.s32[i*2 + 0];
+            sum += va.s32[i*2 + 1];
+            sum += vb.s32[i*2 + 0];
+            if (sum > 0x7FFFFFFF) {
+                vd.s32[i*2] = 0x7FFFFFFF;
+            } else if (sum < 0x80000000) {
+                vd.s32[i*2] = 0x80000000;
+            } else {
+                vd.s32[i*2] = (S32)sum;
+            }
+        }
+    });
 }
 
 void Translator::vsum4sbs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        for (Size i = 0; i < 4; i++) {
+            S64 sum = vb.s32[i];
+            for (Size j = 0; j < 4; j++) {
+                sum += va.s8[i*4 + j];
+            }
+            if (sum > 0x7FFFFFFF) {
+                vd.s32[i] = 0x7FFFFFFF;
+            } else if (sum < 0x80000000) {
+                vd.s32[i] = 0x80000000;
+            } else {
+                vd.s32[i] = (S32)sum;
+            }
+        }
+    });
 }
 
 void Translator::vsum4shs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        for (Size i = 0; i < 4; i++) {
+            S64 sum = vb.s32[i];
+            for (Size j = 0; j < 2; j++) {
+                sum += va.s16[i*2 + j];
+            }
+            if (sum > 0x7FFFFFFF) {
+                vd.s32[i] = 0x7FFFFFFF;
+            } else if (sum < 0x80000000) {
+                vd.s32[i] = 0x80000000;
+            } else {
+                vd.s32[i] = (S32)sum;
+            }
+        }
+    });
 }
 
 void Translator::vsum4ubs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        for (Size i = 0; i < 4; i++) {
+            U64 sum = vb.u32[i];
+            for (Size j = 0; j < 4; j++) {
+                sum += va.u8[i*4 + j];
+            }
+            if (sum > 0xFFFFFFFF) {
+                vd.u32[i] = 0xFFFFFFFF;
+            } else {
+                vd.u32[i] = (U32)sum;
+            }
+        }
+    });
 }
 
 void Translator::vsumsws(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+
+        S64 sum = vb.s32[0];
+        for (Size i = 0; i < 4; i++) {
+            sum += va.s32[i];
+        }
+        state.v[o.vd] = V128{};
+        if (sum > 0x7FFFFFFF) {
+            state.v[o.vd].s32[0] = 0x7FFFFFFF;
+        } else if (sum < 0x80000000) {
+            state.v[o.vd].s32[0] = 0x80000000;
+        } else {
+            state.v[o.vd].s32[0] = (S32)sum;
+        }
+    });
 }
 
 void Translator::vupkhpx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.s8[i * 4 + 3] = (vb.s8[8 + i*2 + 1] >> 7);
+            vd.u8[i * 4 + 2] = (vb.u8[8 + i*2 + 1] >> 2) & 0x1F;
+            vd.u8[i * 4 + 1] = ((vb.u8[8 + i*2 + 1] & 0x3) << 3) | ((vb.u8[8 + i*2 + 0] >> 5) & 0x7);
+            vd.u8[i * 4 + 0] = (vb.u8[8 + i*2 + 0] & 0x1F);
+        }
+    });
 }
 
 void Translator::vupkhsb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 8; i++) {
+            vd.s16[i] = vb.s8[8 + i];
+        }
+    });
 }
 
 void Translator::vupkhsh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.s32[i] = vb.s16[4 + i];
+        }
+    });
 }
 
 void Translator::vupklpx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.s8[i*4 + 3] = (vb.s8[i*2 + 1] >> 7);
+            vd.u8[i*4 + 2] = (vb.u8[i*2 + 1] >> 2) & 0x1F;
+            vd.u8[i*4 + 1] = ((vb.u8[i*2 + 1] & 0x3) << 3) | ((vb.u8[i*2 + 0] >> 5) & 0x7);
+            vd.u8[i*4 + 0] = (vb.u8[i*2 + 0] & 0x1F);
+        }
+    });
 }
 
 void Translator::vupklsb(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 8; i++) {
+            vd.s16[i] = vb.s8[i];
+        }
+    });
 }
 
 void Translator::vupklsh(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        V128 vb = state.v[o.vb];
+        for (Size i = 0; i < 4; i++) {
+            vd.s32[i] = vb.s16[i];
+        }
+    });
 }
 
 void Translator::vxor(Instruction code)
