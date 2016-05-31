@@ -2131,6 +2131,9 @@ struct VADD_V128 : Sequence<VADD_V128, I<OPCODE_VADD, V128Op, V128Op, V128Op>> {
                     e.vpaddd(dest, src1, src2);
                 }
                 break;
+            case COMPONENT_F32:
+                e.vaddps(dest, src1, src2);
+                break;
             default:
                 assert_always("Unimplemented");
             }
@@ -2175,6 +2178,9 @@ struct VSUB_V128 : Sequence<VSUB_V128, I<OPCODE_VSUB, V128Op, V128Op, V128Op>> {
                 } else {
                     e.vpsubd(dest, src1, src2);
                 }
+                break;
+            case COMPONENT_F32:
+                e.vsubps(dest, src1, src2);
                 break;
             default:
                 assert_always("Unimplemented");
