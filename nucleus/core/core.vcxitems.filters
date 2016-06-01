@@ -12,6 +12,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\nucleus.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\fmt.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)host.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
@@ -37,6 +38,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\target.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\literals.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\version.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)host.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="externals">

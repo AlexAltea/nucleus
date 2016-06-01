@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/core/host.h"
 #include "nucleus/audio/audio.h"
 #include "nucleus/graphics/graphics.h"
 

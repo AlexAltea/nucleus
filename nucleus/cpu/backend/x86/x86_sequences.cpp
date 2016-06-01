@@ -2219,7 +2219,7 @@ struct VABS_V128 : Sequence<VABS_V128, I<OPCODE_VABS, V128Op, V128Op>> {
     static void emit(X86Emitter& e, InstrType& i) {
         switch (COMPONENT_TYPE) {
         case COMPONENT_I8:
-            if (1) {//e.isExtensionAvailable(X86Extension::SSSE3)) {
+            if (e.isExtensionAvailable(X86Extension::SSSE3)) {
                 e.vpabsb(i.dest, i.src1);
             } else {
                 assert_always("Unimplemented");

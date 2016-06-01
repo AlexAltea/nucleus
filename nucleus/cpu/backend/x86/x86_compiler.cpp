@@ -29,24 +29,27 @@ X86Compiler::X86Compiler(const Settings& settings) : Compiler(settings) {
     init();
 }
 
-void X86Compiler::init() {
-    // Initialize sequences
-    X86Sequences::init();
-
-    // Set extensions information
+void X86Compiler::setExtensionsHost() {
 #ifdef NUCLEUS_ARCH_X86
     extensions = 0;
     int data[4];
     __cpuid(data, 0x00000001);
-    extensions |= ((data[2] >> 28) & 1) ? X86Extension::AVX : 0;
+    extensions |= ((data[2] >>  9) & 1) ? X86Extension::SSSE3 : 0;
+    extensions |= ((data[2] >> 28) & 1) ? X86Extension::AVX   : 0;
     extensions |= 0 ? X86Extension::AVX2 : 0;
     extensions |= 0 ? X86Extension::BMI2 : 0;
     __cpuid(data, 0x80000001);
     extensions |= ((data[2] >>  5) & 1) ? X86Extension::LZCNT : 0;
     extensions |= 0 ? X86Extension::MOVBE : 0;
 #endif
+}
+
+void X86Compiler::init() {
+    // Initialize sequences
+    X86Sequences::init();
 
     // Set target information
+    setExtensionsHost();
 #if defined(NUCLEUS_TARGET_WINDOWS)
     targetInfo.regSets.resize(2);
     targetInfo.regSets[0].types = RegisterSet::TYPE_INT;

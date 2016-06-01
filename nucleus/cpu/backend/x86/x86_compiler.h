@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/core/host.h"
 #include "nucleus/cpu/backend/compiler.h"
 
 #include <memory>
@@ -31,7 +32,8 @@ private:
 
 public:
     // Available x86 extensions
-    U32 extensions;
+    U32 extensions = 0;
+    void setExtensionsHost();
 
     // Constructor
     X86Compiler();

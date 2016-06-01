@@ -454,9 +454,9 @@ void Translator::vcmpeqfp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_F32);
-    auto vd = builder.createSExt(result, TYPE_I32);
+    vd = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_F32);
 
     setVR(code.vd, vd);
 }
@@ -471,9 +471,9 @@ void Translator::vcmpequb(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_I8);
-    auto vd = builder.createSExt(result, TYPE_I8);
+    vd = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_I8);
 
     setVR(code.vd, vd);
 }
@@ -488,9 +488,9 @@ void Translator::vcmpequh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_I16);
-    auto vd = builder.createSExt(result, TYPE_I16);
+    vd = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_I16);
 
     setVR(code.vd, vd);
 }
@@ -505,9 +505,9 @@ void Translator::vcmpequw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_I32);
-    auto vd = builder.createSExt(result, TYPE_I32);
+    vd = builder.createVCmp(va, vb, COMPARE_EQ | COMPONENT_I32);
 
     setVR(code.vd, vd);
 }
@@ -522,9 +522,9 @@ void Translator::vcmpgefp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_SGE | COMPONENT_F32);
-    auto vd = builder.createSExt(result, TYPE_I32);
+    vd = builder.createVCmp(va, vb, COMPARE_SGE | COMPONENT_F32);
 
     setVR(code.vd, vd);
 }
@@ -539,9 +539,9 @@ void Translator::vcmpgtfp(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_F32);
-    auto vd = builder.createSExt(result, TYPE_I32);
+    vd = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_F32);
 
     setVR(code.vd, vd);
 }
@@ -556,9 +556,9 @@ void Translator::vcmpgtsb(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_I8);
-    auto vd = builder.createSExt(result, TYPE_I8);
+    vd = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_I8);
 
     setVR(code.vd, vd);
 }
@@ -573,9 +573,9 @@ void Translator::vcmpgtsh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_I16);
-    auto vd = builder.createSExt(result, TYPE_I16);
+    vd = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_I16);
 
     setVR(code.vd, vd);
 }
@@ -590,9 +590,9 @@ void Translator::vcmpgtsw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_I32);
-    auto vd = builder.createSExt(result, TYPE_I32);
+    vd = builder.createVCmp(va, vb, COMPARE_SGT | COMPONENT_I32);
 
     setVR(code.vd, vd);
 }
@@ -607,9 +607,9 @@ void Translator::vcmpgtub(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_UGT | COMPONENT_I8);
-    auto vd = builder.createSExt(result, TYPE_I8);
+    vd = builder.createVCmp(va, vb, COMPARE_UGT | COMPONENT_I8);
 
     setVR(code.vd, vd);
 }
@@ -624,9 +624,9 @@ void Translator::vcmpgtuh(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_UGT | COMPONENT_I16);
-    auto vd = builder.createSExt(result, TYPE_I16);
+    vd = builder.createVCmp(va, vb, COMPARE_UGT | COMPONENT_I16);
 
     setVR(code.vd, vd);
 }
@@ -641,9 +641,9 @@ void Translator::vcmpgtuw(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
+    Value* vd;
 
-    auto result = builder.createVCmp(va, vb, COMPARE_UGT | COMPONENT_I32);
-    auto vd = builder.createSExt(result, TYPE_I32);
+    vd = builder.createVCmp(va, vb, COMPARE_UGT | COMPONENT_I32);
 
     setVR(code.vd, vd);
 }
