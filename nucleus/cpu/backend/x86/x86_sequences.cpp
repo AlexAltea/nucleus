@@ -2304,6 +2304,12 @@ struct VCMP_V128 : Sequence<VCMP_V128, I<OPCODE_VCMP, V128Op, V128Op, V128Op>> {
                 assert_always("Unimplemented");
             }
         };
+        auto vcmpUGT = [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            assert_always("Unimplemented");
+        };
+        auto vcmpUGE = [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            assert_always("Unimplemented");
+        };
         auto cmpFlags = i.instr->flags & _FLAGS_MASK;
         switch (cmpFlags) {
         case COMPARE_EQ:  
@@ -2315,6 +2321,21 @@ struct VCMP_V128 : Sequence<VCMP_V128, I<OPCODE_VCMP, V128Op, V128Op, V128Op>> {
             e.vpxor(i.dest, i.dest, e.xmm0);
             break;
 
+        // Greater comparisons
+        case COMPARE_SGE:
+            emitBinaryXmmOp(e, i, vcmpSGE);
+            break;
+        case COMPARE_SGT:
+            emitBinaryXmmOp(e, i, vcmpSGT);
+            break;
+        case COMPARE_UGE:
+            emitBinaryXmmOp(e, i, vcmpUGE);
+            break;
+        case COMPARE_UGT:
+            emitBinaryXmmOp(e, i, vcmpUGT);
+            break;
+        
+        // Lower comparisons
         case COMPARE_SLT:
             emitBinaryXmmOp(e, i, vcmpSGE);
             e.vpxor(e.xmm0, e.xmm0, e.xmm0);
@@ -2325,28 +2346,15 @@ struct VCMP_V128 : Sequence<VCMP_V128, I<OPCODE_VCMP, V128Op, V128Op, V128Op>> {
             e.vpxor(e.xmm0, e.xmm0, e.xmm0);
             e.vpxor(i.dest, i.dest, e.xmm0);
             break;
-        case COMPARE_SGE:
-            emitBinaryXmmOp(e, i, vcmpSGE);
-            break;
-        case COMPARE_SGT:
-            emitBinaryXmmOp(e, i, vcmpSGT);
-            break;
-
         case COMPARE_ULT:
-            assert_always("Unimplemented");
+            emitBinaryXmmOp(e, i, vcmpUGE);
             e.vpxor(e.xmm0, e.xmm0, e.xmm0);
             e.vpxor(i.dest, i.dest, e.xmm0);
             break;
         case COMPARE_ULE:
-            assert_always("Unimplemented");
+            emitBinaryXmmOp(e, i, vcmpUGT);
             e.vpxor(e.xmm0, e.xmm0, e.xmm0);
             e.vpxor(i.dest, i.dest, e.xmm0);
-            break;
-        case COMPARE_UGE:
-            assert_always("Unimplemented");
-            break;
-        case COMPARE_UGT:
-            assert_always("Unimplemented");
             break;
         default:
             assert_always("Unexpected");

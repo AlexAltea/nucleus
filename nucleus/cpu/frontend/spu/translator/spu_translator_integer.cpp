@@ -292,7 +292,7 @@ void Translator::bg(Instruction code)
     Value* rb = getGPR(code.rb);
     Value* rt;
 
-    auto result = builder.createVCmpUGT(ra, rb, COMPONENT_I32);
+    auto result = builder.createVCmp(ra, rb, COMPARE_UGT | COMPONENT_I32);
     rt = builder.createZExt(result, TYPE_I32);
 
     setGPR(code.rt, rt);
