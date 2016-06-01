@@ -421,12 +421,22 @@ void Translator::vavguw(Instruction code)
 
 void Translator::vcfsx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U32 scale = 1 << o.vuimm;
+        for (int w = 0; w < 4; w++) {
+            state.v[o.vd].f32[w] = ((F32)state.v[o.vb].s32[w]) / scale;
+        }
+    });
 }
 
 void Translator::vcfux(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U32 scale = 1 << o.vuimm;
+        for (int w = 0; w < 4; w++) {
+            state.v[o.vd].f32[w] = ((F32)state.v[o.vb].u32[w]) / scale;
+        }
+    });
 }
 
 void Translator::vcmpbfp(Instruction code)
@@ -646,12 +656,37 @@ void Translator::vcmpgtuw_(Instruction code)
 
 void Translator::vctsxs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        int nScale = 1 << o.vuimm;
+        for (int w = 0; w < 4; w++) {
+            F32 result = state.v[o.vb].f32[w] * nScale;
+
+            if (result > 0x7FFFFFFF)
+                state.v[o.vd].s32[w] = 0x7FFFFFFF;
+            else if (result < -0x80000000LL)
+                state.v[o.vd].s32[w] = -0x80000000LL;
+            else {
+                state.v[o.vd].s32[w] = (S32)result;
+            }
+        }
+    });
 }
 
 void Translator::vctuxs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        int nScale = 1 << o.vuimm;
+        for (int w = 0; w < 4; w++) {
+            S64 result = (S64)(state.v[o.vb].f32[w] * nScale);
+
+            if (result > 0xFFFFFFFF)
+                state.v[o.vd].u32[w] = 0xFFFFFFFF;
+            else if (result < 0)
+                state.v[o.vd].u32[w] = 0;
+            else
+                state.v[o.vd].u32[w] = (U32)result;
+        }
+    });
 }
 
 void Translator::vexptefp(Instruction code)

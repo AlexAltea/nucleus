@@ -44,7 +44,9 @@ enum MemoryFlags : OpcodeFlags {
     ENDIAN_LITTLE   = 1 << 1,  // Little Endian memory access
 };
 
-enum ComponentFlags : OpcodeFlags {
+enum VectorFlags : OpcodeFlags {
+    _FLAGS_SHIFT     = 0,
+    _FLAGS_MASK      = 0xFF,
     _COMPONENT_SHIFT = 16,
     _COMPONENT_MASK  = 0xFF,
 

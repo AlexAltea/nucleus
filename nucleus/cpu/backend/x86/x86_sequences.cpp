@@ -2269,6 +2269,92 @@ struct VABS_V128 : Sequence<VABS_V128, I<OPCODE_VABS, V128Op, V128Op>> {
 };
 
 /**
+ * OPCODE_VCMP
+ */
+struct VCMP_V128 : Sequence<VCMP_V128, I<OPCODE_VCMP, V128Op, V128Op, V128Op>> {
+    static void emit(X86Emitter& e, InstrType& i) {
+        auto vcmpEQ = [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            switch (COMPONENT_TYPE) {
+            case TYPE_I8:   e.vpcmpeqb(dest, src1, src2);  break;
+            case TYPE_I16:  e.vpcmpeqw(dest, src1, src2);  break;
+            case TYPE_I32:  e.vpcmpeqd(dest, src1, src2);  break;
+            case TYPE_F32:  e.vcmpeqps(dest, src1, src2);  break;
+            default:
+                assert_always("Unimplemented");
+            }
+        };
+        auto vcmpSGT = [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            switch (COMPONENT_TYPE) {
+            case TYPE_I8:   e.vpcmpgtb(dest, src1, src2);  break;
+            case TYPE_I16:  e.vpcmpgtw(dest, src1, src2);  break;
+            case TYPE_I32:  e.vpcmpgtd(dest, src1, src2);  break;
+            case TYPE_F32:  e.vcmpgtps(dest, src1, src2);  break;
+            default:
+                assert_always("Unimplemented");
+            }
+        };
+        auto vcmpSGE = [&i](X86Emitter& e, auto dest, auto src1, auto src2) {
+            switch (COMPONENT_TYPE) {
+            case TYPE_I8:   e.vpcmpgtb(dest, src1, src2); e.vpcmpeqb(e.xmm0, src1, src2); e.vpor(dest, e.xmm0); break;
+            case TYPE_I16:  e.vpcmpgtw(dest, src1, src2); e.vpcmpeqw(e.xmm0, src1, src2); e.vpor(dest, e.xmm0); break;
+            case TYPE_I32:  e.vpcmpgtd(dest, src1, src2); e.vpcmpeqd(e.xmm0, src1, src2); e.vpor(dest, e.xmm0); break;
+            case TYPE_F32:  e.vcmpgeps(dest, src1, src2); break;
+            case TYPE_F64:  e.vcmpgepd(dest, src1, src2); break;
+            default:
+                assert_always("Unimplemented");
+            }
+        };
+        auto cmpFlags = i.instr->flags & _FLAGS_MASK;
+        switch (cmpFlags) {
+        case COMPARE_EQ:  
+            emitBinaryXmmOp(e, i, vcmpEQ);
+            break;
+        case COMPARE_NE:
+            emitBinaryXmmOp(e, i, vcmpEQ);
+            e.vpxor(e.xmm0, e.xmm0, e.xmm0);
+            e.vpxor(i.dest, i.dest, e.xmm0);
+            break;
+
+        case COMPARE_SLT:
+            emitBinaryXmmOp(e, i, vcmpSGE);
+            e.vpxor(e.xmm0, e.xmm0, e.xmm0);
+            e.vpxor(i.dest, i.dest, e.xmm0);
+            break;
+        case COMPARE_SLE:
+            emitBinaryXmmOp(e, i, vcmpSGT);
+            e.vpxor(e.xmm0, e.xmm0, e.xmm0);
+            e.vpxor(i.dest, i.dest, e.xmm0);
+            break;
+        case COMPARE_SGE:
+            emitBinaryXmmOp(e, i, vcmpSGE);
+            break;
+        case COMPARE_SGT:
+            emitBinaryXmmOp(e, i, vcmpSGT);
+            break;
+
+        case COMPARE_ULT:
+            assert_always("Unimplemented");
+            e.vpxor(e.xmm0, e.xmm0, e.xmm0);
+            e.vpxor(i.dest, i.dest, e.xmm0);
+            break;
+        case COMPARE_ULE:
+            assert_always("Unimplemented");
+            e.vpxor(e.xmm0, e.xmm0, e.xmm0);
+            e.vpxor(i.dest, i.dest, e.xmm0);
+            break;
+        case COMPARE_UGE:
+            assert_always("Unimplemented");
+            break;
+        case COMPARE_UGT:
+            assert_always("Unimplemented");
+            break;
+        default:
+            assert_always("Unexpected");
+        }
+    }
+};
+
+/**
  * OPCODE_EXTRACT
  */
 struct EXTRACT_I8_V128 : Sequence<EXTRACT_I8_V128, I<OPCODE_EXTRACT, I8Op, V128Op, I8Op>> {
@@ -2510,6 +2596,7 @@ void X86Sequences::init() {
         registerSequence<VSUB_V128>();
         registerSequence<VAVG_V128>();
         registerSequence<VABS_V128>();
+        registerSequence<VCMP_V128>();
         registerSequence<EXTRACT_I8_V128, EXTRACT_I16_V128, EXTRACT_I32_V128>();
         registerSequence<INSERT_V128_I8, INSERT_V128_I16, INSERT_V128_I32, INSERT_V128_I64>();
         registerSequence<SHUFFLE_V128>();
