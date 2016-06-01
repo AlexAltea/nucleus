@@ -230,6 +230,28 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
             tmp0 = builder.opDot(src0, src1);
             setDestVector(builder.opCompositeConstruct(vecTypeId, {tmp0, tmp0, tmp0, tmp0}));
             break;
+        case RSX_VP_OPCODE_VEC_SEQ:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdEQ(src0, src1));
+        case RSX_VP_OPCODE_VEC_SFL:
+            assert_always("Unimplemented");
+            break;
+        case RSX_VP_OPCODE_VEC_SGT:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdGT(src0, src1));
+        case RSX_VP_OPCODE_VEC_SLE:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdLE(src0, src1));
+        case RSX_VP_OPCODE_VEC_SNE:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdNE(src0, src1));
+        case RSX_VP_OPCODE_VEC_STR:
+            assert_always("Unimplemented");
+            break;
         default:
             logger.error(LOG_GPU, "VPE: Unknown VEC opcode (%d)", instr.opcode_vec);
         }

@@ -350,6 +350,15 @@ std::string Direct3D12Shader::emitBinaryOp(Instruction* i, Opcode type, char sym
     return format(PADDING "%s v%d = v%d %c v%d;\n", typeStr.c_str(), result, lhs, symbol, rhs);
 }
 
+std::string Direct3D12Shader::emitBinaryOp(hir::Instruction* i, hir::Opcode type, const char* symbol) {
+    Literal result = i->resultId;
+    Literal lhs = i->operands[0];
+    Literal rhs = i->operands[1];
+
+    std::string typeStr = getType(i->typeId);
+    return format(PADDING "%s v%d = v%d %s v%d;\n", typeStr.c_str(), result, lhs, symbol, rhs);
+}
+
 std::string Direct3D12Shader::emitBinaryFunctionOp(Instruction* i, Opcode type, const char* function) {
     Literal result = i->resultId;
     Literal lhs = i->operands[0];
@@ -515,6 +524,21 @@ std::string Direct3D12Shader::compile(Instruction* i) {
         return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "dot");
     case OP_MATRIX_TIMES_VECTOR:
         return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "mul");
+
+    // Comparison ops
+    case OP_FORD_EQUAL:
+        return emitBinaryOp(i, OP_TYPE_INT, "==");
+    case OP_FORD_NOT_EQUAL:
+        return emitBinaryOp(i, OP_TYPE_INT, "!=");
+    case OP_FORD_LESS_THAN:
+        return emitBinaryOp(i, OP_TYPE_INT,  "<");
+    case OP_FORD_GREATER_THAN:
+        return emitBinaryOp(i, OP_TYPE_INT,  ">");
+    case OP_FORD_LESS_THAN_EQUAL:
+        return emitBinaryOp(i, OP_TYPE_INT, "<=");
+    case OP_FORD_GREATER_THAN_EQUAL:
+        return emitBinaryOp(i, OP_TYPE_INT, ">=");
+
     case OP_VECTOR_SHUFFLE:
         return emitOpVectorShuffle(i);
     case OP_COMPOSITE_EXTRACT:

@@ -404,6 +404,17 @@ Literal Builder::opMatrixTimesVector(Literal matrix, Literal vector) {
     return i->resultId;
 }
 
+Literal Builder::emitComparisonOp(Opcode opcode, Literal lhs, Literal rhs) {
+    Literal componentCount = getInstr(getType(lhs))->operands[1];
+
+    Instruction* i = createInstr(opcode, true);
+    i->typeId = opTypeVector(opTypeBool(), componentCount);
+    i->addOperandLiteral(lhs);
+    i->addOperandLiteral(rhs);
+    curBlock->instructions.push_back(i);
+    return i->resultId;
+}
+
 Literal Builder::opImageSampleImplicitLod(Literal typeId, Literal image, Literal coordinate) {
     Instruction* i = createInstr(OP_IMAGE_SAMPLE_IMPLICIT_LOD, true);
     i->typeId = typeId;

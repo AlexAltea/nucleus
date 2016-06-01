@@ -210,6 +210,36 @@ void RSXFragmentProgram::decompile(const rsx_fp_instruction_t* buffer) {
             src1 = getSourceVector(1);
             setDestVector(builder.opFMul(src0, src1));
             break;
+        case RSX_FP_OPCODE_SLT:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdLT(src0, src1));
+            break;
+        case RSX_FP_OPCODE_SGE:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdGE(src0, src1));
+            break;
+        case RSX_FP_OPCODE_SLE:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdLE(src0, src1));
+            break;
+        case RSX_FP_OPCODE_SGT:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdGT(src0, src1));
+            break;
+        case RSX_FP_OPCODE_SNE:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdNE(src0, src1));
+            break;
+        case RSX_FP_OPCODE_SEQ:
+            src0 = getSourceVector(0);
+            src1 = getSourceVector(1);
+            setDestVector(builder.opFOrdEQ(src0, src1));
+            break;
         case RSX_FP_OPCODE_TEX:
             src0 = getSourceVector(0);
             tex = getSamplerReg(instr.tex);

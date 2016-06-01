@@ -135,6 +135,14 @@ public:
     Literal opFNegate(Literal value);
     Literal opMatrixTimesVector(Literal matrix, Literal vector);
 
+    Literal emitComparisonOp(Opcode opcode, Literal lhs, Literal rhs);
+    Literal opFOrdEQ(Literal lhs, Literal rhs) { return emitComparisonOp(OP_FORD_EQUAL, lhs, rhs); }
+    Literal opFOrdNE(Literal lhs, Literal rhs) { return emitComparisonOp(OP_FORD_NOT_EQUAL, lhs, rhs); }
+    Literal opFOrdLT(Literal lhs, Literal rhs) { return emitComparisonOp(OP_FORD_LESS_THAN, lhs, rhs); }
+    Literal opFOrdLE(Literal lhs, Literal rhs) { return emitComparisonOp(OP_FORD_LESS_THAN_EQUAL, lhs, rhs); }
+    Literal opFOrdGE(Literal lhs, Literal rhs) { return emitComparisonOp(OP_FORD_GREATER_THAN_EQUAL, lhs, rhs); }
+    Literal opFOrdGT(Literal lhs, Literal rhs) { return emitComparisonOp(OP_FORD_GREATER_THAN, lhs, rhs); }
+
     // TODO: Auto-deduce typeId from image type
     Literal opImageSampleImplicitLod(Literal typeId, Literal image, Literal coordinate);
 
