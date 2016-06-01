@@ -22,7 +22,7 @@ public:
 
     virtual Size read(void* dst, Size size) override;
     virtual Size write(const void* src, Size size) override;
-    virtual Position seek(Position pos, SeekMode mode) override;
+    virtual void seek(Position pos, SeekMode mode) override;
     virtual Position tell() override;
     virtual Attributes attributes() override;
 

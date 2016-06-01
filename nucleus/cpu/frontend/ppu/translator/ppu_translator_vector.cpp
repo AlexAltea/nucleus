@@ -812,12 +812,50 @@ void Translator::vmaxuw(Instruction code)
 
 void Translator::vmhaddshs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        const auto& vc = state.v[o.vc];
+        for (Size h = 0; h < 8; h++) {
+            S32 result = (S32)va.s16[h] * (S32)vb.s16[h] + (S32)vc.s16[h];
+            if (result > 0x7FFF) {
+                vd.s16[h] = 0x7FFF;
+                state.vscr.SAT = 1;
+            }
+            else if (result < 0x8000) {
+                vd.s16[h] = 0x8000;
+                state.vscr.SAT = 1;
+            }
+            else {
+                vd.s16[h] = (S16)result;
+            }
+        }
+    });
 }
 
 void Translator::vmhraddshs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        const auto& vc = state.v[o.vc];
+        for (Size h = 0; h < 8; h++) {
+            S32 result = (S32)va.s16[h] * (S32)vb.s16[h] + (S32)vc.s16[h] + 0x4000;
+            if (result > 0x7FFF) {
+                vd.s16[h] = 0x7FFF;
+                state.vscr.SAT = 1;
+            }
+            else if (result < 0x8000) {
+                vd.s16[h] = 0x8000;
+                state.vscr.SAT = 1;
+            }
+            else {
+                vd.s16[h] = (S16)result;
+            }
+        }
+    });
 }
 
 void Translator::vminfp(Instruction code)

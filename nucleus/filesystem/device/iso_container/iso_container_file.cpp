@@ -27,9 +27,8 @@ Size ISOContainerFile::write(const void* src, Size size) {
     return 0;
 }
 
-Position ISOContainerFile::seek(Position pos, SeekMode mode) {
+void ISOContainerFile::seek(Position pos, SeekMode mode) {
     logger.warning(LOG_FS, "ISOContainerFile::seek is not implemented");
-    return 0;
 }
 
 Position ISOContainerFile::tell() {

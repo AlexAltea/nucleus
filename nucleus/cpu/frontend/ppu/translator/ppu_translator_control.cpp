@@ -8,6 +8,18 @@
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/assert.h"
+#include "nucleus/cpu/frontend/ppu/ppu_state.h"
+#include "nucleus/cpu/frontend/ppu/ppu_thread.h"
+
+#define INTERPRET(func) \
+    builder.createCall(builder.getExternFunction( \
+        reinterpret_cast<void*>( \
+        reinterpret_cast<uintptr_t>( \
+        static_cast<void(*)(Instruction)>([](Instruction o) { \
+            auto& state = *static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get(); \
+            func \
+        }))), \
+    TYPE_VOID, { TYPE_I32 }), { builder.getConstantI32(code.value) });
 
 namespace cpu {
 namespace frontend {
@@ -145,7 +157,11 @@ void Translator::dcbtst(Instruction code)
 
 void Translator::dcbz(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        const U32 addr = o.ra ? state.r[o.ra] + state.r[o.rb] : state.r[o.rb];
+        void* ptr = nucleus.memory->ptr(addr & ~127);
+        std::memset(ptr, 0, 128);
+    });
 }
 
 void Translator::icbi(Instruction code)

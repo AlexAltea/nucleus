@@ -46,6 +46,12 @@ enum {
     CELL_MAX_FS_MP_LENGTH = 31,
 };
 
+enum {
+    SYS_FS_SEEK_SET = 0,
+    SYS_FS_SEEK_CUR = 1,
+    SYS_FS_SEEK_END = 2,
+};
+
 // Structs
 struct sys_fs_dirent_t
 {
@@ -83,7 +89,7 @@ S32 sys_fs_open(const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* a
 S32 sys_fs_read(S32 fd, void* buf, U64 nbytes, BE<U64>* nread);
 S32 sys_fs_write(S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite);
 S32 sys_fs_close(S32 fd);
-S32 sys_fs_opendir(const S08* path, S32* fd);
+S32 sys_fs_opendir(const S08* path, BE<S32>* fd);
 S32 sys_fs_readdir(S32 fd, sys_fs_dirent_t* dir, BE<U64>* nread);
 S32 sys_fs_closedir(S32 fd);
 S32 sys_fs_stat(const S08* path, sys_fs_stat_t* sb);
@@ -94,6 +100,6 @@ S32 sys_fs_rename(const S08* from, const S08* to);
 S32 sys_fs_rmdir(const S08* path);
 S32 sys_fs_unlink(const S08* path);
 S32 sys_fs_fcntl(S32 fd, S32 cmd, void* argv, U32 argc);
-S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, U64 *pos);
+S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, BE<U64>* pos);
 
 }  // namespace sys

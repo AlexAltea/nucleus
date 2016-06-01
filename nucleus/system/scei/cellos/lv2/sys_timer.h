@@ -10,8 +10,7 @@
 namespace sys {
 
 // Classes
-struct sys_timer_information_t
-{
+struct sys_timer_information_t {
     S64 next_expiration_time;
     U64 period;
     U32 timer_state;

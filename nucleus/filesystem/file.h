@@ -58,9 +58,8 @@ public:
      * Seek a certain position in the file
      * @param[in]   pos   Position offset
      * @param[in]   mode  Seek mode
-     * @return            New position
      */
-    virtual Position seek(Position pos, SeekMode mode) = 0;
+    virtual void seek(Position pos, SeekMode mode) = 0;
 
     /**
      * Tell the current offset in the file

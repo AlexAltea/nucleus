@@ -143,13 +143,18 @@ S32 sys_fs_fcntl(S32 fd, S32 cmd, void* argv, U32 argc) {
     return CELL_OK;
 }
 
-S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, U64 *pos) {
+S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, BE<U64>* pos) {
     LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
 
     auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
-    *pos = file->seek(offset, fs::SeekSet);
+    switch (whence) {
+    case SYS_FS_SEEK_SET: file->seek(offset, fs::SeekSet); break;
+    case SYS_FS_SEEK_CUR: file->seek(offset, fs::SeekCur); break;
+    case SYS_FS_SEEK_END: file->seek(offset, fs::SeekEnd); break;
+    }
+    *pos = file->tell();
     return CELL_OK;
 }
 

@@ -69,8 +69,8 @@ Size HostPathFile::write(const void* src, Size size) {
     return std::fwrite(src, 1, size, handle);
 }
 
-Position HostPathFile::seek(Position pos, SeekMode mode) {
-    return fseeko64(handle, pos, getSeekMode(mode));
+void HostPathFile::seek(Position pos, SeekMode mode) {
+    fseeko64(handle, pos, getSeekMode(mode));
 }
 
 Position HostPathFile::tell() {
