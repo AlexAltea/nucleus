@@ -10,6 +10,7 @@
 
 // PowerPC Interpreter helper
 #include <algorithm>
+#include <cstdint>
 
 namespace cpu {
 namespace frontend {
@@ -207,7 +208,7 @@ void Translator::vaddcuw(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.u32[w] = ~va.u32[w] < vb.u32[w];
         }
     });
@@ -228,10 +229,10 @@ void Translator::vaddsbs(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
-    Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value* vd;
 
-    // TODO: ? I8
-    assert_always("Unimplemented");
+    vd = builder.createVAdd(va, vb, COMPONENT_I8 | ARITHMETIC_SATURATE);
+    // TODO: Update VSCR.SAT on saturation
 
     setVR(code.vd, vd);
 }
@@ -240,10 +241,10 @@ void Translator::vaddshs(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
-    Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value* vd;
 
-    // TODO: ? I16
-    assert_always("Unimplemented");
+    vd = builder.createVAdd(va, vb, COMPONENT_I16 | ARITHMETIC_SATURATE);
+    // TODO: Update VSCR.SAT on saturation
 
     setVR(code.vd, vd);
 }
@@ -252,10 +253,10 @@ void Translator::vaddsws(Instruction code)
 {
     Value* va = getVR(code.va);
     Value* vb = getVR(code.vb);
-    Value* vd = va; // TODO: This is wrong. Just a temporary fix
+    Value* vd;
 
-    // TODO: ? I32
-    assert_always("Unimplemented");
+    vd = builder.createVAdd(va, vb, COMPONENT_I32 | ARITHMETIC_SATURATE);
+    // TODO: Update VSCR.SAT on saturation
 
     setVR(code.vd, vd);
 }
@@ -423,7 +424,7 @@ void Translator::vcfsx(Instruction code)
 {
     INTERPRET({
         const U32 scale = 1 << o.vuimm;
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             state.v[o.vd].f32[w] = ((F32)state.v[o.vb].s32[w]) / scale;
         }
     });
@@ -433,7 +434,7 @@ void Translator::vcfux(Instruction code)
 {
     INTERPRET({
         const U32 scale = 1 << o.vuimm;
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             state.v[o.vd].f32[w] = ((F32)state.v[o.vb].u32[w]) / scale;
         }
     });
@@ -658,7 +659,7 @@ void Translator::vctsxs(Instruction code)
 {
     INTERPRET({
         int nScale = 1 << o.vuimm;
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             F32 result = state.v[o.vb].f32[w] * nScale;
 
             if (result > 0x7FFFFFFF)
@@ -676,7 +677,7 @@ void Translator::vctuxs(Instruction code)
 {
     INTERPRET({
         int nScale = 1 << o.vuimm;
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             S64 result = (S64)(state.v[o.vb].f32[w] * nScale);
 
             if (result > 0xFFFFFFFF)
@@ -732,7 +733,7 @@ void Translator::vmaxfp(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.f32[w] = std::max(va.f32[w], vb.f32[w]);
         }
     });
@@ -744,7 +745,7 @@ void Translator::vmaxsb(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int b = 0; b < 16; b++) {
+        for (Size b = 0; b < 16; b++) {
             vd.s8[b] = std::max(va.s8[b], vb.s8[b]);
         }
     });
@@ -756,7 +757,7 @@ void Translator::vmaxsh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.s16[h] = std::max(va.s16[h], vb.s16[h]);
         }
     });
@@ -768,7 +769,7 @@ void Translator::vmaxsw(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.s32[w] = std::max(va.s32[w], vb.s32[w]);
         }
     });
@@ -780,7 +781,7 @@ void Translator::vmaxub(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int b = 0; b < 16; b++) {
+        for (Size b = 0; b < 16; b++) {
             vd.u8[b] = std::max(va.u8[b], vb.u8[b]);
         }
     });
@@ -792,7 +793,7 @@ void Translator::vmaxuh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.u16[h] = std::max(va.u16[h], vb.u16[h]);
         }
     });
@@ -804,7 +805,7 @@ void Translator::vmaxuw(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.u32[w] = std::max(va.u32[w], vb.u32[w]);
         }
     });
@@ -864,7 +865,7 @@ void Translator::vminfp(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.f32[w] = std::min(va.f32[w], vb.f32[w]);
         }
     });
@@ -876,7 +877,7 @@ void Translator::vminsb(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int b = 0; b < 16; b++) {
+        for (Size b = 0; b < 16; b++) {
             vd.s8[b] = std::min(va.s8[b], vb.s8[b]);
         }
     });
@@ -888,7 +889,7 @@ void Translator::vminsh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.s16[h] = std::min(va.s16[h], vb.s16[h]);
         }
     });
@@ -900,7 +901,7 @@ void Translator::vminsw(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.s32[w] = std::min(va.s32[w], vb.s32[w]);
         }
     });
@@ -912,7 +913,7 @@ void Translator::vminub(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int b = 0; b < 16; b++) {
+        for (Size b = 0; b < 16; b++) {
             vd.u8[b] = std::min(va.u8[b], vb.u8[b]);
         }
     });
@@ -924,7 +925,7 @@ void Translator::vminuh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.u16[h] = std::min(va.u16[h], vb.u16[h]);
         }
     });
@@ -936,7 +937,7 @@ void Translator::vminuw(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.u32[w] = std::min(va.u32[w], vb.u32[w]);
         }
     });
@@ -949,7 +950,7 @@ void Translator::vmladduhm(Instruction code)
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
         const auto& vc = state.v[o.vc];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.u16[h] = va.u16[h] * vb.u16[h] + vc.u16[h];
         }
     });
@@ -961,7 +962,7 @@ void Translator::vmrghb(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.u8[15 - h*2 + 0] = va.u8[15 - h];
             vd.u8[15 - h*2 - 1] = vb.u8[15 - h];
         }
@@ -974,7 +975,7 @@ void Translator::vmrghh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.u16[7 - w*2 + 0] = va.u16[7 - w];
             vd.u16[7 - w*2 - 1] = vb.u16[7 - w];
         }
@@ -987,7 +988,7 @@ void Translator::vmrghw(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int d = 0; d < 2; d++) {
+        for (Size d = 0; d < 2; d++) {
             vd.u32[3 - d*2 + 0] = va.u32[3 - d];
             vd.u32[3 - d*2 - 1] = vb.u32[3 - d];
         }
@@ -1000,7 +1001,7 @@ void Translator::vmrglb(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.u8[15 - h*2 + 0] = va.u8[7 - h];
             vd.u8[15 - h*2 - 1] = vb.u8[7 - h];
      }
@@ -1013,7 +1014,7 @@ void Translator::vmrglh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.u16[7 - w*2 - 0] = va.u16[3 - w];
             vd.u16[7 - w*2 - 1] = vb.u16[3 - w];
         }
@@ -1026,7 +1027,7 @@ void Translator::vmrglw(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int d = 0; d < 2; d++) {
+        for (Size d = 0; d < 2; d++) {
             vd.u32[3 - d*2 - 0] = va.u32[1 - d];
             vd.u32[3 - d*2 - 1] = vb.u32[1 - d];
         }
@@ -1040,9 +1041,9 @@ void Translator::vmsummbm(Instruction code)
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
         const auto& vc = state.v[o.vc];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             S32 result = 0;
-            for (int b = 0; b < 4; b++) {
+            for (Size b = 0; b < 4; b++) {
                 result += va.s8[w*4 + b] * vb.u8[w*4 + b];
             }
             result += vc.s32[w];
@@ -1058,9 +1059,9 @@ void Translator::vmsumshm(Instruction code)
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
         const auto& vc = state.v[o.vc];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             S32 result = 0;
-            for (int h = 0; h < 2; h++) {
+            for (Size h = 0; h < 2; h++) {
                 result += va.s16[w*2 + h] * vb.s16[w*2 + h];
             }
             result += vc.s32[w];
@@ -1081,9 +1082,9 @@ void Translator::vmsumubm(Instruction code)
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
         const auto& vc = state.v[o.vc];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             U32 result = 0;
-            for (int b = 0; b < 4; b++) {
+            for (Size b = 0; b < 4; b++) {
                 result += va.u8[w*4 + b] * vb.u8[w*4 + b];
             }
             result += vc.u32[w];
@@ -1099,9 +1100,9 @@ void Translator::vmsumuhm(Instruction code)
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
         const auto& vc = state.v[o.vc];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             U32 result = 0;
-            for (int h = 0; h < 2; h++) {
+            for (Size h = 0; h < 2; h++) {
                 result += va.u16[w*2 + h] * vb.u16[w*2 + h];
             }
             result += vc.u32[w];
@@ -1121,7 +1122,7 @@ void Translator::vmulesb(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.s16[h] = (S16)va.s8[h*2 + 1] * (S16)vb.s8[h*2 + 1];
         }
     });
@@ -1133,7 +1134,7 @@ void Translator::vmulesh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.s32[w] = (S32)va.s16[w*2 + 1] * (S32)vb.s16[w*2 + 1];
         }
     });
@@ -1145,7 +1146,7 @@ void Translator::vmuleub(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.u16[h] = (U16)va.u8[h*2 + 1] * (U16)vb.u8[h*2 + 1];
         }
     });
@@ -1157,7 +1158,7 @@ void Translator::vmuleuh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.u32[w] = (U32)va.u16[w*2 + 1] * (U32)vb.u16[w*2 + 1];
         }
     });
@@ -1169,7 +1170,7 @@ void Translator::vmulosb(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.s16[h] = (S16)va.s8[h*2] * (S16)vb.s8[h*2];
         }
     });
@@ -1181,7 +1182,7 @@ void Translator::vmulosh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.s32[w] = (S32)va.s16[w*2] * (S32)vb.s16[w*2];
         }
     });
@@ -1193,7 +1194,7 @@ void Translator::vmuloub(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int h = 0; h < 8; h++) {
+        for (Size h = 0; h < 8; h++) {
             vd.u16[h] = (U16)va.u8[h*2] * (U16)vb.u8[h*2];
         }
     });
@@ -1205,7 +1206,7 @@ void Translator::vmulouh(Instruction code)
         auto& vd = state.v[o.vd];
         const auto& va = state.v[o.va];
         const auto& vb = state.v[o.vb];
-        for (int w = 0; w < 4; w++) {
+        for (Size w = 0; w < 4; w++) {
             vd.u32[w] = (U32)va.u16[w*2] * (U32)vb.u16[w*2];
         }
     });
@@ -1218,7 +1219,7 @@ void Translator::vnmsubfp(Instruction code)
     Value* vb = getVR(code.vb);
     Value* vd;
 
-    // NOTE: vb-(va*vc) = -((va*vc)-vb)
+    // Implemented as: vb-(va*vc) = -((va*vc)-vb)
     vd = builder.createVMul(va, vc, COMPONENT_F32);
     vd = builder.createVSub(vb, vd, COMPONENT_F32);
 
@@ -1255,7 +1256,7 @@ void Translator::vperm(Instruction code)
         vconcat[0] = state.v[o.vb];
         vconcat[1] = state.v[o.va];
         const U08* buffer = reinterpret_cast<U08*>(vconcat);
-        for (int b = 0; b < 16; b++) {
+        for (Size b = 0; b < 16; b++) {
             U08 index = state.v[o.vc].u8[b] & 0x1F;
             state.v[o.vd].u8[b] = buffer[0x1F - index];
         }
@@ -1264,22 +1265,120 @@ void Translator::vperm(Instruction code)
 
 void Translator::vpkpx(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size h = 0; h < 4; h++) {
+            const U16 bb7  = vb.u8[15 - (h*4 + 0)] & 0x1;
+            const U16 bb8  = vb.u8[15 - (h*4 + 1)] >> 3;
+            const U16 bb16 = vb.u8[15 - (h*4 + 2)] >> 3;
+            const U16 bb24 = vb.u8[15 - (h*4 + 3)] >> 3;
+            const U16 ab7  = va.u8[15 - (h*4 + 0)] & 0x1;
+            const U16 ab8  = va.u8[15 - (h*4 + 1)] >> 3;
+            const U16 ab16 = va.u8[15 - (h*4 + 2)] >> 3;
+            const U16 ab24 = va.u8[15 - (h*4 + 3)] >> 3;
+
+            vd.u16[3 - h] = (bb7 << 15) | (bb8 << 10) | (bb16 << 5) | bb24;
+            vd.u16[7 - h] = (ab7 << 15) | (ab8 << 10) | (ab16 << 5) | ab24;
+        }
+    });
 }
 
 void Translator::vpkshss(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size b = 0; b < 8; b++) {
+            S16 result = va.s16[b];
+            if (result > INT8_MAX) {
+                result = INT8_MAX;
+                state.vscr.SAT = 1;
+            }
+            else if (result < INT8_MIN) {
+                result = INT8_MIN;
+                state.vscr.SAT = 1;
+            }
+            vd.s8[b+8] = result;
+
+            result = vb.s16[b];
+            if (result > INT8_MAX) {
+                result = INT8_MAX;
+                state.vscr.SAT = 1;
+            }
+            else if (result < INT8_MIN) {
+                result = INT8_MIN;
+                state.vscr.SAT = 1;
+            }
+            vd.s8[b] = result;
+        }
+    });
 }
 
 void Translator::vpkshus(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size b = 0; b < 8; b++) {
+            S16 result = va.s16[b];
+            if (result > UINT8_MAX) {
+                result = UINT8_MAX;
+                state.vscr.SAT = 1;
+            }
+            else if (result < 0) {
+                result = 0;
+                state.vscr.SAT = 1;
+            }
+            vd.u8[b+8] = result;
+
+            result = vb.s16[b];
+            if (result > UINT8_MAX) {
+                result = UINT8_MAX;
+                state.vscr.SAT = 1;
+            }
+            else if (result < 0) {
+                result = 0;
+                state.vscr.SAT = 1;
+            }
+            vd.u8[b] = result;
+        }
+    });
 }
 
 void Translator::vpkswss(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size h = 0; h < 4; h++) {
+            S32 result = va.s32[h];
+            if (result > INT16_MAX) {
+                result = INT16_MAX;
+                state.vscr.SAT = 1;
+            }
+            else if (result < INT16_MIN) {
+                result = INT16_MIN;
+                state.vscr.SAT = 1;
+            }
+            vd.s16[h+4] = result;
+
+            result = vb.s32[h];
+            if (result > INT16_MAX) {
+                result = INT16_MAX;
+                state.vscr.SAT = 1;
+            }
+            else if (result < INT16_MIN) {
+                result = INT16_MIN;
+                state.vscr.SAT = 1;
+            }
+            vd.s16[h] = result;
+        }
+    });
 }
 
 void Translator::vpkswus(Instruction code)
@@ -1296,8 +1395,8 @@ void Translator::vpkswus(Instruction code)
                 result = 0;
             }
             vd.u16[i + 4] = result;
-            result = vb.s32[i];
 
+            result = vb.s32[i];
             if (result > 0xFFFF) {
                 result = 0xFFFF;
             } else if (result < 0) {
@@ -1378,8 +1477,7 @@ void Translator::vpkuwus(Instruction code)
 
 void Translator::vrefp(Instruction code)
 {
-    INTERPRET({
-    });
+    assert_always("Unimplemented");
 }
 
 void Translator::vrfim(Instruction code)
@@ -1711,7 +1809,14 @@ void Translator::vsrw(Instruction code)
 
 void Translator::vsubcuw(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size w = 0; w < 4; w++) {
+            vd.u32[w] = va.u32[w] < vb.u32[w] ? 0 : 1;
+        }
+    });
 }
 
 void Translator::vsubfp(Instruction code)
@@ -1727,17 +1832,71 @@ void Translator::vsubfp(Instruction code)
 
 void Translator::vsubsbs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size b = 0; b < 16; b++) {
+            S16 result = (S16)va.s8[b] - (S16)vb.s8[b];
+            if (result < INT8_MIN) {
+                vd.s8[b] = INT8_MIN;
+                state.vscr.SAT = 1;
+            }
+            else if (result > INT8_MAX) {
+                vd.s8[b] = INT8_MAX;
+                state.vscr.SAT = 1;
+            }
+            else {
+                vd.s8[b] = (S08)result;
+            }
+        }
+    });
 }
 
 void Translator::vsubshs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size h = 0; h < 8; h++) {
+            S32 result = (S32)va.s16[h] - (S32)vb.s16[h];
+            if (result < INT16_MIN) {
+                vd.s16[h] = (S16)INT16_MIN;
+                state.vscr.SAT = 1;
+            }
+            else if (result > INT16_MAX) {
+                vd.s16[h] = (S16)INT16_MAX;
+                state.vscr.SAT = 1;
+            }
+            else {
+                vd.s16[h] = (S16)result;
+            }
+        }
+    });
 }
 
 void Translator::vsubsws(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size w = 0; w < 4; w++) {
+            S64 result = (S64)va.s32[w] - (S64)vb.s32[w];
+            if (result < INT32_MIN) {
+                vd.s32[w] = (S32)INT32_MIN;
+                state.vscr.SAT = 1;
+            }
+            else if (result > INT32_MAX) {
+                vd.s32[w] = (S32)INT32_MAX;
+                state.vscr.SAT = 1;
+            }
+            else {
+                vd.s32[w] = (S32)result;
+            }
+        }
+    });
 }
 
 void Translator::vsububm(Instruction code)
@@ -1753,7 +1912,20 @@ void Translator::vsububm(Instruction code)
 
 void Translator::vsububs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size b = 0; b < 16; b++) {
+            S16 result = (S16)va.u8[b] - (S16)vb.u8[b];
+            if (result < 0) {
+                vd.u8[b] = 0;
+                state.vscr.SAT = 1;
+            } else {
+                vd.u8[b] = (U08)result;
+            }
+        }
+    });
 }
 
 void Translator::vsubuhm(Instruction code)
@@ -1769,7 +1941,20 @@ void Translator::vsubuhm(Instruction code)
 
 void Translator::vsubuhs(Instruction code)
 {
-    assert_always("Unimplemented");
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size h = 0; h < 8; h++) {
+            S32 result = (S32)va.u16[h] - (S32)vb.u16[h];
+            if (result < 0) {
+                vd.u16[h] = 0;
+                state.vscr.SAT = 1;
+            } else {
+                vd.u16[h] = (U16)result;
+            }
+        }
+    });
 }
 
 void Translator::vsubuwm(Instruction code)
