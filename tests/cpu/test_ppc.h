@@ -15,6 +15,7 @@
 #include "nucleus/cpu/backend/ppc/ppc_assembler.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_tables.h"
+#include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/cpu/frontend/ppu/translator/ppu_translator.h"
 #include "nucleus/cpu/hir/block.h"
 #include "nucleus/cpu/hir/function.h"
@@ -59,6 +60,7 @@ public:
 
     U32 buffer[256];
     PPUState state;
+    PPUThread* thread;
 
     PPCTestRunner() {
         module = new hir::Module();
@@ -67,6 +69,9 @@ public:
         // Create mock hardware
         memory = std::make_shared<mem::Memory>();
         cpu = std::make_shared<cpu::CPU>(memory);
+        thread = new PPUThread(cpu.get());
+        cpu->setCurrentThread(thread);
+        thread->state.reset(&state);
 
         compiler = std::make_unique<backend::x86::X86Compiler>();
         compiler->addPass(std::make_unique<hir::passes::RegisterAllocationPass>(compiler->targetInfo));

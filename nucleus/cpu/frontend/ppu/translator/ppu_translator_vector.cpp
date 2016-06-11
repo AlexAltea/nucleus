@@ -10,6 +10,7 @@
 
 // PowerPC Interpreter helper
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 
 namespace cpu {
@@ -692,6 +693,7 @@ void Translator::vctuxs(Instruction code)
 
 void Translator::vexptefp(Instruction code)
 {
+#if 0
     Value* vb = getVR(code.vb);
     Value* vd = vb; // TODO: This is wrong. Just a temporary fix
 
@@ -700,10 +702,20 @@ void Translator::vexptefp(Instruction code)
     assert_always("Unimplemented");
 
     setVR(code.vd, vd);
+#endif
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size w = 0; w < 4; w++) {
+            vd.f32[w] = exp(vb.f32[w] * log(2.0f));
+        }
+    });
 }
 
 void Translator::vlogefp(Instruction code)
 {
+#if 0
     Value* vb = getVR(code.vb);
     Value* vd = vb; // TODO: This is wrong. Just a temporary fix
 
@@ -712,6 +724,15 @@ void Translator::vlogefp(Instruction code)
     assert_always("Unimplemented");
 
     setVR(code.vd, vd);
+#endif
+    INTERPRET({
+        auto& vd = state.v[o.vd];
+        const auto& va = state.v[o.va];
+        const auto& vb = state.v[o.vb];
+        for (Size w = 0; w < 4; w++) {
+            vd.f32[w] = log(vb.f32[w]) / log(2.0f);
+        }
+    });
 }
 
 void Translator::vmaddfp(Instruction code)

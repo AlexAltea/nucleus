@@ -21,6 +21,7 @@
 *.app
 
 # Visual Studio files
+/.vs/
 /Backup/
 /enc_temp_folder/
 /ipch/

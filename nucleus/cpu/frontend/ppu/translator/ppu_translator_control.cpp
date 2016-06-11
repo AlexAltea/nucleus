@@ -5,7 +5,6 @@
 
 #include "ppu_translator.h"
 #include "nucleus/cpu/util.h"
-#include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/assert.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
@@ -16,7 +15,8 @@
         reinterpret_cast<void*>( \
         reinterpret_cast<uintptr_t>( \
         static_cast<void(*)(Instruction)>([](Instruction o) { \
-            auto& state = *static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get(); \
+            auto& thread = *static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread()); \
+            auto& state = *thread.state.get(); \
             func \
         }))), \
     TYPE_VOID, { TYPE_I32 }), { builder.getConstantI32(code.value) });
@@ -120,7 +120,7 @@ void Translator::mftb(Instruction code)
     hir::Function* timeFunc = builder.getExternFunction(reinterpret_cast<void*>(nucleusTime));
     hir::Value* timestamp = builder.createCall(timeFunc, {}, CALL_EXTERN);
 
-    const U32 tbr = (code.spr >> 5) | ((code.spr & 0x1f) << 5);
+    const U32 tbr = (code.spr >> 5) | ((code.spr & 0x1F) << 5);
     switch (tbr) {
     case 0x10C:
         setGPR(code.rd, timestamp);
@@ -159,7 +159,7 @@ void Translator::dcbz(Instruction code)
 {
     INTERPRET({
         const U32 addr = o.ra ? state.r[o.ra] + state.r[o.rb] : state.r[o.rb];
-        void* ptr = nucleus.memory->ptr(addr & ~127);
+        void* ptr = thread.parent->memory->ptr(addr & ~127);
         std::memset(ptr, 0, 128);
     });
 }

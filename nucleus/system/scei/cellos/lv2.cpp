@@ -183,6 +183,7 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
         syscalls[0x323] = SYSCALL(sys_fs_write, LV2_NONE);
         syscalls[0x324] = SYSCALL(sys_fs_close, LV2_NONE);
         syscalls[0x328] = SYSCALL(sys_fs_stat, LV2_NONE);
+        syscalls[0x329] = SYSCALL(sys_fs_fstat, LV2_NONE);
         syscalls[0x331] = SYSCALL(sys_fs_fcntl, LV2_NONE);
         syscalls[0x332] = SYSCALL(sys_fs_lseek, LV2_NONE);
         syscalls[0x367] = SYSCALL(sys_ss_access_control_engine, LV2_DBG);

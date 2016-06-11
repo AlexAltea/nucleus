@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/endianness.h"
+
 #include <cstddef>
 
 using S08 = char;
@@ -87,10 +89,17 @@ union V128 {
 
     static V128 from_u32(U32 a0, U32 a1, U32 a2, U32 a3) {
         V128 result;
+#ifdef NUCLEUS_ENDIANNESS_LITTLE
+        result.u32[3] = a0;
+        result.u32[2] = a1;
+        result.u32[1] = a2;
+        result.u32[0] = a3;
+#else
         result.u32[0] = a0;
         result.u32[1] = a1;
         result.u32[2] = a2;
         result.u32[3] = a3;
+#endif
         return result;
     }
 

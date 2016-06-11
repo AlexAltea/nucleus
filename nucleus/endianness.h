@@ -5,8 +5,16 @@
 
 #pragma once
 
+#include "nucleus/architecture.h"
 #include "nucleus/compiler.h"
 #include "nucleus/types.h"
+
+// Endianness detection
+#if defined(NUCLEUS_ARCH_X86)
+#define NUCLEUS_ENDIAN_LITTLE
+#else
+#define NUCLEUS_ENDIAN_BIG
+#endif
 
 // Swap endianness macros
 #ifdef NUCLEUS_COMPILER_MSVC
