@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     // Using UI
     if (!config.console) {
         // Choose Window manager
-        WindowBackend backend = WINDOW_BACKEND_XLIB;
+        WindowBackend backend = WINDOW_BACKEND_XCB;
         for (int i = 1; i < argc; i++) {
             if (strcmp(argv[i], "--wayland") == 0) {
                 backend = WINDOW_BACKEND_WAYLAND;

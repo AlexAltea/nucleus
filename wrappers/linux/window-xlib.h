@@ -5,6 +5,5 @@
 
 #pragma once
 
-
 // Creates a window with Xlib and initializes Nucleus
 void createWindowXlib(int argc, char** argv);

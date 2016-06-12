@@ -29,7 +29,7 @@ void createWindowXlib(int argc, char **argv) {
     hint.flags = PSize;
 
     Window window = XCreateSimpleWindow(display, DefaultRootWindow(display),
-                                        hint.x, hint.y, hint.width, hint.height, 5, foreground, background);
+        hint.x, hint.y, hint.width, hint.height, 5, foreground, background);
 
     const char appName[] = "Nucleus";
     XSetStandardProperties(display, window, appName, appName, None, argv, argc, &hint);
