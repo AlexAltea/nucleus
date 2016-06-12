@@ -2,19 +2,19 @@ cmake_minimum_required(VERSION 2.8)
 project(nucleus)
 
 # Cross-compiling
-option(TARGET_ANDROID  "Enable to target Android devices")
-option(TARGET_IOS      "Enable to target iOS devices")
-option(TARGET_LINUX    "Enable to target X11-based Linux distributions")
-option(TARGET_OSX      "Enable to target OS X systems")
-option(TARGET_UWP      "Enable to target the Universal Windows Platform")
-option(TARGET_WINDOWS  "Enable to target desktop Windows systems")
+option(TARGET_ANDROID   "Enable to target Android devices")
+option(TARGET_IOS       "Enable to target iOS devices")
+option(TARGET_LINUX     "Enable to target X11-based Linux distributions")
+option(TARGET_OSX       "Enable to target OS X systems")
+option(TARGET_UWP       "Enable to target the Universal Windows Platform")
+option(TARGET_WINDOWS   "Enable to target desktop Windows systems")
 
 # Guest platforms
-option(EMULATE_ANY     "Enable to support emulation in any available platform")
-option(EMULATE_PS3     "Enable to support PlayStation 3 emulation")
-option(EMULATE_PS4     "Enable to support PlayStation 4 emulation")
-option(EMULATE_PSP     "Enable to support PlayStation Portable emulation")
-option(EMULATE_PSVITA  "Enable to support PlayStation Vita emulation")
+option(PLATFORM_ANY     "Enable to support emulation in any available platform")
+option(PLATFORM_PS3     "Enable to support PlayStation 3 emulation")
+option(PLATFORM_PS4     "Enable to support PlayStation 4 emulation")
+option(PLATFORM_PSP     "Enable to support PlayStation Portable emulation")
+option(PLATFORM_PSVITA  "Enable to support PlayStation Vita emulation")
 
 # Features
 set(FEATURE_AUDIO_BACKEND_XAUDIO2   "False")

@@ -9,7 +9,11 @@
 #include "nucleus/cpu/backend/x86/x86_sequences.h"
 
 #ifdef NUCLEUS_ARCH_X86
+#ifdef NUCLEUS_COMPILER_MSVC
 #include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
 #endif
 
 #include <cstring>
@@ -32,6 +36,7 @@ X86Compiler::X86Compiler(const Settings& settings) : Compiler(settings) {
 void X86Compiler::setExtensionsHost() {
 #ifdef NUCLEUS_ARCH_X86
     extensions = 0;
+#ifdef NUCLEUS_COMPILER_MSVC
     int data[4];
     __cpuid(data, 0x00000001);
     extensions |= ((data[2] >>  9) & 1) ? X86Extension::SSSE3 : 0;
@@ -41,6 +46,7 @@ void X86Compiler::setExtensionsHost() {
     __cpuid(data, 0x80000001);
     extensions |= ((data[2] >>  5) & 1) ? X86Extension::LZCNT : 0;
     extensions |= 0 ? X86Extension::MOVBE : 0;
+#endif
 #endif
 }
 

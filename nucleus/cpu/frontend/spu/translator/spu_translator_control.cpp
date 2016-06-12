@@ -8,6 +8,14 @@
 #include "nucleus/cpu/frontend/spu/spu_state.h"
 #include "nucleus/cpu/frontend/spu/spu_thread.h"
 
+#ifdef NUCLEUS_ARCH_X86
+#ifdef NUCLEUS_COMPILER_MSVC
+#include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
+#endif
+
 #define INTERPRET(func) \
     builder.createCall(builder.getExternFunction( \
         reinterpret_cast<void*>( \

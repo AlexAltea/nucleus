@@ -10,6 +10,16 @@
 #include "nucleus/cpu/frontend/spu/spu_decoder.h"
 #include "nucleus/assert.h"
 
+#ifdef NUCLEUS_ARCH_X86
+#ifdef NUCLEUS_COMPILER_MSVC
+#include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
+#endif
+
+#include <cstring>
+
 namespace cpu {
 namespace frontend {
 namespace spu {

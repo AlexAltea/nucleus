@@ -16,6 +16,7 @@ git:
 
 before_install:
   sudo apt-get install libx11-dev
+  sudo apt-get install libvulkan-dev
   # Prepare compilers
   - if [ "$CXX" = "g++" ]; then
       sudo apt-get install g++-5 -qq;

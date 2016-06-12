@@ -14,6 +14,8 @@
 #include "nucleus/emulator.h"
 #include "nucleus/assert.h"
 
+#include <cstring>
+
 namespace sys {
 
 // Addressing

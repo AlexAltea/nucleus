@@ -10,6 +10,8 @@
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 
+#include <cstring>
+
 #define INTERPRET(func) \
     builder.createCall(builder.getExternFunction( \
         reinterpret_cast<void*>( \
