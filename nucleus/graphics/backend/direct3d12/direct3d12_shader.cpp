@@ -359,10 +359,10 @@ std::string Direct3D12Shader::emitBinaryOp(hir::Instruction* i, hir::Opcode type
     return format(PADDING "%s v%d = v%d %s v%d;\n", typeStr.c_str(), result, lhs, symbol, rhs);
 }
 
-std::string Direct3D12Shader::emitBinaryFunctionOp(Instruction* i, Opcode type, const char* function) {
+std::string Direct3D12Shader::emitBinaryFunctionOp(Instruction* i, Opcode type, const char* function, bool reverseArgs) {
     Literal result = i->resultId;
-    Literal lhs = i->operands[0];
-    Literal rhs = i->operands[1];
+    Literal lhs = i->operands[reverseArgs ? 1 : 0];
+    Literal rhs = i->operands[reverseArgs ? 0 : 1];
 
     std::string typeStr = getType(i->typeId);
     return format(PADDING "%s v%d = %s(v%d, v%d);\n", typeStr.c_str(), result, function, lhs, rhs);
@@ -523,7 +523,7 @@ std::string Direct3D12Shader::compile(Instruction* i) {
     case OP_DOT:
         return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "dot");
     case OP_MATRIX_TIMES_VECTOR:
-        return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "mul");
+        return emitBinaryFunctionOp(i, OP_TYPE_FLOAT, "mul", true);
 
     // Comparison ops
     case OP_FORD_EQUAL:
@@ -591,7 +591,6 @@ std::string Direct3D12Shader::compile(Function* function) {
             // Correct coordinate system (TODO: Implement proper system to detect BUILTIN_POSITION's)
             if (idBuiltinPosition != 0) {
                 source += format(PADDING "output.v%d.y *= -1.0f;\n", idBuiltinPosition);
-                source += format(PADDING "output.v%d.z +=  0.5f;\n", idBuiltinPosition);
             }
         }
         source += PADDING "return output;\n";

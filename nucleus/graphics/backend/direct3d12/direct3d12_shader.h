@@ -65,7 +65,7 @@ class Direct3D12Shader : public Shader {
     std::string emitUnaryOp(hir::Instruction* i, hir::Literal value, const char* function);
     std::string emitBinaryOp(hir::Instruction* i, hir::Opcode type, char symbol);
     std::string emitBinaryOp(hir::Instruction* i, hir::Opcode type, const char* symbol);
-    std::string emitBinaryFunctionOp(hir::Instruction* i, hir::Opcode type, const char* function);
+    std::string emitBinaryFunctionOp(hir::Instruction* i, hir::Opcode type, const char* function, bool reverseArgs = false);
     std::string emitOpCompositeConstruct(hir::Instruction* i);
     std::string emitOpCompositeExtract(hir::Instruction* i);
     std::string emitOpImageSample(hir::Instruction* i);
