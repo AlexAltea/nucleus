@@ -407,13 +407,13 @@ int convertTextureSwizzle(TextureFormat format) {
 }
 
 bool convertFrontFace(FrontFace frontFace) {
-    bool frontFaceClockwise;
-    if (frontFace == RSX_FRONT_FACE_CW) {
-        frontFaceClockwise = true;
+    bool frontCounterClockwise;
+    if (frontFace == RSX_FRONT_FACE_CCW) {
+        frontCounterClockwise = true;
     } else {
-        frontFaceClockwise = false;
+        frontCounterClockwise = false;
     }
-    return frontFaceClockwise;
+    return frontCounterClockwise;
 }
 
 }  // namespace rsx

@@ -88,7 +88,7 @@ struct StencilOpDesc {
 struct RSState {
     FillMode fillMode;
     CullMode cullMode;
-    bool frontFaceClockwise;
+    bool frontCounterClockwise;
 
     // Depth-Stencil state
     bool depthEnable;

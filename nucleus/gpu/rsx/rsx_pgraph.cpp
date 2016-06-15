@@ -266,7 +266,7 @@ void PGRAPH::Begin(Primitive primitive) {
 
         pipelineDesc.rsState.fillMode = gfx::FILL_MODE_SOLID;
         pipelineDesc.rsState.cullMode = p.cull_face_enable ? convertCullMode(p.cull_mode) : gfx::CULL_MODE_NONE;
-        pipelineDesc.rsState.frontFaceClockwise = convertFrontFace(p.front_face);
+        pipelineDesc.rsState.frontCounterClockwise = convertFrontFace(p.front_face);
         pipelineDesc.rsState.depthEnable = p.depth_test_enable;
         pipelineDesc.rsState.depthWriteMask = p.depth_mask ? gfx::DEPTH_WRITE_MASK_ALL : gfx::DEPTH_WRITE_MASK_ZERO;
         pipelineDesc.rsState.depthFunc = convertCompareFunc(p.depth_func);

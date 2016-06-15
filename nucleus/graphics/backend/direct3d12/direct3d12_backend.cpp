@@ -342,7 +342,7 @@ Pipeline* Direct3D12Backend::createPipeline(const PipelineDesc& desc) {
     // RS state
     d3dDesc.RasterizerState.FillMode = convertFillMode(desc.rsState.fillMode);
     d3dDesc.RasterizerState.CullMode = convertCullMode(desc.rsState.cullMode);
-    d3dDesc.RasterizerState.FrontCounterClockwise = desc.rsState.frontFaceClockwise;
+    d3dDesc.RasterizerState.FrontCounterClockwise = desc.rsState.frontCounterClockwise;
     d3dDesc.RasterizerState.DepthClipEnable = TRUE; // TODO
 
     d3dDesc.DepthStencilState.DepthEnable = desc.rsState.depthEnable;
