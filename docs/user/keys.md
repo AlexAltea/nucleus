@@ -29,6 +29,14 @@ In *Cell OS LV-2*, executable files need to be signed in order to be loaded. Thi
 </key>
 ```
 
+The following abbreviations apply:
+
+* `ctype`: Curve Type.
+* `erk`: Encryption Root Key.
+* `riv`: Root IV.
+* `pub`: Public Key.
+* `priv`: Private Key.
+
 All attribute/node values above are regex strings. Aside from the for the key type, all values are specified by uppercase hexadecimal strings. For the key type following notiation is used: `LV0` (1), `LV1` (2), `LV2` (3), `APP` (4), `ISO` (5), `LDR` (6), `UNK7` (7), `NPDRM` (8).
 
 
