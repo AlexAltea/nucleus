@@ -110,8 +110,8 @@ S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb) {
     sb->st_mtime = attributes.timestamp_write;
     sb->st_size = attributes.size;
     sb->st_blksize = attributes.blocksize;
-    sb->st_gid = 0; // TODO
-    sb->st_uid = 0; // TODO
+    sb->st_gid = 0; // Always zero
+    sb->st_uid = 0; // Always zero
     sb->st_mode = 0; // TODO
 
     return CELL_OK;
@@ -129,8 +129,8 @@ S32 sys_fs_stat(const S08* path, sys_fs_stat_t* sb) {
     sb->st_mtime = attributes.timestamp_write;
     sb->st_size = attributes.size;
     sb->st_blksize = attributes.blocksize;
-    sb->st_gid = 0; // TODO
-    sb->st_uid = 0; // TODO
+    sb->st_gid = 0; // Always zero
+    sb->st_uid = 0; // Always zero
     sb->st_mode = 0; // TODO
 
     return CELL_OK;
