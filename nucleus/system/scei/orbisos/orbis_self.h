@@ -21,6 +21,7 @@ enum {
     ET_SCE_EXEC    = 0xFE00,  // SCE Executable file
     ET_SCE_RELEXEC = 0xFE04,  // SCE Relocatable file
     ET_SCE_STUBLIB = 0xFE0C,  // SCE SDK Stubs
+    ET_SCE_UNKFE10 = 0xFE10,  // Unknown (Probably PS4 Executable file with ASLR)
     ET_SCE_DYNAMIC = 0xFE18,
 };
 
@@ -30,6 +31,7 @@ enum {
     PT_SCE_RELA        = 0x60000000,
     PT_SCE_DYNLIBDATA  = 0x61000000,
     PT_SCE_PROCPARAM   = 0x61000001,
+    PT_SCE_UNK61000010 = 0x61000010,
     PT_SCE_COMMENT     = 0x6FFFFF00,
     PT_SCE_LIBVERSION  = 0x6FFFFF01,
     PT_SCE_PSPRELA     = 0x700000A0,
@@ -52,7 +54,7 @@ class SELFLoader {
 
 public:
     bool open(fs::File* file);
-    bool load();
+    void* load();
     void close();
 
     U16 getMachine();

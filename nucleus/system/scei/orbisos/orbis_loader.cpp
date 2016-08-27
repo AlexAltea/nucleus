@@ -28,11 +28,11 @@ bool isValid(fs::File* file) {
         Elf64_Ehdr<LE> eh;
         file->seek(0, fs::SeekSet);
         file->read(&eh, sizeof(eh));
-        return eh.elf_class == ELFCLASS64 &&
-            eh.data == ELFDATA2LSB &&
-            eh.abi_ver == ELFOSABI_FREEBSD &&
-            eh.machine == EM_X86_64 &&
-            eh.type == ET_SCE_EXEC;
+        return (eh.elf_class == ELFCLASS64) &&
+            (eh.abi_ver == ELFOSABI_FREEBSD || eh.abi_ver == ELFOSABI_NONE) &&
+            (eh.type == ET_SCE_EXEC || eh.type == ET_SCE_UNKFE10) &&
+            (eh.data == ELFDATA2LSB) &&
+            (eh.machine == EM_X86_64);
     }
     return false;
 }

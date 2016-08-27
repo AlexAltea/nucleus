@@ -75,13 +75,13 @@ bool Emulator::load_ps4(const std::string& path) {
         return false;
     }
 
-    self.load();
+    void* entryBase = self.load();
     if (self.getMachine() != sys::EM_X86_64) {
         logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
         return false;
     }
 
-    auto entry = self.getEntry();
+    auto entry = reinterpret_cast<uintptr_t>(entryBase) + self.getEntry();
     static_cast<sys::OrbisOS*>(sys.get())->init(entry);
     return true;
 }

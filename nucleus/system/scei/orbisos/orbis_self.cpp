@@ -31,20 +31,20 @@ bool SELFLoader::open(fs::File* file) {
     }
 }
 
-bool SELFLoader::load() {
+void* SELFLoader::load() {
     assert_true(!elf.empty(), "No ELF/SELF file has been opened");
     const auto& eh = (Ehdr&)elf[0];
 
-    //
+    // Get ELF size
     Size low = ~0ULL;
     Size high = 0ULL;
     for (Size i = 0; i < eh.phnum; i++) {
         const auto& ph = (Phdr&)elf[eh.phoff + i*sizeof(Phdr)];
         low = std::min(low, Size(ph.vaddr));
-        high = std::min(high, Size(ph.vaddr + ph.memsz));
+        high = std::max(high, Size(ph.vaddr + ph.memsz));
     }
     Size size = high - low;
-    /*void* elf_addr = _aligned_malloc(size, 0x4000);
+    void* elf_addr = malloc(size);
 
     // Loading program header table
     for (U64 i = 0; i < eh.phnum; i++) {
@@ -55,7 +55,7 @@ bool SELFLoader::load() {
             if (!ph.memsz) {
                 break;
             }
-            void* vaddr = reinterpret_cast<void*>(ph.vaddr - reinterpret_cast<uintptr_t>(elf_addr));
+            void* vaddr = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(elf_addr) + ph.vaddr);
             memcpy(vaddr, &elf[ph.offset], ph.filesz);
             if (ph.flags & PF_X) {
 
@@ -68,6 +68,7 @@ bool SELFLoader::load() {
         case PT_TLS:
         case PT_SCE_DYNLIBDATA:
         case PT_SCE_PROCPARAM:
+        case PT_SCE_UNK61000010:
         case PT_GNU_EH_FRAME:
         case PT_SCE_COMMENT:
         case PT_SCE_LIBVERSION:
@@ -77,8 +78,8 @@ bool SELFLoader::load() {
         default:
             assert_always("Unexpected segment type");
         }
-    }*/
-    return true;
+    }
+    return elf_addr;
 }
 
 U16 SELFLoader::getMachine() {

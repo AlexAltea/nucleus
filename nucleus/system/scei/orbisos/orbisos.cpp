@@ -7,6 +7,8 @@
 
 #include "syscalls/orbis_dynlib.h"
 
+#define SYSCALL(name) { #name }
+
 namespace sys {
 namespace scei {
 namespace orbis {
@@ -278,7 +280,7 @@ OrbisOS::OrbisOS() {
     //syscalls[0x24F] = SYSCALL(sys_dynlib_dlsym);
     //syscalls[0x250] = SYSCALL(sys_dynlib_get_list);
     //syscalls[0x251] = SYSCALL(sys_dynlib_get_info);
-    //syscalls[0x252] = SYSCALL(sys_dynlib_load_prx);
+    syscalls[0x252] = SYSCALL(sys_dynlib_load_prx);
     //syscalls[0x253] = SYSCALL(sys_dynlib_unload_prx);
     //syscalls[0x254] = SYSCALL(sys_dynlib_do_copy_relocations);
     //syscalls[0x255] = SYSCALL(sys_dynlib_prepare_dlclose);
@@ -304,13 +306,11 @@ OrbisOS::OrbisOS() {
 }
 
 bool OrbisOS::init(U64 entry) {
-    // TODO: Load /system/common/lib/libkernel.sprx
-
-    // TODO: Run libkernel.sprx start function
-
-    // TODO: Jump to executable entry point
-
-    return true;
+    // Load libkernel.sprx and run its start function, which will load
+    // the remaining modules and jump to the executable entry point
+    dynlib_load_prx_args args = {};
+    args.path = "/system/common/lib/libkernel.sprx";
+    return !sys_dynlib_load_prx(nullptr, &args);
 }
 
 }  // namespace orbis
