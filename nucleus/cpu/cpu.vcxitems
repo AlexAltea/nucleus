@@ -48,6 +48,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_tables.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_thread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\translator\spu_translator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\x86\x86_state.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\block.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\builder.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\function.h" />
@@ -60,6 +61,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\type.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\value.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)native\x86\x86_proxy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)thread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)util.h" />
   </ItemGroup>
@@ -117,6 +119,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\type.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\value.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)native\x86\x86_proxy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)thread.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)util.cpp" />
   </ItemGroup>

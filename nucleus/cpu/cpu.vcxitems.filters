@@ -40,6 +40,15 @@
     <Filter Include="frontend\ppu\translator">
       <UniqueIdentifier>{f4062f54-21be-476f-ba9e-fed11f4dd627}</UniqueIdentifier>
     </Filter>
+    <Filter Include="native">
+      <UniqueIdentifier>{710f0a2d-4839-478f-b6f9-40b7608a908b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="native\x86">
+      <UniqueIdentifier>{d46f60ff-5439-4a88-a0cb-2345dfc974f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontend\x86">
+      <UniqueIdentifier>{033b63e6-afdc-4921-a56b-ae53bf3107b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\assembler.cpp">
@@ -199,6 +208,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_float.cpp">
       <Filter>frontend\ppu\translator</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)native\x86\x86_proxy.cpp">
+      <Filter>native\x86</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">
@@ -336,6 +348,12 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_channel.h">
       <Filter>frontend\spu</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)native\x86\x86_proxy.h">
+      <Filter>native\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)frontend\x86\x86_state.h">
+      <Filter>frontend\x86</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
