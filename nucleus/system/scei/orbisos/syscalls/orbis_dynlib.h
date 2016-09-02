@@ -39,16 +39,30 @@ S64 sys_dynlib_get_info(void* thread, void* args);
 /**
  * OrbisOS Syscall 594 (0x252)
  */
+// TODO: Members below could be wrong
 struct dynlib_load_prx_args {
-    // TODO: Members below could be wrong
-	S08* path;
+    S08* path;  // const char *
+    U64 args;   // size_t
+    U64 argp;   // const void *
+    U32 flags;  // uint32_t
+    U64 pOpt;   // const SceKernelLoadModuleOpt *
+    U64 pRes    // int *
 };
 S64 sys_dynlib_load_prx(void* thread, dynlib_load_prx_args* args);
 
 /**
  * OrbisOS Syscall 595 (0x253)
  */
-S64 sys_dynlib_unload_prx(void* thread, void* args);
+// TODO: Members below could be wrong
+struct dynlib_unload_prx_args {
+    S32 handle; // SceKernelModule
+    U64 args;   // size_t
+    U64 argp;   // const void *
+    U32 flags;  // uint32_t
+    U64 pOpt;   // const SceKernelUnloadModuleOpt *
+    U64 pRes    // int *
+};
+S64 sys_dynlib_unload_prx(void* thread, dynlib_unload_prx_args* args);
 
 /**
  * OrbisOS Syscall 596 (0x254)
