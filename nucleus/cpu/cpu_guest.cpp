@@ -3,7 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "cpu.h"
+#include "cpu_guest.h"
 #include "nucleus/cpu/thread.h"
 #include "nucleus/cpu/hir/passes.h"
 #include "nucleus/logger/logger.h"
@@ -21,7 +21,7 @@ namespace cpu {
 
 thread_local Thread* gCurrentThread = nullptr;
 
-CPU::CPU(std::shared_ptr<mem::Memory> memory) : memory(std::move(memory)) {
+GuestCPU::GuestCPU(std::shared_ptr<mem::Memory> memory) : memory(std::move(memory)) {
 #if defined(NUCLEUS_ARCH_X86)
     compiler = std::make_unique<backend::x86::X86Compiler>();
 #elif defined(NUCLEUS_ARCH_ARM)
@@ -34,7 +34,7 @@ CPU::CPU(std::shared_ptr<mem::Memory> memory) : memory(std::move(memory)) {
     compiler->addPass(std::make_unique<hir::passes::RegisterAllocationPass>(compiler->targetInfo));
 }
 
-Thread* CPU::addThread(ThreadType type) {
+Thread* GuestCPU::addThread(ThreadType type) {
     std::lock_guard<std::mutex> lock(mutex);
 
     Thread* thread;
@@ -58,7 +58,7 @@ Thread* CPU::addThread(ThreadType type) {
     return thread;
 }
 
-void CPU::removeThread(Thread* thread) {
+void GuestCPU::removeThread(Thread* thread) {
     std::lock_guard<std::mutex> lock(mutex);
 
     threads.erase(
@@ -66,15 +66,15 @@ void CPU::removeThread(Thread* thread) {
         threads.end());
 }
 
-Thread* CPU::getCurrentThread() {
+Thread* GuestCPU::getCurrentThread() {
     return gCurrentThread;
 }
 
-void CPU::setCurrentThread(Thread* thread) {
+void GuestCPU::setCurrentThread(Thread* thread) {
     gCurrentThread = thread;
 }
 
-void CPU::run() {
+void GuestCPU::run() {
     std::lock_guard<std::mutex> lock(mutex);
 
     for (Thread* thread : threads) {
@@ -82,7 +82,7 @@ void CPU::run() {
     }
 }
 
-void CPU::pause() {
+void GuestCPU::pause() {
     std::lock_guard<std::mutex> lock(mutex);
 
     for (Thread* thread : threads) {
@@ -90,7 +90,7 @@ void CPU::pause() {
     }
 }
 
-void CPU::stop() {
+void GuestCPU::stop() {
     std::lock_guard<std::mutex> lock(mutex);
 
     for (Thread* thread : threads) {

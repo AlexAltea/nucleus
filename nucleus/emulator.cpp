@@ -31,7 +31,7 @@ Emulator nucleus;
 bool Emulator::load_ps3(const std::string& path) {
     // Initialize hardware
     memory = std::make_shared<mem::Memory>();
-    cpu = std::make_shared<cpu::Cell>(memory);
+    cpu = std::make_shared<cpu::GuestCPU>(memory);
     gpu = std::make_shared<gpu::RSX>(memory, graphics);
     sys = std::make_shared<sys::LV2>(memory, sys::LV2_DEX);
 
@@ -60,6 +60,8 @@ bool Emulator::load_ps3(const std::string& path) {
 
 bool Emulator::load_ps4(const std::string& path) {
     // Initialize hardware
+    memory = std::make_shared<mem::Memory>();
+    cpu = std::make_shared<cpu::HostCPU>(memory);
     gpu = std::make_shared<gpu::R10XX>(graphics);
     sys = std::make_shared<sys::OrbisOS>();
 

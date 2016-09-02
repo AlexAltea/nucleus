@@ -5,9 +5,12 @@
 
 #pragma once
 
+#include "cpu.h"
+
 namespace cpu {
 
-class CPU {
+class HostCPU : public CPU {
+public:
 };
 
 }  // namespace cpu
