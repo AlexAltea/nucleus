@@ -3,8 +3,7 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "memory.h"
-#include "nucleus/common.h"
+#include "guest_virtual_memory.h"
 #include "nucleus/logger/logger.h"
 
 #ifdef NUCLEUS_TARGET_WINDOWS
@@ -20,14 +19,14 @@
 
 namespace mem {
 
-Memory::Memory() {
+GuestVirtualMemory::GuestVirtualMemory(Size amount) {
     // Reserve 4 GB of memory for any 32-bit pointer in the PS3 memory
 #if defined(NUCLEUS_TARGET_UWP)
     m_base = nullptr;
 #elif defined(NUCLEUS_TARGET_WINDOWS)
-    m_base = VirtualAlloc(nullptr, 0x100000000ULL, MEM_RESERVE, PAGE_NOACCESS);
+    m_base = VirtualAlloc(nullptr, amount, MEM_RESERVE, PAGE_NOACCESS);
 #elif defined(NUCLEUS_TARGET_LINUX) || defined(NUCLEUS_TARGET_OSX)
-    m_base = ::mmap(nullptr, 0x100000000ULL, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+    m_base = ::mmap(nullptr, amount, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
 #endif
 
     // Check errors

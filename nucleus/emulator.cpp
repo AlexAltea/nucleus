@@ -10,11 +10,10 @@
 #include "nucleus/filesystem/filesystem_host.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/ui/ui.h"
-#include "nucleus/cpu/cell.h"
 #include "nucleus/gpu/list.h"
 #include "nucleus/filesystem/utils.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/memory/memory.h"
+#include "nucleus/memory/list.h"
 #include "nucleus/system/loader.h"
 #include "nucleus/system/scei/self.h"
 #include "nucleus/system/scei/orbisos/orbis_self.h"
@@ -30,7 +29,7 @@ Emulator nucleus;
  */
 bool Emulator::load_ps3(const std::string& path) {
     // Initialize hardware
-    memory = std::make_shared<mem::Memory>();
+    memory = std::make_shared<mem::GuestVirtualMemory>(4_GB);
     cpu = std::make_shared<cpu::GuestCPU>(memory);
     gpu = std::make_shared<gpu::RSX>(memory, graphics);
     sys = std::make_shared<sys::LV2>(memory, sys::LV2_DEX);
@@ -60,7 +59,7 @@ bool Emulator::load_ps3(const std::string& path) {
 
 bool Emulator::load_ps4(const std::string& path) {
     // Initialize hardware
-    memory = std::make_shared<mem::Memory>();
+    memory = std::make_shared<mem::HostVirtualMemory>();
     cpu = std::make_shared<cpu::HostCPU>(memory);
     gpu = std::make_shared<gpu::R10XX>(graphics);
     sys = std::make_shared<sys::OrbisOS>();
