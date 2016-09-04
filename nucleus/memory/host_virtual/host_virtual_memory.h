@@ -10,6 +10,20 @@
 
 namespace mem {
 
+/**
+ * Host Virtual Memory
+ * ===================
+ * Makes the guest application share virtual memory with the host machine.
+ * No address translation occurs, and any access is reinterpret_cast<void*>'ed.
+ *
+ * NOTE:
+ *   This is only suitable for emulating ASLR-enabled guest applications,
+ *   with same `CHAR_BIT * sizeof(void*)` value in guest and host environments.
+ *
+ * WARNING:
+ *   No security measures implemented. Any malicious guest application could
+ *   easily access the entire virtual address space of the Nucleus process.
+ */
 class HostVirtualMemory : public Memory {
 public:
     HostVirtualMemory();
@@ -31,7 +45,6 @@ public:
     virtual void write64(U64 addr, U64 value) override;
     virtual void write128(U64 addr, U128 value) override;
 
-    virtual void memcpy_h2h(void* destination, const void* source, Size num) override;
     virtual void memcpy_h2g(U64 destination, const void* source, Size num) override;
     virtual void memcpy_g2h(void* destination, U64 source, Size num) override;
     virtual void memcpy_g2g(U64 destination, U64 source, Size num) override;

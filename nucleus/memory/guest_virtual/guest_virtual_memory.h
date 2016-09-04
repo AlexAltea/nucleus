@@ -18,11 +18,33 @@ enum {
     SEG_MMAPPER_MEMORY,    // 0xB0000000 to 0xBFFFFFFF
     SEG_RSX_LOCAL_MEMORY,  // 0xC0000000 to 0xCFFFFFFF
     SEG_STACK,             // 0xD0000000 to 0xDFFFFFFF
+    SEG_SPU,               // 0xF0000000 to 0xFFFFFFFF
 
     // Count of memory segments
     _SEG_COUNT,
 };
 
+/**
+ * Guest Virtual Memory
+ * ====================
+ * Makes the guest application virtual address space live within a fixed range
+ * of Nucleus virtual address space in the host machine.
+ * Depending on the base address of the allocated guest virtual address (`base`)
+ * and the size of guest pointers (masked with `mask`), address will be translated
+ * between guest and host according to following formulas:
+ *
+ *   guest := (host - base) & mask
+ *   host  := (guest - base) & mask
+ *
+ * WARNING:
+ *   While the read*|write*|mem* methods ensure no host virtual memory
+ *   belonging to the Nucleus process can be accessed by the guest application,
+ *   the methods ptr/ref commonly used on OS high-level emulation code could
+ *   easily be misused and lead to code exploitable by a guest application.
+ *
+ *   Accidentally implementing a "guest kernel vulnerability",
+ *   implies implementing a "host userland vulnerability".
+ */
 class GuestVirtualMemory : public Memory {
     void* m_base;
     Segment m_segments[_SEG_COUNT];
