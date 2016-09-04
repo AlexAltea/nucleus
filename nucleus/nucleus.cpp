@@ -9,14 +9,25 @@
 #include "nucleus/emulator.h"
 #include "nucleus/ui/ui.h"
 
+#include "nucleus/audio/backend/list.h"
+#include "nucleus/graphics/backend/list.h"
+
 #include <iostream>
 
 #if !defined(NUCLEUS_BUILD_TEST)
 
-void nucleusConfigure(int argc, char **argv) {
-    // Configure emulator
-    config.parseArguments(argc, argv);
-}
+using namespace audio;
+using namespace gfx;
+using namespace ui;
+
+struct Nucleus {
+    std::unique_ptr<AudioBackend> audio;
+    std::unique_ptr<GraphicsBackend> graphics;
+    std::unique_ptr<UI> ui;
+};
+
+// Global Nucleus object
+Nucleus nucleus;
 
 #if defined(NUCLEUS_TARGET_LINUX)
 void nucleusPrepare(Display* display, Window window, int width, int height) {
@@ -46,18 +57,92 @@ void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height) {
 }
 #endif
 
-int nucleusInitialize(int argc, char **argv) {
+void nucleusConfigure(int argc, char **argv) {
     if (argc <= 1) {
         std::cout
-            << "Nucleus " NUCLEUS_VERSION ": A PlayStation 3 emulator.\n"
-            << "Usage: nucleus [arguments] path/to/executable.ppu.self\n"
+            << "Nucleus " NUCLEUS_VERSION ": Multi-platform emulator.\n"
+            << "Usage: nucleus [arguments] path/to/app\n"
             << "Arguments:\n"
-            << "  --console      Avoids the Nucleus UI window, disabling GPU backends.\n"
-            << "  --debugger     Create a Nerve backend debugging server.\n"
-            << "                 More information at: http://alexaltea.github.io/nerve/ \n"
+            << "  --console    Avoids the Nucleus UI window, disabling GPU backends.\n"
+            << "  --debugger   Create a Nerve backend debugging server.\n"
+            << "               More information at: http://alexaltea.github.io/nerve/ \n"
             << std::endl;
     }
+    config.parseArguments(argc, argv);
+}
 
+void nucleusInitialize() {
+    // Select graphics backend
+    auto& graphics = nucleus.graphics;
+    switch (config.graphicsBackend) {
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D11)
+    case GRAPHICS_BACKEND_DIRECT3D11:
+        graphics = std::make_unique<gfx::Direct3D11Backend>();
+        break;
+#endif
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12)
+    case GRAPHICS_BACKEND_DIRECT3D12:
+        graphics = std::make_unique<gfx::Direct3D12Backend>();
+        break;
+#endif
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_OPENGL)
+    case GRAPHICS_BACKEND_OPENGL:
+        graphics = std::make_unique<gfx::OpenGLBackend>();
+        break;
+#endif
+#if defined(NUCLEUS_FEATURE_GFXBACKEND_VULKAN)
+    case GRAPHICS_BACKEND_VULKAN:
+        graphics = std::make_unique<gfx::VulkanBackend>();
+        break;
+#endif
+    default:
+        logger.warning(LOG_COMMON, "Unsupported graphics backend");
+        return false;
+    }
+
+    // Select audio backend
+    auto& audio = nucleus.audio;
+    switch (config.audioBackend) {
+#if defined(AUDIO_FEATURE_AUDIOBACKEND_COREAUDIO)
+    case AUDIO_BACKEND_COREAUDIO:
+        audio = std::make_unique<audio::CoreAudioBackend>();
+        break;
+#endif
+#if defined(NUCLEUS_FEATURE_AUDIOBACKEND_OPENAL)
+    case AUDIO_BACKEND_OPENAL:
+        audio = std::make_unique<audio::OpenALBackend>();
+        break;
+#endif
+#if defined(NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2)
+    case AUDIO_BACKEND_XAUDIO2:
+        audio = std::make_unique<audio::XAudio2Backend>();
+        break;
+#endif
+     default:
+        logger.warning(LOG_COMMON, "Unsupported audio backend");
+        return false;
+    }
+
+    // Initialize backends
+    if (!graphics->initialize(params)) {
+        logger.warning(LOG_COMMON, "Could not initialize graphics backend");
+        return false;
+    }
+    if (!audio->initialize()) {
+        logger.warning(LOG_COMMON, "Could not initialize audio backend");
+        return false;
+    }
+
+    if (!config.console) {
+        ui = std::make_unique<ui::UI>(graphics, params.width, params.height);
+        if (!ui->initialize()) {
+            logger.warning(LOG_COMMON, "Could not initialize user interface");
+            return false;
+        }
+    }
+
+    return true;
+}
     // Start debugger
     if (config.debugger) {
         debugger.init();
@@ -70,7 +155,6 @@ int nucleusInitialize(int argc, char **argv) {
         nucleus.run();
         nucleus.idle();
     }
-
     return 0;
 }
 

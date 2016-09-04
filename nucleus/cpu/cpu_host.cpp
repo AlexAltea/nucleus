@@ -4,3 +4,16 @@
  */
 
 #include "cpu_host.h"
+
+namespace cpu {
+
+void HostCPU::run() {
+}
+
+void HostCPU::pause() {
+}
+
+void HostCPU::stop() {
+}
+
+}  // namespace cpu

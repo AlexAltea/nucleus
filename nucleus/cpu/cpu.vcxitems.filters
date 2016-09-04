@@ -40,14 +40,14 @@
     <Filter Include="frontend\ppu\translator">
       <UniqueIdentifier>{f4062f54-21be-476f-ba9e-fed11f4dd627}</UniqueIdentifier>
     </Filter>
-    <Filter Include="native">
-      <UniqueIdentifier>{710f0a2d-4839-478f-b6f9-40b7608a908b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="native\x86">
-      <UniqueIdentifier>{d46f60ff-5439-4a88-a0cb-2345dfc974f8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="frontend\x86">
       <UniqueIdentifier>{033b63e6-afdc-4921-a56b-ae53bf3107b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="host">
+      <UniqueIdentifier>{6f14c975-3084-4b85-b317-3ffaee95fb03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="host\x86">
+      <UniqueIdentifier>{09f6570c-5b20-4b2a-8d56-ec975bc4010b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,8 +141,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\passes\dead_code_elimination_pass.cpp">
       <Filter>hir\passes</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)cell.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)cpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)thread.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)util.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)hir\cpu_block.cpp">
@@ -208,9 +206,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\translator\ppu_translator_float.cpp">
       <Filter>frontend\ppu\translator</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)native\x86\x86_proxy.cpp">
-      <Filter>native\x86</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)host\x86\x86_proxy.cpp">
+      <Filter>host\x86</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)cpu_guest.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)cpu_host.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">
@@ -312,7 +312,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)hir\passes\register_allocation_pass.h">
       <Filter>hir\passes</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)cell.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)cpu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)thread.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)util.h" />
@@ -349,12 +348,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\spu\spu_channel.h">
       <Filter>frontend\spu</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)native\x86\x86_proxy.h">
-      <Filter>native\x86</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)frontend\x86\x86_state.h">
       <Filter>frontend\x86</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)host\x86\x86_proxy.h">
+      <Filter>host\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)cpu_guest.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)cpu_host.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)hir\opcodes.inl">

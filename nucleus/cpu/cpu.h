@@ -8,6 +8,22 @@
 namespace cpu {
 
 class CPU {
+public:
+    // Thread management
+    /**
+     * Start or resume the execution of all threads
+     */
+    virtual void run() = 0;
+
+    /**
+     * Pause the execution of all threads
+     */
+    virtual void pause() = 0;
+
+    /**
+     * Stop the execution of all threads
+     */
+    virtual void stop() = 0;
 };
 
 }  // namespace cpu

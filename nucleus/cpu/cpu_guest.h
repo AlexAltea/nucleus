@@ -5,7 +5,13 @@
 
 #pragma once
 
-#include "cpu.h"
+#include "nucleus/common.h"
+#include "nucleus/memory/memory.h"
+#include "nucleus/cpu/cpu.h"
+#include "nucleus/cpu/thread.h"
+#include "nucleus/cpu/backend/compiler.h"
+
+#include <mutex>
 
 namespace cpu {
 
@@ -30,10 +36,10 @@ public:
     static Thread* getCurrentThread();
     static void setCurrentThread(Thread* thread);
 
-    // Manage execution state of all threads
-    void run();
-    void pause();
-    void stop();
+    // Thread management
+    virtual void run() override;
+    virtual void pause() override;
+    virtual void stop() override;
 };
 
 }  // namespace cpu

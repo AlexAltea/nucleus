@@ -5,10 +5,10 @@
 
 #include "emulator.h"
 #include "nucleus/core/config.h"
-#include "nucleus/audio/backend/list.h"
-#include "nucleus/graphics/backend/list.h"
 #include "nucleus/filesystem/filesystem_host.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
+#include "nucleus/cpu/cpu_guest.h"
+#include "nucleus/cpu/cpu_host.h"
 #include "nucleus/ui/ui.h"
 #include "nucleus/gpu/list.h"
 #include "nucleus/filesystem/utils.h"
@@ -20,9 +20,6 @@
 #include "nucleus/system/list.h"
 
 #if !defined(NUCLEUS_BUILD_TEST)
-
-// Global emulator object
-Emulator nucleus;
 
 /**
  * Load specific platform
@@ -84,77 +81,6 @@ bool Emulator::load_ps4(const std::string& path) {
 
     auto entry = reinterpret_cast<uintptr_t>(entryBase) + self.getEntry();
     static_cast<sys::OrbisOS*>(sys.get())->init(entry);
-    return true;
-}
-
-bool Emulator::initialize(const gfx::BackendParameters& params) {
-    // Select graphics backend
-    switch (config.graphicsBackend) {
-#if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D11)
-    case GRAPHICS_BACKEND_DIRECT3D11:
-        graphics = std::make_shared<gfx::Direct3D11Backend>();
-        break;
-#endif
-#if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D12)
-    case GRAPHICS_BACKEND_DIRECT3D12:
-        graphics = std::make_shared<gfx::Direct3D12Backend>();
-        break;
-#endif
-#if defined(NUCLEUS_FEATURE_GFXBACKEND_OPENGL)
-    case GRAPHICS_BACKEND_OPENGL:
-        graphics = std::make_shared<gfx::OpenGLBackend>();
-        break;
-#endif
-#if defined(NUCLEUS_FEATURE_GFXBACKEND_VULKAN)
-    case GRAPHICS_BACKEND_VULKAN:
-        graphics = std::make_shared<gfx::VulkanBackend>();
-        break;
-#endif
-    default:
-        logger.warning(LOG_COMMON, "Unsupported graphics backend");
-        return false;
-    }
-
-    // Select audio backend
-    switch (config.audioBackend) {
-#if defined(AUDIO_FEATURE_AUDIOBACKEND_COREAUDIO)
-    case AUDIO_BACKEND_COREAUDIO:
-        audio = std::make_shared<audio::CoreAudioBackend>();
-        break;
-#endif
-#if defined(NUCLEUS_FEATURE_AUDIOBACKEND_OPENAL)
-    case AUDIO_BACKEND_OPENAL:
-        audio = std::make_shared<audio::OpenALBackend>();
-        break;
-#endif
-#if defined(NUCLEUS_FEATURE_AUDIOBACKEND_XAUDIO2)
-    case AUDIO_BACKEND_XAUDIO2:
-        audio = std::make_shared<audio::XAudio2Backend>();
-        break;
-#endif
-     default:
-        logger.warning(LOG_COMMON, "Unsupported audio backend");
-        return false;
-    }
-
-    // Initialize backends
-    if (!graphics->initialize(params)) {
-        logger.warning(LOG_COMMON, "Could not initialize graphics backend");
-        return false;
-    }
-    if (!audio->initialize()) {
-        logger.warning(LOG_COMMON, "Could not initialize audio backend");
-        return false;
-    }
-
-    if (!config.console) {
-        ui = std::make_shared<ui::UI>(graphics, params.width, params.height);
-        if (!ui->initialize()) {
-            logger.warning(LOG_COMMON, "Could not initialize user interface");
-            return false;
-        }
-    }
-
     return true;
 }
 

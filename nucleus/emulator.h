@@ -56,5 +56,3 @@ public:
     void idle();
     void task(EmulatorEvent evt);
 };
-
-extern Emulator nucleus;

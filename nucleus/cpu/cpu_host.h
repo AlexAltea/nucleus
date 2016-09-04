@@ -11,6 +11,10 @@ namespace cpu {
 
 class HostCPU : public CPU {
 public:
+    // Thread management
+    virtual void run() override;
+    virtual void pause() override;
+    virtual void stop() override;
 };
 
 }  // namespace cpu
