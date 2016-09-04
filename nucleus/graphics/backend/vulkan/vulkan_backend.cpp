@@ -23,7 +23,7 @@
 namespace gfx {
 namespace vulkan {
 
-VulkanBackend::VulkanBackend() : IBackend() {
+VulkanBackend::VulkanBackend() : GraphicsBackend() {
 }
 
 VulkanBackend::~VulkanBackend() {

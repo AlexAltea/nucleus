@@ -8,7 +8,7 @@
 namespace gpu {
 namespace r10xx {
 
-R10XX::R10XX(std::shared_ptr<gfx::IBackend> graphics) {
+R10XX::R10XX(std::shared_ptr<gfx::GraphicsBackend> graphics) {
 }
 
 gfx::Texture* R10XX::getFrontBuffer() {

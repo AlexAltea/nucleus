@@ -7,7 +7,7 @@
 
 namespace audio {
 
-class Backend {
+class AudioBackend {
 public:
     virtual bool initialize() = 0;
 

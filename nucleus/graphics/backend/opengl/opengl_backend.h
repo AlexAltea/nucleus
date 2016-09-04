@@ -30,7 +30,7 @@ using OpenGLContext = HGLRC;
 // Forward declarations
 class OpenGLCommandQueue;
 
-class OpenGLBackend : public IBackend {
+class OpenGLBackend : public GraphicsBackend {
 private:
     OpenGLContext context = 0;
     OpenGLContext subContext[8];

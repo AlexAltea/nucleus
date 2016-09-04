@@ -48,7 +48,7 @@ struct BackendParameters {
     Size height;
 };
 
-class IBackend {
+class GraphicsBackend {
 protected:
     BackendParameters parameters;
 
@@ -59,7 +59,7 @@ public:
     ColorTarget* screenFrontTarget;
 
     // Constructor
-    IBackend();
+    GraphicsBackend();
 
     virtual bool initialize(const BackendParameters& params) = 0;
 

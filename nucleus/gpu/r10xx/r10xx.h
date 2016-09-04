@@ -14,7 +14,7 @@ namespace r10xx {
 
 class R10XX : public GPU {
 public:
-    R10XX(std::shared_ptr<gfx::IBackend> graphics);
+    R10XX(std::shared_ptr<gfx::GraphicsBackend> graphics);
 
     virtual gfx::Texture* getFrontBuffer() override;
 };

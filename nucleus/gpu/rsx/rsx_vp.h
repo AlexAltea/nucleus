@@ -15,7 +15,7 @@
 namespace gfx {
 
 class Shader;
-class IBackend;
+class GraphicsBackend;
 
 }  // namespace gfx
 
@@ -196,7 +196,7 @@ public:
      * @param[in]  backend  Graphics backend to compile the module with
      * @return              Non-zero shader pointer on success, otherwise nullptr
      */
-    void compile(gfx::IBackend* backend);
+    void compile(gfx::GraphicsBackend* backend);
 };
 
 }  // namespace rsx

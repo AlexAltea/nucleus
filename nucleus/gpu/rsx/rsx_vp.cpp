@@ -270,7 +270,7 @@ void RSXVertexProgram::decompile(const rsx_vp_instruction_t* buffer) {
     builder.addMemoryModel(ADDRESSING_MODEL_LOGICAL, MEMORY_MODEL_GLSL450);
 }
 
-void RSXVertexProgram::compile(gfx::IBackend* backend) {
+void RSXVertexProgram::compile(gfx::GraphicsBackend* backend) {
     // TODO: Remove this
     for (const auto& i : module->hCapabilities)     { module->header.push_back(i); }
     for (const auto& i : module->hExtensions)       { module->header.push_back(i); }

@@ -26,7 +26,7 @@ void WidgetImage::init() {
     heap = manager->graphics->createHeap(heapDesc);
 }
 
-gfx::Pipeline* WidgetImage::createPipeline(gfx::IBackend& backend) {
+gfx::Pipeline* WidgetImage::createPipeline(gfx::GraphicsBackend& backend) {
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
     core::Resource resVS(core::RES_SHADER_UI_WIDGET_IMAGE_VS);

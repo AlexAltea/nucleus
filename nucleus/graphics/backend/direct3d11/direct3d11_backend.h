@@ -19,7 +19,7 @@ class IDXGISwapChain;
 namespace gfx {
 namespace direct3d11 {
 
-class Direct3D11Backend : public IBackend {
+class Direct3D11Backend : public GraphicsBackend {
     IDXGIAdapter1* adapter;
     ID3D11Device* device;
     ID3D11DeviceContext* deviceContext;

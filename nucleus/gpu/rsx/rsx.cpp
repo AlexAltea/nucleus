@@ -42,7 +42,7 @@
 namespace gpu {
 namespace rsx {
 
-RSX::RSX(std::shared_ptr<mem::Memory> mem, std::shared_ptr<gfx::IBackend> graphics) :
+RSX::RSX(std::shared_ptr<mem::Memory> mem, std::shared_ptr<gfx::GraphicsBackend> graphics) :
     memory(mem), pgraph(std::move(graphics), this, mem.get()) {
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
     memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40000000, 0x1000);

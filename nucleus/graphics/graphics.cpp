@@ -7,7 +7,7 @@
 
 namespace gfx {
 
-IBackend::IBackend() {
+GraphicsBackend::GraphicsBackend() {
 }
 
 }  // namespace gfx

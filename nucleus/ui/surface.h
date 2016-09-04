@@ -52,7 +52,7 @@ public:
      * Apply surface updates and configure graphics backend accordingly
      * @param[in]  backend  Graphics backend to be configured
      */
-    void update(gfx::IBackend* backend);
+    void update(gfx::GraphicsBackend* backend);
 };
 
 }  // namespace ui

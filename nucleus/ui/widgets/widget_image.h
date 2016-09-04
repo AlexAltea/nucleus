@@ -45,7 +45,7 @@ public:
      * Create a pipeline to process this kind of widgets
      * @param[in]  backend  Graphics backend where the pipeline state object will be created
      */
-    static gfx::Pipeline* createPipeline(gfx::IBackend& backend);
+    static gfx::Pipeline* createPipeline(gfx::GraphicsBackend& backend);
 
     /**
      * Read image from resource

@@ -13,7 +13,7 @@
 
 namespace ui {
 
-gfx::Pipeline* WidgetContainer::createPipeline(gfx::IBackend& backend) {
+gfx::Pipeline* WidgetContainer::createPipeline(gfx::GraphicsBackend& backend) {
     gfx::ShaderDesc vertDesc = {};
     gfx::ShaderDesc fragDesc = {};
     core::Resource resVS(core::RES_SHADER_UI_WIDGET_CONTAINER_VS);

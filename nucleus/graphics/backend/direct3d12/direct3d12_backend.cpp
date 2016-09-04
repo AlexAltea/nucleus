@@ -25,7 +25,7 @@
 namespace gfx {
 namespace direct3d12 {
 
-Direct3D12Backend::Direct3D12Backend() : IBackend() {
+Direct3D12Backend::Direct3D12Backend() : GraphicsBackend() {
 }
 
 Direct3D12Backend::~Direct3D12Backend() {

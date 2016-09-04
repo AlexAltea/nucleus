@@ -20,7 +20,7 @@ struct IDXGISwapChain3;
 namespace gfx {
 namespace direct3d12 {
 
-class Direct3D12Backend : public IBackend {
+class Direct3D12Backend : public GraphicsBackend {
 private:
     // Debugging
     Direct3D12Debug debug;

@@ -32,7 +32,7 @@ Surface::Surface(Size width, Size height) :
     proportion = float(width) / float(height);
 }
 
-void Surface::update(gfx::IBackend* backend) {
+void Surface::update(gfx::GraphicsBackend* backend) {
     if (!changed) {
         return;
     }

@@ -17,7 +17,7 @@
 namespace gpu {
 namespace rsx {
 
-PGRAPH::PGRAPH(std::shared_ptr<gfx::IBackend> backend, RSX* rsx, mem::Memory* memory) :
+PGRAPH::PGRAPH(std::shared_ptr<gfx::GraphicsBackend> backend, RSX* rsx, mem::Memory* memory) :
     graphics(std::move(backend)), rsx(rsx), memory(memory), surface(), cacheTexture(256_MB) {
     cmdQueue = graphics->getGraphicsCommandQueue();
     cmdBuffer = graphics->createCommandBuffer();

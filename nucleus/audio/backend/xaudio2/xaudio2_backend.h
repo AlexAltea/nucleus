@@ -14,7 +14,7 @@ struct IXAudio2MasteringVoice;
 namespace audio {
 namespace xaudio2 {
 
-class XAudio2Backend : public Backend {
+class XAudio2Backend : public AudioBackend {
     IXAudio2* xaudio2;
     IXAudio2MasteringVoice* masteringVoice;
 

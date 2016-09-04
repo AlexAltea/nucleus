@@ -33,8 +33,8 @@ class Emulator {
     bool load_ps4(const std::string& path);
 
 public:
-    std::shared_ptr<audio::Backend> audio;
-    std::shared_ptr<gfx::IBackend> graphics;
+    std::shared_ptr<audio::AudioBackend> audio;
+    std::shared_ptr<gfx::GraphicsBackend> graphics;
     std::shared_ptr<ui::UI> ui;
 
     // Hardware & OS

@@ -147,7 +147,7 @@ struct alignas(sizeof(Hash)) Pipeline {
 
 // RSX's PGRAPH engine (Curie)
 class PGRAPH {
-    std::shared_ptr<gfx::IBackend> graphics;
+    std::shared_ptr<gfx::GraphicsBackend> graphics;
     mem::Memory* memory;
     RSX* rsx;
 
@@ -224,7 +224,7 @@ public:
     U32 fp_control;                      // Control the performance of the program
 
     // Constructor
-    PGRAPH(std::shared_ptr<gfx::IBackend> graphics, RSX* rsx, mem::Memory* memory);
+    PGRAPH(std::shared_ptr<gfx::GraphicsBackend> graphics, RSX* rsx, mem::Memory* memory);
     ~PGRAPH();
 
     // Auxiliary methods

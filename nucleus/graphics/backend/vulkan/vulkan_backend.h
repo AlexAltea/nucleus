@@ -13,7 +13,7 @@
 namespace gfx {
 namespace vulkan {
 
-class VulkanBackend : public IBackend {
+class VulkanBackend : public GraphicsBackend {
     VkInstance instance;
     VkPhysicalDevice physicalDevice;
     VkPhysicalDeviceProperties physicalDeviceProperties;

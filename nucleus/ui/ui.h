@@ -31,7 +31,7 @@ class UI {
     std::queue<std::unique_ptr<Screen>> newScreens;
 
 public:
-    std::shared_ptr<gfx::IBackend> graphics;
+    std::shared_ptr<gfx::GraphicsBackend> graphics;
 
     // Events
     std::mutex eventMutex;
@@ -50,7 +50,7 @@ public:
     std::unique_ptr<Font> fontIcon;
 
     // Constructor
-    UI(std::shared_ptr<gfx::IBackend> graphics, Size width, Size height);
+    UI(std::shared_ptr<gfx::GraphicsBackend> graphics, Size width, Size height);
 
     // RSX connection
     bool rsxChanged = false;
