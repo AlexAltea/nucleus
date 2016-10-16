@@ -72,6 +72,45 @@ struct sys_process_prx_param_t
     BE<U32> unk2;
 };
 
+// process info, size 0x34
+struct sys_process_info_t
+{
+	BE<U32> id;             // 0x00: process ID
+	BE<U32> status;         // 0x04: process status
+	BE<U32> ppu_thr_count;  // 0x08: PPU thread count
+	BE<U32> spu_thr_count;  // 0x0C: SPU thread count
+	BE<U32> raw_spu_count;  // 0x10: raw SPU count
+	BE<U32> pp_id;          // 0x14: parent process ID
+	char *binary_path;      // 0x18: pointer to a char buffer of 0x200 in size, holding process binary path
+	BE<U32> total_mem;      // 0x1C: total memory(user space) size in byte
+	U8 osabi_type;          // 0x20: OS ABI type
+	U8 pad[7];              // 0x21: padding
+	BE<U64> intr_mask;      // 0x28: process interrupt bitmap mask
+	BE<U32> trace_id;       // 0x30: trace ID, for debugging
+};
+    
+// process param sfo
+struct sys_param_sfo_t
+{
+    U8 flag;            // 0x00: 1(exist), 0xFF(process have no param_sfo, e.g. VSH process)
+    char title_id[9]    // 0x01: (8+'/0'), format: "ABCD1234"
+    U8 pad[6];          // 0x0A: padding
+    BE<U64> param_0;    // 0x10: ? sys_process_param_t.crash_dump_param_addr related
+    BE<U64> param_1;    // 0x18: ?
+    BE<U64> param_2;    // 0x20: ?
+    BE<U64> param_3;    // 0x28: ?
+    BE<U64> param_4;    // 0x30: ?
+    BE<U64> param_5;    // 0x38: ? sys_process_param_t.crash_dump_param_addr related
+};
+
+// process debugging data, size 0x10; arg for sys_process_spawns_a_self2()
+struct sys_process_dbg_t
+{
+	BE<U64> intr_mask;  // 0x00: process interrupt bitmap mask
+	BE<U32> trace_id;   // 0x08: trace ID, for debugging
+	BE<U32> pad;        // 0x0C: padding
+};
+    
 // Auxiliary classes
 struct sys_process_t {
     sys_process_param_t param;
