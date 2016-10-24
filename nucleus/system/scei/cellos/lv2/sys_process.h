@@ -22,9 +22,9 @@ enum
     SYS_SPUIMAGE_OBJECT             = 0x22,
     SYS_PRX_OBJECT                  = 0x23,
     SYS_SPUPORT_OBJECT              = 0x24,
-    SYS_UNK65_OBJECT                = 0x41,
-    SYS_UNK66_OBJECT                = 0x42,
-    SYS_UNK67_OBJECT                = 0x43,
+    SYS_SERVICE_LISTENER_OBJECT     = 0x41,  // base system config handle
+    SYS_SERVICE_LISTENER_OBJECT     = 0x42,  // a system config service listener
+    SYS_SERVICE_OBJECT              = 0x43,  // a system config service
     SYS_FS_FD_OBJECT                = 0x73,
     SYS_MUTEX_OBJECT                = 0x85,
     SYS_COND_OBJECT                 = 0x86,
@@ -36,11 +36,19 @@ enum
     SYS_EVENT_FLAG_OBJECT           = 0x98,
 
     // Custom
-    SYS_PPU_THREAD_OBJECT           = 0x01,
+    SYS_PROCESS_OBJECT              = 0x01,
+    SYS_PROGRAM_SEGMENT_OBJECT      = 0x0F,  // ppc program segments
+    SYS_UNK_18_OBJECT               = 0x12,  // ? debug related
+    SYS_SHARED_MEM_OBJECT           = 0x20,
+    SYS_OVERLAY_PRX_OBJECT          = 0x25,
+    SYS_UNK_48_OBJECT               = 0x30,  // ? sys usbd
+    SYS_RSX_AUDIO_OBJECT            = 0x60,  
+    SYS_GSSM_OBJECT                 = 0x65,  // Game Save Storage Manager interface
+    SYS_CRYPTO_OBJECT               = 0x78,  // crypto_engine
 
     // TODO: Are these even objects?
-    SYS_SPU_THREAD_OBJECT           = 0x02,
-    SYS_SPU_THREAD_GROUP_OBJECT     = 0x03,
+    //SYS_SPU_THREAD_OBJECT           = 0x02, // no object with this ID into LV2 kernel
+    SYS_SPU_THREAD_GROUP_OBJECT     = 0x04,
 };
 
 // ELF file headers
@@ -133,5 +141,21 @@ S32 sys_process_detach_child(U64 unk);
 S32 sys_process_is_spu_lock_line_reservation_address(U32 addr, U64 flags);
 void sys_game_process_exitspawn(U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
 void sys_game_process_exitspawn2(U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
+S32 sys_process_wait_for_child(BE<U32>* child_proc_id, BE<U32>* status, U32 flag);
+S32 sys_process_get_status(U32 proc_id);
+S32 sys_process_detach_child(U32 child_proc_id);
+S32 sys_process_get_number_of_object(U32 obj_type, BE<U32>* count);
+S32 sys_process_get_id(U32 obj_type, BE<U32>* id_list, U32 id_list_size, BE<U32>* count);
+S32 sys_process_kill(U32 proc_id);
+S32 sys_process_spawn(BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U64 intr_mask, U32 trace_id);
+S32 sys_process_exit2(S32 exit_status, BE<U32>* user_data, U32 user_data_size);
+S32 sys_process_wait_for_child2(BE<U32>* child_proc_id, BE<U32>* status, BE<U32>* data_out, U32 data_out_size, U32 arg_5, U32 flags);
+S32 sys_process_spawns_a_self(BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U64 proc_intr_mask, U32 trace_id, U32 mc_id);
+S32 sys_process_exit3(S32 exit_status, BE<U32>* user_data, U32 user_data_size, U32 flags);
+S32 sys_process_spawns_a_self2(BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U32 mc_id, sys_param_sfo_t* param_sfo, sys_process_dbg_t* dbg_data);
+S32 sys_process_get_number_of_object2(U32 obj_type);
+S32 sys_process_get_id2(U32 obj_type, BE<U32>* id_list, U32 id_list_size, BE<U32>* count);
+S32 sys_process_get_ppu_guid();
 
+    
 }  // namespace sys
