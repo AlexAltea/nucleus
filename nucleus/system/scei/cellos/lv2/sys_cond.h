@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "nucleus/common.h"
 #include "sys_mutex.h"
 
 #include <condition_variable>
@@ -30,11 +29,11 @@ struct sys_cond_t
 };
 
 // SysCalls
-S32 sys_cond_create(BE<U32>* cond_id, U32 mutex_id, sys_cond_attribute_t* attr);
-S32 sys_cond_destroy(U32 cond_id);
-S32 sys_cond_wait(U32 cond_id, U64 timeout);
-S32 sys_cond_signal(U32 cond_id);
-S32 sys_cond_signal_all(U32 cond_id);
-S32 sys_cond_signal_to(U32 cond_id, U32 thread_id);
+LV2_SYSCALL(sys_cond_create, BE<U32>* cond_id, U32 mutex_id, sys_cond_attribute_t* attr);
+LV2_SYSCALL(sys_cond_destroy, U32 cond_id);
+LV2_SYSCALL(sys_cond_wait, U32 cond_id, U64 timeout);
+LV2_SYSCALL(sys_cond_signal, U32 cond_id);
+LV2_SYSCALL(sys_cond_signal_all, U32 cond_id);
+LV2_SYSCALL(sys_cond_signal_to, U32 cond_id, U32 thread_id);
 
 }  // namespace sys

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 #include <string>
 #include <unordered_map>
@@ -142,29 +143,29 @@ struct sys_prx_t
 };
 
 // SysCalls
-S32 sys_prx_0x1CE();
-S32 sys_prx_load_module(const S08* path, U64 flags, sys_prx_load_module_option_t* pOpt);
-S32 sys_prx_load_module_by_fd();
-S32 sys_prx_load_module_list(S32 count, BE<U64>* pathList, U64 flags, void* pOpt, BE<U32>* idList);
-S32 sys_prx_load_module_on_memcontainer();
-S32 sys_prx_load_module_on_memcontainer_by_fd();
-S32 sys_prx_start_module(S32 id, U64 flags, sys_prx_start_module_option_t* pOpt);
-S32 sys_prx_stop_module(S32 id, U32 args, U32 argp_addr, BE<U32>* modres, U64 flags, sys_prx_stop_module_option_t* pOpt);
-S32 sys_prx_unload_module(S32 id, U64 flags, sys_prx_unload_module_option_t* pOpt);
-S32 sys_prx_register_module();
-S32 sys_prx_get_module_list();
-S32 sys_prx_get_my_module_id();
-S32 sys_prx_get_module_id_by_address();
-S32 sys_prx_get_module_id_by_name(const S08* name, U64 flags, sys_prx_get_module_id_by_name_option_t* pOpt);
-S32 sys_prx_get_module_info();
-S32 sys_prx_register_library(U32 lib_addr);
-S32 sys_prx_unregister_library();
-S32 sys_prx_get_ppu_guid();
-S32 sys_prx_query_module();
-S32 sys_prx_link_library();
-S32 sys_prx_unlink_library();
-S32 sys_prx_query_library();
-S32 sys_prx_start();
-S32 sys_prx_stop();
+LV2_SYSCALL(sys_prx_0x1CE);
+LV2_SYSCALL(sys_prx_load_module, const S08* path, U64 flags, sys_prx_load_module_option_t* pOpt);
+LV2_SYSCALL(sys_prx_load_module_by_fd);
+LV2_SYSCALL(sys_prx_load_module_list, S32 count, BE<U64>* pathList, U64 flags, void* pOpt, BE<U32>* idList);
+LV2_SYSCALL(sys_prx_load_module_on_memcontainer);
+LV2_SYSCALL(sys_prx_load_module_on_memcontainer_by_fd);
+LV2_SYSCALL(sys_prx_start_module, S32 id, U64 flags, sys_prx_start_module_option_t* pOpt);
+LV2_SYSCALL(sys_prx_stop_module, S32 id, U32 args, U32 argp_addr, BE<U32>* modres, U64 flags, sys_prx_stop_module_option_t* pOpt);
+LV2_SYSCALL(sys_prx_unload_module, S32 id, U64 flags, sys_prx_unload_module_option_t* pOpt);
+LV2_SYSCALL(sys_prx_register_module);
+LV2_SYSCALL(sys_prx_get_module_list);
+LV2_SYSCALL(sys_prx_get_my_module_id);
+LV2_SYSCALL(sys_prx_get_module_id_by_address);
+LV2_SYSCALL(sys_prx_get_module_id_by_name, const S08* name, U64 flags, sys_prx_get_module_id_by_name_option_t* pOpt);
+LV2_SYSCALL(sys_prx_get_module_info);
+LV2_SYSCALL(sys_prx_register_library, U32 lib_addr);
+LV2_SYSCALL(sys_prx_unregister_library);
+LV2_SYSCALL(sys_prx_get_ppu_guid);
+LV2_SYSCALL(sys_prx_query_module);
+LV2_SYSCALL(sys_prx_link_library);
+LV2_SYSCALL(sys_prx_unlink_library);
+LV2_SYSCALL(sys_prx_query_library);
+LV2_SYSCALL(sys_prx_start);
+LV2_SYSCALL(sys_prx_stop);
 
 }  // namespace sys

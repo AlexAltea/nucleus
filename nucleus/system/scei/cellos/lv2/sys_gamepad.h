@@ -6,10 +6,11 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 namespace sys {
 
 // SysCalls
-S32 sys_gamepad_ycon_if();
+LV2_SYSCALL(sys_gamepad_ycon_if);
 
 }  // namespace sys

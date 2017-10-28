@@ -4,20 +4,16 @@
  */
 
 #include "sys_dbg.h"
-#include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/system/scei/cellos/kernel.h"
 #include "nucleus/emulator.h"
 
 namespace sys {
 
-S32 sys_dbg_ppu_exception_handler() {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_dbg_ppu_exception_handler) {
     return CELL_OK;
 }
 
-S32 sys_dbg_get_thread_list(U32 pid, U64* ids, U64* ids_num, U64* all_ids_num) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_dbg_get_thread_list, U32 pid, U64* ids, U64* ids_num, U64* all_ids_num) {
     if (ids_num == nucleus.memory->ptr(0) || all_ids_num == nucleus.memory->ptr(0)) {
         return CELL_LV2DBG_ERROR_DEINVALIDARGUMENTS;
     }

@@ -4,14 +4,12 @@
  */
 
 #include "sys_mutex.h"
-#include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/system/scei/cellos/kernel.h"
 #include "nucleus/emulator.h"
 
 namespace sys {
 
-S32 sys_mutex_create(BE<U32>* mutex_id, sys_mutex_attribute_t* attr) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_mutex_create, BE<U32>* mutex_id, sys_mutex_attribute_t* attr) {
     // Check requisites
     if (mutex_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
         return CELL_EFAULT;
@@ -24,23 +22,19 @@ S32 sys_mutex_create(BE<U32>* mutex_id, sys_mutex_attribute_t* attr) {
     auto* mutex = new sys_mutex_t();
     mutex->attr = *attr;
 
-    *mutex_id = lv2.objects.add(mutex, SYS_MUTEX_OBJECT);
+    *mutex_id = kernel.objects.add(mutex, SYS_MUTEX_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_mutex_destroy(U32 mutex_id) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    if (!lv2.objects.remove(mutex_id)) {
+LV2_SYSCALL(sys_mutex_destroy, U32 mutex_id) {
+    if (!kernel.objects.remove(mutex_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-S32 sys_mutex_lock(U32 mutex_id, U64 timeout) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* mutex = lv2.objects.get<sys_mutex_t>(mutex_id);
+LV2_SYSCALL(sys_mutex_lock, U32 mutex_id, U64 timeout) {
+    auto* mutex = kernel.objects.get<sys_mutex_t>(mutex_id);
 
     // Check requisites
     if (!mutex) {
@@ -67,10 +61,8 @@ S32 sys_mutex_lock(U32 mutex_id, U64 timeout) {
     return CELL_OK;
 }
 
-S32 sys_mutex_trylock(U32 mutex_id) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* mutex = lv2.objects.get<sys_mutex_t>(mutex_id);
+LV2_SYSCALL(sys_mutex_trylock, U32 mutex_id) {
+    auto* mutex = kernel.objects.get<sys_mutex_t>(mutex_id);
 
     // Check requisites
     if (!mutex) {
@@ -81,10 +73,8 @@ S32 sys_mutex_trylock(U32 mutex_id) {
     return CELL_OK;
 }
 
-S32 sys_mutex_unlock(U32 mutex_id) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* mutex = lv2.objects.get<sys_mutex_t>(mutex_id);
+LV2_SYSCALL(sys_mutex_unlock, U32 mutex_id) {
+    auto* mutex = kernel.objects.get<sys_mutex_t>(mutex_id);
 
     // Check requisites
     if (!mutex) {

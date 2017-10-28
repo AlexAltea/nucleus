@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 namespace sys {
 
@@ -13,8 +14,8 @@ struct sys_ss_psid_t {
 };
 
 // SysCalls
-S32 sys_ss_get_console_id();
-S32 sys_ss_access_control_engine(U32 pid, U64 arg2, U64 arg3);
-S32 sys_ss_get_open_psid();
+LV2_SYSCALL(sys_ss_get_console_id);
+LV2_SYSCALL(sys_ss_access_control_engine, U32 pid, U64 arg2, U64 arg3);
+LV2_SYSCALL(sys_ss_get_open_psid);
 
 }  // namespace sys

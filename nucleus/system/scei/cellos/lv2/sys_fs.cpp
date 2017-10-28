@@ -7,19 +7,16 @@
 #include "nucleus/emulator.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/system/scei/cellos/lv2.h"
 
 #include <cstring>
 
 namespace sys {
 
 // SysCalls
-S32 sys_fs_open(const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_fs_open, const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size) {
     // Create file
     if (flags & CELL_FS_O_CREAT) {
-        lv2.vfs.createFile(path);
+        kernel.vfs.createFile(path);
     }
 
     // Access mode
@@ -46,62 +43,54 @@ S32 sys_fs_open(const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* a
 
     case CELL_FS_O_RDWR:
         if (flags & CELL_FS_O_TRUNC) {
-            lv2.vfs.createFile(path);
+            kernel.vfs.createFile(path);
         }
         openMode = fs::ReadWrite;
     }
 
-    if (!lv2.vfs.existsFile(path)) {
+    if (!kernel.vfs.existsFile(path)) {
         return CELL_ENOENT;
     }
 
     auto* file = new sys_fs_t();
     file->type = CELL_FS_S_IFREG;
     file->path = path;
-    file->file = lv2.vfs.openFile(path, openMode);
+    file->file = kernel.vfs.openFile(path, openMode);
 
-    *fd = lv2.objects.add(file, SYS_FS_FD_OBJECT);
+    *fd = kernel.objects.add(file, SYS_FS_FD_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_fs_read(S32 fd, void* buf, U64 nbytes, BE<U64>* nread) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
+LV2_SYSCALL(sys_fs_read, S32 fd, void* buf, U64 nbytes, BE<U64>* nread) {
+    auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     *nread = file->read(buf, nbytes);
     return CELL_OK;
 }
 
-S32 sys_fs_write(S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
+LV2_SYSCALL(sys_fs_write, S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite) {
+    auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     *nwrite = file->write(buf, nbytes);
     return CELL_OK;
 }
 
-S32 sys_fs_close(S32 fd) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
+LV2_SYSCALL(sys_fs_close, S32 fd) {
+    auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     delete descriptor->file;
 
     return CELL_OK;
 }
 
-S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_fs_fstat, S32 fd, sys_fs_stat_t* sb) {
     // Check requisites
     if (sb == nucleus.memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
-    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
+    auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     auto attributes = file->attributes();
@@ -117,7 +106,7 @@ S32 sys_fs_fstat(S32 fd, sys_fs_stat_t* sb) {
     return CELL_OK;
 }
 
-S32 sys_fs_stat(const S08* path, sys_fs_stat_t* sb) {
+LV2_SYSCALL(sys_fs_stat, const S08* path, sys_fs_stat_t* sb) {
     // Check requisites
     if (path == nucleus.memory->ptr(0) || sb == nucleus.memory->ptr(0)) {
         return CELL_EFAULT;
@@ -136,17 +125,13 @@ S32 sys_fs_stat(const S08* path, sys_fs_stat_t* sb) {
     return CELL_OK;
 }
 
-S32 sys_fs_fcntl(S32 fd, S32 cmd, void* argv, U32 argc) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_fs_fcntl, S32 fd, S32 cmd, void* argv, U32 argc) {
     logger.warning(LOG_HLE, "LV2 Syscall (0x331) called: sys_fs_fcntl");
     return CELL_OK;
 }
 
-S32 sys_fs_lseek(S32 fd, S64 offset, S32 whence, BE<U64>* pos) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* descriptor = lv2.objects.get<sys_fs_t>(fd);
+LV2_SYSCALL(sys_fs_lseek, S32 fd, S64 offset, S32 whence, BE<U64>* pos) {
+    auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
     switch (whence) {

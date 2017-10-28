@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 namespace sys {
 
@@ -29,15 +30,15 @@ struct sys_page_attr_t
 };
 
 // SysCalls
-S32 sys_memory_allocate(U32 size, U64 flags, BE<U32>* alloc_addr);
-S32 sys_memory_allocate_from_container(U32 size, U32 cid, U64 flags, BE<U32>* alloc_addr);
-S32 sys_memory_container_create2();
-S32 sys_memory_free(U32 start_addr);
-S32 sys_memory_get_page_attribute(U32 addr, sys_page_attr_t* attr);
-S32 sys_memory_get_user_memory_size(sys_memory_info_t* mem_info);
-S32 sys_memory_container_create(BE<U32>* cid, U32 yield_size);
-S32 sys_memory_container_destroy(U32 cid);
-S32 sys_memory_container_get_size(sys_memory_info_t* mem_info, U32 cid);
-S32 sys_memory_get_user_memory_stat();
+LV2_SYSCALL(sys_memory_allocate, U32 size, U64 flags, BE<U32>* alloc_addr);
+LV2_SYSCALL(sys_memory_allocate_from_container, U32 size, U32 cid, U64 flags, BE<U32>* alloc_addr);
+LV2_SYSCALL(sys_memory_container_create2);
+LV2_SYSCALL(sys_memory_free, U32 start_addr);
+LV2_SYSCALL(sys_memory_get_page_attribute, U32 addr, sys_page_attr_t* attr);
+LV2_SYSCALL(sys_memory_get_user_memory_size, sys_memory_info_t* mem_info);
+LV2_SYSCALL(sys_memory_container_create, BE<U32>* cid, U32 yield_size);
+LV2_SYSCALL(sys_memory_container_destroy, U32 cid);
+LV2_SYSCALL(sys_memory_container_get_size, sys_memory_info_t* mem_info, U32 cid);
+LV2_SYSCALL(sys_memory_get_user_memory_stat);
 
 }  // namespace sys

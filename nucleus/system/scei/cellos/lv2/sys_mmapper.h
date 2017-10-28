@@ -6,11 +6,12 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 namespace sys {
 
 // SysCalls
-S32 sys_mmapper_allocate_address(U32 size, U64 flags, U32 alignment, U32* alloc_addr);
-S32 sys_mmapper_allocate_shared_memory(U32 size, U64 flags, U32 alignment, U32* alloc_addr);
+LV2_SYSCALL(sys_mmapper_allocate_address, U32 size, U64 flags, U32 alignment, U32* alloc_addr);
+LV2_SYSCALL(sys_mmapper_allocate_shared_memory, U32 size, U64 flags, U32 alignment, U32* alloc_addr);
 
 }  // namespace sys

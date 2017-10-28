@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 #include <vector>
 #include <string>
@@ -126,49 +127,49 @@ struct SPUThreadGroup {
 };
 
 // SysCalls
-S32 sys_raw_spu_create_interrupt_tag(S32 id, U32 class_id, U32 hwthread, BE<U32>* intrtag);
-S32 sys_raw_spu_set_int_mask(S32 id, U32 class_id, U64 mask);
-S32 sys_raw_spu_get_int_mask(S32 id, U32 class_id, BE<U64>* mask);
-S32 sys_raw_spu_set_int_stat(S32 id, U32 class_id, U64 stat);
-S32 sys_raw_spu_get_int_stat(S32 id, U32 class_id, BE<U64>* stat);
-S32 sys_spu_image_get_information(sys_spu_image_t* img/*, TODO */);
-S32 sys_spu_image_open(sys_spu_image_t* img, const S08* path);
-S32 sys_spu_image_import(sys_spu_image_t* img, const void* src, U32 type);
-S32 sys_spu_image_close(sys_spu_image_t* img);
-S32 sys_raw_spu_create(BE<S32>* id, sys_raw_spu_attribute_t* attr);
-S32 sys_raw_spu_destroy(S32 id);
-S32 sys_raw_spu_read_puint_mb(S32 id, BE<U32>* value);
-S32 sys_spu_thread_get_exit_status(U32 id, BE<S32>* status);
-S32 sys_spu_thread_set_argument(U32 id, sys_spu_thread_argument_t* arg);
-S32 sys_spu_initialize(U32 max_usable_spu, U32 max_raw_spu);
-S32 sys_spu_thread_group_create(BE<U32>* id, U32 num, S32 prio, sys_spu_thread_group_attribute_t* attr);
-S32 sys_spu_thread_group_destroy(U32 id);
-S32 sys_spu_thread_initialize(BE<U32>* thread, U32 group, U32 spu_num, sys_spu_image_t* img, sys_spu_thread_attribute_t* attr, sys_spu_thread_argument_t* arg);
-S32 sys_spu_thread_group_start(U32 id);
-S32 sys_spu_thread_group_suspend(U32 id);
-S32 sys_spu_thread_group_resume(U32 id);
-S32 sys_spu_thread_group_yield(U32 id);
-S32 sys_spu_thread_group_terminate(U32 id, S32 value);
-S32 sys_spu_thread_group_join(U32 gid, BE<S32>* cause, BE<S32>* status);
-S32 sys_spu_thread_group_set_priority(U32 id, S32 priority);
-S32 sys_spu_thread_group_get_priority(U32 id, BE<S32>* priority);
-S32 sys_spu_thread_write_ls(U32 id, U32 address, U64 value, U32 type);
-S32 sys_spu_thread_read_ls(U32 id, U32 address, BE<U64>* value, U32 type);
-S32 sys_spu_thread_write_snr(U32 id, S32 number, U32 value);
-S32 sys_spu_thread_group_connect_event(U32 id, U32 eq, U32 et);
-S32 sys_spu_thread_group_disconnect_event(U32 id, U32 et);
-S32 sys_spu_thread_set_spu_cfg(U32 id, U64 value);
-S32 sys_spu_thread_get_spu_cfg(U32 id, BE<U64>* value);
-S32 sys_spu_thread_write_spu_mb(U32 id, U32 value);
-S32 sys_spu_thread_connect_event(U32 id, U32 eq, U32 et, U08 spup);
-S32 sys_spu_thread_disconnect_event(U32 id, U32 et, U08 spup);
-S32 sys_spu_thread_bind_queue(U32 id, U32 spuq, U32 spuq_num);
-S32 sys_spu_thread_unbind_queue(U32 id, U32 spuq_num);
-S32 sys_raw_spu_set_spu_cfg(S32 id, U32 value);
-S32 sys_raw_spu_get_spu_cfg(S32 id, BE<U32>* value);
-S32 sys_spu_thread_recover_page_fault(U32 id);
-S32 sys_raw_spu_recover_page_fault(S32 id);
-S32 sys_spu_thread_group_connect_event_all_threads(S32 group_id, U32 equeue_id, U64 req, U08* spup);
-S32 sys_spu_thread_group_disconnect_event_all_threads(S32 group_id, U08 spup);
+LV2_SYSCALL(sys_raw_spu_create_interrupt_tag, S32 id, U32 class_id, U32 hwthread, BE<U32>* intrtag);
+LV2_SYSCALL(sys_raw_spu_set_int_mask, S32 id, U32 class_id, U64 mask);
+LV2_SYSCALL(sys_raw_spu_get_int_mask, S32 id, U32 class_id, BE<U64>* mask);
+LV2_SYSCALL(sys_raw_spu_set_int_stat, S32 id, U32 class_id, U64 stat);
+LV2_SYSCALL(sys_raw_spu_get_int_stat, S32 id, U32 class_id, BE<U64>* stat);
+LV2_SYSCALL(sys_spu_image_get_information, sys_spu_image_t* img/*, TODO */);
+LV2_SYSCALL(sys_spu_image_open, sys_spu_image_t* img, const S08* path);
+LV2_SYSCALL(sys_spu_image_import, sys_spu_image_t* img, const void* src, U32 type);
+LV2_SYSCALL(sys_spu_image_close, sys_spu_image_t* img);
+LV2_SYSCALL(sys_raw_spu_create, BE<S32>* id, sys_raw_spu_attribute_t* attr);
+LV2_SYSCALL(sys_raw_spu_destroy, S32 id);
+LV2_SYSCALL(sys_raw_spu_read_puint_mb, S32 id, BE<U32>* value);
+LV2_SYSCALL(sys_spu_thread_get_exit_status, U32 id, BE<S32>* status);
+LV2_SYSCALL(sys_spu_thread_set_argument, U32 id, sys_spu_thread_argument_t* arg);
+LV2_SYSCALL(sys_spu_initialize, U32 max_usable_spu, U32 max_raw_spu);
+LV2_SYSCALL(sys_spu_thread_group_create, BE<U32>* id, U32 num, S32 prio, sys_spu_thread_group_attribute_t* attr);
+LV2_SYSCALL(sys_spu_thread_group_destroy, U32 id);
+LV2_SYSCALL(sys_spu_thread_initialize, BE<U32>* thread, U32 group, U32 spu_num, sys_spu_image_t* img, sys_spu_thread_attribute_t* attr, sys_spu_thread_argument_t* arg);
+LV2_SYSCALL(sys_spu_thread_group_start, U32 id);
+LV2_SYSCALL(sys_spu_thread_group_suspend, U32 id);
+LV2_SYSCALL(sys_spu_thread_group_resume, U32 id);
+LV2_SYSCALL(sys_spu_thread_group_yield, U32 id);
+LV2_SYSCALL(sys_spu_thread_group_terminate, U32 id, S32 value);
+LV2_SYSCALL(sys_spu_thread_group_join, U32 gid, BE<S32>* cause, BE<S32>* status);
+LV2_SYSCALL(sys_spu_thread_group_set_priority, U32 id, S32 priority);
+LV2_SYSCALL(sys_spu_thread_group_get_priority, U32 id, BE<S32>* priority);
+LV2_SYSCALL(sys_spu_thread_write_ls, U32 id, U32 address, U64 value, U32 type);
+LV2_SYSCALL(sys_spu_thread_read_ls, U32 id, U32 address, BE<U64>* value, U32 type);
+LV2_SYSCALL(sys_spu_thread_write_snr, U32 id, S32 number, U32 value);
+LV2_SYSCALL(sys_spu_thread_group_connect_event, U32 id, U32 eq, U32 et);
+LV2_SYSCALL(sys_spu_thread_group_disconnect_event, U32 id, U32 et);
+LV2_SYSCALL(sys_spu_thread_set_spu_cfg, U32 id, U64 value);
+LV2_SYSCALL(sys_spu_thread_get_spu_cfg, U32 id, BE<U64>* value);
+LV2_SYSCALL(sys_spu_thread_write_spu_mb, U32 id, U32 value);
+LV2_SYSCALL(sys_spu_thread_connect_event, U32 id, U32 eq, U32 et, U08 spup);
+LV2_SYSCALL(sys_spu_thread_disconnect_event, U32 id, U32 et, U08 spup);
+LV2_SYSCALL(sys_spu_thread_bind_queue, U32 id, U32 spuq, U32 spuq_num);
+LV2_SYSCALL(sys_spu_thread_unbind_queue, U32 id, U32 spuq_num);
+LV2_SYSCALL(sys_raw_spu_set_spu_cfg, S32 id, U32 value);
+LV2_SYSCALL(sys_raw_spu_get_spu_cfg, S32 id, BE<U32>* value);
+LV2_SYSCALL(sys_spu_thread_recover_page_fault, U32 id);
+LV2_SYSCALL(sys_raw_spu_recover_page_fault, S32 id);
+LV2_SYSCALL(sys_spu_thread_group_connect_event_all_threads, S32 group_id, U32 equeue_id, U64 req, U08* spup);
+LV2_SYSCALL(sys_spu_thread_group_disconnect_event_all_threads, S32 group_id, U08 spup);
 
 }  // namespace sys

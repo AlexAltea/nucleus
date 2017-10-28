@@ -6,12 +6,13 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 namespace sys {
 
 // SysCalls
-S32 sys_time_get_timezone(BE<U32>* timezone, BE<U32>* summertime);
-S32 sys_time_get_current_time(BE<U64>* sec, BE<U64>* nsec);
-U64 sys_time_get_timebase_frequency();
+LV2_SYSCALL(sys_time_get_timezone, BE<U32>* timezone, BE<U32>* summertime);
+LV2_SYSCALL(sys_time_get_current_time, BE<U64>* sec, BE<U64>* nsec);
+LV2_SYSCALL(sys_time_get_timebase_frequency);
 
 }  // namespace sys

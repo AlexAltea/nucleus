@@ -5,14 +5,12 @@
 
 #pragma once
 
-#include "nucleus/common.h"
-#include "../lv2_macro.h"
+#define LV2_SYSCALL(name, ...) \
+    U64 name(LV2& kernel, __VA_ARGS__)
 
 namespace sys {
 
-// SysCalls
-LV2_SYSCALL(sys_hid_0x1FE);
-LV2_SYSCALL(sys_hid_0x200);
-LV2_SYSCALL(sys_hid_0x202);
+// Forward declarations
+class LV2;
 
 }  // namespace sys

@@ -4,7 +4,7 @@
  */
 
 #include "sys_spu.h"
-#include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/system/scei/cellos/kernel.h"
 #include "nucleus/system/scei/cellos/lv2/sys_event.h"
 #include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/cell.h"
@@ -26,9 +26,7 @@ namespace sys {
 #define SPU_SNR2_OFFSET(spuNum) \
     (SYS_SPU_THREAD_OFFSET * (spuNum) + SYS_SPU_THREAD_BASE_LOW + SYS_SPU_THREAD_SNR2)
 
-S32 sys_spu_initialize(U32 max_usable_spu, U32 max_raw_spu) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_spu_initialize, U32 max_usable_spu, U32 max_raw_spu) {
     if (max_usable_spu < max_raw_spu) {
         return CELL_EINVAL;
     }
@@ -36,9 +34,7 @@ S32 sys_spu_initialize(U32 max_usable_spu, U32 max_raw_spu) {
     return CELL_OK;
 }
 
-S32 sys_spu_thread_group_create(BE<U32>* id, U32 num, S32 prio, sys_spu_thread_group_attribute_t* attr) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_spu_thread_group_create, BE<U32>* id, U32 num, S32 prio, sys_spu_thread_group_attribute_t* attr) {
     // TODO: Check if num is in range specified [1, N] with N := value specified on sys_spu_initialize
     if (num < 1) {
         return CELL_EINVAL;
@@ -61,25 +57,21 @@ S32 sys_spu_thread_group_create(BE<U32>* id, U32 num, S32 prio, sys_spu_thread_g
         spuThreadGroup->name = attr->name;
     }
 
-    *id = lv2.objects.add(spuThreadGroup, SYS_SPU_THREAD_GROUP_OBJECT);
+    *id = kernel.objects.add(spuThreadGroup, SYS_SPU_THREAD_GROUP_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_spu_thread_group_destroy(U32 id) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_spu_thread_group_destroy, U32 id) {
     // TODO: Check if SPU thread group is busy, if so return CELL_EBUSY.
-    if (!lv2.objects.remove(id)) {
+    if (!kernel.objects.remove(id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-S32 sys_spu_thread_initialize(BE<U32>* thread, U32 group, U32 spu_num, sys_spu_image_t* img, sys_spu_thread_attribute_t* attr, sys_spu_thread_argument_t* arg) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_spu_thread_initialize, BE<U32>* thread, U32 group, U32 spu_num, sys_spu_image_t* img, sys_spu_thread_attribute_t* attr, sys_spu_thread_argument_t* arg) {
     // Load SPU thread group and perform checks
-    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(group);
+    auto* spuThreadGroup = kernel.objects.get<SPUThreadGroup>(group);
     if (!spuThreadGroup) {
         return CELL_ESRCH;
     }
@@ -125,15 +117,13 @@ S32 sys_spu_thread_initialize(BE<U32>* thread, U32 group, U32 spu_num, sys_spu_i
         }
     }
 
-    *thread = lv2.objects.add(spuThread, SYS_SPU_THREAD_OBJECT);
+    *thread = kernel.objects.add(spuThread, SYS_SPU_THREAD_OBJECT);
     return CELL_OK;
 }
 
-S32 sys_spu_thread_group_connect_event(U32 id, U32 eq, U32 et) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(id);
-    auto* eventQueue = lv2.objects.get<sys_event_queue_t>(eq);
+LV2_SYSCALL(sys_spu_thread_group_connect_event, U32 id, U32 eq, U32 et) {
+    auto* spuThreadGroup = kernel.objects.get<SPUThreadGroup>(id);
+    auto* eventQueue = kernel.objects.get<sys_event_queue_t>(eq);
     if (!spuThreadGroup || !eventQueue) {
         return CELL_ESRCH;
     }
@@ -152,10 +142,8 @@ S32 sys_spu_thread_group_connect_event(U32 id, U32 eq, U32 et) {
     return CELL_OK;
 }
 
-S32 sys_spu_thread_group_start(U32 id) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(id);
+LV2_SYSCALL(sys_spu_thread_group_start, U32 id) {
+    auto* spuThreadGroup = kernel.objects.get<SPUThreadGroup>(id);
     if (!spuThreadGroup) {
         return CELL_ESRCH;
     }
@@ -168,10 +156,8 @@ S32 sys_spu_thread_group_start(U32 id) {
     return CELL_OK;
 }
 
-S32 sys_spu_thread_group_join(U32 gid, BE<S32>* cause, BE<S32>* status) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(gid);
+LV2_SYSCALL(sys_spu_thread_group_join, U32 gid, BE<S32>* cause, BE<S32>* status) {
+    auto* spuThreadGroup = kernel.objects.get<SPUThreadGroup>(gid);
     if (!spuThreadGroup) {
         return CELL_ESRCH;
     }
@@ -185,10 +171,8 @@ S32 sys_spu_thread_group_join(U32 gid, BE<S32>* cause, BE<S32>* status) {
     return CELL_OK;
 }
 
-S32 sys_spu_thread_read_ls(U32 id, U32 address, BE<U64>* value, U32 type) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* spuThread = lv2.objects.get<SPUThread>(id);
+LV2_SYSCALL(sys_spu_thread_read_ls, U32 id, U32 address, BE<U64>* value, U32 type) {
+    auto* spuThread = kernel.objects.get<SPUThread>(id);
     if (!spuThread) {
         return CELL_ESRCH;
     }
@@ -207,11 +191,9 @@ S32 sys_spu_thread_read_ls(U32 id, U32 address, BE<U64>* value, U32 type) {
     return CELL_OK;
 }
 
-S32 sys_spu_thread_group_connect_event_all_threads(S32 group_id, U32 equeue_id, U64 req, U08* spup) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
-    auto* spuThreadGroup = lv2.objects.get<SPUThreadGroup>(group_id);
-    auto* eventQueue = lv2.objects.get<sys_event_queue_t>(equeue_id);
+LV2_SYSCALL(sys_spu_thread_group_connect_event_all_threads, S32 group_id, U32 equeue_id, U64 req, U08* spup) {
+    auto* spuThreadGroup = kernel.objects.get<SPUThreadGroup>(group_id);
+    auto* eventQueue = kernel.objects.get<sys_event_queue_t>(equeue_id);
     if (!spuThreadGroup || !eventQueue) {
         return CELL_ESRCH;
     }

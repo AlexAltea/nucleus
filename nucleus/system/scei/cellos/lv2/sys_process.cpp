@@ -4,48 +4,38 @@
  */
 
 #include "sys_process.h"
-#include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/system/scei/cellos/kernel.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/emulator.h"
 
 namespace sys {
 
-S32 sys_process_getpid() {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_process_getpid) {
     return 0x01000500; // TODO
 }
 
-S32 sys_process_getppid() {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_process_getppid) {
     return 0x01000300; // TODO
 }
 
-S32 sys_process_exit(S32 errorcode) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_process_exit, S32 errorcode) {
     nucleus.task(NUCLEUS_EVENT_STOP);
     return CELL_OK;
 }
 
-S32 sys_process_get_paramsfo(U08* buffer) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_process_get_paramsfo, U08* buffer) {
     return CELL_OK;
 }
 
-S32 sys_process_get_sdk_version(U32 pid, BE<U32>* version) {
-    LV2& lv2 = static_cast<LV2&>(*nucleus.sys.get());
-
+LV2_SYSCALL(sys_process_get_sdk_version, U32 pid, BE<U32>* version) {
     if (!version) {
         return CELL_EFAULT;
     }
-    *version = lv2.proc.param.sdk_version;
+    *version = kernel.proc.param.sdk_version;
     return CELL_OK;
 }
 
-S32 sys_process_is_spu_lock_line_reservation_address(U32 addr, U64 flags) {
+LV2_SYSCALL(sys_process_is_spu_lock_line_reservation_address, U32 addr, U64 flags) {
     logger.warning(LOG_HLE, "LV2 Syscall (0x00E) called: sys_process_is_spu_lock_line_reservation_address");
     return CELL_OK;
 }

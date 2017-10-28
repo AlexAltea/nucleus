@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../lv2_macro.h"
 
 #include <condition_variable>
 
@@ -27,10 +28,10 @@ struct sys_lwcond_t {
 };
 
 // SysCalls
-S32 sys_lwcond_create(BE<U32>* lwcond_id, U32 lwmutex_id, sys_lwcond_attribute_t* attr);
-S32 sys_lwcond_destroy(U32 lwcond_id);
-S32 sys_lwcond_queue_wait(U32 lwcond_id, U64 timeout);
-S32 sys_lwcond_signal(U32 lwcond_id);
-S32 sys_lwcond_signal_all(U32 lwcond_id);
+LV2_SYSCALL(sys_lwcond_create, BE<U32>* lwcond_id, U32 lwmutex_id, sys_lwcond_attribute_t* attr);
+LV2_SYSCALL(sys_lwcond_destroy, U32 lwcond_id);
+LV2_SYSCALL(sys_lwcond_queue_wait, U32 lwcond_id, U64 timeout);
+LV2_SYSCALL(sys_lwcond_signal, U32 lwcond_id);
+LV2_SYSCALL(sys_lwcond_signal_all, U32 lwcond_id);
 
 }  // namespace sys
