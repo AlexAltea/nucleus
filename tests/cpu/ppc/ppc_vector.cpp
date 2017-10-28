@@ -21,132 +21,468 @@ void PPCTestRunner::dstst() {
 }
 
 void PPCTestRunner::lvebx() {
+    TEST_INSTRUCTION(test_lvebx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvebx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvehx() {
+    TEST_INSTRUCTION(test_lvehx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvehx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvewx() {
+    TEST_INSTRUCTION(test_lvewx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvewx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvlx() {
+    TEST_INSTRUCTION(test_lvlx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvlx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvlxl() {
+    TEST_INSTRUCTION(test_lvlxl, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvlxl(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvrx() {
+    TEST_INSTRUCTION(test_lvrx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvrx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvrxl() {
+    TEST_INSTRUCTION(test_lvrxl, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvrxl(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvsl() {
+    TEST_INSTRUCTION(test_lvsl, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvsl(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvsr() {
+    TEST_INSTRUCTION(test_lvsr, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvsr(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvx() {
+    TEST_INSTRUCTION(test_lvx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::lvxl() {
+    TEST_INSTRUCTION(test_lvxl, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.lvxl(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::mfvscr() {
+    TEST_INSTRUCTION(test_mfvscr, V1, {
+        run({ a.mfvscr(v1); });
+        expect(state.v[1] == V1);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::mtvscr() {
+    TEST_INSTRUCTION(test_mtvscr, V1, {
+        run({ a.mtvscr(v1); });
+        expect(state.v[1] == V1);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvebx() {
+    TEST_INSTRUCTION(test_stvebx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvebx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvehx() {
+    TEST_INSTRUCTION(test_stvehx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvehx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvewx() {
+    TEST_INSTRUCTION(test_stvewx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvewx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvlx() {
+    TEST_INSTRUCTION(test_stvlx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvlx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvlxl() {
+    TEST_INSTRUCTION(test_stvlxl, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvlxl(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvrx() {
+    TEST_INSTRUCTION(test_stvrx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvrx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvrxl() {
+    TEST_INSTRUCTION(test_stvrxl, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvrxl(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvx() {
+    TEST_INSTRUCTION(test_stvx, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvx(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::stvxl() {
+    TEST_INSTRUCTION(test_stvxl, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.stvxl(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vaddcuw() {
+    TEST_INSTRUCTION(test_vaddcuw, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vaddcuw(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vaddfp() {
+    TEST_INSTRUCTION(test_vaddfp, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vaddfp(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vaddsbs() {
+    TEST_INSTRUCTION(test_vaddsbs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vaddsbs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vaddshs() {
+    TEST_INSTRUCTION(test_vaddshs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vaddshs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vaddsws() {
+    TEST_INSTRUCTION(test_vaddsws, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vaddsws(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vaddubm() {
+    TEST_INSTRUCTION(test_vaddubm, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vaddubm(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vaddubs() {
+    TEST_INSTRUCTION(test_vaddubs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vaddubs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vadduhm() {
+    TEST_INSTRUCTION(test_vadduhm, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vadduhm(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
-
 void PPCTestRunner::vadduhs() {
+    TEST_INSTRUCTION(test_vadduhs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vadduhs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vadduwm() {
+    TEST_INSTRUCTION(test_vadduwm, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vadduwm(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vadduws() {
+    TEST_INSTRUCTION(test_vadduws, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vadduws(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vand() {
+    TEST_INSTRUCTION(test_vand, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vand(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vandc() {
+    TEST_INSTRUCTION(test_vandc, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vandc(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vavgsb() {
+    TEST_INSTRUCTION(test_vavgsb, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vavgsb(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vavgsh() {
+    TEST_INSTRUCTION(test_vavgsh, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vavgsh(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vavgsw() {
+    TEST_INSTRUCTION(test_vavgsw, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vavgsw(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
-
 void PPCTestRunner::vavgub() {
+    TEST_INSTRUCTION(test_vavgub, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vavgub(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vavguh() {
+    TEST_INSTRUCTION(test_vavguh, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vavguh(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vavguw() {
+    TEST_INSTRUCTION(test_vavguw, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vavguw(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vcfsx() {
+    TEST_INSTRUCTION(test_vcfsx, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vcfsx(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vcfux() {
+    TEST_INSTRUCTION(test_vcfux, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vcfux(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vcmpbfpx() {
@@ -189,9 +525,23 @@ void PPCTestRunner::vcmpgtuwx() {
 }
 
 void PPCTestRunner::vctsxs() {
+    TEST_INSTRUCTION(test_vctsxs, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vctsxs(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vctuxs() {
+    TEST_INSTRUCTION(test_vctuxs, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vctuxs(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
+    // TODO
 }
 
 void PPCTestRunner::vexptefp() {
@@ -749,10 +1099,25 @@ void PPCTestRunner::vmulouh() {
 }
 
 void PPCTestRunner::vnmsubfp() {
+    TEST_INSTRUCTION(test_vnmsubfp, V1, V2, V3, V4, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        state.v[3] = V3;
+        run({ a.vnmsubfp(v4, v1, v2, v3); });
+        expect(state.v[4] == V4);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vnor() {
+    TEST_INSTRUCTION(test_vnor, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vnor(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
@@ -970,10 +1335,22 @@ void PPCTestRunner::vpkuwus() {
 }
 
 void PPCTestRunner::vrefp() {
+    TEST_INSTRUCTION(test_vrefp, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vrefp(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vrfim() {
+    TEST_INSTRUCTION(test_vrfim, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vrfim(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
     // TODO
 }
 
@@ -993,14 +1370,33 @@ void PPCTestRunner::vrfin() {
 }
 
 void PPCTestRunner::vrfip() {
+    TEST_INSTRUCTION(test_vrfip, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vrfip(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vrfiz() {
+    TEST_INSTRUCTION(test_vrfiz, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vrfiz(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vrlb() {
+    TEST_INSTRUCTION(test_vrlb, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vrlb(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
@@ -1019,10 +1415,23 @@ void PPCTestRunner::vrlh() {
 }
 
 void PPCTestRunner::vrlw() {
+    TEST_INSTRUCTION(test_vrlw, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vrlw(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vrsqrtefp() {
+    TEST_INSTRUCTION(test_vrsqrtefp, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vrsqrtefp(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
     // TODO
 }
 
@@ -1325,6 +1734,13 @@ void PPCTestRunner::vsr() {
 }
 
 void PPCTestRunner::vsrab() {
+    TEST_INSTRUCTION(test_vsrab, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsrab(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
@@ -1343,10 +1759,24 @@ void PPCTestRunner::vsrah() {
 }
 
 void PPCTestRunner::vsraw() {
+    TEST_INSTRUCTION(test_vsraw, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsraw(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsrb() {
+    TEST_INSTRUCTION(test_vsrb, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsrb(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
@@ -1395,10 +1825,24 @@ void PPCTestRunner::vsro() {
 }
 
 void PPCTestRunner::vsrw() {
+    TEST_INSTRUCTION(test_vsrw, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsrw(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsubcuw() {
+    TEST_INSTRUCTION(test_vsubcuw, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsubcuw(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
@@ -1417,6 +1861,13 @@ void PPCTestRunner::vsubfp() {
 }
 
 void PPCTestRunner::vsubsbs() {
+    TEST_INSTRUCTION(test_vsubsbs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsubsbs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
@@ -1436,14 +1887,35 @@ void PPCTestRunner::vsubshs() {
 }
 
 void PPCTestRunner::vsubsws() {
+    TEST_INSTRUCTION(test_vsubsws, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsubsws(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsububm() {
+    TEST_INSTRUCTION(test_vsububm, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsububm(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsububs() {
+    TEST_INSTRUCTION(test_vsububs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsububs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
@@ -1462,38 +1934,100 @@ void PPCTestRunner::vsubuhm() {
 }
 
 void PPCTestRunner::vsubuhs() {
+    TEST_INSTRUCTION(test_vsubuhs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsubuhs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsubuwm() {
+    TEST_INSTRUCTION(test_vsubuwm, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsubuwm(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsubuws() {
+    TEST_INSTRUCTION(test_vsubuws, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsubuws(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsum2sws() {
+    TEST_INSTRUCTION(test_vsum2sws, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsum2sws(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsum4sbs() {
+    TEST_INSTRUCTION(test_vsum4sbs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsum4sbs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsum4shs() {
+    TEST_INSTRUCTION(test_vsum4shs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsum4shs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsum4ubs() {
+    TEST_INSTRUCTION(test_vsum4ubs, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsum4ubs(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vsumsws() {
+    TEST_INSTRUCTION(test_vsumsws, V1, V2, V3, {
+        state.v[1] = V1;
+        state.v[2] = V2;
+        run({ a.vsumsws(v3, v1, v2); });
+        expect(state.v[3] == V3);
+    });
+    
     // TODO
 }
 
 void PPCTestRunner::vupkhpx() {
+    TEST_INSTRUCTION(test_vupkhpx, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vupkhpx(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
     // TODO
 }
 
@@ -1534,6 +2068,12 @@ void PPCTestRunner::vupkhsh() {
 }
 
 void PPCTestRunner::vupklpx() {
+    TEST_INSTRUCTION(test_vupklpx, V1, V2, {
+        state.v[1] = V1;
+        run({ a.vupklpx(v2, v1); });
+        expect(state.v[2] == V2);
+    });
+    
     // TODO
 }
 
