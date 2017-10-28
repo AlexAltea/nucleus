@@ -61,74 +61,66 @@ Memory::~Memory() {
     }
 }
 
-U32 Memory::alloc(U32 size, U32 align) {
+U32 GuestVirtualMemory::alloc(U64 size, U32 align) {
     return m_segments[SEG_USER_MEMORY].alloc(size, align);
 }
 
-void Memory::free(U32 addr) {
+void GuestVirtualMemory::free(U32 addr) {
     m_segments[SEG_USER_MEMORY].free(addr);
 }
 
-bool Memory::check(U32 addr) {
+bool GuestVirtualMemory::check(U32 addr) {
     return true;
 }
 
 /**
  * Read memory reversing endianness if necessary
  */
-U08 Memory::read8(U32 addr) {
+U08 GuestVirtualMemory::read8(U32 addr) {
     return *(U08*)((U64)m_base + addr);
 }
-U16 Memory::read16(U32 addr) {
+U16 GuestVirtualMemory::read16(U32 addr) {
     return SE16(*(U16*)((U64)m_base + addr));
 }
-U32 Memory::read32(U32 addr) {
+U32 GuestVirtualMemory::read32(U32 addr) {
     return SE32(*(U32*)((U64)m_base + addr));
 }
-U64 Memory::read64(U32 addr) {
+U64 GuestVirtualMemory::read64(U32 addr) {
     return SE64(*(U64*)((U64)m_base + addr));
 }
-U128 Memory::read128(U32 addr) {
+U128 GuestVirtualMemory::read128(U32 addr) {
     return SE128(*(U128*)((U64)m_base + addr));
-}
-void Memory::readLeft(U08* dst, U32 src, U32 size) {
-    for (U32 i = 0; i < size; i++) {
-        dst[size - 1 - i] = read8(src + i);
-    }
-}
-void Memory::readRight(U08* dst, U32 src, U32 size) {
-    for (U32 i = 0; i < size; i++) {
-        dst[i] = read8(src + (size - 1 - i));
-    }
 }
 
 /**
  * Write memory reversing endianness if necessary
  */
-void Memory::write8(U32 addr, U08 value) {
+void GuestVirtualMemory::write8(U32 addr, U08 value) {
     *(U08*)((U64)m_base + addr) = value;
 }
-void Memory::write16(U32 addr, U16 value) {
+void GuestVirtualMemory::write16(U32 addr, U16 value) {
     *(U16*)((U64)m_base + addr) = SE16(value);
 }
-void Memory::write32(U32 addr, U32 value) {
+void GuestVirtualMemory::write32(U32 addr, U32 value) {
     *(U32*)((U64)m_base + addr) = SE32(value);
 }
-void Memory::write64(U32 addr, U64 value) {
+void GuestVirtualMemory::write64(U32 addr, U64 value) {
     *(U64*)((U64)m_base + addr) = SE64(value);
 }
-void Memory::write128(U32 addr, U128 value) {
+void GuestVirtualMemory::write128(U32 addr, U128 value) {
     *(U128*)((U64)m_base + addr) = SE128(value);
 }
-void Memory::writeLeft(U32 dst, U08* src, U32 size) {
-    for (U32 i = 0; i < size; i++) {
-        write8(dst + i, src[size - 1 - i]);
-    }
+
+void GuestVirtualMemory::memcpy_h2g(U64 destination, const void* source, Size num) {
 }
-void Memory::writeRight(U32 dst, U08* src, U32 size) {
-    for (U32 i = 0; i < size; i++) {
-        write8(dst + (size - 1 - i), src[i]);
-    }
+
+void GuestVirtualMemory::memcpy_g2h(void* destination, U64 source, Size num) {
+}
+
+void GuestVirtualMemory::memcpy_g2g(U64 destination, U64 source, Size num) {
+}
+
+void GuestVirtualMemory::memset(U64 ptr, int value, Size num) {
 }
 
 }  // namespace mem

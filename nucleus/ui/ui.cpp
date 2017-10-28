@@ -13,8 +13,8 @@
 
 namespace ui {
 
-UI::UI(std::shared_ptr<gfx::GraphicsBackend> backend, Size width, Size height) :
-    graphics(std::move(backend)), language(), surface(width, height) {
+UI::UI(gfx::GraphicsBackend* backend, Size width, Size height) :
+    graphics(backend), language(), surface(width, height) {
     cmdQueue = graphics->getGraphicsCommandQueue();
 }
 

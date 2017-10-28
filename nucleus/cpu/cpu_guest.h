@@ -19,14 +19,14 @@ class GuestCPU : public CPU {
     std::mutex mutex;
 
 public:
-    std::shared_ptr<mem::Memory> memory;
+    mem::Memory* memory;
 
     std::unique_ptr<backend::Compiler> compiler;
 
     std::vector<Thread*> threads;
 
     // Constructor
-    GuestCPU(std::shared_ptr<mem::Memory> memory);
+    GuestCPU(mem::Memory* memory);
 
     // Manage threads
     Thread* addThread(ThreadType type);

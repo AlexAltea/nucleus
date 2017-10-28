@@ -21,9 +21,9 @@ int main(int argc, char **argv) {
         unsigned int height = 544;
         Window window("Nucleus", width, height);
 
-        nucleusPrepare(window.hwnd, window.hdc, width, height);
-        auto thread = std::thread([&]{
-            nucleusInitialize(argc, argv);
+        nucleusInitialize(window.hwnd, window.hdc, width, height);
+        auto thread = std::thread([]{
+            nucleusInitialize();
         });
 
         window.loop();
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
     // Using console
     else {
-        nucleusInitialize(argc, argv);
+        nucleusInitialize();
     }
 
     return 0;

@@ -5,12 +5,18 @@
 
 #pragma once
 
-#include "cpu.h"
+#include "nucleus/common.h"
+#include "nucleus/memory/memory.h"
+#include "nucleus/cpu/cpu.h"
 
 namespace cpu {
 
 class HostCPU : public CPU {
+    mem::Memory* memory;
+
 public:
+    HostCPU(mem::Memory* memory);
+
     // Thread management
     virtual void run() override;
     virtual void pause() override;

@@ -1,3 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="guest_virtual">
+      <UniqueIdentifier>{3973b6b1-c923-4ef0-9588-edb334480623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="host_virtual">
+      <UniqueIdentifier>{63cc0eb7-a153-43f4-b7cc-9011bc109a7b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)memory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)host_virtual\host_virtual_memory.h">
+      <Filter>host_virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_memory.h">
+      <Filter>guest_virtual</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_segment.h">
+      <Filter>guest_virtual</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)host_virtual\host_virtual_memory.cpp">
+      <Filter>host_virtual</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_memory.cpp">
+      <Filter>guest_virtual</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_segment.cpp">
+      <Filter>guest_virtual</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>

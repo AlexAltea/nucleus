@@ -76,6 +76,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_constants.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_emitter.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)backend\x86\x86_sequences.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)cpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)cpu_guest.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)cpu_host.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)frontend\ppu\analyzer\ppu_analyzer.cpp" />

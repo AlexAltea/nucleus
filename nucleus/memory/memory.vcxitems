@@ -14,11 +14,15 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_memory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_segment.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)host_virtual\host_virtual_memory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)memory.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)segment.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)memory.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)segment.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_memory.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)guest_virtual\guest_virtual_segment.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)host_virtual\host_virtual_memory.cpp" />
   </ItemGroup>
 </Project>

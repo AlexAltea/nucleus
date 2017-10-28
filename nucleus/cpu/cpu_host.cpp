@@ -7,6 +7,9 @@
 
 namespace cpu {
 
+HostCPU(mem::Memory* memory) : memory(memory) {
+}
+
 void HostCPU::run() {
 }
 

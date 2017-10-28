@@ -19,9 +19,7 @@
 
 namespace cpu {
 
-thread_local Thread* gCurrentThread = nullptr;
-
-GuestCPU::GuestCPU(std::shared_ptr<mem::Memory> memory) : memory(std::move(memory)) {
+GuestCPU::GuestCPU(mem::Memory* memory) : memory(memory) {
 #if defined(NUCLEUS_ARCH_X86)
     compiler = std::make_unique<backend::x86::X86Compiler>();
 #elif defined(NUCLEUS_ARCH_ARM)
@@ -64,14 +62,6 @@ void GuestCPU::removeThread(Thread* thread) {
     threads.erase(
         std::remove_if(threads.begin(), threads.end(), [&](Thread* other){ return thread == other; }),
         threads.end());
-}
-
-Thread* GuestCPU::getCurrentThread() {
-    return gCurrentThread;
-}
-
-void GuestCPU::setCurrentThread(Thread* thread) {
-    gCurrentThread = thread;
 }
 
 void GuestCPU::run() {

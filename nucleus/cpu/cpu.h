@@ -7,6 +7,9 @@
 
 namespace cpu {
 
+//  Forward declarations
+class Thread;
+
 class CPU {
 public:
     // Thread management
@@ -24,6 +27,11 @@ public:
      * Stop the execution of all threads
      */
     virtual void stop() = 0;
+
+
+    static Thread* getCurrentThread();
+
+    static void setCurrentThread(Thread* thread);
 };
 
 }  // namespace cpu

@@ -22,8 +22,8 @@ enum
     SYS_SPUIMAGE_OBJECT             = 0x22,
     SYS_PRX_OBJECT                  = 0x23,
     SYS_SPUPORT_OBJECT              = 0x24,
-    SYS_SERVICE_LISTENER_OBJECT     = 0x41,  // base system config handle
-    SYS_SERVICE_LISTENER_OBJECT     = 0x42,  // a system config service listener
+    SYS_SERVICE_LISTENER_OBJECT_41  = 0x41,  // base system config handle
+    SYS_SERVICE_LISTENER_OBJECT_42  = 0x42,  // a system config service listener
     SYS_SERVICE_OBJECT              = 0x43,  // a system config service
     SYS_FS_FD_OBJECT                = 0x73,
     SYS_MUTEX_OBJECT                = 0x85,
@@ -91,8 +91,8 @@ struct sys_process_info_t
 	BE<U32> pp_id;          // 0x14: parent process ID
 	char *binary_path;      // 0x18: pointer to a char buffer of 0x200 in size, holding process binary path
 	BE<U32> total_mem;      // 0x1C: total memory(user space) size in byte
-	U8 osabi_type;          // 0x20: OS ABI type
-	U8 pad[7];              // 0x21: padding
+	U08 osabi_type;         // 0x20: OS ABI type
+	U08 pad[7];             // 0x21: padding
 	BE<U64> intr_mask;      // 0x28: process interrupt bitmap mask
 	BE<U32> trace_id;       // 0x30: trace ID, for debugging
 };
@@ -100,9 +100,9 @@ struct sys_process_info_t
 // process param sfo
 struct sys_param_sfo_t
 {
-    U8 flag;            // 0x00: 1(exist), 0xFF(process have no param_sfo, e.g. VSH process)
-    char title_id[9]    // 0x01: (8+'/0'), format: "ABCD1234"
-    U8 pad[6];          // 0x0A: padding
+    U08 flag;           // 0x00: 1(exist), 0xFF(process have no param_sfo, e.g. VSH process)
+    char title_id[9];   // 0x01: (8+'/0'), format: "ABCD1234"
+    U08 pad[6];         // 0x0A: padding
     BE<U64> param_0;    // 0x10: ? sys_process_param_t.crash_dump_param_addr related
     BE<U64> param_1;    // 0x18: ?
     BE<U64> param_2;    // 0x20: ?

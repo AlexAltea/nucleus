@@ -211,6 +211,7 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)cpu_guest.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)cpu_host.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)cpu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)backend\assembler.h">

@@ -7,7 +7,7 @@
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/system/scei/cellos/lv2.h"
-#include "nucleus/cpu/cpu.h"
+#include "nucleus/cpu/cpu_guest.h"
 #include "nucleus/cpu/hir/function.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
@@ -26,7 +26,7 @@ void nucleusTranslate(void* guestFunc, U64 guestAddr) {
     function->recompile();
 
     auto* hirFunction = function->hirFunction;
-    auto* cpu = CPU::getCurrentThread()->parent;
+    auto* cpu = static_cast<GuestCPU*>(CPU::getCurrentThread()->parent);
     auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
     cpu->compiler->compile(hirFunction);
     cpu->compiler->call(hirFunction, state);

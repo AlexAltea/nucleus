@@ -6,13 +6,15 @@
 #include "nucleus.h"
 #include "nucleus/core/config.h"
 #include "nucleus/debugger/debugger.h"
-#include "nucleus/emulator.h"
-#include "nucleus/ui/ui.h"
-
+#include "nucleus/logger/logger.h"
 #include "nucleus/audio/backend/list.h"
 #include "nucleus/graphics/backend/list.h"
+#include "nucleus/ui/ui.h"
+#include "nucleus/emulator.h"
 
 #include <iostream>
+#include <memory>
+#include <vector>
 
 #if !defined(NUCLEUS_BUILD_TEST)
 
@@ -21,41 +23,24 @@ using namespace gfx;
 using namespace ui;
 
 struct Nucleus {
+    // Interfaces
     std::unique_ptr<AudioBackend> audio;
     std::unique_ptr<GraphicsBackend> graphics;
     std::unique_ptr<UI> ui;
+
+    // Emulators
+    std::vector<std::unique_ptr<Emulator>> emulators;
+
+    /**
+     * Initializes audio and graphics backends.
+     * param[in]  params  Graphics backend parameters
+     * @return            True on success.
+     */
+    bool initialize(gfx::BackendParameters& params);
 };
 
 // Global Nucleus object
 Nucleus nucleus;
-
-#if defined(NUCLEUS_TARGET_LINUX)
-void nucleusPrepare(Display* display, Window window, int width, int height) {
-    gfx::BackendParameters params = {};
-    params.display = display;
-    params.window = window;
-    params.width = width;
-    params.height = height;
-    nucleus.initialize(params);
-}
-#elif defined(NUCLEUS_TARGET_UWP)
-void nucleusPrepare(IUnknown* window, int width, int height) {
-    gfx::BackendParameters params = {};
-    params.window = window;
-    params.width = width;
-    params.height = height;
-    nucleus.initialize(params);
-}
-#elif defined(NUCLEUS_TARGET_WINDOWS)
-void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height) {
-    gfx::BackendParameters params = {};
-    params.hdc = hdc;
-    params.hwnd = hwnd;
-    params.width = width;
-    params.height = height;
-    nucleus.initialize(params);
-}
-#endif
 
 void nucleusConfigure(int argc, char **argv) {
     if (argc <= 1) {
@@ -71,9 +56,54 @@ void nucleusConfigure(int argc, char **argv) {
     config.parseArguments(argc, argv);
 }
 
-void nucleusInitialize() {
+bool nucleusStart() {
+    // Start debugger
+    if (config.debugger) {
+        debugger.init();
+        std::cerr << "Debugger listening on 127.0.0.1:8000" << std::endl;
+    }
+
+    // Start emulator
+    auto& emulators = nucleus.emulators;
+    if (!config.boot.empty()) {
+        auto emulator = std::make_unique<Emulator>();
+        emulator->load(config.boot);
+        emulator->run();
+        emulators.emplace_back(std::move(emulator));
+    }
+    return true;
+}
+
+#if defined(NUCLEUS_TARGET_LINUX)
+bool nucleusInitialize(Display* display, Window window, int width, int height) {
+    gfx::BackendParameters params = {};
+    params.display = display;
+    params.window = window;
+    params.width = width;
+    params.height = height;
+    return nucleus.initialize(params);
+}
+#elif defined(NUCLEUS_TARGET_UWP)
+bool nucleusInitialize(IUnknown* window, int width, int height) {
+    gfx::BackendParameters params = {};
+    params.window = window;
+    params.width = width;
+    params.height = height;
+    return nucleus.initialize(params);
+}
+#elif defined(NUCLEUS_TARGET_WINDOWS)
+bool nucleusInitialize(HWND hwnd, HDC hdc, int width, int height) {
+    gfx::BackendParameters params = {};
+    params.hdc = hdc;
+    params.hwnd = hwnd;
+    params.width = width;
+    params.height = height;
+    return nucleus.initialize(params);
+}
+#endif
+
+bool Nucleus::initialize(gfx::BackendParameters& params) {
     // Select graphics backend
-    auto& graphics = nucleus.graphics;
     switch (config.graphicsBackend) {
 #if defined(NUCLEUS_FEATURE_GFXBACKEND_DIRECT3D11)
     case GRAPHICS_BACKEND_DIRECT3D11:
@@ -101,7 +131,6 @@ void nucleusInitialize() {
     }
 
     // Select audio backend
-    auto& audio = nucleus.audio;
     switch (config.audioBackend) {
 #if defined(AUDIO_FEATURE_AUDIOBACKEND_COREAUDIO)
     case AUDIO_BACKEND_COREAUDIO:
@@ -134,28 +163,13 @@ void nucleusInitialize() {
     }
 
     if (!config.console) {
-        ui = std::make_unique<ui::UI>(graphics, params.width, params.height);
+        ui = std::make_unique<ui::UI>(graphics.get(), params.width, params.height);
         if (!ui->initialize()) {
             logger.warning(LOG_COMMON, "Could not initialize user interface");
             return false;
         }
     }
-
     return true;
-}
-    // Start debugger
-    if (config.debugger) {
-        debugger.init();
-        std::cerr << "Debugger listening on 127.0.0.1:8000" << std::endl;
-    }
-
-    // Start emulator
-    if (!config.boot.empty()) {
-        nucleus.load(config.boot);
-        nucleus.run();
-        nucleus.idle();
-    }
-    return 0;
 }
 
 void nucleusFinalize() {

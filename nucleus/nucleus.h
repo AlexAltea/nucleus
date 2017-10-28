@@ -13,18 +13,18 @@
 #include <Windows.h>
 #endif
 
-// Initialize UI
+// Initialize backends
 #if defined(NUCLEUS_TARGET_LINUX)
-void nucleusPrepare(Display* display, Window window, int width, int height);
+void nucleusInitialize(Display* display, Window window, int width, int height);
 #elif defined(NUCLEUS_TARGET_UWP)
-void nucleusPrepare(IUnknown* window, int width, int height);
+void nucleusInitialize(IUnknown* window, int width, int height);
 #elif defined(NUCLEUS_TARGET_WINDOWS)
-void nucleusPrepare(HWND hwnd, HDC hdc, int width, int height);
+void nucleusInitialize(HWND hwnd, HDC hdc, int width, int height);
 #endif
 
 void nucleusConfigure(int argc, char** argv);
-void nucleusInitialize();
-void nucleusFinalize();
+bool nucleusStart();
+void nucleusIdle();
 
 // Events
 void nucleusOnWindowSizeChanged(unsigned int width, unsigned int height);

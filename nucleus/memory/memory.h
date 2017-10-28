@@ -9,6 +9,12 @@
 
 namespace mem {
 
+enum Permission {
+    PERM_R = 1 << 0, // Read
+    PERM_W = 1 << 1, // Write
+    PERM_X = 1 << 2, // Execute
+};
+
 class Memory {
 public:
     virtual U64 alloc(U64 size, U32 align=1) = 0;
@@ -27,7 +33,6 @@ public:
     virtual void write64(U64 addr, U64 value) = 0;
     virtual void write128(U64 addr, U128 value) = 0;
 
-    virtual void memcpy_h2h(void* destination, const void* source, Size num) = 0;
     virtual void memcpy_h2g(U64 destination, const void* source, Size num) = 0;
     virtual void memcpy_g2h(void* destination, U64 source, Size num)  = 0;
     virtual void memcpy_g2g(U64 destination, U64 source, Size num) = 0;
