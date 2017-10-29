@@ -14,7 +14,7 @@ Below are the instructions to compile Nucleus for different platforms. If you wa
 
 ### Windows
 
-* __Compiling on Windows__: Install [Visual Studio 2015](http://www.visualstudio.com/). Open `nucleus.sln` and build the project `nucleus-windows`. Alternatively, if you have the [Windows 10 SDK](https://dev.windows.com/en-us/downloads/windows-10-sdk) installed you can compile the Universal Windows Platform wrapper by building the project `nucleus-uwp`.
+* __Compiling on Windows__: Install [Visual Studio 2015](http://www.visualstudio.com/). Install all dependencies with [vcpkg](https://github.com/Microsoft/vcpkg): `vcpkg install zlib:x64-windows`. Open `nucleus.sln` and build the project `nucleus-windows`. Alternatively, if you have the [Windows 10 SDK](https://dev.windows.com/en-us/downloads/windows-10-sdk) installed you can compile the Universal Windows Platform wrapper by building the project `nucleus-uwp`.
 
 ### Windows Phone
 

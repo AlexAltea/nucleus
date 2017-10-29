@@ -19,7 +19,7 @@
 #include "nucleus/system/scei/cellos/lv2/sys_prx.h"
 
 #include "externals/aes.h"
-#include "externals/zlib/zlib.h"
+#include <zlib.h>
 
 #include <cstring>
 
