@@ -10,6 +10,9 @@
 #include "nucleus/ui/transitions.h"
 #include "nucleus/ui/length.h"
 
+#include "nucleus/emulator.h"
+#include "nucleus/nucleus.h"
+
 namespace ui {
 
 ScreenLogo::ScreenLogo(UI* manager) : Screen(manager) {
@@ -63,7 +66,7 @@ void ScreenLogo::update() {
     // Next screen is loaded
     if (dtime > 3000ms) {
         if (bootApp) {
-            manager->pushScreen(std::make_unique<ScreenEmulator>(manager));
+            //manager->pushScreen(std::make_unique<ScreenEmulator>(manager));
         } else {
             manager->pushScreen(std::make_unique<ScreenMain>(manager));
         }

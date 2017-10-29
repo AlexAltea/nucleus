@@ -8,9 +8,15 @@
 #include "nucleus/ui/screen.h"
 #include "nucleus/ui/widgets/list.h"
 
+// Forward declarations
+class Emulator;
+
 namespace ui {
 
 class ScreenEmulator : public Screen {
+private:
+    Emulator* m_emulator;
+
     WidgetImage* app;
 
 public:

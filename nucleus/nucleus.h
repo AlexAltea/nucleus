@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "nucleus/common.h"
+
 #if defined(NUCLEUS_TARGET_LINUX)
 #include <X11/Xlib.h>
 #elif defined(NUCLEUS_TARGET_UWP)
@@ -19,12 +21,13 @@ void nucleusInitialize(Display* display, Window window, int width, int height);
 #elif defined(NUCLEUS_TARGET_UWP)
 void nucleusInitialize(IUnknown* window, int width, int height);
 #elif defined(NUCLEUS_TARGET_WINDOWS)
-void nucleusInitialize(HWND hwnd, HDC hdc, int width, int height);
+bool nucleusInitialize(HWND hwnd, HDC hdc, int width, int height);
 #endif
 
 void nucleusConfigure(int argc, char** argv);
 bool nucleusStart();
 void nucleusIdle();
+void nucleusFinalize();
 
 // Events
 void nucleusOnWindowSizeChanged(unsigned int width, unsigned int height);

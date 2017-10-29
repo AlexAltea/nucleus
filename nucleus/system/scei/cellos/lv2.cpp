@@ -6,8 +6,11 @@
 #include "lv2.h"
 #include "nucleus/emulator.h"
 #include "nucleus/filesystem/filesystem_app.h"
+#include "nucleus/filesystem/filesystem_host.h"
+#include "nucleus/filesystem/utils.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/system/scei/cellos/callback.h"
+#include "cellos_loader_self.h"
 
 #include "lv2/sys_cond.h"
 #include "lv2/sys_config.h"
@@ -243,6 +246,31 @@ void LV2::call(cpu::frontend::ppu::PPUState& state) {
     }
     //logger.notice(LOG_HLE, "LV2 Syscall %d (0x%x: %s) called", id, id, syscalls[id].name);
     syscalls[id].func->call(state, *this, memory->getBaseAddr());
+}
+
+bool LV2::start(const std::string& path)
+{
+    // Initialize application filesystem devices
+    const fs::Path& processPath = fs::getProcessPath(path);
+    vfs.registerDevice(new fs::HostPathDevice("/app_home/", processPath));
+
+    // Load ELF/SELF file
+    scei::cellos::SELFLoader self;
+    auto file = fs::HostFileSystem::openFile(path, fs::Read);
+    if (!self.open(file.get())) {
+        logger.error(LOG_COMMON, "Invalid file given.");
+        return false;
+    }
+
+    self.load_elf(this);
+    if (self.getMachine() != EM_PPC64) {
+        logger.error(LOG_COMMON, "Only PPC64 executables are allowed");
+        return false;
+    }
+
+    auto entry = self.getEntry();
+    init(entry);
+    return true;
 }
 
 }  // namespace sys

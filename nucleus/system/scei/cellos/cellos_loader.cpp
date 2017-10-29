@@ -4,10 +4,11 @@
  */
 
 #include "cellos_loader.h"
+#include "nucleus/filesystem/filesystem_host.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/system/scei/self.h"
 #include "nucleus/system/elf64.h"
 #include "nucleus/system/loader.h"
+#include "cellos_loader_self.h"
 
 namespace sys {
 namespace scei {

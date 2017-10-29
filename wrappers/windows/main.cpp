@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 
         nucleusInitialize(window.hwnd, window.hdc, width, height);
         auto thread = std::thread([]{
-            nucleusInitialize();
+            nucleusStart();
         });
 
         window.loop();
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
     // Using console
     else {
-        nucleusInitialize();
+        nucleusStart();
     }
 
     return 0;

@@ -50,7 +50,7 @@ void UI::task() {
     screens.push_back(std::make_unique<ScreenLogo>(this));
 #endif
     while (true) {
-        surface.update(graphics.get());
+        surface.update(graphics);
         const gfx::Viewport viewport = { 0, 0, surface.getWidth(), surface.getHeight() };
         const gfx::Rectangle scissor = { 0, 0, surface.getWidth(), surface.getHeight() };
 

@@ -10,13 +10,13 @@
 #include "nucleus/core/config.h"
 #include "nucleus/system/scei/cellos/callback.h"
 #include "nucleus/system/scei/cellos/lv2/sys_process.h"
-#include "nucleus/system/scei/self.h"
+#include "nucleus/system/scei/cellos/cellos_loader_self.h"
 #include "../lv2.h"
 
 namespace sys {
 
 HLE_FUNCTION(sys_prx_load_module, const S08* path, U64 flags, sys_prx_load_module_option_t* pOpt) {
-    SELFLoader self;
+    scei::cellos::SELFLoader self;
     auto file = kernel.vfs.openFile(path, fs::Read);
     if (!self.open(file)) {
         return CELL_PRX_ERROR_UNKNOWN_MODULE;
@@ -25,7 +25,7 @@ HLE_FUNCTION(sys_prx_load_module, const S08* path, U64 flags, sys_prx_load_modul
 
     // Load PRX into memory
     auto* prx = new sys_prx_t();
-    if (!self.load_prx(*prx)) {
+    if (!self.load_prx(&kernel, *prx)) {
         delete prx;
         return CELL_PRX_ERROR_ILLEGAL_LIBRARY;
     }

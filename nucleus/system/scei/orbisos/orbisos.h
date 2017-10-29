@@ -135,6 +135,8 @@ public:
      * @param[in]  entry  Module entry point
      */
     bool init(U64 entry);
+
+    bool start(const std::string& path);
 };
 
 }  // namespace orbis

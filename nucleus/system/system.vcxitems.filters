@@ -124,9 +124,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\psf.h">
       <Filter>scei</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)scei\self.h">
-      <Filter>scei</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)list.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)elf64.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.h">
@@ -151,7 +148,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwcond.h">
       <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Alex\Documents\GitHub\nucleus\nucleus\system\scei\cellos\hle_macro.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)elf64_loader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\hle_macro.h" />
+    <ClInclude Include="C:\Users\Alex\Documents\GitHub\nucleus\nucleus\system\scei\cellos\cellos_loader_self.h">
       <Filter>scei\cellos</Filter>
     </ClInclude>
   </ItemGroup>
@@ -242,9 +241,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\psf.cpp">
       <Filter>scei</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)scei\self.cpp">
-      <Filter>scei</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\orbisos\orbis_self.cpp">
       <Filter>scei\orbisos</Filter>
     </ClCompile>
@@ -268,5 +264,8 @@
       <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)system.cpp" />
+    <ClCompile Include="C:\Users\Alex\Documents\GitHub\nucleus\nucleus\system\scei\cellos\cellos_loader_self.cpp">
+      <Filter>scei\cellos</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

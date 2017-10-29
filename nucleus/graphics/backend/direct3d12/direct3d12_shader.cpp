@@ -691,6 +691,215 @@ bool Direct3D12Shader::initialize(const ShaderDesc& desc) {
 
     std::string source = compile(module);
     // std::cout << source << std::endl;
+    static int i = 0;
+    if (i == 8) {
+        source = R"(
+typedef float4 t6[468U];
+
+struct TInput {
+  float4 v29 : INPUT0;
+};
+struct TOutput {
+  float4 v15 : SV_Position;
+  float4 v17 : LINK1;
+  float4 v18 : LINK2;
+  float4 v19 : LINK6;
+  float4 v20 : LINK7;
+  float4 v21 : LINK8;
+  float4 v22 : LINK9;
+  float4 v23 : LINK10;
+  float4 v24 : LINK11;
+  float4 v25 : LINK12;
+  float4 v26 : LINK13;
+  float4 v27 : LINK14;
+  float4 v28 : LINK15;
+};
+cbuffer C7 : register(b0) { t6 v7; };
+cbuffer C9 : register(b1) { float4x4 v9; };
+
+static uint v5 = 468U;
+static int v41 = 467;
+static int v101 = 466;
+
+static float4 v34 = float4(0.0, 0.0, 0.0, 0.0);
+static float4 v60 = float4(0.0, 0.0, 0.0, 0.0);
+
+TOutput main(TInput input) {
+  TOutput output = (TOutput)(0);
+  /*float4 v31 = input.v29;
+  float4 v32 = float4(v31.x, v31.y, v31.x, v31.x);
+  float4 v33 = floor(v32);
+  float4 v36 = v34;
+  float4 v37 = float4(v33.x, v33.y, v36.z, v36.w);
+  v34 = v37;
+  float4 v38 = input.v29;
+  float4 v39 = float4(v38.w, v38.w, v38.w, v38.z);
+  float4 v44 = v7[467];
+  float4 v45 = float4(v44.x, v44.x, v44.x, v44.x);
+  float4 v47 = v7[467];
+  float4 v48 = float4(v47.y, v47.y, v47.y, v47.y);
+  float4 v49 = -(v48);
+  float4 v50 = v39 * v45;
+  float4 v51 = v50 + v49;
+  float4 v52 = v34;
+  float4 v53 = float4(v52.x, v52.y, v51.z, v51.w);
+  v34 = v53;
+  float4 v54 = input.v29;
+  float4 v55 = float4(v54.x, v54.x, v54.x, v54.y);
+  float4 v57 = v7[467];
+  float4 v58 = float4(v57.z, v57.z, v57.z, v57.z);
+  float4 v59 = v55 * v58;
+  float4 v61 = v60;
+  float4 v62 = float4(v61.x, v61.y, v59.z, v59.w);
+  v60 = v62;
+  float4 v63 = input.v29;
+  float4 v64 = float4(v63.y, v63.x, v63.y, v63.y);
+  float4 v65 = frac(v64);
+  float4 v66 = v60;
+  float4 v67 = float4(v65.x, v65.y, v66.z, v66.w);
+  v60 = v67;
+  float4 v68 = v60;
+  float4 v69 = float4(v68.y, v68.x, v68.y, v68.y);
+  float4 v71 = v7[467];
+  float4 v72 = float4(v71.x, v71.x, v71.x, v71.x);
+  float4 v73 = v69 * v72;
+  float4 v74 = output.v20;
+  float4 v75 = float4(v73.x, v73.y, v74.z, v74.w);
+  output.v20 = v75;
+  float4 v76 = v60;
+  float4 v77 = float4(v76.w, v76.z, v76.w, v76.w);
+  float4 v78 = floor(v77);
+  float4 v79 = v60;
+  float4 v80 = float4(v78.x, v78.y, v79.z, v79.w);
+  v60 = v80;
+  float4 v81 = v34;
+  float4 v82 = float4(v81.z, v81.z, v81.z, v81.z);
+  float4 v83 = -(v82);
+  float4 v84 = output.v15;
+  float4 v85 = float4(v84.x, v83.y, v84.z, v84.w);
+  output.v15 = v85;
+  float4 v86 = v34;
+  float4 v87 = float4(v86.w, v86.w, v86.w, v86.w);
+  float4 v88 = output.v15;
+  float4 v89 = float4(v87.x, v88.y, v88.z, v88.w);
+  output.v15 = v89;
+  float4 v90 = v60;
+  float4 v91 = float4(v90.y, v90.y, v90.y, v90.x);
+  float4 v93 = v7[467];
+  float4 v94 = float4(v93.w, v93.w, v93.w, v93.w);
+  float4 v95 = v91 * v94;
+  float4 v96 = v34;
+  float4 v97 = float4(v96.x, v96.y, v95.z, v95.w);
+  v34 = v97;
+  float4 v98 = v34;
+  float4 v99 = float4(v98.z, v98.w, v98.z, v98.z);
+  float4 v100 = -(v99);
+  float4 v103 = v7[466];
+  float4 v104 = float4(v103.x, v103.x, v103.x, v103.x);
+  float4 v105 = v34;
+  float4 v106 = float4(v105.x, v105.y, v105.x, v105.x);
+  float4 v107 = v100 * v104;
+  float4 v108 = v107 + v106;
+  float4 v109 = v34;
+  float4 v110 = float4(v108.x, v108.y, v109.z, v109.w);
+  v34 = v110;
+  float4 v111 = v34;
+  float4 v112 = float4(v111.z, v111.z, v111.z, v111.w);
+  float4 v113 = output.v17;
+  float4 v114 = float4(v113.x, v112.y, v113.z, v112.w);
+  output.v17 = v114;
+  float4 v115 = v34;
+  float4 v116 = float4(v115.x, v115.x, v115.y, v115.x);
+  float4 v118 = v7[467];
+  float4 v119 = float4(v118.w, v118.w, v118.w, v118.w);
+  float4 v120 = v116 * v119;
+  float4 v121 = output.v17;
+  float4 v122 = float4(v120.x, v121.y, v120.z, v121.w);
+  output.v17 = v122;
+  float4 v123 = output.v15;
+  float4x4 v124 = v9;
+  float4 v125 = mul(v123, v124);
+  output.v15 = v125;
+  output.v15.y *= -1.0f;*/
+
+
+	float4 tmp0 = float4(0., 0., 0., 0.);;
+	float4 tmp1 = float4(0., 0., 0., 0.);;
+	float4 dst_reg7 = float4(0.0, 0.0, 0.0, 0.0);
+	float4 dst_reg0 = float4(0.0f, 0.0f, 0.0f, 1.0f);
+	float4 dst_reg1 = float4(0.0, 0.0, 0.0, 0.0);
+	float4 in_pos = input.v29;
+	tmp0.xy = floor(in_pos.xyxx).xy;
+	tmp0.zw = (in_pos.wwwz * v7[467].xxxx + -v7[467].yyyy).zw;
+	tmp1.zw = (in_pos.xxxy * v7[467].zzzz).zw;
+	tmp1.xy = frac(in_pos.yxyy).xy;
+	dst_reg7.xy = (tmp1.yxyy * v7[467].xxxx).xy;
+	tmp1.xy = floor(tmp1.wzww).xy;
+	dst_reg0.y = -tmp0.zzzz.y;
+	dst_reg0.x = tmp0.wwww.x;
+	tmp0.zw = (tmp1.yyyx * v7[467].wwww).zw;
+	tmp0.xy = (-tmp0.zwzz * v7[466].xxxx + tmp0.xyxx).xy;
+	dst_reg1.yw = tmp0.zzzw.yw;
+	dst_reg1.xz = (tmp0.xxyx * v7[467].wwww).xz;
+   output.v15 = dst_reg0;
+   output.v17 = dst_reg1;
+   output.v20 = dst_reg7;
+
+
+
+  return output;
+}
+)";
+    }
+    if (i == 999) {
+        source = R"(
+struct TInput {
+  float4 v9 : SV_Position;
+  float4 v11 : LINK1;
+  float4 v12 : LINK2;
+  float4 v22 : LINK6;
+  float4 v13 : LINK7;
+  float4 v14 : LINK8;
+  float4 v15 : LINK9;
+  float4 v16 : LINK10;
+  float4 v17 : LINK11;
+  float4 v18 : LINK12;
+  float4 v19 : LINK13;
+  float4 v20 : LINK14;
+  float4 v21 : LINK15;
+};
+struct TOutput {
+  float4 v42 : SV_Target0;
+};
+Texture2D v24 : register(t0);
+SamplerState v24s : register(s0);
+
+static float v32 = 0.000000;
+static float v33 = 1.000000;
+static float4 v34 = float4(0.000000, 1.000000, 0.000000, 0.000000);
+
+TOutput main(TInput input) {
+  TOutput output = (TOutput)(0);
+  /*output.v42 = float4(1.0f, 1.0f, 0.0f, 1.0f);*/
+
+
+    float4 tc0 = In.tc0;
+	float4 diff_color = In.diff_color;
+	float4 gl_FragCoord = In.Position;
+	gl_FragCoord.y = (720 - gl_FragCoord.y);
+	float4 ssa = is_front_face ? float4(1., 1., 1., 1.) : float4(-1., -1., -1., -1.);
+	float2  tex0_scale = float2(1., 1.);
+	r0.w = tex0.Sample(tex0sampler, tc0.xy * tex0_scale).w;
+	h0 = diff_color;
+	r0.w = (h0 * r0).w;
+	r0.xyz = h0.xyz;
+
+
+  return output;
+}
+)";
+    }
+    i++;
 
     LPCSTR target;
     switch (desc.type) {

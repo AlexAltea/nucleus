@@ -126,6 +126,8 @@ public:
 
     // Get LV2 SysCall ID from the current thread and call it
     void call(cpu::frontend::ppu::PPUState& state);
+
+    bool start(const std::string& path);
 };
 
 }  // namespace sys

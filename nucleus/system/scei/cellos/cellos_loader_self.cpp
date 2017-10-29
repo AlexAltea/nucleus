@@ -3,23 +3,29 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "self.h"
+#include "cellos_loader_self.h"
 #include "nucleus/common.h"
 #include "nucleus/core/config.h"
 #include "nucleus/emulator.h"
 #include "nucleus/cpu/cpu_guest.h"
-#include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/memory/guest_virtual/guest_virtual_memory.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 #include "nucleus/system/keys.h"
 #include "nucleus/system/loader.h"
 #include "nucleus/logger/logger.h"
+
+#include "nucleus/system/scei/cellos/lv2.h"
+#include "nucleus/system/scei/cellos/lv2/sys_process.h"
+#include "nucleus/system/scei/cellos/lv2/sys_prx.h"
 
 #include "externals/aes.h"
 #include "externals/zlib/zlib.h"
 
 #include <cstring>
 
-using namespace sys;
+namespace sys {
+namespace scei {
+namespace cellos {
 
 bool SELFLoader::open(fs::File* file)
 {
@@ -43,9 +49,9 @@ bool SELFLoader::open(fs::File* file)
     }
 }
 
-bool SELFLoader::open(const std::string& path)
+bool SELFLoader::open(LV2* lv2, const std::string& path)
 {
-    fs::File* file = nucleus.sys->vfs.openFile(path, fs::Read);
+    fs::File* file = lv2->vfs.openFile(path, fs::Read);
     if (!file) {
         return false;
     }
@@ -55,11 +61,13 @@ bool SELFLoader::open(const std::string& path)
     return result;
 }
 
-bool SELFLoader::load_elf(sys::sys_process_t& proc)
+bool SELFLoader::load_elf(LV2* lv2)
 {
     if (elf.empty()) {
         return false;
     }
+    auto* cpu = dynamic_cast<cpu::GuestCPU*>(lv2->getEmulator()->cpu.get());
+    auto* mem = dynamic_cast<mem::GuestVirtualMemory*>(lv2->getEmulator()->memory.get());
 
     const auto& ehdr = (Ehdr&)elf[0];
 
@@ -73,18 +81,18 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
                 break;
             }
 
-            nucleus.memory->getSegment(mem::SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
-            memcpy(nucleus.memory->ptr(phdr.vaddr), &elf[phdr.offset], phdr.filesz);
+            mem->getSegment(mem::SEG_MAIN_MEMORY).allocFixed(phdr.vaddr, phdr.memsz);
+            mem->memcpy_h2g(phdr.vaddr, &elf[phdr.offset], phdr.filesz);
             if (phdr.flags & PF_X) {
-                auto module = new cpu::frontend::ppu::Module(nucleus.cpu.get());
-                module->parent = nucleus.cpu.get();
+                auto module = new cpu::frontend::ppu::Module(cpu);
+                module->parent = cpu;
                 module->address = phdr.vaddr;
                 module->size = phdr.filesz;
                 if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
                     module->analyze();
                     module->recompile();
                 }
-                static_cast<cpu::Cell*>(nucleus.cpu.get())->ppu_modules.push_back(module);
+                cpu->ppu_modules.push_back(module);
             }
             break;
 
@@ -92,20 +100,23 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
             // TODO: ?
             break;
 
+
         case PT_PROC_PARAM:
             if (!phdr.filesz) {
-                proc.param.sdk_version = 0xFFFFFFFF;
-                proc.param.malloc_pagesize = 0x100000;
-            } else {
-                proc.param = (sys::sys_process_param_t&)elf[phdr.offset];
+                lv2->proc.param.sdk_version = 0xFFFFFFFF;
+                lv2->proc.param.malloc_pagesize = 0x100000;
+            }
+            else {
+                lv2->proc.param = (sys::sys_process_param_t&)elf[phdr.offset];
             }
             break;
 
         case PT_PRX_PARAM:
             if (!phdr.filesz) {
                 logger.error(LOG_LOADER, "Invalid PRX_PARAM segment");
-            } else {
-                proc.prx_param = (sys::sys_process_prx_param_t&)elf[phdr.offset];
+            }
+            else {
+                lv2->proc.prx_param = (sys::sys_process_prx_param_t&)elf[phdr.offset];
             }
             break;
         }
@@ -113,11 +124,14 @@ bool SELFLoader::load_elf(sys::sys_process_t& proc)
     return true;
 }
 
-bool SELFLoader::load_prx(sys::sys_prx_t& prx)
+bool SELFLoader::load_prx(LV2* lv2, sys::sys_prx_t& prx)
 {
     if (elf.empty()) {
         return false;
     }
+
+    auto* cpu = dynamic_cast<cpu::GuestCPU*>(lv2->getEmulator()->cpu.get());
+    auto* mem = dynamic_cast<mem::GuestVirtualMemory*>(lv2->getEmulator()->memory.get());
 
     const auto& ehdr = (Ehdr&)elf[0];
     U32 base_addr;
@@ -128,8 +142,8 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
 
         if (phdr.type == PT_LOAD) {
             // Allocate memory and copy segment contents
-            const U32 addr = nucleus.memory->getSegment(mem::SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
-            memcpy(nucleus.memory->ptr(addr), &elf[phdr.offset], phdr.filesz);
+            const U32 addr = mem->getSegment(mem::SEG_MAIN_MEMORY).alloc(phdr.memsz, 0x10000);
+            mem->memcpy_h2g(addr, &elf[phdr.offset], phdr.filesz);
 
             // Add information for PRX Object
             sys::sys_prx_segment_t segment;
@@ -226,22 +240,22 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
                 switch (rel.type.ToLE()) {
                 case R_PPC64_ADDR32:
                     value = (U32)prx.segments[rel.index_value].addr + rel.ptr;
-                    nucleus.memory->write32(addr, value);
+                    mem->write32(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_LO:
                     value = (U16)rel.ptr;
-                    nucleus.memory->write16(addr, value);
+                    mem->write16(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_HI:
                     value = (U16)(prx.segments[rel.index_value].addr >> 16);
-                    nucleus.memory->write16(addr, value);
+                    mem->write16(addr, value);
                     break;
 
                 case R_PPC64_ADDR16_HA:
                     value = (U16)(prx.segments[1].addr >> 16);
-                    nucleus.memory->write16(addr, value);
+                    mem->write16(addr, value);
                     break;
 
                 default:
@@ -262,7 +276,7 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
         const sys::sys_prx_library_t* targetLibrary = nullptr;
 
         // Find library (TODO: This is very inefficient)
-        for (const auto& object : static_cast<sys::LV2*>(nucleus.sys.get())->objects) {
+        for (const auto& object : lv2->objects) {
             if (object.second->getType() == sys::SYS_PRX_OBJECT) {
                 const auto* imported_prx = (sys::sys_prx_t*)object.second->getData();
                 for (const auto& exportedLib : imported_prx->exported_libs) {
@@ -280,21 +294,21 @@ bool SELFLoader::load_prx(sys::sys_prx_t& prx)
 
         for (const auto& import : importedLib.exports) {
             const U32 fnid = import.first;
-            nucleus.memory->write32(import.second, targetLibrary->exports.at(fnid));
+            mem->write32(import.second, targetLibrary->exports.at(fnid));
         }
     }
 
     // Recompile executable segments
     for (auto& prx_segment : prx.segments) {
         if (prx_segment.flags & PF_X) {
-            auto segment = new cpu::frontend::ppu::Module(nucleus.cpu.get());
+            auto segment = new cpu::frontend::ppu::Module(cpu);
             segment->address = prx_segment.addr;
             segment->size = prx_segment.size_file;
             if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
                 segment->analyze();
                 segment->recompile();
             }
-            static_cast<cpu::Cell*>(nucleus.cpu.get())->ppu_modules.push_back(segment);
+            cpu->ppu_modules.push_back(segment);
         }
     }
     return true;
@@ -496,3 +510,35 @@ U64 SELFLoader::getEntry()
     const auto& ehdr = (Ehdr&)elf[0];
     return ehdr.entry;
 }
+
+void SELFLoader::process_seg_custom_os(System* sys, const Phdr& phdr, std::vector<Byte>& data)
+{
+    auto* lv2 = dynamic_cast<LV2*>(sys);
+
+    if (phdr.type == PT_PROC_PARAM) {
+        if (!phdr.filesz) {
+            lv2->proc.param.sdk_version = 0xFFFFFFFF;
+            lv2->proc.param.malloc_pagesize = 0x100000;
+        }
+        else {
+            lv2->proc.param = (sys_process_param_t&)elf[phdr.offset];
+        }
+    }
+    if (phdr.type == PT_PRX_PARAM) {
+        if (!phdr.filesz) {
+            logger.error(LOG_LOADER, "Invalid PRX_PARAM segment");
+        }
+        else {
+            lv2->proc.prx_param = (sys_process_prx_param_t&)elf[phdr.offset];
+        }
+    }
+}
+
+void SELFLoader::process_seg_custom_proc(System* sys, const Phdr& phdr, std::vector<Byte>& data)
+{
+
+}
+
+}  // namespace cellos
+}  // namespace scei
+}  // namespace sys

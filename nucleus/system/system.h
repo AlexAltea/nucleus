@@ -25,6 +25,13 @@ public:
      * @return  Emulator object
      */
     Emulator* getEmulator() const;
+
+    /**
+     * Start new process from the specified source.
+     * @param[in]  path  Executable path
+     * @return  True on success
+     */
+    virtual bool start(const std::string& path) = 0;
 };
 
 }  // namespace sys

@@ -23,8 +23,9 @@ ScreenEmulator::ScreenEmulator(UI* manager) : Screen(manager) {
 }
 
 void ScreenEmulator::update() {
-    if (nucleus.gpu.get()) {
-        auto* appTexture = nucleus.gpu->getFrontBuffer();
+    gpu::GPU* gpu = m_emulator->gpu.get();
+    if (gpu) {
+        auto* appTexture = gpu->getFrontBuffer();
         app->update(appTexture);
     }
 }

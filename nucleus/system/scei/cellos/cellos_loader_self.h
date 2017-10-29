@@ -6,13 +6,19 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/filesystem/file.h"
-#include "nucleus/system/elf64.h"
-#include "nucleus/system/scei/cellos/lv2/sys_process.h"
+#include "nucleus/system/elf64_loader.h"
 #include "nucleus/system/scei/cellos/lv2/sys_prx.h"
 
 #include <string>
 #include <vector>
+
+
+// Forward declaration
+namespace sys { class LV2; }
+
+namespace sys {
+namespace scei {
+namespace cellos {
 
 // ELF ABI
 enum {
@@ -157,29 +163,39 @@ struct ControlInfo {
     };
 };
 
-class SELFLoader {
-    using Ehdr = sys::Elf64_Ehdr<BE>;
-    using Phdr = sys::Elf64_Phdr<BE>;
-    using Shdr = sys::Elf64_Shdr<BE>;
-
+/**
+ * SELF Loader
+ * ============
+ * Parses SELF files.
+ * @tparam  E  Endianness
+ */
+class SELFLoader : public Elf64Loader<BE> {
+protected:
     std::vector<Byte> elf;  // Holds the decrypted executable
     std::vector<Byte> self; // Holds the encrypted executable
 
-    // Decrypts the Metadata Info and Headers of a SELF file
+                            // Decrypts the Metadata Info and Headers of a SELF file
     bool decryptMetadata();
 
     // Returns the size of the ELF file after the SELF decryption/decompression
     // by using accessing the SELF's EHDR and decrypted Metadata headers.
     U32 getDecryptedElfSize();
 
+    void process_seg_custom_os(System* sys, const Phdr& phdr, std::vector<Byte>& data);
+    void process_seg_custom_proc(System* sys, const Phdr& phdr, std::vector<Byte>& data);
+
 public:
     bool open(fs::File* file);
-    bool open(const std::string& path);
-    bool load_elf(sys::sys_process_t& proc);
-    bool load_prx(sys::sys_prx_t& prx);
+    bool open(LV2* lv2, const std::string& path);
+    bool load_elf(LV2* lv2);
+    bool load_prx(LV2* lv2, sys::sys_prx_t& prx);
     bool decrypt();
     void close();
 
     U16 getMachine();
     U64 getEntry();
 };
+
+}  // namespace cellos
+}  // namespace scei
+}  // namespace sys

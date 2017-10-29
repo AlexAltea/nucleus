@@ -7,7 +7,8 @@
 
 #include "nucleus/common.h"
 
-#include "nucleus/filesystem/filesystem_host.h"
+// Forward declarations
+namespace fs { class File; }
 
 namespace sys {
 namespace scei {

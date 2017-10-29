@@ -67,4 +67,25 @@ void HostVirtualMemory::write128(U64 addr, U128 value) {
     *reinterpret_cast<U128*>(addr) = value;
 }
 
+void HostVirtualMemory::memcpy_h2g(U64 dst, const void* src_ptr, Size size) {
+    void* dst_ptr = reinterpret_cast<void*>(dst);
+    ::memcpy(dst_ptr, src_ptr, size);
+}
+
+void HostVirtualMemory::memcpy_g2h(void* dst_ptr, U64 src, Size size) {
+    void* src_ptr = reinterpret_cast<void*>(src);
+    ::memcpy(dst_ptr, src_ptr, size);
+}
+
+void HostVirtualMemory::memcpy_g2g(U64 dst, U64 src, Size size) {
+    void* dst_ptr = reinterpret_cast<void*>(dst);
+    void* src_ptr = reinterpret_cast<void*>(src);
+    ::memcpy(dst_ptr, src_ptr, size);
+}
+
+void HostVirtualMemory::memset(U64 addr, int value, Size size) {
+    void* addr_ptr = reinterpret_cast<void*>(addr);
+    ::memset(addr_ptr, value, size);
+}
+
 }  // namespace mem

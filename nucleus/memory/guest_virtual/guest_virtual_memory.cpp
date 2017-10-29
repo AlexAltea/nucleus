@@ -111,17 +111,20 @@ void GuestVirtualMemory::write128(U64 addr, U128 value) {
     *(U128*)((U64)m_base + addr) = SE128(value);
 }
 
-void GuestVirtualMemory::memcpy_h2g(U64 destination, const void* source, Size num) {
+void GuestVirtualMemory::memcpy_h2g(U64 dst, const void* src, Size size) {
+    ::memcpy(ptr(dst), src, size);
 }
 
-void GuestVirtualMemory::memcpy_g2h(void* destination, U64 source, Size num) {
+void GuestVirtualMemory::memcpy_g2h(void* dst, U64 src, Size size) {
+    ::memcpy(dst, ptr(src), size);
 }
 
 void GuestVirtualMemory::memcpy_g2g(U64 dst, U64 src, Size size) {
-    memcpy(ptr(dst), ptr(src), size);
+    ::memcpy(ptr(dst), ptr(src), size);
 }
 
-void GuestVirtualMemory::memset(U64 ptr, int value, Size num) {
+void GuestVirtualMemory::memset(U64 addr, int value, Size size) {
+    ::memset(ptr(addr), value, size);
 }
 
 }  // namespace mem

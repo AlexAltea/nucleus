@@ -46,12 +46,6 @@ class SELFLoader {
     std::vector<Byte> elf;  // Holds the decrypted executable
     std::vector<Byte> self; // Holds the encrypted executable
 
-    /**
-     * Returns the length of the interval that covers all LOAD segments
-     * @return  Size in bytes
-     */
-    Size getRequiredSize();
-
 public:
     bool open(fs::File* file);
     void* load();
