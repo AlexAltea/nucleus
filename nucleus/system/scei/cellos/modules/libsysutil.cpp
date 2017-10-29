@@ -9,7 +9,7 @@
 
 namespace sys {
 
-S32 cellVideoOutConfigure(U32 videoOut, CellVideoOutConfiguration* config, CellVideoOutOption* option, U32 waitForEvent)
+HLE_FUNCTION(cellVideoOutConfigure, U32 videoOut, CellVideoOutConfiguration* config, CellVideoOutOption* option, U32 waitForEvent)
 {
     if (videoOut != CELL_VIDEO_OUT_PRIMARY) {
         return CELL_VIDEO_OUT_ERROR_UNSUPPORTED_VIDEO_OUT;
@@ -18,14 +18,14 @@ S32 cellVideoOutConfigure(U32 videoOut, CellVideoOutConfiguration* config, CellV
     return CELL_VIDEO_OUT_SUCCEEDED;
 }
 
-S32 cellVideoOutGetDeviceInfo()
+HLE_FUNCTION(cellVideoOutGetDeviceInfo)
 {
     logger.warning(LOG_HLE, "libsysutil: cellVideoOutGetDeviceInfo called");
     // TODO: ?
     return CELL_OK;
 }
 
-S32 cellVideoOutGetResolution(U32 resolutionId, CellVideoOutResolution* resolution)
+HLE_FUNCTION(cellVideoOutGetResolution, U32 resolutionId, CellVideoOutResolution* resolution)
 {
     switch (resolutionId) {
     case CELL_VIDEO_OUT_RESOLUTION_1080:
@@ -75,7 +75,7 @@ S32 cellVideoOutGetResolution(U32 resolutionId, CellVideoOutResolution* resoluti
     return CELL_VIDEO_OUT_SUCCEEDED;
 }
 
-S32 cellVideoOutGetState(U32 videoOut, U32 deviceIndex, CellVideoOutState* state)
+HLE_FUNCTION(cellVideoOutGetState, U32 videoOut, U32 deviceIndex, CellVideoOutState* state)
 {
     if (deviceIndex > 0) {
         return CELL_VIDEO_OUT_ERROR_DEVICE_NOT_FOUND;

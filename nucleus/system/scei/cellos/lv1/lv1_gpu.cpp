@@ -14,8 +14,8 @@ namespace sys {
 BE<U32> eport_handlers;
 
 // LV1 Syscall 217 (0xD9)
-S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode) {
-    auto& rsx = static_cast<gpu::RSX&>(*nucleus.gpu.get());
+S32 lv1_gpu_context_allocate(LV2& kernel, BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode) {
+    auto& rsx = *static_cast<gpu::RSX*>(kernel.getEmulator()->gpu.get());
 
     // HACK: We already store data in the memory on RSX initialization, mapping is not necessary
     *lpar_dma_control = 0x40100000;
@@ -29,18 +29,18 @@ S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<
     sys_event_queue_attr_t equeue_attr{};
     equeue_attr.protocol = SYS_SYNC_PRIORITY;
     equeue_attr.type = SYS_PPU_QUEUE;
-    sys_event_queue_create(&rsx.driver_info->handler_queue, &equeue_attr, 0, 0x20);
+    sys_event_queue_create(kernel, &rsx.driver_info->handler_queue, &equeue_attr, 0, 0x20);
 
     // TEST/HACK: I'm not sure if the event port is created/connected here
-    sys_event_port_create(&eport_handlers, SYS_EVENT_PORT_LOCAL, 0); // TODO: This might not be SYS_EVENT_PORT_LOCAL.
-    sys_event_port_connect_local(eport_handlers, rsx.driver_info->handler_queue);
+    sys_event_port_create(kernel, &eport_handlers, SYS_EVENT_PORT_LOCAL, 0); // TODO: This might not be SYS_EVENT_PORT_LOCAL.
+    sys_event_port_connect_local(kernel, eport_handlers, rsx.driver_info->handler_queue);
 
     return LV1_SUCCESS;
 }
 
 // LV1 Syscall 225 (0xE1)
-S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2, U64 p3, U64 p4) {
-    gpu::RSX& rsx = static_cast<gpu::RSX&>(*nucleus.gpu.get());
+S32 lv1_gpu_context_attribute(LV2& kernel, S32 context_id, U32 operation_code, U64 p1, U64 p2, U64 p3, U64 p4) {
+    auto& rsx = *static_cast<gpu::RSX*>(kernel.getEmulator()->gpu.get());
 
     switch (operation_code) {
     case L1GPU_CONTEXT_ATTRIBUTE_FIFO_SETUP:
@@ -55,17 +55,17 @@ S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_FLIP:
         rsx.driver_info->head[p1].flip |= 0x80000000;
         if (p1 == 0)
-            sys_event_port_send(eport_handlers, 0, (1 << 3), 0);
+            sys_event_port_send(kernel, eport_handlers, 0, (1 << 3), 0);
         if (p1 == 1)
-            sys_event_port_send(eport_handlers, 0, (1 << 4), 0);
+            sys_event_port_send(kernel, eport_handlers, 0, (1 << 4), 0);
         break;
 
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_QUEUE:
         rsx.driver_info->head[p1].flip |= 0x40000000 | (1 << p2);
         if (p1 == 0)
-            sys_event_port_send(eport_handlers, 0, (1 << 5), 0);
+            sys_event_port_send(kernel, eport_handlers, 0, (1 << 5), 0);
         if (p1 == 1)
-            sys_event_port_send(eport_handlers, 0, (1 << 6), 0);
+            sys_event_port_send(kernel, eport_handlers, 0, (1 << 6), 0);
         break;
 
     case L1GPU_CONTEXT_ATTRIBUTE_DISPLAY_BUFFER: {

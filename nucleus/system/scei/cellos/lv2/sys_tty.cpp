@@ -4,16 +4,17 @@
  */
 
 #include "sys_tty.h"
+#include "../lv2.h"
 
 #include <iostream>
 
 namespace sys {
 
-LV2_SYSCALL(sys_tty_read, S32 ch, S08* buf, S32 len, U32* preadlen) {
+HLE_FUNCTION(sys_tty_read, S32 ch, S08* buf, S32 len, U32* preadlen) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_tty_write, S32 ch, S08* buf, S32 len, U32* pwritelen) {
+HLE_FUNCTION(sys_tty_write, S32 ch, S08* buf, S32 len, U32* pwritelen) {
     if (ch > 15 || len <= 0) {
         return CELL_EINVAL;
     }

@@ -9,7 +9,7 @@
 
 namespace sys {
 
-S32 cellVideoOutGetGamma()
+HLE_FUNCTION(cellVideoOutGetGamma)
 {
     logger.warning(LOG_HLE, "libsysutil_avconf_ext: cellVideoOutGetGamma called");
     // TODO: ?

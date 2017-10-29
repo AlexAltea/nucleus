@@ -5,6 +5,7 @@
 
 #include "ppu_decoder.h"
 #include "nucleus/memory/memory.h"
+#include "nucleus/cpu/cpu_guest.h"
 #include "nucleus/cpu/util.h"
 #include "nucleus/cpu/hir/builder.h"
 #include "nucleus/cpu/hir/function.h"
@@ -26,7 +27,7 @@ namespace ppu {
 bool Block::is_split() const
 {
     Instruction lastInstr;
-    lastInstr.value = parent->parent->parent->memory->read32(address + size - 4);
+    lastInstr.value = parent->parent->parent->getMemory()->read32(address + size - 4);
     if (!lastInstr.is_branch() || lastInstr.is_call() || (lastInstr.opcode == 0x13 && lastInstr.op19 == 0x210) /*bcctr*/) {
         return true;
     }
@@ -48,7 +49,7 @@ void Function::do_register_analysis(Analyzer* status)
     Block currentBlock = static_cast<Block&>(*blocks[address]);
     for (U32 i = currentBlock.address; i < (currentBlock.address + currentBlock.size); i += 4) {
         Instruction code;
-        code.value = parent->parent->memory->read32(i);
+        code.value = parent->parent->getMemory()->read32(i);
 
         // Check if called functions use any other registers
         if (code.is_call_known()) {
@@ -76,7 +77,7 @@ bool Function::analyze_cfg()
     blocks.clear();
     type_in.clear();
 
-    std::queue<U32> labels({ address });
+    std::queue<U32> labels({ U32(address) });
 
     Instruction code;  // Current instruction
     Block current;     // Current block
@@ -86,7 +87,7 @@ bool Function::analyze_cfg()
     // Control Flow Graph generation
     while (!labels.empty()) {
         U32 addr = labels.front();
-        code.value = parent->parent->memory->read32(addr);
+        code.value = parent->parent->getMemory()->read32(addr);
 
         // Check if block was already processed
         if (blocks.find(addr) != blocks.end()) {
@@ -125,7 +126,7 @@ bool Function::analyze_cfg()
         while ((!code.is_branch() || code.is_call()) && (current.size < maxSize)) {
             addr += 4;
             current.size += 4;
-            code.value = parent->parent->memory->read32(addr);
+            code.value = parent->parent->getMemory()->read32(addr);
         }
 
         // Push new labels
@@ -266,7 +267,7 @@ void Function::recompile()
     recompiler.createEpilog();
 
     // Recompile basic clocks
-    std::queue<U32> labels({ address });
+    std::queue<U32> labels({ U32(address) });
     for (auto& item : blocks) {
         auto& block = static_cast<Block&>(*item.second);
 
@@ -279,7 +280,7 @@ void Function::recompile()
         for (U32 offset = 0; offset < block.size; offset += 4) {
             recompiler.currentAddress = block.address + offset;
             Instruction instr;
-            instr.value = parent->parent->memory->read32(recompiler.currentAddress);
+            instr.value = parent->parent->getMemory()->read32(recompiler.currentAddress);
             auto method = get_entry(instr).recompile;
             //builder.createCall(logFunc, {builder.getConstantI64(recompiler.currentAddress)}, hir::CALL_EXTERN);
             (recompiler.*method)(instr);
@@ -314,11 +315,13 @@ void Function::createPlaceholder()
 /**
  * PPU Module methods
  */
-Module::Module(CPU* parent) : frontend::Module<U32>(parent) {
+Module::Module(CPU* parent) : frontend::Module(parent) {
 }
 
 Function* Module::addFunction(U32 addr)
 {
+    auto* cpu = dynamic_cast<GuestCPU*>(parent);
+
     // Return function if already present
     if (functions.find(addr) != functions.end()) {
         return static_cast<Function*>(functions[addr]);
@@ -330,7 +333,7 @@ Function* Module::addFunction(U32 addr)
     function->address = addr;
     function->declare();
     function->createPlaceholder();
-    parent->compiler->compile(function->hirFunction);
+    cpu->compiler->compile(function->hirFunction);
 
     // Save and return the function
     functions[addr] = function;
@@ -348,7 +351,7 @@ void Module::analyze()
     U32 currentBlock = 0;
     for (U32 i = address; i < (address + size); i += 4) {
         Instruction instr;
-        instr.value = parent->memory->read32(i);
+        instr.value = parent->getMemory()->read32(i);
 
         // New block appeared
         if (currentBlock == 0 && instr.is_valid()) {
@@ -522,6 +525,8 @@ void Module::recompile()
 }
 
 void Module::hook(U32 funcAddr, U32 fnid) {
+    auto* cpu = dynamic_cast<GuestCPU*>(parent);
+
     if (functions.find(funcAddr) == functions.end()) {
         auto* func = new Function(this);
         func->declare();
@@ -539,7 +544,7 @@ void Module::hook(U32 funcAddr, U32 fnid) {
     builder.createCall(hookFunc, { builder.getConstantI32(fnid) }, hir::CALL_EXTERN);
     builder.createRet();
 
-    parent->compiler->compile(hirFunc);
+    cpu->compiler->compile(hirFunc);
 }
 
 }  // namespace ppu

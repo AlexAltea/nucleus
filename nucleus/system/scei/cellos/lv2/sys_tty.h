@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 
 namespace sys {
 
@@ -32,7 +32,7 @@ enum {
 };
 
 // SysCalls
-LV2_SYSCALL(sys_tty_read, S32 ch, S08* buf, S32 len, U32* preadlen);
-LV2_SYSCALL(sys_tty_write, S32 ch, S08* buf, S32 len, U32* pwritelen);
+HLE_FUNCTION(sys_tty_read, S32 ch, S08* buf, S32 len, U32* preadlen);
+HLE_FUNCTION(sys_tty_write, S32 ch, S08* buf, S32 len, U32* pwritelen);
 
 }  // namespace sys

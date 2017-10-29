@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 
 #include <condition_variable>
 #include <mutex>
@@ -34,11 +34,11 @@ struct sys_semaphore_t
 };
 
 // SysCalls
-LV2_SYSCALL(sys_semaphore_create, BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 initial_count, S32 max_count);
-LV2_SYSCALL(sys_semaphore_destroy, U32 sem_id);
-LV2_SYSCALL(sys_semaphore_get_value, U32 sem_id, BE<S32>* val);
-LV2_SYSCALL(sys_semaphore_post, U32 sem_id, S32 val);
-LV2_SYSCALL(sys_semaphore_trywait, U32 sem_id);
-LV2_SYSCALL(sys_semaphore_wait, U32 sem_id, U64 timeout);
+HLE_FUNCTION(sys_semaphore_create, BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 initial_count, S32 max_count);
+HLE_FUNCTION(sys_semaphore_destroy, U32 sem_id);
+HLE_FUNCTION(sys_semaphore_get_value, U32 sem_id, BE<S32>* val);
+HLE_FUNCTION(sys_semaphore_post, U32 sem_id, S32 val);
+HLE_FUNCTION(sys_semaphore_trywait, U32 sem_id);
+HLE_FUNCTION(sys_semaphore_wait, U32 sem_id, U64 timeout);
 
 }  // namespace sys

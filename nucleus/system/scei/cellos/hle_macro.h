@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include "nucleus/common.h"
-#include "../hle_macro.h"
+#define HLE_FUNCTION(name, ...) \
+    U64 name(LV2& kernel, __VA_ARGS__)
 
 namespace sys {
 
-// Functions
-HLE_FUNCTION(cellVideoOutGetGamma);
+// Forward declarations
+class LV2;
 
 }  // namespace sys

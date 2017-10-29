@@ -4,14 +4,14 @@
  */
 
 #include "sys_mutex.h"
-#include "nucleus/system/scei/cellos/kernel.h"
 #include "nucleus/emulator.h"
+#include "../lv2.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_mutex_create, BE<U32>* mutex_id, sys_mutex_attribute_t* attr) {
+HLE_FUNCTION(sys_mutex_create, BE<U32>* mutex_id, sys_mutex_attribute_t* attr) {
     // Check requisites
-    if (mutex_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
+    if (mutex_id == kernel.memory->ptr(0) || attr == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {
@@ -26,14 +26,14 @@ LV2_SYSCALL(sys_mutex_create, BE<U32>* mutex_id, sys_mutex_attribute_t* attr) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_mutex_destroy, U32 mutex_id) {
+HLE_FUNCTION(sys_mutex_destroy, U32 mutex_id) {
     if (!kernel.objects.remove(mutex_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_mutex_lock, U32 mutex_id, U64 timeout) {
+HLE_FUNCTION(sys_mutex_lock, U32 mutex_id, U64 timeout) {
     auto* mutex = kernel.objects.get<sys_mutex_t>(mutex_id);
 
     // Check requisites
@@ -61,7 +61,7 @@ LV2_SYSCALL(sys_mutex_lock, U32 mutex_id, U64 timeout) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_mutex_trylock, U32 mutex_id) {
+HLE_FUNCTION(sys_mutex_trylock, U32 mutex_id) {
     auto* mutex = kernel.objects.get<sys_mutex_t>(mutex_id);
 
     // Check requisites
@@ -73,7 +73,7 @@ LV2_SYSCALL(sys_mutex_trylock, U32 mutex_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_mutex_unlock, U32 mutex_id) {
+HLE_FUNCTION(sys_mutex_unlock, U32 mutex_id) {
     auto* mutex = kernel.objects.get<sys_mutex_t>(mutex_id);
 
     // Check requisites

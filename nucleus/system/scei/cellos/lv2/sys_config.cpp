@@ -4,21 +4,21 @@
  */
 
 #include "sys_config.h"
-#include "nucleus/system/scei/cellos/kernel.h"
+#include "../lv2.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_config_add_service_listener) {
+HLE_FUNCTION(sys_config_add_service_listener) {
     // TODO: ?
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_config_close) {
+HLE_FUNCTION(sys_config_close) {
     // TODO: ?
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_config_open) {
+HLE_FUNCTION(sys_config_open) {
     // TODO: ?
     return CELL_OK;
 }

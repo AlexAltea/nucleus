@@ -16,7 +16,7 @@ namespace cpu {
 namespace frontend {
 namespace spu {
 
-class Translator : public frontend::IRecompiler<U32> {
+class Translator : public frontend::IRecompiler {
 private:
     CPU* parent;
 

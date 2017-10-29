@@ -5,17 +5,13 @@
 
 #pragma once
 
-#include "nucleus/common.h"
-#include "nucleus/memory/memory.h"
-#include "nucleus/cpu/cpu.h"
+#include "cpu.h"
 
 namespace cpu {
 
 class HostCPU : public CPU {
-    mem::Memory* memory;
-
 public:
-    HostCPU(mem::Memory* memory);
+    HostCPU(Emulator* emulator, mem::Memory* memory);
 
     // Thread management
     virtual void run() override;

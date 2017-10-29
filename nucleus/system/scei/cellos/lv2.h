@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/memory/memory.h"
+#include "nucleus/memory/guest_virtual/guest_virtual_memory.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/system/scei/cellos/module.h"
@@ -112,14 +112,14 @@ public:
     ObjectManager objects;
     ModuleManager modules;
 
-    std::shared_ptr<mem::Memory> memory;
+    mem::GuestVirtualMemory* memory;
 
     // Kernel information
     sys_process_t proc;
     sys_rsx_device_t rsx_device[16];
     sys_rsx_context_t rsx_context[4];
 
-    LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type);
+    LV2(Emulator* emulator, std::shared_ptr<mem::Memory> memory, U32 fw_type);
 
     // Start the process at the given entry point
     bool init(U32 entry);

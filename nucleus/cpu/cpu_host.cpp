@@ -7,16 +7,21 @@
 
 namespace cpu {
 
-HostCPU(mem::Memory* memory) : memory(memory) {
+HostCPU::HostCPU(Emulator* emulator, mem::Memory* memory)
+    : CPU(emulator, memory)
+{
 }
 
-void HostCPU::run() {
+void HostCPU::run()
+{
 }
 
-void HostCPU::pause() {
+void HostCPU::pause()
+{
 }
 
-void HostCPU::stop() {
+void HostCPU::stop()
+{
 }
 
 }  // namespace cpu

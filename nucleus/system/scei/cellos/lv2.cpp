@@ -38,7 +38,9 @@
 
 namespace sys {
 
-LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(memory)), modules(this) {
+LV2::LV2(Emulator* emulator, std::shared_ptr<mem::Memory> memory, U32 fw_type)
+    : System(emulator), memory(dynamic_cast<mem::GuestVirtualMemory*>(memory.get())), modules(this)
+{
     // Initialize syscall table
     memset(syscalls, 0, sizeof(syscalls));
     if (fw_type & (LV2_CEX | LV2_DEX | LV2_DECR)) {
@@ -206,19 +208,19 @@ LV2::LV2(std::shared_ptr<mem::Memory> memory, U32 fw_type) : memory(std::move(me
 
 bool LV2::init(U32 entry) {
     // Load and start liblv2.sprx module
-    S32 moduleId = sys_prx_load_module("/dev_flash/sys/external/liblv2.sprx", 0, 0);
+    S32 moduleId = sys_prx_load_module(*this, "/dev_flash/sys/external/liblv2.sprx", 0, 0);
     if (moduleId <= CELL_OK) {
         logger.error(LOG_HLE, "You need to provide the /dev_flash/sys/external/ firmware files.");
         return false;
     }
     sys_prx_start_module_option_t startFunc;
-    sys_prx_start_module(moduleId, 0, &startFunc);
+    sys_prx_start_module(*this, moduleId, 0, &startFunc);
 
     BE<U64> thread_id;
     sys_ppu_thread_attr_t attr;
     attr.entry = startFunc.entry.ToLE();
     attr.tls_addr = 0;
-    sys_ppu_thread_create(&thread_id, &attr, 0, 0, 500/*TODO*/, 0x10000, 0, "main"/*TODO*/);
+    sys_ppu_thread_create(*this, &thread_id, &attr, 0, 0, 500/*TODO*/, 0x10000, 0, "main"/*TODO*/);
 
     // Set sys_initialize_tls arguments for liblv2.sprx's start function
     auto* state = objects.get<sys_ppu_thread_t>(thread_id)->thread->state.get();
@@ -228,7 +230,7 @@ bool LV2::init(U32 entry) {
     state->r[10] = 0x90;
     state->r[11] = entry;
 
-    sys_ppu_thread_start(thread_id);
+    sys_ppu_thread_start(*this, thread_id);
     return true;
 }
 
@@ -240,7 +242,7 @@ void LV2::call(cpu::frontend::ppu::PPUState& state) {
         return;
     }
     //logger.notice(LOG_HLE, "LV2 Syscall %d (0x%x: %s) called", id, id, syscalls[id].name);
-    syscalls[id].func->call(state, memory->getBaseAddr());
+    syscalls[id].func->call(state, *this, memory->getBaseAddr());
 }
 
 }  // namespace sys

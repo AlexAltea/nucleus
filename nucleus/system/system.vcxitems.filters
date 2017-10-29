@@ -151,7 +151,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwcond.h">
       <Filter>scei\cellos\lv2</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Alex\Documents\GitHub\nucleus\nucleus\system\scei\cellos\lv2_macro.h">
+    <ClInclude Include="C:\Users\Alex\Documents\GitHub\nucleus\nucleus\system\scei\cellos\hle_macro.h">
       <Filter>scei\cellos</Filter>
     </ClInclude>
   </ItemGroup>
@@ -267,5 +267,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_lwcond.cpp">
       <Filter>scei\cellos\lv2</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)system.cpp" />
   </ItemGroup>
 </Project>

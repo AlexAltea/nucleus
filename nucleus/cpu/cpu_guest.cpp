@@ -19,7 +19,9 @@
 
 namespace cpu {
 
-GuestCPU::GuestCPU(mem::Memory* memory) : memory(memory) {
+GuestCPU::GuestCPU(Emulator* emulator, mem::Memory* memory)
+    : CPU(emulator, memory)
+{
 #if defined(NUCLEUS_ARCH_X86)
     compiler = std::make_unique<backend::x86::X86Compiler>();
 #elif defined(NUCLEUS_ARCH_ARM)

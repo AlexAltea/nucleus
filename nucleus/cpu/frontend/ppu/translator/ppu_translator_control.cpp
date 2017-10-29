@@ -9,6 +9,7 @@
 #include "nucleus/assert.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_thread.h"
+#include "nucleus/memory/guest_virtual/guest_virtual_memory.h"
 
 #include <cstring>
 
@@ -161,7 +162,7 @@ void Translator::dcbz(Instruction code)
 {
     INTERPRET({
         const U32 addr = o.ra ? state.r[o.ra] + state.r[o.rb] : state.r[o.rb];
-        void* ptr = thread.parent->memory->ptr(addr & ~127);
+        void* ptr = dynamic_cast<mem::GuestVirtualMemory*>(thread.getMemory())->ptr(addr & ~127);
         std::memset(ptr, 0, 128);
     });
 }

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 #include "nucleus/filesystem/file.h"
 
 #include <string>
@@ -86,21 +86,21 @@ struct sys_fs_t
 };
 
 // SysCalls
-LV2_SYSCALL(sys_fs_open, const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size);
-LV2_SYSCALL(sys_fs_read, S32 fd, void* buf, U64 nbytes, BE<U64>* nread);
-LV2_SYSCALL(sys_fs_write, S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite);
-LV2_SYSCALL(sys_fs_close, S32 fd);
-LV2_SYSCALL(sys_fs_opendir, const S08* path, BE<S32>* fd);
-LV2_SYSCALL(sys_fs_readdir, S32 fd, sys_fs_dirent_t* dir, BE<U64>* nread);
-LV2_SYSCALL(sys_fs_closedir, S32 fd);
-LV2_SYSCALL(sys_fs_stat, const S08* path, sys_fs_stat_t* sb);
-LV2_SYSCALL(sys_fs_fstat, S32 fd, sys_fs_stat_t* sb);
-LV2_SYSCALL(sys_fs_link, const S08* path, const S08* arg0);
-LV2_SYSCALL(sys_fs_mkdir, const S08* path, U32 mode);
-LV2_SYSCALL(sys_fs_rename, const S08* from, const S08* to);
-LV2_SYSCALL(sys_fs_rmdir, const S08* path);
-LV2_SYSCALL(sys_fs_unlink, const S08* path);
-LV2_SYSCALL(sys_fs_fcntl, S32 fd, S32 cmd, void* argv, U32 argc);
-LV2_SYSCALL(sys_fs_lseek, S32 fd, S64 offset, S32 whence, BE<U64>* pos);
+HLE_FUNCTION(sys_fs_open, const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size);
+HLE_FUNCTION(sys_fs_read, S32 fd, void* buf, U64 nbytes, BE<U64>* nread);
+HLE_FUNCTION(sys_fs_write, S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite);
+HLE_FUNCTION(sys_fs_close, S32 fd);
+HLE_FUNCTION(sys_fs_opendir, const S08* path, BE<S32>* fd);
+HLE_FUNCTION(sys_fs_readdir, S32 fd, sys_fs_dirent_t* dir, BE<U64>* nread);
+HLE_FUNCTION(sys_fs_closedir, S32 fd);
+HLE_FUNCTION(sys_fs_stat, const S08* path, sys_fs_stat_t* sb);
+HLE_FUNCTION(sys_fs_fstat, S32 fd, sys_fs_stat_t* sb);
+HLE_FUNCTION(sys_fs_link, const S08* path, const S08* arg0);
+HLE_FUNCTION(sys_fs_mkdir, const S08* path, U32 mode);
+HLE_FUNCTION(sys_fs_rename, const S08* from, const S08* to);
+HLE_FUNCTION(sys_fs_rmdir, const S08* path);
+HLE_FUNCTION(sys_fs_unlink, const S08* path);
+HLE_FUNCTION(sys_fs_fcntl, S32 fd, S32 cmd, void* argv, U32 argc);
+HLE_FUNCTION(sys_fs_lseek, S32 fd, S64 offset, S32 whence, BE<U64>* pos);
 
 }  // namespace sys

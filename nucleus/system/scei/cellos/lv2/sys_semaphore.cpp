@@ -5,15 +5,14 @@
 
 #include "sys_semaphore.h"
 #include "sys_mutex.h"
-#include "nucleus/emulator.h"
+#include "../lv2.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/system/scei/cellos/kernel.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_semaphore_create, BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 initial_count, S32 max_count) {
+HLE_FUNCTION(sys_semaphore_create, BE<U32>* sem_id, sys_semaphore_attribute_t* attr, S32 initial_count, S32 max_count) {
     // Check requisites
-    if (sem_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
+    if (sem_id == kernel.memory->ptr(0) || attr == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {
@@ -38,21 +37,21 @@ LV2_SYSCALL(sys_semaphore_create, BE<U32>* sem_id, sys_semaphore_attribute_t* at
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_semaphore_destroy, U32 sem_id) {
+HLE_FUNCTION(sys_semaphore_destroy, U32 sem_id) {
     if (!kernel.objects.remove(sem_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_semaphore_get_value, U32 sem_id, BE<S32>* val) {
+HLE_FUNCTION(sys_semaphore_get_value, U32 sem_id, BE<S32>* val) {
     auto* semaphore = kernel.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites
     if (!semaphore) {
         return CELL_ESRCH;
     }
-    if (val == nucleus.memory->ptr(0)) {
+    if (val == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
@@ -60,7 +59,7 @@ LV2_SYSCALL(sys_semaphore_get_value, U32 sem_id, BE<S32>* val) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_semaphore_post, U32 sem_id, S32 val) {
+HLE_FUNCTION(sys_semaphore_post, U32 sem_id, S32 val) {
     auto* semaphore = kernel.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites
@@ -84,7 +83,7 @@ LV2_SYSCALL(sys_semaphore_post, U32 sem_id, S32 val) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_semaphore_trywait, U32 sem_id) {
+HLE_FUNCTION(sys_semaphore_trywait, U32 sem_id) {
     auto* semaphore = kernel.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites
@@ -101,7 +100,7 @@ LV2_SYSCALL(sys_semaphore_trywait, U32 sem_id) {
     return CELL_EBUSY;
 }
 
-LV2_SYSCALL(sys_semaphore_wait, U32 sem_id, U64 timeout) {
+HLE_FUNCTION(sys_semaphore_wait, U32 sem_id, U64 timeout) {
     auto* semaphore = kernel.objects.get<sys_semaphore_t>(sem_id);
 
     // Check requisites

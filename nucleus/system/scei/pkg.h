@@ -23,16 +23,16 @@ enum PKGType : U16 {
 };
 
 struct PKGHeader {
-    BE<U32> magic;                  // Magic
-    BE<U16> pkg_revision;           // Revision
-    BE<U16> pkg_type;               // Type
-    BE<U32> pkg_info_offset;        // Info offset
-    BE<U32> pkg_info_count;         // Info count
-    BE<U32> header_size;            // Header size (usually 0xC0)
-    BE<U32> item_count;             // Files and folders in the encrypted data
-    BE<U64> total_size;             // Total PKG file size
-    BE<U64> data_offset;            // Encrypted data offset
-    BE<U64> data_size;              // Encrypted data size
+    BE<U32> magic;                   // Magic
+    BE<U16> pkg_revision;            // Revision
+    BE<U16> pkg_type;                // Type
+    BE<U32> pkg_info_offset;         // Info offset
+    BE<U32> pkg_info_count;          // Info count
+    BE<U32> header_size;             // Header size (usually 0xC0)
+    BE<U32> item_count;              // Files and folders in the encrypted data
+    BE<U64> total_size;              // Total PKG file size
+    BE<U64> data_offset;             // Encrypted data offset
+    BE<U64> data_size;               // Encrypted data size
     S08 contentid[48];               // Content ID (similar to "XX####-XXXX#####_##-XXXXXXXXXXXX####")
     S08 digest[16];                  // SHA1 hash from files and attributes
     S08 klicensee[16];               // AES-128-CTR IV

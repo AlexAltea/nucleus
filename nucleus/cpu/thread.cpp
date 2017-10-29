@@ -4,10 +4,19 @@
  */
 
 #include "thread.h"
+#include "cpu.h"
 
 namespace cpu {
 
 Thread::Thread(CPU* parent) : parent(parent) {
+}
+
+Emulator* Thread::getEmulator() const {
+    return parent->getEmulator();
+}
+
+mem::Memory* Thread::getMemory() const {
+    return parent->getMemory();
 }
 
 void Thread::join() {

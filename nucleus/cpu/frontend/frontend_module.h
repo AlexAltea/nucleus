@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/cpu/cpu.h"
+#include "nucleus/cpu/hir/module.h"
 
 #include <map>
 
@@ -14,10 +15,8 @@ namespace cpu {
 namespace frontend {
 
 // Forward declarations
-template <typename TAddr>
 class Function;
 
-template <typename TAddr>
 class Module {
 public:
     CPU* parent;
@@ -26,16 +25,16 @@ public:
     hir::Module* hirModule;
 
     // Starting address of this module
-    TAddr address = 0;
+    U64 address = 0;
 
     // Number of bytes covered by this module
-    TAddr size = 0;
+    U64 size = 0;
 
     // Name of this module
     std::string name;
 
     // List of functions
-    std::map<TAddr, Function<TAddr>*> functions;
+    std::map<U64, Function*> functions;
 
     // Constructor
     Module(CPU* parent) : parent(parent) {
@@ -48,9 +47,9 @@ public:
     }
 
     // Check whether an address is inside this module
-    bool contains(TAddr addr) const {
-        const TAddr from = address;
-        const TAddr to = address + size;
+    bool contains(U64 addr) const {
+        const U64 from = address;
+        const U64 to = address + size;
         return from <= addr && addr < to;
     }
 };

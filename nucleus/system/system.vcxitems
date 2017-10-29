@@ -49,7 +49,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_time.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2\sys_tty.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\lv2_macro.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\hle_macro.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\module.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scei\cellos\modules\libsysutil_avconf_ext.h" />
@@ -103,5 +103,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\pkg.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\psf.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)scei\self.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)system.cpp" />
   </ItemGroup>
 </Project>

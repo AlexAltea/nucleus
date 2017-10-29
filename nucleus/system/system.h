@@ -7,11 +7,24 @@
 
 #include "nucleus/filesystem/filesystem_virtual.h"
 
+// Forward declarations
+class Emulator;
+
 namespace sys {
 
 class System {
+    Emulator* m_emulator;
+
 public:
     fs::VirtualFileSystem vfs;
+
+    System(Emulator* emulator);
+
+    /**
+     * Get the emulator object to which this HLE-OS belongs.
+     * @return  Emulator object
+     */
+    Emulator* getEmulator() const;
 };
 
 }  // namespace sys

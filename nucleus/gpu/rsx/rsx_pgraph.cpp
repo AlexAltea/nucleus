@@ -11,13 +11,14 @@
 #include "nucleus/gpu/rsx/rsx_convert.h"
 #include "nucleus/gpu/rsx/rsx_enum.h"
 #include "nucleus/gpu/rsx/rsx_methods.h"
+#include "nucleus/memory/guest_virtual/guest_virtual_memory.h"
 
 #include <cstring>
 
 namespace gpu {
 namespace rsx {
 
-PGRAPH::PGRAPH(std::shared_ptr<gfx::GraphicsBackend> backend, RSX* rsx, mem::Memory* memory) :
+PGRAPH::PGRAPH(std::shared_ptr<gfx::GraphicsBackend> backend, RSX* rsx, mem::GuestVirtualMemory* memory) :
     graphics(std::move(backend)), rsx(rsx), memory(memory), surface(), cacheTexture(256_MB) {
     cmdQueue = graphics->getGraphicsCommandQueue();
     cmdBuffer = graphics->createCommandBuffer();
@@ -98,7 +99,7 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
         // Get vertex buffer address
         U32 addr;
         if (attr.location == RSX_LOCATION_LOCAL) {
-            addr = nucleus.memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).getBaseAddr() + attr.offset;
+            addr = memory->getSegment(mem::SEG_RSX_LOCAL_MEMORY).getBaseAddr() + attr.offset;
         } else {
             addr = rsx->get_ea(attr.offset);
         }
@@ -115,17 +116,17 @@ void PGRAPH::LoadVertexAttributes(U32 first, U32 count) {
             switch (typeSize) {
             case 1:
                 for (U08 j = 0; j < attr.size; j++) {
-                    ((U08*)dst)[j] = nucleus.memory->read8(src + 1*j);
+                    ((U08*)dst)[j] = memory->read8(src + 1*j);
                 }
                 break;
             case 2:
                 for (U08 j = 0; j < attr.size; j++) {
-                    ((U16*)dst)[j] = nucleus.memory->read16(src + 2*j);
+                    ((U16*)dst)[j] = memory->read16(src + 2*j);
                 }
                 break;
             case 4:
                 for (U08 j = 0; j < attr.size; j++) {
-                    ((U32*)dst)[j] = nucleus.memory->read32(src + 4*j);
+                    ((U32*)dst)[j] = memory->read32(src + 4*j);
                 }
                 break;
             }

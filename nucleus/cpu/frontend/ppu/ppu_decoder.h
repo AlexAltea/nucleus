@@ -48,7 +48,7 @@ enum FunctionTypeOut {
     FUNCTION_OUT_VOID,        // Nothing is returned
 };
 
-class Block : public frontend::Block<U32> {
+class Block : public frontend::Block {
 public:
     bool initial;                   // Is this a function entry block?
     bool jump_destination = false;  // Is this a target of a bx/bcx instruction?
@@ -56,13 +56,13 @@ public:
 
     // Constructors
     Block() {}
-    Block(frontend::Block<U32>& block) : frontend::Block<U32>(block) {}
+    Block(frontend::Block& block) : frontend::Block(block) {}
 
     // Determines whether an extra branch is required to connect this with the immediate block after
     bool is_split() const;
 };
 
-class Function : public frontend::Function<U32> {
+class Function : public frontend::Function {
     // Analyzer auxiliary method: Determine register read/writes
     void do_register_analysis(Analyzer* status);
 
@@ -72,7 +72,7 @@ public:
     std::vector<FunctionTypeIn> type_in;
 
     Function(Module* seg) {
-        parent = reinterpret_cast<frontend::Module<U32>*>(seg);
+        parent = reinterpret_cast<frontend::Module*>(seg);
     }
 
     // Analysis
@@ -89,7 +89,7 @@ public:
     void recompile();
 };
 
-class Module : public frontend::Module<U32> {
+class Module : public frontend::Module {
 public:
     Function* addFunction(U32 addr);
 

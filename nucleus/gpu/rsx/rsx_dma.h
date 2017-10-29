@@ -7,6 +7,9 @@
 
 #include "nucleus/common.h"
 
+// Forward declarations
+namespace mem { class Memory; }
+
 namespace gpu {
 
 // RSX DMA class handles
@@ -31,8 +34,8 @@ enum {
 
     RSX_CONTEXT_DMA_FRAME_BUFFER            = 0xFEED0000,
     RSX_CONTEXT_DMA_HOST_BUFFER             = 0xFEED0001,
-    RSX_CONTEXT_DMA_GSEMU_UNK0              = 0xFEED0003, // Probably related with SCEI's PlayStation 2 emulator
-    RSX_CONTEXT_DMA_GSEMU_UNK1              = 0xFEED0004, // Probably related with SCEI's PlayStation 2 emulator
+    RSX_CONTEXT_DMA_GSEMU_UNK0              = 0xFEED0003, // Related with SCEI's PlayStation 2 emulator
+    RSX_CONTEXT_DMA_GSEMU_UNK1              = 0xFEED0004, // Related with SCEI's PlayStation 2 emulator
 };
 
 struct DMAObject {
@@ -50,14 +53,14 @@ struct DMAObject {
 // RSX Direct Memory Access
 DMAObject dma_address(U32 dma_object);
 
-U08 dma_read8(U32 dma_object, U32 offset);
-U16 dma_read16(U32 dma_object, U32 offset);
-U32 dma_read32(U32 dma_object, U32 offset);
-U64 dma_read64(U32 dma_object, U32 offset);
+U08 dma_read8 (mem::Memory* memory, U32 dma_object, U32 offset);
+U16 dma_read16(mem::Memory* memory, U32 dma_object, U32 offset);
+U32 dma_read32(mem::Memory* memory, U32 dma_object, U32 offset);
+U64 dma_read64(mem::Memory* memory, U32 dma_object, U32 offset);
 
-void dma_write8(U32 dma_object, U32 offset, U08 value);
-void dma_write16(U32 dma_object, U32 offset, U16 value);
-void dma_write32(U32 dma_object, U32 offset, U32 value);
-void dma_write64(U32 dma_object, U32 offset, U64 value);
+void dma_write8 (mem::Memory* memory, U32 dma_object, U32 offset, U08 value);
+void dma_write16(mem::Memory* memory, U32 dma_object, U32 offset, U16 value);
+void dma_write32(mem::Memory* memory, U32 dma_object, U32 offset, U32 value);
+void dma_write64(mem::Memory* memory, U32 dma_object, U32 offset, U64 value);
 
 }  // namespace gpu

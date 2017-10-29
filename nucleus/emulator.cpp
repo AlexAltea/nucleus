@@ -27,9 +27,9 @@
 bool Emulator::load_ps3(const std::string& path) {
     // Initialize hardware
     memory = std::make_shared<mem::GuestVirtualMemory>(4_GB);
-    cpu = std::make_shared<cpu::GuestCPU>(memory.get());
-    gpu = std::make_shared<gpu::RSX>(memory, graphics);
-    sys = std::make_shared<sys::LV2>(memory, sys::LV2_DEX);
+    cpu = std::make_shared<cpu::GuestCPU>(this, memory.get());
+    gpu = std::make_shared<gpu::RSX>(this, memory.get(), graphics);
+    sys = std::make_shared<sys::LV2>(this, memory, sys::LV2_DEX);
 
     // Initialize application filesystem devices
     const fs::Path& processPath = fs::getProcessPath(path);
@@ -57,9 +57,9 @@ bool Emulator::load_ps3(const std::string& path) {
 bool Emulator::load_ps4(const std::string& path) {
     // Initialize hardware
     memory = std::make_shared<mem::HostVirtualMemory>();
-    cpu = std::make_shared<cpu::HostCPU>(memory.get());
-    gpu = std::make_shared<gpu::R10XX>(graphics);
-    sys = std::make_shared<sys::OrbisOS>();
+    cpu = std::make_shared<cpu::HostCPU>(this, memory.get());
+    gpu = std::make_shared<gpu::R10XX>(this, graphics);
+    sys = std::make_shared<sys::OrbisOS>(this);
 
     // Initialize application filesystem devices
     const fs::Path& processPath = fs::getProcessPath(path);

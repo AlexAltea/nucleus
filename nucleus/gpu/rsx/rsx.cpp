@@ -5,8 +5,9 @@
 
 #include "rsx.h"
 #include "nucleus/assert.h"
+#include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/memory/memory.h"
+#include "nucleus/memory/guest_virtual/guest_virtual_memory.h"
 #include "nucleus/core/config.h"
 #include "nucleus/system/scei/cellos/lv1/lv1_gpu.h"
 
@@ -42,8 +43,10 @@
 namespace gpu {
 namespace rsx {
 
-RSX::RSX(std::shared_ptr<mem::Memory> mem, std::shared_ptr<gfx::GraphicsBackend> graphics) :
-    memory(mem), pgraph(std::move(graphics), this, mem.get()) {
+RSX::RSX(Emulator* emulator, mem::Memory* mem, std::shared_ptr<gfx::GraphicsBackend> graphics) : GPU(emulator),
+    memory(dynamic_cast<mem::GuestVirtualMemory*>(mem)),
+    pgraph(std::move(graphics), this, dynamic_cast<mem::GuestVirtualMemory*>(mem))
+{
     // HACK: We store the data in memory (the PS3 stores the data in the GPU and maps it later through a LV2 syscall)
     memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40000000, 0x1000);
     memory->getSegment(mem::SEG_RSX_MAP_MEMORY).allocFixed(0x40100000, 0x1000);
@@ -150,14 +153,14 @@ void RSX::method(U32 offset, U32 parameter) {
         break;
 
     case NV406E_SEMAPHORE_ACQUIRE:
-        while (dma_read32(dma_semaphore, dma_semaphore_offset) != parameter) {
+        while (dma_read32(memory, dma_semaphore, dma_semaphore_offset) != parameter) {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
             break; // HACK: All processes get stuck here, probably due to the lack of context switching.
         }
         break;
 
     case NV406E_SEMAPHORE_RELEASE:
-        dma_write32(dma_semaphore, dma_semaphore_offset, parameter);
+        dma_write32(memory, dma_semaphore, dma_semaphore_offset, parameter);
         break;
 
     // NV40_CURIE_PRIMITIVE
@@ -526,22 +529,22 @@ void RSX::method(U32 offset, U32 parameter) {
         U64 timestamp = ptimer_gettime();
         U32 value = 0;
 
-        dma_write64(pgraph.dma_report, offset + 0x0, timestamp);
-        dma_write32(pgraph.dma_report, offset + 0x8, value);
-        dma_write32(pgraph.dma_report, offset + 0xC, 0);
+        dma_write64(memory, pgraph.dma_report, offset + 0x0, timestamp);
+        dma_write32(memory, pgraph.dma_report, offset + 0x8, value);
+        dma_write32(memory, pgraph.dma_report, offset + 0xC, 0);
         break;
     }
 
     // SCE DRIVER
     case_range(2, SCE_DRIVER_FLIP, 4)
         pgraph.Flip();
-        sys::lv1_gpu_context_attribute(0x55555555, 0x102, index, parameter, 0, 0);
+        sys::lv1_gpu_context_attribute(*(sys::LV2*)(getEmulator()->sys.get()), 0x55555555, 0x102, index, parameter, 0, 0);
         break;
 
     case_range(2, SCE_DRIVER_QUEUE, 4)
         //glFinish();
         queued_display = parameter;
-        sys::lv1_gpu_context_attribute(0x55555555, 0x103, index, parameter, 0, 0);
+        sys::lv1_gpu_context_attribute(*(sys::LV2*)(getEmulator()->sys.get()), 0x55555555, 0x103, index, parameter, 0, 0);
         break;
 
     default:

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "nucleus/memory/memory.h"
 #include "nucleus/memory/guest_virtual/guest_virtual_segment.h"
 
 namespace mem {

@@ -4,8 +4,9 @@
  */
 
 #include "ppu_translator.h"
+#include "nucleus/cpu/cpu.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
-#include "nucleus/memory/memory.h"
+#include "nucleus/memory/guest_virtual/guest_virtual_memory.h"
 #include "nucleus/core/config.h"
 #include "nucleus/logger/logger.h"
 #include "nucleus/assert.h"
@@ -16,7 +17,7 @@ namespace ppu {
 
 using namespace cpu::hir;
 
-Translator::Translator(CPU* parent, ppu::Function* function) : parent(parent), IRecompiler<U32>(function) {
+Translator::Translator(CPU* parent, ppu::Function* function) : parent(parent), IRecompiler(function) {
 }
 
 void Translator::createProlog() {
@@ -371,7 +372,7 @@ void Translator::setFPSCR(Value* value) {
  */
 Value* Translator::readMemory(hir::Value* addr, hir::Type type) {
     // Get host address
-    void* baseAddress = parent->memory->getBaseAddr();
+    void* baseAddress = dynamic_cast<mem::GuestVirtualMemory*>(parent->getMemory())->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
     if (type == TYPE_I8) {
@@ -383,7 +384,7 @@ Value* Translator::readMemory(hir::Value* addr, hir::Type type) {
 
 void Translator::writeMemory(Value* addr, Value* value) {
     // Get host address
-    void* baseAddress = parent->memory->getBaseAddr();
+    void* baseAddress = dynamic_cast<mem::GuestVirtualMemory*>(parent->getMemory())->getBaseAddr();
     addr = builder.createAdd(addr, builder.getConstantPointer(baseAddress));
 
     if (value->type == TYPE_I8) {

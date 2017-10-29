@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 
 namespace sys {
 
@@ -48,7 +48,8 @@ enum
     SYS_CRYPTO_OBJECT               = 0x78,  // crypto_engine
 
     // TODO: Are these even objects?
-    //SYS_SPU_THREAD_OBJECT           = 0x02, // no object with this ID into LV2 kernel
+    SYS_PPU_THREAD_OBJECT           = 0x01,
+    SYS_SPU_THREAD_OBJECT           = 0x02, // no object with this ID into LV2 kernel
     SYS_SPU_THREAD_GROUP_OBJECT     = 0x04,
 };
 
@@ -127,36 +128,36 @@ struct sys_process_t {
 };
 
 // SysCalls
-LV2_SYSCALL(sys_process_getpid);
-LV2_SYSCALL(sys_process_getppid);
-LV2_SYSCALL(sys_process_get_number_of_object, U32 object, BE<U32>* nump);
-LV2_SYSCALL(sys_process_get_id, U32 object, BE<U32>* buffer, U32 size, BE<U32>* set_size);
-LV2_SYSCALL(sys_process_get_paramsfo, U08* buffer);
-LV2_SYSCALL(sys_process_get_sdk_version, U32 pid, BE<U32>* version);
-LV2_SYSCALL(sys_process_get_status, U64 unk);
-LV2_SYSCALL(sys_process_exit, S32 errorcode);
-LV2_SYSCALL(sys_process_kill, U32 pid);
-LV2_SYSCALL(sys_process_wait_for_child, U32 pid, BE<U32>* status, U64 unk);
-LV2_SYSCALL(sys_process_wait_for_child2, U64 unk1, U64 unk2, U64 unk3, U64 unk4, U64 unk5, U64 unk6);
-LV2_SYSCALL(sys_process_detach_child, U64 unk);
-LV2_SYSCALL(sys_process_is_spu_lock_line_reservation_address, U32 addr, U64 flags);
-LV2_SYSCALL(sys_game_process_exitspawn, U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
-LV2_SYSCALL(sys_game_process_exitspawn2, U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
-LV2_SYSCALL(sys_process_wait_for_child, BE<U32>* child_proc_id, BE<U32>* status, U32 flag);
-LV2_SYSCALL(sys_process_get_status, U32 proc_id);
-LV2_SYSCALL(sys_process_detach_child, U32 child_proc_id);
-LV2_SYSCALL(sys_process_get_number_of_object, U32 obj_type, BE<U32>* count);
-LV2_SYSCALL(sys_process_get_id, U32 obj_type, BE<U32>* id_list, U32 id_list_size, BE<U32>* count);
-LV2_SYSCALL(sys_process_kill, U32 proc_id);
-LV2_SYSCALL(sys_process_spawn, BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U64 intr_mask, U32 trace_id);
-LV2_SYSCALL(sys_process_exit2, S32 exit_status, BE<U32>* user_data, U32 user_data_size);
-LV2_SYSCALL(sys_process_wait_for_child2, BE<U32>* child_proc_id, BE<U32>* status, BE<U32>* data_out, U32 data_out_size, U32 arg_5, U32 flags);
-LV2_SYSCALL(sys_process_spawns_a_self, BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U64 proc_intr_mask, U32 trace_id, U32 mc_id);
-LV2_SYSCALL(sys_process_exit3, S32 exit_status, BE<U32>* user_data, U32 user_data_size, U32 flags);
-LV2_SYSCALL(sys_process_spawns_a_self2, BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U32 mc_id, sys_param_sfo_t* param_sfo, sys_process_dbg_t* dbg_data);
-LV2_SYSCALL(sys_process_get_number_of_object2, U32 obj_type);
-LV2_SYSCALL(sys_process_get_id2, U32 obj_type, BE<U32>* id_list, U32 id_list_size, BE<U32>* count);
-LV2_SYSCALL(sys_process_get_ppu_guid);
+HLE_FUNCTION(sys_process_getpid);
+HLE_FUNCTION(sys_process_getppid);
+HLE_FUNCTION(sys_process_get_number_of_object, U32 object, BE<U32>* nump);
+HLE_FUNCTION(sys_process_get_id, U32 object, BE<U32>* buffer, U32 size, BE<U32>* set_size);
+HLE_FUNCTION(sys_process_get_paramsfo, U08* buffer);
+HLE_FUNCTION(sys_process_get_sdk_version, U32 pid, BE<U32>* version);
+HLE_FUNCTION(sys_process_get_status, U64 unk);
+HLE_FUNCTION(sys_process_exit, S32 errorcode);
+HLE_FUNCTION(sys_process_kill, U32 pid);
+HLE_FUNCTION(sys_process_wait_for_child, U32 pid, BE<U32>* status, U64 unk);
+HLE_FUNCTION(sys_process_wait_for_child2, U64 unk1, U64 unk2, U64 unk3, U64 unk4, U64 unk5, U64 unk6);
+HLE_FUNCTION(sys_process_detach_child, U64 unk);
+HLE_FUNCTION(sys_process_is_spu_lock_line_reservation_address, U32 addr, U64 flags);
+HLE_FUNCTION(sys_game_process_exitspawn, U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
+HLE_FUNCTION(sys_game_process_exitspawn2, U32 path_addr, U32 argv_addr, U32 envp_addr, U32 data_addr, U32 data_size, U32 prio, U64 flags);
+HLE_FUNCTION(sys_process_wait_for_child, BE<U32>* child_proc_id, BE<U32>* status, U32 flag);
+HLE_FUNCTION(sys_process_get_status, U32 proc_id);
+HLE_FUNCTION(sys_process_detach_child, U32 child_proc_id);
+HLE_FUNCTION(sys_process_get_number_of_object, U32 obj_type, BE<U32>* count);
+HLE_FUNCTION(sys_process_get_id, U32 obj_type, BE<U32>* id_list, U32 id_list_size, BE<U32>* count);
+HLE_FUNCTION(sys_process_kill, U32 proc_id);
+HLE_FUNCTION(sys_process_spawn, BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U64 intr_mask, U32 trace_id);
+HLE_FUNCTION(sys_process_exit2, S32 exit_status, BE<U32>* user_data, U32 user_data_size);
+HLE_FUNCTION(sys_process_wait_for_child2, BE<U32>* child_proc_id, BE<U32>* status, BE<U32>* data_out, U32 data_out_size, U32 arg_5, U32 flags);
+HLE_FUNCTION(sys_process_spawns_a_self, BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U64 proc_intr_mask, U32 trace_id, U32 mc_id);
+HLE_FUNCTION(sys_process_exit3, S32 exit_status, BE<U32>* user_data, U32 user_data_size, U32 flags);
+HLE_FUNCTION(sys_process_spawns_a_self2, BE<U32>* proc_id, S32 primary_prio, U32 flags, BE<U32>* stack, U32 stack_size, U32 mc_id, sys_param_sfo_t* param_sfo, sys_process_dbg_t* dbg_data);
+HLE_FUNCTION(sys_process_get_number_of_object2, U32 obj_type);
+HLE_FUNCTION(sys_process_get_id2, U32 obj_type, BE<U32>* id_list, U32 id_list_size, BE<U32>* count);
+HLE_FUNCTION(sys_process_get_ppu_guid);
 
     
 }  // namespace sys

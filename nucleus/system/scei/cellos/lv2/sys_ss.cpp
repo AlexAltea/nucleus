@@ -8,7 +8,7 @@
 
 namespace sys {
 
-LV2_SYSCALL(sys_ss_access_control_engine, U32 pid, U64 arg2, U64 arg3) {
+HLE_FUNCTION(sys_ss_access_control_engine, U32 pid, U64 arg2, U64 arg3) {
     return CELL_OK;
 }
 

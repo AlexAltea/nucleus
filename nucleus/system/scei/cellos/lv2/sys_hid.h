@@ -6,13 +6,13 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 
 namespace sys {
 
 // SysCalls
-LV2_SYSCALL(sys_hid_0x1FE);
-LV2_SYSCALL(sys_hid_0x200);
-LV2_SYSCALL(sys_hid_0x202);
+HLE_FUNCTION(sys_hid_0x1FE);
+HLE_FUNCTION(sys_hid_0x200);
+HLE_FUNCTION(sys_hid_0x202);
 
 }  // namespace sys

@@ -42,21 +42,28 @@ void nucleusCall(U64 guestAddr) {
 
 void nucleusSysCall() {
 #if !defined(NUCLEUS_BUILD_TEST)
-    auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
-    static_cast<sys::LV2*>(nucleus.sys.get())->call(*state);
+    auto* thread = CPU::getCurrentThread();
+    auto* state = static_cast<frontend::ppu::PPUThread*>(thread)->state.get();
+    auto* emu = thread->getEmulator();
+    static_cast<sys::LV2*>(emu->sys.get())->call(*state);
 #endif
 }
 
 void nucleusHook(U32 fnid) {
 #if !defined(NUCLEUS_BUILD_TEST)
-    auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
-    static_cast<sys::LV2*>(nucleus.sys.get())->modules.call(*state, fnid);
+    auto* thread = CPU::getCurrentThread();
+    auto* state = static_cast<frontend::ppu::PPUThread*>(thread)->state.get();
+    auto* emu = thread->getEmulator();
+    auto* lv2 = static_cast<sys::LV2*>(emu->sys.get());
+    lv2->modules.call(*state, lv2, fnid);
 #endif
 }
 
 void nucleusLog(U64 guestAddr) {
-    auto* state = static_cast<frontend::ppu::PPUThread*>(CPU::getCurrentThread())->state.get();
-    frontend::ppu::Instruction instr { CPU::getCurrentThread()->parent->memory->read32(guestAddr) };
+    auto* thread = CPU::getCurrentThread();
+    auto* state = static_cast<frontend::ppu::PPUThread*>(thread)->state.get();
+    auto* emu = thread->getEmulator();
+    frontend::ppu::Instruction instr { emu->memory->read32(guestAddr) };
     printf("> [%08X] %s\n", U32(guestAddr), frontend::ppu::get_entry(instr).name);
     int a = 0;
     a += 1;

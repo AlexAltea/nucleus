@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 
 #include <mutex>
 
@@ -31,10 +31,10 @@ struct sys_lwmutex_t
 };
 
 // SysCalls
-LV2_SYSCALL(sys_lwmutex_create, BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr);
-LV2_SYSCALL(sys_lwmutex_destroy, U32 lwmutex_id);
-LV2_SYSCALL(sys_lwmutex_lock, U32 lwmutex_id, U64 timeout);
-LV2_SYSCALL(sys_lwmutex_trylock, U32 lwmutex_id);
-LV2_SYSCALL(sys_lwmutex_unlock, U32 lwmutex_id);
+HLE_FUNCTION(sys_lwmutex_create, BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr);
+HLE_FUNCTION(sys_lwmutex_destroy, U32 lwmutex_id);
+HLE_FUNCTION(sys_lwmutex_lock, U32 lwmutex_id, U64 timeout);
+HLE_FUNCTION(sys_lwmutex_trylock, U32 lwmutex_id);
+HLE_FUNCTION(sys_lwmutex_unlock, U32 lwmutex_id);
 
 }  // namespace sys

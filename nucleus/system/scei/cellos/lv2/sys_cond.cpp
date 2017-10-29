@@ -7,17 +7,18 @@
 #include "sys_mutex.h"
 #include "nucleus/emulator.h"
 #include "nucleus/logger/logger.h"
+#include "../lv2.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_cond_create, BE<U32>* cond_id, U32 mutex_id, sys_cond_attribute_t* attr) {
+HLE_FUNCTION(sys_cond_create, BE<U32>* cond_id, U32 mutex_id, sys_cond_attribute_t* attr) {
     auto* mutex = kernel.objects.get<sys_mutex_t>(mutex_id);
 
     // Check requisites
     if (!mutex) {
         return CELL_ESRCH;
     }
-    if (cond_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
+    if (cond_id == kernel.memory->ptr(0) || attr == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {
@@ -38,14 +39,14 @@ LV2_SYSCALL(sys_cond_create, BE<U32>* cond_id, U32 mutex_id, sys_cond_attribute_
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_cond_destroy, U32 cond_id) {
+HLE_FUNCTION(sys_cond_destroy, U32 cond_id) {
     if (!kernel.objects.remove(cond_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_cond_signal, U32 cond_id) {
+HLE_FUNCTION(sys_cond_signal, U32 cond_id) {
     auto* cond = kernel.objects.get<sys_cond_t>(cond_id);
 
     // Check requisites
@@ -57,7 +58,7 @@ LV2_SYSCALL(sys_cond_signal, U32 cond_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_cond_signal_all, U32 cond_id) {
+HLE_FUNCTION(sys_cond_signal_all, U32 cond_id) {
     auto* cond = kernel.objects.get<sys_cond_t>(cond_id);
 
     // Check requisites
@@ -69,7 +70,7 @@ LV2_SYSCALL(sys_cond_signal_all, U32 cond_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_cond_signal_to, U32 cond_id, U32 thread_id) {
+HLE_FUNCTION(sys_cond_signal_to, U32 cond_id, U32 thread_id) {
     auto* cond = kernel.objects.get<sys_cond_t>(cond_id);
 
     // Check requisites
@@ -82,7 +83,7 @@ LV2_SYSCALL(sys_cond_signal_to, U32 cond_id, U32 thread_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_cond_wait, U32 cond_id, U64 timeout) {
+HLE_FUNCTION(sys_cond_wait, U32 cond_id, U64 timeout) {
     auto* cond = kernel.objects.get<sys_cond_t>(cond_id);
 
     // Check requisites

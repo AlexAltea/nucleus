@@ -12,6 +12,10 @@
 #include <string>
 #include <thread>
 
+ // Forward declarations
+class Emulator;
+namespace mem { class Memory; }
+
 namespace cpu {
 
 // Forward declarations
@@ -39,6 +43,18 @@ public:
 
     // Constructor
     Thread(CPU* parent = nullptr);
+
+    /**
+     * Get the emulator object to which this this CPU is belongs.
+     * @return  Emulator
+     */
+    Emulator* getEmulator() const;
+
+    /**
+     * Get the memory object to which this this CPU is belongs.
+     * @return  Memory object
+     */
+    mem::Memory* getMemory() const;
 
     // Open a new thread that will enter the code emulation loop
     virtual void start() = 0;

@@ -14,11 +14,10 @@
 namespace cpu {
 namespace frontend {
 
-template <typename TAddr>
 class IRecompiler {
 protected:
     // Function to be generated
-    Function<TAddr>* function;
+    Function* function;
 
 public:
     // HIR builder
@@ -27,10 +26,10 @@ public:
     // Control Flow Graph
     hir::Block* prolog = nullptr;
     hir::Block* epilog = nullptr;
-    std::map<TAddr, hir::Block*> blocks;
+    std::map<U64, hir::Block*> blocks;
 
     // Constructor
-    IRecompiler(Function<TAddr>* f) : function(f) {
+    IRecompiler(Function* f) : function(f) {
         //prolog = hir::Block::Create("prolog", function->function);
         //epilog = hir::Block::Create("epilog", function->function);
     }

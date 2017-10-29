@@ -6,12 +6,15 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "nucleus/memory/memory.h"
 #include "nucleus/gpu/gpu.h"
 #include "nucleus/gpu/rsx/rsx_pgraph.h"
 
 #include <stack>
 #include <thread>
+
+// Forward declarations
+namespace mem { class Memory; }
+namespace mem { class GuestVirtualMemory; }
 
 namespace gpu {
 namespace rsx {
@@ -97,6 +100,8 @@ struct rsx_display_info_t {
 };
 
 class RSX : public GPU {
+    Emulator* emulator;
+
     // Execution engines
     PGRAPH pgraph;
 
@@ -121,23 +126,23 @@ public:
     rsx_display_info_t display[8];
     U08 queued_display = 0;
 
-    std::shared_ptr<mem::Memory> memory;
+    mem::GuestVirtualMemory* memory;
 
     // IO Memory Access (mapped into GPU memory through FlexIO)
     std::vector<rsx_iomap_t> iomaps;
 
     // Constructor
-    RSX(std::shared_ptr<mem::Memory> memory, std::shared_ptr<gfx::GraphicsBackend> graphics);
+    RSX(Emulator* emulator, mem::Memory* memory, std::shared_ptr<gfx::GraphicsBackend> graphics);
 
-    U32 io_read8(U32 offset);
-    U32 io_read16(U32 offset);
+    U08 io_read8(U32 offset);
+    U16 io_read16(U32 offset);
     U32 io_read32(U32 offset);
-    U32 io_read64(U64 offset);
+    U64 io_read64(U32 offset);
 
-    void io_write32(U08 offset, U08 value);
-    void io_write32(U16 offset, U16 value);
+    void io_write8(U32 offset, U08 value);
+    void io_write16(U32 offset, U16 value);
     void io_write32(U32 offset, U32 value);
-    void io_write32(U64 offset, U64 value);
+    void io_write64(U32 offset, U64 value);
 
     U32 get_ea(U32 io_addr);
     //GLuint get_display();

@@ -6,11 +6,23 @@
 #pragma once
 
 #include "cpu.h"
-#include "thread.h"
+
+namespace cpu {
 
 thread_local Thread* gCurrentThread = nullptr;
 
-namespace cpu {
+CPU::CPU(Emulator* emulator, mem::Memory* memory)
+    : m_emulator(emulator), m_memory(memory)
+{
+}
+
+Emulator* CPU::getEmulator() const {
+    return m_emulator;
+}
+
+mem::Memory* CPU::getMemory() const {
+    return m_memory;
+}
 
 Thread* CPU::getCurrentThread() {
     return gCurrentThread;
@@ -19,6 +31,5 @@ Thread* CPU::getCurrentThread() {
 void CPU::setCurrentThread(Thread* thread) {
     gCurrentThread = thread;
 }
-
 
 }  // namespace cpu

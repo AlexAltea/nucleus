@@ -7,6 +7,7 @@
 
 #include "nucleus/common.h"
 #include "nucleus/system/scei/cellos/lv1.h"
+#include "nucleus/system/scei/cellos/lv2.h"
 
 namespace sys {
 
@@ -90,11 +91,11 @@ enum {
  * @param[in]  r4  Flags
  * @param[in]  r5  Context
  */
-S32 lv1_gpu_context_allocate(BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode);
+S32 lv1_gpu_context_allocate(LV2& kernel, BE<U32>* context_id, BE<U64>* lpar_dma_control, BE<U64>* lpar_driver_info, BE<U64>* lpar_reports, U64 mem_ctx, U64 system_mode);
 
 /**
  * LV1 SysCall 225 (0xE1): lv1_gpu_context_attribute
  */
-S32 lv1_gpu_context_attribute(S32 context_id, U32 operation_code, U64 p1, U64 p2, U64 p3, U64 p4);
+S32 lv1_gpu_context_attribute(LV2& kernel, S32 context_id, U32 operation_code, U64 p1, U64 p2, U64 p3, U64 p4);
 
 }  // namespace sys

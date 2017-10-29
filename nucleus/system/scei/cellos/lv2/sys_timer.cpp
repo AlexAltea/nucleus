@@ -4,16 +4,17 @@
  */
 
 #include "sys_timer.h"
+#include "../lv2.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_timer_sleep, U32 sleep_time) {
+HLE_FUNCTION(sys_timer_sleep, U32 sleep_time) {
     // TODO: Use a condition variable to kill the thread while it sleeps
     std::this_thread::sleep_for(std::chrono::seconds(sleep_time));
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_timer_usleep, U64 sleep_time) {
+HLE_FUNCTION(sys_timer_usleep, U64 sleep_time) {
     // Maximum value is: 2^48-1
     if (sleep_time > 0xFFFFFFFFFFFFULL) {
         sleep_time = 0xFFFFFFFFFFFFULL;

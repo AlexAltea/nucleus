@@ -38,16 +38,16 @@ bool ModuleManager::find(const std::string& libraryName, U32 functionId) {
     return false;
 }
 
-void ModuleManager::call(cpu::frontend::ppu::PPUState& state) {
+void ModuleManager::call(cpu::frontend::ppu::PPUState& state, LV2* kernel) {
     const U32 fnid = static_cast<U32>(state.r[11]);
-    call(state, fnid);
+    call(state, kernel, fnid);
 }
 
-void ModuleManager::call(cpu::frontend::ppu::PPUState& state, U32 fnid) {
+void ModuleManager::call(cpu::frontend::ppu::PPUState& state, LV2* kernel, U32 fnid) {
     for (const auto& module : modules) {
         for (const auto& function : module.functions) {
             if (function.first == fnid) {
-                function.second->call(state, parent->memory->getBaseAddr());
+                function.second->call(state, *kernel, parent->memory->getBaseAddr());
                 return;
             }
         }

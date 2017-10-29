@@ -7,6 +7,7 @@
 #include "sys_mutex.h"
 #include "nucleus/cpu/cpu.h"
 #include "nucleus/emulator.h"
+#include "../lv2.h"
 
 // Avoid <Windows.h> macro collisions with std::min and std::max
 #if defined(NUCLEUS_TARGET_UWP) || defined(NUCLEUS_TARGET_WINDOWS)
@@ -21,9 +22,9 @@ namespace sys {
 /**
  * LV2: Event flags
  */
-LV2_SYSCALL(sys_event_flag_create, BE<U32>* eflag_id, sys_event_flag_attr_t* attr, U64 init) {
+HLE_FUNCTION(sys_event_flag_create, BE<U32>* eflag_id, sys_event_flag_attr_t* attr, U64 init) {
     // Check requisites
-    if (eflag_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
+    if (eflag_id == kernel.memory->ptr(0) || attr == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (attr->pshared != SYS_SYNC_PROCESS_SHARED && attr->pshared != SYS_SYNC_NOT_PROCESS_SHARED) {
@@ -39,14 +40,14 @@ LV2_SYSCALL(sys_event_flag_create, BE<U32>* eflag_id, sys_event_flag_attr_t* att
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_flag_destroy, U32 eflag_id) {
+HLE_FUNCTION(sys_event_flag_destroy, U32 eflag_id) {
     if (!kernel.objects.remove(eflag_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_flag_wait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result, U64 timeout) {
+HLE_FUNCTION(sys_event_flag_wait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result, U64 timeout) {
     auto* eflag = kernel.objects.get<sys_event_flag_t>(eflag_id);
 
     // Check requisites
@@ -83,7 +84,7 @@ LV2_SYSCALL(sys_event_flag_wait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* re
     }
 
     // Save value if required and exit if timeout occurred
-    if (result !=  nucleus.memory->ptr(0)) {
+    if (result != kernel.memory->ptr(0)) {
         *result = eflag->value;
     }
     if (!validCondition) {
@@ -100,7 +101,7 @@ LV2_SYSCALL(sys_event_flag_wait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* re
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_flag_trywait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result) {
+HLE_FUNCTION(sys_event_flag_trywait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result) {
     auto* eflag = kernel.objects.get<sys_event_flag_t>(eflag_id);
 
     // Check requisites
@@ -114,7 +115,7 @@ LV2_SYSCALL(sys_event_flag_trywait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>*
     std::unique_lock<std::mutex> lock(eflag->mutex);
 
     // Save value if required
-    if (result ==  nucleus.memory->ptr(0)) {
+    if (result == kernel.memory->ptr(0)) {
         *result = eflag->value;
     }
 
@@ -134,7 +135,7 @@ LV2_SYSCALL(sys_event_flag_trywait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>*
     return CELL_EBUSY;
 }
 
-LV2_SYSCALL(sys_event_flag_set, U32 eflag_id, U64 bitptn) {
+HLE_FUNCTION(sys_event_flag_set, U32 eflag_id, U64 bitptn) {
     auto* eflag = kernel.objects.get<sys_event_flag_t>(eflag_id);
 
     // Check requisites
@@ -147,7 +148,7 @@ LV2_SYSCALL(sys_event_flag_set, U32 eflag_id, U64 bitptn) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_flag_clear, U32 eflag_id, U64 bitptn) {
+HLE_FUNCTION(sys_event_flag_clear, U32 eflag_id, U64 bitptn) {
     auto* eflag = kernel.objects.get<sys_event_flag_t>(eflag_id);
 
     // Check requisites
@@ -160,12 +161,12 @@ LV2_SYSCALL(sys_event_flag_clear, U32 eflag_id, U64 bitptn) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_flag_cancel, U32 eflag_id, BE<U32>* num) {
+HLE_FUNCTION(sys_event_flag_cancel, U32 eflag_id, BE<U32>* num) {
     auto* eflag = kernel.objects.get<sys_event_flag_t>(eflag_id);
 
     // Check requisites
     if (!eflag) {
-        if (num == nucleus.memory->ptr(0)) {
+        if (num == kernel.memory->ptr(0)) {
             num = 0;
         }
         return CELL_ESRCH;
@@ -174,11 +175,11 @@ LV2_SYSCALL(sys_event_flag_cancel, U32 eflag_id, BE<U32>* num) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_flag_get, U32 eflag_id, BE<U64>* flags) {
+HLE_FUNCTION(sys_event_flag_get, U32 eflag_id, BE<U64>* flags) {
     auto* eflag = kernel.objects.get<sys_event_flag_t>(eflag_id);
 
     // Check requisites
-    if (flags == nucleus.memory->ptr(0)) {
+    if (flags == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (!eflag) {
@@ -192,9 +193,9 @@ LV2_SYSCALL(sys_event_flag_get, U32 eflag_id, BE<U64>* flags) {
 /**
  * LV2: Event ports
  */
-LV2_SYSCALL(sys_event_port_create, BE<U32>* eport_id, S32 port_type, U64 name) {
+HLE_FUNCTION(sys_event_port_create, BE<U32>* eport_id, S32 port_type, U64 name) {
     // Check requisites
-    if (eport_id == nucleus.memory->ptr(0)) {
+    if (eport_id == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
@@ -207,14 +208,14 @@ LV2_SYSCALL(sys_event_port_create, BE<U32>* eport_id, S32 port_type, U64 name) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_port_destroy, U32 eport_id) {
+HLE_FUNCTION(sys_event_port_destroy, U32 eport_id) {
     if (!kernel.objects.remove(eport_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_port_connect_local, U32 eport_id, U32 equeue_id) {
+HLE_FUNCTION(sys_event_port_connect_local, U32 eport_id, U32 equeue_id) {
     auto* eport = kernel.objects.get<sys_event_port_t>(eport_id);
     auto* equeue = kernel.objects.get<sys_event_queue_t>(equeue_id);
 
@@ -233,7 +234,7 @@ LV2_SYSCALL(sys_event_port_connect_local, U32 eport_id, U32 equeue_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_port_disconnect, U32 eport_id) {
+HLE_FUNCTION(sys_event_port_disconnect, U32 eport_id) {
     auto* eport = kernel.objects.get<sys_event_port_t>(eport_id);
 
     // Check requisites
@@ -245,7 +246,7 @@ LV2_SYSCALL(sys_event_port_disconnect, U32 eport_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_port_send, U32 eport_id, U64 data1, U64 data2, U64 data3) {
+HLE_FUNCTION(sys_event_port_send, U32 eport_id, U64 data1, U64 data2, U64 data3) {
     auto* eport = kernel.objects.get<sys_event_port_t>(eport_id);
 
     // Check requisites
@@ -267,9 +268,9 @@ LV2_SYSCALL(sys_event_port_send, U32 eport_id, U64 data1, U64 data2, U64 data3) 
 /**
  * LV2: Event queues
  */
-LV2_SYSCALL(sys_event_queue_create, BE<U32>* equeue_id, sys_event_queue_attr_t* attr, U64 event_queue_key, S32 size) {
+HLE_FUNCTION(sys_event_queue_create, BE<U32>* equeue_id, sys_event_queue_attr_t* attr, U64 event_queue_key, S32 size) {
     // Check requisites
-    if (equeue_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
+    if (equeue_id == kernel.memory->ptr(0) || attr == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
     if (size < 1 || size > 127) {
@@ -284,7 +285,7 @@ LV2_SYSCALL(sys_event_queue_create, BE<U32>* equeue_id, sys_event_queue_attr_t* 
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_queue_destroy, U32 equeue_id, S32 mode) {
+HLE_FUNCTION(sys_event_queue_destroy, U32 equeue_id, S32 mode) {
     // TODO: What's up with mode?
     if (!kernel.objects.remove(equeue_id)) {
         return CELL_ESRCH;
@@ -292,7 +293,7 @@ LV2_SYSCALL(sys_event_queue_destroy, U32 equeue_id, S32 mode) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_queue_receive, U32 equeue_id, sys_event_t* evt, U64 timeout) {
+HLE_FUNCTION(sys_event_queue_receive, U32 equeue_id, sys_event_t* evt, U64 timeout) {
     auto* equeue = kernel.objects.get<sys_event_queue_t>(equeue_id);
 
     // Check requisites
@@ -319,7 +320,7 @@ LV2_SYSCALL(sys_event_queue_receive, U32 equeue_id, sys_event_t* evt, U64 timeou
     equeue->queue.pop();
 
     // Event data is returned using registers
-    auto thread = (cpu::frontend::ppu::PPUThread*)nucleus.cpu->getCurrentThread();
+    auto thread = (cpu::frontend::ppu::PPUThread*)cpu::CPU::getCurrentThread();
     thread->state->r[4] = evt->source;
     thread->state->r[5] = evt->data1;
     thread->state->r[6] = evt->data2;
@@ -327,7 +328,7 @@ LV2_SYSCALL(sys_event_queue_receive, U32 equeue_id, sys_event_t* evt, U64 timeou
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_queue_tryreceive, U32 equeue_id, sys_event_t* event_array, S32 size, BE<S32>* number) {
+HLE_FUNCTION(sys_event_queue_tryreceive, U32 equeue_id, sys_event_t* event_array, S32 size, BE<S32>* number) {
     auto* equeue = kernel.objects.get<sys_event_queue_t>(equeue_id);
 
     // Check requisites
@@ -347,7 +348,7 @@ LV2_SYSCALL(sys_event_queue_tryreceive, U32 equeue_id, sys_event_t* event_array,
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_event_queue_drain, U32 equeue_id) {
+HLE_FUNCTION(sys_event_queue_drain, U32 equeue_id) {
     auto* equeue = kernel.objects.get<sys_event_queue_t>(equeue_id);
 
     // Check requisites

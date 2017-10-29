@@ -7,7 +7,6 @@
 
 #include "nucleus/common.h"
 #include "nucleus/graphics/graphics.h"
-#include "nucleus/memory/memory.h"
 #include "nucleus/gpu/gpu_hash.h"
 #include "nucleus/gpu/texture_cache.h"
 #include "nucleus/gpu/rsx/rsx_enum.h"
@@ -18,6 +17,9 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+
+ // Forward declarations
+namespace mem { class GuestVirtualMemory; }
 
 namespace gpu {
 namespace rsx {
@@ -148,7 +150,7 @@ struct alignas(sizeof(Hash)) Pipeline {
 // RSX's PGRAPH engine (Curie)
 class PGRAPH {
     std::shared_ptr<gfx::GraphicsBackend> graphics;
-    mem::Memory* memory;
+    mem::GuestVirtualMemory* memory;
     RSX* rsx;
 
     gfx::CommandQueue* cmdQueue;
@@ -224,7 +226,7 @@ public:
     U32 fp_control;                      // Control the performance of the program
 
     // Constructor
-    PGRAPH(std::shared_ptr<gfx::GraphicsBackend> graphics, RSX* rsx, mem::Memory* memory);
+    PGRAPH(std::shared_ptr<gfx::GraphicsBackend> graphics, RSX* rsx, mem::GuestVirtualMemory* memory);
     ~PGRAPH();
 
     // Auxiliary methods

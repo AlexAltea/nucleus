@@ -3,8 +3,8 @@
  * Released under GPL v2 license. Read LICENSE for more details.
  */
 
-#include "segment.h"
-#include "nucleus/memory/memory.h"
+#include "guest_virtual_segment.h"
+#include "guest_virtual_memory.h"
 
 #if defined(NUCLEUS_TARGET_WINDOWS)
 #include <Windows.h>
@@ -47,7 +47,7 @@ Block::Block(void* baseAddr, U32 blockAddr, U32 blockSize) {
 Segment::Segment() {
 }
 
-Segment::Segment(Memory* parent, U32 start, U32 size) {
+Segment::Segment(GuestVirtualMemory* parent, U32 start, U32 size) {
     init(parent, start, size);
 }
 
@@ -55,7 +55,7 @@ Segment::~Segment() {
     close();
 }
 
-void Segment::init(Memory* parent, U32 start, U32 size) {
+void Segment::init(GuestVirtualMemory* parent, U32 start, U32 size) {
     close();
     m_parent = parent;
     m_start = start;

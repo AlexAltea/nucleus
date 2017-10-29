@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 #include "sys_synchronization.h"
 
 #include <condition_variable>
@@ -82,25 +82,25 @@ struct sys_event_port_t
 };
 
 // SysCalls
-LV2_SYSCALL(sys_event_flag_create, BE<U32>* eflag_id, sys_event_flag_attr_t* attr, U64 init);
-LV2_SYSCALL(sys_event_flag_destroy, U32 eflag_id);
-LV2_SYSCALL(sys_event_flag_wait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result, U64 timeout);
-LV2_SYSCALL(sys_event_flag_trywait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result);
-LV2_SYSCALL(sys_event_flag_set, U32 eflag_id, U64 bitptn);
-LV2_SYSCALL(sys_event_flag_clear, U32 eflag_id, U64 bitptn);
-LV2_SYSCALL(sys_event_flag_cancel, U32 eflag_id, BE<U32>* num);
-LV2_SYSCALL(sys_event_flag_get, U32 eflag_id, BE<U64>* flags);
+HLE_FUNCTION(sys_event_flag_create, BE<U32>* eflag_id, sys_event_flag_attr_t* attr, U64 init);
+HLE_FUNCTION(sys_event_flag_destroy, U32 eflag_id);
+HLE_FUNCTION(sys_event_flag_wait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result, U64 timeout);
+HLE_FUNCTION(sys_event_flag_trywait, U32 eflag_id, U64 bitptn, U32 mode, BE<U64>* result);
+HLE_FUNCTION(sys_event_flag_set, U32 eflag_id, U64 bitptn);
+HLE_FUNCTION(sys_event_flag_clear, U32 eflag_id, U64 bitptn);
+HLE_FUNCTION(sys_event_flag_cancel, U32 eflag_id, BE<U32>* num);
+HLE_FUNCTION(sys_event_flag_get, U32 eflag_id, BE<U64>* flags);
 
-LV2_SYSCALL(sys_event_port_create, BE<U32>* eport_id, S32 port_type, U64 name);
-LV2_SYSCALL(sys_event_port_destroy, U32 eport_id);
-LV2_SYSCALL(sys_event_port_connect_local, U32 eport_id, U32 equeue_id);
-LV2_SYSCALL(sys_event_port_disconnect, U32 eport_id);
-LV2_SYSCALL(sys_event_port_send, U32 eport_id, U64 data1, U64 data2, U64 data3);
+HLE_FUNCTION(sys_event_port_create, BE<U32>* eport_id, S32 port_type, U64 name);
+HLE_FUNCTION(sys_event_port_destroy, U32 eport_id);
+HLE_FUNCTION(sys_event_port_connect_local, U32 eport_id, U32 equeue_id);
+HLE_FUNCTION(sys_event_port_disconnect, U32 eport_id);
+HLE_FUNCTION(sys_event_port_send, U32 eport_id, U64 data1, U64 data2, U64 data3);
 
-LV2_SYSCALL(sys_event_queue_create, BE<U32>* equeue_id, sys_event_queue_attr_t* attr, U64 event_queue_key, S32 size);
-LV2_SYSCALL(sys_event_queue_destroy, U32 equeue_id, S32 mode);
-LV2_SYSCALL(sys_event_queue_receive, U32 equeue_id, sys_event_t* dummy_event, U64 timeout);
-LV2_SYSCALL(sys_event_queue_tryreceive, U32 equeue_id, sys_event_t* event_array, S32 size, BE<S32>* number);
-LV2_SYSCALL(sys_event_queue_drain, U32 equeue_id);
+HLE_FUNCTION(sys_event_queue_create, BE<U32>* equeue_id, sys_event_queue_attr_t* attr, U64 event_queue_key, S32 size);
+HLE_FUNCTION(sys_event_queue_destroy, U32 equeue_id, S32 mode);
+HLE_FUNCTION(sys_event_queue_receive, U32 equeue_id, sys_event_t* dummy_event, U64 timeout);
+HLE_FUNCTION(sys_event_queue_tryreceive, U32 equeue_id, sys_event_t* event_array, S32 size, BE<S32>* number);
+HLE_FUNCTION(sys_event_queue_drain, U32 equeue_id);
 
 }  // namespace sys

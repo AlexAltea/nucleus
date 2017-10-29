@@ -128,7 +128,7 @@ public:
     // Kernel information
     sys_process_t proc; // TODO: Is this really necessary
 
-    OrbisOS();
+    OrbisOS(Emulator* emulator);
 
     /**
      * Start the process at the given entry point

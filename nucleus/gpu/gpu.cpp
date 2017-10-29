@@ -7,6 +7,12 @@
 
 namespace gpu {
 
+GPU::GPU(Emulator* emulator) : m_emulator(emulator)
+{
+}
 
+Emulator* GPU::getEmulator() const {
+    return m_emulator;
+}
 
 }  // namespace gpu

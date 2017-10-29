@@ -7,13 +7,14 @@
 #include "nucleus/emulator.h"
 #include "nucleus/filesystem/filesystem_virtual.h"
 #include "nucleus/logger/logger.h"
+#include "../lv2.h"
 
 #include <cstring>
 
 namespace sys {
 
 // SysCalls
-LV2_SYSCALL(sys_fs_open, const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size) {
+HLE_FUNCTION(sys_fs_open, const S08* path, S32 flags, BE<S32>* fd, U64 mode, const void* arg, U64 size) {
     // Create file
     if (flags & CELL_FS_O_CREAT) {
         kernel.vfs.createFile(path);
@@ -61,7 +62,7 @@ LV2_SYSCALL(sys_fs_open, const S08* path, S32 flags, BE<S32>* fd, U64 mode, cons
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_fs_read, S32 fd, void* buf, U64 nbytes, BE<U64>* nread) {
+HLE_FUNCTION(sys_fs_read, S32 fd, void* buf, U64 nbytes, BE<U64>* nread) {
     auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
@@ -69,7 +70,7 @@ LV2_SYSCALL(sys_fs_read, S32 fd, void* buf, U64 nbytes, BE<U64>* nread) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_fs_write, S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite) {
+HLE_FUNCTION(sys_fs_write, S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite) {
     auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 
@@ -77,16 +78,16 @@ LV2_SYSCALL(sys_fs_write, S32 fd, const void* buf, U64 nbytes, BE<U64>* nwrite) 
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_fs_close, S32 fd) {
+HLE_FUNCTION(sys_fs_close, S32 fd) {
     auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     delete descriptor->file;
 
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_fs_fstat, S32 fd, sys_fs_stat_t* sb) {
+HLE_FUNCTION(sys_fs_fstat, S32 fd, sys_fs_stat_t* sb) {
     // Check requisites
-    if (sb == nucleus.memory->ptr(0)) {
+    if (sb == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
@@ -106,13 +107,13 @@ LV2_SYSCALL(sys_fs_fstat, S32 fd, sys_fs_stat_t* sb) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_fs_stat, const S08* path, sys_fs_stat_t* sb) {
+HLE_FUNCTION(sys_fs_stat, const S08* path, sys_fs_stat_t* sb) {
     // Check requisites
-    if (path == nucleus.memory->ptr(0) || sb == nucleus.memory->ptr(0)) {
+    if (path == kernel.memory->ptr(0) || sb == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
-    auto attributes = nucleus.sys->vfs.getFileAttributes(path);
+    auto attributes = kernel.vfs.getFileAttributes(path);
     sb->st_atime = attributes.timestamp_access;
     sb->st_ctime = attributes.timestamp_create;
     sb->st_mtime = attributes.timestamp_write;
@@ -125,12 +126,12 @@ LV2_SYSCALL(sys_fs_stat, const S08* path, sys_fs_stat_t* sb) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_fs_fcntl, S32 fd, S32 cmd, void* argv, U32 argc) {
+HLE_FUNCTION(sys_fs_fcntl, S32 fd, S32 cmd, void* argv, U32 argc) {
     logger.warning(LOG_HLE, "LV2 Syscall (0x331) called: sys_fs_fcntl");
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_fs_lseek, S32 fd, S64 offset, S32 whence, BE<U64>* pos) {
+HLE_FUNCTION(sys_fs_lseek, S32 fd, S64 offset, S32 whence, BE<U64>* pos) {
     auto* descriptor = kernel.objects.get<sys_fs_t>(fd);
     auto* file = descriptor->file;
 

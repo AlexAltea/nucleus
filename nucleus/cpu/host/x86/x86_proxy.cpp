@@ -42,7 +42,7 @@ void setStateAndEnter64(X86State state, void* target) {
     a.call(target);
 
     // Restore GPRs
-    a.mov(a.rax, state);
+    a.mov(a.rax, U64(&state));
     XORSWAP(a.rcx, a.qword[a.rax + offsetof(X86State, r[0x1])]);
     XORSWAP(a.rdx, a.qword[a.rax + offsetof(X86State, r[0x2])]);
     XORSWAP(a.rbx, a.qword[a.rax + offsetof(X86State, r[0x3])]);

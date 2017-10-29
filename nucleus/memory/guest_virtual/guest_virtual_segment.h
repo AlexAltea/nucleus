@@ -13,7 +13,7 @@
 namespace mem {
 
 // Forward declarations
-class Memory;
+class GuestVirtualMemory;
 
 struct Block {
     U32 addr;
@@ -24,7 +24,7 @@ struct Block {
 };
 
 class Segment {
-    Memory* m_parent;
+    GuestVirtualMemory* m_parent;
     U32 m_start;
     U32 m_size;
     std::mutex m_mutex;
@@ -32,10 +32,10 @@ class Segment {
 
 public:
     Segment();
-    Segment(Memory* parent, U32 start, U32 size);
+    Segment(GuestVirtualMemory* parent, U32 start, U32 size);
     ~Segment();
 
-    void init(Memory* parent, U32 start, U32 size);
+    void init(GuestVirtualMemory* parent, U32 start, U32 size);
     void close();
 
     U32 alloc(U32 size, U32 align=1);

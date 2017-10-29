@@ -8,10 +8,12 @@
 namespace gpu {
 namespace r10xx {
 
-R10XX::R10XX(std::shared_ptr<gfx::GraphicsBackend> graphics) {
+R10XX::R10XX(Emulator* emulator, std::shared_ptr<gfx::GraphicsBackend> graphics) : GPU(emulator)
+{
 }
 
-gfx::Texture* R10XX::getFrontBuffer() {
+gfx::Texture* R10XX::getFrontBuffer()
+{
     return nullptr;
 }
 

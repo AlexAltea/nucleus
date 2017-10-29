@@ -11,35 +11,33 @@ namespace cpu {
 namespace frontend {
 
 // Forward declarations
-template <typename TAddr>
 class Function;
 
-template <typename TAddr>
 class Block {
 public:
-    Function<TAddr>* parent;
+    Function* parent;
 
     // Starting address
-    TAddr address = 0;
+    U64 address = 0;
 
     // Number of bytes covered by this block
-    TAddr size = 0;
+    U64 size = 0;
 
     // Branching
-    TAddr branch_a = 0; // Conditional-True or Unconditional branching address
-    TAddr branch_b = 0; // Conditional-False branching address
+    U64 branch_a = 0; // Conditional-True or Unconditional branching address
+    U64 branch_b = 0; // Conditional-False branching address
 
     // Check whether an address is inside this block
-    bool contains(TAddr addr) const {
-        const TAddr from = address;
-        const TAddr to = address + size;
+    bool contains(U64 addr) const {
+        const U64 from = address;
+        const U64 to = address + size;
         return from <= addr && addr < to;
     }
 
     // Cut this block and return the remaining part as a new object
-    Block<TAddr> split(TAddr cut) {
+    Block split(U64 cut) {
         // Configure new block
-        Block<TAddr> new_block{};
+        Block new_block{};
         new_block.parent = parent;
         new_block.address = cut;
         new_block.size = size - (cut - address);

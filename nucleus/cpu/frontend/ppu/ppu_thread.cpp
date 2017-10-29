@@ -5,7 +5,7 @@
 
 #include "ppu_thread.h"
 #include "nucleus/core/config.h"
-#include "nucleus/cpu/cell.h"
+#include "nucleus/cpu/cpu_guest.h"
 #include "nucleus/cpu/frontend/ppu/ppu_state.h"
 #include "nucleus/cpu/frontend/ppu/ppu_decoder.h"
 
@@ -25,7 +25,10 @@ void PPUThread::start() {
     });
 }
 
-void PPUThread::task() {
+void PPUThread::task()
+{
+    auto* cpu = dynamic_cast<GuestCPU*>(parent);
+
     if (config.ppuTranslator & CPU_TRANSLATOR_INSTRUCTION) {
         while (true) {
             // Handle events
@@ -48,8 +51,9 @@ void PPUThread::task() {
             //interpreter->step();
         }
     }
+
     if (config.ppuTranslator & CPU_TRANSLATOR_BLOCK) {
-        for (auto* ppu_segment : static_cast<Cell*>(parent)->ppu_modules) {
+        for (auto* ppu_segment : cpu->ppu_modules) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
@@ -57,8 +61,9 @@ void PPUThread::task() {
             // TODO: ?
         }
     }
+
     if (config.ppuTranslator & CPU_TRANSLATOR_FUNCTION) {
-        for (auto* ppu_segment : static_cast<Cell*>(parent)->ppu_modules) {
+        for (auto* ppu_segment : cpu->ppu_modules) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }
@@ -66,14 +71,15 @@ void PPUThread::task() {
             auto* function = ppu_segment->addFunction(state->pc);
             auto* hirFunction = function->hirFunction;
             if (!(hirFunction->flags & hir::FUNCTION_IS_COMPILED)) {
-                parent->compiler->compile(hirFunction);
+                cpu->compiler->compile(hirFunction);
             }
-            parent->compiler->call(hirFunction, state.get());
+            cpu->compiler->call(hirFunction, state.get());
             return;
         }
     }
+
     if (config.ppuTranslator & CPU_TRANSLATOR_MODULE) {
-        for (auto* ppu_segment : static_cast<Cell*>(parent)->ppu_modules) {
+        for (auto* ppu_segment : cpu->ppu_modules) {
             if (!ppu_segment->contains(state->pc)) {
                 continue;
             }

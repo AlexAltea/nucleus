@@ -13,7 +13,9 @@ namespace sys {
 namespace scei {
 namespace orbis {
 
-OrbisOS::OrbisOS() {
+OrbisOS::OrbisOS(Emulator* emulator)
+    : System(emulator)
+{
     // Add FreeBSD 9 syscalls referenced in libkernel.sprx (FW 1.62)
     //syscalls[0x000] = SYSCALL();
     //syscalls[0x001] = SYSCALL(sys_exit);

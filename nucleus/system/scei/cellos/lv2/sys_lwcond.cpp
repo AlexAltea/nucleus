@@ -4,22 +4,21 @@
  */
 
 #include "sys_lwcond.h"
-#include "nucleus/emulator.h"
+#include "../lv2.h"
 #include "nucleus/logger/logger.h"
-#include "nucleus/system/scei/cellos/kernel.h"
 #include "nucleus/system/scei/cellos/lv2/sys_lwmutex.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_lwcond_create, BE<U32>* lwcond_id, U32 lwmutex_id, sys_lwcond_attribute_t* attr) {
+HLE_FUNCTION(sys_lwcond_create, BE<U32>* lwcond_id, U32 lwmutex_id, sys_lwcond_attribute_t* attr) {
     auto* lwmutex = kernel.objects.get<sys_lwmutex_t>(lwmutex_id);
 
     // Check requisites
     if (!lwmutex) {
         return CELL_ESRCH;
     }
-    if ((lwcond_id == nucleus.memory->ptr(0)) ||
-        (attr == nucleus.memory->ptr(0))) {
+    if ((lwcond_id == kernel.memory->ptr(0)) ||
+        (attr == kernel.memory->ptr(0))) {
         return CELL_EFAULT;
     }
 
@@ -32,14 +31,14 @@ LV2_SYSCALL(sys_lwcond_create, BE<U32>* lwcond_id, U32 lwmutex_id, sys_lwcond_at
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwcond_destroy, U32 lwcond_id) {
+HLE_FUNCTION(sys_lwcond_destroy, U32 lwcond_id) {
     if (!kernel.objects.remove(lwcond_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwcond_signal, U32 lwcond_id) {
+HLE_FUNCTION(sys_lwcond_signal, U32 lwcond_id) {
     auto* lwcond = kernel.objects.get<sys_lwcond_t>(lwcond_id);
 
     // Check requisites
@@ -51,7 +50,7 @@ LV2_SYSCALL(sys_lwcond_signal, U32 lwcond_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwcond_signal_all, U32 lwcond_id) {
+HLE_FUNCTION(sys_lwcond_signal_all, U32 lwcond_id) {
     auto* lwcond = kernel.objects.get<sys_lwcond_t>(lwcond_id);
 
     // Check requisites
@@ -63,7 +62,7 @@ LV2_SYSCALL(sys_lwcond_signal_all, U32 lwcond_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwcond_queue_wait, U32 lwcond_id, U64 timeout) {
+HLE_FUNCTION(sys_lwcond_queue_wait, U32 lwcond_id, U64 timeout) {
     auto* lwcond = kernel.objects.get<sys_lwcond_t>(lwcond_id);
 
     // Check requisites

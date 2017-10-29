@@ -6,6 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
+#include "../hle_macro.h"
 
 namespace sys {
 
@@ -134,9 +135,9 @@ struct CellVideoOutResolution {
 };
 
 // Functions
-S32 cellVideoOutConfigure(U32 videoOut, CellVideoOutConfiguration* config, CellVideoOutOption* option, U32 waitForEvent);
-S32 cellVideoOutGetDeviceInfo();
-S32 cellVideoOutGetResolution(U32 resolutionId, CellVideoOutResolution* resolution);
-S32 cellVideoOutGetState(U32 videoOut, U32 deviceIndex, CellVideoOutState* state);
+HLE_FUNCTION(cellVideoOutConfigure, U32 videoOut, CellVideoOutConfiguration* config, CellVideoOutOption* option, U32 waitForEvent);
+HLE_FUNCTION(cellVideoOutGetDeviceInfo);
+HLE_FUNCTION(cellVideoOutGetResolution, U32 resolutionId, CellVideoOutResolution* resolution);
+HLE_FUNCTION(cellVideoOutGetState, U32 videoOut, U32 deviceIndex, CellVideoOutState* state);
 
 }  // namespace sys

@@ -5,12 +5,17 @@
 
 #pragma once
 
-#define LV2_SYSCALL(name, ...) \
-    U64 name(LV2& kernel, __VA_ARGS__)
+#include "system.h"
 
 namespace sys {
 
-// Forward declarations
-class LV2;
+System::System(Emulator* emulator) : m_emulator(emulator)
+{
+}
+
+Emulator* System::getEmulator() const
+{
+    return m_emulator;
+}
 
 }  // namespace sys

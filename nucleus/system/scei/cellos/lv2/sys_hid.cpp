@@ -4,21 +4,21 @@
  */
 
 #include "sys_hid.h"
-#include "nucleus/system/scei/cellos/kernel.h"
+#include "../lv2.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_hid_0x1FE) {
+HLE_FUNCTION(sys_hid_0x1FE) {
     // TODO: ?
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_hid_0x200) {
+HLE_FUNCTION(sys_hid_0x200) {
     // TODO: ?
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_hid_0x202) {
+HLE_FUNCTION(sys_hid_0x202) {
     // TODO: ?
     return CELL_OK;
 }

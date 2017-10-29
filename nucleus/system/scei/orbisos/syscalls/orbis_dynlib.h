@@ -46,7 +46,7 @@ struct dynlib_load_prx_args {
     U64 argp;   // const void *
     U32 flags;  // uint32_t
     U64 pOpt;   // const SceKernelLoadModuleOpt *
-    U64 pRes    // int *
+    U64 pRes;   // int *
 };
 S64 sys_dynlib_load_prx(void* thread, dynlib_load_prx_args* args);
 
@@ -60,7 +60,7 @@ struct dynlib_unload_prx_args {
     U64 argp;   // const void *
     U32 flags;  // uint32_t
     U64 pOpt;   // const SceKernelUnloadModuleOpt *
-    U64 pRes    // int *
+    U64 pRes;   // int *
 };
 S64 sys_dynlib_unload_prx(void* thread, dynlib_unload_prx_args* args);
 

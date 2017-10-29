@@ -6,7 +6,7 @@
 #pragma once
 
 #include "nucleus/common.h"
-#include "../lv2_macro.h"
+#include "../hle_macro.h"
 
 namespace sys {
 
@@ -19,14 +19,14 @@ struct sys_timer_information_t {
 };
 
 // SysCalls
-LV2_SYSCALL(sys_timer_create, BE<U32>* timer_id);
-LV2_SYSCALL(sys_timer_destroy, U32 timer_id);
-LV2_SYSCALL(sys_timer_get_information, U32 timer_id, sys_timer_information_t* info);
-LV2_SYSCALL(sys_timer_start, U32 timer_id, S64 basetime, U64 period);
-LV2_SYSCALL(sys_timer_stop, U32 timer_id);
-LV2_SYSCALL(sys_timer_connect_event_queue, U32 timer_id, U32 queue_id, U64 name, U64 data1, U64 data2);
-LV2_SYSCALL(sys_timer_disconnect_event_queue, U32 timer_id);
-LV2_SYSCALL(sys_timer_usleep, U64 sleep_time);
-LV2_SYSCALL(sys_timer_sleep, U32 sleep_time);
+HLE_FUNCTION(sys_timer_create, BE<U32>* timer_id);
+HLE_FUNCTION(sys_timer_destroy, U32 timer_id);
+HLE_FUNCTION(sys_timer_get_information, U32 timer_id, sys_timer_information_t* info);
+HLE_FUNCTION(sys_timer_start, U32 timer_id, S64 basetime, U64 period);
+HLE_FUNCTION(sys_timer_stop, U32 timer_id);
+HLE_FUNCTION(sys_timer_connect_event_queue, U32 timer_id, U32 queue_id, U64 name, U64 data1, U64 data2);
+HLE_FUNCTION(sys_timer_disconnect_event_queue, U32 timer_id);
+HLE_FUNCTION(sys_timer_usleep, U64 sleep_time);
+HLE_FUNCTION(sys_timer_sleep, U32 sleep_time);
 
 }  // namespace sys

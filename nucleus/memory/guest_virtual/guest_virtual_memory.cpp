@@ -47,7 +47,7 @@ GuestVirtualMemory::GuestVirtualMemory(Size amount) {
     m_segments[SEG_SPU].alloc(0x10000000);
 }
 
-Memory::~Memory() {
+GuestVirtualMemory::~GuestVirtualMemory() {
     bool success;
 #if defined(NUCLEUS_TARGET_UWP)
     success = false;
@@ -61,53 +61,53 @@ Memory::~Memory() {
     }
 }
 
-U32 GuestVirtualMemory::alloc(U64 size, U32 align) {
+U64 GuestVirtualMemory::alloc(U64 size, U32 align) {
     return m_segments[SEG_USER_MEMORY].alloc(size, align);
 }
 
-void GuestVirtualMemory::free(U32 addr) {
+void GuestVirtualMemory::free(U64 addr) {
     m_segments[SEG_USER_MEMORY].free(addr);
 }
 
-bool GuestVirtualMemory::check(U32 addr) {
+bool GuestVirtualMemory::check(U64 addr) {
     return true;
 }
 
 /**
  * Read memory reversing endianness if necessary
  */
-U08 GuestVirtualMemory::read8(U32 addr) {
+U08 GuestVirtualMemory::read8(U64 addr) {
     return *(U08*)((U64)m_base + addr);
 }
-U16 GuestVirtualMemory::read16(U32 addr) {
+U16 GuestVirtualMemory::read16(U64 addr) {
     return SE16(*(U16*)((U64)m_base + addr));
 }
-U32 GuestVirtualMemory::read32(U32 addr) {
+U32 GuestVirtualMemory::read32(U64 addr) {
     return SE32(*(U32*)((U64)m_base + addr));
 }
-U64 GuestVirtualMemory::read64(U32 addr) {
+U64 GuestVirtualMemory::read64(U64 addr) {
     return SE64(*(U64*)((U64)m_base + addr));
 }
-U128 GuestVirtualMemory::read128(U32 addr) {
+U128 GuestVirtualMemory::read128(U64 addr) {
     return SE128(*(U128*)((U64)m_base + addr));
 }
 
 /**
  * Write memory reversing endianness if necessary
  */
-void GuestVirtualMemory::write8(U32 addr, U08 value) {
+void GuestVirtualMemory::write8(U64 addr, U08 value) {
     *(U08*)((U64)m_base + addr) = value;
 }
-void GuestVirtualMemory::write16(U32 addr, U16 value) {
+void GuestVirtualMemory::write16(U64 addr, U16 value) {
     *(U16*)((U64)m_base + addr) = SE16(value);
 }
-void GuestVirtualMemory::write32(U32 addr, U32 value) {
+void GuestVirtualMemory::write32(U64 addr, U32 value) {
     *(U32*)((U64)m_base + addr) = SE32(value);
 }
-void GuestVirtualMemory::write64(U32 addr, U64 value) {
+void GuestVirtualMemory::write64(U64 addr, U64 value) {
     *(U64*)((U64)m_base + addr) = SE64(value);
 }
-void GuestVirtualMemory::write128(U32 addr, U128 value) {
+void GuestVirtualMemory::write128(U64 addr, U128 value) {
     *(U128*)((U64)m_base + addr) = SE128(value);
 }
 
@@ -117,7 +117,8 @@ void GuestVirtualMemory::memcpy_h2g(U64 destination, const void* source, Size nu
 void GuestVirtualMemory::memcpy_g2h(void* destination, U64 source, Size num) {
 }
 
-void GuestVirtualMemory::memcpy_g2g(U64 destination, U64 source, Size num) {
+void GuestVirtualMemory::memcpy_g2g(U64 dst, U64 src, Size size) {
+    memcpy(ptr(dst), ptr(src), size);
 }
 
 void GuestVirtualMemory::memset(U64 ptr, int value, Size num) {

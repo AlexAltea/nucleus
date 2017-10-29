@@ -4,14 +4,14 @@
  */
 
 #include "sys_lwmutex.h"
-#include "nucleus/system/scei/cellos/kernel.h"
 #include "nucleus/emulator.h"
+#include "../lv2.h"
 
 namespace sys {
 
-LV2_SYSCALL(sys_lwmutex_create, BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr) {
+HLE_FUNCTION(sys_lwmutex_create, BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* attr) {
     // Check requisites
-    if (lwmutex_id == nucleus.memory->ptr(0) || attr == nucleus.memory->ptr(0)) {
+    if (lwmutex_id == kernel.memory->ptr(0) || attr == kernel.memory->ptr(0)) {
         return CELL_EFAULT;
     }
 
@@ -23,14 +23,14 @@ LV2_SYSCALL(sys_lwmutex_create, BE<U32>* lwmutex_id, sys_lwmutex_attribute_t* at
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwmutex_destroy, U32 lwmutex_id) {
+HLE_FUNCTION(sys_lwmutex_destroy, U32 lwmutex_id) {
     if (!kernel.objects.remove(lwmutex_id)) {
         return CELL_ESRCH;
     }
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwmutex_lock, U32 lwmutex_id, U64 timeout) {
+HLE_FUNCTION(sys_lwmutex_lock, U32 lwmutex_id, U64 timeout) {
     auto* lwmutex = kernel.objects.get<sys_lwmutex_t>(lwmutex_id);
 
     // Check requisites
@@ -58,7 +58,7 @@ LV2_SYSCALL(sys_lwmutex_lock, U32 lwmutex_id, U64 timeout) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwmutex_trylock, U32 lwmutex_id) {
+HLE_FUNCTION(sys_lwmutex_trylock, U32 lwmutex_id) {
     auto* lwmutex = kernel.objects.get<sys_lwmutex_t>(lwmutex_id);
 
     // Check requisites
@@ -70,7 +70,7 @@ LV2_SYSCALL(sys_lwmutex_trylock, U32 lwmutex_id) {
     return CELL_OK;
 }
 
-LV2_SYSCALL(sys_lwmutex_unlock, U32 lwmutex_id) {
+HLE_FUNCTION(sys_lwmutex_unlock, U32 lwmutex_id) {
     auto* lwmutex = kernel.objects.get<sys_lwmutex_t>(lwmutex_id);
 
     // Check requisites
